@@ -102,8 +102,8 @@ export default function RoadmapIndexClient({ initialRoadmaps }: { initialRoadmap
                         >
                             {isSidebarOpen ? <X aria-hidden="true" focusable="false" className="w-5 h-5" /> : <Menu aria-hidden="true" focusable="false" className="w-5 h-5" />}
                         </button>
-                        <Link className="flex items-center group shrink-0" href="/" aria-label="ΣulerFold Home">
-                            <img src="/apple-touch-icon.png" alt="ΣulerFold" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
+                        <Link className="flex items-center group shrink-0" href="/" aria-label="EulerFold Home">
+                            <img src="/apple-touch-icon.png" alt="EulerFold" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
                         </Link>
                         <div className="h-4 w-px bg-[var(--border)] mx-2 hidden md:block"></div>
                         <div className="flex items-center gap-2">
@@ -232,7 +232,7 @@ export default function RoadmapIndexClient({ initialRoadmaps }: { initialRoadmap
 
                         <footer className="mt-16 pt-8 border-t border-border dark:border-white/[0.03]">
                             <p className="inconsolata-ui text-[9px] font-bold text-gray-400 uppercase tracking-widest opacity-40 text-center">
-                                ΣulerFold — Roadmap Directory v1.1                            </p>
+                                EulerFold — Roadmap Directory v1.1                            </p>
                         </footer>
                     </div>
                 </main>

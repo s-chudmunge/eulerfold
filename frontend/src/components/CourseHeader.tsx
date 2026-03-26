@@ -162,7 +162,7 @@ export default function CourseHeader({
         <div className="h-3 w-px bg-[var(--border)] hidden md:block mx-1"></div>
         
         <Link href="/" className="flex items-center group shrink-0">
-          <img src="/apple-touch-icon.png" alt="ΣulerFold" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
+          <img src="/apple-touch-icon.png" alt="EulerFold" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
         </Link>
       </div>
 

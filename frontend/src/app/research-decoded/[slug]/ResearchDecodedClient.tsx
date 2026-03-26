@@ -78,7 +78,7 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
         {/* Community Banner */}
         <div className="mb-10 bg-callout-bg rounded-2xl p-6 md:p-8 border border-callout-border relative overflow-hidden group">
           <div className="relative z-10">
-            <h2 className="text-[20px] md:text-[22px] font-bold mb-2 text-text-heading tracking-tight inconsolata-ui">Join the ΣulerFold community</h2>
+            <h2 className="text-[20px] md:text-[22px] font-bold mb-2 text-text-heading tracking-tight inconsolata-ui">Join the EulerFold community</h2>
             <p className="manrope-body text-text-primary mb-6 max-w-lg text-[13px] md:text-[14px] font-medium">Track progress and collaborate on roadmaps with students worldwide.</p>
             <button 
               onClick={user ? () => window.location.href = '/dashboard' : handleSignIn}

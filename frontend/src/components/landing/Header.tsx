@@ -200,7 +200,7 @@ const Header = () => {
     <header className={`${inconsolata.className} fixed top-0 inset-x-0 z-50 bg-background/80 dark:bg-[#0f0f0f]/80 backdrop-blur-xl border-b border-border dark:border-white/5 h-[48px] flex items-center`}>
       <div className="w-full px-6 flex h-full items-center justify-between">
         <div className="flex items-center gap-4">
-          <Link className="flex items-center group shrink-0" href="/" aria-label="ΣulerFold Home">
+          <Link className="flex items-center group shrink-0" href="/" aria-label="EulerFold Home">
             <div className="relative w-7 h-7 mr-2">
               <Image 
                 src="/apple-touch-icon.png" 
@@ -211,7 +211,7 @@ const Header = () => {
                 priority 
               />
             </div>
-            <span className="hidden whitespace-nowrap text-[16px] font-bold md:block text-slate-950 dark:text-[#f2f2f7] tracking-tighter uppercase">ΣulerFold</span>
+            <span className="hidden whitespace-nowrap text-[16px] font-bold md:block text-slate-950 dark:text-[#f2f2f7] tracking-tighter uppercase">EulerFold</span>
           </Link>
           <div className="h-4 w-px bg-sidebar dark:bg-white/10 mx-2 hidden md:block"></div>
           <nav className="hidden lg:flex items-center gap-6" aria-label="Main navigation">

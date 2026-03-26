@@ -322,9 +322,9 @@ function ArchiveContent() {
                 </button>
                 <div className="relative z-10 max-w-xl">
                   <div className="flex items-center gap-2 text-accent mb-3">
-                    <span className="inconsolata-ui text-[12px] md:text-[13px] font-bold">ΣulerFold</span>
+                    <span className="inconsolata-ui text-[12px] md:text-[13px] font-bold">EulerFold</span>
                   </div>
-                  <h2 className="text-[20px] md:text-[22px] font-bold mb-3 text-text-heading tracking-tight inconsolata-ui">Join the ΣulerFold community</h2>
+                  <h2 className="text-[20px] md:text-[22px] font-bold mb-3 text-text-heading tracking-tight inconsolata-ui">Join the EulerFold community</h2>
                   <p className="manrope-body text-[13px] md:text-[14px] mb-6 text-text-primary leading-relaxed font-medium">
                     Track your preparation progress and collaborate with students worldwide.
                   </p>

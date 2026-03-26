@@ -96,9 +96,9 @@ export default function ResearchDecodedIndexContent() {
         <div className="mb-16 bg-callout-bg rounded-3xl p-6 md:p-8 border border-border relative overflow-hidden group">
           <div className="relative z-10 max-w-xl">
             <div className="flex items-center gap-2 text-accent mb-3">
-              <span className="inconsolata-ui text-[11px] md:text-[12px] font-bold uppercase tracking-wider">ΣulerFold Intelligence</span>
+              <span className="inconsolata-ui text-[11px] md:text-[12px] font-bold uppercase tracking-wider">EulerFold Intelligence</span>
             </div>
-            <h2 className="text-[20px] md:text-[22px] font-bold mb-3 text-text-heading tracking-tight inconsolata-ui">Join the ΣulerFold community</h2>
+            <h2 className="text-[20px] md:text-[22px] font-bold mb-3 text-text-heading tracking-tight inconsolata-ui">Join the EulerFold community</h2>
             <p className="manrope-body text-[13px] md:text-[14px] mb-6 text-text-primary leading-relaxed font-medium">
               Track progress and collaborate on roadmaps with students worldwide.
             </p>

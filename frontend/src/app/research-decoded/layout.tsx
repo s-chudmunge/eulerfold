@@ -167,37 +167,39 @@ export default function ResearchDecodedLayout({
           <div className="flex items-center flex-1">
             {/* Logo Part */}
             <Link className="mr-8 flex items-center group shrink-0" href="/">
-              <img src="/apple-touch-icon.png" alt="ΣulerFold" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
+              <img src="/apple-touch-icon.png" alt="EulerFold" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
             </Link>
 
-            {/* Search Input */}
-            <div className="relative w-full max-w-[400px]">
-              <input 
-                autoComplete="off" 
-                className="w-full pl-10 h-10 pr-3 rounded-md border border-border bg-sidebar focus:bg-background focus:ring-1 focus:ring-[var(--accent)] transition-all text-[14px] text-text-primary outline-none placeholder:text-text-muted" 
-                placeholder="Search papers..." 
-                type="text" 
-                value={searchQuery}
-                onChange={(e) => updateSearchQuery(e.target.value)}
-                onFocus={() => setIsTopSearchFocused(true)}
-                onBlur={() => setTimeout(() => setIsTopSearchFocused(false), 200)}
-              />
-              <Search className="absolute left-3 text-text-muted top-1/2 transform -translate-y-1/2 w-4 h-4" />
-              
-              {/* Dropdown Results */}
-              {isTopSearchFocused && searchQuery && topSearchResults.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-sidebar border border-border rounded-lg shadow-2xl z-[150] overflow-hidden">
-                  {topSearchResults.map((result, idx) => (
-                    <Link
-                      key={idx}
-                      href={`/research-decoded/${result.slug}?${searchParams.toString()}`}
-                      className="block px-4 py-2.5 text-[13px] text-text-primary hover:bg-background transition-colors border-b border-border last:border-0"
-                    >
-                      {result.title}
-                    </Link>
-                  ))}
-                </div>
-              )}
+            {/* Search Input container pushed to right */}
+            <div className="flex-1 flex justify-end mr-8">
+              <div className="relative w-full max-w-[400px]">
+                <input 
+                  autoComplete="off" 
+                  className="w-full pl-10 h-10 pr-3 rounded-md border border-border bg-sidebar focus:bg-background focus:ring-1 focus:ring-[var(--accent)] transition-all text-[13px] text-text-primary outline-none placeholder:text-text-muted" 
+                  placeholder="Search papers..." 
+                  type="text" 
+                  value={searchQuery}
+                  onChange={(e) => updateSearchQuery(e.target.value)}
+                  onFocus={() => setIsTopSearchFocused(true)}
+                  onBlur={() => setTimeout(() => setIsTopSearchFocused(false), 200)}
+                />
+                <Search className="absolute left-3 text-text-muted top-1/2 transform -translate-y-1/2 w-4 h-4" />
+                
+                {/* Dropdown Results */}
+                {isTopSearchFocused && searchQuery && topSearchResults.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-sidebar border border-border rounded-lg shadow-2xl z-[150] overflow-hidden">
+                    {topSearchResults.map((result, idx) => (
+                      <Link
+                        key={idx}
+                        href={`/research-decoded/${result.slug}?${searchParams.toString()}`}
+                        className="block px-4 py-2.5 text-[13px] text-text-primary hover:bg-background transition-colors border-b border-border last:border-0"
+                      >
+                        {result.title}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 

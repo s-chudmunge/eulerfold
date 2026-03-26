@@ -305,7 +305,7 @@ export default function RoadmapClient({ slug, initialRoadmap }: Props) {
                             {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                         </button>
                         <Link className="flex items-center group shrink-0" href="/">
-                            <img src="/apple-touch-icon.png" alt="ΣulerFold" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
+                            <img src="/apple-touch-icon.png" alt="EulerFold" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
                         </Link>
                         {isOwner && roadmap && !roadmap.is_public && !roadmap.cloned_from && (
                             <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-600 text-[9px] font-bold tracking-wide ml-3">
@@ -712,7 +712,7 @@ export default function RoadmapClient({ slug, initialRoadmap }: Props) {
                     <div className="col-span-2 md:col-span-1 flex flex-col items-start">
                         <Link href="/" className="flex items-center gap-2 opacity-40 hover:opacity-100 transition-opacity grayscale">
                             <img src="/apple-touch-icon.png" alt="" className="w-3.5 h-3.5" />
-                            <span className="font-semibold text-[11px] tracking-tight inconsolata-ui text-black dark:text-white">Σulerfold</span>
+                            <span className="font-semibold text-[11px] tracking-tight inconsolata-ui text-black dark:text-white">Eulerfold</span>
                         </Link>
                     </div>
 

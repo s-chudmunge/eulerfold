@@ -371,7 +371,7 @@ export default function HomeClient() {
             </div>
             {isSidebarExpanded && (
               <span className="font-bold text-[13px] tracking-tight inconsolata-ui whitespace-nowrap text-slate-950 dark:text-white">
-                ΣulerFold
+                EulerFold
               </span>
             )}
           </Link>
@@ -635,7 +635,7 @@ export default function HomeClient() {
           <div className="col-span-2 md:col-span-1 flex flex-col items-start">
             <Link href="/" className="flex items-center gap-2 opacity-40 hover:opacity-100 transition-opacity grayscale">
               <img src="/apple-touch-icon.png" alt="" className="w-3.5 h-3.5" />
-              <span className="font-semibold text-[11px] tracking-tight inconsolata-ui text-black dark:text-white">ΣulerFold</span>
+              <span className="font-semibold text-[11px] tracking-tight inconsolata-ui text-black dark:text-white">EulerFold</span>
             </Link>
           </div>
           <div className="flex flex-col gap-2">
@@ -678,6 +678,13 @@ export default function HomeClient() {
           </p>
         </div>
       </footer>
+      
+      {/* Purpose & Compliance */}
+      <div className="w-full px-6 pb-8 text-center bg-background">
+        <p className="text-[7px] text-gray-400 dark:text-gray-600 font-medium inconsolata-ui max-w-2xl mx-auto leading-relaxed opacity-40 hover:opacity-100 transition-opacity tracking-tight">
+          EulerFold uses advanced AI to build personalized, structured roadmaps tailored to your specific goals and current knowledge level. Our mission is to bridge the gap between information and mastery.
+        </p>
+      </div>
     </div>
   );
 }
