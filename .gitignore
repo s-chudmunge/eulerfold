@@ -1,0 +1,51 @@
+
+# Local Environment Files - NEVER COMMIT THESE
+.env
+.env.*
+!/.env.example
+
+# Firebase Service Account Keys - NEVER COMMIT THESE
+serviceAccountKey.json
+**/serviceAccountKey.json
+*firebase*.json
+*adminsdk*.json
+gen-lang-client-*.json
+
+# Node.js
+node_modules/
+dist/
+.pnp.*
+
+# Python
+__pycache__/
+*.pyc
+.venv
+venv/
+
+# IDEs
+.vscode/
+.idea/
+
+# OS-specific
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Next.js
+.next/
+out/
+
+# Other
+*.pem
+*.tsbuildinfo
+frontend/src/app/research-decoded/generatedData.ts
+
+# Large Assets
+content/previous_year_papers_pdf/
+frontend/public/archive/
+frontend/public/archive/
+content/previous_year_papers_pdf/

@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "render": {
+      "command": "https://mcp.render.com/mcp",
+      "args": []
+    }
+  }
+}

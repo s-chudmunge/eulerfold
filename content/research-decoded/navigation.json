@@ -1,0 +1,443 @@
+[
+  {
+    "title": "AI Safety & Alignment",
+    "id": "safety",
+    "expanded": true,
+    "sections": [
+      {
+        "title": "Concrete Problems in AI Safety (2016)",
+        "slug": "concrete-problems-ai-safety"
+      },
+      {
+        "title": "Constitutional AI (2022)",
+        "slug": "constitutional-ai-rlaif"
+      },
+      {
+        "title": "Superalignment (2023)",
+        "slug": "superalignment-weak-to-strong"
+      }
+    ]
+  },
+  {
+    "title": "Scientific Breakthroughs",
+    "id": "science",
+    "expanded": true,
+    "sections": [
+      {
+        "title": "Mendel: Inheritance (1866)",
+        "slug": "mendel-laws-of-inheritance"
+      },
+      {
+        "title": "Einstein: Relativity (1905)",
+        "slug": "einstein-special-relativity"
+      },
+      {
+        "title": "Shannon: Information Theory (1948)",
+        "slug": "shannon-information-theory"
+      },
+      {
+        "title": "Turing: The Turing Test (1950)",
+        "slug": "turing-computing-machinery"
+      },
+      {
+        "title": "Nash: Equilibrium (1950)",
+        "slug": "nash-equilibrium-game-theory"
+      },
+      {
+        "title": "Watson & Crick: DNA (1953)",
+        "slug": "watson-crick-dna-helix"
+      }
+    ]
+  },
+  {
+    "title": "Network Science",
+    "id": "networks",
+    "expanded": true,
+    "sections": [
+      {
+        "title": "PageRank (1998)",
+        "slug": "pagerank-citation-ranking"
+      },
+      {
+        "title": "Watts & Strogatz (1998)",
+        "slug": "watts-strogatz-small-world-networks"
+      },
+      {
+        "title": "Barabási & Albert (1999)",
+        "slug": "barabasi-albert-scale-free-networks"
+      }
+    ]
+  },
+  {
+    "title": "Foundational Papers",
+    "id": "foundational",
+    "expanded": true,
+    "sections": [
+      {
+        "title": "Dropout (2012)",
+        "slug": "dropout-stochastic-regularization"
+      },
+      {
+        "title": "Word2Vec (2013)",
+        "slug": "word2vec-distributed-representations"
+      },
+      {
+        "title": "Batch Normalization (2015)",
+        "slug": "batch-normalization-accelerating-training"
+      },
+      {
+        "title": "Adam Optimizer (2014)",
+        "slug": "adam-stochastic-optimization"
+      },
+      {
+        "title": "ResNet (2015)",
+        "slug": "resnet-deep-residual-learning"
+      },
+      {
+        "title": "Attention Is All You Need (2017)",
+        "slug": "attention-is-all-you-need"
+      },
+      {
+        "title": "Scaling Laws (2020)",
+        "slug": "scaling-laws-neural-language-models"
+      }
+    ]
+  },
+  {
+    "title": "Quantum Computing",
+    "id": "quantum",
+    "expanded": true,
+    "sections": [
+      {
+        "title": "Shor: Quantum Error Correction (1995)",
+        "slug": "shor-quantum-error-correction"
+      },
+      {
+        "title": "Cirac & Zoller: Ion Trap (1995)",
+        "slug": "cirac-zoller-ion-trap"
+      },
+      {
+        "title": "Grover: Database Search (1996)",
+        "slug": "grover-database-search"
+      },
+      {
+        "title": "Calderbank & Shor: CSS Codes (1996)",
+        "slug": "calderbank-shor-css-codes"
+      },
+      {
+        "title": "Kitaev: Toric Code (1997)",
+        "slug": "kitaev-toric-code"
+      },
+      {
+        "title": "DiVincenzo: Criteria (2000)",
+        "slug": "divincenzo-criteria"
+      },
+      {
+        "title": "Adiabatic Quantum Computation (2000)",
+        "slug": "adiabatic-quantum-computation"
+      },
+      {
+        "title": "Surface Code: Topological Memory (2002)",
+        "slug": "surface-code-topological-memory"
+      },
+      {
+        "title": "Quantum Walk: Exponential Speedup (2003)",
+        "slug": "quantum-walk-exponential-speedup"
+      },
+      {
+        "title": "Threshold Theorem: Concatenated Codes (2005)",
+        "slug": "threshold-theorem-concatenated-codes"
+      },
+      {
+        "title": "HHL: Linear Systems Algorithm (2008)",
+        "slug": "hhl-algorithm"
+      },
+      {
+        "title": "BQP and the Polynomial Hierarchy (2009)",
+        "slug": "bqp-and-the-polynomial-hierarchy"
+      },
+      {
+        "title": "VQE: Variational Eigensolver (2013)",
+        "slug": "vqe-variational-quantum-eigensolver"
+      },
+      {
+        "title": "QAOA: Optimization Algorithm (2014)",
+        "slug": "qaoa-quantum-approximate-optimization"
+      },
+      {
+        "title": "The NISQ Era (2018)",
+        "slug": "nisq-era-and-beyond"
+      },
+      {
+        "title": "Quantum Supremacy (2019)",
+        "slug": "quantum-supremacy-sycamore"
+      }
+    ]
+  },
+  {
+    "title": "Computer Vision",
+    "id": "vision",
+    "expanded": true,
+    "sections": [
+      {
+        "title": "AlexNet (2012)",
+        "slug": "alexnet-imagenet-classification"
+      },
+      {
+        "title": "GAN: Adversarial Nets (2014)",
+        "slug": "generative-adversarial-nets"
+      },
+      {
+        "title": "YOLO: Object Detection (2015)",
+        "slug": "yolo-object-detection"
+      },
+      {
+        "title": "ViT: Vision Transformer (2020)",
+        "slug": "vit-vision-transformer"
+      },
+      {
+        "title": "CLIP: Contrastive Vision (2021)",
+        "slug": "clip-contrastive-vision"
+      },
+      {
+        "title": "Segment Anything — SAM (2023)",
+        "slug": "segment-anything-model"
+      },
+      {
+        "title": "Depth Anything (2024)",
+        "slug": "depth-anything-monocular-foundation"
+      }
+    ]
+  },
+  {
+    "title": "Reinforcement Learning",
+    "id": "rl",
+    "expanded": true,
+    "sections": [
+      {
+        "title": "DQN: Atari Deep RL (2013)",
+        "slug": "dqn-atari-reinforcement-learning"
+      },
+      {
+        "title": "PPO: Policy Optimization (2017)",
+        "slug": "ppo-proximal-policy-optimization"
+      },
+      {
+        "title": "RLHF: Helpful Assistant (2022)",
+        "slug": "rlhf-helpful-harmless-assistant"
+      }
+    ]
+  },
+  {
+    "title": "Robotics & Embodied AI",
+    "id": "robotics",
+    "expanded": true,
+    "sections": [
+      {
+        "title": "Dexterous Manipulation (2018)",
+        "slug": "dexterous-manipulation-reinforcement-learning"
+      },
+      {
+        "title": "ACT: Action Chunking (2023)",
+        "slug": "act-action-chunking-transformer"
+      },
+      {
+        "title": "RT-2: VLA Models (2023)",
+        "slug": "rt-2-vision-language-action"
+      }
+    ]
+  },
+  {
+    "title": "AI Agents & Reasoning",
+    "id": "agents",
+    "expanded": true,
+    "sections": [
+      {
+        "title": "ReAct: Reason + Act (2022)",
+        "slug": "react-reasoning-and-acting"
+      },
+      {
+        "title": "Chain of Thought (2022)",
+        "slug": "chain-of-thought-prompting"
+      },
+      {
+        "title": "Toolformer: Tool Use (2023)",
+        "slug": "toolformer-self-supervised-tools"
+      },
+      {
+        "title": "Self-Refine: Iterative (2023)",
+        "slug": "self-refine-iterative-refinement"
+      },
+      {
+        "title": "Generative Agents (2023)",
+        "slug": "generative-agents-human-simulacra"
+      },
+      {
+        "title": "Tree of Thoughts (2023)",
+        "slug": "tree-of-thoughts-deliberate-search"
+      },
+      {
+        "title": "DeepSeek R1: Reasoning (2025)",
+        "slug": "deepseek-r1-incentivizing-reasoning"
+      }
+    ]
+  },
+  {
+    "title": "Multimodal",
+    "id": "multimodal",
+    "expanded": true,
+    "sections": [
+      {
+        "title": "Flamingo (2022)",
+        "slug": "flamingo-visual-language-few-shot"
+      },
+      {
+        "title": "ImageBind (2023)",
+        "slug": "imagebind-multimodal-embedding"
+      },
+      {
+        "title": "Gemini (2023)",
+        "slug": "gemini-native-multimodal-models"
+      },
+      {
+        "title": "Gemini 1.5 Pro: Multimodal MoE (2024)",
+        "slug": "gemini-1-5-pro-multimodal-moe"
+      },
+      {
+        "title": "GPT-4 (2023)",
+        "slug": "gpt-4-technical-report"
+      },
+      {
+        "title": "LLaVA (2023)",
+        "slug": "llava-visual-instruction-tuning"
+      }
+    ]
+  },
+  {
+    "title": "Diffusion & Generative",
+    "id": "generative",
+    "expanded": true,
+    "sections": [
+      {
+        "title": "DDPM: Diffusion Models (2020)",
+        "slug": "ddpm-diffusion-models"
+      },
+      {
+        "title": "Stable Diffusion (2021)",
+        "slug": "stable-diffusion-latent-space"
+      },
+      {
+        "title": "DALL-E 2: Hierarchical (2022)",
+        "slug": "dalle-2-hierarchical-generation"
+      }
+    ]
+  },
+  {
+    "title": "Large Language Models",
+    "id": "llms",
+    "expanded": true,
+    "sections": [
+      {
+        "title": "BERT: Bidirectional Context (2018)",
+        "slug": "bert-bidirectional-transformers"
+      },
+      {
+        "title": "Transformer XL (2019)",
+        "slug": "transformer-xl-extra-long-context"
+      },
+      {
+        "title": "GPT-3: Few-Shot Learners (2020)",
+        "slug": "gpt-3-few-shot-learners"
+      },
+      {
+        "title": "LoRA: Low-Rank Adaptation (2021)",
+        "slug": "lora-low-rank-adaptation"
+      },
+      {
+        "title": "InstructGPT: Model Alignment (2022)",
+        "slug": "instruct-gpt-alignment"
+      },
+      {
+        "title": "FlashAttention: IO-Aware (2022)",
+        "slug": "flash-attention-io-aware"
+      },
+      {
+        "title": "LLaMA: Foundation Models (2023)",
+        "slug": "llama-efficient-foundation-models"
+      },
+      {
+        "title": "Mistral 7B: Efficient (2023)",
+        "slug": "mistral-7b-efficient-llm"
+      },
+      {
+        "title": "Phi-2: Textbook-Quality (2023)",
+        "slug": "phi-2-textbook-quality-llm"
+      },
+      {
+        "title": "QLoRA: Efficient (2023)",
+        "slug": "qlora-efficient-finetuning"
+      },
+      {
+        "title": "Mixtral 8x7B: SMoE (2024)",
+        "slug": "mixtral-moe-sparse-experts"
+      },
+      {
+        "title": "Gemma 2: High-Signal Open Models (2024)",
+        "slug": "gemma-2-high-signal-llm"
+      },
+      {
+        "title": "Llama 3 405B: Dense Scaling (2024)",
+        "slug": "llama-3-herd-of-models"
+      },
+      {
+        "title": "DeepSeek-V2: Latent Attention (2024)",
+        "slug": "deepseek-v2-latent-attention"
+      }
+    ]
+  },
+  {
+    "title": "Fine-tuning & Efficiency",
+    "id": "efficiency",
+    "expanded": true,
+    "sections": [
+      {
+        "title": "DoRA: Weight-Decomposed LoRA (2024)",
+        "slug": "dora-weight-decomposed-lora"
+      },
+      {
+        "title": "Scaling LLM Test-Time Compute (2024)",
+        "slug": "scaling-test-time-compute"
+      }
+    ]
+  },
+  {
+    "title": "Novel Architectures",
+    "id": "architectures",
+    "expanded": true,
+    "sections": [
+      {
+        "title": "KAN: Kolmogorov-Arnold Networks (2024)",
+        "slug": "kan-kolmogorov-arnold-networks"
+      }
+    ]
+  },
+  {
+    "title": "Biology & Science AI",
+    "id": "science-ai",
+    "expanded": true,
+    "sections": [
+      {
+        "title": "AlphaFold 2 (2021)",
+        "slug": "alphafold-2-structure-prediction"
+      },
+      {
+        "title": "Evo — DNA Language Model (2024)",
+        "slug": "evo-dna-language-model"
+      },
+      {
+        "title": "GraphCast — Weather AI (2023)",
+        "slug": "graphcast-weather-ai"
+      }
+    ]
+  }
+]

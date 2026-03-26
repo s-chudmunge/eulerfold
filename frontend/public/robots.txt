@@ -1,0 +1,33 @@
+# Robots.txt for EulerFold - Personalized AI Learning
+
+User-agent: *
+
+# Publicly accessible areas
+Allow: /
+Allow: /_next/static/
+Allow: /u/
+Allow: /roadmap
+Allow: /explore
+Allow: /library
+Allow: /research-decoded
+Allow: /leaderboard
+Allow: /help
+Allow: /privacy
+Allow: /terms
+Allow: /learn
+
+# Disallow private user areas and authentication
+Disallow: /auth/
+Disallow: /dashboard
+Disallow: /settings
+Disallow: /profile
+Disallow: /journey
+Disallow: /performance-analysis
+Disallow: /visualize
+Disallow: /results
+Disallow: /api/
+Disallow: /admin/
+Disallow: /checkins/
+
+# Sitemap locations
+Sitemap: https://eulerfold.com/sitemap.xml

@@ -1,0 +1,156 @@
+{
+  "title": "Neural Network Architectures",
+  "subject": "Deep Learning Research",
+  "goal": "Learn about neural network architectures in deep learning",
+  "lastUpdated": "2025-01-09T10:30:00Z",
+  "content": [
+    {
+      "type": "heading",
+      "data": {
+        "level": 1,
+        "text": "Neural Network Architectures"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Neural network architectures are the foundational structures that define how artificial neural networks process and transform information. These architectures determine the flow of data through interconnected layers of artificial neurons, each designed to capture specific patterns and representations from input data."
+      }
+    },
+    {
+      "type": "progressive_disclosure",
+      "data": {
+        "key_idea": "Feedforward Neural Networks",
+        "summary": "The most basic neural network architecture where information flows in one direction from input to output",
+        "full_text": "Feedforward neural networks, also known as multilayer perceptrons (MLPs), represent the simplest form of artificial neural networks. In these architectures, information moves in a single direction - from the input layer through one or more hidden layers to the output layer. Each neuron in a layer is connected to every neuron in the subsequent layer, but there are no connections within the same layer or backwards. This unidirectional flow makes feedforward networks particularly suitable for tasks like classification and regression, where the goal is to map inputs to outputs without considering temporal dependencies."
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 2,
+        "text": "Convolutional Neural Networks (CNNs)"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Convolutional Neural Networks revolutionized computer vision by introducing specialized layers that can capture spatial hierarchies in data. CNNs use convolutional layers, pooling layers, and fully connected layers to automatically learn features from images."
+      }
+    },
+    {
+      "type": "dual_coding",
+      "data": {
+        "text": "The convolutional layer applies filters (kernels) across the input to detect local features like edges, textures, and patterns. These filters are learned during training and become increasingly complex in deeper layers, progressing from simple edge detectors to complex object recognizers.",
+        "visual_url": "https://via.placeholder.com/400x300?text=CNN+Architecture+Diagram",
+        "position": "right"
+      }
+    },
+    {
+      "type": "comparison_table",
+      "data": {
+        "headers": ["Architecture", "Best For", "Key Advantage", "Limitation"],
+        "rows": [
+          ["Feedforward (MLP)", "Tabular Data, Simple Classification", "Simple and Fast", "Cannot handle sequential data"],
+          ["CNN", "Image Processing, Computer Vision", "Spatial feature detection", "Limited to grid-like data"],
+          ["RNN/LSTM", "Sequential Data, Time Series", "Temporal dependencies", "Vanishing gradient problem"],
+          ["Transformer", "NLP, Sequence-to-sequence", "Parallel processing, Long-range dependencies", "High computational cost"]
+        ]
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 2,
+        "text": "Recurrent Neural Networks (RNNs)"
+      }
+    },
+    {
+      "type": "active_recall",
+      "data": {
+        "question": "What is the key difference between feedforward networks and recurrent neural networks?",
+        "answer": "Feedforward networks process information in one direction from input to output, while RNNs have feedback connections that allow information to flow in cycles, enabling them to maintain memory of previous inputs and process sequential data."
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Recurrent Neural Networks introduce the concept of memory to neural networks through feedback connections. Unlike feedforward networks, RNNs can process sequences of variable length by maintaining hidden states that capture information from previous time steps."
+      }
+    },
+    {
+      "type": "callout",
+      "data": {
+        "text": "Think of RNNs like reading a book - each word you read is influenced by the context of all the previous words you've encountered. The network maintains a 'memory' of what it has seen before, allowing it to understand context and make predictions based on sequential patterns.",
+        "style": "analogy"
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 2,
+        "text": "Transformer Architecture"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "The Transformer architecture, introduced in the paper 'Attention Is All You Need', revolutionized sequence modeling by replacing recurrent connections with self-attention mechanisms. This allows for better parallelization and the ability to capture long-range dependencies more effectively."
+      }
+    },
+    {
+      "type": "mermaid_diagram",
+      "data": {
+        "chart": "graph TD\n    A[Input Embeddings] --> B[Positional Encoding]\n    B --> C[Multi-Head Self-Attention]\n    C --> D[Add & Norm]\n    D --> E[Feed Forward]\n    E --> F[Add & Norm]\n    F --> G[Output]\n    \n    subgraph \"Transformer Block\"\n        C\n        D\n        E\n        F\n    end"
+      }
+    },
+    {
+      "type": "progressive_disclosure",
+      "data": {
+        "key_idea": "Self-Attention Mechanism",
+        "summary": "The core innovation of Transformers that allows each position to attend to all positions in the input sequence",
+        "full_text": "Self-attention is the key mechanism that allows Transformers to process sequences efficiently. For each position in the input sequence, self-attention computes a weighted combination of all positions, where the weights are determined by the similarity between the query (current position) and keys (all positions). This allows the model to directly access information from any part of the sequence, regardless of distance, solving the long-range dependency problem that plagued RNNs. The 'multi-head' aspect means this attention computation is performed multiple times in parallel, allowing the model to focus on different types of relationships simultaneously."
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 2,
+        "text": "Modern Architectural Innovations"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Recent advances in neural network architectures have focused on improving efficiency, scalability, and performance. Innovations like ResNet's skip connections, attention mechanisms, and architectural search have led to more powerful and efficient models."
+      }
+    },
+    {
+      "type": "callout",
+      "data": {
+        "text": "ResNet's skip connections solve the vanishing gradient problem by allowing gradients to flow directly to earlier layers. This is like providing express lanes on a highway - information can travel quickly from the end to the beginning without getting stuck in traffic.",
+        "style": "metaphor"
+      }
+    },
+    {
+      "type": "heading",
+      "data": {
+        "level": 2,
+        "text": "Choosing the Right Architecture"
+      }
+    },
+    {
+      "type": "paragraph",
+      "data": {
+        "text": "Selecting the appropriate neural network architecture depends on your data type, problem domain, computational constraints, and performance requirements. Understanding the strengths and limitations of each architecture is crucial for successful deep learning applications."
+      }
+    },
+    {
+      "type": "callout",
+      "data": {
+        "text": "Always start with the simplest architecture that can reasonably solve your problem. You can increase complexity gradually if needed, but overcomplicating from the start often leads to unnecessary computational overhead and harder debugging.",
+        "style": "warning"
+      }
+    }
+  ]
+}
