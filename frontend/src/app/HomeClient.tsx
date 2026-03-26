@@ -525,21 +525,16 @@ export default function HomeClient() {
       <main className="min-h-screen flex flex-col items-center justify-center px-6 py-20 md:ml-[64px]">
         <div className="w-full max-w-lg">
 
-          <div className="flex flex-col items-center justify-center mb-12">
-            <div className="scale-[1.2] mb-4">
-              <EulerLogoCanvas size={32} />
-            </div>
-            <h2 className="inconsolata-ui text-[14px] font-bold text-text-heading tracking-[0.3em] uppercase opacity-80">
-              EulerFold
-            </h2>
+          <div className="flex justify-center mb-12 scale-[1.2]">
+            <EulerLogoCanvas size={32} />
           </div>
 
-          <div className="mb-10 text-center">
-            <h1 className="text-xl md:text-2xl font-bold tracking-tight mb-3 manrope-body text-black dark:text-white">
+          <div className="mb-8 text-center">
+            <h1 className="text-xl md:text-2xl font-bold tracking-tight mb-2 manrope-body text-black dark:text-white">
               What do you want to learn?
             </h1>
-            <p className="text-gray-500 text-[13px] manrope-body font-medium max-w-sm mx-auto leading-relaxed">
-              EulerFold is an AI-powered platform that builds personalized, structured roadmaps to help you master any skill with verified proof-of-work.
+            <p className="text-gray-400 text-[12px] manrope-body font-medium">
+              Search community roadmaps or build your own with AI.
             </p>
           </div>
 
@@ -640,6 +635,36 @@ export default function HomeClient() {
         </div>
       </main>
 
+      {/* Brand Identity & Mission - Only visible upon scrolling */}
+      <section className="w-full bg-sidebar/10 dark:bg-white/[0.01] border-t border-border py-16 px-6 overflow-hidden">
+        <div className="max-w-2xl mx-auto flex flex-col items-center text-center">
+          <div className="mb-6 flex flex-col items-center">
+            <span className="text-xl mb-3 opacity-60">🐢</span>
+            <h2 className="inconsolata-ui text-[11px] font-bold text-text-heading tracking-[0.2em] uppercase opacity-40">
+              Mission Statement
+            </h2>
+          </div>
+
+            <p className="manrope-body text-[14px] text-text-primary leading-relaxed mb-8 max-w-xl font-medium opacity-80">
+            EulerFold is a platform that builds personalized, structured roadmaps to help you master any skill with verified proof-of-work. Our mission is to bridge the gap between information and mastery.
+            </p>          
+          <div className="flex flex-wrap justify-center gap-x-10 gap-y-4 w-full">
+            <div className="flex items-center gap-2.5">
+              <span className="text-[14px]">🗺️</span>
+              <span className="inconsolata-ui text-[11px] font-bold text-text-muted tracking-wide">Structured paths</span>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <span className="text-[14px]">✅</span>
+              <span className="inconsolata-ui text-[11px] font-bold text-text-muted tracking-wide">Verified growth</span>
+            </div>
+            <div className="flex items-center gap-2.5">
+              <span className="text-[14px]">🤖</span>
+              <span className="inconsolata-ui text-[11px] font-bold text-text-muted tracking-wide">AI intelligence</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <footer className="w-full px-6 py-12 border-t border-border bg-background">
         <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-4">
           <div className="col-span-2 md:col-span-1 flex flex-col items-start">
@@ -688,13 +713,6 @@ export default function HomeClient() {
           </p>
         </div>
       </footer>
-      
-      {/* Purpose & Compliance */}
-      <div className="w-full px-6 pb-8 text-center bg-background">
-        <p className="text-[8px] text-gray-400 dark:text-gray-600 font-medium inconsolata-ui max-w-2xl mx-auto leading-relaxed opacity-40 hover:opacity-100 transition-opacity tracking-tight">
-          EulerFold uses advanced AI to build personalized, structured roadmaps tailored to your specific goals and current knowledge level. Our mission is to bridge the gap between information and mastery.
-        </p>
       </div>
-    </div>
-  );
-}
+      );
+      }
