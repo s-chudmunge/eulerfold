@@ -35,7 +35,7 @@ export default function TOSModal({ onAccept }: TOSModalProps) {
 
   return (
     <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/60 animate-in fade-in duration-100">
-      <div className="bg-background border border-border rounded-none w-full max-w-[400px] shadow-2xl relative p-0 flex flex-col max-h-[90vh]">
+      <div className="bg-background border border-border rounded-none w-full max-w-[550px] shadow-2xl relative p-0 flex flex-col max-h-[90vh]">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-border bg-callout-bg shrink-0">
           <div className="flex flex-col">
