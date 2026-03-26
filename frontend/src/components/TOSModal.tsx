@@ -1,127 +1,123 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { Check, X, ExternalLink, Loader } from 'lucide-react';
-import { authAPI } from '@/lib/api';
-import { TOS_VERSION } from '@/config/constants';
+import React, { useState, useEffect } from 'react';
+import { 
+    X, 
+    ShieldCheck, 
+    FileText, 
+    AlertCircle, 
+    ExternalLink,
+    Check
+} from 'lucide-react';
+import Link from 'next/link';
 import { supabase } from '@/lib/supabase/client';
 
 interface TOSModalProps {
-  onAccept: () => void;
+    isOpen: boolean;
+    onAccept: () => void;
+    onDecline: () => void;
 }
 
-export default function TOSModal({ onAccept }: TOSModalProps) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+export default function TOSModal({ isOpen, onAccept, onDecline }: TOSModalProps) {
+    const [hasScrolledToBottom, setHasScrolledToBottom] = useState(false);
+    const contentRef = React.useRef<HTMLDivElement>(null);
 
-  const handleAccept = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      await authAPI.acceptTOS(TOS_VERSION);
-      onAccept();
-    } catch (err: any) {
-      console.error("Failed to accept TOS:", err);
-      setError(err.response?.data?.detail || "Failed to save acceptance. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    const handleScroll = () => {
+        if (contentRef.current) {
+            const { scrollTop, scrollHeight, clientHeight } = contentRef.current;
+            if (scrollHeight - scrollTop <= clientHeight + 50) {
+                setHasScrolledToBottom(true);
+            }
+        }
+    };
 
-  const handleDecline = async () => {
-    await supabase.auth.signOut();
-    window.location.href = '/login?message=tos_declined';
-  };
+    if (!isOpen) return null;
 
-  return (
-    <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-black/60 animate-in fade-in duration-100">
-      <div className="bg-background border border-border rounded-none w-full max-w-[550px] shadow-2xl relative p-0 flex flex-col max-h-[90vh]">
-        {/* Header */}
-        <div className="flex items-center justify-between px-5 py-3 border-b border-border bg-callout-bg shrink-0">
-          <div className="flex flex-col">
-            <h2 className="inconsolata-ui text-[12px] font-bold text-text-heading uppercase tracking-widest leading-none mb-1">
-              Legal Update Required
-            </h2>
-            <p className="inconsolata-ui text-[9px] text-text-muted uppercase tracking-wider opacity-60">
-              Version {TOS_VERSION} • March 2026
-            </p>
-          </div>
-          <button onClick={handleDecline} className="text-text-muted hover:text-text-heading transition-colors p-1">
-            <X className="w-4 h-4" />
-          </button>
-        </div>
-        
-        {/* Content */}
-        <div className="p-6 overflow-y-auto manrope-body">
-          <p className="text-[12px] text-text-primary leading-relaxed mb-6 font-medium">
-            To continue using EulerFold, please review and accept our updated Terms of Service and Privacy Policy. These updates clarify how we use YouTube API Services to provide educational content.
-          </p>
+    return (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-[2px] animate-in fade-in duration-200">
+            <div className="w-full max-w-[500px] bg-background border border-border shadow-2xl flex flex-col max-h-[80vh] animate-in zoom-in-95 duration-200">
+                
+                {/* Header */}
+                <div className="p-5 border-b border-border flex items-center justify-between bg-sidebar/30">
+                    <div className="flex items-center gap-3">
+                        <ShieldCheck className="w-4 h-4 text-accent" />
+                        <h2 className="inconsolata-ui text-[13px] font-bold text-text-heading uppercase tracking-widest">
+                            Terms of Service
+                        </h2>
+                    </div>
+                    <span className="inconsolata-ui text-[10px] font-bold text-text-muted opacity-40 uppercase tracking-tighter">
+                        v1.0.2026
+                    </span>
+                </div>
 
-          <div className="space-y-6">
-            <section>
-              <h3 className="inconsolata-ui text-[10px] font-bold text-text-heading uppercase tracking-widest mb-2 flex items-center gap-2">
-                <span className="w-1 h-1 bg-accent rounded-full" /> Terms of Service
-              </h3>
-              <p className="text-[11px] text-text-muted leading-relaxed mb-2">
-                Our Terms of Service govern your use of the EulerFold platform, including AI roadmap generation, EulerCoins rewards, and community sharing.
-              </p>
-              <a 
-                href="/terms" 
-                target="_blank" 
-                className="inconsolata-ui text-[10px] font-bold text-accent uppercase tracking-wider hover:underline flex items-center gap-1.5 transition-all"
-              >
-                Read full Terms of Service <ExternalLink className="w-3 h-3" />
-              </a>
-            </section>
+                {/* Content */}
+                <div 
+                    ref={contentRef}
+                    onScroll={handleScroll}
+                    className="flex-1 overflow-y-auto p-6 manrope-body text-[13px] text-text-primary leading-relaxed space-y-6 scroll-smooth"
+                >
+                    <section>
+                        <h3 className="inconsolata-ui text-[11px] font-bold text-text-heading uppercase tracking-widest mb-3 flex items-center gap-2">
+                            <FileText className="w-3.5 h-3.5 opacity-40" />
+                            1. Platform Usage
+                        </h3>
+                        <p>
+                            EulerFold is a tool designed to help you build and verify skill roadmaps. By using our services, you agree that your progress, roadmap titles, and "Proof of Work" submissions may be visible to other users if set to public. You are responsible for maintaining the confidentiality of your account.
+                        </p>
+                    </section>
 
-            <section>
-              <h3 className="inconsolata-ui text-[10px] font-bold text-text-heading uppercase tracking-widest mb-2 flex items-center gap-2">
-                <span className="w-1 h-1 bg-accent rounded-full" /> Privacy Policy
-              </h3>
-              <p className="text-[11px] text-text-muted leading-relaxed mb-2">
-                Our Privacy Policy explains how we collect and protect your data, including the minimal YouTube metadata (video IDs and titles) stored to populate your learning paths.
-              </p>
-              <a 
-                href="/privacy" 
-                target="_blank" 
-                className="inconsolata-ui text-[10px] font-bold text-accent uppercase tracking-wider hover:underline flex items-center gap-1.5 transition-all"
-              >
-                Read full Privacy Policy <ExternalLink className="w-3 h-3" />
-              </a>
-            </section>
+                    <section>
+                        <h3 className="inconsolata-ui text-[11px] font-bold text-text-heading uppercase tracking-widest mb-3 flex items-center gap-2">
+                            <ShieldCheck className="w-3.5 h-3.5 opacity-40" />
+                            2. Community Integrity
+                        </h3>
+                        <p>
+                            To maintain the value of verified learning, you agree not to submit plagiarized work, AI-generated responses where original work is required, or irrelevant content. Repeated violations may result in the suspension of your "Verified" status.
+                        </p>
+                    </section>
 
-            <div className="p-4 bg-callout-bg/50 border border-border rounded-none text-[10px] text-text-muted leading-relaxed">
-              By clicking &quot;Accept and Continue&quot;, you also agree to be bound by the <strong>YouTube Terms of Service</strong> and <strong>Google&apos;s Privacy Policy</strong> as part of our integration with YouTube API Services.
+                    <section>
+                        <h3 className="inconsolata-ui text-[11px] font-bold text-text-heading uppercase tracking-widest mb-3 flex items-center gap-2">
+                            <AlertCircle className="w-3.5 h-3.5 opacity-40" />
+                            3. Data & Privacy
+                        </h3>
+                        <p>
+                            We collect minimal data required to track your learning journey. This includes your email (for auth), username, and roadmap progress. We do not sell your data. For a full breakdown, please read our 
+                            <Link href="/privacy" target="_blank" className="text-accent hover:underline inline-flex items-center gap-1 mx-1 font-semibold">
+                                Privacy Policy <ExternalLink className="w-3 h-3" />
+                            </Link>.
+                        </p>
+                    </section>
+
+                    <div className="p-4 bg-sidebar/40 border border-border rounded-lg">
+                        <p className="text-[11px] text-text-muted italic">
+                            Note: You must scroll to the end of the terms to enable the acceptance button.
+                        </p>
+                    </div>
+                </div>
+
+                {/* Footer Actions */}
+                <div className="p-5 border-t border-border bg-sidebar/20 flex flex-col sm:flex-row gap-3">
+                    <button 
+                        onClick={onDecline}
+                        className="flex-1 px-4 py-2.5 border border-border text-text-muted hover:text-text-heading hover:bg-sidebar transition-all inconsolata-ui text-[11px] font-bold uppercase tracking-widest active:scale-95"
+                    >
+                        Decline
+                    </button>
+                    <button 
+                        onClick={onAccept}
+                        disabled={!hasScrolledToBottom}
+                        className={`flex-1 px-4 py-2.5 flex items-center justify-center gap-2 transition-all inconsolata-ui text-[11px] font-bold uppercase tracking-widest active:scale-95 ${
+                            hasScrolledToBottom 
+                            ? 'bg-text-heading text-background hover:opacity-90' 
+                            : 'bg-border text-text-muted cursor-not-allowed opacity-50'
+                        }`}
+                    >
+                        {hasScrolledToBottom && <Check className="w-3.5 h-3.5" />}
+                        Accept Terms
+                    </button>
+                </div>
             </div>
-          </div>
-
-          {error && (
-            <div className="mt-4 p-2 bg-red-500/5 border-l-2 border-red-500 text-red-500 text-[10px] font-bold inconsolata-ui uppercase tracking-tighter">
-              {error}
-            </div>
-          )}
         </div>
-
-        {/* Action Button */}
-        <div className="p-6 pt-0 shrink-0">
-          <button
-            onClick={handleAccept}
-            disabled={loading}
-            className="w-full py-3 bg-black dark:bg-[#14b8a6] text-white rounded-none font-bold text-[11px] uppercase tracking-widest flex items-center justify-center hover:opacity-90 disabled:opacity-50 transition-opacity shadow-lg"
-          >
-            {loading ? <Loader className="w-4 h-4 animate-spin" /> : (
-              <>
-                <Check className="w-3.5 h-3.5 mr-2" />
-                Accept and Continue
-              </>
-            )}
-          </button>
-          
-          <p className="inconsolata-ui text-[8px] text-text-muted mt-4 text-center uppercase tracking-widest opacity-40">
-            Secure Legal Verification
-          </p>
-        </div>
-      </div>
-    </div>
-  );
+    );
 }
