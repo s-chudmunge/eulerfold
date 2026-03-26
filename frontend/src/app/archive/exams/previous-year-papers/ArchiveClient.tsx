@@ -7,6 +7,7 @@ import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import AppSidebar from '@/components/AppSidebar';
 import { supabase } from '@/lib/supabase/client';
+import { getDriveDownloadUrl } from '@/lib/drive';
 
 const EXAM_FULL_NAMES: Record<string, string> = {
   "AIME": "American Invitational Mathematics Examination",
@@ -459,8 +460,32 @@ function ArchiveContent() {
                                         </Link>
                                       </div>
                                       <div className="flex items-center gap-1 shrink-0">
-                                        {entry.questionPaper && <a href={`/archive/${entry.questionPaper}`} download={entry.questionPaper} title="Download QP" className="p-1 rounded-md hover:bg-teal-50 text-teal-600/70 hover:text-teal-700 transition-all"><Download className="w-3.5 h-3.5" /></a>}
-                                        {entry.answerKey && <a href={`/archive/${entry.answerKey}`} download={entry.answerKey} title="Download AK" className="p-1 rounded-md hover:bg-emerald-50 text-emerald-600/70 hover:text-emerald-700 transition-all"><Key className="w-3.5 h-3.5" /></a>}
+                                        {entry.questionPaper && (
+                                          <a 
+                                            href={entry.questionPaperDriveId ? getDriveDownloadUrl(entry.questionPaperDriveId) : `/archive/${entry.questionPaper}`} 
+                                            download={!entry.questionPaperDriveId ? entry.questionPaper : undefined}
+                                            target={entry.questionPaperDriveId ? "_blank" : undefined}
+                                            rel={entry.questionPaperDriveId ? "noopener noreferrer" : undefined}
+                                            title={entry.questionPaperDriveId ? "Download from Drive" : "Download QP"} 
+                                            className="p-1 rounded-md hover:bg-teal-50 text-teal-600/70 hover:text-teal-700 transition-all flex items-center gap-0.5"
+                                          >
+                                            <Download className="w-3.5 h-3.5" />
+                                            {entry.questionPaperDriveId && <span className="text-[7px] font-black opacity-50">DRIVE</span>}
+                                          </a>
+                                        )}
+                                        {entry.answerKey && (
+                                          <a 
+                                            href={entry.answerKeyDriveId ? getDriveDownloadUrl(entry.answerKeyDriveId) : `/archive/${entry.answerKey}`} 
+                                            download={!entry.answerKeyDriveId ? entry.answerKey : undefined}
+                                            target={entry.answerKeyDriveId ? "_blank" : undefined}
+                                            rel={entry.answerKeyDriveId ? "noopener noreferrer" : undefined}
+                                            title={entry.answerKeyDriveId ? "Download from Drive" : "Download AK"} 
+                                            className="p-1 rounded-md hover:bg-emerald-50 text-emerald-600/70 hover:text-emerald-700 transition-all flex items-center gap-0.5"
+                                          >
+                                            <Key className="w-3.5 h-3.5" />
+                                            {entry.answerKeyDriveId && <span className="text-[7px] font-black opacity-50">DRIVE</span>}
+                                          </a>
+                                        )}
                                       </div>
                                     </div>
                                   ))}

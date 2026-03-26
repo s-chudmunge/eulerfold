@@ -7,6 +7,7 @@ import Link from 'next/link';
 import AppSidebar from '@/components/AppSidebar';
 import { supabase } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
+import { getDriveDownloadUrl } from '@/lib/drive';
 
 const EXAM_LOGOS: Record<string, string> = {
   "IMO": "/assets/logos/IMO.png",
@@ -128,11 +129,14 @@ export default function PaperClient({ exam, paper }: Props) {
                   <span className="inconsolata-ui text-[14px] font-bold text-text-heading">Question Paper</span>
                   {paper.questionPaper ? (
                     <a 
-                      href={`/archive/${paper.questionPaper}`}
-                      download={paper.questionPaper}
+                      href={paper.questionPaperDriveId ? getDriveDownloadUrl(paper.questionPaperDriveId) : `/archive/${paper.questionPaper}`} 
+                      download={!paper.questionPaperDriveId ? paper.questionPaper : undefined}
+                      target={paper.questionPaperDriveId ? "_blank" : undefined}
+                      rel={paper.questionPaperDriveId ? "noopener noreferrer" : undefined}
                       className="inline-flex items-center gap-2 text-accent hover:underline underline-offset-4 text-[13px] font-black inconsolata-ui"
                     >
                       <Download className="w-3.5 h-3.5" /> download paper
+                      {paper.questionPaperDriveId && <span className="text-[8px] opacity-60 ml-1">DRIVE</span>}
                     </a>
                   ) : (
                     <span className="text-[12px] font-bold text-text-muted italic">not available</span>
@@ -143,11 +147,14 @@ export default function PaperClient({ exam, paper }: Props) {
                   <span className="inconsolata-ui text-[14px] font-bold text-text-heading">Answer Key / Solutions</span>
                   {paper.answerKey ? (
                     <a 
-                      href={`/archive/${paper.answerKey}`}
-                      download={paper.answerKey}
+                      href={paper.answerKeyDriveId ? getDriveDownloadUrl(paper.answerKeyDriveId) : `/archive/${paper.answerKey}`} 
+                      download={!paper.answerKeyDriveId ? paper.answerKey : undefined}
+                      target={paper.answerKeyDriveId ? "_blank" : undefined}
+                      rel={paper.answerKeyDriveId ? "noopener noreferrer" : undefined}
                       className="inline-flex items-center gap-2 text-accent hover:underline underline-offset-4 text-[13px] font-black inconsolata-ui"
                     >
                       <Download className="w-3.5 h-3.5" /> download solutions
+                      {paper.answerKeyDriveId && <span className="text-[8px] opacity-60 ml-1">DRIVE</span>}
                     </a>
                   ) : (
                     <span className="text-[12px] font-bold text-text-muted italic">not available</span>

@@ -6,8 +6,18 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const sourceDir = path.join(__dirname, '../content/previous_year_papers_pdf');
-const targetDir = path.join(__dirname, '../frontend/public/archive');
 const outputFile = path.join(__dirname, '../frontend/src/app/archive/generatedArchiveData.ts');
+const mappingFile = path.join(__dirname, '../content/archive_drive_mapping.json');
+
+// Load drive mapping if it exists
+let driveMapping = {};
+if (fs.existsSync(mappingFile)) {
+    try {
+        driveMapping = JSON.parse(fs.readFileSync(mappingFile, 'utf8'));
+    } catch (e) {
+        console.error('Error parsing drive mapping file:', e);
+    }
+}
 
 const GATE_SUBJECTS = {
     'AE': 'Aerospace Engineering',
@@ -41,10 +51,6 @@ const GATE_SUBJECTS = {
     'XH': 'Humanities and Social Sciences',
     'XL': 'Life Sciences'
 };
-
-if (!fs.existsSync(targetDir)) {
-    fs.mkdirSync(targetDir, { recursive: true });
-}
 
 function slugify(text) {
     return text
@@ -184,6 +190,10 @@ function parseFilename(filename, examType) {
 }
 
 async function compile() {
+    if (!fs.existsSync(sourceDir)) {
+        console.warn('Source directory not found:', sourceDir);
+        return;
+    }
     const exams = fs.readdirSync(sourceDir).filter(f => fs.statSync(path.join(sourceDir, f)).isDirectory());
     const archiveData = [];
 
@@ -206,20 +216,20 @@ async function compile() {
                     examType: exam,
                     questionPaper: null,
                     answerKey: null,
+                    questionPaperDriveId: null,
+                    answerKeyDriveId: null,
                     slug: parsed.slug
                 };
             }
             
+            const driveId = driveMapping[file] || null;
+
             if (parsed.isAnswerKey) {
                 groups[key].answerKey = file;
+                groups[key].answerKeyDriveId = driveId;
             } else {
                 groups[key].questionPaper = file;
-            }
-            
-            const srcFile = path.join(examPath, file);
-            const destFile = path.join(targetDir, file);
-            if (!fs.existsSync(destFile)) {
-                fs.copyFileSync(srcFile, destFile);
+                groups[key].questionPaperDriveId = driveId;
             }
         }
 
@@ -245,6 +255,7 @@ async function compile() {
                     for (const pk of matchingPaperKeys) {
                         if (!groups[pk].answerKey) {
                             groups[pk].answerKey = entry.answerKey;
+                            groups[pk].answerKeyDriveId = entry.answerKeyDriveId;
                         }
                     }
                     // Remove the session-less entry
@@ -276,6 +287,8 @@ export interface PaperEntry {
   examType: string;
   questionPaper: string | null;
   answerKey: string | null;
+  questionPaperDriveId: string | null;
+  answerKeyDriveId: string | null;
   slug: string;
 }
 

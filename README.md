@@ -1,5 +1,9 @@
 # ΣulerFold
 
+<div align="center">
+  <img src="frontend/public/android-chrome-512x512.png" alt="ΣulerFold" width="160">
+</div>
+
 ΣulerFold is a simple tool to help you actually learn things. Most people just collect links and bookmarks but never get anything done. This app builds you a path and makes sure you follow it.
 
 ## How it works

@@ -6,15 +6,15 @@ import logging
 from typing import Dict, Any
 import asyncio
 
-router = APIRouter(prefix="/health", tags=["health"])
+router = APIRouter(tags=["health"])
 logger = logging.getLogger(__name__)
 
-@router.api_route("/", methods=["GET", "HEAD"])
+@router.get("/health")
 async def health_check():
     """Basic health check to keep backend warm"""
-    return {"status": "healthy", "timestamp": time.time()}
+    return {"status": "ok"}
 
-@router.api_route("/deep", methods=["GET", "HEAD"])
+@router.api_route("/health/deep", methods=["GET", "HEAD"])
 async def deep_health_check():
     """Deep health check that tests cache and Supabase connectivity"""
     checks = {
@@ -62,7 +62,7 @@ async def deep_health_check():
             "timestamp": time.time()
         }
 
-@router.api_route("/warm", methods=["GET", "HEAD"])
+@router.api_route("/health/warm", methods=["GET", "HEAD"])
 async def warm_backend():
     """Warm up backend by ensuring Redis connectivity"""
     try:
@@ -91,7 +91,7 @@ async def warm_backend():
         raise HTTPException(status_code=500, detail=f"Warmup failed: {str(e)}")
 
 
-@router.api_route("/auth-test", methods=["GET", "HEAD"])
+@router.api_route("/health/auth-test", methods=["GET", "HEAD"])
 async def test_auth(authorization: str = None):
     """Test auth verification with a token (for debugging)"""
     import time

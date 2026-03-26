@@ -6,7 +6,7 @@ import Header from '@/components/landing/Header';
 import AuthProvider from '@/components/AuthProvider';
 import QueryProvider from '@/app/providers/QueryProvider';
 import SessionTracker from '@/components/SessionTracker';
-import { Analytics } from '@vercel/analytics/react';
+import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({

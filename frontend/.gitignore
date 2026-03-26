@@ -36,6 +36,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# archive (Google Drive is used instead)
+/public/archive
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
