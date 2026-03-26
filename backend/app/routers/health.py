@@ -9,7 +9,7 @@ import asyncio
 router = APIRouter(tags=["health"])
 logger = logging.getLogger(__name__)
 
-@router.get("/health")
+@router.api_route("/health", methods=["GET", "HEAD"])
 async def health_check():
     """Basic health check to keep backend warm"""
     return {"status": "ok"}

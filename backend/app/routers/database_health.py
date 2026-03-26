@@ -6,7 +6,7 @@ import logging
 router = APIRouter(prefix="/db-test", tags=["database-test"])
 logger = logging.getLogger(__name__)
 
-@router.get("/")
+@router.api_route("/", methods=["GET", "HEAD"])
 async def test_database_connection():
     """Simple database connection test endpoint"""
     try:
