@@ -259,7 +259,7 @@ export default function ExploreClient({
                         >
                             {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                         </button>
-                        <Link className="flex items-center group" href="/" aria-label="ΣulerFold Home">
+                        <Link className="flex items-center group" href="/" aria-label="EulerFold Home">
                             <img src="/apple-touch-icon.png" alt="" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
                         </Link>
                     </div>

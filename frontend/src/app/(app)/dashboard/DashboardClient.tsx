@@ -227,8 +227,8 @@ export default function DashboardPage() {
                         >
                             {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                         </button>
-                        <Link className="flex items-center group shrink-0" href="/" aria-label="ΣulerFold Home">
-                            <img src="/apple-touch-icon.png" alt="ΣulerFold" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
+                        <Link className="flex items-center group shrink-0" href="/" aria-label="EulerFold Home">
+                            <img src="/apple-touch-icon.png" alt="EulerFold" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
                         </Link>
                     </div>
 

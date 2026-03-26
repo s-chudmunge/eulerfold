@@ -6,6 +6,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowRight, ShieldCheck, Compass, BookOpen, History } from 'lucide-react';
 import RoadmapCanvas from '@/components/landing/RoadmapCanvas';
+import EulerLogoCanvas from '@/components/EulerLogoCanvas';
 
 export default function LoginPage() {
     const [error, setError] = useState<string | null>(null);
@@ -43,7 +44,14 @@ export default function LoginPage() {
             <RoadmapCanvas />
 
             <main className="flex-1 flex flex-col items-center justify-center p-6 relative z-10">
-                <div className="w-full max-w-[340px] -mt-20 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                <div className="w-full max-w-[340px] -mt-20 animate-in fade-in slide-in-from-bottom-4 duration-1000 flex flex-col items-center">
+                    <div className="mb-10 flex flex-col items-center">
+                        <EulerLogoCanvas size={28} className="mb-4" />
+                        <h2 className="inconsolata-ui text-[12px] font-bold text-text-heading tracking-[0.3em] uppercase opacity-80">
+                            EulerFold
+                        </h2>
+                    </div>
+
                     <div className="text-center mb-10">
                         <h1 className="text-xl font-bold tracking-tight mb-2 manrope-body">
                             Welcome back

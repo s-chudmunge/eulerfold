@@ -115,7 +115,7 @@ export default function StrictlyHFPage() {
         <div className="w-full px-6 flex h-full items-center justify-between">
           <div className="flex items-center">
             <Link className="flex items-center group shrink-0" href="/">
-              <img src="/apple-touch-icon.png" alt="ΣulerFold" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
+              <img src="/apple-touch-icon.png" alt="EulerFold" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
             </Link>
 
             {/* Search Input */}
