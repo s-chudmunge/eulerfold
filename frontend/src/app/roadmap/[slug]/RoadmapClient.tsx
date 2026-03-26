@@ -27,6 +27,7 @@ import {
     Scale
 } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Inconsolata, Manrope } from 'next/font/google';
 import AppSidebar from '@/components/AppSidebar';
 import ShareMenu from '@/components/ShareMenu';
@@ -65,6 +66,7 @@ export default function RoadmapClient({ slug, initialRoadmap }: Props) {
     const [showActions, setShowActions] = useState<boolean>(false);
     const [submissions, setSubmissions] = useState<any[]>([]);
     const [showLogs, setShowLogs] = useState<boolean>(false);
+    const router = useRouter();
 
     useEffect(() => {
         const fetchSubmissions = async () => {
@@ -203,18 +205,8 @@ export default function RoadmapClient({ slug, initialRoadmap }: Props) {
         setTimeout(() => setSuccessMsg(null), 3000);
     };
 
-    const handleSignIn = async () => {
-        try {
-            const { error } = await supabase.auth.signInWithOAuth({
-                provider: 'google',
-                options: {
-                    redirectTo: `${window.location.origin}/auth/callback?next=/roadmap/${roadmap?.slug || slug}`,
-                },
-            });
-            if (error) throw error;
-        } catch (err: any) {
-            setError(err.message);
-        }
+    const handleSignIn = () => {
+        router.push(`/login?next=${encodeURIComponent(window.location.pathname)}`);
     };
 
     const handleContinueLearning = async () => {

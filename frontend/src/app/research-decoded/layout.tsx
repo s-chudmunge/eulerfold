@@ -130,18 +130,8 @@ export default function ResearchDecodedLayout({
     router.replace(`${pathname}?${params.toString()}`);
   };
 
-  const handleSignIn = async () => {
-    try {
-      await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: { 
-          redirectTo: `${window.location.origin}/auth/callback`,
-          queryParams: { prompt: 'select_account' } 
-        },
-      });
-    } catch (error) {
-      console.error('Sign in error:', error);
-    }
+  const handleSignIn = () => {
+    router.push(`/login?next=${encodeURIComponent(pathname)}`);
   };
 
   const filteredNavigation = navigation.map(nav => ({

@@ -319,16 +319,8 @@ export default function HomeClient() {
     }
   };
 
-  const handleSignIn = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: { redirectTo: `${window.location.origin}/auth/callback` },
-      });
-      if (error) throw error;
-    } catch (err: any) {
-      console.error(err);
-    }
+  const handleSignIn = () => {
+    router.push('/login');
   };
 
   const handleSignOut = async () => {
@@ -639,7 +631,7 @@ export default function HomeClient() {
       <section className="w-full bg-sidebar/10 dark:bg-white/[0.01] border-t border-border py-16 px-6 overflow-hidden">
         <div className="max-w-2xl mx-auto flex flex-col items-center text-center">
           <div className="mb-6 flex flex-col items-center">
-            <span className="text-xl mb-3 opacity-60">🐢</span>
+            <EulerLogoCanvas size={24} className="mb-3 opacity-60" />
             <h2 className="inconsolata-ui text-[11px] font-bold text-text-heading tracking-[0.2em] uppercase opacity-40">
               Mission Statement
             </h2>

@@ -8,6 +8,7 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 import { supabase } from '@/lib/supabase/client';
+import { useRouter } from 'next/navigation';
 
 interface Paper {
   title: string;
@@ -43,6 +44,7 @@ interface Props {
 
 export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
   const [user, setUser] = React.useState<any>(null);
+  const router = useRouter();
 
   React.useEffect(() => {
     const checkUser = async () => {
@@ -56,18 +58,8 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleSignIn = async () => {
-    try {
-      await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: { 
-          redirectTo: `${window.location.origin}/auth/callback`,
-          queryParams: { prompt: 'select_account' } 
-        },
-      });
-    } catch (error) {
-      console.error('Sign in error:', error);
-    }
+  const handleSignIn = () => {
+    router.push(`/login?next=${encodeURIComponent(window.location.pathname)}`);
   };
 
   return (

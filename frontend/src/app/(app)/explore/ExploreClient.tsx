@@ -45,7 +45,7 @@ import { exploreAPI, ExploreRoadmap, coinsAPI, LeaderboardEntry, authAPI } from 
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Inconsolata, Manrope } from 'next/font/google';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import AppSidebar from '@/components/AppSidebar';
 import StarRating from '@/components/roadmap/StarRating';
 
@@ -113,6 +113,7 @@ export default function ExploreClient({
     initialLeaderboard?: LeaderboardEntry[] 
 }) {
     const searchParams = useSearchParams();
+    const router = useRouter();
     const initialSearch = searchParams.get('search') || '';
     
     const [searchQuery, setSearchQuery] = useState(initialSearch);
@@ -206,18 +207,8 @@ export default function ExploreClient({
         });
     }, [roadmaps, filter]);
 
-    const handleSignIn = async () => {
-      try {
-        const { error } = await supabase.auth.signInWithOAuth({
-          provider: 'google',
-          options: {
-            redirectTo: `${window.location.origin}/auth/callback?next=/explore`,
-          },
-        });
-        if (error) throw error;
-      } catch (err: any) {
-        setError(err.message);
-      }
+    const handleSignIn = () => {
+      router.push(`/login?next=${encodeURIComponent(window.location.pathname)}`);
     };
 
     const handleReport = (e: React.MouseEvent, id: number) => {

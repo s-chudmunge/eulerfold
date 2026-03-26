@@ -103,16 +103,8 @@ function ArchiveContent() {
     checkAuth();
   }, []);
 
-  const handleSignIn = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: { redirectTo: `${window.location.origin}/auth/callback` },
-      });
-      if (error) throw error;
-    } catch (err: any) {
-      console.error(err);
-    }
+  const handleSignIn = () => {
+    router.push(`/login?next=${encodeURIComponent(pathname)}`);
   };
 
   const toggleCategory = (id: string) => {

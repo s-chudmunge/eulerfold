@@ -5,11 +5,12 @@ import Link from 'next/link';
 import { navigation, papers } from './generatedData';
 import { ArrowRight } from 'lucide-react';
 import { supabase } from '@/lib/supabase/client';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { cleanSearchQuery, getSearchKeywords } from '@/lib/search';
 
 export default function ResearchDecodedIndexContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const searchQuery = searchParams.get('q') || "";
   const [user, setUser] = React.useState<any>(null);
 
@@ -25,18 +26,8 @@ export default function ResearchDecodedIndexContent() {
     return () => subscription.unsubscribe();
   }, []);
 
-  const handleSignIn = async () => {
-    try {
-      await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: { 
-          redirectTo: `${window.location.origin}/auth/callback`,
-          queryParams: { prompt: 'select_account' } 
-        },
-      });
-    } catch (error) {
-      console.error('Sign in error:', error);
-    }
+  const handleSignIn = () => {
+    router.push(`/login?next=${encodeURIComponent(window.location.pathname)}`);
   };
 
   const filteredNavigation = navigation.map(category => {
