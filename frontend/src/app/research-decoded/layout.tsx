@@ -166,16 +166,25 @@ export default function ResearchDecodedLayout({
         <div className="w-full px-6 flex h-full items-center justify-between">
           <div className="flex items-center flex-1">
             {/* Logo Part */}
-            <Link className="mr-8 flex items-center group shrink-0" href="/">
+            <Link className="flex items-center group shrink-0" href="/">
               <img src="/apple-touch-icon.png" alt="EulerFold" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
             </Link>
 
-            {/* Search Input container pushed to right */}
-            <div className="flex-1 flex justify-end mr-8">
+            <div className="h-4 w-px bg-border mx-4 hidden md:block"></div>
+
+            <div className="flex items-center gap-2.5 mr-8">
+              <Microscope className="w-4 h-4 text-accent" />
+              <h1 className="text-[14px] font-bold leading-tight tracking-tight text-text-heading whitespace-nowrap">
+                Research Decoded
+              </h1>
+            </div>
+
+            {/* Search Input container centered */}
+            <div className="flex-1 flex justify-center">
               <div className="relative w-full max-w-[400px]">
                 <input 
                   autoComplete="off" 
-                  className="w-full pl-10 h-10 pr-3 rounded-md border border-border bg-sidebar focus:bg-background focus:ring-1 focus:ring-[var(--accent)] transition-all text-[13px] text-text-primary outline-none placeholder:text-text-muted" 
+                  className="w-full pl-10 h-8 pr-3 rounded-md border border-border bg-sidebar focus:bg-background focus:ring-1 focus:ring-[var(--accent)] transition-all text-[13px] text-text-primary outline-none placeholder:text-text-muted" 
                   placeholder="Search papers..." 
                   type="text" 
                   value={searchQuery}
@@ -255,51 +264,52 @@ export default function ResearchDecodedLayout({
             isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
           } manrope-body bg-sidebar border-r border-border transition-transform duration-200 w-[260px] flex flex-col h-full overflow-y-auto no-scrollbar fixed inset-y-0 left-0 z-50 md:relative md:translate-x-0 shrink-0`}
         >
-          <div className="p-5 border-b border-border shrink-0 flex items-center justify-between">
-            <div className="flex items-center gap-2.5">
-              <Microscope className="w-4 h-4 text-accent" />
+          <div className="p-5 border-b border-border shrink-0 flex items-center justify-between md:hidden">
+            <div className="flex items-center">
               <h1 className="text-[15px] font-bold leading-tight tracking-tight text-text-heading whitespace-nowrap">
                 Research Decoded
               </h1>
             </div>
             <button 
               onClick={() => setIsSidebarOpen(false)}
-              className="md:hidden p-1 hover:bg-callout-bg rounded-lg text-text-muted"
+              className="p-1 hover:bg-callout-bg rounded-lg text-text-muted"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
           
-          <div className="px-5 py-4 border-b border-border shrink-0">
+          <div className="px-4 py-4 border-b border-border shrink-0">
             <div className="relative">
               <input 
-                className="w-full flex items-center rounded-full border border-border bg-background pl-9 pr-4 py-2 text-[13px] text-text-primary placeholder:text-text-muted focus:ring-1 focus:ring-[var(--accent)] outline-none transition-all"
+                className="w-full flex items-center rounded-full border border-border bg-background pl-9 pr-4 py-1.5 text-[12px] text-text-primary placeholder:text-text-muted focus:ring-1 focus:ring-[var(--accent)] outline-none transition-all"
                 placeholder="Jump to paper..."
                 value={searchQuery}
                 onChange={(e) => updateSearchQuery(e.target.value)}
               />
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted" />
             </div>
           </div>
 
-          <nav className="flex-1 px-4 pt-6 pb-16 space-y-2">
+          <nav className="flex-1 px-2.5 pt-4 pb-16 space-y-1">
             {filteredNavigation.map((nav) => {
               const isExpanded = searchQuery ? true : !!expandedSections[nav.id];
               
               return (
-                <div key={nav.id} className="mb-4">
+                <div key={nav.id} className="mb-0.5">
                   <button 
                     onClick={() => toggleSection(nav.id)}
-                    className="w-full flex items-center px-2 py-1.5 text-[12px] font-bold text-text-muted group hover:text-text-primary transition-colors text-left"
+                    className={`w-full flex items-center px-3 py-2 text-[12px] font-bold group transition-all text-left rounded-lg ${
+                      isExpanded ? 'text-text-heading bg-background/30' : 'text-text-muted hover:text-text-primary hover:bg-background/50'
+                    }`}
                   >
-                    <span className="flex-1">{nav.title}</span>
+                    <span className="flex-1 uppercase tracking-tight">{nav.title}</span>
                     <ChevronRight 
-                      className={`w-3.5 h-3.5 transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`} 
+                      className={`w-3.5 h-3.5 opacity-40 transition-transform duration-200 ${isExpanded ? 'rotate-90' : ''}`} 
                     />
                   </button>
                   
                   {isExpanded && (
-                    <div className="mt-1.5 space-y-1 ml-1 animate-in fade-in slide-in-from-top-1 duration-200">
+                    <div className="mt-0.5 space-y-0.5 ml-1 animate-in fade-in slide-in-from-left-1 duration-200">
                       {nav.sections.map((section, idx) => {
                         const active = pathname?.includes(section.slug);
                         return (
@@ -308,10 +318,10 @@ export default function ResearchDecodedLayout({
                             href={`/research-decoded/${section.slug}?${searchParams.toString()}`}
                             onClick={() => setIsSidebarOpen(false)}
                             style={active ? { background: 'var(--active-bg)' } : {}}
-                            className={`block py-2 px-4 text-[13px] rounded-xl transition-all ${
+                            className={`block py-1.5 px-4 text-[13px] rounded-lg transition-all ${
                               active 
-                                ? 'text-[var(--active-text)] font-bold shadow-lg border border-border' 
-                                : 'text-text-muted font-medium hover:text-text-primary hover:bg-background'
+                                ? 'text-[var(--active-text)] font-bold shadow-sm border border-border/50' 
+                                : 'text-text-muted font-medium hover:text-text-primary hover:bg-background/50'
                             }`}
                           >
                             {section.title}

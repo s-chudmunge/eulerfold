@@ -36,6 +36,7 @@ import { navigation, papers } from './research-decoded/generatedData';
 import { archiveData } from './archive/generatedArchiveData';
 import { cleanSearchQuery, getSearchKeywords } from '@/lib/search';
 import AppSidebar from '@/components/AppSidebar';
+import EulerLogoCanvas from '@/components/EulerLogoCanvas';
 import Fuse from 'fuse.js';
 
 const EXAM_FULL_NAMES: Record<string, string> = {
@@ -522,13 +523,16 @@ export default function HomeClient() {
       </div>
 
       <main className="min-h-screen flex flex-col items-center justify-center px-6 py-20 md:ml-[64px]">
-        <div className="w-full max-w-lg mt-12">
-          
+        <div className="w-full max-w-lg">
+
+          <div className="flex justify-center mb-12 scale-[1.2]">
+            <EulerLogoCanvas size={32} />
+          </div>
+
           <div className="mb-8 text-center">
             <h1 className="text-xl md:text-2xl font-bold tracking-tight mb-2 manrope-body text-black dark:text-white">
               What do you want to learn?
-            </h1>
-            <p className="text-gray-400 text-[12px] manrope-body font-medium">
+            </h1>            <p className="text-gray-400 text-[12px] manrope-body font-medium">
               Search community roadmaps or build your own with AI.
             </p>
           </div>
