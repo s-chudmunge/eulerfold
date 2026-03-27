@@ -3,17 +3,32 @@
 import React, { useState, useEffect } from 'react';
 import { X, Gift } from 'lucide-react';
 import Link from 'next/link';
+import { supabase } from '@/lib/supabase/client';
 
 export default function AnnouncementBar() {
   const [isVisible, setIsVisible] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
+    // Check if user is logged in
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsLoggedIn(!!session);
+    };
+    checkAuth();
+
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsLoggedIn(!!session);
+    });
+
     // Reshow on every reload as requested
     setIsVisible(true);
     document.documentElement.style.setProperty('--announcement-height', '32px');
     
     return () => {
       document.documentElement.style.setProperty('--announcement-height', '0px');
+      subscription.unsubscribe();
     };
   }, []);
 
@@ -32,7 +47,7 @@ export default function AnnouncementBar() {
           <span>Launch promo: Get 5 free roadmaps on signup</span>
         </div>
         <Link 
-          href="/login" 
+          href={isLoggedIn ? "/generate" : "/login"} 
           className="bg-white text-teal-800 px-3 py-0.5 rounded-full text-[9px] font-black uppercase tracking-tighter hover:bg-teal-50 transition-colors hidden sm:block shadow-sm"
         >
           Claim Now
