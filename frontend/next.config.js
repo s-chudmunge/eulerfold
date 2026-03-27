@@ -3,6 +3,7 @@ const nextConfig = {
   // Performance optimizations
   compress: true,
   poweredByHeader: false,
+  optimizeFonts: false,
   
   // Ignore linting and type errors during build
   eslint: {

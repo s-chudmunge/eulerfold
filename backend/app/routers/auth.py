@@ -129,11 +129,13 @@ async def delete_user(user_id: int, current_user: User = Depends(get_current_use
     return
 
 @router.patch("/profile", response_model=User)
+@router.patch("/profile/", response_model=User)
 async def update_user_profile(
     user_update: UserUpdate,
     current_user: User = Depends(get_current_user)
 ):
     """Update current user's profile."""
+    logger.info(f"Updating profile for user {current_user.email} (UID: {current_user.supabase_uid})")
     supabase = get_supabase_client()
     
     update_data = user_update.model_dump(exclude_unset=True)
@@ -152,7 +154,7 @@ async def update_user_profile(
 
     response = supabase.table("profiles").update(update_data).eq("supabase_uid", current_user.supabase_uid).execute()
     if not response.data:
-        raise HTTPException(status_code=404, detail="Profile not found")
+        raise HTTPException(status_code=404, detail="Profile not found in database.")
     
     return response.data[0]
 
@@ -291,7 +293,9 @@ async def complete_onboarding(
     if not response.data:
         # If profile doesn't exist, create it (though it should exist if they are logged in)
         update_data["supabase_uid"] = current_user.supabase_uid
-        # email should already be set via OAuth
+        update_data["email"] = current_user.email
+        # We omit eulercoins and roadmap_credits to avoid PGRST204 schema cache errors 
+        # when columns were recently added. Database defaults will handle them.
         response = supabase.table("profiles").insert(update_data).execute()
 
     # Send welcome email if profile was just completed

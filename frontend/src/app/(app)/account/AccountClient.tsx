@@ -17,11 +17,11 @@ import {
     LayoutDashboard
 } from 'lucide-react';
 import Link from 'next/link';
-import { Inconsolata, Manrope } from 'next/font/google';
 import AppSidebar from '@/components/AppSidebar';
 import { supabase } from '@/lib/supabase/client';
-import { paymentsAPI, authAPI, User } from '@/lib/api';
+import { paymentsAPI, authAPI, User, profileAPI } from '@/lib/api';
 import { format } from 'date-fns';
+import { Inconsolata, Manrope } from 'next/font/google';
 
 const inconsolata = Inconsolata({
   subsets: ['latin'],
@@ -43,6 +43,7 @@ export default function AccountClient() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     useEffect(() => {
+        let isMounted = true;
         async function loadAccountData() {
             try {
                 const { data: { session } } = await supabase.auth.getSession();
@@ -51,23 +52,58 @@ export default function AccountClient() {
                     return;
                 }
 
-                const [userData, txData, profileRes] = await Promise.all([
+                // 1. Basic Auth & Transactions
+                const [userData, txData] = await Promise.all([
                     authAPI.getMe(),
                     paymentsAPI.getTransactions(),
-                    supabase.from('profiles').select('*').eq('supabase_uid', session.user.id).single()
                 ]);
 
+                if (!isMounted) return;
                 setUser(userData);
                 setTransactions(txData);
-                if (profileRes.data) setProfile(profileRes.data);
+
+                // 2. Profile fetch with fallback
+                const { data: userProfile, error: profileError } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('supabase_uid', session.user.id)
+                    .maybeSingle();
+                
+                let activeProfile = userProfile;
+
+                if (!userProfile) {
+                    try {
+                        const me = await authAPI.getMe();
+                        if (isMounted) {
+                            setProfile(me);
+                            activeProfile = me as any;
+                        }
+                    } catch (err) {
+                        console.error("Backend fallback failed:", err);
+                    }
+                } else {
+                    if (isMounted) setProfile(userProfile);
+                }
+
+                // 3. Technical identity if username exists
+                if (activeProfile?.username) {
+                    try {
+                        const fullProfile = await profileAPI.getPublicProfile(activeProfile.username);
+                        if (isMounted) setProfile(fullProfile);
+                    } catch (err) {
+                        console.error("Technical identity load failed:", err);
+                    }
+                }
+
             } catch (err) {
                 console.error("Error loading account data:", err);
             } finally {
-                setLoading(false);
+                if (isMounted) setLoading(false);
             }
         }
 
         loadAccountData();
+        return () => { isMounted = false; };
     }, []);
 
     if (loading) {

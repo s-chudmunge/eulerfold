@@ -12,22 +12,26 @@ export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [showEmailLogin, setShowEmailLogin] = useState(false);
+    const [isSignUp, setIsSignUp] = useState(false);
+    const [fullName, setFullName] = useState('');
     const router = useRouter();
     const searchParams = useSearchParams();
     const next = searchParams.get('next');
+
+    const getRedirectUrl = () => {
+        return next 
+            ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`
+            : `${window.location.origin}/auth/callback`;
+    };
 
     const handleGoogleLogin = async () => {
         setLoading(true);
         setError(null);
         try {
-            const redirectTo = next 
-                ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`
-                : `${window.location.origin}/auth/callback`;
-
             const { error } = await supabase.auth.signInWithOAuth({ 
                 provider: 'google',
                 options: {
-                    redirectTo
+                    redirectTo: getRedirectUrl()
                 }
             });
             if (error) {
@@ -44,14 +48,10 @@ export default function LoginPage() {
         setLoading(true);
         setError(null);
         try {
-            const redirectTo = next 
-                ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`
-                : `${window.location.origin}/auth/callback`;
-
             const { error } = await supabase.auth.signInWithOAuth({ 
                 provider: 'github',
                 options: {
-                    redirectTo
+                    redirectTo: getRedirectUrl()
                 }
             });
             if (error) {
@@ -69,22 +69,25 @@ export default function LoginPage() {
         setLoading(true);
         setError(null);
         try {
-            const { error } = await supabase.auth.signInWithPassword({
-                email,
-                password,
-            });
-            if (error) {
-                if (error.message === 'Invalid login credentials') {
-                    const { error: signUpError } = await supabase.auth.signUp({
-                        email,
-                        password,
-                    });
-                    if (signUpError) throw signUpError;
-                    setError('Check your email for the confirmation link!');
-                } else {
-                    throw error;
-                }
+            if (isSignUp) {
+                const { error } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: {
+                            full_name: fullName,
+                        },
+                        emailRedirectTo: getRedirectUrl(),
+                    }
+                });
+                if (error) throw error;
+                setError('Verification link sent! Check your email.');
             } else {
+                const { error } = await supabase.auth.signInWithPassword({
+                    email,
+                    password,
+                });
+                if (error) throw error;
                 router.push(next || '/dashboard');
             }
         } catch (err: any) {
@@ -110,10 +113,10 @@ export default function LoginPage() {
                     {/* Text */}
                     <div className="text-center mb-10">
                         <h1 className="text-xl font-bold tracking-tight mb-2 manrope-body text-text-heading">
-                            Welcome back
+                            {isSignUp ? 'Create your account' : 'Welcome back'}
                         </h1>
                         <p className="text-text-muted text-[13px] manrope-body font-medium">
-                            Continue your learning journey.
+                            {isSignUp ? 'Start your learning journey today.' : 'Continue your learning journey.'}
                         </p>
                     </div>
 
@@ -155,6 +158,16 @@ export default function LoginPage() {
                         ) : (
                             <form onSubmit={handleEmailLogin} className="w-full space-y-3">
                                 <div className="space-y-2">
+                                    {isSignUp && (
+                                        <input
+                                            type="text"
+                                            placeholder="Full Name"
+                                            value={fullName}
+                                            onChange={(e) => setFullName(e.target.value)}
+                                            required={isSignUp}
+                                            className="w-full px-4 h-11 bg-sidebar/50 border border-border rounded-xl text-[13px] manrope-body focus:outline-none focus:ring-1 focus:ring-accent transition-all"
+                                        />
+                                    )}
                                     <input
                                         type="email"
                                         placeholder="Email address"
@@ -177,15 +190,25 @@ export default function LoginPage() {
                                     disabled={loading}
                                     className="w-full h-11 bg-text-heading text-background rounded-xl font-bold text-[12px] manrope-body hover:opacity-90 transition-all disabled:opacity-50 shadow-sm active:scale-[0.98]"
                                 >
-                                    {loading ? 'Processing...' : 'Sign in / Sign up'}
+                                    {loading ? 'Processing...' : (isSignUp ? 'Create Account' : 'Sign In')}
                                 </button>
-                                <button
-                                    type="button"
-                                    onClick={() => setShowEmailLogin(false)}
-                                    className="w-full text-[10px] font-bold text-text-muted hover:text-text-primary uppercase tracking-widest transition-colors pt-2 h-8"
-                                >
-                                    Back to social login
-                                </button>
+                                
+                                <div className="flex flex-col items-center gap-2 pt-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => setIsSignUp(!isSignUp)}
+                                        className="text-[10px] font-bold text-accent hover:underline uppercase tracking-widest transition-colors h-8"
+                                    >
+                                        {isSignUp ? 'Already have an account? Sign In' : 'Need an account? Sign Up'}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowEmailLogin(false)}
+                                        className="text-[10px] font-bold text-text-muted hover:text-text-primary uppercase tracking-widest transition-colors h-8"
+                                    >
+                                        Back to social login
+                                    </button>
+                                </div>
                             </form>
                         )}
                         

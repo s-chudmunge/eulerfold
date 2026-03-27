@@ -58,7 +58,7 @@ export default function PricingPage() {
     return (
         <div 
             style={{ top: 'var(--announcement-height, 0px)' }}
-            className={`fixed inset-x-0 bottom-0 flex flex-col bg-background ${inconsolata.variable} ${manrope.variable} manrope-body selection:bg-teal-500/30 overflow-hidden transition-all duration-300`}
+            className="fixed inset-x-0 bottom-0 flex flex-col bg-background manrope-body selection:bg-teal-500/30 overflow-hidden transition-all duration-300"
         >
             {/* Header */}
             <header className="inconsolata-ui border-b border-border bg-header h-[48px] shrink-0 z-50">

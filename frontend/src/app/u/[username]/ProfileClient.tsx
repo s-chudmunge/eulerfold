@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Inconsolata, Manrope } from 'next/font/google';
 import { 
     Clock, 
     Target, 
@@ -27,18 +26,6 @@ import Link from 'next/link';
 import { supabase } from '@/lib/supabase/client';
 import { PublicProfile } from '@/lib/api';
 import ShareMenu from '@/components/ShareMenu';
-
-const inconsolata = Inconsolata({
-  subsets: ['latin'],
-  variable: '--font-mono',
-  weight: ['400', '500', '600', '700'],
-});
-
-const manrope = Manrope({
-  subsets: ['latin'],
-  variable: '--font-sans',
-  weight: ['400', '500', '600', '700'],
-});
 
 interface Props {
     profile: PublicProfile;
@@ -89,7 +76,7 @@ export default function ProfileClient({ profile }: Props) {
     };
 
     return (
-        <div className={`${inconsolata.variable} ${manrope.variable} min-h-screen flex flex-col bg-background text-text-primary selection:bg-teal-500/30 selection:text-text-heading`}>
+        <div className="min-h-screen flex flex-col bg-background text-text-primary selection:bg-teal-500/30 selection:text-text-heading">
             {/* Header */}
             <header className="inconsolata-ui border-b border-border bg-header h-[48px] shrink-0 z-50">
                 <div className="w-full px-6 flex h-full items-center justify-between">

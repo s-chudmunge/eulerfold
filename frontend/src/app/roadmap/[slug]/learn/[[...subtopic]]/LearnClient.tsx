@@ -30,20 +30,7 @@ import {
   Info
 } from 'lucide-react';
 import Link from 'next/link';
-import { Inconsolata, Manrope } from 'next/font/google';
 import ReactMarkdown from 'react-markdown';
-
-const inconsolata = Inconsolata({
-  subsets: ['latin'],
-  variable: '--font-mono',
-  weight: ['400', '500', '600', '700'],
-});
-
-const manrope = Manrope({
-  subsets: ['latin'],
-  variable: '--font-sans',
-  weight: ['400', '500', '600', '700'],
-});
 
 import CourseHeader from '@/components/CourseHeader';
 
@@ -453,7 +440,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
     };
 
     return (
-        <div className={`${inconsolata.variable} ${manrope.variable} fixed inset-0 z-[100] flex flex-col bg-background text-text-primary selection:bg-teal-500/30 selection:text-text-heading overflow-hidden`}>
+        <div className="fixed inset-0 z-[100] flex flex-col bg-background text-text-primary selection:bg-teal-500/30 selection:text-text-heading overflow-hidden">
             {/* Header */}
             <CourseHeader 
                 roadmapId={id}

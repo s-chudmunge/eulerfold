@@ -20,18 +20,23 @@ async def get_coin_balance(current_user: User = Depends(get_current_user)):
     email = current_user.email.lower()
     sb = get_supabase_client()
     
-    prof_res = sb.table("profiles").select("eulercoins").ilike("email", email).execute()
-    balance = prof_res.data[0].get("eulercoins", 0) if prof_res.data else 0
-    
-    tx_res = sb.table("eulercoin_transactions") \
-        .select("amount, reason, created_at") \
-        .ilike("user_email", email) \
-        .order("created_at", desc=True) \
-        .limit(10) \
-        .execute()
-    
-    transactions = [Transaction(**tx) for tx in tx_res.data]
-    return CoinBalance(balance=balance, transactions=transactions)
+    try:
+        prof_res = sb.table("profiles").select("eulercoins").ilike("email", email).execute()
+        balance = prof_res.data[0].get("eulercoins", 0) if prof_res.data else 0
+        
+        tx_res = sb.table("eulercoin_transactions") \
+            .select("amount, reason, created_at") \
+            .ilike("user_email", email) \
+            .order("created_at", desc=True) \
+            .limit(10) \
+            .execute()
+        
+        transactions = [Transaction(**tx) for tx in tx_res.data]
+        return CoinBalance(balance=balance, transactions=transactions)
+    except Exception as e:
+        logger.error(f"Failed to fetch coin balance for {email}: {e}")
+        # Return 0 balance on schema cache errors or missing table/columns
+        return CoinBalance(balance=0, transactions=[])
 
 @router.get("/leaderboard", response_model=LeaderboardResponse)
 async def get_leaderboard(

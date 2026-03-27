@@ -1,7 +1,7 @@
 import type { Metadata } from "next/types";
 import "./globals.css";
 import Script from 'next/script';
-import { Inter } from 'next/font/google';
+// import { Inter, Inconsolata, Manrope } from 'next/font/google';
 import BannerWrapper from '@/components/BannerWrapper';
 import AuthProvider from '@/components/AuthProvider';
 import QueryProvider from '@/app/providers/QueryProvider';
@@ -9,27 +9,27 @@ import SessionTracker from '@/components/SessionTracker';
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-inter',
-});
+const inter = { variable: '--font-inter', className: 'font-inter' };
+
+const inconsolata = { variable: '--font-mono', className: 'font-mono' };
+
+const manrope = { variable: '--font-sans', className: 'font-sans' };
 
 export const metadata: Metadata = {
   title: {
-    default: 'EulerFold - The World\'s Most Trusted Learning Platform',
+    default: 'EulerFold - A Learning Hub',
     template: '%s - EulerFold'
   },
-  description: 'Structured roadmaps, active recall, and project audits that verify what you actually know.',
+  description: 'Clear learning paths with simple progress tracking that show exactly what you’ve learned and keep you on-track.',
   keywords: [
     'master real skills',
-    'verified skills',
-    'proof of work',
+    'Gain skills',
+    'prove your skills',
     'technical roadmaps',
     'skill tracking',
-    'honest progress',
+    'progress tracking',
     'interactive course player',
-    'active recall questions',
+    'practice and view questions',
     'personalized learning path',
     'online study planner',
     'GATE preparation',
@@ -38,11 +38,43 @@ export const metadata: Metadata = {
     'skill development',
     'career advancement',
     'adaptive learning',
-    'student accountability'
+    'student accountability',
+    'learn by doing',
+    'hands-on learning',
+    'project-based learning',
+    'real-world projects',
+    'skill assessment',
+    'career roadmap',
+    'learning dashboard',
+    'study progress analytics',
+    'goal-based learning',
+    'self-paced courses',
+    'structured learning path',
+    'exam preparation platform',
+    'mock tests',
+    'quiz practice',
+    'coding practice platform',
+    'technical interview prep',
+    'job-ready skills',
+    'industry-relevant skills',
+    'guided learning',
+    'learning milestones',
+    'performance tracking',
+    'study planner app',
+    'daily study goals',
+    'learning streaks',
+    'skill certification',
+    'upskill platform',
+    'reskill programs',
+    'online education platform',
+    'smart learning system',
+    'AI-powered learning',
+    'personalized recommendations',
+    'study management tool'
   ],
-  authors: [{ name: 'EulerFold Labs' }],
-  creator: 'EulerFold Labs',
-  publisher: 'EulerFold Labs',
+  authors: [{ name: 'EulerFold' }],
+  creator: 'EulerFold',
+  publisher: 'EulerFold',
   formatDetection: {
     email: false,
     address: false,
@@ -54,15 +86,15 @@ export const metadata: Metadata = {
   locale: 'en_US',
   url: 'https://eulerfold.com',
   siteName: 'EulerFold',
-  title: 'EulerFold - The World\'s Most Trusted Learning Platform',
-  description: 'Master real-world skills and build a verified proof-of-work. This is the ultimate platform to cut through the noise, ship real projects, and land your next role.',
+  title: 'EulerFold - A Learning Hub ',
+  description: 'Clear learning paths with simple progress tracking that show exactly what you’ve learned and keep you on-track.',
   },
   twitter: {
   card: 'summary',
-  title: 'EulerFold - The World\'s Most Trusted Learning Platform',
-  description: 'Stop collecting links. Start mastering skills with structured roadmaps and verified proof of work.',
-  creator: '@eulerfoldlabs',
-  site: '@eulerfoldlabs',
+  title: 'EulerFold - A Learning Hub',
+  description: 'Clear learning paths with simple progress tracking that show exactly what you’ve learned and keep you on track.',
+  creator: '@eulerfold',
+  site: '@eulerfold',
   },  robots: {
     index: true,
     follow: true,
@@ -128,9 +160,9 @@ export default function RootLayout({
                 "width": 512,
                 "height": 512
               },
-              "description": "Personalized AI learning offering free roadmaps across diverse subjects including programming, business, science, and professional skills",
+              "description": "Clear learning paths with simple progress tracking that show exactly what you’ve learned and keep you on track",
               "sameAs": [
-                "https://github.com/mountain-snatcher"
+                "https://github.com/s-chudmunge"
               ],
               "offers": {
                 "@type": "Offer",
@@ -188,7 +220,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${inter.variable} antialiased font-sans`}
+        className={`${inter.variable} ${inconsolata.variable} ${manrope.variable} antialiased font-sans`}
       >
         <QueryProvider>
           <AuthProvider>

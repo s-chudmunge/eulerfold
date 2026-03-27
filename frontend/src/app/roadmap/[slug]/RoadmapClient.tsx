@@ -28,9 +28,9 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Inconsolata, Manrope } from 'next/font/google';
 import AppSidebar from '@/components/AppSidebar';
 import ShareMenu from '@/components/ShareMenu';
+import { Inconsolata, Manrope } from 'next/font/google';
 
 const inconsolata = Inconsolata({
   subsets: ['latin'],

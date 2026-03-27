@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Inconsolata, Manrope } from 'next/font/google';
 import { 
   Search,
   ChevronRight,
@@ -14,18 +13,6 @@ import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import { navigation } from './generatedData';
-
-const inconsolata = Inconsolata({
-  subsets: ['latin'],
-  variable: '--font-mono',
-  weight: ['400', '500', '600', '700'],
-});
-
-const manrope = Manrope({
-  subsets: ['latin'],
-  variable: '--font-sans',
-  weight: ['400', '500', '600', '700'],
-});
 
 function SearchQueryHandler({ 
   setSearchQuery, 
@@ -146,7 +133,7 @@ export default function ResearchDecodedLayout({
     .slice(0, 10);
 
   return (
-    <div className={`${inconsolata.variable} ${manrope.variable} fixed inset-0 z-[100] flex flex-col bg-background text-text-primary selection:bg-teal-500/30 selection:text-text-heading overflow-hidden`}>
+    <div className="fixed inset-0 z-[100] flex flex-col bg-background text-text-primary selection:bg-teal-500/30 selection:text-text-heading overflow-hidden">
       <React.Suspense fallback={null}>
         <SearchQueryHandler setSearchQuery={setSearchQuery} setSearchParams={setSearchParams} />
       </React.Suspense>

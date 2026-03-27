@@ -2,22 +2,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { Menu, X, LayoutDashboard, Plus, Map, Globe, Shield, BookOpen, History, CreditCard, HelpCircle, Settings, FileText } from 'lucide-react';
-import { Inconsolata, Manrope } from 'next/font/google';
 import AppSidebar from '@/components/AppSidebar';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase/client';
-
-const inconsolata = Inconsolata({
-  subsets: ['latin'],
-  variable: '--font-mono',
-  weight: ['400', '500', '600', '700'],
-});
-
-const manrope = Manrope({
-  subsets: ['latin'],
-  variable: '--font-sans',
-  weight: ['400', '500', '600', '700'],
-});
 
 export default function SitemapPage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -65,7 +52,7 @@ export default function SitemapPage() {
   ];
 
   return (
-    <div className={`${inconsolata.variable} ${manrope.variable} fixed inset-0 z-[100] flex flex-col bg-background text-text-primary selection:bg-teal-500/30 selection:text-text-heading overflow-hidden`}>
+    <div className="fixed inset-0 z-[100] flex flex-col bg-background text-text-primary selection:bg-teal-500/30 selection:text-text-heading overflow-hidden">
       {/* Header */}
       <header className="inconsolata-ui border-b border-border bg-header h-[48px] shrink-0 z-50">
         <div className="w-full px-4 md:px-6 flex h-full items-center justify-between">

@@ -9,21 +9,8 @@ import {
   Menu,
   X
 } from 'lucide-react';
-import { Inconsolata, Manrope } from 'next/font/google';
 import AppSidebar from '@/components/AppSidebar';
 import { supabase } from '@/lib/supabase/client';
-
-const inconsolata = Inconsolata({
-  subsets: ['latin'],
-  variable: '--font-mono',
-  weight: ['400', '500', '600', '700'],
-});
-
-const manrope = Manrope({
-  subsets: ['latin'],
-  variable: '--font-sans',
-  weight: ['400', '500', '600', '700'],
-});
 
 export default function GeneratePage() {
   const router = useRouter();
@@ -54,7 +41,7 @@ export default function GeneratePage() {
   };
 
   return (
-    <div className={`fixed inset-0 flex flex-col bg-background ${inconsolata.variable} ${manrope.variable} manrope-body selection:bg-teal-500/30 overflow-hidden`}>
+    <div className={`fixed inset-0 flex flex-col bg-background manrope-body selection:bg-teal-500/30 overflow-hidden`}>
       <div className="flex flex-1 relative overflow-hidden">
         <AppSidebar 
             isOpen={isSidebarOpen}

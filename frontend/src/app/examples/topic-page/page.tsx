@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Inconsolata, Manrope } from 'next/font/google';
 import { 
   Search,
   ChevronRight,
@@ -21,18 +20,6 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase/client';
-
-const inconsolata = Inconsolata({
-  subsets: ['latin'],
-  variable: '--font-mono',
-  weight: ['400', '500', '600', '700'],
-});
-
-const manrope = Manrope({
-  subsets: ['latin'],
-  variable: '--font-sans',
-  weight: ['400', '500', '600', '700'],
-});
 
 // Mock Data following the Roadmap Schema
 const topicData = {
@@ -97,7 +84,7 @@ export default function StrictlyHFPage() {
   };
 
   return (
-    <div className={`${inconsolata.variable} ${manrope.variable} fixed inset-0 z-[100] flex flex-col bg-background text-black selection:bg-indigo-100 selection:text-indigo-900 overflow-hidden`}>
+    <div className="fixed inset-0 z-[100] flex flex-col bg-background text-black selection:bg-indigo-100 selection:text-indigo-900 overflow-hidden">
       <style jsx global>{`
         .manrope-body {
           font-family: var(--font-sans), sans-serif;

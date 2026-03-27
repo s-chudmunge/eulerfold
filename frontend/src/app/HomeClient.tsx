@@ -642,7 +642,7 @@ export default function HomeClient() {
           </div>
 
             <p className="manrope-body text-[14px] text-text-primary leading-relaxed mb-8 max-w-xl font-medium opacity-80">
-            EulerFold is a platform that builds personalized, structured roadmaps to help you master any skill. Our mission is to bridge the gap between information and mastery.
+            EulerFold is a platform that builds personalized learning paths to help user's master any skill. Our mission is to bridge the gap between information and mastery.
             </p>          
         </div>
       </section>

@@ -54,15 +54,24 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
             if (session) {
                 try {
                     // Fetch profile for streak
-                    const { data: profile } = await supabase
+                    const { data: profile, error: profileErr } = await supabase
                         .from('profiles')
-                        .select('current_streak, eulercoins')
+                        .select('current_streak,eulercoins')
                         .eq('supabase_uid', session.user.id)
-                        .single();
+                        .maybeSingle();
+                    
+                    if (profileErr) {
+                        console.warn("Sidebar profile fetch error:", profileErr);
+                    }
                     
                     // Fetch roadmaps for count
-                    const roadmaps = await roadmapsAPI.getMyRoadmaps();
-                    const activeCount = roadmaps.filter(r => r.status !== 'completed').length;
+                    let activeCount = 0;
+                    try {
+                        const roadmaps = await roadmapsAPI.getMyRoadmaps();
+                        activeCount = roadmaps.filter(r => r.status !== 'completed').length;
+                    } catch (err) {
+                        console.error("Sidebar roadmaps fetch failed:", err);
+                    }
 
                     setStats({
                         streak: profile?.current_streak || 0,
@@ -71,6 +80,7 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                     });
                 } catch (error) {
                     console.error('Error loading sidebar stats:', error);
+                    setStats(prev => ({ ...prev, streak: 0, coins: 0 }));
                 }
             }
         };

@@ -75,8 +75,8 @@ async def get_current_user(request: Request) -> User:
         username="user_" + uid[:8],
         is_active=True,
         display_name=display_name,
-        profile_completed=True,
-        onboarding_completed=True
+        profile_completed=False,
+        onboarding_completed=False
     )
 
 async def get_optional_user(request: Request) -> Optional[User]:

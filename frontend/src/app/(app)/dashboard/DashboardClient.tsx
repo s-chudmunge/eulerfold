@@ -95,18 +95,41 @@ export default function DashboardPage() {
                 if (isMounted) setUser(session.user);
                 const token = session.access_token;
 
-                // 1. Basic Profile
-                const { data: userProfile, error: profileError } = await supabase.from('profiles').select('*').eq('supabase_uid', session.user.id).single();
-                if (!isMounted) return;
-                if (profileError || !userProfile) throw profileError || new Error("Profile not found");
+                // 1. Basic Profile - use maybeSingle() to avoid 406 error if profile is missing
+                const { data: userProfile, error: profileError } = await supabase.from('profiles').select('*').eq('supabase_uid', session.user.id).maybeSingle();
                 
-                setProfile(userProfile);
-                if (!userProfile.username) setShowUsernameClaim(true);
+                if (profileError) {
+                    console.error("Profile fetch error:", profileError);
+                }
+
+                let activeProfile = userProfile;
+
+                if (!userProfile) {
+                    // Fallback: Try backend /auth/me which creates transient profile if missing
+                    try {
+                        const me = await authAPI.getMe();
+                        if (isMounted) {
+                            setProfile(me);
+                            activeProfile = me as any;
+                            if (!me.username || me.username.startsWith('user_')) setShowUsernameClaim(true);
+                        }
+                    } catch (authMeErr) {
+                        console.error("Backend auth/me failed:", authMeErr);
+                        if (isMounted) setError("Profile not found. Please try logging out and in again.");
+                    }
+                } else {
+                    if (isMounted) {
+                        setProfile(userProfile);
+                        if (!userProfile.username) setShowUsernameClaim(true);
+                    }
+                }
+
+                if (!isMounted) return;
 
                 // 2. Full Technical Identity (Skills, Submissions, etc.)
-                if (userProfile.username) {
+                if (activeProfile?.username) {
                     try {
-                        const fullProfile = await profileAPI.getPublicProfile(userProfile.username);
+                        const fullProfile = await profileAPI.getPublicProfile(activeProfile.username);
                         if (isMounted && fullProfile) {
                             setProfile(fullProfile); // Update with skills array
                             if (fullProfile.submissions) {
@@ -118,7 +141,7 @@ export default function DashboardPage() {
                     }
                 }
 
-                if (token) {
+                if (token && activeProfile) {
                     coinsAPI.getBalance(token).then(data => {
                         if (isMounted) setCoinData(data);
                     }).catch(console.error);
@@ -138,11 +161,11 @@ export default function DashboardPage() {
                     if (isMounted) setWeeklyStats(data);
                 }).catch(console.error);
 
-                if (userProfile.last_active_date && myRoadmaps.length > 0) {
-                    const lastActive = new Date(userProfile.last_active_date);
+                if (activeProfile?.last_active_date && myRoadmaps.length > 0) {
+                    const lastActive = new Date(activeProfile.last_active_date);
                     const today = new Date();
                     const diffDays = Math.ceil(Math.abs(today.getTime() - lastActive.getTime()) / (1000 * 60 * 60 * 24));
-                    const metadata = userProfile.metadata || {};
+                    const metadata = activeProfile.metadata || {};
                     const isPaused = metadata.reengagement_paused_until ? new Date(metadata.reengagement_paused_until) > new Date() : false;
                     
                     if (diffDays >= 21 && !isPaused) {
@@ -170,9 +193,9 @@ export default function DashboardPage() {
         }
         setClaimLoading(true);
         try {
-            await authAPI.updateProfile({ username: claimedUsername });
+            const updatedUser = await authAPI.completeOnboarding({ username: claimedUsername });
             setShowUsernameClaim(false);
-            setProfile({ ...profile, username: claimedUsername });
+            setProfile({ ...profile, ...updatedUser });
         } catch (err: any) {
             setClaimError(err.response?.data?.detail || "Taken or invalid.");
         } finally {
