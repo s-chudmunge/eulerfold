@@ -10,6 +10,9 @@ const HomeClient = dynamic(() => import('./HomeClient'), {
 
 export const metadata: Metadata = {
   description: 'Learn it. Build it. Prove it.',
+  alternates: {
+    canonical: '/',
+  },
 };
 
 export default function EulerFoldLabsMainPage() {

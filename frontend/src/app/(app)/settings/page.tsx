@@ -3,8 +3,12 @@ import { Metadata } from 'next';
 import SettingsClient from './SettingsClient';
 
 export const metadata: Metadata = {
-  title: 'Settings',
+  title: 'Settings | EulerFold Preferences',
   description: 'Manage your EulerFold account, profile, and notification preferences.',
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 export default function SettingsPage() {

@@ -339,7 +339,10 @@ export default function HomeClient() {
       
       {/* Login Required Message */}
       {showLoginMessage && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 z-[100] animate-in fade-in slide-in-from-top-2 duration-700">
+        <div 
+          style={{ top: 'calc(5rem + var(--announcement-height, 0px))' }}
+          className="fixed left-1/2 -translate-x-1/2 z-[100] animate-in fade-in slide-in-from-top-2 duration-700 transition-all"
+        >
           <div className="px-4 py-1.5 bg-sidebar/50 dark:bg-white/5 backdrop-blur-md rounded-full border border-border dark:border-white/10">
             <p className="manrope-body text-[11px] font-medium text-gray-400 dark:text-gray-500">
               Sign in to access your dashboard
@@ -352,7 +355,8 @@ export default function HomeClient() {
       <aside 
         onMouseEnter={() => setIsSidebarExpanded(true)}
         onMouseLeave={() => setIsSidebarExpanded(false)}
-        className={`fixed left-0 top-0 bottom-0 z-[100] bg-sidebar/95 backdrop-blur-xl border-r border-border dark:border-white/[0.05] transition-all duration-300 ease-in-out flex flex-col pt-6 pb-2 ${isSidebarExpanded ? 'w-[200px]' : 'w-[64px]'} ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
+        style={{ top: 'var(--announcement-height, 0px)' }}
+        className={`fixed left-0 bottom-0 z-[100] bg-sidebar/95 backdrop-blur-xl border-r border-border dark:border-white/[0.05] transition-all duration-300 ease-in-out flex flex-col pt-6 pb-2 ${isSidebarExpanded ? 'w-[200px]' : 'w-[64px]'} ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
       >
         <div className="mb-8 shrink-0 h-8 flex items-center overflow-hidden">
           <Link 
@@ -638,22 +642,8 @@ export default function HomeClient() {
           </div>
 
             <p className="manrope-body text-[14px] text-text-primary leading-relaxed mb-8 max-w-xl font-medium opacity-80">
-            EulerFold is a platform that builds personalized, structured roadmaps to help you master any skill with verified proof-of-work. Our mission is to bridge the gap between information and mastery.
+            EulerFold is a platform that builds personalized, structured roadmaps to help you master any skill. Our mission is to bridge the gap between information and mastery.
             </p>          
-          <div className="flex flex-wrap justify-center gap-x-10 gap-y-4 w-full">
-            <div className="flex items-center gap-2.5">
-              <span className="text-[14px]">🗺️</span>
-              <span className="inconsolata-ui text-[11px] font-bold text-text-muted tracking-wide">Structured paths</span>
-            </div>
-            <div className="flex items-center gap-2.5">
-              <span className="text-[14px]">✅</span>
-              <span className="inconsolata-ui text-[11px] font-bold text-text-muted tracking-wide">Verified growth</span>
-            </div>
-            <div className="flex items-center gap-2.5">
-              <span className="text-[14px]">🤖</span>
-              <span className="inconsolata-ui text-[11px] font-bold text-text-muted tracking-wide">AI intelligence</span>
-            </div>
-          </div>
         </div>
       </section>
 

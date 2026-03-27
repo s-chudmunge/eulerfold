@@ -6,6 +6,15 @@ import { Inconsolata, Manrope } from 'next/font/google';
 import AppSidebar from '@/components/AppSidebar';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase/client';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'Privacy Policy | EulerFold Data & Security',
+  description: 'How we handle your learning data, security, and privacy at EulerFold. We believe in transparency and data protection for all our learners.',
+  alternates: {
+    canonical: '/privacy',
+  },
+};
 
 const inconsolata = Inconsolata({
   subsets: ['latin'],

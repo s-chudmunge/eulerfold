@@ -14,6 +14,9 @@ export async function generateMetadata({ params }: { params: { exam: string } })
   return {
     title: `${exam.title} Previous Year Papers - EulerFold Archive`,
     description: `Download previous year question papers and answer keys for ${exam.title}. Access the complete archive of ${exam.entries.length} items.`,
+    alternates: {
+      canonical: `/archive/exams/previous-year-papers/${params.exam.toLowerCase()}`,
+    },
   };
 }
 

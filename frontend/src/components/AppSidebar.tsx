@@ -118,16 +118,18 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
             {/* Mobile Overlay */}
             {isOpen && (
                 <div 
-                    className="fixed inset-0 bg-black/20 z-[60] lg:hidden backdrop-blur-[2px] transition-opacity"
+                    style={{ top: 'var(--announcement-height, 0px)' }}
+                    className="fixed inset-x-0 bottom-0 bg-black/20 z-[60] lg:hidden backdrop-blur-[2px] transition-all"
                     onClick={onClose}
                 />
             )}
 
             <aside 
                 aria-label="Application sidebar"
+                style={{ top: 'var(--announcement-height, 0px)' }}
                 className={`
                 manrope-body bg-sidebar border-r border-border dark:border-white/[0.05]
-                fixed inset-y-0 left-0 z-[70] w-[240px] transform transition-transform duration-200 ease-in-out
+                fixed bottom-0 left-0 z-[70] w-[240px] transform transition-all duration-200 ease-in-out
                 lg:translate-x-0 lg:static lg:w-[230px] lg:z-40
                 ${isOpen ? 'translate-x-0' : '-translate-x-full'}
                 flex flex-col h-full overflow-hidden shrink-0

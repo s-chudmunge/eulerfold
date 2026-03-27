@@ -46,6 +46,9 @@ export async function generateMetadata({ params }: { params: { username: string 
             card: 'summary',
             title: title,
             description: description,
+        },
+        alternates: {
+            canonical: `/u/${profile.username}`,
         }
     };
 }

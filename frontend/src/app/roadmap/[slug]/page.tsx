@@ -41,6 +41,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
             card: 'summary',
             title: title,
             description: description,
+        },
+        alternates: {
+            canonical: `/roadmap/${params.slug}`,
         }
     };
 }

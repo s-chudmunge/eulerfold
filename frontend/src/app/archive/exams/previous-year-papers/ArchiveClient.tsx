@@ -267,7 +267,7 @@ function ArchiveContent() {
               {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
             <Link className="flex items-center group" href="/" aria-label="EulerFold Home">
-              <img src="/apple-touch-icon.png" alt="" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
+              <img src="/apple-touch-icon.png" alt="EulerFold - Personalized AI Learning" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
             </Link>
           </div>
 
@@ -429,7 +429,7 @@ function ArchiveContent() {
                                 <div className="flex items-center gap-2 truncate">
                                   {EXAM_LOGOS[category.title] && (
                                     <div className="w-5 h-5 bg-background rounded border border-border overflow-hidden flex items-center justify-center p-0.5 shrink-0">
-                                      <img src={EXAM_LOGOS[category.title]} alt="" className="w-full h-full object-contain grayscale-[0.3]" />
+                                      <img src={EXAM_LOGOS[category.title]} alt={`${category.title} Exam Logo`} className="w-full h-full object-contain grayscale-[0.3]" />
                                     </div>
                                   )}
                                   <h2 className="inconsolata-ui text-[14px] font-black text-text-heading shrink-0">{category.title}</h2>
@@ -487,7 +487,7 @@ function ArchiveContent() {
                                     <div className="text-center space-y-2 px-6">
                                       <p className="manrope-body text-[11px] font-bold text-text-muted">EulerFold is free. <span className="text-text-primary">Sign in to view full archives.</span></p>
                                       <button onClick={handleSignIn} className="inline-flex items-center gap-2 bg-black dark:bg-white text-white dark:text-black rounded-full px-4 py-1.5 text-[11px] font-bold hover:opacity-90 transition-all shadow-md manrope-body">
-                                        <img src="/google.svg" alt="" className="w-3.5 h-3.5 brightness-0 invert dark:brightness-100 dark:invert-0" /> Sign in
+                                        <img src="/google.svg" alt="Google Logo" className="w-3.5 h-3.5 brightness-0 invert dark:brightness-100 dark:invert-0" /> Sign in
                                       </button>
                                     </div>
                                   </div>

@@ -56,7 +56,10 @@ export default function PricingPage() {
     }, []);
 
     return (
-        <div className={`fixed inset-0 flex flex-col bg-background ${inconsolata.variable} ${manrope.variable} manrope-body selection:bg-teal-500/30 overflow-hidden`}>
+        <div 
+            style={{ top: 'var(--announcement-height, 0px)' }}
+            className={`fixed inset-x-0 bottom-0 flex flex-col bg-background ${inconsolata.variable} ${manrope.variable} manrope-body selection:bg-teal-500/30 overflow-hidden transition-all duration-300`}
+        >
             {/* Header */}
             <header className="inconsolata-ui border-b border-border bg-header h-[48px] shrink-0 z-50">
                 <div className="w-full px-4 md:px-6 flex h-full items-center justify-between">
@@ -153,7 +156,7 @@ export default function PricingPage() {
                                         "Learn from all lessons",
                                         "Copy any roadmap",
                                         "Your own skill profile",
-                                        "1 Free roadmap"
+                                        "5 Free roadmaps"
                                     ].map((item) => (
                                         <div key={item} className="flex items-center gap-2.5 text-[11px] text-text-primary">
                                             <Check className="w-3.5 h-3.5 text-accent shrink-0" /> {item}

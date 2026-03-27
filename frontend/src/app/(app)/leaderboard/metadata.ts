@@ -13,5 +13,8 @@ export const metadata: Metadata = {
     card: 'summary',
     title: 'EulerFold Leaderboard',
     description: 'See the top learners on EulerFold. Track streaks, EulerCoins, and community contributions.',
+  },
+  alternates: {
+    canonical: '/leaderboard',
   }
 }

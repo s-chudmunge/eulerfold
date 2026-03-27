@@ -8,8 +8,7 @@ import {
   Menu,
   X,
   Github,
-  ArrowRight,
-  Microscope
+  ArrowRight
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -163,7 +162,6 @@ export default function ResearchDecodedLayout({
             <div className="h-4 w-px bg-border mx-4 hidden md:block"></div>
 
             <div className="flex items-center gap-2.5 mr-8">
-              <Microscope className="w-4 h-4 text-accent" />
               <h1 className="text-[14px] font-bold leading-tight tracking-tight text-text-heading whitespace-nowrap">
                 Research Decoded
               </h1>

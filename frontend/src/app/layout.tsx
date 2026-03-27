@@ -2,7 +2,7 @@ import type { Metadata } from "next/types";
 import "./globals.css";
 import Script from 'next/script';
 import { Inter } from 'next/font/google';
-import Header from '@/components/landing/Header';
+import BannerWrapper from '@/components/BannerWrapper';
 import AuthProvider from '@/components/AuthProvider';
 import QueryProvider from '@/app/providers/QueryProvider';
 import SessionTracker from '@/components/SessionTracker';
@@ -49,9 +49,6 @@ export const metadata: Metadata = {
     telephone: false,
   },
   metadataBase: new URL('https://eulerfold.com'),
-  alternates: {
-    canonical: '/',
-  },
   openGraph: {
   type: 'website',
   locale: 'en_US',
@@ -90,6 +87,17 @@ export const metadata: Metadata = {
     apple: '/apple-touch-icon.png',
   },
   manifest: '/site.webmanifest',
+};
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#ffffff' },
+    { media: '(prefers-color-scheme: dark)', color: '#000000' },
+  ],
 };
 
 export default function RootLayout({
@@ -185,7 +193,7 @@ export default function RootLayout({
         <QueryProvider>
           <AuthProvider>
             <SessionTracker />
-            <Header />
+            <BannerWrapper />
             <main>
               {children}
             </main>

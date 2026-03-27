@@ -21,6 +21,9 @@ export async function generateMetadata({ params }: { params: { exam: string, pap
   return {
     title: `${paperName} - EulerFold Archive`,
     description: `Access and download the ${paperName} question paper and answer key. Part of the EulerFold complete archive for ${exam.title}.`,
+    alternates: {
+      canonical: `/archive/exams/previous-year-papers/${params.exam.toLowerCase()}/${params.paper}`,
+    },
   };
 }
 

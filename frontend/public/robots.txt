@@ -21,9 +21,6 @@ Disallow: /auth/
 Disallow: /dashboard
 Disallow: /settings
 Disallow: /profile
-Disallow: /journey
-Disallow: /performance-analysis
-Disallow: /visualize
 Disallow: /results
 Disallow: /api/
 Disallow: /admin/

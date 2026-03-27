@@ -85,7 +85,9 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
         {/* Paper Header */}
         <header className="mb-10">
           <div className="inconsolata-ui flex items-center gap-2 text-accent mb-4 text-[12px] md:text-[13px] font-bold uppercase tracking-widest flex-wrap">
-            <span className="bg-accent-muted px-2 py-0.5 rounded">Research Decoded</span>
+            <Link href="/research-decoded" className="bg-accent-muted px-2 py-0.5 rounded hover:bg-accent/10 transition-colors">
+              Research Decoded
+            </Link>
             <span className="text-[var(--border)]">/</span>
             <span className="text-[var(--text-label)] font-medium">{paper.authors}</span>
           </div>
@@ -114,7 +116,7 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
           <div className="mb-8 p-4 md:p-6 bg-image-bg border border-border rounded-2xl shadow-xl">
             <img 
               src={paper.heroImage} 
-              alt={paper.title} 
+              alt={`${paper.title} - Research Breakthrough Illustration`} 
               className="w-full rounded-xl transition-all dark:opacity-90" 
             />
           </div>
@@ -137,7 +139,7 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
               <div className="my-10 p-4 md:p-6 bg-image-bg border border-border rounded-2xl">
                 <img 
                   src={section.diagram.url} 
-                  alt={section.title} 
+                  alt={`${section.title} Diagram - ${section.diagram.caption}`} 
                   className="mx-auto rounded-xl max-h-[300px] md:max-h-[400px] dark:opacity-90" 
                 />
                 <p className="manrope-body text-[12px] text-text-muted mt-4 text-center italic">
