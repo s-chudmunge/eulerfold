@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: 'Pricing & Plans | EulerFold Roadmap Credits',
+  title: 'Pricing & Plans',
   description: 'Flexible pricing for your learning journey. Choose between our free starter plan or top-up with Pro credits for advanced AI-curated roadmaps.',
   alternates: {
     canonical: '/pricing',

@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import AccountClient from './AccountClient';
 
 export const metadata: Metadata = {
-  title: 'Account Settings | EulerFold',
+  title: 'Account Settings',
   description: 'Manage your EulerFold account, view credits, and track transaction history.',
   robots: {
     index: false,

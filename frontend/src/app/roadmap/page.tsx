@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import RoadmapIndexClient from './RoadmapIndexClient';
 
 export const metadata: Metadata = {
-  title: 'Roadmap Index | EulerFold',
+  title: 'Roadmap Index',
   description: 'Direct directory of all public learning roadmaps on EulerFold. Structured paths for programming, science, and professional skills.',
   alternates: {
     canonical: '/roadmap',

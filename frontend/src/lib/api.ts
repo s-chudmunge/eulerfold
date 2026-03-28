@@ -9,12 +9,28 @@ export const api = axios.create({
     withCredentials: true
 });
 
+// Shared session promise to deduplicate parallel requests
+let sessionPromise: Promise<any> | null = null;
+
+export const getDeduplicatedSession = () => {
+    if (sessionPromise) return sessionPromise;
+
+    sessionPromise = supabase.auth.getSession().finally(() => {
+        // Clear promise after a short delay to allow current parallel calls to finish
+        // but ensure subsequent calls get fresh data if needed
+        setTimeout(() => {
+            sessionPromise = null;
+        }, 100);
+    });
+    return sessionPromise;
+};
+
 // Request Interceptor to add Auth token automatically
 api.interceptors.request.use(
     async (config) => {
         try {
-            // Get session - Supabase handles token refresh internally here
-            const { data: { session }, error } = await supabase.auth.getSession();
+            // Get session with deduplication
+            const { data: { session }, error } = await getDeduplicatedSession();
 
             if (error) {
                 console.error("Supabase session error:", error);
@@ -185,33 +201,12 @@ export const checkinsAPI = {
 api.interceptors.response.use(
     (response) => response,
     async (error) => {
-        const originalRequest = error.config;
-
-        // If 401 Unauthorized and not already retrying
-        if (error.response?.status === 401 && !originalRequest._retry) {
-            console.warn('401 Unauthorized detected. Clearing local session.');
-            
-            // Sign out locally to clear stale tokens
-            try {
-                // Use scope: local to avoid recursive 401s if the token is already rejected
-                await supabase.auth.signOut({ scope: 'local' });
-                
-                // Optional: redirect to login if on a protected route
-                // EXCLUDE /roadmaps/ and /explore/ from redirection so public roadmaps can be viewed
-                if (typeof window !== 'undefined' && 
-                    !window.location.pathname.startsWith('/roadmap/') &&
-                    !window.location.pathname.startsWith('/explore/') &&
-                    (window.location.pathname.startsWith('/dashboard') || 
-                     window.location.pathname.startsWith('/settings'))) {
-                    window.location.href = '/login?message=session_expired';
-                }
-            } catch (signOutError) {
-                console.error('Error during automatic sign out:', signOutError);
-            }
-        }
-
         // Log errors for debugging but don't interfere with error handling
-        if (error.response?.status === 404 && !error.config?.url?.includes('/sessions/resume/')) {
+        if (error.response?.status === 401) {
+            console.warn('401 Unauthorized detected for:', error.config?.url);
+            // We NO LONGER call signOut() here. 
+            // Let the calling component handle the error or wait for a session refresh.
+        } else if (error.response?.status === 404 && !error.config?.url?.includes('/sessions/resume/')) {
             console.log('API Resource not found:', error.config?.url);
         } else if (error.response?.status >= 500) {
             console.error('API Server error:', error.response?.status, error.config?.url);

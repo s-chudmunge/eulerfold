@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Help Center | EulerFold Personalized AI Learning Support',
+  title: 'Help Center',
   description: 'Get help with EulerFold personalized AI learning hub. Find answers to common questions about programming courses, learning roadmaps, and technical support.',
   keywords: [
     'eulerfold help',
@@ -18,14 +18,14 @@ export const metadata: Metadata = {
     'coding bootcamp help'
   ],
   openGraph: {
-    title: 'EulerFold Help Center | Personalized AI Learning Support',
+    title: 'Help Center',
     description: 'Get help with programming courses, learning roadmaps, and technical support for the EulerFold personalized AI learning hub.',
     url: 'https://eulerfold.com/help',
     type: 'website',
   },
   twitter: {
     card: 'summary',
-    title: 'EulerFold Help Center | Programming Course Support',
+    title: 'Help Center',
     description: 'Get help with programming courses and learning roadmaps on EulerFold personalized AI learning hub.',
   },
   alternates: {

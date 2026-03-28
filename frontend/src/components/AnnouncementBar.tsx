@@ -57,7 +57,7 @@ export default function AnnouncementBar() {
       <div className="w-full max-w-7xl mx-auto flex items-center justify-center gap-3">
         <div className="flex items-center gap-2 text-[10px] md:text-[11px] font-bold uppercase tracking-widest">
           <Gift className="w-3.5 h-3.5 text-teal-300" />
-          <span>Launch promo: Get 5 free roadmaps on signup</span>
+          <span>LAUNCH OFFER: Get 5 free roadmaps on signup</span>
         </div>
         <Link 
           href={isLoggedIn ? "/generate" : "/login"} 

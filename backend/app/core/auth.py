@@ -15,11 +15,13 @@ logger = logging.getLogger(__name__)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", auto_error=False)
 
-async def verify_token_with_timeout(token: str, timeout: float = 5.0):
+async def verify_token_with_timeout(token: str, timeout: float = 10.0):
     """Verify Supabase token with a timeout to avoid hanging on network issues."""
     try:
         supabase = get_supabase_client()
-        # Supabase-py's get_user takes the JWT directly
+        # Supabase-py's get_user is now async-friendly in v2+ and we should call it directly
+        # if using the async client, or use wait_for if it's a synchronous call we're wrapping.
+        # Actually, if we're using the standard supabase-py, get_user is sync.
         response = await asyncio.wait_for(
             asyncio.to_thread(supabase.auth.get_user, token),
             timeout=timeout
@@ -27,10 +29,10 @@ async def verify_token_with_timeout(token: str, timeout: float = 5.0):
         return response
     except asyncio.TimeoutError:
         logger.error(f"Auth: Supabase token verification timed out after {timeout}s")
-        raise TimeoutError("Auth service timeout")
+        return None
     except Exception as e:
         logger.error(f"Auth verification failed: {e}")
-        raise e
+        return None
 
 async def get_current_user(request: Request) -> User:
     credentials_exception = HTTPException(
@@ -50,14 +52,13 @@ async def get_current_user(request: Request) -> User:
         # Verify Supabase JWT token with timeout
         response = await verify_token_with_timeout(token)
         if not response or not response.user:
-            raise Exception("Invalid token")
+            raise credentials_exception
 
         supabase_user = response.user
         uid = supabase_user.id
         email = supabase_user.email
-    except TimeoutError as e:
-        logger.error(f"Auth: Token verification timeout: {e}")
-        raise HTTPException(status_code=408, detail="Authentication service timeout")
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Auth: Supabase token verification failed: {e}")
         raise credentials_exception

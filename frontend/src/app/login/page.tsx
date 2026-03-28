@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import LoginClient from './LoginClient';
 
 export const metadata: Metadata = {
-  title: 'Sign In | EulerFold Authentication',
+  title: 'Sign In',
   description: 'Sign in to EulerFold to continue your learning journey.',
   robots: {
     index: false,

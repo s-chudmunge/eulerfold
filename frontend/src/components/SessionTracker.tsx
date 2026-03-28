@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import { sessionsAPI } from '@/lib/api';
+import { sessionsAPI, getDeduplicatedSession } from '@/lib/api';
 import { supabase } from '@/lib/supabase/client';
 
 export default function SessionTracker() {
@@ -14,8 +14,8 @@ export default function SessionTracker() {
       currentTokenRef.current = session?.access_token || null;
     });
 
-    // Initial token fetch
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    // Initial token fetch with deduplication
+    getDeduplicatedSession().then(({ data: { session } }) => {
       currentTokenRef.current = session?.access_token || null;
     });
 

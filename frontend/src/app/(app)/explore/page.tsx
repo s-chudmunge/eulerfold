@@ -6,14 +6,14 @@ export const metadata: Metadata = {
   title: 'Explore Roadmaps',
   description: 'Discover learning journeys crafted and shared by the community. Find your next skill to master.',
   openGraph: {
-    title: 'Explore Roadmaps - EulerFold',
+    title: 'Explore Roadmaps',
     description: 'Find your next learning journey from our community of learners.',
     url: 'https://eulerfold.com/explore',
     type: 'website',
   },
   twitter: {
     card: 'summary',
-    title: 'Explore Roadmaps - EulerFold',
+    title: 'Explore Roadmaps',
     description: 'Discover learning journeys crafted and shared by the community.',
   },
   alternates: {

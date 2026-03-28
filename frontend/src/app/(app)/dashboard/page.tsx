@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import DashboardClient from './DashboardClient';
 
 export const metadata: Metadata = {
-  title: 'Dashboard | My EulerFold Journey',
+  title: 'Dashboard',
   description: 'Track your learning progress, active goals, and skill development on EulerFold.',
   robots: {
     index: false,

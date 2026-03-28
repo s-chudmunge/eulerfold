@@ -3,7 +3,7 @@ import { Metadata } from 'next';
 import GenerateClient from './GenerateClient';
 
 export const metadata: Metadata = {
-  title: 'Create Your Learning Roadmap | EulerFold AI',
+  title: 'Create Your Learning Roadmap',
   description: 'Create a personalized AI-generated learning roadmap for any skill or subject.',
   robots: {
     index: false,

@@ -475,13 +475,17 @@ export default function HomeClient() {
       {!isMobileSidebarOpen && (
         <button
           onClick={() => setIsMobileSidebarOpen(true)}
-          className="fixed top-5 left-5 z-[90] md:hidden p-2 bg-background/80 dark:bg-background/80 backdrop-blur-xl border border-border dark:border-white/5 rounded-xl shadow-sm"
+          style={{ top: 'calc(1.25rem + var(--announcement-height, 0px))' }}
+          className="fixed left-5 z-[90] md:hidden p-2 bg-background/80 dark:bg-background/80 backdrop-blur-xl border border-border dark:border-white/5 rounded-xl shadow-sm transition-all duration-500 ease-in-out"
         >          <Menu className="w-5 h-5 text-gray-400" />
         </button>
       )}
 
       {/* Top Right Auth/Profile */}
-      <div className="absolute top-5 right-6 z-50 flex items-center gap-4">
+      <div 
+        style={{ top: 'calc(1.25rem + var(--announcement-height, 0px))' }}
+        className="absolute right-6 z-50 flex items-center gap-4 transition-all duration-500 ease-in-out"
+      >
         {user ? (
           <div className="flex items-center gap-3">
             <Link href="/dashboard" className="text-[10px] font-bold text-gray-400 hover:text-black dark:hover:text-white transition-colors flex items-center gap-1.5">
