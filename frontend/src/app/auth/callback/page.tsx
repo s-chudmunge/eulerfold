@@ -28,44 +28,65 @@ export default function AuthCallbackPage() {
         const code = queryParams.get('code');
         const errorDescription = queryParams.get('error_description');
 
-        if (errorDescription) {
-          throw new Error(errorDescription);
-        }
+        if (errorDescription) throw new Error(errorDescription);
 
         if (code) {
-          // Exchange the code for a session
+          // PKCE Flow: Exchange code for session
           const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
-          if (exchangeError) throw exchangeError;
+          if (exchangeError) {
+            console.error('Exchange error:', exchangeError);
+            // Don't throw immediately, check if we got a session anyway (e.g. from listener)
+          }
         }
 
-        // Verify session existence
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        if (sessionError) throw sessionError;
-
+        // Final check for session
+        const { data: { session } } = await supabase.auth.getSession();
         if (session) {
           navigateToDashboard();
-        } else if (!code) {
-          // If no code and no session, return to home
+        } else if (!code && !window.location.hash) {
+          // If no code, no hash, and no session, we're lost
           if (isMounted) router.push('/');
         }
       } catch (error: any) {
         console.error('Auth callback error:', error);
         if (isMounted) {
-          // If a session already exists, ignore the error and redirect
           const { data: { session } } = await supabase.auth.getSession();
           if (session) {
             navigateToDashboard();
             return;
           }
-          setErrorMessage(error.message || 'Authentication failed. Please try again.');
+          setErrorMessage(error.message || 'Authentication failed.');
         }
       }
     };
 
+    // 1. Start processing
     handleAuth();
+
+    // 2. Listener for real-time auth events (catches hash-based logins)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if ((event === 'SIGNED_IN' || event === 'USER_UPDATED') && session) {
+        navigateToDashboard();
+      }
+    });
+
+    // 3. Fallback: If still stuck after 5s, try one last time or redirect
+    const fallbackTimeout = setTimeout(async () => {
+      if (isMounted && !redirected) {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+          navigateToDashboard();
+        } else {
+          console.warn('Auth callback timed out without session.');
+          router.push('/dashboard'); // Try going to dashboard anyway, it has its own auth guards
+        }
+      }
+    }, 5000);
 
     return () => {
       isMounted = false;
+      subscription.unsubscribe();
+      clearTimeout(fallbackTimeout);
     };
   }, [router]);
 
