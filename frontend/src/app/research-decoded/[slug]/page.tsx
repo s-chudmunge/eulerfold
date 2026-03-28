@@ -64,7 +64,7 @@ export default function ResearchDecodedPage({ params }: { params: { slug: string
     "author": [
       {
         "@type": "Person",
-        "name": "EulerFold Labs",
+        "name": "EulerFold",
         "url": "https://eulerfold.com"
       },
       {
@@ -74,7 +74,7 @@ export default function ResearchDecodedPage({ params }: { params: { slug: string
     ],
     "publisher": {
       "@type": "Organization",
-      "name": "EulerFold Labs",
+      "name": "EulerFold",
       "logo": {
         "@type": "ImageObject",
         "url": "https://eulerfold.com/android-chrome-512x512.png"

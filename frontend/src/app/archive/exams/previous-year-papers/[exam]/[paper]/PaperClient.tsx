@@ -171,7 +171,7 @@ export default function PaperClient({ exam, paper }: Props) {
               <div className="mt-12 pt-8 border-t border-border">
                 <h5 className="inconsolata-ui text-[12px] font-black text-text-muted mb-3 tracking-widest">academic note</h5>
                 <p className="manrope-body text-[13px] text-text-muted leading-relaxed max-w-xl">
-                  these materials are for educational use. solve under timed conditions to simulate the exam environment. eulerfold provides links to publicly available official resources.
+                  these materials are for educational use. solve under timed conditions to simulate the exam environment. EulerFold provides links to publicly available official resources.
                 </p>
               </div>
             </div>

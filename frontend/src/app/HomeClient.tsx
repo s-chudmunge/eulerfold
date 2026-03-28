@@ -364,7 +364,7 @@ export default function HomeClient() {
             className={`flex items-center transition-all duration-300 ${isSidebarExpanded ? 'px-6 gap-3' : 'w-[64px] justify-center'}`}
           >
             <div className="relative">
-              <img src="/apple-touch-icon.png" alt="" className="w-7 h-7 object-contain shrink-0" />
+              <img src="/apple-touch-icon.png" alt="EulerFold" className="w-7 h-7 object-contain shrink-0" />
             </div>
             {isSidebarExpanded && (
               <span className="font-bold text-[13px] tracking-tight inconsolata-ui whitespace-nowrap text-slate-950 dark:text-white">
@@ -527,7 +527,7 @@ export default function HomeClient() {
 
           <div className="mb-8 text-center">
             <h1 className="text-xl md:text-2xl font-bold tracking-tight mb-2 manrope-body text-black dark:text-white">
-              What do you want to learn?
+              What do you want to learn on EulerFold?
             </h1>
             <p className="text-gray-400 text-[12px] manrope-body font-medium">
               Search community roadmaps or build your own with AI.

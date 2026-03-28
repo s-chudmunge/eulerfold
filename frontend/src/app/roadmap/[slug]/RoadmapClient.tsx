@@ -704,7 +704,7 @@ export default function RoadmapClient({ slug, initialRoadmap }: Props) {
                     <div className="col-span-2 md:col-span-1 flex flex-col items-start">
                         <Link href="/" className="flex items-center gap-2 opacity-40 hover:opacity-100 transition-opacity grayscale">
                             <img src="/apple-touch-icon.png" alt="" className="w-3.5 h-3.5" />
-                            <span className="font-semibold text-[11px] tracking-tight inconsolata-ui text-black dark:text-white">Eulerfold</span>
+                            <span className="font-semibold text-[11px] tracking-tight inconsolata-ui text-black dark:text-white">EulerFold</span>
                         </Link>
                     </div>
 

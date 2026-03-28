@@ -16,8 +16,9 @@ const inconsolata = { variable: '--font-mono', className: 'font-mono' };
 const manrope = { variable: '--font-sans', className: 'font-sans' };
 
 export const metadata: Metadata = {
+  applicationName: 'EulerFold',
   title: {
-    default: 'EulerFold - A Learning Hub',
+    default: 'EulerFold',
     template: '%s - EulerFold'
   },
   description: 'Clear learning paths with simple progress tracking that show exactly what you’ve learned and keep you on-track.',
@@ -86,12 +87,12 @@ export const metadata: Metadata = {
   locale: 'en_US',
   url: 'https://eulerfold.com',
   siteName: 'EulerFold',
-  title: 'EulerFold - A Learning Hub ',
+  title: 'EulerFold',
   description: 'Clear learning paths with simple progress tracking that show exactly what you’ve learned and keep you on-track.',
   },
   twitter: {
   card: 'summary',
-  title: 'EulerFold - A Learning Hub',
+  title: 'EulerFold',
   description: 'Clear learning paths with simple progress tracking that show exactly what you’ve learned and keep you on track.',
   creator: '@eulerfold',
   site: '@eulerfold',
@@ -152,7 +153,7 @@ export default function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "EducationalOrganization",
-              "name": "EulerFold Labs",
+              "name": "EulerFold",
               "url": "https://eulerfold.com",
               "logo": {
                 "@type": "ImageObject",
