@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: { params: { exam: string } })
   if (!exam) return { title: 'Exam Not Found' };
 
   return {
-    title: `${exam.title} Previous Year Papers - EulerFold Archive`,
+    title: `${exam.title} Previous Year Papers`,
     description: `Download previous year question papers and answer keys for ${exam.title}. Access the complete archive of ${exam.entries.length} items.`,
     alternates: {
       canonical: `/archive/exams/previous-year-papers/${params.exam.toLowerCase()}`,

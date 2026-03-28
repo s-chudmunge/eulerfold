@@ -266,9 +266,13 @@ function ArchiveContent() {
             >
               {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
-            <Link className="flex items-center group" href="/" aria-label="EulerFold Home">
+            <Link className="flex items-center group shrink-0" href="/" aria-label="EulerFold Home">
               <img src="/apple-touch-icon.png" alt="EulerFold - Personalized AI Learning" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
             </Link>
+            <div className="h-4 w-px bg-[var(--border)] mx-2 hidden md:block"></div>
+            <div className="flex items-center gap-1.5 overflow-hidden">
+              <span className="text-[11px] md:text-[13px] font-bold text-accent tracking-wide whitespace-nowrap">Archive</span>
+            </div>
           </div>
 
           {/* Search Bar in Header - Responsive */}

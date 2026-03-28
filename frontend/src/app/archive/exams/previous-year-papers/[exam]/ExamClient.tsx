@@ -2,7 +2,7 @@
 
 import React, { useState, useMemo, useEffect } from 'react';
 import { PaperEntry, ExamCategory } from '../../../generatedArchiveData';
-import { Download, Key, ArrowRight, X, Menu, Rocket, LayoutDashboard, Plus, Search, ChevronLeft } from 'lucide-react';
+import { Download, Key, ArrowRight, X, Menu, BookOpen, LayoutDashboard, Plus, Search, ChevronLeft, Calendar, FileText, CheckCircle2, Filter, Info, ChevronRight, FileQuestion, Clock, Target, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import AppSidebar from '@/components/AppSidebar';
 import { supabase } from '@/lib/supabase/client';
@@ -60,6 +60,70 @@ const EXAM_LOGOS: Record<string, string> = {
   "IPhO": "/assets/logos/IPhO.png",
   "MAT": "/assets/logos/MAT.png",
   "PAT": "/assets/logos/PAT.png"
+};
+
+const EXAM_URLS: Record<string, string> = {
+  "AIME": "https://www.maa.org/math-competitions/about-amc",
+  "AMC": "https://www.maa.org/math-competitions",
+  "AP": "https://apcentral.collegeboard.org/",
+  "CSIR_NET": "https://csirnet.nta.nic.in/",
+  "ENGAA": "https://www.undergraduate.study.cam.ac.uk/applying/admissions-tests",
+  "GATE": "https://gate2024.iisc.ac.in/",
+  "IAO": "http://www.isao.it/",
+  "IChO": "https://www.icho-official.org/",
+  "IMO": "https://www.imo-official.org/",
+  "IOI": "https://ioinformatics.org/",
+  "IPhO": "https://www.ipho-official.org/",
+  "JAM": "https://jam.iitm.ac.in/",
+  "JEST": "https://www.jest.org.in/",
+  "MAT": "https://www.ox.ac.uk/admissions/undergraduate/applying-to-oxford/guide/admissions-tests/mat",
+  "NSAA": "https://www.undergraduate.study.cam.ac.uk/applying/admissions-tests",
+  "PAT": "https://www.ox.ac.uk/admissions/undergraduate/applying-to-oxford/guide/admissions-tests/pat",
+  "Putnam": "https://www.maa.org/math-competitions/putnam-competition",
+  "STEP": "https://www.admissionstesting.org/for-test-takers/step/",
+  "TIFR": "https://www.tifr.res.in/~gsadmissions/",
+  "UGC_NET": "https://ugcnet.nta.nic.in/",
+  "JEE_ADVANCE": "https://jeeadv.ac.in/",
+  "NEET": "https://neet.nta.nic.in/",
+  "UPSC": "https://www.upsc.gov.in/",
+  "CAT": "https://iimcat.ac.in/",
+  "NBHM": "https://www.nbhm.dae.gov.in/",
+  "INMO": "https://olympiads.hbcse.tifr.res.in/",
+  "RMO": "https://olympiads.hbcse.tifr.res.in/",
+  "IOQM": "https://olympiads.hbcse.tifr.res.in/",
+  "PRMO": "https://olympiads.hbcse.tifr.res.in/"
+};
+
+const EXAM_METADATA: Record<string, { duration: string; marks: string }> = {
+  "AIME": { duration: "3.0 Hours", marks: "15 Marks" },
+  "AMC": { duration: "75 Mins", marks: "150 Marks" },
+  "AP": { duration: "2-3 Hours", marks: "5.0 Scale" },
+  "CSIR_NET": { duration: "3.0 Hours", marks: "200 Marks" },
+  "ENGAA": { duration: "2.0 Hours", marks: "Varies" },
+  "GATE": { duration: "3.0 Hours", marks: "100 Marks" },
+  "IAO": { duration: "3-4 Hours", marks: "Varies" },
+  "IChO": { duration: "5.0 Hours", marks: "Varies" },
+  "IMO": { duration: "9.0 Hours", marks: "42 Marks" },
+  "IOI": { duration: "10.0 Hours", marks: "600 Marks" },
+  "IPhO": { duration: "10.0 Hours", marks: "50 Marks" },
+  "JAM": { duration: "3.0 Hours", marks: "100 Marks" },
+  "JEST": { duration: "3.0 Hours", marks: "100 Marks" },
+  "MAT": { duration: "2.5 Hours", marks: "100 Marks" },
+  "NSAA": { duration: "2.0 Hours", marks: "Varies" },
+  "PAT": { duration: "2.0 Hours", marks: "100 Marks" },
+  "Putnam": { duration: "6.0 Hours", marks: "120 Marks" },
+  "STEP": { duration: "3.0 Hours", marks: "120 Marks" },
+  "TIFR": { duration: "3.0 Hours", marks: "100 Marks" },
+  "UGC_NET": { duration: "3.0 Hours", marks: "300 Marks" },
+  "JEE_ADVANCE": { duration: "6.0 Hours", marks: "Varies" },
+  "NEET": { duration: "3.3 Hours", marks: "720 Marks" },
+  "UPSC": { duration: "2.0 Hours", marks: "200 Marks" },
+  "CAT": { duration: "2.0 Hours", marks: "198 Marks" },
+  "NBHM": { duration: "3.0 Hours", marks: "Varies" },
+  "INMO": { duration: "4.0 Hours", marks: "102 Marks" },
+  "RMO": { duration: "3.0 Hours", marks: "100 Marks" },
+  "IOQM": { duration: "3.0 Hours", marks: "100 Marks" },
+  "PRMO": { duration: "3.0 Hours", marks: "100 Marks" }
 };
 
 interface Props {
@@ -122,6 +186,17 @@ export default function ExamClient({ exam }: Props) {
   const fullName = EXAM_FULL_NAMES[exam.title] || exam.title;
   const description = EXAM_DESCRIPTIONS[exam.title] || `Access previous year papers and answer keys for ${exam.title}.`;
   const logoUrl = EXAM_LOGOS[exam.title];
+  const examUrl = EXAM_URLS[exam.title];
+  const metadata = EXAM_METADATA[exam.title] || { duration: "3.0 Hours", marks: "100 Marks" };
+
+  const totalPapers = exam.entries.length;
+  const yearsRange = useMemo(() => {
+    const years = exam.entries.map(e => parseInt(e.year)).filter(y => !isNaN(y));
+    if (years.length === 0) return "N/A";
+    const min = Math.min(...years);
+    const max = Math.max(...years);
+    return min === max ? `${min}` : `${min} - ${max}`;
+  }, [exam.entries]);
 
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-background">
@@ -138,19 +213,25 @@ export default function ExamClient({ exam }: Props) {
             <Link className="flex items-center group" href="/" aria-label="EulerFold Home">
               <img src="/apple-touch-icon.png" alt="" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
             </Link>
+            <div className="h-4 w-px bg-[var(--border)] mx-2 hidden md:block"></div>
+            <div className="flex items-center gap-1.5 overflow-hidden">
+              <Link href="/archive/exams/previous-year-papers" className="text-[11px] md:text-[13px] font-bold text-text-muted hover:text-text-heading transition-colors tracking-wide whitespace-nowrap">Archive</Link>
+              <span className="text-text-muted text-[10px]">/</span>
+              <span className="text-[11px] md:text-[13px] font-bold text-accent tracking-wide truncate">{exam.title}</span>
+            </div>
           </div>
 
           {/* Search Bar in Header - Responsive */}
           <div className="flex-1 max-w-md relative group">
             <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-              <Search className="w-3 h-3 md:w-3.5 md:h-3.5 text-text-muted group-focus-within:text-accent transition-colors" />
+              <Search className="w-3.5 h-3.5 text-text-muted group-focus-within:text-accent transition-colors" />
             </div>
             <input 
               type="text"
               placeholder={`Search ${exam.title} papers...`}
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              className="w-full bg-callout-bg border border-border rounded-full py-1 md:py-1.5 pl-8 md:pl-9 pr-4 inconsolata-ui text-[11px] md:text-[12px] focus:outline-none focus:border-[var(--accent)] transition-all shadow-sm focus:bg-background dark:focus:bg-[#1a1a1a]"
+              className="w-full bg-callout-bg border border-border rounded-full py-1 md:py-1.5 pl-8 md:pl-9 pr-4 manrope-body text-[11px] md:text-[12px] focus:outline-none focus:border-[var(--accent)] transition-all shadow-sm focus:bg-background dark:focus:bg-[#1a1a1a]"
             />
           </div>
 
@@ -171,113 +252,158 @@ export default function ExamClient({ exam }: Props) {
         />
 
         <main className="flex-1 min-w-0 h-full overflow-y-auto bg-background pb-24">
-          <div className="max-w-[1000px] mx-auto px-6 py-8 md:px-12 md:py-12">
+          <div className="max-w-[1000px] mx-auto px-6 pt-8 pb-12">
             
-            <div className="mb-12">
-              <div className="flex items-center gap-3 mb-4">
-                {logoUrl ? (
-                  <div className="w-10 h-10 md:w-12 md:h-12 bg-background rounded-xl border border-border overflow-hidden flex items-center justify-center p-1.5 shrink-0 shadow-sm">
-                    <img src={logoUrl} alt={exam.title} className="w-full h-full object-contain grayscale-[0.2]" />
+            {/* Page Header */}
+            <div className="mb-10">
+              <div className="flex items-center gap-4 mb-6">
+                <h2 className="inconsolata-ui text-[0.7rem] font-bold text-text-muted uppercase tracking-wider">Exam Archive</h2>
+                <div className="h-[1px] flex-1 bg-[var(--border)]"></div>
+              </div>
+
+              <div className="flex items-start justify-between gap-6 mb-8">
+                <div className="flex items-center gap-4">
+                  {logoUrl && (
+                    <div className="w-10 h-10 md:w-12 md:h-12 bg-background rounded-xl border border-border overflow-hidden flex items-center justify-center p-1.5 shrink-0 shadow-sm">
+                      <img src={logoUrl} alt={exam.title} className="w-full h-full object-contain grayscale-[0.2]" />
+                    </div>
+                  )}
+                  <div>
+                    <h1 className="text-[20px] md:text-[24px] font-black text-text-heading tracking-tight inconsolata-ui leading-none mb-1">
+                      {exam.title}
+                    </h1>
+                    <p className="manrope-body text-[12px] md:text-[13px] font-bold text-text-muted">
+                      {fullName}
+                    </p>
                   </div>
-                ) : (
-                  <div className="bg-accent-muted text-accent p-2 rounded-xl">
-                    <Rocket className="w-6 h-6" />
+                </div>
+
+                <div className="hidden lg:flex items-center gap-6">
+                  <div className="text-right">
+                    <span className="inconsolata-ui text-[9px] font-bold text-text-muted uppercase tracking-widest block mb-0.5">Duration</span>
+                    <span className="inconsolata-ui text-[14px] font-black text-text-heading leading-none">{metadata.duration}</span>
                   </div>
-                )}
-                <div>
-                  <h1 className="text-[28px] md:text-[32px] font-black text-text-heading tracking-tight inconsolata-ui leading-none">
-                    {exam.title}
-                  </h1>
-                  <p className="manrope-body text-[13px] md:text-[14px] font-bold text-text-muted mt-1">
-                    {fullName}
-                  </p>
+                  <div className="text-right">
+                    <span className="inconsolata-ui text-[9px] font-bold text-text-muted uppercase tracking-widest block mb-0.5">Marks</span>
+                    <span className="inconsolata-ui text-[14px] font-black text-text-heading leading-none">{metadata.marks}</span>
+                  </div>
+                  <div className="text-right">
+                    <span className="inconsolata-ui text-[9px] font-bold text-text-muted uppercase tracking-widest block mb-0.5">Papers</span>
+                    <span className="inconsolata-ui text-[14px] font-black text-text-heading leading-none">{totalPapers}</span>
+                  </div>
                 </div>
               </div>
-              <div className="max-w-2xl bg-callout-bg border border-border rounded-2xl p-6">
-                <p className="manrope-body text-[14px] text-text-primary leading-relaxed">
+
+              <div className="bg-callout-bg/50 border border-callout-border rounded-xl p-5">
+                <p className="manrope-body text-[13px] text-text-primary leading-relaxed font-medium mb-4">
                   {description}
                 </p>
+                {examUrl && (
+                  <a 
+                    href={examUrl} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-[11px] font-bold text-accent hover:underline underline-offset-4 inconsolata-ui tracking-wide"
+                  >
+                    Official Main Site <ExternalLink className="w-3 h-3" />
+                  </a>
+                )}
               </div>
             </div>
 
-            <div className="relative">
-              <div className="divide-y divide-[var(--border)] border-t border-b border-border animate-in fade-in slide-in-from-top-1 duration-200">
-                {(isAuthenticated === false ? filteredEntries.slice(0, 5) : filteredEntries).map((entry, idx) => (
-                  <div key={idx} className="flex items-center justify-between py-1.5 hover:bg-callout-bg transition-colors group">
-                    <div className="flex items-center gap-4 min-w-0 flex-1">
-                      <span className="inconsolata-ui text-[11px] font-black text-text-muted w-10 shrink-0 opacity-80 group-hover:opacity-100 transition-opacity">
-                        {entry.year}
-                      </span>
-                      <Link 
-                        href={`/archive/exams/previous-year-papers/${exam.id.toLowerCase()}/${entry.slug}`}
-                        className="flex items-center gap-2 min-w-0 hover:text-accent hover:underline underline-offset-4 transition-all"
-                      >
-                        <span className="manrope-body text-[13px] font-medium text-text-heading truncate">
-                          {exam.title} {entry.subject === 'Main Paper' ? 'Paper' : entry.subject} {entry.year}
-                        </span>
-                        {entry.session && (
-                          <span className="text-[8px] bg-accent-muted text-accent px-1 py-0.5 rounded uppercase font-black tracking-tighter">
-                            S{entry.session}
-                          </span>
+            {/* Papers List Section */}
+            <section className="mb-12">
+              <div className="flex items-center gap-4 mb-6">
+                <h2 className="inconsolata-ui text-[0.7rem] font-bold text-text-muted uppercase tracking-wider">
+                  Available Papers
+                </h2>
+                <div className="h-[1px] flex-1 bg-[var(--border)]"></div>
+              </div>
+
+              <div className="border-t border-border divide-y divide-[var(--border)]">
+                {filteredEntries.length > 0 ? (
+                  (isAuthenticated === false ? filteredEntries.slice(0, 8) : filteredEntries).map((entry, idx) => (
+                    <div key={idx} className="group flex flex-col md:flex-row md:items-center gap-4 py-2 hover:bg-sidebar/30 transition-colors px-2 rounded-lg">
+                      {/* Paper Title */}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-3">
+                          <Link 
+                            href={`/archive/exams/previous-year-papers/${exam.id.toLowerCase()}/${entry.slug}`}
+                            className="inconsolata-ui text-[13px] font-bold text-text-heading truncate tracking-normal hover:text-accent transition-colors"
+                          >
+                            {exam.title} {entry.subject === 'Main Paper' ? 'Standard Paper' : entry.subject} {entry.year}
+                          </Link>
+                          {entry.session && (
+                            <span className="text-[8px] bg-accent-muted text-accent px-1.5 py-0.5 rounded uppercase font-black tracking-tighter shrink-0">
+                              S{entry.session}
+                            </span>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-3 mt-0.5">
+                          <span className="manrope-body text-[10px] font-bold text-text-muted uppercase tracking-wide">Edition {entry.year}</span>
+                        </div>
+                      </div>
+
+                      {/* Desktop Actions - Quick Download Icons */}
+                      <div className="hidden md:flex items-center gap-2 px-6 shrink-0 border-x border-border h-6">
+                        {entry.questionPaper && (
+                          <a 
+                            href={entry.questionPaperDriveId ? getDriveDownloadUrl(entry.questionPaperDriveId) : `/archive/${entry.questionPaper}`} 
+                            className="text-text-muted hover:text-accent transition-colors p-1"
+                            title="Download Paper"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <Download className="w-3.5 h-3.5" />
+                          </a>
                         )}
-                      </Link>
-                    </div>
+                        {entry.answerKey && (
+                          <a 
+                            href={entry.answerKeyDriveId ? getDriveDownloadUrl(entry.answerKeyDriveId) : `/archive/${entry.answerKey}`} 
+                            className="text-text-muted hover:text-emerald-500 transition-colors p-1"
+                            title="Download Solutions"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <Download className="w-3.5 h-3.5" />
+                          </a>
+                        )}
+                      </div>
 
-                    <div className="flex items-center gap-1 shrink-0">
-                      {entry.questionPaper && (
-                        <a 
-                          href={entry.questionPaperDriveId ? getDriveDownloadUrl(entry.questionPaperDriveId) : `/archive/${entry.questionPaper}`} 
-                          download={!entry.questionPaperDriveId ? entry.questionPaper : undefined}
-                          target={entry.questionPaperDriveId ? "_blank" : undefined}
-                          rel={entry.questionPaperDriveId ? "noopener noreferrer" : undefined}
-                          title={entry.questionPaperDriveId ? "Download from Drive" : "Download Question Paper"} 
-                          className="p-1.5 rounded-md hover:bg-teal-50 dark:hover:bg-teal-900/20 text-teal-600/70 hover:text-teal-700 transition-all flex items-center gap-0.5"
+                      {/* Primary Action Button */}
+                      <div className="flex items-center gap-2 shrink-0">
+                        <Link
+                          href={`/archive/exams/previous-year-papers/${exam.id.toLowerCase()}/${entry.slug}`}
+                          className="bg-[var(--text-heading)] text-[var(--bg-main)] px-4 py-1 rounded-md text-[10px] font-bold tracking-wide hover:opacity-90 transition-all flex items-center gap-2"
                         >
-                          <Download className="w-3.5 h-3.5" />
-                          {entry.questionPaperDriveId && <span className="text-[7px] font-black opacity-50">DRIVE</span>}
-                        </a>
-                      )}
-                      {entry.answerKey && (
-                        <a 
-                          href={entry.answerKeyDriveId ? getDriveDownloadUrl(entry.answerKeyDriveId) : `/archive/${entry.answerKey}`} 
-                          download={!entry.answerKeyDriveId ? entry.answerKey : undefined}
-                          target={entry.answerKeyDriveId ? "_blank" : undefined}
-                          rel={entry.answerKeyDriveId ? "noopener noreferrer" : undefined}
-                          title={entry.answerKeyDriveId ? "Download from Drive" : "Download Answer Key"} 
-                          className="p-1.5 rounded-md hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-emerald-600/70 hover:text-emerald-700 transition-all flex items-center gap-0.5"
-                        >
-                          <Key className="w-3.5 h-3.5" />
-                          {entry.answerKeyDriveId && <span className="text-[7px] font-black opacity-50">DRIVE</span>}
-                        </a>
-                      )}
+                          Access <ChevronRight className="w-3 h-3" />
+                        </Link>
+                      </div>
                     </div>
+                  ))
+                ) : (
+                  <div className="py-20 text-center bg-callout-bg/20 border border-dashed border-border rounded-xl">
+                    <h3 className="inconsolata-ui text-[1rem] font-bold text-text-muted mb-2">No matching papers.</h3>
+                    <p className="manrope-body text-[0.875rem] text-text-muted italic">Refine your search to find specific editions.</p>
                   </div>
-                ))}
+                )}
               </div>
 
-              {isAuthenticated === false && filteredEntries.length > 5 && (
-                <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[var(--bg-main)] via-[var(--bg-main)]/90 to-transparent flex flex-col items-center justify-end pb-4 z-10">
-                  <div className="text-center space-y-2 px-6">
-                    <p className="manrope-body text-[11px] font-bold text-text-muted">
-                      EulerFold is free. <span className="text-text-primary">Sign in to view full archives.</span>
-                    </p>
-                    <button 
-                      onClick={handleSignIn}
-                      className="inline-flex items-center gap-2 bg-black dark:bg-white text-white dark:text-black rounded-full px-4 py-1.5 text-[11px] font-bold hover:opacity-90 transition-all shadow-md manrope-body"
-                    >
-                      <img src="/google.svg" alt="" className="w-3.5 h-3.5 brightness-0 invert dark:brightness-100 dark:invert-0" />
-                      Sign in
-                    </button>
-                  </div>
+              {/* Login Gate */}
+              {isAuthenticated === false && filteredEntries.length > 8 && (
+                <div className="mt-8 p-8 bg-sidebar/40 border border-border border-dashed rounded-xl text-center">
+                  <p className="manrope-body text-[13px] font-bold text-text-heading mb-4">
+                    Unlock full archive access ({filteredEntries.length - 8} more items)
+                  </p>
+                  <button 
+                    onClick={handleSignIn}
+                    className="inline-flex items-center gap-2 bg-[var(--text-heading)] text-[var(--bg-main)] rounded-full px-6 py-2 text-[11px] font-bold hover:opacity-90 transition-all"
+                  >
+                    Sign in to EulerFold
+                  </button>
                 </div>
               )}
-              
-              {filteredEntries.length === 0 && (
-                <div className="py-24 text-center border-2 border-dashed border-border rounded-3xl">
-                  <p className="manrope-body text-text-muted text-sm uppercase tracking-widest font-black">No matching papers found</p>
-                </div>
-              )}
-            </div>
+            </section>
 
           </div>
         </main>
