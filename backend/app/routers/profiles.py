@@ -313,7 +313,8 @@ async def export_profile_pdf(username: str):
     header_table_data = [
         [logo, Paragraph(f"<b>{profile.get('display_name') or username}</b> <font color='#64748b' size='11'>@{username}</font>", name_style)],
         ['', Paragraph("Your Earned Record", badge_style)]
-        ]    header_table = Table(header_table_data, colWidths=[0.75*inch, 6.2*inch], rowHeights=[0.4*inch, 0.2*inch])
+    ]
+    header_table = Table(header_table_data, colWidths=[0.75*inch, 6.2*inch], rowHeights=[0.4*inch, 0.2*inch])
     header_table.setStyle(TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ('LEFTPADDING', (0,0), (-1,-1), 0),
