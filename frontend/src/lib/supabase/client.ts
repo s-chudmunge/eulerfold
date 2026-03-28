@@ -14,15 +14,7 @@ const getSupabaseClient = (): SupabaseClient => {
 
   if (supabaseUrl && supabaseAnonKey && isValidUrl(supabaseUrl)) {
     try {
-      return createClient(supabaseUrl, supabaseAnonKey, {
-        auth: {
-          persistSession: true,
-          autoRefreshToken: true,
-          detectSessionInUrl: true,
-          flowType: 'pkce',
-          storageKey: 'eulerfold-auth-token',
-        }
-      });
+      return createClient(supabaseUrl, supabaseAnonKey);
     } catch (e) {
       console.error("Failed to initialize Supabase client:", e);
     }
