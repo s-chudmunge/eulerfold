@@ -107,7 +107,7 @@ def seed():
             })
         
         rid = sb.table("roadmaps").insert({
-            "user_id": pid, "email": email, "title": rd["title"], "description": f"Verified mastery of {rd['title']}",
+            "user_id": pid, "email": email, "title": rd["title"], "description": f"Proven skills in {rd['title']}",
             "roadmap_plan": {"modules": r_plan}, "depth_score": rd["depth"], "skills_extracted": True
         }).execute().data[0]["id"]
 

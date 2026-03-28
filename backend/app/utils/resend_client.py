@@ -120,8 +120,8 @@ async def send_welcome_email(to: str) -> dict:
         <ul style="margin: 0 0 32px 0; padding: 0 0 0 20px; color: #52525b; line-height: 1.6;">
             <li style="margin-bottom: 8px;"><strong>Community Roadmaps:</strong> Clone and master paths from the library.</li>
             <li style="margin-bottom: 8px;"><strong>Research Decoded:</strong> Understand foundational scientific papers.</li>
-            <li style="margin-bottom: 8px;"><strong>Proof of Work:</strong> Verify your skills with project audits.</li>
-            <li><strong>Technical Profile:</strong> Your verified signature of expertise.</li>
+            <li style="margin-bottom: 8px;"><strong>Proof of Work:</strong> Prove your skills with project audits.</li>
+            <li><strong>Technical Profile:</strong> Your earned record of expertise.</li>
         </ul>
         
         <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">

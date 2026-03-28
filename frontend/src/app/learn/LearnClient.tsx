@@ -155,7 +155,7 @@ export default function LearnClient() {
                                         <h3 className="inconsolata-ui text-[15px] font-bold text-text-heading group-hover:text-accent transition-colors">Global Roadmaps</h3>
                                         <span className="inconsolata-ui text-[10px] font-bold text-accent bg-accent/10 px-2 py-0.5 rounded">{roadmapCount || '...'} Community</span>
                                     </div>
-                                    <p className="manrope-body text-[12px] text-text-muted leading-relaxed">Community learning paths built and verified by EulerFold peers.</p>
+                                    <p className="manrope-body text-[12px] text-text-muted leading-relaxed">Community learning paths built and trusted by EulerFold peers.</p>
                                 </div>
                                 <ArrowRight className="w-4 h-4 text-text-muted opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all mt-1" />
                             </Link>

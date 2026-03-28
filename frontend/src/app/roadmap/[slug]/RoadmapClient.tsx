@@ -636,7 +636,7 @@ export default function RoadmapClient({ slug, initialRoadmap }: Props) {
                                         { title: "Learn", sub: "Study curated videos and articles", threshold: 0 },
                                         { title: "Practice", sub: "Solve problems, build things", threshold: 30 },
                                         { title: "Verify", sub: "Submit your work as proof", threshold: 60 },
-                                        { title: "Identity", sub: "Get a verified skill on your profile", threshold: 100 }
+                                        { title: "Identity", sub: "Earn a proven skill on your record", threshold: 100 }
                                     ].map((step, idx) => {
                                         const isActive = (roadmap.progress?.percent || 0) >= step.threshold;
                                         return (

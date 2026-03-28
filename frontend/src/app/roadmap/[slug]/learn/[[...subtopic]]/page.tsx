@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: { params: { slug: string, sub
         twitter: {
             card: 'summary_large_image',
             title: `Learning ${roadmap.subject} on EulerFold`,
-            description: `Follow this verified learning path to master ${roadmap.subject}.`,
+            description: `Follow this Path We Trust to master ${roadmap.subject}.`,
         },
         alternates: {
             canonical: `https://eulerfold.com/roadmap/${roadmap.slug}/learn`

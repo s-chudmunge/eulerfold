@@ -101,7 +101,7 @@ export default function HelpClient() {
     {
       category: 'Platform',
       question: 'How does the AI generate my roadmap?',
-      answer: 'Our engine analyzes your goal, experience, and duration to identify high-density learning units and verified resources.',
+      answer: 'Our engine analyzes your goal, experience, and duration to identify high-density learning units and Resources We Trust.',
       icon: <Target className="w-3.5 h-3.5" />
     },
     {
@@ -113,7 +113,7 @@ export default function HelpClient() {
     {
       category: 'Integrity',
       question: 'What do the letter grades (A+, B, F) mean?',
-      answer: 'Grades represent your verified mastery. F (<40%) is foundational exposure, C/D (40-79%) is advancing competence, and A/B (80%+) represents high proficiency and expertise.',
+      answer: "Grades represent your Skills You've Proven. F (<40%) is foundational exposure, C/D (40-79%) is advancing competence, and A/B (80%+) represents high proficiency and expertise.",
       icon: <Shield className="w-3.5 h-3.5" />
     },
     {

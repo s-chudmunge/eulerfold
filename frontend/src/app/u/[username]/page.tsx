@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: { params: { username: string 
 
     const displayName = profile.display_name || profile.username;
     const title = `${displayName} (@${profile.username}) - Explorer`;
-    const description = `View ${displayName}'s verified skills and learning progress on EulerFold. Currently tracking ${profile.total_skills} skills across ${profile.total_roadmaps} roadmaps.`;
+    const description = `View ${displayName}'s proven skills and learning progress on EulerFold. Currently tracking ${profile.total_skills} skills across ${profile.total_roadmaps} roadmaps.`;
     
     return {
         title: title,

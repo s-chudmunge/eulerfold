@@ -411,7 +411,7 @@ export default function DashboardPage() {
                         <p className="manrope-body text-[13px] text-text-muted mb-6 leading-relaxed">
                             This will permanently remove this goal and all associated evidence. 
                             <span className="block mt-2 text-red-500/80 font-bold  text-[11px] tracking-normal">
-                                ⚠️ Impact: This will lower your technical identity scores and may remove verified skills from your profile.
+                                ⚠️ Impact: This will lower your technical identity scores and may remove proven skills from your record.
                             </span>
                         </p>
                         <div className="flex flex-col gap-2">

@@ -109,8 +109,7 @@ export default function ProfileClient({ profile }: Props) {
                         ) : (
                             <ShareMenu 
                                 title={`${profile.display_name || profile.username}'s Technical Profile`}
-                                text={`Check out ${profile.display_name || profile.username}'s verified technical skills on EulerFold.`}
-                                url={`https://eulerfold.com/u/${profile.username}`}
+                                text={`Check out ${profile.display_name || profile.username}'s proven technical skills on EulerFold.`}                                url={`https://eulerfold.com/u/${profile.username}`}
                             />
                         )}
                     </div>
@@ -201,7 +200,7 @@ export default function ProfileClient({ profile }: Props) {
                                                     {sub.roadmaps?.title || 'Technical Roadmap'}
                                                 </p>
                                                 <p className="text-[9px] text-text-muted font-medium mt-0.5 opacity-80">
-                                                    Module {sub.module_number} Verified • {new Date(sub.submitted_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                                    Module {sub.module_number} Proven • {new Date(sub.submitted_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
                                                 </p>
                                             </div>
                                         </div>
@@ -221,7 +220,7 @@ export default function ProfileClient({ profile }: Props) {
                             </Link>
                         ) : (
                             <div className="flex flex-col items-center gap-1">
-                                <p className="text-[10px] font-bold text-text-muted tracking-wide opacity-40">Verified Explorer</p>
+                                <p className="text-[10px] font-bold text-text-muted tracking-wide opacity-40">Proven Explorer</p>
                                 <div className="flex gap-1">
                                     <div className="w-1 h-1 rounded-full bg-[var(--border)]"></div>
                                     <div className="w-1 h-1 rounded-full bg-[var(--border)]"></div>
@@ -240,7 +239,7 @@ export default function ProfileClient({ profile }: Props) {
                         <div className="relative mb-12">
                             <input 
                                 className="w-full bg-callout-bg border border-border rounded-lg px-10 py-3.5 text-[14px] text-text-heading placeholder:text-text-muted outline-none focus:border-[var(--accent)] transition-all font-medium"
-                                placeholder="Search verified skills..."
+                                placeholder="Search proven skills..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />

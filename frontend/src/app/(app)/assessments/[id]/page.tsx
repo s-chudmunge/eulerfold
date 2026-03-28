@@ -134,12 +134,11 @@ export default function AssessmentPage() {
             </div>
             <h1 className="text-3xl font-black text-slate-900 dark:text-[#f2f2f7] mb-2 tracking-tight">Assessment Complete</h1>
             <p className="text-slate-500 dark:text-[#aeaeb2] mb-12 max-w-md mx-auto">
-                Your results have been verified and added to your technical profile. Standardized benchmarks increase the trust signal of your credential.
+               Your results have been Added to Your Record. Standardized benchmarks increase the trust signal of your credential.
             </p>
-            
+
             <div className="mb-12 p-8 bg-slate-50 dark:bg-[#2c2c2e] rounded-[2.5rem] border border-slate-100 dark:border-[#3a3a3c] min-w-[240px]">
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Verified Score</p>
-                <div className="flex items-baseline justify-center">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">Score You've Proven</p>                <div className="flex items-baseline justify-center">
                     <span className="text-6xl font-black text-teal-700 dark:text-teal-400">{score?.toFixed(0)}</span>
                     <span className="text-xl font-bold text-slate-400 ml-1">/100</span>
                 </div>

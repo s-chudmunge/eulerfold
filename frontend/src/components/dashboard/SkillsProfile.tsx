@@ -70,7 +70,7 @@ export default function SkillsProfile({ skills }: SkillsProfileProps) {
                         </p>
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                             {[
-                                { label: 'PoW (40%)', desc: 'Verified projects & Proof of Work submissions.' },
+                                { label: 'PoW (40%)', desc: "Projects You've Solved & Proof of Work submissions." },
                                 { label: 'Practice (30%)', desc: 'Performance in AI-generated practice assessments.' },
                                 { label: 'Topics (15%)', desc: 'Percentage of roadmap topics covered and reviewed.' },
                                 { label: 'Depth (15%)', desc: 'Complexity level of the topics mastered.' }
@@ -117,7 +117,7 @@ export default function SkillsProfile({ skills }: SkillsProfileProps) {
                                             <p className="text-[9px] font-black text-gray-400 dark:text-[#636366] uppercase tracking-widest mb-3">Signal Contributions</p>
                                             <div className="space-y-2">
                                                 {[
-                                                    { label: 'Verified Proof', val: (skill.pow_score * 40).toFixed(1), total: 40 },
+                                                    { label: "Work You've Submitted", val: (skill.pow_score * 40).toFixed(1), total: 40 },
                                                     { label: 'Practice Score', val: (skill.practice_score * 30).toFixed(1), total: 30 },
                                                     { label: 'Topics Covered', val: (skill.topic_completion * 15).toFixed(1), total: 15 },
                                                     { label: 'Concept Depth', val: (Math.min(skill.depth_score, 1.0) * 15).toFixed(1), total: 15 }
@@ -138,11 +138,11 @@ export default function SkillsProfile({ skills }: SkillsProfileProps) {
                                                 </div>
                                                 <div className="flex items-center gap-2 text-gray-500 dark:text-[#aeaeb2] font-bold">
                                                     <Target className="h-3 w-3" />
-                                                    <span>Verified in {skill.contributing_roadmap_ids?.length || 1} { (skill.contributing_roadmap_ids?.length || 1) === 1 ? 'Roadmap' : 'Roadmaps' }</span>
+                                                    <span>Earned in {skill.contributing_roadmap_ids?.length || 1} { (skill.contributing_roadmap_ids?.length || 1) === 1 ? 'Roadmap' : 'Roadmaps' }</span>
                                                 </div>
                                                 <div className="flex items-center gap-2 text-gray-500 dark:text-[#aeaeb2] font-bold">
                                                     <ShieldCheck className="h-3 w-3" />
-                                                    <span>Last verified {new Date(skill.last_updated).toLocaleDateString()}</span>
+                                                    <span>Last Checked {new Date(skill.last_updated).toLocaleDateString()}</span>
                                                 </div>
                                             </div>
                                         </div>

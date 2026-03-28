@@ -312,9 +312,8 @@ async def export_profile_pdf(username: str):
     # Simplified header to avoid overlap
     header_table_data = [
         [logo, Paragraph(f"<b>{profile.get('display_name') or username}</b> <font color='#64748b' size='11'>@{username}</font>", name_style)],
-        ['', Paragraph("Verified Technical Growth Profile", badge_style)]
-    ]
-    header_table = Table(header_table_data, colWidths=[0.75*inch, 6.2*inch], rowHeights=[0.4*inch, 0.2*inch])
+        ['', Paragraph("Your Earned Record", badge_style)]
+        ]    header_table = Table(header_table_data, colWidths=[0.75*inch, 6.2*inch], rowHeights=[0.4*inch, 0.2*inch])
     header_table.setStyle(TableStyle([
         ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
         ('LEFTPADDING', (0,0), (-1,-1), 0),
@@ -329,7 +328,7 @@ async def export_profile_pdf(username: str):
     # --- STATS ROW ---
     stats_data = [
         [Paragraph(f"{len(skills)}", stat_val_style), Paragraph(f"{total_roadmaps_count}", stat_val_style), Paragraph(f"{int(total_hours)}h", stat_val_style), Paragraph(f"{p_stats.total}", stat_val_style), Paragraph(f"{len(submissions)}", stat_val_style)],
-        [Paragraph("Verified Skills", stat_label_style), Paragraph("Roadmaps", stat_label_style), Paragraph("Learning Time", stat_label_style), Paragraph("Practice Reps", stat_label_style), Paragraph("Proof of Work", stat_label_style)]
+        [Paragraph("Proven Skills", stat_label_style), Paragraph("Roadmaps", stat_label_style), Paragraph("Learning Time", stat_label_style), Paragraph("Practice Reps", stat_label_style), Paragraph("Proof of Work", stat_label_style)]
     ]
     stats_table = Table(stats_data, colWidths=[1.38*inch]*5)
     stats_table.setStyle(TableStyle([
@@ -357,7 +356,7 @@ async def export_profile_pdf(username: str):
     right_col = []
 
     # Left: Skills
-    left_col.append(accent_header("Verified Technical Stack", 2.8*inch))
+    left_col.append(accent_header("Proven Technical Stack", 2.8*inch))
     left_col.append(Spacer(1, 6))
     if skills:
         for s in skills[:8]:
@@ -408,7 +407,7 @@ async def export_profile_pdf(username: str):
     left_col.append(prac_box)
 
     # Right: Evidence
-    right_col.append(accent_header("Verified Evidence Log", 3.7*inch))
+    right_col.append(accent_header("Work You've Done", 3.7*inch))
     right_col.append(Spacer(1, 6))
     if submissions:
         for sub in submissions:
@@ -460,7 +459,7 @@ async def export_profile_pdf(username: str):
     
     footer_text = f"""
     <b>AUTHENTICITY GUARANTEED BY EULERFOLD LABS</b><br/>
-    This document is a real-time extraction of verified technical skills and project evidence.<br/>
+    This document is a real-time extraction of proven technical skills and project evidence.<br/>
     Scan QR to view live artifacts, verification links, and the original evidence chain.<br/>
     SYSTEM ID: {uid[:8].upper()} • ISSUED: {datetime.now().strftime('%Y-%m-%d')}
     """
