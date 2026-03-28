@@ -104,7 +104,7 @@ async def get_leaderboard(
                 .maybe_single() \
                 .execute()
             
-            if me_res.data:
+            if me_res and me_res.data:
                 u = me_res.data
                 user_rank_entry = LeaderboardEntry(
                     author=format_name(u.get("email"), u.get("display_name")),

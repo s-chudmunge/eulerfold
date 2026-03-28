@@ -78,7 +78,10 @@ export default function ProfileClient({ profile }: Props) {
     return (
         <div className="min-h-screen flex flex-col bg-background text-text-primary selection:bg-teal-500/30 selection:text-text-heading">
             {/* Header */}
-            <header className="inconsolata-ui border-b border-border bg-header h-[48px] shrink-0 z-50">
+            <header 
+                style={{ top: 'var(--announcement-height, 0px)' }}
+                className="inconsolata-ui border-b border-border bg-header h-[48px] shrink-0 z-50 fixed inset-x-0 transition-all duration-500 ease-in-out"
+            >
                 <div className="w-full px-6 flex h-full items-center justify-between">
                     <div className="flex items-center gap-4">
                         <Link className="flex items-center group shrink-0" href="/">
@@ -116,9 +119,15 @@ export default function ProfileClient({ profile }: Props) {
                 </div>
             </header>
 
-            <div className="flex flex-1 relative">
+            <div 
+                style={{ marginTop: 'calc(48px + var(--announcement-height, 0px))' }}
+                className="flex flex-1 relative h-full overflow-hidden transition-all duration-500 ease-in-out"
+            >
                 {/* Sidebar */}
-                <aside className="manrope-body bg-sidebar border-r border-border w-[230px] flex flex-col shrink-0 z-40">
+                <aside 
+                    style={{ top: 'calc(48px + var(--announcement-height, 0px))' }}
+                    className="manrope-body bg-sidebar border-r border-border w-[230px] flex flex-col shrink-0 z-40 fixed bottom-0 left-0 transition-all duration-500 ease-in-out"
+                >
                     <div className="p-6 flex flex-col">
                         <div className="mb-6">
                             <div className="w-12 h-12 bg-callout-bg border border-border rounded-lg flex items-center justify-center text-xl font-black text-text-heading overflow-hidden">

@@ -186,29 +186,34 @@ async def read_users_me(current_user: User = Depends(get_current_user)):
     if current_user and current_user.email:
         email = current_user.email.lower()
         await refresh_streak(email)
-        # Fetch fresh profile after streak refresh to return accurate data
+        
         supabase = get_supabase_client()
         # Fetch profile
-        res = supabase.table("profiles").select("*").ilike("email", email).execute()
-        if res.data:
-            user_data = res.data[0]
-            
-            # Fetch user skills in a separate query since there's no direct FK from profiles to user_skills
-            # user_skills links to auth.users via user_id
-            uid = user_data.get("supabase_uid")
-            skills = []
-            if uid:
-                skills_res = supabase.table("user_skills").select("*, canonical_skills(name, category)").eq("user_id", uid).execute()
-                for us in skills_res.data:
-                    cs = us.get("canonical_skills", {}) or {}
-                    skills.append({
-                        **us,
-                        "name": cs.get("name"),
-                        "category": cs.get("category")
-                    })
-            
-            user_data["skills"] = skills
-            return user_data
+        res = supabase.table("profiles").select("*").eq("supabase_uid", current_user.supabase_uid).execute()
+        
+        if not res.data:
+            # RACE CONDITION: Profile might not be created by trigger yet.
+            # Return the current_user (from JWT) which is enough for onboarding to start.
+            logger.warning(f"Profile not found for {current_user.email} (UID: {current_user.supabase_uid}). Returning transient user.")
+            return current_user
+
+        user_data = res.data[0]
+        
+        # Fetch user skills
+        uid = user_data.get("supabase_uid")
+        skills = []
+        if uid:
+            skills_res = supabase.table("user_skills").select("*, canonical_skills(name, category)").eq("user_id", uid).execute()
+            for us in skills_res.data:
+                cs = us.get("canonical_skills", {}) or {}
+                skills.append({
+                    **us,
+                    "name": cs.get("name"),
+                    "category": cs.get("category")
+                })
+        
+        user_data["skills"] = skills
+        return user_data
     return current_user
 
 @router.post("/metadata")
@@ -301,8 +306,30 @@ async def complete_onboarding(
     # Send welcome email if profile was just completed
     if response.data and current_user.email:
         try:
+            profile_data = response.data[0]
+            
+            # Resolve the best name:
+            # 1. Onboarding input (highest priority)
+            # 2. JWT display_name (if profile is still the default 'EulerFold User')
+            # 3. Profile's actual display_name
+            # 4. Fallback to Email-derived name
+            
+            name = onboarding_data.display_name
+            p_name = profile_data.get("display_name")
+            
+            if not name:
+                if not p_name or p_name == "EulerFold User":
+                    # Use name from JWT if profile has the generic default
+                    name = current_user.display_name
+                else:
+                    name = p_name
+            
+            if not name or name == "EulerFold User":
+                name = current_user.email.split('@')[0].capitalize()
+            
+            username = profile_data.get("username")
             import asyncio
-            asyncio.create_task(send_welcome_email(current_user.email))
+            asyncio.create_task(send_welcome_email(current_user.email, name, username))
         except Exception as e:
             logger.error(f"Failed to send welcome email: {e}")
 

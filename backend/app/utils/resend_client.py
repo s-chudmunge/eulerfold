@@ -46,15 +46,19 @@ async def get_user_coins(email: str) -> int:
     return 0
 
 async def build_html_email(content_html: str, user_email: str = None, unsubscribe_link: str = None) -> str:
-    # Absolute URL for logo (Using the official branding icon)
-    logo_url = "https://eulerfold.com/apple-touch-icon.png"
+    # Branding assets and colors
+    logo_url = "https://eulerfold.com/logo_with_text.png"
+    bg_color = "#f0f7f6"
+    card_bg = "#ffffff"
+    text_color = "#1e293b"
+    border_color = "#e2e8f0"
     
     unsub_section = ""
     if unsubscribe_link:
         unsub_section = f"""
             <tr>
-                <td style="padding: 32px 0 0 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 11px; color: #a1a1aa; text-align: center;">
-                    <a href="{unsubscribe_link}" style="color: #a1a1aa; text-decoration: none;">Unsubscribe</a>
+                <td style="padding: 32px 0 0 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 11px; color: #94a3b8; text-align: center;">
+                    <a href="{unsubscribe_link}" style="color: #94a3b8; text-decoration: none;">Unsubscribe</a>
                 </td>
             </tr>
         """
@@ -66,23 +70,32 @@ async def build_html_email(content_html: str, user_email: str = None, unsubscrib
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <title>EulerFold</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700;800&display=swap" rel="stylesheet">
     </head>
-    <body style="margin: 0; padding: 0; background-color: #ffffff; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
-        <table border="0" cellpadding="0" cellspacing="0" width="100%">
+    <body style="margin: 0; padding: 0; background-color: {bg_color}; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: {bg_color};">
             <tr>
-                <td style="padding: 60px 0;">
-                    <table align="center" border="0" cellpadding="0" cellspacing="0" width="500" style="border-collapse: collapse; background-color: #ffffff;">
+                <td style="padding: 40px 20px;">
+                    <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; border-collapse: collapse;">
                         <tr>
-                            <td style="padding: 0 0 40px 0; text-align: left;">
-                                <img src="{logo_url}" alt="EulerFold" width="28" height="28" style="display: block; opacity: 0.9;" />
+                            <td style="padding: 0 0 32px 0; text-align: center;">
+                                <img src="{logo_url}" alt="EulerFold" width="220" style="display: block; margin: 0 auto;" />
                             </td>
                         </tr>
                         <tr>
-                            <td style="padding: 0; color: #000000; font-size: 15px; line-height: 1.5; letter-spacing: -0.01em;">
-                                {content_html}
+                            <td style="background-color: {card_bg}; border-radius: 24px; padding: 40px; border: 1px solid {border_color}; color: {text_color}; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+                                <div style="font-size: 16px; line-height: 1.6;">
+                                    {content_html}
+                                </div>
                             </td>
                         </tr>
                         {unsub_section}
+                        <tr>
+                            <td style="padding: 32px 0 0 0; font-family: 'Inter', sans-serif; font-size: 12px; color: #94a3b8; text-align: center; line-height: 1.5;">
+                                You're receiving this because you're an EulerFold member.<br/>
+                                If this wasn't you, please ignore this email.
+                            </td>
+                        </tr>
                     </table>
                 </td>
             </tr>
@@ -112,27 +125,64 @@ async def send_onboarding_email(to: str, subject: str, goal: str, modules: list,
     final_html = await build_html_email(html_body, to, unsubscribe_link)
     return await send_email(to, f"Roadmap: {subject}", final_html)
 
-async def send_welcome_email(to: str) -> dict:
+async def send_welcome_email(to: str, display_name: str = None, username: str = None) -> dict:
+    # Ensure name is properly formatted if it exists (First Name, Capitalized)
+    if display_name:
+        first_name = display_name.split(' ')[0].strip()
+        greeting_name = first_name[0].upper() + first_name[1:].lower() if first_name else "there"
+    else:
+        greeting_name = "there"
+    
+    base_url = settings.FRONTEND_URL.rstrip('/')
+    profile_url = f"{base_url}/u/{username}" if username else f"{base_url}/dashboard"
+    
+    # We use a simplified version of the verification template's structure
+    # since this is sent via Resend (python) rather than Supabase templates.
     html_body = f"""
-        <p style="margin: 0 0 20px 0; font-weight: 600; font-size: 17px;">Welcome to EulerFold.</p>
-        <p style="margin: 0 0 16px 0; color: #52525b;">Build steady progress with tools designed for deep learning:</p>
+        <h2 style="color: #0f766e; font-size: 20px; font-weight: 800; margin: 0 0 24px 0; letter-spacing: -0.025em; text-align: center;">
+            Welcome to EulerFold
+        </h2>
         
-        <ul style="margin: 0 0 32px 0; padding: 0 0 0 20px; color: #52525b; line-height: 1.6;">
-            <li style="margin-bottom: 8px;"><strong>Community Roadmaps:</strong> Clone and master paths from the library.</li>
-            <li style="margin-bottom: 8px;"><strong>Research Decoded:</strong> Understand foundational scientific papers.</li>
-            <li style="margin-bottom: 8px;"><strong>Proof of Work:</strong> Prove your skills with project audits.</li>
-            <li><strong>Technical Profile:</strong> Your earned record of expertise.</li>
+        <p style="font-size: 16px; line-height: 1.6; margin-bottom: 24px;">
+            Hi {greeting_name},
+        </p>
+        
+        <p style="font-size: 16px; line-height: 1.6; margin-bottom: 24px;">
+            We're excited to have you onboard. EulerFold is designed to make steady progress in your learning journey and we hope you gain true skills with your time us, Godspeed!
+        </p>
+        
+        <p style="font-size: 16px; font-weight: 700; margin-bottom: 12px; color: #0f766e;">
+            What you can do with EulerFold:
+        </p>
+
+        <ul style="font-size: 15px; line-height: 1.6; padding-left: 20px; margin: 0 0 32px 0; color: #334155;">
+            <li style="margin-bottom: 8px;">
+                <a href="{base_url}/generate" style="color: #0f766e; text-decoration: underline; font-weight: 600;">Generate a roadmap</a> and start learning
+            </li>
+            <li style="margin-bottom: 8px;">
+                <a href="{base_url}/explore" style="color: #0f766e; text-decoration: underline; font-weight: 600;">Clone roadmaps</a> from users worldwide
+            </li>
+            <li style="margin-bottom: 8px;">
+                Download <a href="{base_url}/archive/exams/previous-year-papers" style="color: #0f766e; text-decoration: underline; font-weight: 600;">previous year papers</a> from our archives
+            </li>
+            <li style="margin-bottom: 8px;">
+                Explore <a href="{base_url}/research-decoded" style="color: #0f766e; text-decoration: underline; font-weight: 600;">Research Decoded</a> for technical insights
+            </li>
+            <li style="margin-bottom: 8px;">
+                <a href="{base_url}/learn" style="color: #0f766e; text-decoration: underline; font-weight: 600;">Practice</a> and earn badges
+            </li>
+            <li>
+                <a href="{profile_url}" style="color: #0f766e; text-decoration: underline; font-weight: 600;">Showcase your work</a> and get audited by our AI
+            </li>
         </ul>
         
-        <table border="0" cellpadding="0" cellspacing="0" style="border-collapse: collapse;">
-            <tr>
-                <td align="center" bgcolor="#000000" style="border-radius: 4px;">
-                    <a href="{settings.FRONTEND_URL}/dashboard" style="padding: 10px 20px; font-size: 13px; color: #ffffff; text-decoration: none; font-weight: 600; display: inline-block; letter-spacing: 0.02em;">Start Learning</a>
-                </td>
-            </tr>
-        </table>
+        <div style="text-align: center; margin-bottom: 32px;">
+            <a href="{base_url}/dashboard" style="display: inline-block; background-color: #0f766e; color: #ffffff; padding: 14px 32px; border-radius: 12px; font-weight: 700; text-decoration: none; font-size: 15px;">
+                Go to Dashboard
+            </a>
+        </div>
         
-        <p style="margin: 48px 0 0 0; font-size: 13px; color: #a1a1aa;">&mdash; The EulerFold Team</p>
+        <hr style="border: 0; border-top: 1px solid #f1f5f9; margin: 32px 0;">
     """
     
     final_html = await build_html_email(html_body)

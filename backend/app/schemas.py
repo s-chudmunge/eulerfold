@@ -43,7 +43,7 @@ class UserSkill(BaseModel):
 
 class UserBase(BaseModel):
     email: str
-    username: str
+    username: Optional[str] = None
     is_active: bool = True
     is_admin: bool = False
     display_name: Optional[str] = None

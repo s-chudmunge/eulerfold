@@ -135,7 +135,10 @@ export default function LeaderboardPage({
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-background">
       {/* Header */}
-      <header className="inconsolata-ui border-b border-border bg-header h-[48px] shrink-0 z-50">
+      <header 
+        style={{ top: 'var(--announcement-height, 0px)' }}
+        className="inconsolata-ui border-b border-border bg-header h-[48px] shrink-0 z-50 fixed inset-x-0 transition-all duration-500 ease-in-out"
+      >
                   <div className="w-full px-4 md:px-6 flex h-full items-center justify-between">
                   <div className="flex items-center gap-2 md:gap-4">
                   <button 
@@ -170,7 +173,10 @@ export default function LeaderboardPage({
           </div>
       </header>
 
-      <div className="flex flex-1 relative overflow-hidden">
+      <div 
+        style={{ marginTop: 'calc(48px + var(--announcement-height, 0px))' }}
+        className="flex flex-1 relative overflow-hidden h-full transition-all duration-500 ease-in-out"
+      >
         <AppSidebar 
             isOpen={isSidebarOpen}
             onClose={() => setIsSidebarOpen(false)}

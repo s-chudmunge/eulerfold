@@ -69,7 +69,7 @@ async def get_public_profile(username: str):
     
     # 1. Fetch Profile
     p_res = sb.table("profiles").select("*").eq("username", username).maybe_single().execute()
-    if not p_res.data:
+    if not p_res:
         raise HTTPException(status_code=404, detail="Profile not found")
     
     profile = p_res.data
@@ -171,12 +171,12 @@ async def get_public_profile(username: str):
 async def get_activity(username: str):
     sb = get_supabase_client()
     p_res = sb.table("profiles").select("supabase_uid").eq("username", username).maybe_single().execute()
-    if p_res is None or not p_res.data:
+    if not p_res:
         raise HTTPException(status_code=404, detail="Not found")
     
     uid = p_res.data["supabase_uid"]
     email_res = sb.table("profiles").select("email").eq("supabase_uid", uid).maybe_single().execute()
-    if email_res is None or not email_res.data:
+    if not email_res:
         raise HTTPException(status_code=404, detail="Email not found")
     email = email_res.data["email"]
     
@@ -200,7 +200,7 @@ async def export_profile_pdf(username: str):
     sb = get_supabase_client()
     
     p_res = sb.table("profiles").select("*").eq("username", username).maybe_single().execute()
-    if not p_res.data:
+    if not p_res:
         raise HTTPException(status_code=404, detail="Profile not found")
     profile = p_res.data
     uid = profile["supabase_uid"]

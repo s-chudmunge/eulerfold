@@ -81,7 +81,7 @@ export default function LoginPage() {
                     }
                 });
                 if (error) throw error;
-                setError('Verification link sent! Check your email.');
+                setError('Verification link sent! You can close this tab and check your email to verify your account and access your dashboard.');
             } else {
                 const { error } = await supabase.auth.signInWithPassword({
                     email,

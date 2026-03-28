@@ -34,7 +34,7 @@ async def get_my_rank(current_user: User = Depends(get_current_user)):
         .maybe_single() \
         .execute()
     
-    if res.data:
+    if res and res.data:
         return res.data
             
     return {"message": "User not on leaderboard yet", "rank": None, "composite_score": 0}
