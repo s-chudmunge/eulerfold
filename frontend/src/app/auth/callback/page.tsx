@@ -33,33 +33,30 @@ export default function AuthCallbackPage() {
         }
 
         if (code) {
-          const { error } = await supabase.auth.exchangeCodeForSession(code);
-          if (error) throw error;
+          // Exchange the code for a session
+          const { error: exchangeError } = await supabase.auth.exchangeCodeForSession(code);
+          if (exchangeError) throw exchangeError;
         }
 
+        // Verify session existence
         const { data: { session }, error: sessionError } = await supabase.auth.getSession();
         if (sessionError) throw sessionError;
 
         if (session) {
           navigateToDashboard();
         } else if (!code) {
+          // If no code and no session, return to home
           if (isMounted) router.push('/');
         }
       } catch (error: any) {
         console.error('Auth callback error:', error);
         if (isMounted) {
-          // Check if it's the "code has already been used" error (common on refresh/back button)
-          const isStaleCode = error.message?.includes('code_verifier') || error.message?.includes('already been used');
-          
-          if (isStaleCode) {
-            // If the code is stale but we have a session, just go to dashboard
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-              navigateToDashboard();
-              return;
-            }
+          // If a session already exists, ignore the error and redirect
+          const { data: { session } } = await supabase.auth.getSession();
+          if (session) {
+            navigateToDashboard();
+            return;
           }
-          
           setErrorMessage(error.message || 'Authentication failed. Please try again.');
         }
       }
@@ -67,15 +64,8 @@ export default function AuthCallbackPage() {
 
     handleAuth();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_IN' && session) {
-        navigateToDashboard();
-      }
-    });
-
     return () => {
       isMounted = false;
-      subscription.unsubscribe();
     };
   }, [router]);
 
