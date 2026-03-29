@@ -12,18 +12,15 @@ export const api = axios.create({
 // Shared session promise to deduplicate parallel requests
 let sessionPromise: Promise<any> | null = null;
 
-export const getDeduplicatedSession = () => {
-    if (sessionPromise) return sessionPromise;
-
+export async function getDeduplicatedSession() {
+  if (!sessionPromise) {
     sessionPromise = supabase.auth.getSession().finally(() => {
-        // Clear promise after a short delay to allow current parallel calls to finish
-        // but ensure subsequent calls get fresh data if needed
-        setTimeout(() => {
-            sessionPromise = null;
-        }, 100);
+      // Reset after resolution so future calls get a fresh session
+      setTimeout(() => { sessionPromise = null; }, 100);
     });
-    return sessionPromise;
-};
+  }
+  return sessionPromise;
+}
 
 // Request Interceptor to add Auth token automatically
 api.interceptors.request.use(
