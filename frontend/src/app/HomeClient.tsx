@@ -33,7 +33,7 @@ import {
 import { supabase } from '@/lib/supabase/client';
 import { exploreAPI, ExploreRoadmap } from '@/lib/api';
 import { navigation, papers } from './research-decoded/generatedData';
-import { archiveData } from './archive/generatedArchiveData';
+import { archiveData } from './(public)/archive/generatedArchiveData';
 import { cleanSearchQuery, getSearchKeywords } from '@/lib/search';
 import AppSidebar from '@/components/AppSidebar';
 import EulerLogoCanvas from '@/components/EulerLogoCanvas';

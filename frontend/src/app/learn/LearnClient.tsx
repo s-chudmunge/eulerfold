@@ -16,7 +16,7 @@ import Link from 'next/link';
 import AppSidebar from '@/components/AppSidebar';
 import { supabase } from '@/lib/supabase/client';
 import { navigation, papers } from '../research-decoded/generatedData';
-import { archiveData } from '../archive/generatedArchiveData';
+import { archiveData } from '../(public)/archive/generatedArchiveData';
 import { exploreAPI } from '@/lib/api';
 
 export default function LearnClient() {

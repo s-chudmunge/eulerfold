@@ -6,7 +6,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const sourceDir = path.join(__dirname, '../content/previous_year_papers_pdf');
-const outputFile = path.join(__dirname, '../frontend/src/app/archive/generatedArchiveData.ts');
+const outputFile = path.join(__dirname, '../frontend/src/app/(public)/archive/generatedArchiveData.ts');
 const mappingFile = path.join(__dirname, '../content/archive_drive_mapping.json');
 
 // Load drive mapping if it exists
