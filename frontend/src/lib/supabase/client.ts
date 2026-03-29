@@ -14,7 +14,17 @@ const getSupabaseClient = (): SupabaseClient => {
 
   if (supabaseUrl && supabaseAnonKey && isValidUrl(supabaseUrl)) {
     try {
-      return createClient(supabaseUrl, supabaseAnonKey);
+      return createClient(supabaseUrl, supabaseAnonKey, {
+        auth: {
+          persistSession: true,
+          storageKey: 'sb-auth-token',
+          lock: async (name, acquireTimeout, fn) => {
+            // Bypass Web Locks API — each tab manages its own session independently.
+            // This prevents "AbortError: Lock broken" errors in production.
+            return fn();
+          },
+        },
+      });
     } catch (e) {
       console.error("Failed to initialize Supabase client:", e);
     }
