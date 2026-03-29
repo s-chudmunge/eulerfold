@@ -30,9 +30,13 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   useEffect(() => {
     // 1. Get initial session, then fetch full user profile
     supabase.auth.getSession().then(async ({ data: { session } }) => {
+      console.log('Production session check:', session ? 'FOUND' : 'NULL');
+      console.log('Session user:', session?.user?.email);
+
       if (session?.user) {
         try {
           const userData = await authAPI.getMe();
+          console.log('getMe success:', userData?.email);
           setUser(userData);
           // TOS check
           if (!userData.tos_accepted_at || userData.tos_version !== TOS_VERSION) {
@@ -41,7 +45,8 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
               setShowTOS(true);
             }
           }
-        } catch (err) {
+        } catch (err: any) {
+          console.log('getMe failed:', err?.response?.status, err?.message);
           console.error("Auth init failed:", err);
         }
       }
