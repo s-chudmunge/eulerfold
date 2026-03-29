@@ -19,7 +19,7 @@ import { coinsAPI, LeaderboardEntry } from '@/lib/api';
 import Link from 'next/link';
 import { Inconsolata, Manrope } from 'next/font/google';
 import AppSidebar from '@/components/AppSidebar';
-import { supabase } from '@/lib/supabase/client';
+import { useAuth } from '@/components/AuthProvider';
 
 const inconsolata = Inconsolata({
   subsets: ['latin'],
@@ -46,7 +46,7 @@ export default function LeaderboardPage({
   const [userRank, setUserRank] = useState<LeaderboardEntry | null>(initialUserRank);
   const [loading, setLoading] = useState(initialTopUsers.length === 0);
   const [category, setCategory] = useState('All');
-  const [profile, setProfile] = useState<any>(null);
+  const { user: authUser, loading: authLoading } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   useEffect(() => {
@@ -60,17 +60,6 @@ export default function LeaderboardPage({
         const lbData = await coinsAPI.getLeaderboard(category === 'All' ? undefined : category);
         setTopUsers(lbData.top_users);
         setUserRank(lbData.user_rank);
-
-        // Silent session check
-        const { data: { session } } = await supabase.auth.getSession();
-        if (session?.user) {
-            try {
-                const { data: profileData } = await supabase.from('profiles').select('*').eq('supabase_uid', session.user.id).single();
-                if (profileData) setProfile(profileData);
-            } catch (e) {
-                console.log("Silent profile fetch failed", e);
-            }
-        }
       } catch (err) {
         console.error('Failed to load data:', err);
       } finally {
@@ -157,7 +146,7 @@ export default function LeaderboardPage({
               </div>
 
               <div className="flex items-center gap-2 md:gap-4">
-                  {profile?.username ? (
+                  {authUser?.username ? (
                       <Link href="/dashboard" className="text-[10px] md:text-[11px] font-bold text-text-muted hover:text-text-heading transition-colors flex items-center gap-1.5 tracking-wide">
                           <LayoutDashboard className="w-3.5 h-3.5 hidden sm:block" /> <span className="hidden sm:inline">Dashboard</span>
                       </Link>

@@ -7,8 +7,8 @@ import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
-import { supabase } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/components/AuthProvider';
 
 interface Paper {
   title: string;
@@ -43,20 +43,8 @@ interface Props {
 }
 
 export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
-  const [user, setUser] = React.useState<any>(null);
+  const { user } = useAuth();
   const router = useRouter();
-
-  React.useEffect(() => {
-    const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
-    };
-    checkUser();
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-    return () => subscription.unsubscribe();
-  }, []);
 
   const handleSignIn = () => {
     router.push(`/login?next=${encodeURIComponent(window.location.pathname)}`);

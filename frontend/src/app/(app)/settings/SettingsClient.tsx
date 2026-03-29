@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
+import { useAuth } from '@/components/AuthProvider';
 import { 
   User as UserIcon, 
   Mail, 
@@ -35,7 +36,8 @@ const manrope = Manrope({
 
 export default function SettingsClient() {
   const router = useRouter();
-  const [user, setUser] = useState<any>(null);
+  const { user: authUser, loading: authLoading } = useAuth();
+  const [profile, setProfile] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
@@ -45,18 +47,20 @@ export default function SettingsClient() {
   const [email, setEmail] = useState('');
 
   useEffect(() => {
-    async function getUser() {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (!session) {
-        router.push('/?message=login_required');
-        return;
-      }
+    if (!authLoading && !authUser) {
+      router.replace('/?message=login_required');
+    }
+  }, [authLoading, authUser, router]);
+
+  useEffect(() => {
+    async function getProfile() {
+      if (!authUser) return;
       
       try {
-        const { data: userData, error } = await supabase.from('profiles').select('*').eq('supabase_uid', session.user.id).single();
+        const { data: userData, error } = await supabase.from('profiles').select('*').eq('supabase_uid', authUser.id).single();
         if (error || !userData) throw error || new Error("Profile not found");
         
-        setUser(userData);
+        setProfile(userData);
         setDisplayName(userData.display_name || '');
         setUsername(userData.username || '');
         setEmail(userData.email || '');
@@ -67,8 +71,8 @@ export default function SettingsClient() {
       }
     }
     
-    getUser();
-  }, [router]);
+    getProfile();
+  }, [authUser]);
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -95,7 +99,7 @@ export default function SettingsClient() {
     }
   };
 
-  if (loading) {
+  if (authLoading || (loading && !profile)) {
     return (
       <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
         <div className="h-6 w-6 border-2 border-border border-t-[var(--accent)] rounded-full animate-spin mb-4"></div>

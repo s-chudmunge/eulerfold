@@ -1,71 +1,79 @@
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase/client';
-import { authAPI, User, getDeduplicatedSession } from '@/lib/api';
+import { authAPI, User } from '@/lib/api';
 import { TOS_VERSION } from '@/config/constants';
 import TOSModal from './TOSModal';
+
+interface AuthContextType {
+  user: User | null;
+  loading: boolean;
+  setUser: (user: User | null) => void;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export function useAuth() {
+  const context = useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+}
 
 export default function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [showTOS, setShowTOS] = useState(false);
   const [loading, setLoading] = useState(true);
-  const initialized = useRef(false);
 
   useEffect(() => {
-    if (initialized.current) return;
-    initialized.current = true;
-
-    const initAuth = async () => {
-      try {
-        const { data: { session } } = await getDeduplicatedSession();
-        if (session?.user) {
+    // 1. Get initial session, then fetch full user profile
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (session?.user) {
+        try {
           const userData = await authAPI.getMe();
           setUser(userData);
-          
-          // TOS Check
+          // TOS check
           if (!userData.tos_accepted_at || userData.tos_version !== TOS_VERSION) {
             const protectedPaths = ['/dashboard', '/settings', '/roadmap', '/learn'];
             if (protectedPaths.some(path => window.location.pathname.startsWith(path))) {
               setShowTOS(true);
             }
           }
+        } catch (err) {
+          console.error("Auth init failed:", err);
         }
-      } catch (err) {
-        console.error("Auth init failed:", err);
-      } finally {
-        setLoading(false);
       }
-    };
+      setLoading(false);
+    });
 
-    initAuth();
-
+    // 2. Listen for future auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (event === 'SIGNED_OUT') {
         setUser(null);
         setShowTOS(false);
+        setLoading(false);
       } else if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session) {
-        // Only fetch if we don't have a user or the ID changed
-        if (!user || user.supabase_uid !== session.user.id) {
-          try {
-            const userData = await authAPI.getMe();
-            setUser(userData);
-          } catch (err) {
-            console.error("Auth change fetch failed:", err);
-          }
+        setLoading(true);
+        try {
+          const userData = await authAPI.getMe();
+          setUser(userData);
+        } catch (err) {
+          console.error("Auth change fetch failed:", err);
+        } finally {
+          setLoading(false);
         }
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [user]);
+  }, []);
 
-  // Don't block rendering with a full-screen spinner
-  // Just render children and let components handle their own auth-dependent states
   return (
-    <>
+    <AuthContext.Provider value={{ user, loading, setUser }}>
       {children}
       {showTOS && <TOSModal onAccept={() => setShowTOS(false)} />}
-    </>
+    </AuthContext.Provider>
   );
 }

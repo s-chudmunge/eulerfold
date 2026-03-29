@@ -3,6 +3,8 @@ import { Metadata } from 'next';
 import ResearchDecodedClient from './ResearchDecodedClient';
 import { papers } from '../generatedData';
 
+export const revalidate = 3600; // rebuild at most once per hour
+
 export async function generateStaticParams() {
   return Object.keys(papers).map((slug) => ({
     slug: slug,

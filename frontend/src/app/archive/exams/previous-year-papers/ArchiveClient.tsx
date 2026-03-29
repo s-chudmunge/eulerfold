@@ -6,7 +6,7 @@ import { Search, Download, Key, ArrowRight, X, ChevronDown, ChevronRight, Menu, 
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import AppSidebar from '@/components/AppSidebar';
-import { supabase } from '@/lib/supabase/client';
+import { useAuth } from '@/components/AuthProvider';
 import { getDriveDownloadUrl } from '@/lib/drive';
 
 const EXAM_FULL_NAMES: Record<string, string> = {
@@ -84,24 +84,11 @@ function ArchiveContent() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const { user: authUser, loading: authLoading } = useAuth();
 
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
   const [showBanner, setShowBanner] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [profile, setProfile] = useState<any>(null);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
-
-  useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setIsAuthenticated(!!session);
-      if (session) {
-        const { data } = await supabase.from('profiles').select('*').eq('supabase_uid', session.user.id).single();
-        setProfile(data);
-      }
-    };
-    checkAuth();
-  }, []);
 
   const handleSignIn = () => {
     router.push(`/login?next=${encodeURIComponent(pathname)}`);
@@ -293,7 +280,7 @@ function ArchiveContent() {
           </div>
 
           <div className="flex items-center shrink-0">
-            {!isAuthenticated && isAuthenticated !== null && (
+            {(!authLoading && !authUser) && (
               <button onClick={handleSignIn} className="text-[10px] md:text-[11px] font-bold text-text-muted hover:text-text-heading transition-colors flex items-center gap-1.5 tracking-wide">
                 <span>Sign In</span>
               </button>
@@ -452,7 +439,7 @@ function ArchiveContent() {
                             {isExpanded && (
                               <div className="relative ml-8">
                                 <div className="divide-y divide-[var(--border)] border-t border-b border-border animate-in fade-in slide-in-from-top-1 duration-200">
-                                  {(isAuthenticated === false ? category.entries.slice(0, 5) : category.entries).map((entry, idx) => (
+                                  {((!authLoading && !authUser) ? category.entries.slice(0, 5) : category.entries).map((entry, idx) => (
                                     <div key={idx} className="flex items-center justify-between py-1.5 hover:bg-callout-bg transition-colors group">
                                       <div className="flex items-center gap-3 min-w-0 flex-1">
                                         <span className="inconsolata-ui text-[11px] font-black text-text-muted w-10 shrink-0 opacity-80 group-hover:opacity-100 transition-opacity">{entry.year}</span>
@@ -492,7 +479,7 @@ function ArchiveContent() {
                                     </div>
                                   ))}
                                 </div>
-                                {isAuthenticated === false && category.entries.length > 5 && (
+                                {(!authLoading && !authUser) && category.entries.length > 5 && (
                                   <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-[var(--bg-main)] via-[var(--bg-main)]/90 to-transparent flex flex-col items-center justify-end pb-4 z-10">
                                     <div className="text-center space-y-2 px-6">
                                       <p className="manrope-body text-[11px] font-bold text-text-muted">EulerFold is free. <span className="text-text-primary">Sign in to view full archives.</span></p>

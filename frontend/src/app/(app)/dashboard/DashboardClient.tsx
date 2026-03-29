@@ -31,7 +31,9 @@ import Menu from 'lucide-react/dist/esm/icons/menu';
 import X from 'lucide-react/dist/esm/icons/x';
 
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
+import { useAuth } from '@/components/AuthProvider';
 import { coinsAPI, EulerCoinBalance, authAPI, roadmapsAPI, RoadmapMe, sessionsAPI, profileAPI } from '@/lib/api';
 import ReengagementModal from '@/components/dashboard/ReengagementModal';
 import IntensityHeatmap from '@/components/dashboard/IntensityHeatmap';
@@ -56,10 +58,11 @@ const manrope = Manrope({
 });
 
 export default function DashboardPage() {
+    const router = useRouter();
+    const { user: authUser, loading: authLoading } = useAuth();
     const [roadmaps, setRoadmaps] = useState<RoadmapMe[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [user, setUser] = useState<any>(null);
     const [profile, setProfile] = useState<any>(null);
     const [allSubmissions, setAllSubmissions] = useState<any[]>([]);
     const [coinData, setCoinData] = useState<EulerCoinBalance | null>(null);
@@ -81,22 +84,24 @@ export default function DashboardPage() {
     const [daysAway, setDaysAway] = useState(0);
 
     useEffect(() => {
+        if (!authLoading && !authUser) {
+            router.replace('/?message=login_required');
+        }
+    }, [authLoading, authUser, router]);
+
+    useEffect(() => {
         let isMounted = true;
         
         async function loadData() {
+            if (!authUser) return;
+
             try {
-                const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-                
-                if (sessionError || !session) {
-                    if (isMounted) window.location.href = '/?message=login_required';
-                    return;
-                }
-                
-                if (isMounted) setUser(session.user);
-                const token = session.access_token;
+                // Get token for background API calls
+                const { data: { session } } = await supabase.auth.getSession();
+                const token = session?.access_token;
 
                 // 1. Basic Profile - use maybeSingle() to avoid 406 error if profile is missing
-                const { data: userProfile, error: profileError } = await supabase.from('profiles').select('*').eq('supabase_uid', session.user.id).maybeSingle();
+                const { data: userProfile, error: profileError } = await supabase.from('profiles').select('*').eq('supabase_uid', authUser.id).maybeSingle();
                 
                 if (profileError) {
                     console.error("Profile fetch error:", profileError);
@@ -184,7 +189,7 @@ export default function DashboardPage() {
         }
         loadData();
         return () => { isMounted = false; };
-    }, []);
+    }, [authUser]);
 
     const handleClaimUsername = async () => {
         if (claimedUsername.length < 3) {
@@ -221,7 +226,7 @@ export default function DashboardPage() {
     // Filter verified skills for Technical Signature - Reactive
     const verifiedSkills = React.useMemo(() => profile?.skills || [], [profile]);
 
-    if (loading) return (
+    if (authLoading || (loading && !profile)) return (
         <div className="fixed inset-0 bg-background flex flex-col">
             <header className="h-[48px] border-b border-border bg-header animate-pulse" />
             <div className="flex flex-1">

@@ -4,27 +4,15 @@ import React from 'react';
 import Link from 'next/link';
 import { navigation, papers } from './generatedData';
 import { ArrowRight } from 'lucide-react';
-import { supabase } from '@/lib/supabase/client';
 import { useSearchParams, useRouter } from 'next/navigation';
+import { useAuth } from '@/components/AuthProvider';
 import { cleanSearchQuery, getSearchKeywords } from '@/lib/search';
 
 export default function ResearchDecodedIndexContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
   const searchQuery = searchParams.get('q') || "";
-  const [user, setUser] = React.useState<any>(null);
-
-  React.useEffect(() => {
-    const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setUser(session?.user ?? null);
-    };
-    checkUser();
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-    return () => subscription.unsubscribe();
-  }, []);
+  const { user } = useAuth();
 
   const handleSignIn = () => {
     router.push(`/login?next=${encodeURIComponent(window.location.pathname)}`);

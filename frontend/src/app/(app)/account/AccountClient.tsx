@@ -17,8 +17,10 @@ import {
     LayoutDashboard
 } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import AppSidebar from '@/components/AppSidebar';
 import { supabase } from '@/lib/supabase/client';
+import { useAuth } from '@/components/AuthProvider';
 import { paymentsAPI, authAPI, User, profileAPI } from '@/lib/api';
 import { format } from 'date-fns';
 import { Inconsolata, Manrope } from 'next/font/google';
@@ -36,21 +38,28 @@ const manrope = Manrope({
 });
 
 export default function AccountClient() {
-    const [user, setUser] = useState<User | null>(null);
+    const router = useRouter();
+    const { user: authUser, loading: authLoading } = useAuth();
     const [profile, setProfile] = useState<any>(null);
     const [transactions, setTransactions] = useState<any[]>([]);
     const [loading, setLoading] = useState(true);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     useEffect(() => {
+        if (!authLoading && !authUser) {
+            router.replace('/?message=login_required');
+        }
+    }, [authLoading, authUser, router]);
+
+    useEffect(() => {
         let isMounted = true;
         async function loadAccountData() {
+            if (!authUser) return;
+
             try {
+                // Get token for background API calls
                 const { data: { session } } = await supabase.auth.getSession();
-                if (!session) {
-                    window.location.href = '/login?message=login_required';
-                    return;
-                }
+                if (!session) return;
 
                 // 1. Basic Auth & Transactions
                 const [userData, txData] = await Promise.all([
@@ -59,14 +68,13 @@ export default function AccountClient() {
                 ]);
 
                 if (!isMounted) return;
-                setUser(userData);
                 setTransactions(txData);
 
                 // 2. Profile fetch with fallback
                 const { data: userProfile, error: profileError } = await supabase
                     .from('profiles')
                     .select('*')
-                    .eq('supabase_uid', session.user.id)
+                    .eq('supabase_uid', authUser.id)
                     .maybeSingle();
                 
                 let activeProfile = userProfile;
@@ -104,9 +112,9 @@ export default function AccountClient() {
 
         loadAccountData();
         return () => { isMounted = false; };
-    }, []);
+    }, [authUser]);
 
-    if (loading) {
+    if (authLoading || (loading && !profile)) {
         return (
             <div className="min-h-screen bg-background flex flex-col items-center justify-center p-4">
                 <div className="h-6 w-6 border-2 border-border border-t-[var(--accent)] rounded-full animate-spin mb-4"></div>
@@ -189,7 +197,7 @@ export default function AccountClient() {
                                         </div>
                                         <div>
                                             <p className="inconsolata-ui text-[10px] text-text-muted uppercase tracking-wider leading-none mb-1">Email Address</p>
-                                            <p className="manrope-body text-[14px] font-bold text-text-heading">{user?.email}</p>
+                                            <p className="manrope-body text-[14px] font-bold text-text-heading">{authUser?.email}</p>
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3">
@@ -198,7 +206,7 @@ export default function AccountClient() {
                                         </div>
                                         <div>
                                             <p className="inconsolata-ui text-[10px] text-text-muted uppercase tracking-wider leading-none mb-1">Username</p>
-                                            <p className="manrope-body text-[14px] font-bold text-text-heading">@{user?.username || 'not_set'}</p>
+                                            <p className="manrope-body text-[14px] font-bold text-text-heading">@{authUser?.username || 'not_set'}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -211,7 +219,7 @@ export default function AccountClient() {
                                 <span className="inconsolata-ui text-[9px] font-bold text-accent uppercase tracking-widest mb-4 block">Credit Balance</span>
                                 <div className="flex items-center gap-4">
                                     <div className="text-4xl font-black text-text-heading tracking-tighter">
-                                        {user?.roadmap_credits || 0}
+                                        {authUser?.roadmap_credits || 0}
                                     </div>
                                     <div className="flex flex-col">
                                         <span className="inconsolata-ui text-[11px] font-bold text-text-heading uppercase tracking-wide">Premium Credits</span>

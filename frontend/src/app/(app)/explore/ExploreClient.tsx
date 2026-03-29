@@ -44,6 +44,7 @@ import {
 import { exploreAPI, ExploreRoadmap, coinsAPI, LeaderboardEntry, authAPI } from '@/lib/api';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Inconsolata, Manrope } from 'next/font/google';
+import { useAuth } from '@/components/AuthProvider';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import AppSidebar from '@/components/AppSidebar';
@@ -114,6 +115,7 @@ export default function ExploreClient({
 }) {
     const searchParams = useSearchParams();
     const router = useRouter();
+    const { user: authUser, loading: authLoading } = useAuth();
     const initialSearch = searchParams.get('search') || '';
     
     const [searchQuery, setSearchQuery] = useState(initialSearch);
@@ -122,7 +124,6 @@ export default function ExploreClient({
     const [reportReason, setReportReason] = useState('');
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [showAuthModal, setShowAuthModal] = useState(false);
-    const [profile, setProfile] = useState<any>(null);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [error, setError] = useState<string | null>(null);
     
@@ -132,10 +133,11 @@ export default function ExploreClient({
 
     const queryClient = useQueryClient();
 
-    // 1. Roadmaps Query - Updated to support server-side sorting
+    // 1. Roadmaps Query - Updated to support server-side sorting and initial data
     const { data: roadmaps = [], isLoading: roadmapsLoading } = useQuery({
-        queryKey: ['explore-roadmaps', debouncedSearch, sortBy, profile?.supabase_uid],
+        queryKey: ['explore-roadmaps', debouncedSearch, sortBy, authUser?.id],
         queryFn: () => exploreAPI.getExploreRoadmaps(debouncedSearch, 0, 100, sortBy),
+        initialData: (debouncedSearch === '' && sortBy === 'newest') ? initialRoadmaps : undefined,
         staleTime: 5 * 60 * 1000,
     });
 
@@ -148,18 +150,6 @@ export default function ExploreClient({
     });
 
     const leaderboard = (leaderboardData?.top_users || []).slice(0, 5);
-
-    // Silent profile check on mount
-    useEffect(() => {
-        async function checkProfile() {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session?.user) {
-                const { data: profileData } = await supabase.from('profiles').select('*').eq('supabase_uid', session.user.id).single();
-                if (profileData) setProfile(profileData);
-            }
-        }
-        checkProfile();
-    }, []);
 
     const getCategory = (subject: string) => {
         if (!subject) return 'Other';
@@ -214,8 +204,7 @@ export default function ExploreClient({
     const handleReport = (e: React.MouseEvent, id: number) => {
         e.stopPropagation();
         const executeReport = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) {
+            if (!authUser) {
                 setShowAuthModal(true);
                 return;
             }
@@ -226,6 +215,9 @@ export default function ExploreClient({
             }
 
             try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) return;
+
                 await exploreAPI.reportRoadmap(id, reportReason, session.access_token);
                 setSuccessMessage('Thank you for your report.');
                 setReporting(null);
@@ -270,7 +262,7 @@ export default function ExploreClient({
                     </div>
 
                     <div className="flex items-center shrink-0">
-                        {!profile?.username && (
+                        {!authUser?.username && (
                             <Link href="/login" className="text-[10px] md:text-[11px] font-bold text-text-muted hover:text-text-heading transition-colors flex items-center gap-1.5  tracking-wide">
                                 <span>Sign In</span>
                             </Link>
