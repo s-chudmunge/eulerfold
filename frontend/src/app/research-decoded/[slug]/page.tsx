@@ -17,6 +17,10 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   if (!paper) {
     return {
       title: 'Paper Not Found | Research Decoded',
+      robots: {
+        index: false,
+        follow: false,
+      }
     };
   }
 
@@ -29,7 +33,6 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     openGraph: {
       title: title,
       description: description,
-      url: `https://www.eulerfold.com/research-decoded/${params.slug}`,
       type: 'article',
       images: paper.heroImage ? [{ url: paper.heroImage }] : [],
     },

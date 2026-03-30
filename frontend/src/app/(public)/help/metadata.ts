@@ -20,7 +20,6 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Help Center',
     description: 'Get help with programming courses, learning roadmaps, and technical support for the EulerFold personalized AI learning hub.',
-    url: 'https://www.eulerfold.com/help',
     type: 'website',
   },
   twitter: {

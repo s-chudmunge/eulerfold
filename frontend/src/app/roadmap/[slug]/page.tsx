@@ -22,6 +22,11 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     if (!roadmap) {
         return {
             title: 'Learning Roadmap',
+            description: 'This roadmap does not exist or has been removed.',
+            robots: {
+                index: false,
+                follow: false,
+            }
         };
     }
 
@@ -34,7 +39,6 @@ export async function generateMetadata({ params }: { params: { slug: string } })
         openGraph: {
             title: title,
             description: description,
-            url: `https://www.eulerfold.com/roadmap/${params.slug}`,
             type: 'website',
         },
         twitter: {

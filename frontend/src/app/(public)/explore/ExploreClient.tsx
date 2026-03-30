@@ -115,7 +115,7 @@ export default function ExploreClient({
     const [filter, setFilter] = useState('all');
 
     const handleSearchParams = React.useCallback((params: URLSearchParams) => {
-        const search = params.get('search');
+        const search = params.get('search') || params.get('q');
         if (search) setSearchQuery(search);
     }, []);
 

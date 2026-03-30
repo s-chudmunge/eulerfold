@@ -26,6 +26,11 @@ export async function generateMetadata({ params }: { params: { username: string 
     if (!profile) {
         return {
             title: 'Explorer Not Found',
+            description: 'This explorer profile could not be found.',
+            robots: {
+                index: false,
+                follow: false,
+            }
         };
     }
 
@@ -39,7 +44,6 @@ export async function generateMetadata({ params }: { params: { username: string 
         openGraph: {
             title: title,
             description: description,
-            url: `https://www.eulerfold.com/u/${profile.username}`,
             type: 'profile',
         },
         twitter: {

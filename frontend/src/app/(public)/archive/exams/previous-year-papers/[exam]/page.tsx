@@ -9,7 +9,15 @@ async function getExamData(examId: string) {
 
 export async function generateMetadata({ params }: { params: { exam: string } }): Promise<Metadata> {
   const exam = await getExamData(params.exam);
-  if (!exam) return { title: 'Exam Not Found' };
+  if (!exam) {
+    return { 
+      title: 'Exam Not Found',
+      robots: {
+        index: false,
+        follow: false,
+      }
+    };
+  }
 
   return {
     title: `${exam.title} Previous Year Papers`,

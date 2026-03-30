@@ -8,7 +8,6 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Explore Roadmaps',
     description: 'Find your next learning journey from our community of learners.',
-    url: 'https://www.eulerfold.com/explore',
     type: 'website',
   },
   twitter: {

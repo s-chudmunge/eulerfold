@@ -13,7 +13,15 @@ async function getPaperData(examId: string, paperSlug: string) {
 
 export async function generateMetadata({ params }: { params: { exam: string, paper: string } }): Promise<Metadata> {
   const data = await getPaperData(params.exam, params.paper);
-  if (!data) return { title: 'Paper Not Found' };
+  if (!data) {
+    return { 
+      title: 'Paper Not Found',
+      robots: {
+        index: false,
+        follow: false,
+      }
+    };
+  }
 
   const { exam, paper } = data;
   const paperName = `${exam.title} ${paper.subject === 'Main Paper' ? 'Paper' : paper.subject} ${paper.year}`;
