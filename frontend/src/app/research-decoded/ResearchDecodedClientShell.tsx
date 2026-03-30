@@ -12,20 +12,11 @@ import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 
-function SearchQueryHandler({ 
-  setSearchQuery, 
-  setSearchParams 
-}: { 
-  setSearchQuery: (val: string) => void,
-  setSearchParams: (params: URLSearchParams) => void
-}) {
+function SearchParamsHandler({ onParams }: { onParams: (params: URLSearchParams) => void }) {
   const searchParams = useSearchParams();
-  
   useEffect(() => {
-    setSearchQuery(searchParams.get('q') || "");
-    setSearchParams(new URLSearchParams(searchParams.toString()));
-  }, [searchParams, setSearchQuery, setSearchParams]);
-
+    onParams(searchParams);
+  }, [searchParams, onParams]);
   return null;
 }
 
@@ -44,6 +35,11 @@ export default function ResearchDecodedClientShell({
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
   const pathname = usePathname();
   const router = useRouter();
+
+  const handleSearchParams = React.useCallback((params: URLSearchParams) => {
+    setSearchQuery(params.get('q') || "");
+    setSearchParams(new URLSearchParams(params.toString()));
+  }, []);
 
   // Initialize expanded sections from localStorage or defaults
   useEffect(() => {
@@ -123,7 +119,7 @@ export default function ResearchDecodedClientShell({
   return (
     <div className="fixed inset-0 z-[100] flex flex-col bg-background text-text-primary selection:bg-teal-500/30 selection:text-text-heading overflow-hidden">
       <React.Suspense fallback={null}>
-        <SearchQueryHandler setSearchQuery={setSearchQuery} setSearchParams={setSearchParams} />
+        <SearchParamsHandler onParams={handleSearchParams} />
       </React.Suspense>
       {/* 1. Global Header */}
       <header className="inconsolata-ui border-b border-border bg-header h-[48px] shrink-0">
