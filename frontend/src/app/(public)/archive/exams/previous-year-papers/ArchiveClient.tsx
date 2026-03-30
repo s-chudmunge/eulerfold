@@ -1,5 +1,6 @@
 "use client";
 
+// Fresh build trigger
 import React, { useMemo, useState, useEffect, Suspense } from 'react';
 import { archiveData, PaperEntry } from '../../generatedArchiveData';
 import { Search, Download, Key, ArrowRight, X, ChevronDown, ChevronRight } from 'lucide-react';
