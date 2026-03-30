@@ -447,7 +447,7 @@ async def export_profile_pdf(username: str):
     card_story.append(Spacer(1, 24)) 
     card_story.append(HRFlowable(width="100%", thickness=1, color=slate_100, spaceAfter=16))
     
-    profile_url = f"https://eulerfold.com/u/{username}"
+    profile_url = f"https://www.eulerfold.com/u/{username}"
     qr = qrcode.QRCode(version=1, box_size=10, border=0)
     qr.add_data(profile_url)
     qr.make(fit=True)

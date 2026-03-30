@@ -47,7 +47,7 @@ async def get_user_coins(email: str) -> int:
 
 async def build_html_email(content_html: str, user_email: str = None, unsubscribe_link: str = None) -> str:
     # Branding assets and colors
-    logo_url = "https://eulerfold.com/logo_with_text.png"
+    logo_url = "https://www.eulerfold.com/logo_with_text.png"
     bg_color = "#f0f7f6"
     card_bg = "#ffffff"
     text_color = "#1e293b"

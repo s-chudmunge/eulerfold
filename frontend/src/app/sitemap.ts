@@ -4,7 +4,7 @@ import { papers } from './research-decoded/generatedData';
 import { archiveData } from './(public)/archive/generatedArchiveData';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = 'https://eulerfold.com';
+  const baseUrl = 'https://www.eulerfold.com';
 
   // 1. Static Routes
   const staticRoutes = [

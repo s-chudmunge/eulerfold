@@ -27,4 +27,4 @@ Disallow: /admin/
 Disallow: /checkins/
 
 # Sitemap locations
-Sitemap: https://eulerfold.com/sitemap.xml
+Sitemap: https://www.eulerfold.com/sitemap.xml

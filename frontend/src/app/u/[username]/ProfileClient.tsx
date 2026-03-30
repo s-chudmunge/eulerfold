@@ -112,7 +112,7 @@ export default function ProfileClient({ profile }: Props) {
                         ) : (
                             <ShareMenu 
                                 title={`${profile.display_name || profile.username}'s Technical Profile`}
-                                text={`Check out ${profile.display_name || profile.username}'s proven technical skills on EulerFold.`}                                url={`https://eulerfold.com/u/${profile.username}`}
+                                text={`Check out ${profile.display_name || profile.username}'s proven technical skills on EulerFold.`}                                url={`https://www.ulerfold.com/u/${profile.username}`}
                             />
                         )}
                     </div>

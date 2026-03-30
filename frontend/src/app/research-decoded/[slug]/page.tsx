@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     openGraph: {
       title: title,
       description: description,
-      url: `https://eulerfold.com/research-decoded/${params.slug}`,
+      url: `https://www.eulerfold.com/research-decoded/${params.slug}`,
       type: 'article',
       images: paper.heroImage ? [{ url: paper.heroImage }] : [],
     },
@@ -67,7 +67,7 @@ export default function ResearchDecodedPage({ params }: { params: { slug: string
       {
         "@type": "Person",
         "name": "EulerFold",
-        "url": "https://eulerfold.com"
+        "url": "https://www.eulerfold.com"
       },
       {
         "@type": "Person",
@@ -79,13 +79,13 @@ export default function ResearchDecodedPage({ params }: { params: { slug: string
       "name": "EulerFold",
       "logo": {
         "@type": "ImageObject",
-        "url": "https://eulerfold.com/android-chrome-512x512.png"
+        "url": "https://www.eulerfold.com/android-chrome-512x512.png"
       }
     },
     "datePublished": "2026-03-27T00:00:00Z", // Base date for decoded papers
     "mainEntityOfPage": {
       "@type": "WebPage",
-      "@id": `https://eulerfold.com/research-decoded/${slug}`
+      "@id": `https://www.eulerfold.com/research-decoded/${slug}`
     }
   };
 
@@ -97,19 +97,19 @@ export default function ResearchDecodedPage({ params }: { params: { slug: string
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://eulerfold.com"
+        "item": "https://www.eulerfold.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Research Decoded",
-        "item": "https://eulerfold.com/research-decoded"
+        "item": "https://www.eulerfold.com/research-decoded"
       },
       {
         "@type": "ListItem",
         "position": 3,
         "name": paper.title,
-        "item": `https://eulerfold.com/research-decoded/${slug}`
+        "item": `https://www.eulerfold.com/research-decoded/${slug}`
       }
     ]
   };

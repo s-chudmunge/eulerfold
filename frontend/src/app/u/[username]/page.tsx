@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: { params: { username: string 
         openGraph: {
             title: title,
             description: description,
-            url: `https://eulerfold.com/u/${profile.username}`,
+            url: `https://www.eulerfold.com/u/${profile.username}`,
             type: 'profile',
         },
         twitter: {

@@ -81,11 +81,11 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL('https://eulerfold.com'),
+  metadataBase: new URL('https://www.eulerfold.com'),
   openGraph: {
   type: 'website',
   locale: 'en_US',
-  url: 'https://eulerfold.com',
+  url: 'https://www.eulerfold.com',
   siteName: 'EulerFold',
   title: 'EulerFold',
   description: 'Clear learning paths with simple progress tracking that show exactly what you’ve learned and keep you on-track.',
@@ -154,10 +154,10 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "EducationalOrganization",
               "name": "EulerFold",
-              "url": "https://eulerfold.com",
+              "url": "https://www.eulerfold.com",
               "logo": {
                 "@type": "ImageObject",
-                "url": "https://eulerfold.com/android-chrome-512x512.png",
+                "url": "https://www.eulerfold.com/android-chrome-512x512.png",
                 "width": 512,
                 "height": 512
               },
@@ -166,7 +166,7 @@ export default function RootLayout({
                 "https://github.com/s-chudmunge"
               ],
               "offers": {
-                "@type": "Offer",
+                "@type": "Offer",https://www.eulerfold.com
                 "price": "0",
                 "priceCurrency": "USD",
                 "category": "Educational Services"
@@ -210,10 +210,10 @@ export default function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebSite",
               "name": "EulerFold",
-              "url": "https://eulerfold.com",
+              "url": "https://www.eulerfold.com",
               "potentialAction": {
                 "@type": "SearchAction",
-                "target": "https://eulerfold.com/explore?q={search_term_string}",
+                "target": "https://www.eulerfold.com/explore?q={search_term_string}",
                 "query-input": "required name=search_term_string"
               }
             })

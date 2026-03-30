@@ -365,7 +365,7 @@ export default function RoadmapClient({ slug, initialRoadmap }: Props) {
                             <ShareMenu 
                                 title={`Check out this roadmap: ${roadmap.title}`}
                                 text={`I'm learning ${roadmap.title} on EulerFold. Join me!`}
-                                url={`https://eulerfold.com/roadmap/${roadmap.slug || roadmap.id}`}
+                                url={`https://www.eulerfold.com/roadmap/${roadmap.slug || roadmap.id}`}
                                 triggerClassName="whitespace-nowrap rounded-lg bg-callout-bg border border-border px-4 md:px-5 py-1.5 text-text-heading text-[10px] md:text-[12px] font-bold hover:bg-[var(--border)] transition-opacity flex items-center gap-2"
                             />
                         )}

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 
 export async function GET() {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://eulerfold.com'
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.eulerfold.com'
   
   // List of all important URLs for manual submission
   const priorityUrls = [

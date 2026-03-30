@@ -34,7 +34,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
         openGraph: {
             title: title,
             description: description,
-            url: `https://eulerfold.com/roadmap/${params.slug}`,
+            url: `https://www.eulerfold.com/roadmap/${params.slug}`,
             type: 'website',
         },
         twitter: {

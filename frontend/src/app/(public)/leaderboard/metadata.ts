@@ -6,7 +6,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'EulerFold Leaderboard',
     description: 'Join the top 1% of learners. Track your ranking and earn EulerCoins for your progress.',
-    url: 'https://eulerfold.com/leaderboard',
+    url: 'https://www.eulerfold.com/leaderboard',
     type: 'website',
   },
   twitter: {

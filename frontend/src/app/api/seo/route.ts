@@ -8,7 +8,7 @@ export async function GET(request: NextRequest) {
 
   if (check === 'sitemap') {
     // Return comprehensive sitemap status
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://eulerfold.com';
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.eulerfold.com';
     
     return NextResponse.json({
         sitemap_url: `${baseUrl}/sitemap.xml`,

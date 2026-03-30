@@ -88,7 +88,7 @@ if settings.ENVIRONMENT == "development" and "http://localhost:3000" not in _all
     _allowed = ["http://localhost:3000"] + (_allowed if "*" not in _allowed else [])
 # In production, never use wildcard
 elif settings.ENVIRONMENT == "production" and "*" in _allowed:
-    _allowed = ["https://eulerfold.com"]  # Explicitly set production origin
+    _allowed = ["https://www.eulerfold.com"]  # Explicitly set production origin
 
 app.add_middleware(
     CORSMiddleware,

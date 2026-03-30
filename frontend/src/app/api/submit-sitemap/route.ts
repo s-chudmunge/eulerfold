@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://eulerfold.com';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.eulerfold.com';
   const sitemapUrl = `${baseUrl}/sitemap.xml`;
   
   try {

@@ -65,13 +65,13 @@ export default function HelpPage() {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://eulerfold.com"
+        "item": "https://www.eulerfold.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Help Center",
-        "item": "https://eulerfold.com/help"
+        "item": "https://www.eulerfold.com/help"
       }
     ]
   };

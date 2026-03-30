@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://eulerfold.com';
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.eulerfold.com';
     const results: { url: string; submitted: boolean; message?: string }[] = [];
     
     for (const url of urls) {
@@ -60,6 +60,6 @@ export async function GET() {
   return NextResponse.json({
     message: 'URL submission endpoint',
     description: 'Submit specific explore page URLs for search engine indexing',
-    usage: 'POST with { "urls": ["https://eulerfold.com/explore/web-development"] }'
+    usage: 'POST with { "urls": ["https://www.eulerfold.com/explore/web-development"] }'
   });
 }

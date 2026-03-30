@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: { params: { slug: string, sub
         openGraph: {
             title: `${roadmap.subject} - Interactive Learning Journey`,
             description: `Master ${roadmap.subject} with this interactive, AI-curated learning journey.`,
-            url: `https://eulerfold.com/roadmap/${roadmap.slug}/learn`,
+            url: `https://www.eulerfold.com/roadmap/${roadmap.slug}/learn`,
             type: 'website',
         },
         twitter: {
@@ -44,7 +44,7 @@ export async function generateMetadata({ params }: { params: { slug: string, sub
             description: `Follow this Path We Trust to master ${roadmap.subject}.`,
         },
         alternates: {
-            canonical: `https://eulerfold.com/roadmap/${roadmap.slug}/learn`
+            canonical: `https://www.eulerfold.com/roadmap/${roadmap.slug}/learn`
         }
     };
 }

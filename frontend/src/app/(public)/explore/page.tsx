@@ -8,7 +8,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'Explore Roadmaps',
     description: 'Find your next learning journey from our community of learners.',
-    url: 'https://eulerfold.com/explore',
+    url: 'https://www.eulerfold.com/explore',
     type: 'website',
   },
   twitter: {
@@ -57,13 +57,13 @@ export default async function ExplorePage() {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://eulerfold.com"
+        "item": "https://www.eulerfold.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Explore",
-        "item": "https://eulerfold.com/explore"
+        "item": "https://www.eulerfold.com/explore"
       }
     ]
   };
