@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { navigation, papers } from './generatedData';
 import { ArrowRight } from 'lucide-react';
@@ -8,11 +8,22 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import { cleanSearchQuery, getSearchKeywords } from '@/lib/search';
 
-export default function ResearchDecodedIndexContent() {
+function SearchParamsHandler({ onParams }: { onParams: (params: URLSearchParams) => void }) {
   const searchParams = useSearchParams();
+  useEffect(() => {
+    onParams(searchParams);
+  }, [searchParams, onParams]);
+  return null;
+}
+
+export default function ResearchDecodedIndexContent() {
   const router = useRouter();
-  const searchQuery = searchParams.get('q') || "";
+  const [searchQuery, setSearchQuery] = useState("");
   const { user } = useAuth();
+
+  const handleSearchParams = React.useCallback((params: URLSearchParams) => {
+    setSearchQuery(params.get('q') || "");
+  }, []);
 
   const handleSignIn = () => {
     router.push(`/login?next=${encodeURIComponent(window.location.pathname)}`);
@@ -51,6 +62,9 @@ export default function ResearchDecodedIndexContent() {
 
   return (
     <div className="bg-background min-h-screen pb-24 overflow-y-auto text-text-primary">
+      <Suspense fallback={null}>
+        <SearchParamsHandler onParams={handleSearchParams} />
+      </Suspense>
       <div className="max-w-[1000px] mx-auto px-6 py-8 md:px-12 md:py-12">
         
         {/* Header Section */}
