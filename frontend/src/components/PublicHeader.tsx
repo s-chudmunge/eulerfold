@@ -4,266 +4,238 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { 
-  ChevronDown, 
   Menu, 
   X, 
-  ExternalLink, 
-  ArrowRight,
   Globe,
   Archive,
   Microscope,
   Trophy,
-  CreditCard
+  CreditCard,
+  Plus,
+  ChevronDown,
+  ArrowRight,
+  ExternalLink
 } from 'lucide-react';
 import UserNav from './UserNav';
 import { Suspense } from 'react';
 
-const EXPLORE_CATEGORIES = [
-  "Programming", "Business", "Science", "Design", "Career", "Other"
+const EXPLORE_DATA = {
+  categories: ["Programming", "Business", "Science", "Design", "Career", "Mathematics"],
+  featured: [
+    { title: "Machine Learning", slug: "machine-learning-from-scratch" },
+    { title: "AWS Cloud", slug: "aws-for-developers-a-hands-on-4-week-roadmap" },
+    { title: "Cybersecurity", slug: "cybersecurity-vulnerability-assessment-penetration-testing-simulation" }
+  ]
+};
+
+const ARCHIVE_DATA = [
+  { region: "Worldwide", exams: ["IMO", "IPhO", "IChO"] },
+  { region: "India", exams: ["GATE", "JEE", "NEET", "UPSC"] },
+  { region: "USA & UK", exams: ["AMC", "AIME", "STEP", "PAT"] }
 ];
 
-const TOP_ROADMAPS = [
-  { title: "Machine Learning from Scratch", slug: "machine-learning-from-scratch" },
-  { title: "AWS for Developers: A 4-Week Roadmap", slug: "aws-for-developers-a-hands-on-4-week-roadmap" },
-  { title: "Finance for Investing and Trading", slug: "finance-for-investing-and-trading-a-2-week-roadmap" },
-  { title: "Frontend Animation & Motion Design", slug: "frontend-animation-motion-design-with-css-and-framer-motion" },
-  { title: "Cybersecurity: Penetration Testing", slug: "cybersecurity-vulnerability-assessment-penetration-testing-simulation" }
-];
-
-const ARCHIVE_REGIONS = [
-  { name: "Worldwide", exams: ["IMO", "IPhO", "IChO"] },
-  { name: "India", exams: ["GATE", "JEE", "NEET", "CAT", "UPSC"] },
-  { name: "USA", exams: ["AMC", "AIME", "AP"] },
-  { name: "UK", exams: ["STEP", "PAT", "ENGAA"] }
-];
-
-const RESEARCH_CATEGORIES = [
-  "AI Safety & Alignment", "Foundational Papers", "Computer Vision", 
-  "Reinforcement Learning", "Scientific Breakthroughs", "Diffusion & Generative", 
-  "Novel Architectures", "Multimodal", "AI Agents & Reasoning"
+const RESEARCH_DOMAINS = [
+  "AI Safety", "Foundational Papers", "Computer Vision", 
+  "Reinforcement Learning", "Generative AI", "AI Agents"
 ];
 
 export default function PublicHeader() {
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const headerRef = useRef<HTMLElement>(null);
   const pathname = usePathname();
 
   useEffect(() => {
+    const handleScroll = () => setIsScrolled(window.scrollY > 10);
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setOpenDropdown(null);
-      }
+        if (headerRef.current && !headerRef.current.contains(event.target as Node)) {
+            setActiveDropdown(null);
+        }
     };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    
+    return () => {
+        window.removeEventListener('scroll', handleScroll);
+        document.removeEventListener('mousedown', handleClickOutside);
+    };
   }, []);
 
-  // Close dropdowns on route change
   useEffect(() => {
-    setOpenDropdown(null);
+    setActiveDropdown(null);
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
-  const toggleDropdown = (name: string) => {
-    setOpenDropdown(openDropdown === name ? null : name);
+  const DesktopDropdown = ({ id, label, children }: { id: string, label: string, children: React.ReactNode }) => {
+    const isOpen = activeDropdown === id;
+    return (
+        <div className="relative h-full flex items-center">
+            <button 
+                onClick={() => setActiveDropdown(isOpen ? null : id)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 text-[14px] font-semibold transition-all tracking-tight rounded-lg hover:bg-sidebar/40 ${
+                    isOpen ? 'text-text-heading bg-sidebar/50' : 'text-text-muted hover:text-text-heading'
+                }`}
+            >
+                {label}
+                <ChevronDown className={`w-3.5 h-3.5 opacity-40 transition-transform duration-300 ${isOpen ? 'rotate-180 opacity-100' : ''}`} />
+            </button>
+            
+            {isOpen && (
+                <div className="absolute top-[calc(100%-8px)] left-0 pt-4 z-[100] animate-in fade-in zoom-in-95 duration-200 ease-out">
+                    <div className="bg-header border border-border shadow-[0_20px_50px_rgba(0,0,0,0.12)] rounded-2xl overflow-hidden min-w-[460px] backdrop-blur-xl">
+                        {children}
+                    </div>
+                </div>
+            )}
+        </div>
+    );
   };
-
-  const NavItem = ({ name, label, dropdown }: { name: string, label: string, dropdown?: React.ReactNode }) => (
-    <div className="relative">
-      <button 
-        onClick={() => dropdown ? toggleDropdown(name) : null}
-        className={`flex items-center gap-1.5 px-3 py-1.5 text-[12px] md:text-[13px] font-bold tracking-tight uppercase transition-colors hover:text-text-heading ${openDropdown === name ? 'text-text-heading' : 'text-text-muted'}`}
-      >
-        {label}
-        {dropdown && (
-          <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-200 ${openDropdown === name ? 'rotate-180' : ''}`} />
-        )}
-      </button>
-
-      {dropdown && openDropdown === name && (
-        <div className="absolute top-[calc(100%+8px)] left-0 min-w-[320px] md:min-w-[480px] bg-background border border-border shadow-xl rounded-xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 z-[100]">
-          {dropdown}
-        </div>
-      )}
-    </div>
-  );
-
-  const ExploreDropdown = (
-    <div className="flex divide-x divide-border">
-      <div className="flex-1 p-4 bg-sidebar/10">
-        <h4 className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-3">Categories</h4>
-        <div className="grid grid-cols-1 gap-1">
-          {EXPLORE_CATEGORIES.map(cat => (
-            <Link 
-              key={cat} 
-              href={`/explore?category=${cat}`}
-              className="px-2 py-1.5 text-[12px] font-medium text-text-primary hover:bg-background hover:text-teal-600 rounded-lg transition-colors"
-            >
-              {cat}
-            </Link>
-          ))}
-        </div>
-      </div>
-      <div className="flex-[1.5] p-4 bg-background">
-        <h4 className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-3">Popular Roadmaps</h4>
-        <div className="space-y-1">
-          {TOP_ROADMAPS.map(roadmap => (
-            <Link 
-              key={roadmap.slug} 
-              href={`/roadmap/${roadmap.slug}`}
-              className="flex items-center justify-between group px-2 py-1.5 text-[12px] font-medium text-text-primary hover:bg-sidebar/30 rounded-lg transition-colors"
-            >
-              <span className="truncate">{roadmap.title}</span>
-              <ArrowRight className="w-3 h-3 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all text-teal-600" />
-            </Link>
-          ))}
-        </div>
-        <Link href="/explore" className="mt-4 flex items-center gap-1.5 text-[11px] font-bold text-teal-600 hover:opacity-80 transition-opacity px-2 pt-2 border-t border-border/50">
-          Browse all roadmaps <ArrowRight className="w-3 h-3" />
-        </Link>
-      </div>
-    </div>
-  );
-
-  const ArchiveDropdown = (
-    <div className="flex divide-x divide-border">
-      <div className="flex-[2] p-4 bg-sidebar/10">
-        <h4 className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-4">Exam Archives</h4>
-        <div className="grid grid-cols-2 gap-x-6 gap-y-4">
-          {ARCHIVE_REGIONS.map(region => (
-            <div key={region.name}>
-              <p className="text-[11px] font-bold text-text-heading mb-1.5">{region.name}</p>
-              <div className="flex flex-wrap gap-x-2 gap-y-1">
-                {region.exams.map(exam => (
-                  <Link 
-                    key={exam} 
-                    href={`/archive/exams/previous-year-papers/${exam.toLowerCase()}`}
-                    className="text-[11px] font-medium text-text-muted hover:text-teal-600 transition-colors"
-                  >
-                    {exam}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="flex-1 p-4 bg-background flex flex-col justify-between">
-        <Link 
-          href="/archive/exams/previous-year-papers" 
-          className="block p-3 bg-sidebar/20 rounded-xl border border-border/50 hover:border-teal-600/30 transition-colors group"
-        >
-          <Archive className="w-5 h-5 text-teal-600 mb-2" />
-          <p className="text-[12px] font-bold text-text-heading mb-1 group-hover:text-teal-600 transition-colors">Browse full archive</p>
-          <p className="text-[10px] text-text-muted leading-relaxed">Access papers for global competitions and national entrance exams.</p>
-          <ArrowRight className="w-3.5 h-3.5 mt-2 text-teal-600 translate-x-0 group-hover:translate-x-1 transition-transform" />
-        </Link>
-      </div>
-    </div>
-  );
-
-  const ResearchDropdown = (
-    <div className="p-4 bg-background">
-      <h4 className="text-[10px] font-bold uppercase tracking-widest text-text-muted mb-3">Research Domains</h4>
-      <div className="grid grid-cols-2 gap-1 min-w-[400px]">
-        {RESEARCH_CATEGORIES.map(cat => (
-          <Link 
-            key={cat} 
-            href={`/research-decoded?category=${cat}`}
-            className="px-2 py-1.5 text-[12px] font-medium text-text-primary hover:bg-sidebar/40 hover:text-teal-600 rounded-lg transition-colors"
-          >
-            {cat}
-          </Link>
-        ))}
-      </div>
-      <Link href="/research-decoded" className="mt-4 flex items-center gap-1.5 text-[11px] font-bold text-teal-600 hover:opacity-80 transition-opacity px-2 pt-2 border-t border-border/50">
-        All breakthrough papers <ArrowRight className="w-3 h-3" />
-      </Link>
-    </div>
-  );
 
   return (
     <header 
-      className="inconsolata-ui border-b border-border bg-header h-[48px] shrink-0 z-50 sticky" 
+      ref={headerRef}
+      className={`manrope-body sticky top-0 z-50 w-full transition-all duration-300 ${
+        isScrolled 
+            ? 'bg-header/90 backdrop-blur-md h-[56px] border-b border-border/40 shadow-[0_1px_2px_rgba(0,0,0,0.02)]' 
+            : 'bg-header h-[68px] border-b border-transparent'
+      }`}
       style={{ top: 'var(--announcement-height, 0px)' }}
-      ref={dropdownRef}
     >
-      <div className="w-full h-full px-4 md:px-6 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto h-full px-6 flex items-center justify-between">
         
-        {/* Left Section: Logo + Nav */}
-        <div className="flex items-center gap-4 md:gap-8 h-full">
-          <Link href="/" className="flex items-center group shrink-0">
-            <img src="/apple-touch-icon.png" alt="EulerFold" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
-            <span className="ml-3 text-[14px] font-bold text-text-heading hidden sm:block">EulerFold</span>
+        {/* Left: Brand & Nav */}
+        <div className="flex items-center gap-10 h-full">
+          <Link href="/" className="flex items-center gap-3 hover:opacity-85 transition-opacity active:scale-95 duration-200">
+            <img src="/apple-touch-icon.png" alt="" className="w-8 h-8" />
+            <span className="text-[17px] font-bold text-text-heading tracking-tight hidden md:block">EulerFold</span>
           </Link>
 
-          <div className="h-4 w-px bg-border mx-2 hidden lg:block"></div>
+          <nav className="hidden lg:flex items-center gap-1 h-full">
+            <DesktopDropdown id="explore" label="Explore">
+              <div className="flex divide-x divide-border">
+                <div className="p-6 w-52 bg-sidebar/30">
+                  <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-4 opacity-60">Categories</span>
+                  <div className="space-y-1">
+                    {EXPLORE_DATA.categories.map(cat => (
+                      <Link key={cat} href={`/explore?category=${cat}`} className="block text-[13px] font-medium text-text-muted hover:text-accent transition-colors py-1.5">{cat}</Link>
+                    ))}
+                  </div>
+                </div>
+                <div className="p-6 flex-1 bg-header">
+                  <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-4 opacity-60">Featured Paths</span>
+                  <div className="space-y-4">
+                    {EXPLORE_DATA.featured.map(r => (
+                      <Link key={r.slug} href={`/roadmap/${r.slug}`} className="flex items-center justify-between group/item">
+                        <span className="text-[13px] font-semibold text-text-heading group-hover/item:text-accent transition-colors">{r.title}</span>
+                        <ArrowRight className="w-4 h-4 text-accent opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all" />
+                      </Link>
+                    ))}
+                    <Link href="/explore" className="pt-4 border-t border-border flex items-center gap-2 text-[12px] font-bold text-accent hover:gap-3 transition-all">
+                      Browse Full Directory <ArrowRight className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </DesktopDropdown>
 
-          {/* Desktop Nav */}
-          <nav className="hidden md:flex items-center gap-2 h-full">
-            <NavItem name="explore" label="Explore" dropdown={ExploreDropdown} />
-            <Link href="/leaderboard" className="px-3 py-1.5 text-[12px] md:text-[13px] font-bold tracking-tight uppercase text-text-muted hover:text-text-heading transition-colors">
-              Rankings
-            </Link>
-            <NavItem name="archive" label="Archives" dropdown={ArchiveDropdown} />
-            <NavItem name="research" label="Research" dropdown={ResearchDropdown} />
-            <Link href="/pricing" className="px-3 py-1.5 text-[12px] md:text-[13px] font-bold tracking-tight uppercase text-text-muted hover:text-text-heading transition-colors">
-              Pricing
-            </Link>
+            <Link href="/leaderboard" className="px-3 py-1.5 text-[14px] font-semibold text-text-muted hover:text-text-heading transition-all tracking-tight rounded-lg hover:bg-sidebar/40">Rankings</Link>
+
+            <DesktopDropdown id="archives" label="Archives">
+              <div className="p-6 grid grid-cols-3 gap-8">
+                {ARCHIVE_DATA.map(reg => (
+                  <div key={reg.region}>
+                    <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-4 opacity-60">{reg.region}</span>
+                    <div className="space-y-2">
+                      {reg.exams.map(ex => (
+                        <Link key={ex} href={`/archive/exams/previous-year-papers/${ex.toLowerCase()}`} className="block text-[13px] font-medium text-text-heading hover:text-accent transition-colors">{ex}</Link>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <Link href="/archive/exams/previous-year-papers" className="mx-4 mb-4 p-4 bg-sidebar/50 rounded-xl flex items-center justify-between group/full border border-border/50 hover:border-accent/30 transition-all">
+                <div className="flex flex-col gap-0.5">
+                    <span className="text-[13px] font-bold text-text-heading">Global Exam Archive</span>
+                    <span className="text-[11px] text-text-muted">Access thousands of papers</span>
+                </div>
+                <ExternalLink className="w-4 h-4 text-text-muted group-hover/full:text-accent transition-colors" />
+              </Link>
+            </DesktopDropdown>
+
+            <DesktopDropdown id="research" label="Research">
+              <div className="p-6 bg-header">
+                <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-5 opacity-60">Domain Exploration</span>
+                <div className="grid grid-cols-2 gap-x-10 gap-y-4">
+                  {RESEARCH_DOMAINS.map(domain => (
+                    <Link key={domain} href={`/research-decoded?category=${domain}`} className="text-[13px] font-semibold text-text-heading hover:text-accent transition-colors flex items-center gap-2.5 group/d">
+                      <div className="w-1.5 h-1.5 rounded-full bg-border group-hover/d:bg-accent transition-colors" />
+                      {domain}
+                    </Link>
+                  ))}
+                </div>
+                <Link href="/research-decoded" className="mt-8 flex items-center gap-2 text-[12px] font-bold text-accent hover:gap-3 transition-all">
+                  Access Research Portal <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </DesktopDropdown>
+
+            <Link href="/pricing" className="px-3 py-1.5 text-[14px] font-semibold text-text-muted hover:text-text-heading transition-all tracking-tight rounded-lg hover:bg-sidebar/40">Pricing</Link>
           </nav>
         </div>
 
-        {/* Right Section: Auth + Mobile Menu */}
-        <div className="flex items-center gap-4 h-full">
-          <Suspense fallback={
-            <div className="flex items-center gap-x-6 text-[14px] font-medium text-text-muted animate-pulse">
-              <div className="w-12 h-4 bg-border rounded"></div>
-              <div className="w-16 h-8 bg-text-heading rounded-full opacity-20"></div>
-            </div>
-          }>
+        {/* Right: Auth & CTAs */}
+        <div className="flex items-center gap-5">
+          <Suspense fallback={<div className="w-20 h-8 bg-border/20 animate-pulse rounded-full" />}>
             <UserNav />
           </Suspense>
+          
+          <Link href="/generate" className="hidden xs:flex items-center gap-2 bg-text-heading text-background px-5 py-2.5 rounded-full text-[13px] font-bold tracking-tight hover:opacity-90 active:scale-95 transition-all shadow-md">
+            <Plus className="w-4 h-4" /> <span>New Goal</span>
+          </Link>
 
-          {/* Mobile Menu Toggle */}
-          <button 
-            className="md:hidden p-2 text-text-muted hover:text-text-heading transition-colors"
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          >
-            {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="lg:hidden p-2 text-text-muted hover:text-text-heading transition-colors" aria-label="Toggle Menu">
+            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
           </button>
         </div>
       </div>
 
       {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && (
-        <div 
-          className="md:hidden absolute top-[48px] left-0 right-0 bg-background border-b border-border shadow-2xl animate-in slide-in-from-top-4 duration-300 z-[90] overflow-y-auto"
-          style={{ maxHeight: 'calc(100vh - 48px - var(--announcement-height, 0px))' }}
-        >
-          <div className="p-6 space-y-6">
-            <div>
-              <p className="text-[10px] font-bold text-text-muted uppercase tracking-widest mb-4">Discovery</p>
-              <div className="grid grid-cols-2 gap-4">
-                <Link href="/explore" className="flex items-center gap-2 text-[13px] font-bold text-text-heading"><Globe className="w-4 h-4" /> Explore</Link>
-                <Link href="/leaderboard" className="flex items-center gap-2 text-[13px] font-bold text-text-heading"><Trophy className="w-4 h-4" /> Rankings</Link>
-                <Link href="/archive/exams/previous-year-papers" className="flex items-center gap-2 text-[13px] font-bold text-text-heading"><Archive className="w-4 h-4" /> Archives</Link>
-                <Link href="/research-decoded" className="flex items-center gap-2 text-[13px] font-bold text-text-heading"><Microscope className="w-4 h-4" /> Research</Link>
-                <Link href="/pricing" className="flex items-center gap-2 text-[13px] font-bold text-text-heading"><CreditCard className="w-4 h-4" /> Pricing</Link>
-              </div>
-            </div>
-
-            <div className="pt-6 border-t border-border">
-              <Link 
-                href="/generate"
-                className="flex items-center justify-center w-full bg-text-heading dark:bg-white text-background dark:text-black py-3 rounded-xl text-[14px] font-bold tracking-tight uppercase transition-all"
-              >
-                Create Roadmap
-              </Link>
+      <div 
+        className={`lg:hidden fixed inset-0 top-[var(--announcement-height,0px)] bg-header/98 backdrop-blur-2xl z-[45] transition-all duration-400 ease-[cubic-bezier(0.23,1,0.32,1)] ${
+          isMobileMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-8 pointer-events-none'
+        }`}
+        style={{ marginTop: isScrolled ? '56px' : '68px' }}
+      >
+        <div className="px-6 py-10 flex flex-col gap-10 h-full overflow-y-auto">
+          <div className="flex flex-col gap-2">
+            <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.15em] block mb-4 opacity-50">Menu Navigation</span>
+            <div className="grid grid-cols-1 gap-3">
+              {[
+                { l: "Explore Paths", h: "/explore", i: Globe },
+                { l: "Leaderboard", h: "/leaderboard", i: Trophy },
+                { l: "Exam Archives", h: "/archive/exams/previous-year-papers", i: Archive },
+                { l: "Research Decoded", h: "/research-decoded", i: Microscope },
+                { l: "Pricing Plans", h: "/pricing", i: CreditCard }
+              ].map(item => (
+                <Link key={item.h} href={item.h} className="flex items-center justify-between p-4.5 bg-sidebar/40 rounded-2xl border border-border/50">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-background border border-border flex items-center justify-center">
+                        <item.i className="w-5 h-5 text-accent" />
+                    </div>
+                    <span className="text-[15px] font-bold text-text-heading">{item.l}</span>
+                  </div>
+                  <ArrowRight className="w-4 h-4 text-text-muted opacity-30" />
+                </Link>
+              ))}
             </div>
           </div>
+          <Link href="/generate" className="mt-auto w-full bg-text-heading text-background py-4.5 rounded-2xl flex items-center justify-center gap-3 text-[15px] font-bold shadow-xl active:scale-[0.98] transition-transform">
+            <Plus className="w-5 h-5" /> Create Custom Roadmap
+          </Link>
         </div>
-      )}
+      </div>
     </header>
   );
 }

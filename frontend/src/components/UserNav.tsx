@@ -27,30 +27,30 @@ export default function UserNav() {
 
   if (user) {
     return (
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-3 sm:gap-4">
         <Link 
           href="/dashboard" 
-          className="hidden md:flex items-center gap-1.5 text-[12px] font-bold text-text-muted hover:text-text-heading transition-colors uppercase tracking-tight"
+          className="hidden lg:flex items-center gap-2 text-[12px] font-bold text-text-muted hover:text-text-heading transition-all active:scale-95 uppercase tracking-tight"
         >
           <LayoutDashboard className="w-3.5 h-3.5" />
           Dashboard
         </Link>
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
           <Link 
             href="/settings"
-            className="w-8 h-8 rounded-full bg-sidebar dark:bg-white/5 border border-border dark:border-white/10 flex items-center justify-center overflow-hidden hover:opacity-80 transition-opacity"
+            className="w-8 h-8 rounded-full bg-sidebar/50 border border-border flex items-center justify-center overflow-hidden hover:border-accent/30 transition-all active:scale-90 shadow-sm"
           >
             {user.metadata?.avatar_url ? (
               <img src={user.metadata.avatar_url} alt="" className="w-full h-full object-cover grayscale-[0.5]" />
             ) : (
-              <span className="text-[10px] font-bold text-teal-600 uppercase">
+              <span className="text-[10px] font-black text-accent uppercase">
                 {user.email?.substring(0, 1)}
               </span>
             )}
           </Link>
           <button 
             onClick={handleSignOut}
-            className="p-2 text-text-muted hover:text-red-500 transition-colors"
+            className="p-1.5 text-text-muted hover:text-red-500 hover:bg-red-50/50 dark:hover:bg-red-500/5 rounded-lg transition-all active:scale-90"
             title="Sign out"
           >
             <LogOut className="w-4 h-4" />
@@ -61,18 +61,12 @@ export default function UserNav() {
   }
 
   return (
-    <div className="flex items-center gap-4 md:gap-6">
+    <div className="flex items-center gap-4 sm:gap-6">
       <Link
         href="/login"
-        className="text-[12px] md:text-[13px] font-bold text-text-muted hover:text-text-heading transition-colors uppercase tracking-tight"
+        className="text-[12px] font-bold text-text-muted hover:text-text-heading transition-all active:scale-95 uppercase tracking-tight"
       >
         Sign in
-      </Link>
-      <Link 
-        href="/generate"
-        className="bg-text-heading dark:bg-white text-background dark:text-black px-4 py-1.5 rounded-full text-[12px] md:text-[13px] font-bold hover:opacity-90 transition-opacity uppercase tracking-tight shadow-sm"
-      >
-        New Goal
       </Link>
     </div>
   );
