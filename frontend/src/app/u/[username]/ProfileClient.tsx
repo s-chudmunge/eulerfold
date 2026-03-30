@@ -20,7 +20,9 @@ import {
     LayoutDashboard,
     ArrowRight,
     AlertCircle,
-    Scale
+    Scale,
+    Menu,
+    X
 } from 'lucide-react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase/client';
@@ -35,6 +37,7 @@ export default function ProfileClient({ profile }: Props) {
     const [searchQuery, setSearchQuery] = useState("");
     const [isOwner, setIsOwner] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -82,14 +85,20 @@ export default function ProfileClient({ profile }: Props) {
                 style={{ top: 'var(--announcement-height, 0px)' }}
                 className="inconsolata-ui border-b border-border bg-header h-[48px] shrink-0 z-50 fixed inset-x-0 transition-all duration-500 ease-in-out"
             >
-                <div className="w-full px-6 flex h-full items-center justify-between">
-                    <div className="flex items-center gap-4">
+                <div className="w-full px-4 md:px-6 flex h-full items-center justify-between">
+                    <div className="flex items-center gap-2 md:gap-4">
+                        <button 
+                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                            className="p-2 -ml-2 lg:hidden text-text-muted hover:text-text-heading transition-colors"
+                        >
+                            {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                        </button>
                         <Link className="flex items-center group shrink-0" href="/">
                             <img src="/apple-touch-icon.png" alt="EulerFold" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
                         </Link>
                     </div>
 
-                    <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-3 md:gap-6">
                         <Link href="/explore" className="hidden sm:flex text-[11px] font-bold text-text-muted hover:text-text-heading transition-colors items-center gap-1.5 tracking-wide">
                             <Globe className="w-3.5 h-3.5" /> Explore
                         </Link>
@@ -103,10 +112,10 @@ export default function ProfileClient({ profile }: Props) {
                             onClick={handleExportPDF}
                             className="text-[11px] font-bold text-text-muted hover:text-text-heading transition-colors flex items-center gap-1.5 tracking-wide"
                         >
-                            <Download className="w-3.5 h-3.5" /> Export
+                            <Download className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Export</span>
                         </button>
                         {isOwner ? (
-                            <Link href="/settings" className="whitespace-nowrap rounded-full bg-[var(--text-heading)] px-5 py-1.5 text-[var(--bg-main)] text-[12px] font-bold hover:opacity-90 transition-opacity flex items-center gap-2">
+                            <Link href="/settings" className="whitespace-nowrap rounded-full bg-[var(--text-heading)] px-3 md:px-5 py-1.5 text-[var(--bg-main)] text-[10px] md:text-[12px] font-bold hover:opacity-90 transition-opacity flex items-center gap-2">
                                 <Settings className="w-3.5 h-3.5" /> Settings
                             </Link>
                         ) : (
@@ -123,12 +132,26 @@ export default function ProfileClient({ profile }: Props) {
                 style={{ marginTop: 'calc(48px + var(--announcement-height, 0px))' }}
                 className="flex flex-1 relative h-full overflow-hidden transition-all duration-500 ease-in-out"
             >
+                {/* Mobile Overlay */}
+                {isSidebarOpen && (
+                    <div 
+                        className="fixed inset-0 bg-black/20 z-[35] lg:hidden backdrop-blur-[2px] transition-all"
+                        onClick={() => setIsSidebarOpen(false)}
+                        style={{ top: 'calc(48px + var(--announcement-height, 0px))' }}
+                    />
+                )}
+
                 {/* Sidebar */}
                 <aside 
                     style={{ top: 'calc(48px + var(--announcement-height, 0px))' }}
-                    className="manrope-body bg-sidebar border-r border-border w-[230px] flex flex-col shrink-0 z-40 fixed bottom-0 left-0 transition-all duration-500 ease-in-out"
+                    className={`
+                        manrope-body bg-sidebar border-r border-border w-[230px] flex flex-col shrink-0 z-40 
+                        fixed bottom-0 left-0 transition-all duration-200 ease-in-out
+                        lg:static lg:translate-x-0
+                        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+                    `}
                 >
-                    <div className="p-6 flex flex-col">
+                    <div className="p-6 flex flex-col h-full overflow-y-auto no-scrollbar">
                         <div className="mb-6">
                             <div className="w-12 h-12 bg-callout-bg border border-border rounded-lg flex items-center justify-center text-xl font-black text-text-heading overflow-hidden">
                                 {profile.avatar_url ? (

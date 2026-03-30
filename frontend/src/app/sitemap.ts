@@ -31,7 +31,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     url: `${baseUrl}/research-decoded/${slug}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
-    priority: 0.7,
+    priority: 0.9,
   }));
 
   // 3. Archive Dynamic Routes (Exams and Papers)
@@ -42,7 +42,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       url: `${baseUrl}/archive/exams/previous-year-papers/${category.id.toLowerCase()}`,
       lastModified: new Date(),
       changeFrequency: 'monthly' as const,
-      priority: 0.6,
+      priority: 0.7,
     });
 
     // Individual Paper Pages
@@ -51,7 +51,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         url: `${baseUrl}/archive/exams/previous-year-papers/${category.id.toLowerCase()}/${entry.slug}`,
         lastModified: new Date(),
         changeFrequency: 'monthly' as const,
-        priority: 0.5,
+        priority: 0.7,
       });
     });
   });
@@ -71,7 +71,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         url: `${baseUrl}/roadmap/${r.slug}`,
         lastModified: new Date(r.updated_at || new Date()),
         changeFrequency: 'weekly' as const,
-        priority: 0.6,
+        priority: 0.9,
       }));
     }
   } catch (e) {

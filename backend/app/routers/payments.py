@@ -126,7 +126,7 @@ async def verify_razorpay(req: RazorpayVerifyRequest, current_user: User = Depen
             signature=req.razorpay_signature
         )
         if success:
-            return {"status": "success", "message": "Payment verified and credit added"}
+            return {"status": "success", "message": "Payment received and credit added"}
         else:
             return {"status": "success", "message": "Payment already processed or recorded"}
     else:
