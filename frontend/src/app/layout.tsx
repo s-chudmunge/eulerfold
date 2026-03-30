@@ -166,7 +166,7 @@ export default function RootLayout({
                 "https://github.com/s-chudmunge"
               ],
               "offers": {
-                "@type": "Offer",https://www.eulerfold.com
+                "@type": "Offer",
                 "price": "0",
                 "priceCurrency": "USD",
                 "category": "Educational Services"

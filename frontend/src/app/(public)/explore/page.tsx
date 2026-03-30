@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import { Metadata } from 'next';
 import ExploreClient from './ExploreClient';
 
@@ -74,16 +74,10 @@ export default async function ExplorePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-      <Suspense fallback={
-        <div className="flex items-center justify-center min-h-screen bg-background dark:bg-[#0f0f0f]">
-          <div className="animate-pulse text-teal-700 font-mono">Loading Explore...</div>
-        </div>
-      }>
-        <ExploreClient 
-          initialRoadmaps={initialRoadmaps} 
-          initialLeaderboard={initialLeaderboard} 
-        />
-      </Suspense>
+      <ExploreClient 
+        initialRoadmaps={initialRoadmaps} 
+        initialLeaderboard={initialLeaderboard} 
+      />
     </>
   );
 }

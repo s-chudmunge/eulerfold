@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect, Suspense } from 'react';
 import { archiveData, PaperEntry } from '../../generatedArchiveData';
 import { Search, Download, Key, ArrowRight, X, ChevronDown, ChevronRight } from 'lucide-react';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
@@ -80,14 +80,37 @@ const EXAM_REGIONS: Record<string, string> = {
   "PRMO": "India"
 };
 
+function SearchParamsHandler({ onParams }: { onParams: (params: URLSearchParams) => void }) {
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    onParams(searchParams);
+  }, [searchParams, onParams]);
+  return null;
+}
+
 function ArchiveContent() {
   const router = useRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const { user: authUser, loading: authLoading } = useAuth();
 
   const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
   const [showBanner, setShowBanner] = useState(true);
+  
+  const [query, setQuery] = useState("");
+  const [selectedExam, setSelectedExam] = useState("All Exams");
+  const [selectedSubject, setSelectedSubject] = useState("All Subjects");
+  const [selectedYear, setSelectedYear] = useState("All Years");
+  const [sortOrder, setSortOrder] = useState("newest");
+  const [currentParams, setCurrentParams] = useState<URLSearchParams | null>(null);
+
+  const handleSearchParams = React.useCallback((params: URLSearchParams) => {
+    setCurrentParams(params);
+    setQuery(params.get('q')?.toLowerCase() || "");
+    setSelectedExam(params.get('exam') || "All Exams");
+    setSelectedSubject(params.get('subject') || "All Subjects");
+    setSelectedYear(params.get('year') || "All Years");
+    setSortOrder(params.get('sort') || "newest");
+  }, []);
 
   const handleSignIn = () => {
     router.push(`/login?next=${encodeURIComponent(pathname)}`);
@@ -102,12 +125,6 @@ function ArchiveContent() {
     }
     setExpandedCategories(newExpanded);
   };
-
-  const query = searchParams.get('q')?.toLowerCase() || "";
-  const selectedExam = searchParams.get('exam') || "All Exams";
-  const selectedSubject = searchParams.get('subject') || "All Subjects";
-  const selectedYear = searchParams.get('year') || "All Years";
-  const sortOrder = searchParams.get('sort') || "newest";
 
   const allExams = useMemo(() => ["All Exams", ...archiveData.map(c => c.title)], []);
   const allSubjects = useMemo(() => {
@@ -135,7 +152,7 @@ function ArchiveContent() {
   }, []);
 
   const updateFilters = (updates: Record<string, string | null>) => {
-    const params = new URLSearchParams(searchParams.toString());
+    const params = new URLSearchParams(currentParams?.toString() || "");
     Object.entries(updates).forEach(([key, value]) => {
       if (value === null || value === "All Exams" || value === "All Years" || value === "All Subjects" || (key === 'sort' && value === 'newest')) {
         params.delete(key);
@@ -242,6 +259,9 @@ function ArchiveContent() {
 
   return (
     <div className="bg-background">
+      <Suspense fallback={null}>
+        <SearchParamsHandler onParams={handleSearchParams} />
+      </Suspense>
       <main className="max-w-[1000px] mx-auto px-6 py-8 md:px-12 md:py-12">
         <Breadcrumbs items={[{ label: 'Archive' }]} />
 
@@ -456,9 +476,5 @@ function ArchiveContent() {
 }
 
 export default function ArchiveClient() {
-  return (
-    <Suspense fallback={<div className="min-h-screen bg-background flex items-center justify-center inconsolata-ui text-text-muted uppercase tracking-widest">Loading Archive...</div>}>
-      <ArchiveContent />
-    </Suspense>
-  );
+  return <ArchiveContent />;
 }

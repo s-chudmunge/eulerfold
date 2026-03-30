@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { supabase } from '@/lib/supabase/client';
 import { 
   Search, 
@@ -85,6 +85,14 @@ function useDebounce(value: string, delay: number) {
     return debouncedValue;
 }
 
+function SearchParamsHandler({ onParams }: { onParams: (params: URLSearchParams) => void }) {
+    const searchParams = useSearchParams();
+    useEffect(() => {
+        onParams(searchParams);
+    }, [searchParams, onParams]);
+    return null;
+}
+
 export default function ExploreClient({ 
     initialRoadmaps = [], 
     initialLeaderboard = [] 
@@ -92,12 +100,10 @@ export default function ExploreClient({
     initialRoadmaps?: ExploreRoadmap[], 
     initialLeaderboard?: LeaderboardEntry[] 
 }) {
-    const searchParams = useSearchParams();
     const router = useRouter();
     const { user: authUser } = useAuth();
-    const initialSearch = searchParams.get('search') || '';
     
-    const [searchQuery, setSearchQuery] = useState(initialSearch);
+    const [searchQuery, setSearchQuery] = useState('');
     const debouncedSearch = useDebounce(searchQuery, 300);
     const [reporting, setReporting] = useState<number | null>(null);
     const [reportReason, setReportReason] = useState('');
@@ -107,6 +113,11 @@ export default function ExploreClient({
     // Filtering & Sorting State
     const [sortBy, setSortBy] = useState('newest');
     const [filter, setFilter] = useState('all');
+
+    const handleSearchParams = React.useCallback((params: URLSearchParams) => {
+        const search = params.get('search');
+        if (search) setSearchQuery(search);
+    }, []);
 
     const queryClient = useQueryClient();
 
@@ -205,6 +216,9 @@ export default function ExploreClient({
 
     return (
         <div className="bg-background text-text-primary selection:bg-teal-500/30 selection:text-text-heading">
+            <Suspense fallback={null}>
+                <SearchParamsHandler onParams={handleSearchParams} />
+            </Suspense>
             <main className="max-w-[900px] mx-auto px-6 pt-6 pb-12">
                 <header className="mb-6">
                     <div className="flex flex-col sm:flex-row gap-3 mt-4">
