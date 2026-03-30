@@ -173,6 +173,7 @@ class ExploreRoadmap(BaseModel):
     id: int
     title: str
     slug: str
+    username: Optional[str] = None
     subject: Optional[str] = None
     goal: Optional[str]
     time_value: Optional[int]
@@ -180,7 +181,7 @@ class ExploreRoadmap(BaseModel):
     clone_count: int
     average_rating: float = 0.0
     rating_count: int = 0
-    author: str  # First name from email or "Anonymous"
+    author: str  # Username from profiles or "Anonymous"
     week_count: int  # len(roadmap_plan["modules"])
     topic_count: int  # sum of topics across all modules
     created_at: datetime

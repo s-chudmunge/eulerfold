@@ -95,7 +95,19 @@ async def explore_roadmaps(
     if not response or not response.data:
         return []
 
-    # If logged in, fetch user's roadmaps to check ownership/clone status
+    # 1. Fetch usernames for these roadmaps to avoid email-derived fallbacks
+    emails = list(set(r.get("email") for r in response.data if r.get("email")))
+    username_map = {}
+    if emails:
+        try:
+            profile_res = sb.table("profiles").select("email, username").in_("email", emails).execute()
+            for p in profile_res.data:
+                if p.get("username"):
+                    username_map[p["email"]] = p["username"]
+        except Exception as e:
+            logger.warning(f"Failed to fetch usernames for explore: {e}")
+
+    # 2. If logged in, fetch user's roadmaps to check ownership/clone status
     owned_ids = set()
     cloned_from_ids = set()
     if email:
@@ -140,14 +152,21 @@ async def explore_roadmaps(
         week_count = len(modules)
         topic_count = sum(len(m.get("topics", [])) for m in modules)
         
+        r_email = r.get("email")
+        username = username_map.get(r_email)
+        
         author = "Anonymous"
-        if r.get("show_author") and r.get("email"):
-            email_part = r["email"].split("@")[0]
-            raw_name = email_part.split(".")[0]
-            if len(raw_name) >= 2:
-                author = raw_name.capitalize()
+        if r.get("show_author") and r_email:
+            if username:
+                author = username
             else:
-                author = "EulerFold User"
+                # Fallback to email prefix ONLY if username is absolutely missing
+                email_part = r_email.split("@")[0]
+                raw_name = email_part.split(".")[0]
+                if len(raw_name) >= 2:
+                    author = raw_name.capitalize()
+                else:
+                    author = "EulerFold User"
 
         rid = r["id"]
         # Ensure strict boolean to avoid Pydantic validation errors when email is None
@@ -159,6 +178,7 @@ async def explore_roadmaps(
                 id=rid,
                 title=r["title"],
                 slug=r.get("slug", ""),
+                username=username,
                 subject=r.get("subject"),
                 goal=r.get("goal"),
                 time_value=r.get("time_value"),
@@ -398,16 +418,26 @@ async def get_public_roadmap(
         raise HTTPException(status_code=404, detail="Public roadmap not found")
     
     r = response.data[0]
+    r_email = r.get("email")
     
-    # Compute author name
+    # Compute author name using username if available
     author = "Anonymous"
-    if r.get("show_author") and r.get("email"):
-        email_part = r["email"].split("@")[0]
-        raw_name = email_part.split(".")[0]
-        if len(raw_name) >= 2:
-            author = raw_name.capitalize()
+    username = None
+    if r_email:
+        profile_res = sb.table("profiles").select("username").eq("email", r_email).execute()
+        if profile_res.data and profile_res.data[0].get("username"):
+            username = profile_res.data[0]["username"]
+
+    if r.get("show_author") and r_email:
+        if username:
+            author = username
         else:
-            author = "EulerFold User"
+            email_part = r_email.split("@")[0]
+            raw_name = email_part.split(".")[0]
+            if len(raw_name) >= 2:
+                author = raw_name.capitalize()
+            else:
+                author = "EulerFold User"
 
     # Ownership / Clone check
     is_owner = email and r.get("email", "").lower() == email.lower()
@@ -428,6 +458,7 @@ async def get_public_roadmap(
     r.pop("email", None)
     r.pop("show_author", None)
     r["author"] = author
+    r["username"] = username
     r["is_owner"] = is_owner
     r["is_cloned"] = is_cloned
     r["user_rating"] = user_rating

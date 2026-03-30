@@ -166,7 +166,7 @@ export default function PublicHeader() {
 
             <DesktopDropdown id="research" label="Research">
               <div className="p-6 bg-header">
-                <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-5 opacity-60">Domain Exploration</span>
+                <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-5 opacity-60">Access Research Topics</span>
                 <div className="grid grid-cols-2 gap-x-10 gap-y-4">
                   {RESEARCH_DOMAINS.map(domain => (
                     <Link key={domain} href={`/research-decoded?category=${domain}`} className="text-[13px] font-semibold text-text-heading hover:text-accent transition-colors flex items-center gap-2.5 group/d">

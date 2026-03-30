@@ -14,7 +14,8 @@ async def award_coins(user_email: str, amount: int, reason: str, roadmap_id: Opt
         
     # Normalize email to prevent case-sensitivity issues
     user_email = user_email.lower()
-    sb = get_supabase_client()
+    from app.core.supabase_client import get_admin_supabase_client
+    sb = get_admin_supabase_client()
     try:
         # Prevent double-awarding for certain recurring but unique events
         # e.g. "Completed all topics in 'Introduction'"
@@ -29,7 +30,7 @@ async def award_coins(user_email: str, amount: int, reason: str, roadmap_id: Opt
                 return # Already awarded for this module/topic-set
 
         # 1. Increment profiles.eulercoins atomically via RPC
-        # The RPC is case-insensitive, but we pass lowercase anyway
+        # Using Admin Client to ensure execution permission and schema cache reliability
         sb.rpc("increment_eulercoins", {"target_email": user_email, "amount": amount}).execute()
         
         # 2. Insert transaction log
