@@ -23,6 +23,7 @@
 - **Semantic Classes**: Use semantic Tailwind classes (e.g., `bg-background`, `border-border`) instead of hardcoded hex codes or standard Tailwind colors (e.g., `bg-white`, `border-gray-100`) to ensure site-wide theme changes work.
 - **Roadmap Routes**: In `roadmaps.py`, the `/roadmaps/me` route must be defined **before** `/roadmaps/{id}` to avoid 422 errors.
 - **YouTube Filters**: Videos are strictly filtered between **8 and 60 minutes** and must pass a keyword-based title relevance check.
+- **SSR & Search Params**: To avoid `BAILOUT_TO_CLIENT_SIDE_RENDERING` in production, never use `useSearchParams()` directly in a component that should render server-side. Use the **SearchParamsHandler** pattern: isolate `useSearchParams` into a tiny component that returns `null`, wrap *only* that component in `<Suspense fallback={null}>`, and pass params back via a callback. This ensures the main component renders immediately with initial data in the raw HTML.
 - **JSON Handling**: `roadmap_plan` can be stored as a string or object in the DB; use `_parse_roadmap_dict` or the Pydantic validator in `RoadmapRead` to handle it.
 
 ## Phase 1 Architecture (March 2026)

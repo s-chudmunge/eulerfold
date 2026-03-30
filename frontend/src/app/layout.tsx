@@ -1,3 +1,4 @@
+import React, { Suspense } from 'react';
 import type { Metadata } from "next/types";
 import "./globals.css";
 import Script from 'next/script';
@@ -83,12 +84,11 @@ export const metadata: Metadata = {
   },
   metadataBase: new URL('https://www.eulerfold.com'),
   openGraph: {
-  type: 'website',
-  locale: 'en_US',
-  url: 'https://www.eulerfold.com',
-  siteName: 'EulerFold',
-  title: 'EulerFold',
-  description: 'Clear learning paths with simple progress tracking that show exactly what you’ve learned and keep you on-track.',
+    type: 'website',
+    locale: 'en_US',
+    siteName: 'EulerFold',
+    title: 'EulerFold',
+    description: 'Clear learning paths with simple progress tracking that show exactly what you’ve learned and keep you on-track.',
   },
   twitter: {
   card: 'summary',
@@ -225,7 +225,9 @@ export default function RootLayout({
       >
         <QueryProvider>
           <AuthProvider>
-            <SessionTracker />
+            <Suspense fallback={null}>
+              <SessionTracker />
+            </Suspense>
             <BannerWrapper />
             <main>
               {children}

@@ -1,6 +1,6 @@
 import React from 'react';
 import ResearchDecodedIndexContent from './ResearchDecodedIndexContent';
 
-export default function ResearchDecodedIndex() {
+export default function ResearchDecodedIndexClient() {
   return <ResearchDecodedIndexContent />;
 }
