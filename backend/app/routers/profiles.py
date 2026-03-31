@@ -155,11 +155,14 @@ async def get_public_profile(username: str):
     total_hours = sum(s.time_invested for s in skills)
     
     return PublicProfile(
-        username=username,
+        username=profile["username"],
         display_name=profile.get("display_name"),
+        email=profile.get("email"),
+        avatar_url=profile.get("avatar_url"),
+        supabase_uid=profile.get("supabase_uid"),
         total_skills=len(skills),
         total_roadmaps=total_roadmaps_count,
-        total_hours=total_hours,
+        total_hours=round(total_hours, 1),
         last_active=profile.get("last_active_date"),
         skills=skills,
         roadmaps=roadmaps_data,

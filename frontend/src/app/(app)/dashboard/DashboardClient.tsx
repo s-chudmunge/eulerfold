@@ -76,6 +76,10 @@ export default function DashboardPage() {
     // Username Claim
     const [showUsernameClaim, setShowUsernameClaim] = useState(false);
     const [claimedUsername, setClaimedUsername] = useState('');
+    const [displayName, setDisplayName] = useState('');
+    const [agreedToTerms, setAgreedToTerms] = useState(false);
+    const [agreedToPrivacy, setAgreedToPrivacy] = useState(false);
+    const [agreedToMarketing, setAgreedToMarketing] = useState(false);
     const [claimLoading, setClaimLoading] = useState(false);
     const [claimError, setClaimError] = useState<string | null>(null);
 
@@ -116,7 +120,10 @@ export default function DashboardPage() {
                         if (isMounted) {
                             setProfile(me);
                             activeProfile = me as any;
-                            if (!me.username || me.username.startsWith('user_')) setShowUsernameClaim(true);
+                            if (!me.username || me.username.startsWith('user_')) {
+                                setShowUsernameClaim(true);
+                                setDisplayName(me.display_name || '');
+                            }
                         }
                     } catch (authMeErr) {
                         console.error("Backend auth/me failed:", authMeErr);
@@ -125,7 +132,10 @@ export default function DashboardPage() {
                 } else {
                     if (isMounted) {
                         setProfile(userProfile);
-                        if (!userProfile.username) setShowUsernameClaim(true);
+                        if (!userProfile.username) {
+                            setShowUsernameClaim(true);
+                            setDisplayName(userProfile.display_name || '');
+                        }
                     }
                 }
 
@@ -192,17 +202,29 @@ export default function DashboardPage() {
     }, [authUser]);
 
     const handleClaimUsername = async () => {
-        if (claimedUsername.length < 3) {
-            setClaimError("Min 3 characters");
+        if (displayName.trim().length < 2) {
+            setClaimError("Please enter your name");
             return;
         }
+        if (claimedUsername.length < 3) {
+            setClaimError("Username must be at least 3 characters");
+            return;
+        }
+        if (!agreedToTerms || !agreedToPrivacy) {
+            setClaimError("Please agree to the terms and privacy policy");
+            return;
+        }
+
         setClaimLoading(true);
         try {
-            const updatedUser = await authAPI.completeOnboarding({ username: claimedUsername });
+            const updatedUser = await authAPI.completeOnboarding({ 
+                username: claimedUsername,
+                display_name: displayName 
+            });
             setShowUsernameClaim(false);
             setProfile({ ...profile, ...updatedUser });
         } catch (err: any) {
-            setClaimError(err.response?.data?.detail || "Taken or invalid.");
+            setClaimError(err.response?.data?.detail || "Username taken or invalid.");
         } finally {
             setClaimLoading(false);
         }
@@ -449,34 +471,105 @@ export default function DashboardPage() {
             )}
 
             {showUsernameClaim && (
-                <div className="fixed inset-0 z-[200] bg-black/90 backdrop-blur-xl flex items-center justify-center p-4">
-                    <div className="bg-background border border-border w-full max-w-sm rounded-xl p-8 shadow-2xl text-center">
-                        <div className="w-16 h-16 bg-accent-muted rounded-xl flex items-center justify-center mx-auto mb-6">
-                            <ShieldCheck className="w-8 h-8 text-accent" />
-                        </div>
-                        <h2 className="inconsolata-ui text-xl font-bold text-text-heading  mb-2">Claim Username</h2>
-                        <p className="manrope-body text-[13px] text-text-muted mb-8 leading-relaxed">Set your unique username to enable public sharing.</p>
+                <div className="fixed inset-0 z-[200] bg-background flex items-center justify-center p-6 overflow-y-auto">
+                    <div className="w-full max-w-[540px] animate-in fade-in zoom-in-95 duration-500 py-12">
                         
-                        <div className="space-y-4">
-                            <div className="relative">
-                                <span className="absolute left-4 top-1/2 -translate-y-1/2 text-text-muted font-bold">@</span>
+                        {/* Branding */}
+                        <div className="flex justify-center mb-16">
+                            <div className="flex items-center gap-2 opacity-90">
+                                <img src="/apple-touch-icon.png" alt="" className="w-8 h-8" />
+                                <span className="text-2xl font-bold tracking-tight text-text-heading manrope-body">EulerFold</span>
+                            </div>
+                        </div>
+
+                        <h1 className="text-4xl md:text-5xl font-bold text-text-heading mb-10 text-center tracking-tight manrope-body">
+                            Let&apos;s create your account
+                        </h1>
+
+                        <div className="space-y-8">
+                            <div className="space-y-3">
+                                <label className="text-[15px] font-bold text-text-muted manrope-body">
+                                    What is your name?
+                                </label>
                                 <input 
                                     type="text" 
-                                    value={claimedUsername}
-                                    onChange={(e) => setClaimedUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
-                                    placeholder="username"
-                                    className="w-full pl-9 pr-4 py-3 bg-callout-bg border border-callout-border rounded-lg text-[15px] font-bold text-text-heading outline-none focus:border-[var(--accent)] transition-all"
+                                    value={displayName}
+                                    onChange={(e) => setDisplayName(e.target.value)}
+                                    placeholder="Full Name"
+                                    className="w-full px-5 py-4 bg-sidebar/50 border border-border rounded-2xl text-[17px] text-text-primary outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all placeholder:text-text-muted/40 manrope-body font-medium"
                                 />
                             </div>
-                            {claimError && <p className="text-[11px] font-bold text-red-500 ">{claimError}</p>}
+
+                            <div className="space-y-3">
+                                <label className="text-[15px] font-bold text-text-muted manrope-body">
+                                    Choose a unique username
+                                </label>
+                                <div className="relative">
+                                    <span className="absolute left-5 top-1/2 -translate-y-1/2 text-text-muted/60 font-bold text-[17px] manrope-body">@</span>
+                                    <input 
+                                        type="text" 
+                                        value={claimedUsername}
+                                        onChange={(e) => setClaimedUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+                                        placeholder="username"
+                                        className="w-full pl-11 pr-5 py-4 bg-sidebar/50 border border-border rounded-2xl text-[17px] text-text-primary outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all placeholder:text-text-muted/40 manrope-body font-medium"
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="space-y-4 pt-2">
+                                <div className="flex items-start gap-4 group cursor-pointer" onClick={() => setAgreedToTerms(!agreedToTerms)}>
+                                    <div className={`mt-1 shrink-0 w-5 h-5 rounded border flex items-center justify-center transition-all ${agreedToTerms ? 'bg-text-heading border-text-heading' : 'border-border group-hover:border-accent'}`}>
+                                        {agreedToTerms && <Check className="w-3.5 h-3.5 text-background stroke-[3px]" />}
+                                    </div>
+                                    <p className="text-[14px] text-text-muted leading-relaxed manrope-body font-medium">
+                                        I agree to EulerFold&apos;s <Link href="/terms" target="_blank" className="text-text-primary hover:text-accent font-bold underline underline-offset-4" onClick={(e) => e.stopPropagation()}>Consumer Terms</Link> and <Link href="/terms" target="_blank" className="text-text-primary hover:text-accent font-bold underline underline-offset-4" onClick={(e) => e.stopPropagation()}>Acceptable Use Policy</Link> and confirm that I am at least 18 years of age.
+                                    </p>
+                                </div>
+
+                                <div className="flex items-start gap-4 group cursor-pointer" onClick={() => setAgreedToPrivacy(!agreedToPrivacy)}>
+                                    <div className={`mt-1 shrink-0 w-5 h-5 rounded border flex items-center justify-center transition-all ${agreedToPrivacy ? 'bg-text-heading border-text-heading' : 'border-border group-hover:border-accent'}`}>
+                                        {agreedToPrivacy && <Check className="w-3.5 h-3.5 text-background stroke-[3px]" />}
+                                    </div>
+                                    <p className="text-[14px] text-text-muted leading-relaxed manrope-body font-medium">
+                                        I consent to collection and use of my personal information in accordance with the <Link href="/privacy" target="_blank" className="text-text-primary hover:text-accent font-bold underline underline-offset-4" onClick={(e) => e.stopPropagation()}>Privacy Policy</Link>.
+                                    </p>
+                                </div>
+
+                                <div className="flex items-start gap-4 group cursor-pointer" onClick={() => setAgreedToMarketing(!agreedToMarketing)}>
+                                    <div className={`mt-1 shrink-0 w-5 h-5 rounded border flex items-center justify-center transition-all ${agreedToMarketing ? 'bg-text-heading border-text-heading' : 'border-border group-hover:border-accent'}`}>
+                                        {agreedToMarketing && <Check className="w-3.5 h-3.5 text-background stroke-[3px]" />}
+                                    </div>
+                                    <p className="text-[14px] text-text-muted leading-relaxed manrope-body font-medium">
+                                        Subscribe to occasional product update and promotional emails. You can opt out at any time.
+                                    </p>
+                                </div>
+                            </div>
+
+                            {claimError && (
+                                <p className="text-[13px] font-bold text-red-500 text-center manrope-body animate-in fade-in slide-in-from-top-1">
+                                    {claimError}
+                                </p>
+                            )}
+
                             <button 
                                 onClick={handleClaimUsername}
-                                disabled={claimLoading || claimedUsername.length < 3}
-                                className="w-full py-3 bg-[var(--text-heading)] text-[var(--bg-main)] rounded-lg font-black text-[12px]  tracking-wide hover:opacity-90 transition-all"
+                                disabled={claimLoading || !agreedToTerms || !agreedToPrivacy || claimedUsername.length < 3 || displayName.trim().length < 2}
+                                className="w-full py-4 bg-text-heading text-background rounded-2xl font-bold text-[16px] hover:opacity-90 transition-all disabled:opacity-20 disabled:grayscale disabled:cursor-not-allowed shadow-xl active:scale-[0.98] manrope-body"
                             >
-
-                                {claimLoading ? 'Processing...' : 'Set Username'}
+                                {claimLoading ? 'Processing...' : 'Create account'}
                             </button>
+
+                            <div className="pt-8 text-center space-y-3">
+                                <p className="text-[13px] text-text-muted manrope-body font-medium">
+                                    Email verified as <span className="text-text-primary font-bold">{authUser?.email}</span>
+                                </p>
+                                <button 
+                                    onClick={() => supabase.auth.signOut()}
+                                    className="text-[12px] text-text-muted hover:text-accent underline underline-offset-4 transition-colors font-bold manrope-body"
+                                >
+                                    Use a different email
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -685,6 +685,9 @@ export const practiceAPI = {
     export interface PublicProfile {
     username: string;
     display_name?: string;
+    email?: string;
+    avatar_url?: string;
+    supabase_uid?: string;
     total_skills: number;
     total_roadmaps: number;
     total_hours: number;
@@ -698,7 +701,6 @@ export const practiceAPI = {
         total: number;
     };
     }
-
     export const profileAPI = {
     getPublicProfile: async (username: string): Promise<PublicProfile> => {
         const response = await api.get(`/profile/${username}`);

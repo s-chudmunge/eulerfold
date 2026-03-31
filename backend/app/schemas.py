@@ -294,6 +294,9 @@ class PracticeStats(BaseModel):
 class PublicProfile(BaseModel):
     username: str
     display_name: Optional[str]
+    email: Optional[str] = None
+    avatar_url: Optional[str] = None
+    supabase_uid: Optional[str] = None
     total_skills: int
     total_roadmaps: int
     total_hours: float
