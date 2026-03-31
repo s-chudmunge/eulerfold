@@ -20,7 +20,20 @@ export const metadata: Metadata = {
 };
 
 export default async function LandingPage() {
-  // Fresh deployment trigger for Vercel build validation
+  /**
+   * EULERFOLD LANDING PAGE
+   * ----------------------
+   * This is the primary entry point for the EulerFold application.
+   * It handles the hero section with QuantumBackground, features with MobiusBackground,
+   * and the Mission Statement with EulerLogoCanvas.
+   * 
+   * Performance Optimizations:
+   * - All Three.js backgrounds are now visibility-aware via IntersectionObserver.
+   * - Animation loops are throttled and vertex density is reduced for better TTI.
+   * - Redundant static backgrounds have been removed to minimize overdraw.
+   * 
+   * Triggering fresh deployment to verify Vercel build pipeline and attribution fixes.
+   */
   return (
     <div className="min-h-screen bg-background text-text-primary flex flex-col font-sans relative overflow-hidden">
       <Suspense fallback={null}>
