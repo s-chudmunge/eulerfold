@@ -39,7 +39,7 @@ export default function EulerLogoCanvas({
       alpha: true // Important for background transparency
     });
     renderer.setSize(size, size);
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     containerRef.current.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
@@ -120,17 +120,33 @@ export default function EulerLogoCanvas({
     scene.add(new THREE.AmbientLight(0xffffff, 0.35));
 
     // --- Animation Loop ---
-    let frameId: number;
+    let frameId: number | null = null;
     const animate = () => {
       frameId = requestAnimationFrame(animate);
       mesh.rotation.y += rotationSpeed;
       renderer.render(scene, camera);
     };
-    animate();
+
+    // IntersectionObserver to pause when not visible
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          if (frameId === null) animate();
+        } else {
+          if (frameId !== null) {
+            cancelAnimationFrame(frameId);
+            frameId = null;
+          }
+        }
+      },
+      { threshold: 0 }
+    );
+    observer.observe(containerRef.current);
 
     // --- Cleanup ---
     return () => {
-      cancelAnimationFrame(frameId);
+      observer.disconnect();
+      if (frameId !== null) cancelAnimationFrame(frameId);
       if (rendererRef.current) {
         rendererRef.current.dispose();
         if (containerRef.current && rendererRef.current.domElement) {

@@ -29,18 +29,18 @@ export default function QuantumBackground() {
     const renderer = new THREE.WebGLRenderer({
       canvas,
       alpha: true,
-      antialias: true,
+      antialias: false, // Disabling antialias for performance, not really needed for a wireframe plane
     });
 
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // Capping pixel ratio at 1.5
     renderer.setSize(container.clientWidth, container.clientHeight);
 
     // Theme-aware colors
     const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const wireColor = isDark ? 0x2dd4bf : 0x0f766e;
 
-    // bigger plane to fill screen
-    const geometry = new THREE.PlaneGeometry(80, 80, 60, 60);
+    // Reduced segments for performance (40x40 = 1681 vertices instead of 60x60 = 3721)
+    const geometry = new THREE.PlaneGeometry(80, 80, 40, 40);
     geometry.rotateX(-Math.PI / 2);
 
     const material = new THREE.MeshBasicMaterial({
@@ -63,32 +63,51 @@ export default function QuantumBackground() {
     mediaQuery.addEventListener('change', handleThemeChange);
 
     let time = 0;
-    let frameId: number;
+    let frameId: number | null = null;
+    let lastTime = 0;
 
-    function animate() {
+    const pos = geometry.attributes.position;
+    const array = pos.array as Float32Array;
+
+    function animate(now = 0) {
       frameId = requestAnimationFrame(animate);
+      
+      // Throttle to ~45 FPS to save battery and main thread on high-refresh screens
+      if (now - lastTime < 22) return; 
+      lastTime = now;
 
       time += 0.015;
 
-      const pos = geometry.attributes.position;
-
       for (let i = 0; i < pos.count; i++) {
-        const x = pos.getX(i);
-        const z = pos.getZ(i);
+        const ix = i * 3;
+        const x = array[ix];
+        const z = array[ix + 2];
 
-        // Wave logic
-        const y =
+        // Direct access is faster than pos.getX/setY/getZ
+        array[ix + 1] =
           Math.sin(x * 0.2 + time) * 1.5 +
           Math.cos(z * 0.2 + time) * 1.5;
-
-        pos.setY(i, y);
       }
 
       pos.needsUpdate = true;
       renderer.render(scene, camera);
     }
 
-    animate();
+    // IntersectionObserver to pause when not visible
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          if (frameId === null) animate();
+        } else {
+          if (frameId !== null) {
+            cancelAnimationFrame(frameId);
+            frameId = null;
+          }
+        }
+      },
+      { threshold: 0 }
+    );
+    observer.observe(container);
 
     function handleResize() {
       if (!container) return;
@@ -104,7 +123,8 @@ export default function QuantumBackground() {
     return () => {
       window.removeEventListener("resize", handleResize);
       mediaQuery.removeEventListener('change', handleThemeChange);
-      cancelAnimationFrame(frameId);
+      observer.disconnect();
+      if (frameId !== null) cancelAnimationFrame(frameId);
       renderer.dispose();
       geometry.dispose();
       material.dispose();

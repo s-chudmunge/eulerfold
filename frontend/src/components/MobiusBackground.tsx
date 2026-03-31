@@ -144,19 +144,40 @@ export default function MobiusBackground() {
       animate();
 
       window.addEventListener('resize', updateSize);
+      
+      // Use IntersectionObserver to pause animation when not visible
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry.isIntersecting) {
+            if (!frameId) animate();
+          } else {
+            if (frameId) {
+              cancelAnimationFrame(frameId);
+              frameId = 0;
+            }
+          }
+        },
+        { threshold: 0 }
+      );
+      
+      if (containerRef.current) {
+        observer.observe(containerRef.current);
+      }
+
       return () => {
         window.removeEventListener('resize', updateSize);
         mediaQuery.removeEventListener('change', handleThemeChange);
+        observer.disconnect();
       };
     };
 
-    const cleanupResize = initThree();
+    const cleanup = initThree();
 
     return () => {
-      if (typeof cleanupResize === 'function') {
-        window.removeEventListener('resize', cleanupResize);
+      if (typeof cleanup === 'function') {
+        cleanup();
       }
-      cancelAnimationFrame(frameId);
+      if (frameId) cancelAnimationFrame(frameId);
       if (renderer) renderer.dispose();
       if (mobiusMesh) {
         mobiusMesh.geometry.dispose();

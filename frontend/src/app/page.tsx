@@ -113,11 +113,6 @@ export default async function LandingPage() {
               <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
-          
-          {/* Subtle background branding */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-[0.02] pointer-events-none select-none">
-            <img src="/apple-touch-icon.png" alt="" className="w-[600px] h-[600px] grayscale" />
-          </div>
         </section>
 
         {/* FAQ Section */}
