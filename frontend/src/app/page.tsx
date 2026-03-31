@@ -91,21 +91,20 @@ export default async function LandingPage() {
         </section>
 
         {/* Mission Statement */}
-        <section className="py-24 md:py-40 px-6 relative overflow-hidden border-t border-border/30">
+        <section className="py-24 md:py-40 px-6 relative overflow-hidden border-t border-border/30 bg-sidebar/10">
           {/* Large Background Logo */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 opacity-[0.08] dark:opacity-[0.04] pointer-events-none select-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 opacity-[0.15] dark:opacity-[0.1] pointer-events-none select-none">
             <EulerLogoCanvas size={600} rotationSpeed={0.002} />
           </div>
 
           <div className="max-w-4xl mx-auto text-center relative z-10">
             <h2 className="text-[11px] font-bold text-accent tracking-[0.2em] uppercase mb-8 md:mb-12 manrope-body">Our Mission</h2>
-            
+
             <div className="relative mb-12 md:mb-16">
-              <p className="text-xl md:text-4xl font-semibold text-text-heading leading-[1.3] md:leading-[1.2] font-inter tracking-tight">
+              <p className="text-base md:text-xl font-semibold text-text-heading leading-relaxed font-inter tracking-tight max-w-3xl mx-auto">
                 To bridge the gap between information and mastery by building the most effective learning infrastructure for every individual.
               </p>
             </div>
-
             <Link 
               href="/research-decoded" 
               className="inline-flex items-center justify-center bg-accent text-white px-8 py-3.5 rounded-2xl text-[14px] font-bold transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-accent/30 active:scale-[0.98] gap-3"

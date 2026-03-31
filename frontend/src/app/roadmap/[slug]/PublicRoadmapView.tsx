@@ -16,7 +16,8 @@ import {
     Play, 
     Copy,
     Users,
-    Clock
+    Clock,
+    Target
 } from 'lucide-react';
 
 interface Props {
@@ -141,6 +142,19 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                             )}
                         </div>
                     </div>
+
+                    {/* Roadmap Description */}
+                    {(roadmap.goal || roadmap.description) && (
+                        <div className="mb-12 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                            <div className="flex items-center gap-3 mb-4">
+                                <Target className="w-4 h-4 text-accent" />
+                                <h2 className="manrope-body text-[12px] font-bold uppercase tracking-[0.2em] text-text-heading font-inter">Objective</h2>
+                            </div>
+                            <p className="manrope-body text-[16px] text-text-primary leading-relaxed font-medium bg-accent-muted/30 p-6 rounded-2xl border border-accent/10 italic">
+                                &ldquo;{roadmap.goal || roadmap.description}&rdquo;
+                            </p>
+                        </div>
+                    )}
 
                     {/* Main Roadmap Display */}
                     <div className="mb-20">
