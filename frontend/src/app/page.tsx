@@ -166,7 +166,7 @@ export default async function LandingPage() {
             {/* Background Illustration */}
             <div className="absolute inset-0 z-0">
               <img 
-                src="/images/learning_aesthetic_bg_1.png" 
+                src="/images/learning_aesthetic_bg_1.jpg" 
                 alt="" 
                 className="w-full h-full object-cover opacity-80 dark:opacity-50 transition-opacity duration-500"
               />
