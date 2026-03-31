@@ -10,6 +10,26 @@ export const metadata: Metadata = {
   },
 };
 
-export default function LearnPage() {
+async function getInitialData() {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
+  
+  try {
+    const roadmapsRes = await fetch(`${API_URL}/explore?limit=1`, { next: { revalidate: 3600 } });
+    // We just want a count or a sample, or we can just fetch it on client if it's too dynamic
+    // For now let's just make the page structure SSR ready
+    return {
+      initialData: true
+    };
+  } catch (error) {
+    console.error("Error fetching learn data:", error);
+    return {
+      initialData: false
+    };
+  }
+}
+
+export default async function LearnPage() {
+  const data = await getInitialData();
+  
   return <LearnClient />;
 }
