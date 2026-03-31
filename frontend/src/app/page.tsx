@@ -20,6 +20,7 @@ export const metadata: Metadata = {
 };
 
 export default async function LandingPage() {
+  // Triggering fresh deployment to verify Vercel build pipeline
   return (
     <div className="min-h-screen bg-background text-text-primary flex flex-col font-sans relative overflow-hidden">
       <Suspense fallback={null}>
