@@ -1,6 +1,7 @@
 import React from 'react';
 import { Metadata } from 'next';
 import RoadmapClient from './RoadmapClient';
+import PublicRoadmapView from './PublicRoadmapView';
 
 async function getPublicRoadmapMetadata(slug: string) {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
@@ -56,6 +57,15 @@ export default async function RoadmapDetailPage({ params }: { params: { slug: st
     // Only fetch by slug. If a numeric ID is passed, the backend by-slug endpoint 
     // will naturally fail or 404, which is correct for clean SEO.
     const initialRoadmap = await getPublicRoadmapMetadata(params.slug);
+
+    if (initialRoadmap?.is_public) {
+        return (
+            <PublicRoadmapView 
+                slug={params.slug} 
+                roadmap={initialRoadmap} 
+            />
+        );
+    }
 
     return (
         <RoadmapClient 

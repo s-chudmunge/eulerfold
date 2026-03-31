@@ -6,11 +6,13 @@ import {
   ChevronRight,
   Menu,
   X,
-  ExternalLink
+  PanelLeftClose,
+  PanelLeftOpen
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
+import PublicHeader from '@/components/PublicHeader';
 
 function SearchParamsHandler({ onParams }: { onParams: (params: URLSearchParams) => void }) {
   const searchParams = useSearchParams();
@@ -28,8 +30,9 @@ export default function ResearchDecodedClientShell({
   navigation: any[];
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isTopSearchFocused, setIsTopSearchFocused] = useState(false);
-  const { user, loading: authLoading } = useAuth();
+  const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState("");
   const [searchParams, setSearchParams] = useState(new URLSearchParams());
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
@@ -62,13 +65,16 @@ export default function ResearchDecodedClientShell({
     if (activeCategory && !stored) {
       initialState[activeCategory.id] = true;
     } else if (!stored) {
-      // If no active paper and no stored state, expand first category
       if (navigation.length > 0) {
         initialState[navigation[0].id] = true;
       }
     }
 
     setExpandedSections(initialState);
+
+    // Sidebar collapse state
+    const collapsed = localStorage.getItem('research-decoded-sidebar-collapsed') === 'true';
+    setIsSidebarCollapsed(collapsed);
   }, [pathname, navigation]);
 
   // Persist expansion state to localStorage
@@ -78,6 +84,12 @@ export default function ResearchDecodedClientShell({
     }
   }, [expandedSections]);
 
+  const toggleSidebarCollapse = () => {
+    const newState = !isSidebarCollapsed;
+    setIsSidebarCollapsed(newState);
+    localStorage.setItem('research-decoded-sidebar-collapsed', String(newState));
+  };
+
   const toggleSection = (id: string) => {
     setExpandedSections(prev => ({
       ...prev,
@@ -85,7 +97,7 @@ export default function ResearchDecodedClientShell({
     }));
   };
 
-  // Close sidebar on route change
+  // Close sidebar on route change (mobile)
   useEffect(() => {
     setIsSidebarOpen(false);
   }, [pathname]);
@@ -98,10 +110,6 @@ export default function ResearchDecodedClientShell({
       params.delete('q');
     }
     router.replace(`${pathname}?${params.toString()}`);
-  };
-
-  const handleSignIn = () => {
-    router.push(`/login?next=${encodeURIComponent(pathname)}`);
   };
 
   const filteredNavigation = navigation.map(nav => ({
@@ -121,107 +129,91 @@ export default function ResearchDecodedClientShell({
       <React.Suspense fallback={null}>
         <SearchParamsHandler onParams={handleSearchParams} />
       </React.Suspense>
-      {/* 1. Global Header */}
-      <header className="inconsolata-ui border-b border-border bg-header h-[48px] shrink-0">
-        <div className="w-full px-6 flex h-full items-center justify-between">
-          <div className="flex items-center flex-1">
-            {/* Logo Part */}
-            <Link className="flex items-center group shrink-0" href="/">
-              <img src="/apple-touch-icon.png" alt="EulerFold" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
-            </Link>
+      
+      {/* 1. Global Public Header - Ensure it has high z-index to stay on top */}
+      <div className="relative z-[150]">
+        <PublicHeader />
+      </div>
 
-            <div className="h-4 w-px bg-border mx-4 hidden md:block"></div>
+      {/* 2. Sub-header with Search and Sidebar Toggle */}
+      <div className="inconsolata-ui border-b border-border bg-header h-[48px] shrink-0 relative z-[140]">
+        <div className="w-full px-4 md:px-6 flex h-full items-center">
+          {/* Left section: Toggle */}
+          <div className="flex items-center w-[40px] md:w-[200px] shrink-0">
+            {/* Hamburger / Sidebar Toggle (Desktop) */}
+            <button 
+              onClick={toggleSidebarCollapse}
+              className="hidden md:flex items-center justify-center p-2 hover:bg-sidebar rounded-lg text-text-muted transition-colors"
+              title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+            >
+              {isSidebarCollapsed ? <PanelLeftOpen className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
+            </button>
 
-            <div className="flex items-center gap-2.5 mr-8">
-              <h1 className="text-[14px] font-bold leading-tight tracking-tight text-text-heading whitespace-nowrap">
-                Research Decoded
-              </h1>
-            </div>
+            {/* Mobile Hamburger */}
+            <button 
+              onClick={() => setIsSidebarOpen(true)}
+              className="flex md:hidden items-center justify-center p-2 hover:bg-sidebar rounded-lg text-text-muted transition-colors"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+          </div>
 
-            {/* Search Input container centered */}
-            <div className="flex-1 flex justify-center">
-              <div className="relative w-full max-w-[400px]">
-                <input 
-                  autoComplete="off" 
-                  className="w-full pl-10 h-8 pr-3 rounded-md border border-border bg-sidebar focus:bg-background focus:ring-1 focus:ring-[var(--accent)] transition-all text-[13px] text-text-primary outline-none placeholder:text-text-muted" 
-                  placeholder="Search papers..." 
-                  type="text" 
-                  value={searchQuery}
-                  onChange={(e) => updateSearchQuery(e.target.value)}
-                  onFocus={() => setIsTopSearchFocused(true)}
-                  onBlur={() => setTimeout(() => setIsTopSearchFocused(false), 200)}
-                />
-                <Search className="absolute left-3 text-text-muted top-1/2 transform -translate-y-1/2 w-4 h-4" />
-                
-                {/* Dropdown Results */}
-                {isTopSearchFocused && searchQuery && topSearchResults.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-sidebar border border-border rounded-lg shadow-2xl z-[150] overflow-hidden">
-                    {topSearchResults.map((result: any, idx: number) => (
-                      <Link
-                        key={idx}
-                        href={`/research-decoded/${result.slug}?${searchParams.toString()}`}
-                        className="block px-4 py-2.5 text-[13px] text-text-primary hover:bg-background transition-colors border-b border-border last:border-0"
-                      >
-                        {result.title}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
+          {/* Center section: Search Bar (Centered) */}
+          <div className="flex-1 flex justify-center">
+            <div className="relative w-full max-w-[500px]">
+              <input 
+                autoComplete="off" 
+                className="w-full pl-10 h-8 pr-3 rounded-full border border-border bg-sidebar focus:bg-background focus:ring-1 focus:ring-[var(--accent)] transition-all text-[13px] text-text-primary outline-none placeholder:text-text-muted" 
+                placeholder="Search across all breakthroughs..." 
+                type="text" 
+                value={searchQuery}
+                onChange={(e) => updateSearchQuery(e.target.value)}
+                onFocus={() => setIsTopSearchFocused(true)}
+                onBlur={() => setTimeout(() => setIsTopSearchFocused(false), 200)}
+              />
+              <Search className="absolute left-3.5 text-text-muted top-1/2 transform -translate-y-1/2 w-3.5 h-3.5" />
+              
+              {/* Dropdown Results */}
+              {isTopSearchFocused && searchQuery && topSearchResults.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-2 bg-sidebar border border-border rounded-xl shadow-2xl z-[150] overflow-hidden">
+                  {topSearchResults.map((result: any, idx: number) => (
+                    <Link
+                      key={idx}
+                      href={`/research-decoded/${result.slug}?${searchParams.toString()}`}
+                      className="block px-4 py-3 text-[13px] text-text-primary hover:bg-background transition-colors border-b border-border last:border-0"
+                    >
+                      <div className="font-bold text-text-heading">{result.title}</div>
+                      <div className="text-[11px] text-text-muted truncate opacity-80">{result.intro || 'Access full paper decoding'}</div>
+                    </Link>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
 
-          {/* Minimal Nav */}
-          <nav aria-label="Main" className="hidden lg:block ml-4">
-            <ul className="flex items-center gap-x-6 text-[14px] font-medium text-text-muted">
-              {user ? (
-                <>
-                  <li className="hover:text-text-heading transition-colors">
-                    <Link href="/dashboard">Dashboard</Link>
-                  </li>
-                  <li>
-                    <Link 
-                      href="/settings"
-                      className="whitespace-nowrap rounded-full bg-[var(--text-heading)] px-5 py-1.5 text-[var(--bg-main)] font-bold hover:opacity-90 transition-opacity"
-                    >
-                      Profile
-                    </Link>
-                  </li>
-                </>
-              ) : (
-                <>
-                  <li className="hover:text-text-heading transition-colors">
-                    <button onClick={handleSignIn}>Log In</button>
-                  </li>
-                  <li>
-                    <button 
-                      onClick={handleSignIn}
-                      className="whitespace-nowrap rounded-full bg-[var(--text-heading)] px-5 py-1.5 text-[var(--bg-main)] font-bold hover:opacity-90 transition-opacity"
-                    >
-                      Sign In
-                    </button>
-                  </li>
-                </>
-              )}
-            </ul>
-          </nav>
+          {/* Right section: Placeholder for balance */}
+          <div className="hidden md:flex items-center justify-end w-[200px] shrink-0">
+          </div>
         </div>
-      </header>
+      </div>
 
       <div className="flex flex-1 relative overflow-hidden">
         {/* Backdrop for mobile */}
         {isSidebarOpen && (
           <div 
-            className="fixed inset-0 bg-black/50 z-40 md:hidden animate-in fade-in duration-200"
+            className="fixed inset-0 bg-black/50 z-[130] md:hidden animate-in fade-in duration-200"
             onClick={() => setIsSidebarOpen(false)}
           />
         )}
 
         {/* Left Sidebar */}
         <aside 
-          className={`${
-            isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-          } manrope-body bg-sidebar border-r border-border transition-transform duration-200 w-[260px] flex flex-col h-full overflow-y-auto no-scrollbar fixed inset-y-0 left-0 z-50 md:relative md:translate-x-0 shrink-0`}
+          className={`
+            ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
+            manrope-body bg-sidebar border-r border-border transition-all duration-300 ease-in-out
+            ${isSidebarCollapsed ? 'md:w-0 md:opacity-0 md:-translate-x-4' : 'md:w-[260px] md:opacity-100 md:translate-x-0'}
+            flex flex-col h-full overflow-y-auto no-scrollbar fixed md:relative inset-y-0 left-0 z-[120] shrink-0
+          `}
         >
           <div className="p-5 border-b border-border shrink-0 flex items-center justify-between md:hidden">
             <div className="flex items-center">
@@ -237,17 +229,7 @@ export default function ResearchDecodedClientShell({
             </button>
           </div>
           
-          <div className="px-4 py-4 border-b border-border shrink-0">
-            <div className="relative">
-              <input 
-                className="w-full flex items-center rounded-full border border-border bg-background pl-9 pr-4 py-1.5 text-[12px] text-text-primary placeholder:text-text-muted focus:ring-1 focus:ring-[var(--accent)] outline-none transition-all"
-                placeholder="Jump to paper..."
-                value={searchQuery}
-                onChange={(e) => updateSearchQuery(e.target.value)}
-              />
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted" />
-            </div>
-          </div>
+          {/* Removed: Jump to paper search input from sidebar */}
 
           <nav className="flex-1 px-2.5 pt-4 pb-16 space-y-1">
             {filteredNavigation.map((nav) => {
@@ -299,7 +281,7 @@ export default function ResearchDecodedClientShell({
             )}
           </nav>
           
-          <div className="p-4 border-t border-border">
+          <div className="p-4 border-t border-border mt-auto">
             <p className="inconsolata-ui text-[10px] font-bold text-text-muted text-center uppercase tracking-widest opacity-60">
               Verified Explorer
             </p>
@@ -307,18 +289,6 @@ export default function ResearchDecodedClientShell({
         </aside>
 
         <main className="flex-1 min-w-0 h-full overflow-y-auto no-scrollbar bg-background">
-          {/* Mobile-only hamburger bar */}
-          <div className="md:hidden sticky top-0 z-30 bg-background border-b border-border flex items-center justify-between px-4 h-12">
-            <div className="flex items-center gap-3">
-              <button 
-                onClick={() => setIsSidebarOpen(true)}
-                className="p-2 -ml-2 hover:bg-callout-bg rounded-lg text-text-primary"
-              >
-                <Menu className="w-5 h-5" />
-              </button>
-              <span className="inconsolata-ui text-[12px] font-bold uppercase tracking-widest text-text-muted">Research Index</span>
-            </div>
-          </div>
           {children}
         </main>
       </div>

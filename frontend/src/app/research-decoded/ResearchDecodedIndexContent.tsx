@@ -67,23 +67,25 @@ export default function ResearchDecodedIndexContent() {
       </Suspense>
       <div className="max-w-[1000px] mx-auto px-6 py-8 md:px-12 md:py-12">
         
-        {/* Header Section */}
-        <header className="mb-12">
-          <div className="inconsolata-ui flex items-center gap-2 text-accent mb-4 text-[12px] md:text-[13px] font-bold uppercase tracking-widest flex-wrap">
-            <span className="bg-accent-muted px-2 py-0.5 rounded">Decoded</span>
-            <span className="text-[var(--border)]">/</span>
-            <span className="text-[var(--text-label)] font-medium">Curated Science</span>
-          </div>
-          
-          <h1 className="inconsolata-ui text-[28px] md:text-[42px] font-bold text-text-heading mb-4 leading-[1.1] tracking-tighter">
-            Research Decoded
-          </h1>
-          
-          <p className="manrope-body text-[15px] md:text-[16px] text-text-primary max-w-2xl leading-relaxed">
-            The foundational breakthroughs of modern AI, decoded for the curious. 
-            From Mendel&apos;s laws to Gemini&apos;s native multimodality, explore the specific technical shifts that changed the trajectory of human reasoning.
-          </p>
-        </header>
+        {/* Header Section simplified as subheader is now in the Shell */}
+        {!searchQuery && (
+          <header className="mb-12">
+            <div className="inconsolata-ui flex items-center gap-2 text-accent mb-4 text-[12px] md:text-[13px] font-bold uppercase tracking-widest flex-wrap">
+              <span className="bg-accent-muted px-2 py-0.5 rounded">Decoded</span>
+              <span className="text-[var(--border)]">/</span>
+              <span className="text-[var(--text-label)] font-medium">Curated Science</span>
+            </div>
+            
+            <h1 className="inconsolata-ui text-[28px] md:text-[42px] font-bold text-text-heading mb-4 leading-[1.1] tracking-tighter">
+              Research Decoded
+            </h1>
+            
+            <p className="manrope-body text-[15px] md:text-[16px] text-text-primary max-w-2xl leading-relaxed">
+              The foundational breakthroughs of modern AI, decoded for the curious. 
+              From Mendel&apos;s laws to Gemini&apos;s native multimodality, explore the specific technical shifts that changed the trajectory of human reasoning.
+            </p>
+          </header>
+        )}
 
         {/* Community Banner */}
         <div className="mb-16 bg-callout-bg rounded-3xl p-6 md:p-8 border border-border relative overflow-hidden group">
@@ -136,7 +138,6 @@ export default function ResearchDecodedIndexContent() {
                               alt={section.title}
                               className="w-full h-full object-contain p-4 transition-all duration-500 group-hover:scale-105 dark:opacity-80"
                               onError={(e) => {
-                                // If image fails to load, replace with placeholder
                                 e.currentTarget.style.display = 'none';
                                 const parent = e.currentTarget.parentElement;
                                 if (parent) {

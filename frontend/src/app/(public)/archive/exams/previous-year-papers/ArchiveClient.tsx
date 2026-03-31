@@ -9,6 +9,9 @@ import Link from 'next/link';
 import { useAuth } from '@/components/AuthProvider';
 import { getDriveDownloadUrl } from '@/lib/drive';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import SocialShare from '@/components/SocialShare';
+import { DiscussionSection } from '@/components/discussions/DiscussionSection';
+import Footer from '@/components/Footer';
 
 const EXAM_FULL_NAMES: Record<string, string> = {
   "AIME": "American Invitational Mathematics Examination",
@@ -471,7 +474,15 @@ function ArchiveContent() {
             </div>
           )}
         </div>
+
+        {/* Discussion Section */}
+        <DiscussionSection 
+          contextId="root" 
+          contextType="archive" 
+          title="Community Insights"
+        />
       </main>
+      <Footer />
     </div>
   );
 }

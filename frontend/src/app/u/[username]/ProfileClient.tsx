@@ -24,7 +24,8 @@ import {
     Menu,
     X,
     User as UserIcon,
-    Info
+    Info,
+    MessageSquare
 } from 'lucide-react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase/client';
@@ -48,6 +49,7 @@ export default function ProfileClient({ profile }: Props) {
     const [isAdvancingOpen, setIsAdvancingOpen] = useState(true);
     const [isFoundationsOpen, setIsFoundationsOpen] = useState(false);
     const [isLogsOpen, setIsLogsOpen] = useState(true);
+    const [isDiscussionsOpen, setIsDiscussionsOpen] = useState(true);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -149,7 +151,8 @@ export default function ProfileClient({ profile }: Props) {
                                 { label: 'Skills', val: profile.skills?.length || 0, icon: BarChart3 },
                                 { label: 'Evidence', val: profile.submissions?.length || 0, icon: FileText },
                                 { label: 'Roadmaps', val: profile.total_roadmaps || 0, icon: Target },
-                                { label: 'Benchmarks', val: profile.skills?.filter(s => s.last_assessment_score).length || 0, icon: Award }
+                                { label: 'Benchmarks', val: profile.skills?.filter(s => s.last_assessment_score).length || 0, icon: Award },
+                                { label: 'Insights', val: profile.discussions?.length || 0, icon: MessageSquare }
                             ].map((item) => (
                                 <div key={item.label} className="flex items-center justify-between px-2 py-1.5 rounded-lg text-[12px] font-medium text-gray-700 dark:text-gray-300">
                                     <div className="flex items-center gap-2">
@@ -431,6 +434,103 @@ export default function ProfileClient({ profile }: Props) {
                                             ) : (
                                                 <div className="py-12 text-center bg-callout-bg border border-dashed border-border rounded-xl">
                                                     <p className="manrope-body text-[13px] text-text-muted font-medium italic opacity-60">Awaiting verification logs.</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </section>
+
+                        {/* Community Contributions Section */}
+                        <section className="mb-12">
+                            <div className="flex items-center gap-4 mb-6">
+                                <h2 className="manrope-body text-[12px] font-bold text-text-muted tracking-[0.1em]">Community insights</h2>
+                                <div className="h-[1px] flex-1 bg-border opacity-50"></div>
+                            </div>
+
+                            <div className="space-y-4">
+                                <div className="border border-border rounded-xl overflow-hidden bg-sidebar/5">
+                                    <button 
+                                        onClick={() => setIsDiscussionsOpen(!isDiscussionsOpen)}
+                                        className="w-full px-4 py-3 flex items-center justify-between hover:bg-sidebar/10 transition-colors"
+                                    >
+                                        <h3 className="manrope-body text-[10px] font-black text-text-muted tracking-widest flex items-center gap-2">
+                                            Community contributions <span className="px-1.5 py-0.5 rounded-md bg-text-muted/10 text-[9px]">{profile.discussions?.length || 0}</span>
+                                        </h3>
+                                        {isDiscussionsOpen ? <ChevronUp className="w-3.5 h-3.5 text-text-muted" /> : <ChevronDown className="w-3.5 h-3.5 text-text-muted" />}
+                                    </button>
+                                    {isDiscussionsOpen && (
+                                        <div className="p-4 space-y-4 animate-in fade-in slide-in-from-top-1 duration-200">
+                                            {profile.discussions && profile.discussions.length > 0 ? (
+                                                profile.discussions.map((disc, idx) => (
+                                                    <div key={idx} className="bg-background border border-border rounded-xl p-6 relative group hover:border-accent/50 transition-all duration-200">
+                                                        <div className="flex justify-between items-start mb-4">
+                                                            <div className="flex flex-col gap-1.5">
+                                                                <div className="flex items-center gap-2">
+                                                                    <div className="manrope-body text-[9px] font-black text-accent bg-accent-muted px-2 py-0.5 rounded-full">
+                                                                        Insight #{profile.discussions.length - idx}
+                                                                    </div>
+                                                                    <div className="manrope-body text-[9px] font-black px-2 py-0.5 rounded-full bg-sidebar border border-border text-text-muted">
+                                                                        {disc.context_type.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ')}
+                                                                    </div>
+                                                                </div>
+                                                                <div className="flex items-center gap-2">
+                                                                    <Link 
+                                                                        href={
+                                                                            disc.context_type === 'roadmap' ? `/roadmap/${disc.context_id}` :
+                                                                            disc.context_type === 'research-decoded' ? `/research-decoded/${disc.context_id}` :
+                                                                            disc.context_type === 'exam' ? `/archive/exams/previous-year-papers/${disc.context_id}` :
+                                                                            disc.context_type === 'paper' ? `/archive/exams/previous-year-papers/${disc.context_id.replace(':', '/')}` :
+                                                                            '#'
+                                                                        }
+                                                                        className="manrope-body text-[13px] font-bold text-text-heading hover:text-accent transition-colors"
+                                                                    >
+                                                                        {disc.context_id.replace('-', ' ').replace(':', ' - ')}
+                                                                    </Link>
+                                                                </div>
+                                                            </div>
+                                                            <span className="manrope-body text-[10px] font-bold text-text-muted opacity-40">
+                                                                {new Date(disc.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                                                            </span>
+                                                        </div>
+
+                                                        <div className="manrope-body prose prose-sm max-w-none text-text-primary mb-4 leading-relaxed font-medium">
+                                                            {disc.is_deleted ? (
+                                                                <p className="text-[14px] italic text-text-muted opacity-50">Comment deleted by author</p>
+                                                            ) : (
+                                                                <ReactMarkdown components={{
+                                                                    h3: ({node, ...props}) => <h3 className="manrope-body text-[14px] font-bold tracking-tight mt-4 mb-2 text-text-heading" {...props} />,
+                                                                    p: ({node, ...props}) => <p className="mb-3 leading-relaxed" {...props} />,
+                                                                    ul: ({node, ...props}) => <ul className="list-disc pl-5 mb-4 space-y-1.5 opacity-90" {...props} />,
+                                                                    li: ({node, ...props}) => <li className="text-[13px]" {...props} />,
+                                                                    code: ({node, ...props}) => <code className="bg-callout-bg border border-border px-1.5 py-0.5 rounded text-[12px] font-mono text-accent font-bold" {...props} />,
+                                                                    pre: ({node, ...props}) => <pre className="bg-text-heading text-background p-4 rounded-xl my-4 overflow-x-auto font-mono text-[11px]" {...props} />,
+                                                                }}>
+                                                                    {disc.content}
+                                                                </ReactMarkdown>
+                                                            )}
+                                                        </div>
+
+                                                        <div className="flex items-center gap-4">
+                                                            <Link 
+                                                                href={
+                                                                    disc.context_type === 'roadmap' ? `/roadmap/${disc.context_id}` :
+                                                                    disc.context_type === 'research-decoded' ? `/research-decoded/${disc.context_id}` :
+                                                                    disc.context_type === 'exam' ? `/archive/exams/previous-year-papers/${disc.context_id}` :
+                                                                    disc.context_type === 'paper' ? `/archive/exams/previous-year-papers/${disc.context_id.replace(':', '/')}` :
+                                                                    '#'
+                                                                }
+                                                                className="manrope-body text-[11px] font-bold text-accent hover:text-teal-500 flex items-center gap-1.5 tracking-wide transition-colors"
+                                                            >
+                                                                View context <ExternalLink className="w-3 h-3" />
+                                                            </Link>
+                                                        </div>
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <div className="py-12 text-center bg-callout-bg border border-dashed border-border rounded-xl">
+                                                    <p className="manrope-body text-[13px] text-text-muted font-medium italic opacity-60">Awaiting community insights.</p>
                                                 </div>
                                             )}
                                         </div>

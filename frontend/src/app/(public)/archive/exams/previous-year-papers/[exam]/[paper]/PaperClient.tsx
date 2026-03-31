@@ -6,6 +6,9 @@ import { Download, Key, Bookmark, Share2, Calendar, Clock, Target, FileText, Ext
 import Link from 'next/link';
 import { getDriveDownloadUrl } from '@/lib/drive';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import SocialShare from '@/components/SocialShare';
+import { DiscussionSection } from '@/components/discussions/DiscussionSection';
+import Footer from '@/components/Footer';
 
 const EXAM_LOGOS: Record<string, string> = {
   "IMO": "/assets/logos/IMO.png",
@@ -121,12 +124,7 @@ export default function PaperClient({ exam, paper }: Props) {
                 <h1 className="text-[20px] md:text-[24px] font-black text-text-heading tracking-tight inconsolata-ui leading-tight">
                   {paperName}
                 </h1>
-                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-0.5">
-                  <div className="flex items-center gap-2">
-                    <p className="manrope-body text-[11px] md:text-[12px] font-bold text-text-muted uppercase tracking-wide whitespace-nowrap">
-                      Official Resource Archive
-                    </p>
-                  </div>
+                <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-0.5 mb-3">
                   {examUrl && (
                     <a 
                       href={examUrl} 
@@ -138,15 +136,16 @@ export default function PaperClient({ exam, paper }: Props) {
                     </a>
                   )}
                 </div>
+                <SocialShare 
+                  title={paperName}
+                  text={`Check out this ${paperName} resource on EulerFold:`}
+                />
               </div>
             </div>
 
             <div className="hidden sm:flex items-center gap-2">
               <button className="p-2 text-text-muted hover:text-text-heading transition-colors border border-border rounded-lg hover:bg-callout-bg" title="Bookmark">
                 <Bookmark className="w-4 h-4" />
-              </button>
-              <button className="p-2 text-text-muted hover:text-text-heading transition-colors border border-border rounded-lg hover:bg-callout-bg" title="Share">
-                <Share2 className="w-4 h-4" />
               </button>
             </div>
           </div>
@@ -252,7 +251,15 @@ export default function PaperClient({ exam, paper }: Props) {
           </div>
         </section>
 
+        {/* Discussion Section */}
+        <DiscussionSection 
+          contextId={`${exam.id.toLowerCase()}:${paper.slug}`} 
+          contextType="paper" 
+          title="Community Insights"
+        />
+
       </main>
+      <Footer />
     </div>
   );
 }

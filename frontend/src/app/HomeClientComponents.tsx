@@ -2,6 +2,44 @@
 
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { ChevronDown } from 'lucide-react';
+
+export function FAQAccordion({ items }: { items: { question: string, answer: string }[] }) {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+
+  return (
+    <div className="space-y-4">
+      {items.map((item, index) => {
+        const isOpen = openIndex === index;
+        return (
+          <div 
+            key={index} 
+            className={`border border-border/50 rounded-2xl transition-all duration-300 ${isOpen ? 'bg-sidebar/30 shadow-sm' : 'hover:bg-sidebar/20'}`}
+          >
+            <button
+              onClick={() => setOpenIndex(isOpen ? null : index)}
+              className="w-full flex items-center justify-between p-6 text-left"
+            >
+              <span className="font-inter text-[16px] md:text-[18px] font-bold text-text-heading tracking-tight">
+                {item.question}
+              </span>
+              <ChevronDown className={`w-5 h-5 text-accent transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+            </button>
+            <div 
+              className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[300px] opacity-100' : 'max-h-0 opacity-0'}`}
+            >
+              <div className="px-6 pb-6 pt-0">
+                <p className="manrope-body text-[14px] md:text-[15px] text-text-muted leading-relaxed max-w-3xl">
+                  {item.answer}
+                </p>
+              </div>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
 export function LoginRequiredMessage() {
   const [show, setShow] = useState(false);

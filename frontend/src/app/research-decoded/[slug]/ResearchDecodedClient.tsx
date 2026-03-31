@@ -9,6 +9,8 @@ import rehypeKatex from 'rehype-katex';
 import 'katex/dist/katex.min.css';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
+import { DiscussionSection } from '@/components/discussions/DiscussionSection';
+import SocialShare from '@/components/SocialShare';
 
 interface Paper {
   title: string;
@@ -79,6 +81,12 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
             <span className="text-[var(--border)]">/</span>
             <span className="text-[var(--text-label)] font-medium">{paper.authors}</span>
           </div>
+
+          <SocialShare 
+            title={paper.title} 
+            text={`Decoding ${paper.title} on EulerFold:`} 
+            className="mb-6" 
+          />
           
           <h1 className="inconsolata-ui text-[28px] md:text-[36px] font-bold text-text-heading mb-8 leading-[1.1] tracking-tight group flex items-center md:-ml-12">
             <span className="text-accent opacity-0 group-hover:opacity-100 w-12 text-3xl transition-opacity hidden md:inline">#</span>
@@ -160,6 +168,9 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
             ))}
           </ul>
         </div>
+
+        {/* Discussion Section */}
+        <DiscussionSection contextId={slug} contextType="research-decoded" />
 
         {/* Navigation */}
         <footer className="inconsolata-ui mt-16 flex flex-col md:flex-row items-stretch md:items-center pb-16 text-[14px] md:text-[15px] font-medium border-t border-border pt-12 gap-8 md:gap-0">

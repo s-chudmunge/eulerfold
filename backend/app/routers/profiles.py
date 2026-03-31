@@ -18,7 +18,7 @@ from reportlab.lib.utils import ImageReader
 
 from app.core.supabase_client import get_supabase_client, get_admin_supabase_client
 from app.core.auth import get_current_user
-from app.schemas import PublicProfile, UserSkill, PracticeStats, User
+from app.schemas import PublicProfile, UserSkill, PracticeStats, User, DiscussionRead
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -152,6 +152,29 @@ async def get_public_profile(username: str):
                 else: p_stats.medium += 1
                 p_stats.total += 1
 
+    # 6. Fetch Community Contributions (Discussions)
+    disc_res = sb.table("discussion_threads").select("*").eq("author_id", profile["id"]).order("created_at", desc=True).limit(50).execute()
+    discussions = []
+    for item in (disc_res.data or []):
+        content = item.get("content")
+        if item.get("is_deleted"):
+            content = None
+        
+        discussions.append(DiscussionRead(
+            id=item["id"],
+            context_type=item["context_type"],
+            context_id=item["context_id"],
+            author_id=item["author_id"],
+            author_name=profile.get("display_name") or profile.get("username"),
+            author_avatar=profile.get("avatar_url"),
+            parent_id=item["parent_id"],
+            content=content,
+            is_pinned=item["is_pinned"],
+            is_deleted=item["is_deleted"],
+            created_at=item["created_at"],
+            updated_at=item["updated_at"]
+        ))
+
     total_hours = sum(s.time_invested for s in skills)
     
     return PublicProfile(
@@ -167,7 +190,8 @@ async def get_public_profile(username: str):
         skills=skills,
         roadmaps=roadmaps_data,
         submissions=subs_data,
-        practice_stats=p_stats
+        practice_stats=p_stats,
+        discussions=discussions
     )
 
 @router.get("/profile/{username}/activity")

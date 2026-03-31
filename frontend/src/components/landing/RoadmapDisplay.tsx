@@ -20,6 +20,7 @@ interface RoadmapDisplayProps {
   justGenerated?: boolean;
   isOwner?: boolean;
   onClone?: () => void;
+  hideHeader?: boolean;
 }
 
 const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({ 
@@ -27,7 +28,8 @@ const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({
   initialFormData, 
   justGenerated,
   isOwner = true,
-  onClone
+  onClone,
+  hideHeader = false
 }) => {
   const currentModule = (roadmapData as any).current_module || 1;
   const [expandedModules, setExpandedModules] = useState<number[]>([currentModule - 1]);
@@ -198,31 +200,33 @@ const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({
 
   return (
     <div className="w-full max-w-4xl mx-auto space-y-6 transition-colors duration-300 manrope-body">
-      <div className="flex flex-col md:flex-row md:items-start justify-between gap-8 mt-3">
-        <div className="flex-1 min-w-0">
-          <h2 className="inconsolata-ui text-2xl font-semibold text-text-heading leading-tight   mb-4">
-            {roadmapData.title}
-          </h2>
-          <p className="text-[16px] text-text-muted leading-relaxed italic max-w-3xl font-medium">
-            {roadmapData.description}
-          </p>
-          
-          {submissionsByModule && Object.keys(submissionsByModule).length > 0 && (
-            <div className="mt-8 flex items-center gap-4">
-              <span className="inconsolata-ui text-[11px] font-bold text-text-muted  tracking-wide">Goal Progress:</span>
-              <div className="flex items-center space-x-2">
-                {(roadmapData.roadmap_plan?.modules || []).map((m: any, idx: number) => {
-                  const lvl = getLatestLevelForModule(idx + 1);
-                  const colorClass = lvl === 'Solid' ? 'bg-emerald-500' : lvl === 'Developing' ? 'bg-blue-500' : 'bg-[var(--border)] opacity-30';
-                  return (
-                    <div key={idx} className={`w-2.5 h-2.5 rounded-full ${colorClass}`} title={`Week ${idx+1}: ${lvl || 'Pending'}`} />
-                  );
-                })}
+      {!hideHeader && (
+        <div className="flex flex-col md:flex-row md:items-start justify-between gap-8 mt-3">
+          <div className="flex-1 min-w-0">
+            <h2 className="inconsolata-ui text-2xl font-semibold text-text-heading leading-tight   mb-4">
+              {roadmapData.title}
+            </h2>
+            <p className="text-[16px] text-text-muted leading-relaxed italic max-w-3xl font-medium">
+              {roadmapData.description}
+            </p>
+            
+            {submissionsByModule && Object.keys(submissionsByModule).length > 0 && (
+              <div className="mt-8 flex items-center gap-4">
+                <span className="inconsolata-ui text-[11px] font-bold text-text-muted  tracking-wide">Goal Progress:</span>
+                <div className="flex items-center space-x-2">
+                  {(roadmapData.roadmap_plan?.modules || []).map((m: any, idx: number) => {
+                    const lvl = getLatestLevelForModule(idx + 1);
+                    const colorClass = lvl === 'Solid' ? 'bg-emerald-500' : lvl === 'Developing' ? 'bg-blue-500' : 'bg-[var(--border)] opacity-30';
+                    return (
+                      <div key={idx} className={`w-2.5 h-2.5 rounded-full ${colorClass}`} title={`Week ${idx+1}: ${lvl || 'Pending'}`} />
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       <div className="space-y-4 pt-6">
         {(roadmapData.roadmap_plan?.modules || []).map((module: any, index: number) => {

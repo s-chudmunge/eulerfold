@@ -305,3 +305,36 @@ class PublicProfile(BaseModel):
     roadmaps: List[Dict[str, Any]] = []
     submissions: List[Dict[str, Any]] = []
     practice_stats: Optional[PracticeStats] = None
+    discussions: List["DiscussionRead"] = []
+
+# --- Discussion Schemas ---
+
+class DiscussionBase(BaseModel):
+    content: Optional[str] = None
+    context_type: str
+    context_id: str
+    parent_id: Optional[uuid.UUID] = None
+
+class DiscussionCreate(DiscussionBase):
+    content: str # Required for creation
+
+class DiscussionRead(DiscussionBase):
+    id: uuid.UUID
+    author_id: int
+    author_name: Optional[str] = None
+    author_avatar: Optional[str] = None
+    is_pinned: bool
+    is_deleted: bool
+    created_at: datetime
+    updated_at: datetime
+
+class DiscussionReportCreate(BaseModel):
+    comment_id: uuid.UUID
+    reason: Optional[str] = None
+
+class DiscussionReportRead(BaseModel):
+    id: uuid.UUID
+    user_id: int
+    comment_id: uuid.UUID
+    reason: Optional[str] = None
+    created_at: datetime

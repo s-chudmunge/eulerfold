@@ -8,6 +8,9 @@ import { supabase } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { getDriveDownloadUrl } from '@/lib/drive';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import SocialShare from '@/components/SocialShare';
+import { DiscussionSection } from '@/components/discussions/DiscussionSection';
+import Footer from '@/components/Footer';
 
 const EXAM_FULL_NAMES: Record<string, string> = {
   "AIME": "American Invitational Mathematics Examination",
@@ -197,11 +200,6 @@ export default function ExamClient({ exam }: Props) {
         
         {/* Page Header */}
         <div className="mb-10">
-          <div className="flex items-center gap-4 mb-6">
-            <h2 className="inconsolata-ui text-[0.7rem] font-bold text-text-muted uppercase tracking-wider">Exam Archive</h2>
-            <div className="h-[1px] flex-1 bg-[var(--border)]"></div>
-          </div>
-
           <div className="flex items-start justify-between gap-6 mb-8">
             <div className="flex items-center gap-4">
               {logoUrl && (
@@ -213,9 +211,13 @@ export default function ExamClient({ exam }: Props) {
                 <h1 className="text-[20px] md:text-[24px] font-black text-text-heading tracking-tight inconsolata-ui leading-none mb-1">
                   {exam.title}
                 </h1>
-                <p className="manrope-body text-[12px] md:text-[13px] font-bold text-text-muted">
+                <p className="manrope-body text-[12px] md:text-[13px] font-bold text-text-muted mb-3">
                   {fullName}
                 </p>
+                <SocialShare 
+                  title={`${exam.title} - Previous Year Papers`}
+                  text={`Access previous year papers for ${exam.title} on EulerFold:`}
+                />
               </div>
             </div>
 
@@ -346,7 +348,15 @@ export default function ExamClient({ exam }: Props) {
           )}
         </section>
 
+        {/* Discussion Section */}
+        <DiscussionSection 
+          contextId={exam.id.toLowerCase()} 
+          contextType="exam" 
+          title="Community Insights"
+        />
+
       </main>
+      <Footer />
     </div>
   );
 }

@@ -381,7 +381,7 @@ export default function RoadmapCanvas() {
     return (
         <canvas 
             ref={canvasRef} 
-            className="fixed inset-0 pointer-events-none z-0 overflow-hidden"
+            className="absolute inset-0 pointer-events-none z-0 overflow-hidden"
             style={{ opacity: 0.55, willChange: 'transform' }}
         />
     );
