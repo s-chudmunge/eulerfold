@@ -50,6 +50,124 @@
     ]
   },
   {
+    "title": "Foundational Algorithms",
+    "id": "algorithms",
+    "expanded": true,
+    "sections": [
+      {
+        "title": "Bellman-Ford: Routing & Optimality (1958)",
+        "slug": "bellman-routing-problem"
+      },
+      {
+        "title": "Dijkstra's Algorithm: Graph Search (1959)",
+        "slug": "dijkstra-graph-problems"
+      },
+      {
+        "title": "Floyd-Warshall: All-Pairs Shortest Path (1962)",
+        "slug": "floyd-shortest-path"
+      },
+      {
+        "title": "Hoare Logic: Axiomatic Basis (1969)",
+        "slug": "hoare-axiomatic-basis"
+      },
+      {
+        "title": "Tarjan's DFS: Linear Graph Algorithms (1972)",
+        "slug": "tarjan-dfs-linear-algorithms"
+      },
+      {
+        "title": "Aho-Corasick: Multi-Pattern Matching (1975)",
+        "slug": "aho-corasick-string-matching"
+      },
+      {
+        "title": "KMP: Fast Pattern Matching (1977)",
+        "slug": "knuth-morris-pratt-string-matching"
+      },
+      {
+        "title": "Boyer-Moore: Sub-linear String Search (1977)",
+        "slug": "boyer-moore-string-searching"
+      },
+      {
+        "title": "Fibonacci Heaps: Amortized Efficiency (1987)",
+        "slug": "fredman-tarjan-fibonacci-heaps"
+      },
+      {
+        "title": "LSH: Locality-Sensitive Hashing (1998)",
+        "slug": "indyk-motwani-lsh"
+      },
+      {
+        "title": "Cuckoo Hashing: Worst-Case O(1) (2004)",
+        "slug": "pagh-rodler-cuckoo-hashing"
+      },
+      {
+        "title": "PCP Theorem by Gap Amplification (2007)",
+        "slug": "dinur-pcp-gap-amplification"
+      },
+      {
+        "title": "Breaking the Sorting Barrier for SSSP (2025)",
+        "slug": "duan-sssp-sorting-barrier"
+      }
+    ]
+  },
+  {
+    "title": "Computational Theory",
+    "id": "theory",
+    "expanded": true,
+    "sections": [
+      {
+        "title": "Rabin-Scott: Finite Automata (1959)",
+        "slug": "rabin-scott-finite-automata"
+      },
+      {
+        "title": "Cook's Theorem: NP-Completeness (1971)",
+        "slug": "cook-complexity-theorem-proving"
+      },
+      {
+        "title": "Karp's 21 NP-Complete Problems (1972)",
+        "slug": "karp-combinatorial-problems"
+      },
+      {
+        "title": "Baker-Gill-Solovay: Relativization (1975)",
+        "slug": "baker-gill-solovay-relativization"
+      },
+      {
+        "title": "Miller-Rabin: Probabilistic Primality (1980)",
+        "slug": "rabin-miller-primality-test"
+      },
+      {
+        "title": "Karger's Min-Cut: Randomized Contraction (1993)",
+        "slug": "karger-min-cut-algorithm"
+      },
+      {
+        "title": "Natural Proofs: Complexity Barriers (1994)",
+        "slug": "razborov-rudich-natural-proofs"
+      },
+      {
+        "title": "The PCP Theorem: Hardness of Approximation (1998)",
+        "slug": "arora-pcp-theorem"
+      },
+      {
+        "title": "Smoothed Analysis: Beyond Worst-Case (2001)",
+        "slug": "spielman-teng-smoothed-analysis"
+      },
+      {
+        "title": "AKS: PRIMES is in P (2004)",
+        "slug": "aks-primality-in-p"
+      },
+      {
+        "title": "Reingold's Theorem: Log-Space Connectivity (2005)",
+        "slug": "reingold-log-space-connectivity"
+      },
+      {
+        "title": "ACC Circuit Lower Bounds (2011)",
+        "slug": "williams-acc-circuit-lower-bounds"
+      },
+      {
+        "title": "Fine-Grained Complexity & SETH (2014)",
+        "slug": "abboud-williams-fine-grained-complexity"
+      }
+    ]
+  },
+  {
     "title": "Network Science",
     "id": "networks",
     "expanded": true,

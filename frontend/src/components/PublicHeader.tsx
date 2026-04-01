@@ -101,6 +101,8 @@ const RESEARCH_DATA = {
     { name: "AI Safety & Alignment", href: "/research-decoded?category=safety" },
     { name: "Large Language Models", href: "/research-decoded?category=llms" },
     { name: "Quantum Computing", href: "/research-decoded?category=quantum" },
+    { name: "Foundational Algorithms", href: "/research-decoded?category=algorithms" },
+    { name: "Computational Theory", href: "/research-decoded?category=theory" },
     { name: "Computer Vision", href: "/research-decoded?category=vision" },
     { name: "Reinforcement Learning", href: "/research-decoded?category=rl" },
     { name: "AI Agents & Reasoning", href: "/research-decoded?category=agents" },
@@ -117,14 +119,14 @@ const RESEARCH_DATA = {
   featured: [
     { title: "DeepSeek R1", slug: "deepseek-r1-incentivizing-reasoning" },
     { title: "Attention Is All You Need", slug: "attention-is-all-you-need" },
+    { title: "Dijkstra: Graph Problems", slug: "dijkstra-graph-problems" },
+    { title: "Cook: Theorem-Proving", slug: "cook-complexity-theorem-proving" },
     { title: "AlphaFold 2", slug: "alphafold-2-structure-prediction" },
     { title: "GPT-4 Technical Report", slug: "gpt-4-technical-report" },
     { title: "LoRA Adaptation", slug: "lora-low-rank-adaptation" },
     { title: "Flash Attention", slug: "flash-attention-io-aware" },
     { title: "Segment Anything (SAM)", slug: "segment-anything-model" },
-    { title: "ResNet-50 Architecture", slug: "resnet-deep-residual-learning" },
-    { title: "Scaling Laws for LLMs", slug: "scaling-laws-neural-language-models" },
-    { title: "Adam: Stochastic Optimization", slug: "adam-stochastic-optimization" }
+    { title: "ResNet-50 Architecture", slug: "resnet-deep-residual-learning" }
   ]
 };
 

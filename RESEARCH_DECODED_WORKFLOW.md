@@ -33,5 +33,9 @@ All content must adhere to the **Sankalp Writing Style**:
     *   Include a `## Resources` section at the end with the format:
         `- [Title](URL) {type: article, provider: Provider}`
 2.  **Navigation**: Add the new paper's slug to the appropriate category in `content/research-decoded/navigation.json`.
-3.  **Automated Compilation**: The build system will automatically run `scripts/compile-research.mjs` to sync the new content into the application.
-4.  **Verification**: Confirm the build compiles and the new page renders with correct metadata and functioning images.
+3. **Automated Compilation**: Sync the new content to the frontend by running the compilation script from the root directory:
+   ```bash
+   node scripts/compile-research.mjs
+   ```
+   This script parses the markdown files and navigation settings to generate `frontend/src/app/research-decoded/generatedData.ts`.
+4. **Verification**: Confirm the build compiles and the new page renders with correct metadata and functioning images.
