@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   
   if (!paper) {
     return {
-      title: 'Paper Not Found | Research Decoded',
+      title: 'Paper Not Found',
       robots: {
         index: false,
         follow: false,
@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     };
   }
 
-  const title = paper.title + ' | Research Decoded';
+  const title = paper.title;
   const description = paper.intro.substring(0, 160) + '...';
 
   return {

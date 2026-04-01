@@ -348,7 +348,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
     useEffect(() => {
         if (roadmap && roadmap.id) {
             const subject = roadmap.subject || roadmap.title || 'Roadmap';
-            document.title = `Learning: ${subject} - EulerFold`;
+            document.title = `Learning: ${subject}`;
             
             // Construct the clean slug
             const roadmapSlug = roadmap.slug || roadmap.id.toString();
