@@ -39,7 +39,8 @@ async def reset_user():
         "submissions",
         "eulercoin_transactions",
         "recall_responses",
-        "roadmaps"
+        "roadmaps",
+        "payment_transactions"
     ]
     for table in email_tables:
         try:
