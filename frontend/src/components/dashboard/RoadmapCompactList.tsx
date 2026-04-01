@@ -14,7 +14,6 @@ interface Roadmap {
         bottleneck_module?: number;
     };
     status?: string;
-    next_check_at?: string;
 }
 
 interface RoadmapCompactListProps {
@@ -70,12 +69,6 @@ export default function RoadmapCompactList({ roadmaps }: RoadmapCompactListProps
                                         
                                         {isFlagged && (
                                             <div className="w-2 h-2 rounded-full bg-orange-500 border border-orange-600/20" title="Bottleneck detected" />
-                                        )}
-
-                                        {r.next_check_at && (
-                                            <span className="inconsolata-ui text-[9px] font-bold text-text-muted uppercase ml-auto">
-                                                {format(new Date(r.next_check_at), 'MMM d')}
-                                            </span>
                                         )}
                                     </div>
 

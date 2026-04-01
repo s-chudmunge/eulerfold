@@ -132,6 +132,7 @@ export interface User {
     tos_accepted_at?: string;
     tos_version?: string;
     metadata: Record<string, any>;
+    unsubscribed: boolean;
     current_streak: number;
     eulercoins: number;
     roadmap_credits: number;
@@ -167,29 +168,6 @@ export const authAPI = {
     },
     submitFeatureRequest: async (data: { title: string, description: string }): Promise<any> => {
         const response = await api.post('/auth/feature-request', data);
-        return response.data;
-    }
-};
-
-export const checkinsAPI = {
-    respond: async (entry_uuid: string, action: string, score?: number, token?: string): Promise<any> => {
-        const query = new URLSearchParams({ entry_uuid, action });
-        if (score !== undefined) query.append('score', score.toString());
-        
-        const opts: any = {};
-        if (token) opts.headers = { Authorization: `Bearer ${token}` };
-        
-        const response = await api.get(`/checkins/respond?${query.toString()}`, opts);
-        return response.data;
-    },
-    unsubscribe: async (entry_uuid: string, token?: string): Promise<any> => {
-        const opts: any = {};
-        if (token) opts.headers = { Authorization: `Bearer ${token}` };
-        const response = await api.get(`/checkins/unsubscribe?entry_uuid=${entry_uuid}`, opts);
-        return response.data;
-    },
-    submitRecallResponse: async (payload: any): Promise<any> => {
-        const response = await api.post('/checkins/recall_response', payload);
         return response.data;
     }
 };
@@ -325,11 +303,6 @@ export interface RoadmapData {
 }
 
 export interface RoadmapMe extends RoadmapData {
-    current_module: number;
-    confidence_score: number | null;
-    progressPercent?: number; // Keep for backward compatibility if needed, but we'll use progress.percent
-    unsubscribed?: boolean;
-    next_check_at?: string;
     progress?: {
         percent: number;
         completed_topics: number;

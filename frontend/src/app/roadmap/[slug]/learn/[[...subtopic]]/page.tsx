@@ -30,7 +30,7 @@ export async function generateMetadata({ params }: { params: { slug: string, sub
     }
 
     return {
-        title: `Learning: ${roadmap.subject} | EulerFold`,
+        title: `Learning: ${roadmap.subject}`,
         description: `Master ${roadmap.subject} with this interactive, AI-curated learning journey. Track your progress, study core concepts, and verify your technical skills on EulerFold.`,
         openGraph: {
             title: `${roadmap.subject} - Interactive Learning Journey`,

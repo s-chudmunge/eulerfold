@@ -19,7 +19,7 @@ const manrope = { variable: '--font-sans', className: 'font-sans' };
 export const metadata: Metadata = {
   applicationName: 'EulerFold',
   title: {
-    default: 'EulerFold',
+    default: 'EulerFold - Learning Paths, Exam Prep & Skill Building.',
     template: '%s - EulerFold'
   },
   description: 'Clear learning paths with simple progress tracking that show exactly what you’ve learned and keep you on-track.',

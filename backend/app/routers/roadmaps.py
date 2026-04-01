@@ -478,7 +478,8 @@ async def save_roadmap(
                 goal=roadmap_save.goal,
                 modules=roadmap_save.roadmap_plan.get("modules", []),
                 unsubscribe_link=f"{base}/dashboard",
-                roadmap_id=new_roadmap["id"]
+                roadmap_slug=new_roadmap["slug"],
+                display_name=current_user.display_name
             )
         except Exception as e:
             logger.error(f"Failed to send delayed onboarding email: {e}")
@@ -728,7 +729,8 @@ Begin the JSON output immediately.
                             goal=roadmap_create.goal,
                             modules=roadmap_data["roadmap_plan"]["modules"],
                             unsubscribe_link=f"{settings.FRONTEND_URL}/dashboard",
-                            roadmap_id=r_res.data[0]["id"]
+                            roadmap_slug=r_res.data[0]["slug"],
+                            display_name=current_user.display_name
                         )
                     except Exception as e:
                         logger.error(f"Failed to send delayed generated onboarding: {e}")

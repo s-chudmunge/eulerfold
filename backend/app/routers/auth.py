@@ -29,6 +29,24 @@ class FeatureRequest(BaseModel):
     description: str
     category: str = "Feature"
 
+class UnsubscribeRequest(BaseModel):
+    email: str
+
+@router.post("/unsubscribe")
+async def unsubscribe_email(request: UnsubscribeRequest):
+    """Handle global unsubscriptions by updating the profile flag."""
+    email = request.email.lower().strip()
+    supabase = get_supabase_client()
+    
+    # Update profiles table for this email
+    try:
+        supabase.table("profiles").update({"unsubscribed": True}).eq("email", email).execute()
+    except Exception as e:
+        logger.error(f"Failed to update unsubscribed in profiles for {email}: {e}")
+        raise HTTPException(status_code=500, detail="Failed to update unsubscription preference")
+        
+    return {"status": "ok", "message": "Successfully unsubscribed"}
+
 @router.post("/feature-request")
 async def submit_feature_request(
     request: FeatureRequest,

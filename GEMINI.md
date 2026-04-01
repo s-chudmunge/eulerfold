@@ -83,7 +83,9 @@ Read it fully before making any changes. Rules here are not suggestions.
 
 ---
 
-## Personal Preferences
+### Personal Preferences
 
 - I am Sankalp. I write clean, logical code. Match that standard.
 - Prefer clarity over cleverness. If a solution is hard to read, it's wrong.
+- ALWAYS use `https://www.eulerfold.com` for all links and assets. NEVER use the non-www `https://eulerfold.com` version.
+

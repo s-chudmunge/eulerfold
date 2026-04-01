@@ -40,8 +40,6 @@ class Settings(BaseSettings):
     SENTRY_ENVIRONMENT: str = "development"
     FRONTEND_URL: str = "http://localhost:3000"  # URL of the Next.js frontend
     YOUTUBE_API_KEY: Optional[str] = None
-    # Key to protect the run-due endpoint (for cron jobs)
-    CHECKIN_RUN_KEY: Optional[str] = None
     
     # ToS & Privacy Policy
     TOS_VERSION: str = "2026-03"

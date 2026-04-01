@@ -52,6 +52,7 @@ class UserBase(BaseModel):
     tos_accepted_at: Optional[datetime] = None
     tos_version: Optional[str] = None
     metadata: Dict[str, Any] = Field(default={})
+    unsubscribed: bool = False
     current_streak: int = 0
     eulercoins: int = 0
     roadmap_credits: int = 1
