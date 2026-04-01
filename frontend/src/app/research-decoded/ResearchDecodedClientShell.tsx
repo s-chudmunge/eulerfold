@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { 
   Search,
   ChevronRight,
+  ChevronLeft,
   Menu,
   X,
   PanelLeftClose,
@@ -168,14 +169,7 @@ export default function ResearchDecodedClientShell({
         <div className="w-full px-4 md:px-6 flex h-full items-center">
           {/* Left section: Toggle */}
           <div className="flex items-center w-[40px] md:w-[200px] shrink-0">
-            {/* Hamburger / Sidebar Toggle (Desktop) */}
-            <button 
-              onClick={toggleSidebarCollapse}
-              className="hidden md:flex items-center justify-center p-2 hover:bg-sidebar rounded-lg text-text-muted transition-colors"
-              title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
-            >
-              {isSidebarCollapsed ? <PanelLeftOpen className="w-5 h-5" /> : <PanelLeftClose className="w-5 h-5" />}
-            </button>
+            {/* Desktop toggle moved to sidebar edge */}
 
             {/* Mobile Hamburger */}
             <button 
@@ -234,6 +228,24 @@ export default function ResearchDecodedClientShell({
           />
         )}
 
+        {/* Desktop Sidebar Toggle Button (Floating on Edge) */}
+        <button
+          onClick={toggleSidebarCollapse}
+          className={`
+            hidden md:flex absolute top-1/2 -translate-y-1/2 z-[130]
+            w-5 h-10 bg-sidebar border border-border border-l-0 rounded-r-lg
+            items-center justify-center hover:bg-background transition-all duration-300 group shadow-sm
+            ${isSidebarCollapsed ? 'left-0' : 'left-[260px]'}
+          `}
+          title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+        >
+          {isSidebarCollapsed ? (
+            <ChevronRight className="w-3.5 h-3.5 text-text-muted group-hover:text-accent transition-colors" />
+          ) : (
+            <ChevronLeft className="w-3.5 h-3.5 text-text-muted group-hover:text-accent transition-colors" />
+          )}
+        </button>
+
         {/* Left Sidebar */}
         <aside 
           className={`
@@ -243,12 +255,8 @@ export default function ResearchDecodedClientShell({
             flex flex-col h-full overflow-y-auto no-scrollbar fixed md:relative inset-y-0 left-0 z-[120] shrink-0
           `}
         >
-          <div className="p-5 border-b border-border shrink-0 flex items-center justify-between md:hidden">
-            <div className="flex items-center">
-              <h1 className="text-[15px] font-bold leading-tight tracking-tight text-text-heading whitespace-nowrap">
-                Research Decoded
-              </h1>
-            </div>
+          <div className="md:hidden h-[48px] px-4 border-b border-border shrink-0 flex items-center justify-end">
+            {/* Mobile Close Button */}
             <button 
               onClick={() => setIsSidebarOpen(false)}
               className="p-1 hover:bg-callout-bg rounded-lg text-text-muted"
@@ -308,12 +316,6 @@ export default function ResearchDecodedClientShell({
               </div>
             )}
           </nav>
-          
-          <div className="p-4 border-t border-border mt-auto">
-            <p className="inconsolata-ui text-[10px] font-bold text-text-muted text-center uppercase tracking-widest opacity-60">
-              Verified Explorer
-            </p>
-          </div>
         </aside>
 
         <main ref={scrollContainerRef} className="flex-1 min-w-0 h-full overflow-y-auto no-scrollbar bg-background">
