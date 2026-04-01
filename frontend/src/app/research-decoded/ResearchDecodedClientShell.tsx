@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { 
   Search,
   ChevronRight,
@@ -13,6 +13,7 @@ import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import PublicHeader from '@/components/PublicHeader';
+import { papers } from './generatedData';
 
 function SearchParamsHandler({ onParams }: { onParams: (params: URLSearchParams) => void }) {
   const searchParams = useSearchParams();
@@ -38,11 +39,30 @@ export default function ResearchDecodedClientShell({
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
   const pathname = usePathname();
   const router = useRouter();
+  const scrollContainerRef = useRef<HTMLElement>(null);
 
   const handleSearchParams = React.useCallback((params: URLSearchParams) => {
     setSearchQuery(params.get('q') || "");
     setSearchParams(new URLSearchParams(params.toString()));
-  }, []);
+    
+    const categoryId = params.get('category');
+    if (categoryId && pathname === '/research-decoded') {
+      setTimeout(() => {
+        const element = document.getElementById(categoryId);
+        const container = scrollContainerRef.current;
+        if (element && container) {
+          const containerRect = container.getBoundingClientRect();
+          const elementRect = element.getBoundingClientRect();
+          const relativeTop = elementRect.top - containerRect.top;
+          
+          container.scrollTo({
+            top: container.scrollTop + relativeTop - 20,
+            behavior: 'smooth'
+          });
+        }
+      }, 150);
+    }
+  }, [pathname]);
 
   // Initialize expanded sections from localStorage or defaults
   useEffect(() => {
@@ -114,14 +134,22 @@ export default function ResearchDecodedClientShell({
 
   const filteredNavigation = navigation.map(nav => ({
     ...nav,
-    sections: nav.sections.filter((section: any) => 
-      section.title.toLowerCase().includes(searchQuery.toLowerCase())
-    )
+    sections: nav.sections.filter((section: any) => {
+      const searchLower = searchQuery.toLowerCase();
+      const paper = papers[section.slug];
+      const authorStr = (paper?.authors || "").toLowerCase();
+      return section.title.toLowerCase().includes(searchLower) || authorStr.includes(searchLower);
+    })
   })).filter(nav => nav.sections.length > 0);
 
   const topSearchResults = navigation
     .flatMap(nav => nav.sections)
-    .filter((section: any) => section.title.toLowerCase().includes(searchQuery.toLowerCase()))
+    .filter((section: any) => {
+      const searchLower = searchQuery.toLowerCase();
+      const paper = papers[section.slug];
+      const authorStr = (paper?.authors || "").toLowerCase();
+      return section.title.toLowerCase().includes(searchLower) || authorStr.includes(searchLower);
+    })
     .slice(0, 10);
 
   return (
@@ -288,7 +316,7 @@ export default function ResearchDecodedClientShell({
           </div>
         </aside>
 
-        <main className="flex-1 min-w-0 h-full overflow-y-auto no-scrollbar bg-background">
+        <main ref={scrollContainerRef} className="flex-1 min-w-0 h-full overflow-y-auto no-scrollbar bg-background">
           {children}
         </main>
       </div>

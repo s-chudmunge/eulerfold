@@ -101,13 +101,17 @@
         "title": "Scaling Laws (2020)",
         "slug": "scaling-laws-neural-language-models"
       }
-    ]
-  },
-  {
-    "title": "Quantum Computing",
-    "id": "quantum",
-    "expanded": true,
-    "sections": [
+      ]
+      },
+      {
+      "title": "Quantum Computing",
+      "id": "quantum",
+      "expanded": true,
+      "sections": [
+      {
+        "title": "Simulating Physics with Computers (1982)",
+        "slug": "simulating-physics-feynman"
+      },
       {
         "title": "Shor: Quantum Error Correction (1995)",
         "slug": "shor-quantum-error-correction"
@@ -149,6 +153,10 @@
         "slug": "threshold-theorem-concatenated-codes"
       },
       {
+        "title": "Superconducting Qubits — Transmon (2007)",
+        "slug": "superconducting-qubits-transmon"
+      },
+      {
         "title": "HHL: Linear Systems Algorithm (2008)",
         "slug": "hhl-algorithm"
       },
@@ -165,6 +173,10 @@
         "slug": "qaoa-quantum-approximate-optimization"
       },
       {
+        "title": "Quantum Machine Learning Survey (2017)",
+        "slug": "quantum-machine-learning-survey"
+      },
+      {
         "title": "The NISQ Era (2018)",
         "slug": "nisq-era-and-beyond"
       },
@@ -172,8 +184,8 @@
         "title": "Quantum Supremacy (2019)",
         "slug": "quantum-supremacy-sycamore"
       }
-    ]
-  },
+      ]
+      },
   {
     "title": "Computer Vision",
     "id": "vision",

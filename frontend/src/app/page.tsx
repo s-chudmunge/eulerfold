@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Plus, GraduationCap, ArrowRight, BookOpen, Target, Zap } from 'lucide-react';
 import PublicHeader from '@/components/PublicHeader';
 import Footer from '@/components/Footer';
-import { LoginRequiredMessage, FAQAccordion } from './HomeClientComponents';
+import { LoginRequiredMessage, AlreadySignedInMessage, FAQAccordion } from './HomeClientComponents';
 import MobiusBackground from '@/components/MobiusBackground';
 import QuantumBackground from '@/components/QuantumBackground';
 import EulerLogoCanvas from '@/components/EulerLogoCanvas';
@@ -38,6 +38,7 @@ export default async function LandingPage() {
     <div className="min-h-screen bg-background text-text-primary flex flex-col font-sans relative overflow-hidden">
       <Suspense fallback={null}>
         <LoginRequiredMessage />
+        <AlreadySignedInMessage />
       </Suspense>
       <PublicHeader />
       

@@ -23,6 +23,25 @@ export default function ResearchDecodedIndexContent() {
 
   const handleSearchParams = React.useCallback((params: URLSearchParams) => {
     setSearchQuery(params.get('q') || "");
+    
+    const categoryId = params.get('category');
+    if (categoryId) {
+      setTimeout(() => {
+        const element = document.getElementById(categoryId);
+        if (element) {
+          const offset = 80;
+          const bodyRect = document.body.getBoundingClientRect().top;
+          const elementRect = element.getBoundingClientRect().top;
+          const elementPosition = elementRect - bodyRect;
+          const offsetPosition = elementPosition - offset;
+
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth'
+          });
+        }
+      }, 100);
+    }
   }, []);
 
   const handleSignIn = () => {
@@ -39,17 +58,23 @@ export default function ResearchDecodedIndexContent() {
       ...category,
       sections: category.sections.map(section => {
         const title = section.title.toLowerCase();
+        const paper = papers[section.slug];
+        const authorStr = (paper?.authors || "").toLowerCase();
         let relevance = 0;
         
-        if (cleanedQuery && title === cleanedQuery) {
-          relevance += 1000;
-        } else if (cleanedQuery && title.includes(cleanedQuery)) {
-          relevance += 500;
+        if (cleanedQuery) {
+          if (title === cleanedQuery) relevance += 1000;
+          else if (title.includes(cleanedQuery)) relevance += 500;
+          else if (authorStr.includes(cleanedQuery)) relevance += 300;
         }
         
         for (const kw of keywords) {
-          if (title.includes(kw.toLowerCase())) {
+          const kwLow = kw.toLowerCase();
+          if (title.includes(kwLow)) {
             relevance += 100;
+          }
+          if (authorStr.includes(kwLow)) {
+            relevance += 50;
           }
         }
         

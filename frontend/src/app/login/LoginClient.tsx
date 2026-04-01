@@ -19,6 +19,16 @@ export default function LoginPage() {
     const searchParams = useSearchParams();
     const next = searchParams.get('next');
 
+    useEffect(() => {
+        const checkSession = async () => {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                router.push('/?message=already_signed_in');
+            }
+        };
+        checkSession();
+    }, [router]);
+
     const getRedirectUrl = () => {
         return next 
             ? `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`

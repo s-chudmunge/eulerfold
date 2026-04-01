@@ -95,7 +95,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                 <div className="max-w-[1000px] mx-auto px-6 py-12 md:px-12 md:py-16">
                     
                     {/* Public Toolbar */}
-                    <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-12 border-b border-border pb-8">
+                    <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8 border-b border-border pb-8">
                         <div className="space-y-3">
                             <h1 className="font-inter text-2xl md:text-4xl font-bold text-text-heading tracking-tighter">
                                 {roadmap.title}
@@ -145,7 +145,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
 
                     {/* Roadmap Description */}
                     {(roadmap.goal || roadmap.description) && (
-                        <div className="mb-12 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                        <div className="mb-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
                             <div className="flex items-center gap-3 mb-4">
                                 <Target className="w-4 h-4 text-accent" />
                                 <h2 className="manrope-body text-[12px] font-bold uppercase tracking-[0.2em] text-text-heading font-inter">Objective</h2>
@@ -170,10 +170,10 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                     <div className="mb-24 py-16 border-y border-border/50">
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
                             {[
-                                { title: "Learn", sub: "Study curated videos and high-signal articles" },
-                                { title: "Practice", sub: "Apply knowledge through targeted exercises" },
-                                { title: "Verify", sub: "Pass the Audit Senate to prove your mastery" },
-                                { title: "Proven Skill", sub: "Earn a permanent verifiable technical badge" }
+                                { title: "Learn", sub: "Watch curated videos and read study resources" },
+                                { title: "Practice", sub: "Practice what you learned" },
+                                { title: "Build Projects", sub: "Build projects using your new gained knowledge" },
+                                { title: "Submit & Verify", sub: "Submit your project and get verified by our system" }
                             ].map((step, idx) => (
                                 <div key={idx} className="relative group">
                                     <div className="mb-4 inline-flex items-center justify-center w-10 h-10 rounded-full bg-accent-muted text-accent font-bold font-inter border border-accent/20">

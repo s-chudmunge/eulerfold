@@ -329,6 +329,16 @@ function LearnContent() {
                                 </p>
                             </Link>
                         </div>
+
+                        {/* AI Creation CTA */}
+                        <div className="w-full max-w-md mt-12 pt-8 flex justify-center border-t border-border/40">
+                            <Link 
+                                href="/generate"
+                                className="inline-flex items-center gap-2 bg-text-heading text-background px-8 py-3 rounded-full text-[14px] font-bold tracking-tight hover:opacity-90 active:scale-95 transition-all"
+                            >
+                                <Plus className="w-4 h-4" /> Create your roadmap
+                            </Link>
+                        </div>
                     </div>
                 </main>
             </div>
