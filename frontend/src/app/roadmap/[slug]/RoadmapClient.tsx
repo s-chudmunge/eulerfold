@@ -213,30 +213,31 @@ export default function RoadmapClient({ slug, initialRoadmap }: Props) {
         if (!roadmap) return;
         
         if (isOwner) {
-            window.location.href = `/roadmap/${roadmap.slug}/learn`;
+            router.push(`/roadmap/${roadmap.slug}/learn`);
             return;
         }
 
         if (roadmap.is_cloned) {
-            if (roadmap.cloned_id) {
-                window.location.href = `/roadmap/${roadmap.slug}/learn`;
-                return;
-            }
-            
             setSaving(true);
             try {
                 const { data: { session } } = await supabase.auth.getSession();
                 if (session) {
                     const res = await supabase.from('roadmaps')
                         .select('slug')
-                        .eq('email', session.user.email)
+                        .eq('email', session.user.email?.toLowerCase())
                         .eq('cloned_from', roadmap.id)
                         .maybeSingle();
                     
                     if (res.data) {
-                        window.location.href = `/roadmap/${res.data.slug}/learn`;
+                        router.push(`/roadmap/${res.data.slug}/learn`);
+                    } else {
+                        // Fallback
+                        router.push(`/roadmap/${roadmap.slug}/learn`);
                     }
                 }
+            } catch (err) {
+                console.error("Failed to find clone:", err);
+                router.push(`/roadmap/${roadmap.slug}/learn`);
             } finally {
                 setSaving(false);
             }
@@ -326,7 +327,7 @@ export default function RoadmapClient({ slug, initialRoadmap }: Props) {
                                             const { data: { session } } = await supabase.auth.getSession();
                                             if (session) {
                                                 const res = await exploreAPI.cloneRoadmap(roadmap.id, session.access_token);
-                                                window.location.href = `/roadmap/${res.new_slug}`;
+                                                router.push(`/roadmap/${res.new_slug}`);
                                             }
                                         } catch (err: any) {
                                             setError(err.message);

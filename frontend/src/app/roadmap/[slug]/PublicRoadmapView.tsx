@@ -38,15 +38,30 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
     useEffect(() => {
         const checkAuth = async () => {
             const { data: { session } } = await supabase.auth.getSession();
-            setIsAuthenticated(!!session);
-            if (session) {
+            const authStatus = !!session;
+            setIsAuthenticated(authStatus);
+            
+            if (session && roadmap) {
                 const sessionEmail = session.user.email?.toLowerCase();
                 const roadmapEmail = roadmap?.email?.toLowerCase();
-                setIsOwner(sessionEmail === roadmapEmail);
+                const ownerStatus = sessionEmail === roadmapEmail;
+                setIsOwner(ownerStatus);
+
+                // If not owner, check if already cloned to get the correct state
+                if (!ownerStatus && !roadmap.is_cloned) {
+                    try {
+                        const updatedRoadmap = await exploreAPI.getPublicRoadmap(roadmap.id);
+                        if (updatedRoadmap) {
+                            setRoadmap(updatedRoadmap);
+                        }
+                    } catch (err) {
+                        console.error("Failed to fetch updated roadmap status:", err);
+                    }
+                }
             }
         };
         checkAuth();
-    }, [roadmap]);
+    }, [isAuthenticated, roadmap?.id]);
 
     const handleRate = async (value: number) => {
         if (!isAuthenticated) {
@@ -65,6 +80,42 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
             }
         } catch (err) {
             console.error("Failed to rate:", err);
+        }
+    };
+
+    const handleContinueLearning = async () => {
+        if (!roadmap) return;
+        
+        if (isOwner) {
+            router.push(`/roadmap/${slug}/learn`);
+            return;
+        }
+
+        if (roadmap.is_cloned) {
+            setSaving(true);
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session) {
+                    const { data, error } = await supabase
+                        .from('roadmaps')
+                        .select('slug')
+                        .eq('email', session.user.email?.toLowerCase())
+                        .eq('cloned_from', roadmap.id)
+                        .maybeSingle();
+                    
+                    if (data?.slug) {
+                        router.push(`/roadmap/${data.slug}/learn`);
+                    } else {
+                        // Fallback if clone record not found but flag was true
+                        router.push(`/roadmap/${slug}/learn`);
+                    }
+                }
+            } catch (err) {
+                console.error("Failed to find clone:", err);
+                router.push(`/roadmap/${slug}/learn`);
+            } finally {
+                setSaving(false);
+            }
         }
     };
 
@@ -153,13 +204,14 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                         </div>
 
                         <div className="flex items-center gap-3 shrink-0 pt-1">
-                            {isOwner ? (
-                                <Link 
-                                    href={`/roadmap/${slug}/learn`}
-                                    className="inline-flex items-center justify-center bg-accent text-white px-7 py-3 rounded-2xl font-bold text-[14px] transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-accent/30 active:scale-[0.98] gap-3 font-inter"
+                            {(isOwner || roadmap.is_cloned) ? (
+                                <button 
+                                    onClick={handleContinueLearning}
+                                    disabled={saving}
+                                    className="inline-flex items-center justify-center bg-accent text-white px-7 py-3 rounded-2xl font-bold text-[14px] transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-accent/30 active:scale-[0.98] gap-3 font-inter disabled:opacity-50"
                                 >
                                     <Play className="w-4 h-4 fill-current" /> Continue Learning
-                                </Link>
+                                </button>
                             ) : (
                                 <button 
                                     onClick={handleClone}

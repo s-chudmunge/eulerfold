@@ -5,9 +5,10 @@ import { Plus, GraduationCap, ArrowRight, BookOpen, Target, Zap } from 'lucide-r
 import PublicHeader from '@/components/PublicHeader';
 import Footer from '@/components/Footer';
 import { LoginRequiredMessage, AlreadySignedInMessage, FAQAccordion } from './HomeClientComponents';
-import MobiusBackground from '@/components/MobiusBackground';
+
 import QuantumBackground from '@/components/QuantumBackground';
 import EulerLogoCanvas from '@/components/EulerLogoCanvas';
+import TwistedTorusBackground from '@/components/TwistedTorusBackground';
 
 export const revalidate = 3600;
 
@@ -140,9 +141,9 @@ export default async function LandingPage() {
 {/* Features Section with Illustration Background */}
 <section className="relative py-20 md:py-32 px-4 md:px-6">
   <div className="max-w-7xl mx-auto relative rounded-[32px] md:rounded-[40px] overflow-hidden border border-border bg-sidebar/50 min-h-[550px] md:min-h-[600px] flex items-center shadow-2xl">
-    {/* Mobius Animation Background */}
+    {/* Twisted Torus Animation Background */}
     <div className="absolute inset-0 z-0 opacity-100">
-      <MobiusBackground />
+      <TwistedTorusBackground />
     </div>
 
     <div className="relative z-10 px-6 md:px-20 py-12 md:py-0 max-w-2xl">
@@ -223,7 +224,7 @@ export default async function LandingPage() {
                 Build your first roadmap in seconds.
               </h2>
               <p className="manrope-body text-[15px] md:text-[17px] text-text-primary mb-10 max-w-lg mx-auto leading-relaxed font-medium">
-                No credit card required. Join thousands of students building their mastery on the world's most effective learning infrastructure.
+                No credit card required. Join thousands of students building their paths on the world's most effective learning platform.
               </p>
               <Link 
                 href="/generate"
