@@ -28,42 +28,59 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // 1. Get initial session, then fetch full user profile
-    supabase.auth.getSession().then(async ({ data: { session } }) => {
-      if (session?.user) {
-        try {
-          const userData = await authAPI.getMe();
-          setUser(userData);
-          // TOS check
-          if (!userData.tos_accepted_at || userData.tos_version !== TOS_VERSION) {
-            const protectedPaths = ['/dashboard', '/settings', '/roadmap', '/learn'];
-            if (protectedPaths.some(path => window.location.pathname.startsWith(path))) {
-              setShowTOS(true);
-            }
-          }
-        } catch (err: any) {
-          console.error("Auth init failed:", err);
-        }
+    let isInitialized = false;
+
+    const fetchUserProfile = async (session: any) => {
+      if (!session?.user) {
+        setUser(null);
+        setLoading(false);
+        return;
       }
-      setLoading(false);
+
+      try {
+        const userData = await authAPI.getMe();
+        setUser(userData);
+        
+        // TOS check
+        if (!userData.tos_accepted_at || userData.tos_version !== TOS_VERSION) {
+          const protectedPaths = ['/dashboard', '/settings', '/roadmap', '/learn'];
+          if (protectedPaths.some(path => window.location.pathname.startsWith(path))) {
+            setShowTOS(true);
+          }
+        }
+      } catch (err: any) {
+        console.error("Auth profile fetch failed:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    // 1. Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (isInitialized) return;
+      isInitialized = true;
+      fetchUserProfile(session);
     });
 
     // 2. Listen for future auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === 'INITIAL_SESSION') {
+        if (!isInitialized) {
+          isInitialized = true;
+          fetchUserProfile(session);
+        }
+        return;
+      }
+
       if (event === 'SIGNED_OUT') {
         setUser(null);
         setShowTOS(false);
         setLoading(false);
+        isInitialized = true;
       } else if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session) {
         setLoading(true);
-        try {
-          const userData = await authAPI.getMe();
-          setUser(userData);
-        } catch (err) {
-          console.error("Auth change fetch failed:", err);
-        } finally {
-          setLoading(false);
-        }
+        fetchUserProfile(session);
+        isInitialized = true;
       }
     });
 
