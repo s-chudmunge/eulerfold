@@ -1,6 +1,7 @@
 import os
 import httpx
 import logging
+from datetime import datetime
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
@@ -35,7 +36,7 @@ async def send_email(to: str, subject: str, html: str, sender: str = None) -> di
 async def build_html_email(content_html: str, user_email: str = None, unsubscribe_link: str = None) -> str:
     # Branding assets and colors
     logo_url = "https://www.eulerfold.com/logo_with_text.png"
-    bg_color = "#f0f7f6"
+    bg_color = "#e2eeed"
     card_bg = "#ffffff"
     text_color = "#1e293b"
     border_color = "#e2e8f0"
@@ -43,11 +44,7 @@ async def build_html_email(content_html: str, user_email: str = None, unsubscrib
     unsub_section = ""
     if unsubscribe_link:
         unsub_section = f"""
-            <tr>
-                <td style="padding: 32px 0 0 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 11px; color: #94a3b8; text-align: center;">
-                    <a href="{unsubscribe_link}" style="color: #94a3b8; text-decoration: none;">Unsubscribe</a>
-                </td>
-            </tr>
+            <a href="{unsubscribe_link}" style="color: #94a3b8; text-decoration: none; margin: 0 8px;">Unsubscribe</a> •
         """
 
     return f"""
@@ -66,7 +63,7 @@ async def build_html_email(content_html: str, user_email: str = None, unsubscrib
                     <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; border-collapse: collapse;">
                         <tr>
                             <td style="padding: 0 0 32px 0; text-align: center;">
-                                <img src="{logo_url}" alt="EulerFold" width="220" style="display: block; margin: 0 auto;" />
+                                <img src="{logo_url}" alt="EulerFold" width="160" style="display: block; margin: 0 auto;" />
                             </td>
                         </tr>
                         <tr>
@@ -76,11 +73,27 @@ async def build_html_email(content_html: str, user_email: str = None, unsubscrib
                                 </div>
                             </td>
                         </tr>
-                        {unsub_section}
                         <tr>
-                            <td style="padding: 32px 0 0 0; font-family: 'Inter', sans-serif; font-size: 12px; color: #94a3b8; text-align: center; line-height: 1.5;">
-                                You're receiving this because you're an EulerFold member.<br/>
-                                If this wasn't you, please ignore this email.
+                            <td style="padding: 48px 0 0 0; text-align: center; font-family: 'Inter', sans-serif;">
+                                <div style="margin-bottom: 24px;">
+                                    <a href="https://x.com/eulerfold" style="display: inline-block; margin: 0 12px; text-decoration: none;">
+                                        <img src="https://img.icons8.com/ios-filled/50/64748b/twitterx.png" alt="Twitter" width="20" style="display: block;" />
+                                    </a>
+                                    <a href="https://instagram.com/eulerfold" style="display: inline-block; margin: 0 12px; text-decoration: none;">
+                                        <img src="https://img.icons8.com/ios-filled/50/64748b/instagram-new.png" alt="Instagram" width="20" style="display: block;" />
+                                    </a>
+                                    <a href="https://www.eulerfold.com" style="display: inline-block; margin: 0 12px; text-decoration: none;">
+                                        <img src="https://img.icons8.com/ios-filled/50/64748b/globe.png" alt="Website" width="20" style="display: block;" />
+                                    </a>
+                                </div>
+                                <div style="font-size: 12px; color: #94a3b8; line-height: 1.8; margin-bottom: 24px;">
+                                    <strong>EulerFold</strong><br/>
+                                    Sangli, Maharashtra, India
+                                </div>
+                                <div style="font-size: 11px; color: #cbd5e1; letter-spacing: 0.025em; text-transform: uppercase; font-weight: 700;">
+                                    {unsub_section}
+                                    <span>© {datetime.now().year} EulerFold. All rights reserved.</span>
+                                </div>
                             </td>
                         </tr>
                     </table>

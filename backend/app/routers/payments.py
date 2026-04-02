@@ -10,7 +10,9 @@ from app.core.config import settings
 from app.core.auth import get_current_user
 from app.schemas import User
 from app.core.supabase_client import get_supabase_client
+from app.utils.resend_client import send_pro_activation_email
 import logging
+import asyncio
 
 logger = logging.getLogger(__name__)
 
@@ -73,18 +75,18 @@ async def process_payment_success(email: str, payment_id: str, order_id: str = N
         logger.info(f"Payment {payment_id} already processed. Skipping.")
         return False
 
-    # 2. Fetch current credits
-    res = sb.table("profiles").select("roadmap_credits").eq("email", email).execute()
+    # 2. Fetch current credits and user info
+    res = sb.table("profiles").select("roadmap_credits, display_name").eq("email", email).execute()
     if not res.data:
         logger.error(f"Profile not found for {email} during payment processing")
         return False
         
-    current_credits = res.data[0].get("roadmap_credits") or 0
+    profile_data = res.data[0]
+    current_credits = profile_data.get("roadmap_credits") or 0
+    display_name = profile_data.get("display_name")
     new_credits = current_credits + 5
     
-    # 3. Update credits and record transaction in a "transactional" way (as much as possible via API)
-    # Note: Supabase JS/Python client doesn't support cross-table transactions easily without RPC, 
-    # but we can do them sequentially.
+    # 3. Update credits and record transaction
     try:
         # Update Profile (Add Credits and set is_pro=True)
         sb.table("profiles").update({
@@ -104,6 +106,10 @@ async def process_payment_success(email: str, payment_id: str, order_id: str = N
         }).execute()
         
         logger.info(f"Successfully processed payment {payment_id}. Added 5 credits to {email}.")
+        
+        # 4. Send Pro Activation Email
+        asyncio.create_task(send_pro_activation_email(email, display_name))
+        
         return True
     except Exception as e:
         logger.error(f"Error recording transaction for {payment_id}: {e}")
