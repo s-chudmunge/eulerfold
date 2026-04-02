@@ -183,6 +183,8 @@ async def get_public_profile(username: str):
         email=profile.get("email"),
         avatar_url=profile.get("avatar_url"),
         supabase_uid=profile.get("supabase_uid"),
+        is_pro=profile.get("is_pro", False),
+        roadmap_credits=profile.get("roadmap_credits", 0),
         total_skills=len(skills),
         total_roadmaps=total_roadmaps_count,
         total_hours=round(total_hours, 1),

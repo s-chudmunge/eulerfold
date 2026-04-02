@@ -41,7 +41,9 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
     const [stats, setStats] = useState({
         streak: 0,
         coins: 0,
-        roadmaps: 0
+        roadmaps: 0,
+        credits: 0,
+        isPro: false
     });
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
@@ -53,15 +55,24 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
             
             if (session) {
                 try {
-                    // Fetch profile for streak
-                    const { data: profile, error: profileErr } = await supabase
-                        .from('profiles')
-                        .select('current_streak,eulercoins')
-                        .eq('supabase_uid', session.user.id)
-                        .maybeSingle();
+                    // Validate UUID before querying to prevent Postgres errors
+                    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(session.user.id);
                     
-                    if (profileErr) {
-                        console.warn("Sidebar profile fetch error:", profileErr);
+                    let profile = null;
+                    if (isUUID) {
+                        // Fetch profile for streak, coins, credits, and pro status
+                        const { data, error: profileErr } = await supabase
+                            .from('profiles')
+                            .select('current_streak,eulercoins,roadmap_credits,is_pro')
+                            .eq('supabase_uid', session.user.id)
+                            .maybeSingle();
+                        
+                        if (profileErr) {
+                            console.warn("Sidebar profile fetch error:", profileErr);
+                        }
+                        profile = data;
+                    } else {
+                        console.warn("Sidebar session user ID is not a valid UUID:", session.user.id);
                     }
                     
                     // Fetch roadmaps for count
@@ -76,7 +87,9 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                     setStats({
                         streak: profile?.current_streak || 0,
                         coins: profile?.eulercoins || 0,
-                        roadmaps: activeCount
+                        roadmaps: activeCount,
+                        credits: profile?.roadmap_credits || 0,
+                        isPro: profile?.is_pro || false
                     });
                 } catch (error) {
                     console.error('Error loading sidebar stats:', error);
@@ -188,6 +201,7 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                                 {[
                                     { label: 'Streak', val: `${stats.streak}d`, icon: Zap },
                                     { label: 'EulerCoins', val: stats.coins, icon: Coins },
+                                    { label: 'Credits', val: stats.credits, icon: CreditCard },
                                     { label: 'Roadmaps', val: stats.roadmaps, icon: TrendingUp }
                                 ].map((item) => (
                                     <div key={item.label} className="flex items-center justify-between px-2.5 py-1 text-[12px] font-medium text-gray-600 dark:text-gray-400">
@@ -280,8 +294,8 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                                     <p className="text-[11px] font-semibold text-black dark:text-white truncate leading-none">
                                         {user.user_metadata?.full_name?.split(' ')[0] || user.email?.split('@')[0]}
                                     </p>
-                                    <p className="text-[9px] text-gray-400 lowercase tracking-tight mt-0.5">
-                                        eulerfold free
+                                    <p className={`text-[9px] lowercase tracking-tight mt-0.5 ${stats.isPro ? 'text-accent font-bold' : 'text-gray-400'}`}>
+                                        eulerfold {stats.isPro ? 'pro' : 'free'}
                                     </p>
                                 </div>
                             </div>

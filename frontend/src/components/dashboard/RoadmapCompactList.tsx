@@ -9,6 +9,7 @@ interface Roadmap {
     id: number;
     slug: string;
     subject: string;
+    is_public?: boolean;
     progress?: {
         percent: number;
         bottleneck_module?: number;
@@ -60,14 +61,21 @@ export default function RoadmapCompactList({ roadmaps }: RoadmapCompactListProps
                             <div className="flex justify-between items-start gap-4">
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-2 mb-2 flex-wrap">
-                                        <Link 
+                                        <Link
                                             href={`/roadmap/${r.slug || r.id}`}
                                             className="inconsolata-ui text-[13px] font-bold text-text-heading hover:text-accent transition-colors uppercase tracking-tight truncate leading-tight"
                                         >
                                             {r.subject}
                                         </Link>
-                                        
+
+                                        {r.is_public && (
+                                            <div className="flex items-center px-1.5 py-0.5 rounded bg-blue-500/5 border border-blue-500/20 ml-1">
+                                                <span className="inconsolata-ui text-[8px] font-black text-blue-500 uppercase tracking-tighter">Public</span>
+                                            </div>
+                                        )}
+
                                         {isFlagged && (
+
                                             <div className="w-2 h-2 rounded-full bg-orange-500 border border-orange-600/20" title="Bottleneck detected" />
                                         )}
                                     </div>

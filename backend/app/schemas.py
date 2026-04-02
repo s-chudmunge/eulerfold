@@ -56,6 +56,7 @@ class UserBase(BaseModel):
     current_streak: int = 0
     eulercoins: int = 0
     roadmap_credits: int = 1
+    is_pro: bool = False
     last_active_date: Optional[datetime] = None
     skills: List[UserSkill] = []
 
@@ -300,6 +301,8 @@ class PublicProfile(BaseModel):
     email: Optional[str] = None
     avatar_url: Optional[str] = None
     supabase_uid: Optional[str] = None
+    is_pro: bool = False
+    roadmap_credits: int = 0
     total_skills: int
     total_roadmaps: int
     total_hours: float

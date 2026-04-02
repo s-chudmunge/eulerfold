@@ -24,6 +24,7 @@ import TrendingUp from 'lucide-react/dist/esm/icons/trending-up';
 import Calendar from 'lucide-react/dist/esm/icons/calendar';
 import BrainCircuit from 'lucide-react/dist/esm/icons/brain-circuit';
 import AlertCircle from 'lucide-react/dist/esm/icons/alert-circle';
+import CreditCard from 'lucide-react/dist/esm/icons/credit-card';
 import Coins from 'lucide-react/dist/esm/icons/coins';
 import Trash2 from 'lucide-react/dist/esm/icons/trash-2';
 import ArrowRight from 'lucide-react/dist/esm/icons/arrow-right';
@@ -105,7 +106,15 @@ export default function DashboardPage() {
                 const token = session?.access_token;
 
                 // 1. Basic Profile - use maybeSingle() to avoid 406 error if profile is missing
-                const { data: userProfile, error: profileError } = await supabase.from('profiles').select('*').eq('supabase_uid', authUser.id).maybeSingle();
+                if (!authUser.supabase_uid) {
+                    throw new Error("No Supabase UID found for user");
+                }
+                
+                const { data: userProfile, error: profileError } = await supabase
+                    .from('profiles')
+                    .select('*')
+                    .eq('supabase_uid', authUser.supabase_uid)
+                    .maybeSingle();
                 
                 if (profileError) {
                     console.error("Profile fetch error:", profileError);
@@ -146,7 +155,8 @@ export default function DashboardPage() {
                     try {
                         const fullProfile = await profileAPI.getPublicProfile(activeProfile.username);
                         if (isMounted && fullProfile) {
-                            setProfile(fullProfile); // Update with skills array
+                            // Merge data to preserve is_pro and credits if they exist in state
+                            setProfile((prev: any) => ({ ...prev, ...fullProfile }));
                             if (fullProfile.submissions) {
                                 setAllSubmissions(fullProfile.submissions);
                             }
@@ -286,6 +296,15 @@ export default function DashboardPage() {
                     </div>
 
                     <div className="flex items-center gap-2 md:gap-4">
+                        {profile?.is_pro && (
+                            <div className="hidden sm:flex items-center px-2 py-0.5 rounded bg-accent/10 border border-accent/20">
+                                <span className="inconsolata-ui text-[9px] font-black text-accent uppercase tracking-tighter">Pro Mode</span>
+                            </div>
+                        )}
+                        <div className="flex items-center gap-1 text-text-muted px-2 py-1 rounded bg-callout-bg border border-border">
+                            <CreditCard className="w-3 h-3" />
+                            <span className="inconsolata-ui text-[10px] font-bold">{profile?.roadmap_credits || 0}</span>
+                        </div>
                         {profile?.username && (
                             <Link 
                                 href={`/u/${profile.username}`}
@@ -366,7 +385,13 @@ export default function DashboardPage() {
                                                     <h3 className="inconsolata-ui text-[13px] font-bold text-text-heading truncate tracking-normal">
                                                         {r.title}
                                                     </h3>
+                                                    {r.is_public && (
+                                                        <div className="flex items-center px-1.5 py-0.5 rounded bg-blue-500/5 border border-blue-500/20">
+                                                            <span className="inconsolata-ui text-[8px] font-black text-blue-500 uppercase tracking-tighter">Public</span>
+                                                        </div>
+                                                    )}
                                                 </div>
+
                                             </div>
 
                                             {/* Progress - Minimal Percentage */}

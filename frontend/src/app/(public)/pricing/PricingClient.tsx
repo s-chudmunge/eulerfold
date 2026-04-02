@@ -56,8 +56,9 @@ export default function PricingClient() {
                 <div className="flex flex-col p-6 border border-border rounded-none bg-background">
                     <div className="mb-6">
                         <span className="inconsolata-ui text-[9px] font-bold text-text-muted uppercase tracking-widest mb-3 inline-block">Always Free</span>
-                        <div className="flex items-baseline gap-1 mb-1">
+                        <div className="flex items-baseline justify-between mb-1">
                             <span className="inconsolata-ui text-2xl font-bold text-text-heading">Starter</span>
+                            <span className="inconsolata-ui text-xl font-bold text-text-muted">Free</span>
                         </div>
                         <p className="manrope-body text-[12px] text-text-muted">Standard features for everyone.</p>
                     </div>
@@ -89,15 +90,16 @@ export default function PricingClient() {
                 <div className="flex flex-col p-6 border border-[var(--accent)] rounded-none bg-accent-muted/5">
                     <div className="mb-6">
                         <span className="inconsolata-ui text-[9px] font-bold text-accent uppercase tracking-widest mb-3 inline-block">One-time payment</span>
-                        <div className="flex items-baseline gap-1 mb-1">
+                        <div className="flex items-baseline justify-between mb-1">
                             <span className="inconsolata-ui text-2xl font-bold text-text-heading">Pro</span>
+                            <span className="inconsolata-ui text-xl font-bold text-accent">₹299</span>
                         </div>
                         <p className="manrope-body text-[12px] text-text-muted">Advanced study paths.</p>
                     </div>
 
                     <div className="space-y-2 mb-8 flex-1 text-[11px] text-text-primary font-medium">
                         <div className="flex items-center gap-2.5">
-                            <span className="text-accent">✓</span> 2 Premium roadmaps
+                            <span className="text-accent">✓</span> 5 Premium roadmaps
                         </div>
                         <div className="flex items-center gap-2.5">
                             <span className="text-accent">✓</span> Full-length study paths
@@ -111,12 +113,13 @@ export default function PricingClient() {
                     </div>
 
                     {isLoggedIn ? (
-                        <button 
+                        <button
                             onClick={() => setIsPaymentModalOpen(true)}
                             className="w-full py-2 bg-[#111] dark:bg-[#14b8a6] !text-white rounded-none text-center inconsolata-ui text-[10px] font-bold uppercase tracking-widest hover:opacity-90 transition-all shadow-md"
                         >
-                            Buy Credits (₹99)
+                            Buy Credits (₹299)
                         </button>
+
                     ) : (
                         <Link 
                             href="/login?next=/pricing"

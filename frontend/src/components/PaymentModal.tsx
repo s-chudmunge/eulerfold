@@ -106,9 +106,9 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
           <div className="flex justify-between items-center mb-6">
             <div className="flex flex-col">
               <span className="inconsolata-ui text-[11px] font-bold uppercase text-text-muted tracking-wider">Premium Credits</span>
-              <span className="inconsolata-ui text-[9px] text-text-muted opacity-60">2 Roadmap Generations</span>
+              <span className="inconsolata-ui text-[9px] text-text-muted opacity-60">5 Roadmap Generations</span>
             </div>
-            <span className="inconsolata-ui text-[18px] font-bold text-accent">₹99</span>
+            <span className="inconsolata-ui text-[18px] font-bold text-accent">₹299</span>
           </div>
 
           {error && (

@@ -101,7 +101,10 @@ function parseMarkdown(content, slug) {
 }
 
 function compile() {
-    const navData = JSON.parse(fs.readFileSync(navFile, 'utf8'));
+    let navRaw = fs.readFileSync(navFile, 'utf8');
+    // Replace em-dashes with space-hyphen-space, handling surrounding whitespace
+    navRaw = navRaw.replace(/\s*—\s*/g, ' - ');
+    const navData = JSON.parse(navRaw);
     const orderedSlugs = [];
     for (const cat of navData) {
         for (const sec of cat.sections) {
@@ -115,7 +118,10 @@ function compile() {
         const mdPath = path.join(contentDir, `${slug}.md`);
         if (!fs.existsSync(mdPath)) continue;
 
-        const parsed = parseMarkdown(fs.readFileSync(mdPath, 'utf8'), slug);
+        let mdContent = fs.readFileSync(mdPath, 'utf8');
+        // Replace em-dashes with space-hyphen-space, handling surrounding whitespace
+        mdContent = mdContent.replace(/\s*—\s*/g, ' - ');
+        const parsed = parseMarkdown(mdContent, slug);
         if (!parsed) continue;
 
         papersRecord[slug] = {

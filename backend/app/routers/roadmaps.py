@@ -539,18 +539,35 @@ async def generate_roadmap(
     user_email = current_user.email
     logger.info(f"User {user_email} generating roadmap for: {roadmap_create.subject} ({roadmap_create.goal})")
     
-    # Validation guard for credits
+    # Validation guard for credits and Pro status
     sb = get_supabase_client()
-    res = sb.table("profiles").select("roadmap_credits").eq("email", user_email).execute()
-    if not res.data or res.data[0].get("roadmap_credits", 0) <= 0:
+    res = sb.table("profiles").select("roadmap_credits, is_pro").eq("email", user_email).execute()
+    if not res.data:
+        raise HTTPException(status_code=404, detail="User profile not found")
+        
+    profile_data = res.data[0]
+    has_credits = profile_data.get("roadmap_credits", 0) > 0
+    is_pro = profile_data.get("is_pro", False)
+    
+    if not has_credits:
         raise HTTPException(
             status_code=402,
             detail="Insufficient roadmap generation credits. Please purchase a credit."
         )
         
     # Deduct credit
-    current_credits = res.data[0].get("roadmap_credits", 0)
+    current_credits = profile_data.get("roadmap_credits", 0)
     sb.table("profiles").update({"roadmap_credits": current_credits - 1}).eq("email", user_email).execute()
+
+    # Determine model to use
+    # Paid users (who have purchased at least once) get the Pro model.
+    # We use the is_pro flag which is set upon any successful purchase.
+    if is_pro or roadmap_create.model == "models/gemini-2.5-pro":
+        model_to_use = "models/gemini-2.5-pro"
+        logger.info(f"Using PREMIUM model (gemini-2.5-pro) for {user_email}")
+    else:
+        model_to_use = "models/gemini-2.5-flash"
+        logger.info(f"Using SCALE model (gemini-2.5-flash) for {user_email}")
 
     # Validation guard
     if roadmap_create.time_value < 1 or roadmap_create.time_value > 8:
@@ -627,10 +644,6 @@ Begin the JSON output immediately.
 """
 
     try:
-        model_to_use = roadmap_create.model or settings.GEMINI_MODEL
-        if not model_to_use.startswith("models/"):
-            model_to_use = f"models/{model_to_use}"
-        
         # Retry logic for JSON generation
         max_retries = 3
         for attempt in range(max_retries):
@@ -733,10 +746,9 @@ Begin the JSON output immediately.
                 "goal": roadmap_create.goal,
                 "time_value": roadmap_create.time_value,
                 "time_unit": roadmap_create.time_unit,
-                "model": roadmap_create.model,
+                "model": model_to_use,
                 "email": email
-            }).execute()
-            
+                }).execute()
             if r_res.data:
                 # 4. Delayed Email (2 hours)
                 async def delayed_onboarding_gen():
@@ -774,7 +786,7 @@ Begin the JSON output immediately.
         goal=roadmap_create.goal,
         time_value=roadmap_create.time_value,
         time_unit=roadmap_create.time_unit,
-        model=roadmap_create.model,
+        model=model_to_use,
         created_at=datetime.now(timezone.utc),
         updated_at=datetime.now(timezone.utc),
     )

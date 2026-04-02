@@ -37,9 +37,9 @@ async def create_checkout(req: CheckoutRequest, current_user: User = Depends(get
         raise HTTPException(status_code=500, detail="Razorpay not configured")
     
     try:
-        # ₹99 = 9900 paise
+        # ₹299 = 29900 paise
         order_data = {
-            "amount": 9900,
+            "amount": 29900,
             "currency": "INR",
             "receipt": f"receipt_{user_email[:20]}",
             "notes": {
@@ -58,7 +58,7 @@ async def create_checkout(req: CheckoutRequest, current_user: User = Depends(get
         logger.error(f"Razorpay order creation failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-async def process_payment_success(email: str, payment_id: str, order_id: str = None, signature: str = None, amount: int = 9900, currency: str = "INR"):
+async def process_payment_success(email: str, payment_id: str, order_id: str = None, signature: str = None, amount: int = 29900, currency: str = "INR"):
     """
     Handles successful payment: 
     1. Check for duplicate payment_id
@@ -80,14 +80,17 @@ async def process_payment_success(email: str, payment_id: str, order_id: str = N
         return False
         
     current_credits = res.data[0].get("roadmap_credits") or 0
-    new_credits = current_credits + 2
+    new_credits = current_credits + 5
     
     # 3. Update credits and record transaction in a "transactional" way (as much as possible via API)
     # Note: Supabase JS/Python client doesn't support cross-table transactions easily without RPC, 
     # but we can do them sequentially.
     try:
-        # Update Profile
-        sb.table("profiles").update({"roadmap_credits": new_credits}).eq("email", email).execute()
+        # Update Profile (Add Credits and set is_pro=True)
+        sb.table("profiles").update({
+            "roadmap_credits": new_credits,
+            "is_pro": True
+        }).eq("email", email).execute()
         
         # Record Transaction
         sb.table("payment_transactions").insert({
@@ -100,7 +103,7 @@ async def process_payment_success(email: str, payment_id: str, order_id: str = N
             "status": "captured"
         }).execute()
         
-        logger.info(f"Successfully processed payment {payment_id}. Added 2 credits to {email}.")
+        logger.info(f"Successfully processed payment {payment_id}. Added 5 credits to {email}.")
         return True
     except Exception as e:
         logger.error(f"Error recording transaction for {payment_id}: {e}")
@@ -159,7 +162,7 @@ async def razorpay_webhook(request: Request, x_razorpay_signature: str = Header(
         email = payload.get("notes", {}).get("email")
         payment_id = payload.get("id")
         order_id = payload.get("order_id")
-        amount = payload.get("amount", 9900)
+        amount = payload.get("amount", 29900)
         currency = payload.get("currency", "INR")
         
         if not email:
@@ -187,3 +190,4 @@ async def get_transactions(current_user: User = Depends(get_current_user)):
         .execute()
     
     return res.data
+

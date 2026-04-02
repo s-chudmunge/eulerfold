@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
     GEMINI_API_KEY: Optional[str] = None
-    GEMINI_MODEL: str = "models/gemini-1.5-pro"
+    GEMINI_MODEL: str = "models/gemini-2.5-flash"
     DEEPSEEK_KEY: Optional[str] = None
     AT_RISK_THRESHOLD: float = 0.2
 
@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     SUPABASE_SERVICE_ROLE_KEY: Optional[str] = None  # For admin operations
 
     # Default AI Models for different use cases - centralized configuration
-    DEFAULT_ROADMAP_MODEL: str = "models/gemini-2.5-flash"
+    DEFAULT_ROADMAP_MODEL: str = "models/gemini-2.5-pro"
     DEFAULT_FEEDBACK_MODEL: str = "models/gemini-2.5-flash"
     DEFAULT_LEARNING_CONTENT_MODEL: str = "models/gemini-2.5-flash"
     DEFAULT_VISUALIZATION_MODEL: str = "models/gemini-2.5-flash"

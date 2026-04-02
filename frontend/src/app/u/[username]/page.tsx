@@ -25,8 +25,8 @@ export async function generateMetadata({ params }: { params: { username: string 
     
     if (!profile) {
         return {
-            title: 'Explorer Not Found',
-            description: 'This explorer profile could not be found.',
+            title: 'User Not Found',
+            description: 'This user profile could not be found.',
             robots: {
                 index: false,
                 follow: false,
@@ -35,7 +35,7 @@ export async function generateMetadata({ params }: { params: { username: string 
     }
 
     const displayName = profile.display_name || profile.username;
-    const title = `${displayName} (@${profile.username}) - Explorer`;
+    const title = `${displayName} (@${profile.username}) - Member`;
     const description = `View ${displayName}'s proven skills and learning progress on EulerFold. Currently tracking ${profile.total_skills} skills across ${profile.total_roadmaps} roadmaps.`;
     
     return {
@@ -65,7 +65,7 @@ export default async function PublicProfilePage({ params }: { params: { username
             <div className="min-h-screen bg-background flex items-center justify-center p-6 transition-colors duration-300">
                 <div className="text-center space-y-6 max-w-sm">
                     <div className="text-5xl mb-8">🐢</div>
-                    <h1 className="inconsolata-ui text-xl font-bold  tracking-normal text-text-heading">Explorer not found</h1>
+                    <h1 className="inconsolata-ui text-xl font-bold  tracking-normal text-text-heading">User not found</h1>
                     <p className="manrope-body text-[14px] text-text-muted font-medium leading-relaxed italic">This username hasn't been claimed yet or is currently set to private mode.</p>
                     <div className="pt-8">
                         <Link href="/" className="inconsolata-ui inline-block px-8 py-3 bg-[var(--text-heading)] text-[var(--bg-main)] rounded-full text-[11px] font-bold  tracking-wide hover:opacity-90 transition-all">
