@@ -25,25 +25,57 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   }
 
   const title = paper.title;
-  const description = paper.intro.substring(0, 160) + '...';
+  const rawIntro = paper.intro.trim();
+  
+  // Truncate at the end of a sentence if possible within 160 chars
+  // Look for the last period, question mark, or exclamation mark within the limit
+  let description = rawIntro;
+  if (description.length > 160) {
+    const truncated = description.substring(0, 160);
+    const lastSentenceEnd = Math.max(
+      truncated.lastIndexOf('. '),
+      truncated.lastIndexOf('? '),
+      truncated.lastIndexOf('! ')
+    );
+    
+    if (lastSentenceEnd > 60) { // Only truncate at sentence if it leaves enough text
+      description = truncated.substring(0, lastSentenceEnd + 1);
+    } else {
+      // Fallback: truncate at word boundary
+      description = truncated.split(' ').slice(0, -1).join(' ') + '...';
+    }
+  }
+
+  const keywords = [
+    paper.title,
+    paper.authors,
+    'research decoded',
+    'AI research',
+    'technical summary',
+    'EulerFold'
+  ].join(', ');
 
   return {
     title: title,
     description: description,
+    keywords: keywords,
     openGraph: {
       title: title,
       description: description,
       type: 'article',
+      url: `https://www.eulerfold.com/research-decoded/${params.slug}`,
+      siteName: 'EulerFold',
       images: paper.heroImage ? [{ url: paper.heroImage }] : [],
     },
     twitter: {
       card: paper.heroImage ? 'summary_large_image' : 'summary',
       title: title,
       description: description,
+      creator: '@eulerfold',
       images: paper.heroImage ? [paper.heroImage] : [],
     },
     alternates: {
-      canonical: `/research-decoded/${params.slug}`,
+      canonical: `https://www.eulerfold.com/research-decoded/${params.slug}`,
     }
   };
 }
@@ -60,15 +92,32 @@ export default function ResearchDecodedPage({ params }: { params: { slug: string
     );
   }
 
+  // Same description logic for schema
+  const rawIntro = paper.intro.trim();
+  let schemaDescription = rawIntro;
+  if (schemaDescription.length > 160) {
+    const truncated = schemaDescription.substring(0, 160);
+    const lastSentenceEnd = Math.max(
+      truncated.lastIndexOf('. '),
+      truncated.lastIndexOf('? '),
+      truncated.lastIndexOf('! ')
+    );
+    if (lastSentenceEnd > 60) {
+      schemaDescription = truncated.substring(0, lastSentenceEnd + 1);
+    } else {
+      schemaDescription = truncated.split(' ').slice(0, -1).join(' ') + '...';
+    }
+  }
+
   const articleSchema = {
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": paper.title,
-    "description": paper.intro.substring(0, 160) + '...',
+    "description": schemaDescription,
     "image": paper.heroImage ? [paper.heroImage] : [],
     "author": [
       {
-        "@type": "Person",
+        "@type": "Organization",
         "name": "EulerFold",
         "url": "https://www.eulerfold.com"
       },
@@ -85,7 +134,7 @@ export default function ResearchDecodedPage({ params }: { params: { slug: string
         "url": "https://www.eulerfold.com/android-chrome-512x512.png"
       }
     },
-    "datePublished": "2026-03-27T00:00:00Z", // Base date for decoded papers
+    "datePublished": "2026-03-27T00:00:00Z", 
     "mainEntityOfPage": {
       "@type": "WebPage",
       "@id": `https://www.eulerfold.com/research-decoded/${slug}`

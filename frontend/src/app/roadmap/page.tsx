@@ -3,10 +3,24 @@ import { Metadata } from 'next';
 import RoadmapIndexClient from './RoadmapIndexClient';
 
 export const metadata: Metadata = {
-  title: 'Roadmap Index',
-  description: 'Direct directory of all public learning roadmaps on EulerFold. Structured paths for programming, science, and professional skills.',
+  title: 'Roadmap Directory — Discover public learning paths',
+  description: 'Browse the complete directory of public learning roadmaps on EulerFold. Find structured, high-density paths for programming, AI, science, and professional skills.',
+  keywords: 'roadmap directory, public roadmaps, learning paths, technical curriculum, skill directory, EulerFold roadmaps',
   alternates: {
-    canonical: '/roadmap',
+    canonical: 'https://www.eulerfold.com/roadmap',
+  },
+  openGraph: {
+    title: 'Roadmap Directory — Discover public learning paths',
+    description: 'Browse the complete directory of public learning roadmaps on EulerFold.',
+    type: 'website',
+    url: 'https://www.eulerfold.com/roadmap',
+    siteName: 'EulerFold',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Roadmap Directory — Discover public learning paths',
+    description: 'Browse the complete directory of public learning roadmaps on EulerFold.',
+    creator: '@eulerfold',
   },
 };
 
@@ -29,8 +43,33 @@ async function getPublicRoadmaps() {
 
 export default async function RoadmapIndexPage() {
   const roadmaps = await getPublicRoadmaps();
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://www.eulerfold.com"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Roadmaps",
+        "item": "https://www.eulerfold.com/roadmap"
+      }
+    ]
+  };
   
   return (
-    <RoadmapIndexClient initialRoadmaps={roadmaps} />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <RoadmapIndexClient initialRoadmaps={roadmaps} />
+    </>
   );
 }

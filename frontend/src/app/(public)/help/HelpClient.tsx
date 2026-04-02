@@ -222,7 +222,7 @@ export default function HelpClient() {
                   <ArrowRight className="w-3.5 h-3.5 text-text-muted group-hover:text-accent group-hover:translate-x-1 transition-all" />
                 </Link>
 
-                <a href="mailto:hello@eulerfold.com" className="flex items-center justify-between group py-3 border-b border-border hover:border-accent transition-colors">
+                <a href="mailto:eulerfold@gmail.com" className="flex items-center justify-between group py-3 border-b border-border hover:border-accent transition-colors">
                   <span className="manrope-body text-[14px] font-bold text-text-heading">Direct Support</span>
                   <ArrowRight className="w-3.5 h-3.5 text-text-muted group-hover:text-accent group-hover:translate-x-1 transition-all" />
                 </a>

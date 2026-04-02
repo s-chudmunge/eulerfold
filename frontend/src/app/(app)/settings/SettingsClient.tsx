@@ -250,7 +250,7 @@ export default function SettingsClient() {
                           await supabase.auth.signOut();
                           window.location.href = '/';
                         } catch (err) {
-                          alert('Purge failed. Please contact hello@eulerfold.com');
+                          alert('Purge failed. Please contact eulerfold@gmail.com');
                         }
                       }
                     }}

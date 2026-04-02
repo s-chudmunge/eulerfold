@@ -167,6 +167,8 @@ class RoadmapMe(RoadmapRead):
     status: Optional[str] = "active" # active, completed, action_required, pending_review, resubmit_required
     is_cloned: bool = False
     user_rating: Optional[int] = None
+    author: Optional[str] = None
+    username: Optional[str] = None
 
 # --- Explore & Clone Schemas ---
 

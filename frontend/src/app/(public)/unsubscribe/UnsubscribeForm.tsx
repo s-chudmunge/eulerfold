@@ -164,7 +164,7 @@ export default function UnsubscribeForm({ initialEmail }: UnsubscribeFormProps) 
 
       <div className="mt-16 pt-8 border-t border-border flex flex-col gap-2">
         <p className="text-[13px] text-gray-500 leading-relaxed font-medium">
-          If this was a mistake, you can <button onClick={handleResubscribe} className="text-black dark:text-white underline font-bold hover:text-teal-700 transition-colors">resubscribe</button>. If you received an email you weren't expecting, please let us know by <a href="mailto:abuse@eulerfold.com" className="text-black dark:text-white underline font-bold hover:text-teal-700 transition-colors">reporting abuse</a>.
+          If this was a mistake, you can <button onClick={handleResubscribe} className="text-black dark:text-white underline font-bold hover:text-teal-700 transition-colors">resubscribe</button>. If you received an email you weren't expecting, please let us know by <a href="mailto:eulerfold@gmail.com" className="text-black dark:text-white underline font-bold hover:text-teal-700 transition-colors">reporting abuse</a>.
         </p>
       </div>
     </div>

@@ -297,7 +297,7 @@ export default function LoginPage() {
                     <div className="flex flex-col gap-2">
                         <h4 className="text-[10px] font-bold text-black dark:text-white opacity-30 uppercase tracking-widest">Social</h4>
                         <div className="flex flex-col gap-1">
-                            <a href="mailto:hello@eulerfold.com" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Contact support</a>
+                            <a href="mailto:eulerfold@gmail.com" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Contact support</a>
                         </div>
                     </div>
                 </div>

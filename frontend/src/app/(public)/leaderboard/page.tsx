@@ -4,7 +4,24 @@ import LeaderboardClient from './LeaderboardClient';
 
 export const metadata: Metadata = {
   title: 'Global Rankings',
-  description: 'See how learners rank globally on EulerFold based on skills and consistency.',
+  description: 'See the top learners on EulerFold. Track global rankings based on technical skills, learning consistency, and verified audits.',
+  keywords: 'leaderboard, global rankings, technical skills, learning streaks, EulerFold community',
+  openGraph: {
+    title: 'Global Rankings',
+    description: 'See how learners rank globally on EulerFold based on skills and consistency.',
+    type: 'website',
+    url: 'https://www.eulerfold.com/leaderboard',
+    siteName: 'EulerFold',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'Global Rankings',
+    description: 'See how learners rank globally on EulerFold based on skills and consistency.',
+    creator: '@eulerfold',
+  },
+  alternates: {
+    canonical: 'https://www.eulerfold.com/leaderboard',
+  },
 };
 
 async function getInitialLeaderboard() {
@@ -31,10 +48,35 @@ async function getInitialLeaderboard() {
 export default async function LeaderboardPage() {
   const initialData = await getInitialLeaderboard();
 
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://www.eulerfold.com"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Leaderboard",
+        "item": "https://www.eulerfold.com/leaderboard"
+      }
+    ]
+  };
+
   return (
-    <LeaderboardClient 
-      initialTopUsers={initialData.top_users} 
-      initialUserRank={initialData.user_rank} 
-    />
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <LeaderboardClient 
+        initialTopUsers={initialData.top_users} 
+        initialUserRank={initialData.user_rank} 
+      />
+    </>
   );
 }

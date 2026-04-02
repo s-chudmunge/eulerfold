@@ -1,5 +1,6 @@
 import React from 'react';
 import Link from 'next/link';
+import { Twitter, Instagram, Mail } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -40,8 +41,16 @@ export default function Footer() {
         </div>
         <div className="flex flex-col gap-2">
           <h4 className="text-[10px] font-bold text-black dark:text-white opacity-30">Social</h4>
-          <div className="flex flex-col gap-1">
-            <a href="mailto:hello@eulerfold.com" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Contact support</a>
+          <div className="flex flex-col gap-2">
+            <a href="https://x.com/eulerfold" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">
+              <Twitter className="w-3 h-3" /> Twitter
+            </a>
+            <a href="https://www.instagram.com/eulerfold" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">
+              <Instagram className="w-3 h-3" /> Instagram
+            </a>
+            <a href="mailto:eulerfold@gmail.com" className="flex items-center gap-2 text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">
+              <Mail className="w-3 h-3" /> Contact support
+            </a>
           </div>
         </div>
       </div>

@@ -5,18 +5,22 @@ import ExploreClient from './ExploreClient';
 export const metadata: Metadata = {
   title: 'Explore Roadmaps',
   description: 'Discover learning journeys crafted and shared by the community. Find your next skill to master.',
+  keywords: 'explore roadmaps, technical skills, community learning, learning paths, EulerFold roadmaps',
   openGraph: {
     title: 'Explore Roadmaps',
-    description: 'Find your next learning journey from our community of learners.',
+    description: 'Discover learning journeys crafted and shared by the community. Find your next skill to master.',
     type: 'website',
+    url: 'https://www.eulerfold.com/explore',
+    siteName: 'EulerFold',
   },
   twitter: {
     card: 'summary',
     title: 'Explore Roadmaps',
     description: 'Discover learning journeys crafted and shared by the community.',
+    creator: '@eulerfold',
   },
   alternates: {
-    canonical: '/explore',
+    canonical: 'https://www.eulerfold.com/explore',
   }
 };
 

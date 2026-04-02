@@ -53,7 +53,7 @@ async def submit_feature_request(
     current_user: User = Depends(get_current_user)
 ):
     """Submit a feature request or bug report directly to the developer."""
-    admin_email = "csankalp21@gmail.com"
+    admin_email = "eulerfold@gmail.com"
     
     html_content = f"""
         <h1 style="color: #0f766e; font-size: 20px; font-weight: 900; text-transform: uppercase;">New {request.category} Request</h1>

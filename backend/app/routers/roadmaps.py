@@ -298,6 +298,23 @@ async def get_roadmap_by_slug(slug: str, background_tasks: BackgroundTasks, curr
     if not is_owner and not is_public:
         raise HTTPException(status_code=403, detail="Not authorized to view this roadmap")
 
+    # Fetch author information
+    r_email = r.get("email")
+    author = "Anonymous"
+    username = None
+    if r_email:
+        profile_res = sb.table("profiles").select("username").eq("email", r_email).execute()
+        if profile_res.data and profile_res.data[0].get("username"):
+            username = profile_res.data[0]["username"]
+            author = username
+        elif r.get("show_author", True):
+            email_part = r_email.split("@")[0]
+            raw_name = email_part.split(".")[0]
+            if len(raw_name) >= 2:
+                author = raw_name.capitalize()
+            else:
+                author = "EulerFold User"
+
     # Reuse enrichment logic if needed, but for a single roadmap we can simplify
     if uid:
         enriched = await _enrich_roadmap_progress([r], email, uid, sb, background_tasks)
@@ -349,7 +366,9 @@ async def get_roadmap_by_slug(slug: str, background_tasks: BackgroundTasks, curr
         email=r.get("email"),
         is_cloned=is_cloned,
         cloned_id=cloned_id,
-        user_rating=user_rating
+        user_rating=user_rating,
+        author=author,
+        username=username
     )
 
 @router.get("/roadmaps/{roadmap_id}", response_model=RoadmapMe)

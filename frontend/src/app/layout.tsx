@@ -120,7 +120,8 @@ export default function RootLayout({
               },
               "description": "Clear learning paths with simple progress tracking that show exactly what you’ve learned and keep you on track",
               "sameAs": [
-                "https://github.com/s-chudmunge"
+                "https://x.com/eulerfold",
+                "https://www.instagram.com/eulerfold"
               ],
               "offers": {
                 "@type": "Offer",

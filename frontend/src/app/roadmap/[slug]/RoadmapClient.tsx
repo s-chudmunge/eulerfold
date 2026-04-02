@@ -739,7 +739,7 @@ export default function RoadmapClient({ slug, initialRoadmap }: Props) {
                     <div className="flex flex-col gap-2">
                         <h4 className="text-[10px] font-bold text-black dark:text-white opacity-30">Social</h4>
                         <div className="flex flex-col gap-1">
-                            <a href="mailto:hello@eulerfold.com" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Contact support</a>                            <span className="text-[10px] text-gray-300 dark:text-gray-800 cursor-default">GitHub</span>
+                            <a href="mailto:eulerfold@gmail.com" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Contact support</a>                            <span className="text-[10px] text-gray-300 dark:text-gray-800 cursor-default">GitHub</span>
                             <span className="text-[10px] text-gray-300 dark:text-gray-800 cursor-default">Twitter</span>
                         </div>
                     </div>

@@ -12,30 +12,94 @@ import EulerLogoCanvas from '@/components/EulerLogoCanvas';
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: 'EulerFold',
-  description: 'EulerFold builds personalized learning paths to help you bridge the gap between information and mastery.',
+  title: 'EulerFold - Infrastructure for efficient, structured learning',
+  description: 'EulerFold builds personalized learning paths to help you bridge the gap between information and mastery through high-density roadmaps and verifiable audits.',
+  keywords: 'learning roadmaps, skill tracking, AI learning paths, technical mastery, structured learning, EulerFold',
   alternates: {
-    canonical: '/',
+    canonical: 'https://www.eulerfold.com',
+  },
+  openGraph: {
+    title: 'EulerFold - Infrastructure for efficient, structured learning',
+    description: 'EulerFold builds personalized learning paths to help you bridge the gap between information and mastery through high-density roadmaps and verifiable audits.',
+    url: 'https://www.eulerfold.com',
+    siteName: 'EulerFold',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'EulerFold - Infrastructure for efficient, structured learning',
+    description: 'EulerFold builds personalized learning paths to help you bridge the gap between information and mastery.',
+    creator: '@eulerfold',
   },
 };
 
 export default async function LandingPage() {
-  /**
-   * EULERFOLD LANDING PAGE
-   * ----------------------
-   * This is the primary entry point for the EulerFold application.
-   * It handles the hero section with QuantumBackground, features with MobiusBackground,
-   * and the Mission Statement with EulerLogoCanvas.
-   * 
-   * Performance Optimizations:
-   * - All Three.js backgrounds are now visibility-aware via IntersectionObserver.
-   * - Animation loops are throttled and vertex density is reduced for better TTI.
-   * - Redundant static backgrounds have been removed to minimize overdraw.
-   * 
-   * Triggering fresh deployment to verify Vercel build pipeline and attribution fixes.
-   */
+  const faqItems = [
+    {
+      question: "How accurate are the AI roadmaps?",
+      answer: "Our engine doesn't just \"guess.\" It cross-references millions of technical data points and \"Resources We Trust\" to build high-density paths that mirror industry expectations."
+    },
+    {
+      question: "How does the Audit Senate evaluate my work?",
+      answer: "Your 'Proof of Work' is evaluated by a three-auditor system: a Technician (for correctness), an Educator (for clarity), and a Relevance Judge (for alignment). This ensures your mastery is verified by multiple perspectives."
+    },
+    {
+      question: "Can I customize my roadmap after it's generated?",
+      answer: "Absolutely. While the AI provides a high-signal starting point, you can add, remove, or reorder topics to suit your specific learning style and professional goals."
+    },
+    {
+      question: "What are EulerCoins and how do I earn them?",
+      answer: "EulerCoins are the platform's proof-of-progress currency. You earn them by maintaining learning streaks, passing audits, and contributing high-signal insights to the community."
+    },
+    {
+      question: "Is my progress actually saved?",
+      answer: "Yes. Every module you finish, every practice session you complete, and every audit you pass is recorded in your global Technical Inventory and skill profile."
+    },
+    {
+      question: "What makes EulerFold better than a video course?",
+      answer: "Videos are passive. EulerFold is active. We require \"Proof of Work\" through audits and recall sessions, ensuring you actually master the material rather than just watching it."
+    },
+    {
+      question: "Can I build roadmaps for free?",
+      answer: "All new users receive 5 free credits to generate premium AI roadmaps. After that, you can earn more through the community or purchase top-ups."
+    }
+  ];
+
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "EulerFold",
+    "url": "https://www.eulerfold.com",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://www.eulerfold.com/explore?search={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  };
+
+  const faqSchema = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": faqItems.map(item => ({
+      "@type": "Question",
+      "name": item.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": item.answer
+      }
+    }))
+  };
+
   return (
     <div className="min-h-screen bg-background text-text-primary flex flex-col font-sans relative overflow-hidden">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+      />
       <Suspense fallback={null}>
         <LoginRequiredMessage />
         <AlreadySignedInMessage />
@@ -136,36 +200,7 @@ export default async function LandingPage() {
             <h2 className="text-[11px] font-bold text-accent tracking-[0.2em] uppercase mb-12 md:mb-16 manrope-body text-center">FAQ(Frequently Asked Questions)</h2>
             
             <FAQAccordion 
-              items={[
-                {
-                  question: "How accurate are the AI roadmaps?",
-                  answer: "Our engine doesn't just \"guess.\" It cross-references millions of technical data points and \"Resources We Trust\" to build high-density paths that mirror industry expectations."
-                },
-                {
-                  question: "How does the Audit Senate evaluate my work?",
-                  answer: "Your 'Proof of Work' is evaluated by a three-auditor system: a Technician (for correctness), an Educator (for clarity), and a Relevance Judge (for alignment). This ensures your mastery is verified by multiple perspectives."
-                },
-                {
-                  question: "Can I customize my roadmap after it's generated?",
-                  answer: "Absolutely. While the AI provides a high-signal starting point, you can add, remove, or reorder topics to suit your specific learning style and professional goals."
-                },
-                {
-                  question: "What are EulerCoins and how do I earn them?",
-                  answer: "EulerCoins are the platform's proof-of-progress currency. You earn them by maintaining learning streaks, passing audits, and contributing high-signal insights to the community."
-                },
-                {
-                  question: "Is my progress actually saved?",
-                  answer: "Yes. Every module you finish, every practice session you complete, and every audit you pass is recorded in your global Technical Inventory and skill profile."
-                },
-                {
-                  question: "What makes EulerFold better than a video course?",
-                  answer: "Videos are passive. EulerFold is active. We require \"Proof of Work\" through audits and recall sessions, ensuring you actually master the material rather than just watching it."
-                },
-                {
-                  question: "Can I build roadmaps for free?",
-                  answer: "All new users receive 5 free credits to generate premium AI roadmaps. After that, you can earn more through the community or purchase top-ups."
-                }
-              ]}
+              items={faqItems}
             />
           </div>
         </section>

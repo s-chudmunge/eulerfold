@@ -89,6 +89,35 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
 
     return (
         <div className="min-h-screen bg-background text-text-primary flex flex-col font-sans">
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "Course",
+                        "name": roadmap.title,
+                        "description": roadmap.goal || roadmap.description,
+                        "creator": {
+                            "@type": "Person",
+                            "name": roadmap.author || "EulerFold User"
+                        },
+                        "provider": {
+                            "@type": "EducationalOrganization",
+                            "name": "EulerFold",
+                            "url": "https://www.eulerfold.com"
+                        },
+                        "about": roadmap.subject,
+                        "timeRequired": roadmap.time_value ? `P${roadmap.time_value}${roadmap.time_unit?.[0].toUpperCase()}` : undefined,
+                        "coursePrerequisites": "None",
+                        "educationalLevel": "Intermediate",
+                        "syllabusSections": roadmap.roadmap_plan?.modules?.map((m: any) => ({
+                            "@type": "Syllabus",
+                            "name": m.title,
+                            "description": m.outcome
+                        }))
+                    })
+                }}
+            />
             <PublicHeader />
             
             <main className="flex-grow">

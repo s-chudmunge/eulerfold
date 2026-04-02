@@ -32,23 +32,65 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     }
 
     const title = roadmap.title || roadmap.subject || 'Learning Roadmap';
-    const description = roadmap.goal || roadmap.description || 'View this personalized learning roadmap on EulerFold.';
+    const rawDescription = (roadmap.goal || roadmap.description || '').trim();
+    const subject = roadmap.subject || 'Technical Skills';
+    const author = roadmap.author || 'EulerFold User';
+    
+    // Base part of the description
+    const baseDescription = `Learn ${subject} with this structured roadmap by ${author}: ${title}.`;
+    const fullDescription = `${baseDescription} ${rawDescription}`.trim();
+
+    // Strategy: Use full description if it fits; otherwise, use base or a truncated base.
+    // This prevents mid-sentence truncation of the goal.
+    let description = '';
+    if (fullDescription.length <= 160) {
+        description = fullDescription;
+    } else if (baseDescription.length <= 160) {
+        description = baseDescription;
+    } else {
+        // Fallback: truncate base description at word boundary
+        description = baseDescription.substring(0, 157).split(' ').slice(0, -1).join(' ') + '...';
+    }
+    
+    // Add a call to action if the result is very short
+    if (description.length < 100 && !description.includes('EulerFold')) {
+        const cta = " Follow curated resources and track your progress on EulerFold.";
+        if (description.length + cta.length <= 160) {
+            description += cta;
+        }
+    }
+
+    const keywords = [
+        subject,
+        title,
+        'learning roadmap',
+        'skill tracking',
+        'technical skills',
+        'career path',
+        'EulerFold',
+        author
+    ].join(', ');
     
     return {
         title: title,
         description: description,
+        keywords: keywords,
         openGraph: {
             title: title,
             description: description,
-            type: 'website',
+            type: 'article',
+            url: `https://www.eulerfold.com/roadmap/${params.slug}`,
+            siteName: 'EulerFold',
+            authors: [author],
         },
         twitter: {
             card: 'summary',
             title: title,
             description: description,
+            creator: '@eulerfold',
         },
         alternates: {
-            canonical: `/roadmap/${params.slug}`,
+            canonical: `https://www.eulerfold.com/roadmap/${params.slug}`,
         }
     };
 }

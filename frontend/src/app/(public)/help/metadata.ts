@@ -1,8 +1,8 @@
 import { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: 'Help Center',
-  description: 'Get help with EulerFold personalized AI learning hub. Find answers to common questions about programming courses, learning roadmaps, and technical support.',
+  title: 'Help Center & FAQ',
+  description: 'Find answers to common questions about EulerFold learning roadmaps, AI credits, technical mastery scoring, and the Audit Senate.',
   keywords: [
     'eulerfold help',
     'learning hub support',
@@ -10,24 +10,24 @@ export const metadata: Metadata = {
     'coding tutorial support',
     'learning roadmap guide',
     'technical support',
-    'how to learn programming',
-    'coding help',
-    'programming questions',
-    'learning hub FAQ',
-    'programming course support',
-    'coding bootcamp help'
+    'Audit Senate',
+    'EulerCoins',
+    'Roadmap Credits'
   ],
   openGraph: {
-    title: 'Help Center',
-    description: 'Get help with programming courses, learning roadmaps, and technical support for the EulerFold personalized AI learning hub.',
+    title: 'Help Center & FAQ',
+    description: 'Get help with programming courses, learning roadmaps, and technical support on EulerFold.',
     type: 'website',
+    url: 'https://www.eulerfold.com/help',
+    siteName: 'EulerFold',
   },
   twitter: {
     card: 'summary',
-    title: 'Help Center',
-    description: 'Get help with programming courses and learning roadmaps on EulerFold personalized AI learning hub.',
+    title: 'Help Center & FAQ',
+    description: 'Get help with programming courses and learning roadmaps on EulerFold.',
+    creator: '@eulerfold',
   },
   alternates: {
-    canonical: '/help',
+    canonical: 'https://www.eulerfold.com/help',
   },
 }

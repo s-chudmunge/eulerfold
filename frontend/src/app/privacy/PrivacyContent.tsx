@@ -157,7 +157,7 @@ export default function PrivacyContent() {
               </h2>
               <div className="h-[1px] w-full bg-[var(--border)] mb-6"></div>
               <p>
-                If you have any questions or concerns about this Privacy Policy, please contact us at: <a href="mailto:csankalp21@gmail.com" className="text-accent font-bold hover:underline">csankalp21@gmail.com</a>
+                If you have any questions or concerns about this Privacy Policy, please contact us at: <a href="mailto:eulerfold@gmail.com" className="text-accent font-bold hover:underline">eulerfold@gmail.com</a>
               </p>
             </section>
           </div>

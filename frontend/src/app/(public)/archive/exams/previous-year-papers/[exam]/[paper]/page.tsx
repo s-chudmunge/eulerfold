@@ -25,12 +25,38 @@ export async function generateMetadata({ params }: { params: { exam: string, pap
 
   const { exam, paper } = data;
   const paperName = `${exam.title} ${paper.subject === 'Main Paper' ? 'Paper' : paper.subject} ${paper.year}`;
+  const title = `${paperName} Archive`;
+  const description = `Access and download the official ${paperName} question paper and answer key. Essential study resource from the EulerFold ${exam.title} archive.`;
+  const keywords = [
+    exam.title,
+    paper.subject,
+    paper.year,
+    'previous year paper',
+    'question paper',
+    'answer key',
+    'solutions',
+    'EulerFold'
+  ].join(', ');
 
   return {
-    title: `${paperName} Archive`,
-    description: `Access and download the ${paperName} question paper and answer key. Part of the complete archive for ${exam.title}.`,
+    title: title,
+    description: description,
+    keywords: keywords,
+    openGraph: {
+      title: title,
+      description: description,
+      type: 'website',
+      url: `https://www.eulerfold.com/archive/exams/previous-year-papers/${params.exam.toLowerCase()}/${params.paper}`,
+      siteName: 'EulerFold',
+    },
+    twitter: {
+      card: 'summary',
+      title: title,
+      description: description,
+      creator: '@eulerfold',
+    },
     alternates: {
-      canonical: `/archive/exams/previous-year-papers/${params.exam.toLowerCase()}/${params.paper}`,
+      canonical: `https://www.eulerfold.com/archive/exams/previous-year-papers/${params.exam.toLowerCase()}/${params.paper}`,
     },
   };
 }
@@ -52,7 +78,71 @@ export default async function PaperPage({ params }: { params: { exam: string, pa
     );
   }
 
-  return <PaperClient exam={data.exam} paper={data.paper} />;
+  const { exam, paper } = data;
+  const paperName = `${exam.title} ${paper.subject === 'Main Paper' ? 'Paper' : paper.subject} ${paper.year}`;
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://www.eulerfold.com"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Archive",
+        "item": "https://www.eulerfold.com/archive/exams/previous-year-papers"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": exam.title,
+        "item": `https://www.eulerfold.com/archive/exams/previous-year-papers/${params.exam.toLowerCase()}`
+      },
+      {
+        "@type": "ListItem",
+        "position": 4,
+        "name": paperName,
+        "item": `https://www.eulerfold.com/archive/exams/previous-year-papers/${params.exam.toLowerCase()}/${params.paper}`
+      }
+    ]
+  };
+
+  const paperSchema = {
+    "@context": "https://schema.org",
+    "@type": "CreativeWork",
+    "name": paperName,
+    "description": `Official question paper and answer key for ${paperName}.`,
+    "datePublished": paper.year,
+    "genre": "Educational",
+    "educationalUse": "Assessment",
+    "publisher": {
+      "@type": "Organization",
+      "name": "EulerFold"
+    },
+    "mainEntityOfPage": {
+      "@type": "WebPage",
+      "@id": `https://www.eulerfold.com/archive/exams/previous-year-papers/${params.exam.toLowerCase()}/${params.paper}`
+    }
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(paperSchema) }}
+      />
+      <PaperClient exam={exam} paper={paper} />
+    </>
+  );
 }
 
 export async function generateStaticParams() {
