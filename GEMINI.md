@@ -83,6 +83,12 @@ Read it fully before making any changes. Rules here are not suggestions.
 
 ---
 
+## SEO & Sitemaps
+
+- **Update <lastmod> Dates:** When modifying content on fixed URLs or updating sitemap logic, ensure the `<lastmod>` tag is updated to the current date. This signals to search engines that the content has changed and requires re-indexing.
+
+---
+
 ### Personal Preferences
 
 - I am Sankalp. I write clean, logical code. Match that standard.
