@@ -88,7 +88,7 @@ async def build_html_email(content_html: str, user_email: str = None, unsubscrib
                                 </div>
                                 <div style="font-size: 12px; color: #94a3b8; line-height: 1.8; margin-bottom: 24px;">
                                     <strong>EulerFold</strong><br/>
-                                    Sangli, Maharashtra, India
+                                    Maharashtra, India
                                 </div>
                                 <div style="font-size: 11px; color: #cbd5e1; letter-spacing: 0.025em; text-transform: uppercase; font-weight: 700;">
                                     {unsub_section}

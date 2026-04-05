@@ -6,7 +6,8 @@ import PublicHeader from '@/components/PublicHeader';
 import Footer from '@/components/Footer';
 import { LoginRequiredMessage, AlreadySignedInMessage, FAQAccordion } from './HomeClientComponents';
 
-import QuantumBackground from '@/components/QuantumBackground';
+import HeroBackground from '@/components/HeroBackground';
+import SocialFeed from '@/components/SocialFeed';
 import EulerLogoCanvas from '@/components/EulerLogoCanvas';
 import TwistedTorusBackground from '@/components/TwistedTorusBackground';
 
@@ -110,7 +111,7 @@ export default async function LandingPage() {
       <main className="flex-grow">
         {/* Hero Section */}
         <section className="relative pt-24 pb-32 md:pt-32 md:pb-48 px-6 min-h-[90vh] md:min-h-[95vh] flex items-center overflow-hidden">
-          <QuantumBackground />
+          <HeroBackground />
           <div className="max-w-7xl mx-auto w-full relative z-10">
             <div className="max-w-3xl">
               <h1 className="font-inter text-3xl sm:text-4xl md:text-5xl font-semibold text-text-heading mb-6 leading-[1.15] md:leading-[1.1] tracking-tight">
@@ -138,9 +139,10 @@ export default async function LandingPage() {
             </div>
           </div>
         </section>
-{/* Features Section with Illustration Background */}
-<section className="relative py-20 md:py-32 px-4 md:px-6">
-  <div className="max-w-7xl mx-auto relative rounded-[32px] md:rounded-[40px] overflow-hidden border border-border bg-sidebar/50 min-h-[550px] md:min-h-[600px] flex items-center shadow-2xl">
+
+        {/* Features Section with Illustration Background */}
+        <section className="relative py-20 md:py-32 px-4 md:px-6">
+          <div className="max-w-7xl mx-auto relative rounded-[32px] md:rounded-[40px] overflow-hidden border border-border bg-sidebar/50 min-h-[550px] md:min-h-[600px] flex items-center shadow-2xl">
     {/* Twisted Torus Animation Background */}
     <div className="absolute inset-0 z-0 opacity-100">
       <TwistedTorusBackground />
@@ -205,6 +207,8 @@ export default async function LandingPage() {
             />
           </div>
         </section>
+
+        <SocialFeed />
 
         {/* Final CTA Section */}
         <section className="py-20 md:py-32 px-4 md:px-6 relative overflow-hidden">
