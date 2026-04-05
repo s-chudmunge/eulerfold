@@ -183,8 +183,11 @@ export default async function LandingPage() {
             <h2 className="text-[11px] font-bold text-accent tracking-[0.2em] uppercase mb-8 md:mb-12 manrope-body">Our Mission</h2>
 
             <div className="relative mb-12 md:mb-16">
-              <p className="text-base md:text-xl font-semibold text-text-heading leading-relaxed font-inter tracking-tight max-w-3xl mx-auto">
+              <p className="text-base md:text-xl font-semibold text-text-heading leading-relaxed font-inter tracking-tight max-w-3xl mx-auto mb-6">
                 To bridge the gap between information and mastery by building the most effective learning infrastructure for every individual.
+              </p>
+              <p className="text-sm md:text-base text-text-muted manrope-body font-medium max-w-2xl mx-auto italic opacity-80">
+                "We believe Learning with an open mind, curiosity and questions gives the best results."
               </p>
             </div>
             <Link 
