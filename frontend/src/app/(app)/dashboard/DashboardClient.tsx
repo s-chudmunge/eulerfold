@@ -13,6 +13,7 @@ import ChevronDown from 'lucide-react/dist/esm/icons/chevron-down';
 import ChevronUp from 'lucide-react/dist/esm/icons/chevron-up';
 import ExternalLink from 'lucide-react/dist/esm/icons/external-link';
 import Plus from 'lucide-react/dist/esm/icons/plus';
+import Check from 'lucide-react/dist/esm/icons/check';
 import Share2 from 'lucide-react/dist/esm/icons/share-2';
 import Trophy from 'lucide-react/dist/esm/icons/trophy';
 import Search from 'lucide-react/dist/esm/icons/search';

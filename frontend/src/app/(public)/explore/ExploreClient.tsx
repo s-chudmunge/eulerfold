@@ -34,7 +34,8 @@ import {
   Database,
   Binary,
   Coins,
-  Network
+  Network,
+  Atom
 } from 'lucide-react';
 import { exploreAPI, ExploreRoadmap, coinsAPI, LeaderboardEntry } from '@/lib/api';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
@@ -42,6 +43,7 @@ import { useAuth } from '@/components/AuthProvider';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import StarRating from '@/components/roadmap/StarRating';
+import VerifiedBadge from '@/components/VerifiedBadge';
 
 const CATEGORY_METADATA: Record<string, { icon: any }> = {
     'all': { icon: LayoutDashboard },
@@ -70,6 +72,7 @@ const CATEGORY_METADATA: Record<string, { icon: any }> = {
     'Flutter': { icon: Smartphone },
     'Blockchain': { icon: Coins },
     'Quantum': { icon: Infinity },
+    'Science': { icon: Atom },
     'Game Dev': { icon: Gamepad2 },
     'ECE & Hardware': { icon: Cpu },
     'Embedded': { icon: Binary },
@@ -125,7 +128,7 @@ export default function ExploreClient({
     const [error, setError] = useState<string | null>(null);
     
     // Filtering & Sorting State
-    const [sortBy, setSortBy] = useState('newest');
+    const [sortBy, setSortBy] = useState('alphabetical');
     const [filter, setFilter] = useState('all');
 
     const handleSearchParams = React.useCallback((params: URLSearchParams) => {
@@ -136,6 +139,11 @@ export default function ExploreClient({
         if (cat && CATEGORY_METADATA[cat]) {
             setFilter(cat);
         }
+
+        const sort = params.get('sort');
+        if (sort === 'newest' || sort === 'highest_rated' || sort === 'most_cloned' || sort === 'alphabetical') {
+            setSortBy(sort);
+        }
     }, []);
 
     const queryClient = useQueryClient();
@@ -144,7 +152,7 @@ export default function ExploreClient({
     const { data: roadmaps = [], isLoading: roadmapsLoading } = useQuery({
         queryKey: ['explore-roadmaps', debouncedSearch, sortBy, authUser?.id],
         queryFn: () => exploreAPI.getExploreRoadmaps(debouncedSearch, 0, 100, sortBy),
-        initialData: (debouncedSearch === '' && sortBy === 'newest') ? initialRoadmaps : undefined,
+        initialData: (debouncedSearch === '' && sortBy === 'alphabetical') ? initialRoadmaps : undefined,
         staleTime: 5 * 60 * 1000,
     });
 
@@ -181,6 +189,7 @@ export default function ExploreClient({
         
         if (/ai|machine learning|intelligence|prompt|llm|neural|pytorch|tensorflow/i.test(s)) return 'AI/ML';
         if (/quantum/i.test(s)) return 'Quantum';
+        if (/science|physics|biology|chemistry|neuro|climate|energy|environment|medical|biotech|bioinformatics/i.test(s)) return 'Science';
         
         if (/flutter/i.test(s)) return 'Flutter';
         if (/ios|android|swift|kotlin|mobile/i.test(s)) return 'iOS/Android';
@@ -197,16 +206,16 @@ export default function ExploreClient({
         if (/ece|electronics|circuit|microprocessor|verilog|vhdl|vlsi/i.test(s)) return 'ECE & Hardware';
         
         if (/terminal|bash|shell|zsh|cli|command line/i.test(s)) return 'Terminal & CLI';
-        if (/system design|architecture/i.test(s)) return 'System Design';
+        if (/system design|architecture|distributed system/i.test(s)) return 'System Design';
         if (/cyber|security|hacking|penetration|network/i.test(s)) return 'Security';
         if (/blockchain|web3|crypto|solidity|ethereum/i.test(s)) return 'Blockchain';
         
         if (/product management|product owner|agile|scrum/i.test(s)) return 'Product Management';
-        if (/marketing|seo|social media|growth|ads/i.test(s)) return 'Marketing';
+        if (/marketing|seo|social media|growth|ads|youtube|video/i.test(s)) return 'Marketing';
         if (/business|startup|finance|management|mba/i.test(s)) return 'Business';
         
         if (/gate|upsc|exam|test|prep|certification|certified/i.test(s)) return 'Exam Prep';
-        if (/freelan|placement|career|interview|job|resume/i.test(s)) return 'Career';
+        if (/freelan|placement|career|interview|job|resume|aptitude/i.test(s)) return 'Career';
         if (/open source|github|git /i.test(s)) return 'Open Source';
         if (/design|ui|ux|figma|graphic|adobe|product design/i.test(s)) return 'Design';
         
@@ -214,11 +223,17 @@ export default function ExploreClient({
     };
 
     const filteredRoadmaps = React.useMemo(() => {
-        return roadmaps.filter(r => {
+        let result = roadmaps.filter(r => {
             if (filter === 'all') return true;
             return getCategory(r.subject || '') === filter;
         });
-    }, [roadmaps, filter]);
+
+        if (sortBy === 'alphabetical') {
+            result = [...result].sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+        }
+
+        return result;
+    }, [roadmaps, filter, sortBy]);
 
     const handleReport = (e: React.MouseEvent, id: number) => {
         e.stopPropagation();
@@ -276,6 +291,7 @@ export default function ExploreClient({
                                     onChange={(e) => setSortBy(e.target.value)}
                                     className="appearance-none bg-transparent border border-border rounded-lg pl-8 pr-7 py-1.5 text-[11px] font-bold focus:outline-none focus:border-[var(--text-heading)] transition-all manrope-body cursor-pointer min-w-[120px]"
                                 >
+                                    <option value="alphabetical">Alphabetical (A-Z)</option>
                                     <option value="newest">Newest First</option>
                                     <option value="highest_rated">Highest Rated</option>
                                     <option value="most_cloned">Most Popular</option>
@@ -349,6 +365,7 @@ export default function ExploreClient({
                                                         <span className="text-[14px] font-bold text-text-heading truncate group-hover/title:underline">
                                                             {r.title}
                                                         </span>
+                                                        {r.username === 'eulerfold' && <VerifiedBadge size={18} className="shrink-0" />}
                                                         {r.average_rating > 0 && (
                                                             <StarRating 
                                                                 rating={r.average_rating} 
