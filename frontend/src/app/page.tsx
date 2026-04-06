@@ -9,7 +9,7 @@ import { LoginRequiredMessage, AlreadySignedInMessage, FAQAccordion } from './Ho
 import HeroBackground from '@/components/HeroBackground';
 import SocialFeed from '@/components/SocialFeed';
 import EulerLogoCanvas from '@/components/EulerLogoCanvas';
-import TwistedTorusBackground from '@/components/TwistedTorusBackground';
+import FeaturesBackground from '@/components/FeaturesBackground';
 
 export const revalidate = 3600;
 
@@ -143,9 +143,9 @@ export default async function LandingPage() {
         {/* Features Section with Illustration Background */}
         <section className="relative py-20 md:py-32 px-4 md:px-6">
           <div className="max-w-7xl mx-auto relative rounded-[32px] md:rounded-[40px] overflow-hidden border border-border bg-sidebar/50 min-h-[550px] md:min-h-[600px] flex items-center shadow-2xl">
-    {/* Twisted Torus Animation Background */}
-    <div className="absolute inset-0 z-0 opacity-100">
-      <TwistedTorusBackground />
+    {/* Wave Animation Background */}
+    <div className="absolute inset-0 z-0">
+      <FeaturesBackground />
     </div>
 
     <div className="relative z-10 px-6 md:px-20 py-12 md:py-0 max-w-2xl">
