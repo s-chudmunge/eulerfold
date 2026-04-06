@@ -20,6 +20,7 @@ import {
   Shield,
   Palette,
   Briefcase,
+  TrendingUp,
   GraduationCap,
   Compass,
   Layers,
@@ -28,6 +29,7 @@ import {
   Server,
   Monitor,
   Smartphone,
+  Gamepad2,
   Infinity,
   Database,
   Binary,
@@ -45,29 +47,41 @@ const CATEGORY_METADATA: Record<string, { icon: any }> = {
     'all': { icon: LayoutDashboard },
     'Programming': { icon: Code },
     'Rust': { icon: Terminal },
+    'Go': { icon: Terminal },
+    'Python': { icon: Binary },
+    'Java': { icon: Binary },
     'C++': { icon: Binary },
+    'Frontend': { icon: Monitor },
+    'React': { icon: Layers },
+    'Vue/Angular': { icon: Layers },
+    'Backend': { icon: Server },
     'SQL & Database': { icon: Database },
     'Terminal & CLI': { icon: Terminal },
-    'ECE & Hardware': { icon: Cpu },
-    'Edge Computing': { icon: Network },
-    'Quantum': { icon: Infinity },
-    'Game Dev': { icon: Smartphone },
     'AI/ML': { icon: Cpu },
     'Data Science': { icon: BarChart3 },
+    'Data Engineering': { icon: Database },
     'System Design': { icon: Network },
-    'CS Fundamentals': { icon: Binary },
-    'Open Source': { icon: GitBranch },
     'Cloud': { icon: Cloud },
     'DevOps': { icon: Infinity },
+    'SRE': { icon: Shield },
     'Security': { icon: Shield },
     'Mobile': { icon: Smartphone },
-    'Backend': { icon: Server },
-    'Frontend': { icon: Monitor },
-    'Design': { icon: Palette },
-    'Business': { icon: Briefcase },
+    'iOS/Android': { icon: Smartphone },
+    'Flutter': { icon: Smartphone },
     'Blockchain': { icon: Coins },
+    'Quantum': { icon: Infinity },
+    'Game Dev': { icon: Gamepad2 },
+    'ECE & Hardware': { icon: Cpu },
+    'Embedded': { icon: Binary },
+    'Robotics': { icon: Cpu },
+    'AR/VR': { icon: Monitor },
+    'Design': { icon: Palette },
+    'Product Management': { icon: Briefcase },
+    'Marketing': { icon: TrendingUp },
+    'Business': { icon: Briefcase },
     'Exam Prep': { icon: GraduationCap },
     'Career': { icon: Compass },
+    'Open Source': { icon: GitBranch },
     'Other': { icon: Layers },
 };
 
@@ -150,35 +164,51 @@ export default function ExploreClient({
         
         // Specific priority checks
         if (/rust/i.test(s)) return 'Rust';
+        if (/go /i.test(s) || /golang/i.test(s)) return 'Go';
+        if (/python/i.test(s)) return 'Python';
+        if (/java /i.test(s) || /spring/i.test(s)) return 'Java';
         if (/c\+\+|cpp/i.test(s)) return 'C++';
+        
+        if (/react/i.test(s) || /nextjs/i.test(s)) return 'React';
+        if (/vue/i.test(s) || /angular/i.test(s)) return 'Vue/Angular';
+        if (/frontend|web|css|html|javascript|typescript/i.test(s)) return 'Frontend';
+        
+        if (/backend|node|express|django|fastapi|laravel/i.test(s)) return 'Backend';
         if (/sql|database|postgres|mongodb|redis|mysql|dbms/i.test(s)) return 'SQL & Database';
-        if (/terminal|bash|shell|zsh|cli|command line/i.test(s)) return 'Terminal & CLI';
-        if (/quantum/i.test(s)) return 'Quantum';
-        if (/edge computing|iot|internet of things/i.test(s)) return 'Edge Computing';
-        if (/game dev|unity|unreal|godot|game engine/i.test(s)) return 'Game Dev';
-        if (/ece|electronics|circuit|microprocessor|embedded|verilog|vhdl|vlsi|robotics/i.test(s)) return 'ECE & Hardware';
         
-        if (/open source|github|git /i.test(s)) return 'Open Source';
-        if (/system design|architecture/i.test(s)) return 'System Design';
-        if (/cs fundamentals|computer science|operating system|networking|dbms/i.test(s)) return 'CS Fundamentals';
-        if (/blockchain|web3|crypto|solidity|ethereum/i.test(s)) return 'Blockchain';
-        if (/product management|product owner|agile|scrum/i.test(s)) return 'Product';
-        if (/devops|sre|infrastructure|terraform|ci\/cd|kubernetes/i.test(s)) return 'DevOps';
-        if (/ios|android|react native|flutter|mobile/i.test(s)) return 'Mobile';
-        if (/backend|node|express|django|fastapi|spring/i.test(s)) return 'Backend';
-        if (/frontend|web|react|vue|angular|css|html/i.test(s)) return 'Frontend';
-        
-        // General categories
-        if (/gate|upsc|exam|test|prep|certification|certified/i.test(s)) return 'Exam Prep';
-        if (/aws|cloud|azure|gcp/i.test(s)) return 'Cloud';
-        if (/python|javascript|coding|programming|java|c\+\+|dsa/i.test(s)) return 'Programming';
-        if (/freelan|placement|career|interview|job|resume/i.test(s)) return 'Career';
-        if (/ai|machine learning|intelligence|prompt|llm|neural/i.test(s)) return 'AI/ML';
+        if (/data engineering|etl|pipeline|airflow|spark/i.test(s)) return 'Data Engineering';
         if (/data science|analysis|analytics|pandas|numpy|visualization/i.test(s)) return 'Data Science';
-        if (/design|ui|ux|figma|graphic|adobe|product design/i.test(s)) return 'Design';
+        
+        if (/ai|machine learning|intelligence|prompt|llm|neural|pytorch|tensorflow/i.test(s)) return 'AI/ML';
+        if (/quantum/i.test(s)) return 'Quantum';
+        
+        if (/flutter/i.test(s)) return 'Flutter';
+        if (/ios|android|swift|kotlin|mobile/i.test(s)) return 'iOS/Android';
+        
+        if (/sre|reliability/i.test(s)) return 'SRE';
+        if (/devops|infrastructure|terraform|ci\/cd|kubernetes/i.test(s)) return 'DevOps';
+        if (/aws|cloud|azure|gcp/i.test(s)) return 'Cloud';
+        
+        if (/game dev|unity|unreal|godot|game engine/i.test(s)) return 'Game Dev';
+        if (/ar\/vr|augmented reality|virtual reality|metaverse/i.test(s)) return 'AR/VR';
+        
+        if (/robotics/i.test(s)) return 'Robotics';
+        if (/embedded|microcontroller|arduino|raspberry pi/i.test(s)) return 'Embedded';
+        if (/ece|electronics|circuit|microprocessor|verilog|vhdl|vlsi/i.test(s)) return 'ECE & Hardware';
+        
+        if (/terminal|bash|shell|zsh|cli|command line/i.test(s)) return 'Terminal & CLI';
+        if (/system design|architecture/i.test(s)) return 'System Design';
+        if (/cyber|security|hacking|penetration|network/i.test(s)) return 'Security';
+        if (/blockchain|web3|crypto|solidity|ethereum/i.test(s)) return 'Blockchain';
+        
+        if (/product management|product owner|agile|scrum/i.test(s)) return 'Product Management';
         if (/marketing|seo|social media|growth|ads/i.test(s)) return 'Marketing';
         if (/business|startup|finance|management|mba/i.test(s)) return 'Business';
-        if (/cyber|security|hacking|penetration|network/i.test(s)) return 'Security';
+        
+        if (/gate|upsc|exam|test|prep|certification|certified/i.test(s)) return 'Exam Prep';
+        if (/freelan|placement|career|interview|job|resume/i.test(s)) return 'Career';
+        if (/open source|github|git /i.test(s)) return 'Open Source';
+        if (/design|ui|ux|figma|graphic|adobe|product design/i.test(s)) return 'Design';
         
         return 'Other';
     };

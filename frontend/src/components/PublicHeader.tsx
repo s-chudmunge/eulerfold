@@ -13,10 +13,18 @@ import {
   CreditCard,
   Plus,
   ChevronDown,
+  ChevronRight,
   ArrowRight,
   ExternalLink,
   Cpu,
   Laptop,
+  Code,
+  Monitor,
+  Server,
+  Network,
+  Cloud,
+  Smartphone,
+  Shield,
   Atom,
   TrendingUp,
   Dna,
@@ -25,6 +33,7 @@ import {
   Coins,
   Palette,
   Briefcase,
+  Compass,
   Database,
   GraduationCap
 } from 'lucide-react';
@@ -33,18 +42,24 @@ import { Suspense } from 'react';
 
 const ROADMAP_DATA = {
   categories: [
-    { name: "Programming", icon: Laptop, href: "/explore?category=Programming" },
+    { name: "Programming", icon: Code, href: "/explore?category=Programming" },
     { name: "AI & Machine Learning", icon: Cpu, href: "/explore?category=AI/ML" },
-    { name: "Mathematics", icon: Calculator, href: "/explore?category=Mathematics" },
-    { name: "System Design", icon: Database, href: "/explore?category=System Design" },
-    { name: "Cloud & DevOps", icon: Atom, href: "/explore?category=Cloud" },
+    { name: "Frontend", icon: Monitor, href: "/explore?category=Frontend" },
+    { name: "Backend", icon: Server, href: "/explore?category=Backend" },
     { name: "Data Science", icon: TrendingUp, href: "/explore?category=Data Science" },
-    { name: "Cybersecurity", icon: Dna, href: "/explore?category=Security" },
+    { name: "System Design", icon: Network, href: "/explore?category=System Design" },
+    { name: "Cloud & DevOps", icon: Cloud, href: "/explore?category=Cloud" },
+    { name: "Mobile Development", icon: Smartphone, href: "/explore?category=Mobile" },
+    { name: "Cybersecurity", icon: Shield, href: "/explore?category=Security" },
     { name: "Quantum Computing", icon: Atom, href: "/explore?category=Quantum" },
     { name: "Blockchain & Web3", icon: Coins, href: "/explore?category=Blockchain" },
     { name: "Game Development", icon: Gamepad2, href: "/explore?category=Game Dev" },
+    { name: "ECE & Hardware", icon: Cpu, href: "/explore?category=ECE & Hardware" },
+    { name: "Product Management", icon: Briefcase, href: "/explore?category=Product Management" },
+    { name: "Marketing", icon: TrendingUp, href: "/explore?category=Marketing" },
     { name: "Design & UX", icon: Palette, href: "/explore?category=Design" },
-    { name: "Business & Career", icon: Briefcase, href: "/explore?category=Business" }
+    { name: "Business & Startup", icon: Briefcase, href: "/explore?category=Business" },
+    { name: "Career & Interview", icon: Compass, href: "/explore?category=Career" }
   ],
   featured: [
     { title: "Machine Learning from Scratch", slug: "machine-learning-from-scratch" },
@@ -132,6 +147,7 @@ const RESEARCH_DATA = {
 
 export default function PublicHeader() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const [learnTab, setLearnTab] = useState<'roadmaps' | 'exams'>('roadmaps');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
@@ -207,65 +223,6 @@ export default function PublicHeader() {
           </Link>
 
           <nav className="hidden lg:flex items-center gap-0.5 h-full">
-            <Link href="/learn" className="px-3 py-1.5 text-[13.5px] font-semibold text-text-muted hover:text-text-heading transition-all tracking-tight rounded-lg hover:bg-sidebar/40">Learn</Link>
-            
-            <DesktopDropdown id="roadmaps" label="Roadmaps" width="min-w-[500px]">
-              <div className="flex divide-x divide-border/60">
-                <div className="p-5 w-56 bg-sidebar/20">
-                  <span className="text-[10px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-3.5 opacity-50">Categories</span>
-                  <div className="grid grid-cols-1 gap-y-0.5">
-                    {ROADMAP_DATA.categories.map(cat => (
-                      <Link key={cat.name} href={cat.href} className="flex items-center gap-2 text-[12.5px] font-medium text-text-muted hover:text-accent transition-colors py-1 group/cat">
-                        <cat.icon className="w-3 h-3 opacity-30 group-hover/cat:opacity-100 transition-opacity" />
-                        {cat.name}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-                <div className="p-5 flex-1 bg-header">
-                  <span className="text-[10px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-3.5 opacity-50">Featured Roadmaps</span>
-                  <div className="space-y-3.5">
-                    {ROADMAP_DATA.featured.map(r => (
-                      <Link key={r.slug} href={`/roadmap/${r.slug}`} className="flex items-center justify-between group/item">
-                        <span className="text-[12.5px] font-semibold text-text-heading group-hover/item:text-accent transition-colors">{r.title}</span>
-                        <ArrowRight className="w-3.5 h-3.5 text-accent opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all" />
-                      </Link>
-                    ))}
-                    <Link href="/explore" className="pt-3.5 border-t border-border/60 flex items-center gap-2 text-[11px] font-bold text-accent hover:gap-2.5 transition-all">
-                      Browse Full Directory <ArrowRight className="w-3 h-3" />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </DesktopDropdown>
-
-            <DesktopDropdown id="exams" label="Exams" width="min-w-[600px]">
-              <div className="p-5 grid grid-cols-3 gap-6">
-                {EXAM_CATEGORIES.map(reg => (
-                  <div key={reg.title}>
-                    <span className="text-[10px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-3.5 opacity-50">{reg.title}</span>
-                    <div className="space-y-2">
-                      {reg.exams.map(ex => (
-                        <Link key={ex.slug} href={`/archive/exams/previous-year-papers/${ex.slug}`} className="block text-[12.5px] font-semibold text-text-heading hover:text-accent transition-colors">{ex.name}</Link>
-                      ))}
-                    </div>
-                  </div>
-                ))}
-              </div>
-              <Link href="/archive/exams/previous-year-papers" className="mx-3 mb-3 p-3 bg-sidebar/30 rounded-lg flex items-center justify-between group/full border border-border/40 hover:border-accent/30 transition-all">
-                <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-md bg-background border border-border flex items-center justify-center">
-                        <Archive className="w-4 h-4 text-accent" />
-                    </div>
-                    <div className="flex flex-col gap-0">
-                        <span className="text-[12.5px] font-bold text-text-heading">Exam Archive</span>
-                        <span className="text-[10px] text-text-muted">Access thousands of papers across all domains</span>
-                    </div>
-                </div>
-                <ExternalLink className="w-3.5 h-3.5 text-text-muted group-hover/full:text-accent transition-colors" />
-              </Link>
-            </DesktopDropdown>
-
             <DesktopDropdown id="research" label="Research" width="min-w-[620px]">
               <div className="flex divide-x divide-border/60">
                 <div className="p-5 w-72 bg-sidebar/20">
@@ -283,7 +240,7 @@ export default function PublicHeader() {
                   <div className="space-y-3">
                     {RESEARCH_DATA.featured.map(paper => (
                       <Link key={paper.slug} href={`/research-decoded/${paper.slug}`} className="block group/p">
-                        <span className="text-[12.5px] font-semibold text-text-heading group-hover/p:text-accent transition-colors line-clamp-1">{paper.title}</span>
+                        <span className="text-[12.5px] font-semibold text-text-heading group-hover/p:text-accent transition-colors block">{paper.title}</span>
                       </Link>
                     ))}
                     <Link href="/research-decoded" className="pt-3.5 border-t border-border/60 flex items-center gap-2 text-[11px] font-bold text-accent hover:gap-2.5 transition-all">
@@ -296,6 +253,122 @@ export default function PublicHeader() {
 
             <Link href="/leaderboard" className="px-3 py-1.5 text-[13.5px] font-semibold text-text-muted hover:text-text-heading transition-all tracking-tight rounded-lg hover:bg-sidebar/40">Leaderboard</Link>
             <Link href="/pricing" className="px-3 py-1.5 text-[13.5px] font-semibold text-text-muted hover:text-text-heading transition-all tracking-tight rounded-lg hover:bg-sidebar/40">Pricing</Link>
+
+            <DesktopDropdown id="learn" label="Learn" width="min-w-[850px]">
+              <div className="flex min-h-[540px]">
+                {/* Left Side: Sub-nav */}
+                <div className="w-60 bg-sidebar/20 border-r border-border/60 p-4 flex flex-col gap-2">
+                  <div className="mb-4">
+                    <span className="text-[10px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-1 opacity-50">Educational Content</span>
+                    <h2 className="text-[14px] font-bold text-text-heading">Learning Hub</h2>
+                  </div>
+                  
+                  <button 
+                    onMouseEnter={() => setLearnTab('roadmaps')}
+                    className={`flex items-center justify-between p-3 rounded-xl transition-all border ${learnTab === 'roadmaps' ? 'bg-header border-border shadow-sm text-accent' : 'border-transparent text-text-muted hover:bg-header/50'}`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${learnTab === 'roadmaps' ? 'bg-accent/10 text-accent' : 'bg-background border border-border text-text-muted'}`}>
+                        <Globe className="w-4 h-4" />
+                      </div>
+                      <div className="flex flex-col items-start">
+                        <span className="text-[13px] font-bold">Roadmaps</span>
+                        <span className="text-[10px] opacity-60">Step-by-step paths</span>
+                      </div>
+                    </div>
+                    <ChevronRight className={`w-3.5 h-3.5 transition-transform ${learnTab === 'roadmaps' ? 'translate-x-0' : '-translate-x-2 opacity-0'}`} />
+                  </button>
+
+                  <button 
+                    onMouseEnter={() => setLearnTab('exams')}
+                    className={`flex items-center justify-between p-3 rounded-xl transition-all border ${learnTab === 'exams' ? 'bg-header border-border shadow-sm text-accent' : 'border-transparent text-text-muted hover:bg-header/50'}`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${learnTab === 'exams' ? 'bg-accent/10 text-accent' : 'bg-background border border-border text-text-muted'}`}>
+                        <Archive className="w-4 h-4" />
+                      </div>
+                      <div className="flex flex-col items-start">
+                        <span className="text-[13px] font-bold">Exams</span>
+                        <span className="text-[10px] opacity-60">Previous year papers</span>
+                      </div>
+                    </div>
+                    <ChevronRight className={`w-3.5 h-3.5 transition-transform ${learnTab === 'exams' ? 'translate-x-0' : '-translate-x-2 opacity-0'}`} />
+                  </button>
+
+                  <div className="mt-auto pt-4 border-t border-border/60">
+                    <Link href="/learn" className="flex items-center gap-2 text-[11px] font-bold text-text-muted hover:text-accent transition-colors">
+                      View all learning resources <ArrowRight className="w-3 h-3" />
+                    </Link>
+                  </div>
+                </div>
+
+                {/* Right Side: Content Area */}
+                <div className="flex-1 bg-header overflow-hidden">
+                  {learnTab === 'roadmaps' ? (
+                    <div className="flex divide-x divide-border/60 h-full animate-in fade-in slide-in-from-left-2 duration-300">
+                      {/* Categories Sidebar */}
+                      <div className="p-5 w-56 bg-sidebar/10 overflow-y-auto">
+                        <span className="text-[10px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-2.5 opacity-50">Categories</span>
+                        <div className="grid grid-cols-1 gap-y-0">
+                          {ROADMAP_DATA.categories.map(cat => (
+                            <Link key={cat.name} href={cat.href} className="flex items-center gap-2 text-[12.5px] font-medium text-text-muted hover:text-accent transition-colors py-0.5 group/cat">
+                              <cat.icon className="w-3 h-3 opacity-30 group-hover/cat:opacity-100 transition-opacity" />
+                              {cat.name}
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                      {/* Featured Items */}
+                      <div className="p-6 flex-1 bg-header">
+                        <span className="text-[10px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-4 opacity-50">Featured Roadmaps</span>
+                        <div className="space-y-3.5">
+                          {ROADMAP_DATA.featured.map(r => (
+                            <Link key={r.slug} href={`/roadmap/${r.slug}`} className="flex items-start justify-between group/item">
+                              <span className="text-[12.5px] font-semibold text-text-heading group-hover/item:text-accent transition-colors pr-4">{r.title}</span>
+                              <ArrowRight className="w-3.5 h-3.5 text-accent opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all shrink-0 mt-0.5" />
+                            </Link>
+                          ))}
+                        </div>
+                        <Link href="/explore" className="mt-8 pt-4 border-t border-border/60 flex items-center gap-2 text-[11px] font-bold text-accent hover:gap-2.5 transition-all">
+                          Browse Full Directory <ArrowRight className="w-3 h-3" />
+                        </Link>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="p-6 flex flex-col h-full animate-in fade-in slide-in-from-left-2 duration-300">
+                      <div className="grid grid-cols-3 gap-8 mb-8">
+                        {EXAM_CATEGORIES.map(reg => (
+                          <div key={reg.title}>
+                            <span className="text-[10px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-4 opacity-50">{reg.title}</span>
+                            <div className="space-y-2.5">
+                              {reg.exams.map(ex => (
+                                <Link key={ex.slug} href={`/archive/exams/previous-year-papers/${ex.slug}`} className="block text-[12.5px] font-semibold text-text-heading hover:text-accent transition-colors">{ex.name}</Link>
+                              ))}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                      <div className="mt-auto">
+                        <Link href="/archive/exams/previous-year-papers" className="p-4 bg-sidebar/30 rounded-xl flex items-center justify-between group/full border border-border/40 hover:border-accent/30 transition-all">
+                          <div className="flex items-center gap-4">
+                              <div className="w-10 h-10 rounded-lg bg-background border border-border flex items-center justify-center shadow-sm">
+                                  <Archive className="w-5 h-5 text-accent" />
+                              </div>
+                              <div className="flex flex-col gap-0.5">
+                                  <span className="text-[13px] font-bold text-text-heading">Full Exam Archive</span>
+                                  <span className="text-[11px] text-text-muted">Access thousands of papers across all domains</span>
+                              </div>
+                          </div>
+                          <div className="flex items-center gap-2 text-accent font-bold text-[12px]">
+                            Explore Archive <ArrowRight className="w-3.5 h-3.5" />
+                          </div>
+                        </Link>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </DesktopDropdown>
           </nav>
         </div>
 
