@@ -119,7 +119,7 @@ export default function UserNav() {
     <div className="flex items-center gap-4">
       <Link
         href="/login"
-        className="text-[12px] font-bold text-text-muted hover:text-text-heading transition-all px-3 py-1.5 rounded-lg hover:bg-sidebar/40"
+        className="text-[12px] font-bold text-text-heading px-5 py-2 rounded-full border border-border/80 hover:bg-sidebar/60 hover:border-text-muted transition-all active:scale-95 shadow-sm hover:shadow-md"
       >
         Sign in
       </Link>

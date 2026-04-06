@@ -10,8 +10,37 @@ import HeroBackground from '@/components/HeroBackground';
 import SocialFeed from '@/components/SocialFeed';
 import EulerLogoCanvas from '@/components/EulerLogoCanvas';
 import FeaturesBackground from '@/components/FeaturesBackground';
+import { ExploreRoadmap } from '@/lib/api';
+import VerifiedBadge from '@/components/VerifiedBadge';
+import { getCategory } from '@/lib/roadmapUtils';
 
 export const revalidate = 3600;
+
+async function getFeaturedRoadmaps(): Promise<ExploreRoadmap[]> {
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
+  try {
+    // Fetch a larger pool of popular roadmaps
+    const res = await fetch(`${API_URL}/explore?limit=100&sort_by=most_cloned`, { next: { revalidate: 3600 } });
+    if (!res.ok) return [];
+    const allRoadmaps: ExploreRoadmap[] = await res.json();
+
+    // Prioritize roadmaps by eulerfold (official)
+    const eulerfoldRoadmaps = allRoadmaps.filter(r => r.username === 'eulerfold' || r.author.toLowerCase() === 'eulerfold');
+    const otherRoadmaps = allRoadmaps.filter(r => r.username !== 'eulerfold' && r.author.toLowerCase() !== 'eulerfold');
+
+    // Combine: all available eulerfold ones (up to 4) + top popular others to fill 6 slots
+    const selected = [
+      ...eulerfoldRoadmaps.slice(0, 4),
+      ...otherRoadmaps.slice(0, 6 - Math.min(4, eulerfoldRoadmaps.length))
+    ];
+
+    // Shuffle for variety
+    return selected.sort(() => Math.random() - 0.5);
+  } catch (error) {
+    console.error("Error fetching featured roadmaps:", error);
+    return [];
+  }
+}
 
 export const metadata: Metadata = {
   title: 'EulerFold - Infrastructure for efficient, structured learning',
@@ -36,6 +65,7 @@ export const metadata: Metadata = {
 };
 
 export default async function LandingPage() {
+  const featuredRoadmaps = await getFeaturedRoadmaps();
   const faqItems = [
     {
       question: "How accurate are the AI roadmaps?",
@@ -128,6 +158,12 @@ export default async function LandingPage() {
                 >
                   <Plus className="w-4 h-4" /> Start Your Learning
                 </Link>
+                <Link 
+                  href="/explore"
+                  className="w-full sm:w-auto inline-flex items-center justify-center bg-sidebar/80 backdrop-blur-sm border border-border text-text-primary px-7 py-3.5 rounded-2xl text-[14px] font-bold transition-all hover:scale-[1.02] hover:bg-sidebar active:scale-[0.98] gap-3"
+                >
+                  <BookOpen className="w-4 h-4" /> Browse Public Roadmaps
+                </Link>
               </div>
 
               <div className="flex items-center gap-2">
@@ -139,6 +175,54 @@ export default async function LandingPage() {
             </div>
           </div>
         </section>
+
+        {/* Featured Roadmaps Section */}
+        {featuredRoadmaps.length > 0 && (
+          <section className="py-12 md:py-16 px-6 bg-sidebar/10 border-t border-border/30">
+            <div className="max-w-4xl mx-auto">
+              <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
+                <div className="max-w-2xl">
+                  <h2 className="text-[10px] md:text-[11px] font-bold text-accent tracking-[0.2em] uppercase mb-4 manrope-body">Discovery</h2>
+                  <h3 className="text-2xl md:text-3xl font-bold text-text-heading leading-tight font-inter">
+                    Explore community roadmaps
+                  </h3>
+                </div>
+                <Link 
+                  href="/explore" 
+                  className="inline-flex items-center gap-2 text-accent font-bold text-[14px] hover:underline underline-offset-4 group"
+                >
+                  View all roadmaps <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                </Link>
+              </div>
+
+              <div className="space-y-1">
+                {featuredRoadmaps.map((roadmap) => (
+                  <Link 
+                    key={roadmap.id} 
+                    href={`/roadmap/${roadmap.slug}`}
+                    className="group flex items-center justify-between py-3 border-b border-border/40 hover:border-accent transition-colors"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <span className="text-[15px] font-bold text-text-heading group-hover:text-accent transition-colors truncate">
+                        {roadmap.title}
+                      </span>
+                      {roadmap.username === 'eulerfold' && <VerifiedBadge size={16} className="shrink-0" />}
+                      <span className="hidden sm:inline-block text-[10px] font-bold text-text-muted bg-sidebar px-2 py-0.5 rounded uppercase tracking-wider inconsolata-ui opacity-70">
+                        {getCategory(roadmap.subject || '')}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-4 shrink-0">
+                      <span className="hidden md:inline-block text-[11px] font-bold text-text-muted inconsolata-ui uppercase tracking-tight">
+                        by @{roadmap.username || roadmap.author}
+                      </span>
+                      <ArrowRight className="w-4 h-4 text-accent opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Features Section with Illustration Background */}
         <section className="relative py-20 md:py-32 px-4 md:px-6">
