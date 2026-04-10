@@ -721,7 +721,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                                 {currentModule?.title || 'Practice session'}
                                             </h2>
                                             <p className="manrope-body text-[14px] text-text-muted max-w-2xl italic">
-                                                A consolidated view of all study materials and AI-generated practice resources for this week&apos;s curriculum.
+                                                A consolidated view of all study materials and practice resources for this week&apos;s curriculum.
                                             </p>
                                         </div>
 
@@ -770,7 +770,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                                     <div className="h-[1px] flex-1 bg-[var(--border)] opacity-30"></div>
                                                     <div className="flex items-center gap-2 px-2 py-1 bg-amber-500/10 text-amber-600 rounded border border-amber-500/20 shrink-0">
                                                         <Trophy className="h-3 w-3" />
-                                                        <span className="text-[9px] font-bold tracking-widest">+1 🐢 / Correct</span>
+                                                        <span className="text-[9px] font-bold tracking-widest">+1 🤑 / Correct</span>
                                                     </div>
                                                 </div>
 
@@ -881,7 +881,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                         </div>
                         <div>
                             <p className="text-[10px] font-bold text-emerald-400 tracking-wide leading-none mb-1.5">Node mastered</p>
-                            <p className="text-[15px] font-bold tracking-tight">+{coinToast.amount} 🐢 System Points</p>
+                            <p className="text-[15px] font-bold tracking-tight">+{coinToast.amount}🤑 System Points</p>
                         </div>
                     </div>
                 </div>

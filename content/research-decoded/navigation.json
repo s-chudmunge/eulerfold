@@ -567,6 +567,22 @@
       {
         "title": "GraphCast — Weather AI (2023)",
         "slug": "graphcast-weather-ai"
+      },
+      {
+        "title": "CRISPR-GPT: AI-Assisted Genome Editing (2024)",
+        "slug": "crispr-gpt-ai-assisted-genome-editing"
+      },
+      {
+        "title": "Physics-Informed ML in Biomedical Engineering (2025)",
+        "slug": "physics-informed-machine-learning-biomedical-engineering"
+      },
+      {
+        "title": "Agentomics-ML: Autonomous ML for Genomics (2025)",
+        "slug": "agentomics-ml-autonomous-ml-genomics"
+      },
+      {
+        "title": "BIOVERSE: Multimodal Bio-Foundation Alignment (2025)",
+        "slug": "bioverse-multimodal-biological-foundation-model-alignment"
       }
     ]
   }

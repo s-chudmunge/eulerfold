@@ -11,6 +11,10 @@ export const getCategory = (subject: string) => {
     if (/react/i.test(s) || /nextjs/i.test(s)) return 'React';
     if (/vue/i.test(s) || /angular/i.test(s)) return 'Vue/Angular';
     if (/frontend|web|css|html|javascript|typescript/i.test(s)) return 'Frontend';
+
+    // Move Exam Prep and Career higher to catch specific prep roadmaps
+    if (/jee|neet|gate|upsc|cat|clat|sat|gre|gmat|ibps|ssc|exam|test|prep|certification|certified/i.test(s)) return 'Exam Prep';
+    if (/freelan|placement|career|interview|\bjob\b|resume|aptitude/i.test(s)) return 'Career';
     
     if (/backend|node|express|django|fastapi|laravel/i.test(s)) return 'Backend';
     if (/sql|database|postgres|mongodb|redis|mysql|dbms/i.test(s)) return 'SQL & Database';
@@ -18,7 +22,7 @@ export const getCategory = (subject: string) => {
     if (/data engineering|etl|pipeline|airflow|spark/i.test(s)) return 'Data Engineering';
     if (/data science|analysis|analytics|pandas|numpy|visualization/i.test(s)) return 'Data Science';
     
-    if (/ai|machine learning|intelligence|prompt|llm|neural|pytorch|tensorflow/i.test(s)) return 'AI/ML';
+    if (/\bai\b|machine learning|intelligence|prompt|llm|neural|pytorch|tensorflow/i.test(s)) return 'AI/ML';
     if (/quantum/i.test(s)) return 'Quantum';
     if (/science|physics|biology|chemistry|neuro|climate|energy|environment|medical|biotech|bioinformatics/i.test(s)) return 'Science';
     
@@ -45,8 +49,6 @@ export const getCategory = (subject: string) => {
     if (/marketing|seo|social media|growth|ads|youtube|video/i.test(s)) return 'Marketing';
     if (/business|startup|finance|management|mba/i.test(s)) return 'Business';
     
-    if (/gate|upsc|exam|test|prep|certification|certified/i.test(s)) return 'Exam Prep';
-    if (/freelan|placement|career|interview|job|resume|aptitude/i.test(s)) return 'Career';
     if (/open source|github|git /i.test(s)) return 'Open Source';
     if (/design|ui|ux|figma|graphic|adobe|product design/i.test(s)) return 'Design';
     
