@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Plus, GraduationCap, ArrowRight, BookOpen, Target, Zap } from 'lucide-react';
 import PublicHeader from '@/components/PublicHeader';
 import Footer from '@/components/Footer';
-import { LoginRequiredMessage, AlreadySignedInMessage, FAQAccordion } from './HomeClientComponents';
+import { LoginRequiredMessage, AlreadySignedInMessage, FAQAccordion, LandingOnboardingTrigger } from './HomeClientComponents';
 
 import HeroBackground from '@/components/HeroBackground';
 import SocialFeed from '@/components/SocialFeed';
@@ -135,6 +135,7 @@ export default async function LandingPage() {
       <Suspense fallback={null}>
         <LoginRequiredMessage />
         <AlreadySignedInMessage />
+        <LandingOnboardingTrigger />
       </Suspense>
       <PublicHeader />
       

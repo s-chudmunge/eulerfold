@@ -3,6 +3,42 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { ChevronDown } from 'lucide-react';
+import { useAuth } from '@/components/AuthProvider';
+import { authAPI } from '@/lib/api';
+import OnboardingFlow from '@/components/onboarding/OnboardingFlow';
+
+export function LandingOnboardingTrigger() {
+  const { user, loading } = useAuth();
+  const [showOnboarding, setShowOnboarding] = useState(false);
+  const [profile, setProfile] = useState<any>(null);
+
+  useEffect(() => {
+    async function checkOnboarding() {
+      if (!loading && user) {
+        try {
+          const me = await authAPI.getMe();
+          setProfile(me);
+          if (!me.username || me.username.startsWith('user_') || !me.onboarding_completed) {
+            setShowOnboarding(true);
+          }
+        } catch (err) {
+          console.error("Failed to check onboarding on landing:", err);
+        }
+      }
+    }
+    checkOnboarding();
+  }, [user, loading]);
+
+  if (!showOnboarding || !user) return null;
+
+  return (
+    <OnboardingFlow 
+      user={user}
+      onComplete={(updatedUser) => setProfile(updatedUser)}
+      onExit={() => setShowOnboarding(false)}
+    />
+  );
+}
 
 export function FAQAccordion({ items }: { items: { question: string, answer: string }[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
