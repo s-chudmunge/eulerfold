@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { RoadmapData, saveRoadmap, roadmapsAPI, submissionsAPI } from '../../lib/api';
-import { Download, CheckCircle, ChevronDown, ChevronUp, Play, BookOpen, X, Trophy, Plus, FileText, Copy, Target, MonitorPlay, BookText, Hash, Scroll } from 'lucide-react';
+import { Download, CheckCircle, ChevronDown, ChevronUp, Play, BookOpen, X, Trophy, Plus, FileText, Copy, Target, MonitorPlay, BookText, Hash, Scroll, ChevronRight, Trash2 } from 'lucide-react';
 import SubmissionModal from '@/components/SubmissionModal';
 import { supabase } from '../../lib/supabase/client';
 import Link from 'next/link';
@@ -20,6 +20,8 @@ interface RoadmapDisplayProps {
   justGenerated?: boolean;
   isOwner?: boolean;
   onClone?: () => void;
+  onExtend?: () => void;
+  onDeleteExtension?: () => void;
   hideHeader?: boolean;
 }
 
@@ -29,6 +31,8 @@ const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({
   justGenerated,
   isOwner = true,
   onClone,
+  onExtend,
+  onDeleteExtension,
   hideHeader = false
 }) => {
   const currentModule = (roadmapData as any).current_module || 1;
@@ -238,11 +242,15 @@ const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({
             const resourceCount = module.resources?.length || 0;
             const topicCount = module.topics?.length || 0;
             
+            const isLast = index === (roadmapData.roadmap_plan?.modules || []).length - 1;
+            const isExtension = module.is_extension;
+
             return (
               <div
                 key={index}
-                className={`transition-colors duration-300 ${isCurrent ? 'bg-accent/[0.03]' : 'bg-background hover:bg-callout-bg/50'}`}
+                className={`transition-colors duration-300 relative group/module ${isCurrent ? 'bg-accent/[0.03]' : 'bg-background hover:bg-callout-bg/50'}`}
               >
+                {/* Module Header */}
                 <button
                   onClick={() => toggleModule(index)}
                   className="w-full px-6 py-6 flex items-center justify-between text-left focus:outline-none"
@@ -257,7 +265,7 @@ const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({
                     </div>
                     <div className="min-w-0">
                       <h3 className="inconsolata-ui text-[18px] font-bold text-text-heading truncate pr-4  ">{module.title}</h3>
-                      <p className="text-[13px] text-text-muted line-clamp-1 mt-1 font-medium italic">{module.outcome}</p>
+                      <p className="text-[13px] text-text-muted line-clamp-2 leading-relaxed mt-1 font-medium italic pr-8">{module.outcome}</p>
                       
                       <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-4">
                         {videoCount > 0 && (
@@ -297,7 +305,21 @@ const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-4 shrink-0">
+                  <div className="flex items-center gap-2 md:gap-4 shrink-0">
+                    {isOwner && isLast && isExtension && onDeleteExtension && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          if (confirm('Are you sure you want to delete this extension?')) {
+                            onDeleteExtension();
+                          }
+                        }}
+                        className="p-2 text-text-muted hover:text-red-500 hover:bg-red-50 rounded-lg transition-all opacity-100 md:opacity-0 group-hover/module:opacity-100"
+                        title="Delete last extension"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    )}
                     {submissionsByModule[index+1] && submissionsByModule[index+1].length > 0 && (
                       <CheckCircle className="h-5 w-5 text-green-500 hidden sm:block" />
                     )}
@@ -402,6 +424,28 @@ const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({
               </div>
             );
         })}
+
+        {onExtend && (
+          <div className="pt-12 pb-6 border-t border-border mt-12 flex flex-col items-center text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <button 
+              onClick={onExtend}
+              className="w-16 h-16 bg-emerald-500/10 rounded-2xl border border-emerald-500/20 text-emerald-600 mb-6 flex items-center justify-center transition-all hover:bg-emerald-500/20 hover:border-emerald-500/40 hover:scale-105 active:scale-95 group shadow-lg shadow-emerald-500/5"
+            >
+              <Plus className="w-7 h-7 group-hover:rotate-90 transition-transform duration-500" />
+            </button>
+            
+            <div className="max-w-[400px]">
+              <h3 className="inconsolata-ui text-lg font-bold text-text-heading tracking-tight mb-2">Continue Learning</h3>
+              <p className="manrope-body text-[12px] text-text-muted leading-relaxed italic opacity-80 mb-6 px-4">
+                You've completed the original curriculum. As a Pro user, you can extend this roadmap further based on your specific needs.
+              </p>
+              
+              <div className="inline-flex items-center px-3 py-1 bg-emerald-500/5 rounded-full border border-emerald-500/10">
+                <span className="text-[9px] text-emerald-600 font-bold uppercase tracking-[0.1em]">Pro Exclusive Feature</span>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
 
       {showModalFor && (

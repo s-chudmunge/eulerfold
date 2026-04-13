@@ -147,7 +147,7 @@ const RESEARCH_DATA = {
 
 export default function PublicHeader() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
-  const [learnTab, setLearnTab] = useState<'roadmaps' | 'exams'>('roadmaps');
+  const [learnTab, setLearnTab] = useState<'roadmaps' | 'exams' | 'research'>('roadmaps');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const headerRef = useRef<HTMLElement>(null);
@@ -223,34 +223,6 @@ export default function PublicHeader() {
           </Link>
 
           <nav className="hidden lg:flex items-center gap-0.5 h-full">
-            <DesktopDropdown id="research" label="Research" width="min-w-[620px]">
-              <div className="flex divide-x divide-border/60">
-                <div className="p-5 w-72 bg-sidebar/20">
-                   <span className="text-[10px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-4 opacity-50">Domains</span>
-                   <div className="grid grid-cols-1 gap-y-0.5">
-                     {RESEARCH_DATA.categories.map(cat => (
-                        <Link key={cat.name} href={cat.href} className="block text-[12.5px] font-semibold text-text-heading hover:text-accent transition-colors py-1">
-                          {cat.name}
-                        </Link>
-                     ))}
-                   </div>
-                </div>
-                <div className="p-5 flex-1 bg-header">
-                  <span className="text-[10px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-4 opacity-50">Latest Decoded Papers</span>
-                  <div className="space-y-3">
-                    {RESEARCH_DATA.featured.map(paper => (
-                      <Link key={paper.slug} href={`/research-decoded/${paper.slug}`} className="block group/p">
-                        <span className="text-[12.5px] font-semibold text-text-heading group-hover/p:text-accent transition-colors block">{paper.title}</span>
-                      </Link>
-                    ))}
-                    <Link href="/research-decoded" className="pt-3.5 border-t border-border/60 flex items-center gap-2 text-[11px] font-bold text-accent hover:gap-2.5 transition-all">
-                      Access Research Portal <ArrowRight className="w-3.5 h-3.5" />
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </DesktopDropdown>
-
             <Link href="/leaderboard" className="px-3 py-1.5 text-[13.5px] font-semibold text-text-muted hover:text-text-heading transition-all tracking-tight rounded-lg hover:bg-sidebar/40">Leaderboard</Link>
             <Link href="/pricing" className="px-3 py-1.5 text-[13.5px] font-semibold text-text-muted hover:text-text-heading transition-all tracking-tight rounded-lg hover:bg-sidebar/40">Pricing</Link>
 
@@ -295,6 +267,22 @@ export default function PublicHeader() {
                     <ChevronRight className={`w-3.5 h-3.5 transition-transform ${learnTab === 'exams' ? 'translate-x-0' : '-translate-x-2 opacity-0'}`} />
                   </button>
 
+                  <button 
+                    onMouseEnter={() => setLearnTab('research')}
+                    className={`flex items-center justify-between p-3 rounded-xl transition-all border ${learnTab === 'research' ? 'bg-header border-border shadow-sm text-accent' : 'border-transparent text-text-muted hover:bg-header/50'}`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${learnTab === 'research' ? 'bg-accent/10 text-accent' : 'bg-background border border-border text-text-muted'}`}>
+                        <Microscope className="w-4 h-4" />
+                      </div>
+                      <div className="flex flex-col items-start">
+                        <span className="text-[13px] font-bold">Research Decoded</span>
+                        <span className="text-[10px] opacity-60">Papers made simple</span>
+                      </div>
+                    </div>
+                    <ChevronRight className={`w-3.5 h-3.5 transition-transform ${learnTab === 'research' ? 'translate-x-0' : '-translate-x-2 opacity-0'}`} />
+                  </button>
+
                   <div className="mt-auto pt-4 border-t border-border/60">
                     <Link href="/learn" className="flex items-center gap-2 text-[11px] font-bold text-text-muted hover:text-accent transition-colors">
                       View all learning resources <ArrowRight className="w-3 h-3" />
@@ -334,7 +322,7 @@ export default function PublicHeader() {
                         </Link>
                       </div>
                     </div>
-                  ) : (
+                  ) : learnTab === 'exams' ? (
                     <div className="p-6 flex flex-col h-full animate-in fade-in slide-in-from-left-2 duration-300">
                       <div className="grid grid-cols-3 gap-8 mb-8">
                         {EXAM_CATEGORIES.map(reg => (
@@ -364,6 +352,33 @@ export default function PublicHeader() {
                           </div>
                         </Link>
                       </div>
+                    </div>
+                  ) : (
+                    <div className="flex divide-x divide-border/60 h-full animate-in fade-in slide-in-from-left-2 duration-300">
+                        <div className="p-5 w-56 bg-sidebar/10 overflow-y-auto">
+                           <span className="text-[10px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-2.5 opacity-50">Domains</span>
+                           <div className="grid grid-cols-1 gap-y-0">
+                             {RESEARCH_DATA.categories.map(cat => (
+                                <Link key={cat.name} href={cat.href} className="flex items-center gap-2 text-[12.5px] font-medium text-text-muted hover:text-accent transition-colors py-0.5 group/cat">
+                                  <Microscope className="w-3 h-3 opacity-30 group-hover/cat:opacity-100 transition-opacity" />
+                                  {cat.name}
+                                </Link>
+                             ))}
+                           </div>
+                        </div>
+                        <div className="p-6 flex-1 bg-header">
+                          <span className="text-[10px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-4 opacity-50">Latest Decoded Papers</span>
+                          <div className="space-y-2.5">
+                            {RESEARCH_DATA.featured.map(paper => (
+                              <Link key={paper.slug} href={`/research-decoded/${paper.slug}`} className="block group/p">
+                                <span className="text-[12px] font-semibold text-text-heading group-hover/p:text-accent transition-colors block">{paper.title}</span>
+                              </Link>
+                            ))}
+                            <Link href="/research-decoded" className="pt-3 border-t border-border/60 flex items-center gap-2 text-[11px] font-bold text-accent hover:gap-2.5 transition-all">
+                              Access Research Portal <ArrowRight className="w-3.5 h-3.5" />
+                            </Link>
+                          </div>
+                        </div>
                     </div>
                   )}
                 </div>
@@ -404,7 +419,7 @@ export default function PublicHeader() {
                 { l: "Roadmap Explorer", h: "/explore", i: Globe },
                 { l: "Global Leaderboard", h: "/leaderboard", i: Trophy },
                 { l: "Exams & Papers", h: "/archive/exams/previous-year-papers", i: Archive },
-                { l: "Research Portal", h: "/research-decoded", i: Microscope },
+                { l: "Research Decoded", h: "/research-decoded", i: Microscope },
                 { l: "Premium Plans", h: "/pricing", i: CreditCard }
               ].map(item => (
                 <Link key={item.h} href={item.h} className="flex items-center justify-between p-4.5 bg-sidebar/40 rounded-2xl border border-border/50">

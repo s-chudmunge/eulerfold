@@ -10,6 +10,8 @@ interface Roadmap {
     slug: string;
     subject: string;
     is_public?: boolean;
+    cloned_from?: number;
+    is_cloned?: boolean;
     progress?: {
         percent: number;
         bottleneck_module?: number;
@@ -71,6 +73,12 @@ export default function RoadmapCompactList({ roadmaps }: RoadmapCompactListProps
                                         {r.is_public && (
                                             <div className="flex items-center px-1.5 py-0.5 rounded bg-blue-500/5 border border-blue-500/20 ml-1">
                                                 <span className="inconsolata-ui text-[8px] font-black text-blue-500 uppercase tracking-tighter">Public</span>
+                                            </div>
+                                        )}
+
+                                        {r.cloned_from && (
+                                            <div className="flex items-center px-1.5 py-0.5 rounded bg-amber-500/5 border border-amber-500/20 ml-1">
+                                                <span className="inconsolata-ui text-[8px] font-black text-amber-500 uppercase tracking-tighter">Cloned</span>
                                             </div>
                                         )}
 

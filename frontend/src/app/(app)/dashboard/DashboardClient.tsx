@@ -37,7 +37,6 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import { useAuth } from '@/components/AuthProvider';
 import { coinsAPI, EulerCoinBalance, authAPI, roadmapsAPI, RoadmapMe, sessionsAPI, profileAPI } from '@/lib/api';
-import ReengagementModal from '@/components/dashboard/ReengagementModal';
 import IntensityHeatmap from '@/components/dashboard/IntensityHeatmap';
 import { format } from 'date-fns';
 import AppSidebar from '@/components/AppSidebar';
@@ -78,10 +77,6 @@ export default function DashboardPage() {
     
     // Onboarding
     const [showOnboarding, setShowOnboarding] = useState(false);
-
-    // Re-engagement
-    const [reengagementRoadmap, setReengagementRoadmap] = useState<RoadmapMe | null>(null);
-    const [daysAway, setDaysAway] = useState(0);
 
     useEffect(() => {
         if (!authLoading && !authUser) {
@@ -178,22 +173,6 @@ export default function DashboardPage() {
                 sessionsAPI.getWeeklyStats().then(data => {
                     if (isMounted) setWeeklyStats(data);
                 }).catch(console.error);
-
-                if (activeProfile?.last_active_date && myRoadmaps.length > 0) {
-                    const lastActive = new Date(activeProfile.last_active_date);
-                    const today = new Date();
-                    const diffDays = Math.ceil(Math.abs(today.getTime() - lastActive.getTime()) / (1000 * 60 * 60 * 24));
-                    const metadata = activeProfile.metadata || {};
-                    const isPaused = metadata.reengagement_paused_until ? new Date(metadata.reengagement_paused_until) > new Date() : false;
-                    
-                    if (diffDays >= 21 && !isPaused) {
-                        const mostRecent = [...myRoadmaps].sort((a, b) => new Date(b.updated_at).getTime() - new Date(a.updated_at).getTime())[0];
-                        if (mostRecent) {
-                            setReengagementRoadmap(mostRecent);
-                            setDaysAway(diffDays);
-                        }
-                    }
-                }
             } catch (err: any) {
                 if (isMounted) setError(err.message);
             } finally {
@@ -354,6 +333,11 @@ export default function DashboardPage() {
                                                             <span className="inconsolata-ui text-[8px] font-black text-blue-500 uppercase tracking-tighter">Public</span>
                                                         </div>
                                                     )}
+                                                    {r.cloned_from && (
+                                                        <div className="flex items-center px-1.5 py-0.5 rounded bg-amber-500/5 border border-amber-500/20">
+                                                            <span className="inconsolata-ui text-[8px] font-black text-amber-500 uppercase tracking-tighter">Cloned</span>
+                                                        </div>
+                                                    )}
                                                 </div>
 
                                             </div>
@@ -448,15 +432,6 @@ export default function DashboardPage() {
                         </div>
                     </div>
                 </div>
-            )}
-
-            {reengagementRoadmap && (
-                <ReengagementModal 
-                    roadmap={reengagementRoadmap}
-                    daysAway={daysAway}
-                    onClose={() => setReengagementRoadmap(null)}
-                    onUpdated={(updated) => setRoadmaps(prev => prev.map(r => r.id === updated.id ? updated : r))}
-                />
             )}
 
             {showOnboarding && (

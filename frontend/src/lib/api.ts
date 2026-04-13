@@ -114,8 +114,12 @@ export const roadmapsAPI = {
         const response = await api.delete(`/roadmaps/${id}`);
         return response.data;
     },
-    rebuildRoadmap: async (payload: { roadmap_id: number, current_module: number }): Promise<RoadmapMe> => {
-        const response = await api.post('/roadmaps/rebuild', payload);
+    extendRoadmap: async (id: number, payload: { weeks: number, extension_goal: string }): Promise<RoadmapMe> => {
+        const response = await api.post(`/roadmaps/${id}/extend`, payload);
+        return response.data;
+    },
+    deleteRoadmapExtension: async (id: number): Promise<RoadmapMe> => {
+        const response = await api.post(`/roadmaps/${id}/delete-extension`);
         return response.data;
     }
 };
@@ -300,6 +304,9 @@ export interface RoadmapData {
     average_rating?: number;
     rating_count?: number;
     cloned_id?: number;
+    cloned_from?: number;
+    is_cloned?: boolean;
+    extension_count: number;
 }
 
 export interface RoadmapMe extends RoadmapData {

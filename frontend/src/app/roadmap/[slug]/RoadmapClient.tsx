@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase/client';
-import { roadmapsAPI, exploreAPI, submissionsAPI } from '@/lib/api';
+import { roadmapsAPI, exploreAPI, submissionsAPI, authAPI } from '@/lib/api';
 import RoadmapDisplay from '@/components/landing/RoadmapDisplay';
 import StarRating from '@/components/roadmap/StarRating';
 import { 
@@ -24,7 +24,9 @@ import {
     LogIn,
     MoreVertical,
     Lock,
-    Scale
+    Scale,
+    Plus,
+    ArrowRight
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -66,7 +68,26 @@ export default function RoadmapClient({ slug, initialRoadmap }: Props) {
     const [showActions, setShowActions] = useState<boolean>(false);
     const [submissions, setSubmissions] = useState<any[]>([]);
     const [showLogs, setShowLogs] = useState<boolean>(false);
+    const [isPro, setIsPro] = useState<boolean>(false);
+    const [showExtendModal, setShowExtendModal] = useState<boolean>(false);
+    const [extensionWeeks, setExtensionWeeks] = useState<number>(1);
+    const [extensionGoal, setExtensionGoal] = useState<string>('');
+    const [extending, setExtending] = useState<boolean>(false);
     const router = useRouter();
+
+    useEffect(() => {
+        const fetchUserStatus = async () => {
+            if (isAuthenticated) {
+                try {
+                    const user = await authAPI.getMe();
+                    setIsPro(user.is_pro);
+                } catch (err) {
+                    console.error("Failed to fetch user profile:", err);
+                }
+            }
+        };
+        fetchUserStatus();
+    }, [isAuthenticated]);
 
     useEffect(() => {
         const fetchSubmissions = async () => {
@@ -209,6 +230,48 @@ export default function RoadmapClient({ slug, initialRoadmap }: Props) {
         router.push(`/login?next=${encodeURIComponent(window.location.pathname)}`);
     };
 
+    const handleExtend = async () => {
+        if (!extensionGoal.trim()) {
+            setError("Please describe what you want to learn next.");
+            return;
+        }
+        setExtending(true);
+        try {
+            const updated = await roadmapsAPI.extendRoadmap(roadmap.id, {
+                weeks: extensionWeeks,
+                extension_goal: extensionGoal
+            });
+            setRoadmap(updated);
+            setShowExtendModal(false);
+            setExtensionGoal('');
+            setSuccessMsg("Roadmap extended successfully!");
+            setTimeout(() => setSuccessMsg(null), 3000);
+        } catch (err: any) {
+            console.error("Extension failed:", err);
+            setError(err.response?.data?.detail || "Failed to extend roadmap.");
+            setTimeout(() => setError(null), 5000);
+        } finally {
+            setExtending(false);
+        }
+    };
+
+    const handleDeleteExtension = async () => {
+        if (!roadmap) return;
+        setSaving(true);
+        try {
+            const updated = await roadmapsAPI.deleteRoadmapExtension(roadmap.id);
+            setRoadmap(updated);
+            setSuccessMsg("Extension removed successfully.");
+            setTimeout(() => setSuccessMsg(null), 3000);
+        } catch (err: any) {
+            console.error("Delete extension failed:", err);
+            setError(err.response?.data?.detail || "Failed to delete extension.");
+            setTimeout(() => setError(null), 5000);
+        } finally {
+            setSaving(false);
+        }
+    };
+
     const handleContinueLearning = async () => {
         if (!roadmap) return;
         
@@ -300,6 +363,24 @@ export default function RoadmapClient({ slug, initialRoadmap }: Props) {
                         <Link className="flex items-center group shrink-0" href="/">
                             <img src="/apple-touch-icon.png" alt="EulerFold" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
                         </Link>
+                        
+                        {(successMsg || error) && (
+                            <div className="flex items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-300 ml-2">
+                                {successMsg && (
+                                    <div className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 rounded text-emerald-600">
+                                        <ShieldCheck className="w-3 h-3" />
+                                        <span className="inconsolata-ui text-[10px] font-bold uppercase tracking-wider">{successMsg}</span>
+                                    </div>
+                                )}
+                                {error && (
+                                    <div className="flex items-center gap-1.5 px-2 py-0.5 bg-red-500/10 border border-red-500/20 rounded text-red-500">
+                                        <AlertCircle className="w-3 h-3" />
+                                        <span className="inconsolata-ui text-[10px] font-bold uppercase tracking-wider">{error}</span>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
                         {isOwner && roadmap && !roadmap.is_public && !roadmap.cloned_from && (
                             <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-600 text-[9px] font-bold tracking-wide ml-3">
                                 <Lock className="w-3 h-3" />
@@ -327,7 +408,11 @@ export default function RoadmapClient({ slug, initialRoadmap }: Props) {
                                             const { data: { session } } = await supabase.auth.getSession();
                                             if (session) {
                                                 const res = await exploreAPI.cloneRoadmap(roadmap.id, session.access_token);
-                                                router.push(`/roadmap/${res.new_slug}`);
+                                                setSuccessMsg("Roadmap cloned to dashboard!");
+                                                // Short delay to show success message before redirect
+                                                setTimeout(() => {
+                                                    router.push(`/roadmap/${res.new_slug}/learn`);
+                                                }, 1500);
                                             }
                                         } catch (err: any) {
                                             setError(err.message);
@@ -385,6 +470,25 @@ export default function RoadmapClient({ slug, initialRoadmap }: Props) {
                                     <div className="absolute right-0 mt-2 w-48 bg-background border border-border rounded-xl shadow-2xl z-50 overflow-hidden animate-in zoom-in-95 duration-100 origin-top-right">
                                         {isOwner ? (
                                             <>
+                                                {/* Extend Roadmap for Pro Users */}
+                                                {isPro && (roadmap.progress?.completed_topics || 0) >= (roadmap.progress?.total_topics || 1) && (roadmap.extension_count || 0) < 5 && (
+                                                    <button 
+                                                        onClick={() => {
+                                                            setShowExtendModal(true);
+                                                            setShowActions(false);
+                                                        }}
+                                                        className="w-full px-4 py-3 text-left flex items-center gap-3 transition-colors border-b border-border hover:bg-emerald-500/5 group/ext"
+                                                    >
+                                                        <Plus className="w-4 h-4 text-emerald-500" />
+                                                        <div className="flex flex-col">
+                                                            <span className="inconsolata-ui text-[12px] font-bold text-text-heading tracking-wide group-hover/ext:text-emerald-600">
+                                                                Extend Roadmap
+                                                            </span>
+                                                            <span className="text-[9px] text-emerald-600/60 font-bold uppercase tracking-widest">Pro Feature</span>
+                                                        </div>
+                                                    </button>
+                                                )}
+                                                
                                                 {/* Only allow Make Public if it's NOT already public AND NOT a clone */}
                                                 {!roadmap.is_public && !roadmap.cloned_from && (
                                                     <button 
@@ -585,37 +689,24 @@ export default function RoadmapClient({ slug, initialRoadmap }: Props) {
 
                                 <div className="mb-12">
                                     <RoadmapDisplay 
-                                        roadmapData={roadmap} 
-                                initialFormData={{
-                                    subject: roadmap.subject || '',
-                                    goal: roadmap.goal || '',
-                                    time_value: roadmap.time_value || 0,
-                                    time_unit: roadmap.time_unit || 'weeks',
-                                    model: roadmap.model
-                                }}
-                                justGenerated={false}
-                                isOwner={isOwner || roadmap.is_cloned}
-                                onClone={async () => {
-                                    if (roadmap.is_cloned) {
-                                        handleContinueLearning();
-                                        return;
+                                    roadmapData={roadmap} 
+                                    initialFormData={{
+                                        subject: roadmap.subject || '',
+                                        goal: roadmap.goal || '',
+                                        time_value: roadmap.time_value || 0,
+                                        time_unit: roadmap.time_unit || 'weeks',
+                                        model: roadmap.model
+                                    }}
+                                    justGenerated={false}
+                                    isOwner={isOwner || roadmap.is_cloned}
+                                    onExtend={
+                                        isPro && isOwner && (roadmap.progress?.completed_topics || 0) >= (roadmap.progress?.total_topics || 1) && (roadmap.extension_count || 0) < 5
+                                        ? () => setShowExtendModal(true)
+                                        : undefined
                                     }
-                                    setSaving(true);
-                                    try {
-                                        const { data: { session } } = await supabase.auth.getSession();
-                                        if (session) {
-                                            const res = await exploreAPI.cloneRoadmap(roadmap.id, session.access_token);
-                                            window.location.href = `/roadmap/${res.new_slug}`;
-                                        } else {
-                                            handleSignIn();
-                                        }
-                                    } catch (err: any) {                                        setError(err.message);
-                                    } finally {
-                                        setSaving(false);
-                                    }
-                                }}
-                            />
-                        </div>
+                                    onDeleteExtension={handleDeleteExtension}
+                                />
+                            </div>
 
                         {/* How It Works Flow */}
                         <div className="mb-16">
@@ -800,6 +891,88 @@ export default function RoadmapClient({ slug, initialRoadmap }: Props) {
                             >
                                 Maybe Later
                             </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Extend Modal */}
+            {showExtendModal && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="w-full max-w-md bg-background border border-border shadow-2xl rounded-3xl overflow-hidden animate-in zoom-in-95 duration-200">
+                        <div className="p-8">
+                            <div className="flex justify-between items-start mb-6">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+                                        <Plus className="w-6 h-6" />
+                                    </div>
+                                    <div>
+                                        <h3 className="inconsolata-ui text-lg font-bold text-text-heading tracking-tight">Extend Roadmap</h3>
+                                        <p className="manrope-body text-[11px] text-emerald-600 font-bold uppercase tracking-widest">Pro Exclusive</p>
+                                    </div>
+                                </div>
+                                <button onClick={() => setShowExtendModal(false)} className="text-text-muted hover:text-text-heading p-1">
+                                    <X className="w-5 h-5" />
+                                </button>
+                            </div>
+
+                            <div className="space-y-6">
+                                <div className="space-y-2">
+                                    <label className="inconsolata-ui text-[11px] font-bold text-text-muted uppercase tracking-widest block ml-1">
+                                        Extension Goal
+                                    </label>
+                                    <textarea 
+                                        placeholder="What do you want to learn next? (e.g., 'Advanced concepts', 'Specific framework', 'Real-world project')"
+                                        className="w-full h-24 bg-callout-bg border border-border rounded-2xl p-4 text-[14px] manrope-body focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all resize-none"
+                                        value={extensionGoal}
+                                        onChange={(e) => setExtensionGoal(e.target.value)}
+                                    />
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="inconsolata-ui text-[11px] font-bold text-text-muted uppercase tracking-widest block ml-1">
+                                        Duration
+                                    </label>
+                                    <div className="grid grid-cols-2 gap-3">
+                                        {[1, 2].map((w) => (
+                                            <button
+                                                key={w}
+                                                onClick={() => setExtensionWeeks(w)}
+                                                className={`py-3 rounded-xl border inconsolata-ui text-[13px] font-bold transition-all ${
+                                                    extensionWeeks === w 
+                                                    ? 'bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/20' 
+                                                    : 'bg-callout-bg border-border text-text-muted hover:border-emerald-500/30'
+                                                }`}
+                                            >
+                                                +{w} Week{w > 1 ? 's' : ''}
+                                            </button>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                <div className="pt-2">
+                                    <button
+                                        onClick={handleExtend}
+                                        disabled={extending}
+                                        className="w-full py-4 bg-emerald-600 text-white rounded-2xl text-[14px] font-bold inconsolata-ui tracking-wide hover:bg-emerald-700 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-emerald-500/10"
+                                    >
+                                        {extending ? (
+                                            <>
+                                                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                                Generating Extension...
+                                            </>
+                                        ) : (
+                                            <>
+                                                Extend Now
+                                                <ArrowRight className="w-4 h-4" />
+                                            </>
+                                        )}
+                                    </button>
+                                    <p className="text-center mt-4 manrope-body text-[10px] text-text-muted font-medium italic">
+                                        You can extend this roadmap up to 5 times. (Current: {roadmap.extension_count || 0}/5)
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

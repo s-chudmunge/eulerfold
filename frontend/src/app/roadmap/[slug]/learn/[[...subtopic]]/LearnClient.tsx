@@ -181,9 +181,11 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
     const handleToggleResource = async (resourceId: string, completed: boolean) => {
         if (!practiceSession) return;
 
+        // Optimistic UI update
+        setPracticeProgress(prev => ({ ...prev, [resourceId]: completed }));
+
         try {
-            await practiceAPI.updateProgress(practiceSession.id, resourceId, completed);
-            setPracticeProgress(prev => ({ ...prev, [resourceId]: completed }));
+            const response = await practiceAPI.updateProgress(practiceSession.id, resourceId, completed);
 
             if (completed) {
                 setCoinToast({ show: true, amount: 1 });
@@ -191,6 +193,8 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
             }
         } catch (err) {
             console.error('Error updating practice progress:', err);
+            // Rollback optimistic update on error
+            setPracticeProgress(prev => ({ ...prev, [resourceId]: !completed }));
         }
     };
 
@@ -257,6 +261,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
     }, []);
 
     useEffect(() => {
+        let isMounted = true;
         const fetchEverything = async () => {
             try {
                 const { data: { session } } = await supabase.auth.getSession();
@@ -265,9 +270,11 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                     return;
                 }
 
+                if (!isMounted) return;
+
                 try {
                     const { data: userData } = await supabase.from('profiles').select('*').eq('supabase_uid', session.user.id).single();
-                    if (userData) {
+                    if (userData && isMounted) {
                         setProfile(userData);
                         if (!userData.metadata?.muted_autoplay_hint_dismissed) {
                             setShowMuteTooltip(true);
@@ -277,19 +284,26 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                     console.error("Failed to fetch user profile:", e);
                 }
 
-                let currentRoadmap = roadmap;
-                if (!currentRoadmap) {
-                    setLoading(true);
-                    const isNumericId = /^\d+$/.test(id);
-                    if (isNumericId) {
+                // If we are logged in, we MUST re-fetch from our backend (not anonymous Supabase)
+                // to get the version we own/cloned and to avoid extensions being filtered.
+                setLoading(true);
+                let currentRoadmap = null;
+                const isIdNumeric = /^\d+$/.test(id);
+
+                try {
+                    if (isIdNumeric) {
                         currentRoadmap = await roadmapsAPI.getRoadmapById(Number(id));
                     } else {
                         currentRoadmap = await roadmapsAPI.getRoadmapBySlug(id);
                     }
-                    setRoadmap(currentRoadmap);
+                } catch (err) {
+                    console.error("Fetch re-fetch failed:", err);
+                    // Fallback to initialRoadmap if re-fetch fails
+                    currentRoadmap = initialRoadmap;
                 }
 
-                if (currentRoadmap) {
+                if (currentRoadmap && isMounted) {
+                    setRoadmap(currentRoadmap);
                     const isOwner = currentRoadmap.email?.toLowerCase() === session.user.email?.toLowerCase();
                     
                     if (isOwner && currentRoadmap.last_position) {
@@ -320,14 +334,15 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                 }
             } catch (err: any) {
                 console.error('Error fetching roadmap:', err);
-                setError(err.message);
+                if (isMounted) setError(err.message);
             } finally {
-                setLoading(false);
+                if (isMounted) setLoading(false);
             }
         };
 
         if (id) fetchEverything();
-    }, [id, router, fetchProgress, roadmap]);
+        return () => { isMounted = false; };
+    }, [id, router, fetchProgress]);
 
     useEffect(() => {
         if (!roadmap) return;
@@ -364,6 +379,17 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
 
     const updateProgressOnServer = async (mIdx: number, tIdx: number, isCompleted: boolean = false) => {
         if (!roadmap || !roadmap.id) return;
+
+        // Optimistic UI update
+        if (isCompleted) {
+            const key = `${mIdx + 1}-${tIdx}`;
+            setCompletedTopics(prev => {
+                const next = new Set(prev);
+                next.add(key);
+                return next;
+            });
+        }
+
         try {
             const response = await roadmapsAPI.updateProgress(roadmap.id, {
                 module_number: mIdx + 1,
@@ -371,21 +397,21 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                 completed: isCompleted
             });
 
+            if (isCompleted && response.coins_earned && response.coins_earned > 0) {
+                setCoinToast({ show: true, amount: response.coins_earned });
+                setTimeout(() => setCoinToast(null), 4000);
+            }
+        } catch (err) {
+            console.error('Error updating progress:', err);
+            // Rollback optimistic update on error
             if (isCompleted) {
                 const key = `${mIdx + 1}-${tIdx}`;
                 setCompletedTopics(prev => {
                     const next = new Set(prev);
-                    next.add(key);
+                    next.delete(key);
                     return next;
                 });
-
-                if (response.coins_earned && response.coins_earned > 0) {
-                    setCoinToast({ show: true, amount: response.coins_earned });
-                    setTimeout(() => setCoinToast(null), 4000);
-                }
             }
-        } catch (err) {
-            console.error('Error updating progress:', err);
         }
     };
 
@@ -512,7 +538,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                 <div key={mIdx} className="relative">
                                     <div className="flex items-center justify-between mb-1 px-1">
                                         <span className="text-[8px] font-bold text-text-muted tracking-tight opacity-60">
-                                            WEEK {mIdx + 1}
+                                            {module.is_extension ? 'EXTENSION' : `WEEK ${mIdx + 1}`}
                                         </span>
                                         {Array.from(completedTopics).filter(k => k.startsWith(`${mIdx + 1}-`)).length === (module.topics?.length || 0) && (
                                             <Check className="h-2 w-2 text-emerald-500" />
@@ -700,7 +726,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                                         href={`/roadmap/${roadmap?.slug || id}`} 
                                                         className="px-8 py-2 bg-emerald-600 text-white rounded-lg text-[11px] font-bold tracking-wide hover:bg-emerald-700 shadow-xl transition-all"
                                                     >
-                                                        Submit Evidence
+                                                        Submit Weekly Work
                                                     </Link>
                                                 )}
                                             </div>
@@ -715,7 +741,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                             <div className="flex items-center gap-2 text-accent mb-3 text-[11px] font-bold tracking-widest">
                                                 <span className="bg-accent-muted px-2 py-0.5 rounded">Practice</span>
                                                 <span className="text-[var(--border)]">/</span>
-                                                <span className="text-text-muted font-medium italic">Week {currentModuleIndex + 1}</span>
+                                                <span className="text-text-muted font-medium italic">{currentModule?.is_extension ? 'Extension' : `Week ${currentModuleIndex + 1}`}</span>
                                             </div>
                                             <h2 className="text-2xl md:text-3xl font-bold text-text-heading mb-3 tracking-tight">
                                                 {currentModule?.title || 'Practice session'}

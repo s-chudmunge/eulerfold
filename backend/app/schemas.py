@@ -152,6 +152,7 @@ class RoadmapRead(BaseModel):
     email: Optional[str] = None
     is_cloned: bool = False
     cloned_id: Optional[int] = None
+    extension_count: int = 0
 
     @field_validator("roadmap_plan", "last_position", mode="before")
     @classmethod
@@ -213,15 +214,14 @@ class RoadmapSave(BaseModel):
     email: str
     model: Optional[str] = None
 
+class RoadmapExtend(BaseModel):
+    weeks: int = Field(..., ge=1, le=2)
+    extension_goal: str
+
 class ProgressUpdate(BaseModel):
     module_number: int
     topic_index: int
     completed: bool = False
-
-class ReengagementRebuild(BaseModel):
-    roadmap_id: int
-    current_module: int
-    is_long_gap: bool = True
 
 # --- Coin Schemas ---
 

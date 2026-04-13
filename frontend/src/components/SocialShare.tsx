@@ -23,9 +23,14 @@ export default function SocialShare({
     className = "" 
 }: SocialShareProps) {
     const [copied, setCopied] = useState(false);
+    const [mounted, setMounted] = useState(false);
+
+    React.useEffect(() => {
+        setMounted(true);
+    }, []);
     
     // Fallback to window.location if url is not provided
-    const shareUrl = url || (typeof window !== 'undefined' ? window.location.href : '');
+    const shareUrl = url || (mounted ? window.location.href : '');
     const encodedUrl = encodeURIComponent(shareUrl);
     const encodedText = encodeURIComponent(`${text} ${title}`);
 
@@ -33,19 +38,19 @@ export default function SocialShare({
         {
             name: 'WhatsApp',
             icon: FaWhatsapp,
-            href: `https://api.whatsapp.com/send?text=${encodedText}%20${encodedUrl}`,
+            href: mounted ? `https://api.whatsapp.com/send?text=${encodedText}%20${encodedUrl}` : '#',
             color: 'bg-[#25D366]/10 text-[#25D366] hover:bg-[#25D366]/20',
         },
         {
             name: 'LinkedIn',
             icon: FaLinkedinIn,
-            href: `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}`,
+            href: mounted ? `https://www.linkedin.com/sharing/share-offsite/?url=${encodedUrl}` : '#',
             color: 'bg-[#0077B5]/10 text-[#0077B5] hover:bg-[#0077B5]/20',
         },
         {
             name: 'Twitter',
             icon: FaXTwitter,
-            href: `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`,
+            href: mounted ? `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}` : '#',
             color: 'bg-text-heading/5 text-text-heading hover:bg-text-heading/10',
         }
     ];

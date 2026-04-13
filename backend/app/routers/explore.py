@@ -144,14 +144,23 @@ async def explore_roadmaps(
                     relevance_score += 100 # Keyword in title
                 if kw_l in subject_lower:
                     relevance_score += 30  # Keyword in subject
-                if kw_l in goal_lower:
+                if goal_lower and kw_l in goal_lower:
                     relevance_score += 10  # Keyword in goal
 
+        # Only count modules and topics that are NOT extensions for the public explore view
         plan = r.get("roadmap_plan", {})
+        if isinstance(plan, str):
+            try:
+                plan = json.loads(plan)
+            except:
+                plan = {}
+
         modules = plan.get("modules", [])
-        week_count = len(modules)
-        topic_count = sum(len(m.get("topics", [])) for m in modules)
-        
+        public_modules = [m for m in modules if not m.get("is_extension")]
+
+        week_count = len(public_modules)
+        topic_count = sum(len(m.get("topics", [])) for m in public_modules)
+
         r_email = r.get("email")
         username = username_map.get(r_email)
         
@@ -264,20 +273,40 @@ async def clone_roadmap(id: int, current_user: User = Depends(get_current_user))
     title = orig["title"]
     slug = orig_slug # Strictly reuse the original slug for consistency
     
+    # Filter out extensions from roadmap_plan if they exist
+    plan = orig.get("roadmap_plan", {})
+    if isinstance(plan, str):
+        try:
+            plan = json.loads(plan)
+        except json.JSONDecodeError:
+            plan = {}
+            
+    time_value = orig.get("time_value", 0)
+    if "modules" in plan:
+        original_count = len(plan["modules"])
+        plan["modules"] = [m for m in plan["modules"] if not m.get("is_extension")]
+        filtered_count = len(plan["modules"])
+        
+        # Adjust time_value if we removed modules
+        if filtered_count < original_count:
+            removed_count = original_count - filtered_count
+            time_value = max(1, (time_value or 0) - removed_count)
+
     new_roadmap_data = {
         "email": cloner_email,
         "title": title,
         "slug": slug,
         "description": orig.get("description"),
-        "roadmap_plan": orig["roadmap_plan"],
+        "roadmap_plan": plan,
         "subject": orig.get("subject"),
         "goal": orig.get("goal"),
-        "time_value": orig.get("time_value"),
+        "time_value": time_value,
         "time_unit": orig.get("time_unit"),
         "model": orig.get("model"),
         "cloned_from": id,
         "is_public": False, 
-        "last_position": {"mIdx": 0, "tIdx": 0}
+        "last_position": {"mIdx": 0, "tIdx": 0},
+        "extension_count": 0
     }
     
     new_res = sb.table("roadmaps").insert(new_roadmap_data).execute()
@@ -420,6 +449,30 @@ async def get_public_roadmap(
     r = response.data[0]
     r_email = r.get("email")
     
+    # Ownership check
+    is_owner = email and r_email and r_email.lower() == email.lower()
+
+    # If it's a non-owner viewing, filter out extensions from roadmap_plan
+    if not is_owner:
+        plan = r.get("roadmap_plan", {})
+        if isinstance(plan, str):
+            try:
+                plan = json.loads(plan)
+            except:
+                plan = {}
+        
+        if "modules" in plan:
+            original_count = len(plan["modules"])
+            plan["modules"] = [m for m in plan["modules"] if not m.get("is_extension")]
+            filtered_count = len(plan["modules"])
+            
+            # Adjust time_value if we removed modules
+            if filtered_count < original_count:
+                removed_count = original_count - filtered_count
+                r["time_value"] = max(1, (r.get("time_value", 0) or 0) - removed_count)
+            
+            r["roadmap_plan"] = plan
+
     # Compute author name using username if available
     author = "Anonymous"
     username = None
@@ -439,8 +492,7 @@ async def get_public_roadmap(
             else:
                 author = "EulerFold User"
 
-    # Ownership / Clone check
-    is_owner = email and r.get("email", "").lower() == email.lower()
+    # Clone check
     is_cloned = False
     if email and not is_owner:
         clone_check = sb.table("roadmaps").select("id").eq("email", email).eq("cloned_from", id).execute()
