@@ -9,7 +9,6 @@ import { LoginRequiredMessage, AlreadySignedInMessage, FAQAccordion, LandingOnbo
 import HeroBackground from '@/components/HeroBackground';
 import SocialFeed from '@/components/SocialFeed';
 import EulerLogoCanvas from '@/components/EulerLogoCanvas';
-import FeaturesBackground from '@/components/FeaturesBackground';
 import { ExploreRoadmap } from '@/lib/api';
 import VerifiedBadge from '@/components/VerifiedBadge';
 import { getCategory } from '@/lib/roadmapUtils';
@@ -228,9 +227,14 @@ export default async function LandingPage() {
         {/* Features Section with Illustration Background */}
         <section className="relative py-20 md:py-32 px-4 md:px-6">
           <div className="max-w-7xl mx-auto relative rounded-[32px] md:rounded-[40px] overflow-hidden border border-border bg-sidebar/50 min-h-[550px] md:min-h-[600px] flex items-center shadow-2xl">
-    {/* Wave Animation Background */}
+    {/* Background Image */}
     <div className="absolute inset-0 z-0">
-      <FeaturesBackground />
+      <img 
+        src="https://images.openai.com/static-rsc-4/x5LW12uiAPJaD8XEiZqvoIbyXHN1RY4Ty_wu9xNZLgKYmC5Qe3BYUq14MLAdFDs5A7LRds8W-_OtsSALtQ-24Y6qZph1ps7MZ1J8pC_navnG0_1LvfHSZcvMGCU1VtnJu1xtZGou-H0AAV_PZysEBBmtHHyZ6zUXWPFFf-G8lT3n90vdJ6d88SVV1hqhTQqK?purpose=fullsize" 
+        alt="" 
+        className="w-full h-full object-cover opacity-60 dark:opacity-40"
+      />
+      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent" />
     </div>
 
     <div className="relative z-10 px-6 md:px-20 py-12 md:py-0 max-w-2xl">

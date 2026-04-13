@@ -177,7 +177,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                     {/* Public Toolbar */}
                     <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8 border-b border-border pb-8">
                         <div className="space-y-3">
-                            <h1 className="font-inter text-2xl md:text-4xl font-bold text-text-heading tracking-tighter">
+                            <h1 className="font-inter text-xl md:text-3xl font-bold text-text-heading tracking-tighter">
                                 {roadmap.title}
                             </h1>
                             
@@ -208,7 +208,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                 <button 
                                     onClick={handleContinueLearning}
                                     disabled={saving}
-                                    className="inline-flex items-center justify-center bg-accent text-white px-7 py-3 rounded-2xl font-bold text-[14px] transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-accent/30 active:scale-[0.98] gap-3 font-inter disabled:opacity-50"
+                                    className="inline-flex items-center justify-center bg-accent text-white px-5 py-2.5 rounded-2xl font-bold text-[13px] transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-accent/30 active:scale-[0.98] gap-3 font-inter disabled:opacity-50"
                                 >
                                     <Play className="w-4 h-4 fill-current" /> Continue Learning
                                 </button>
@@ -216,7 +216,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                 <button 
                                     onClick={handleClone}
                                     disabled={saving}
-                                    className="inline-flex items-center justify-center bg-text-heading text-background px-7 py-3 rounded-2xl font-bold text-[14px] transition-all hover:scale-[1.02] hover:shadow-2xl active:scale-[0.98] gap-3 shadow-lg font-inter"
+                                    className="inline-flex items-center justify-center bg-text-heading text-background px-5 py-2.5 rounded-2xl font-bold text-[13px] transition-all hover:scale-[1.02] hover:shadow-2xl active:scale-[0.98] gap-3 shadow-lg font-inter"
                                 >
                                     <Copy className="w-4 h-4" /> {saving ? 'Cloning...' : 'Clone to Dashboard'}
                                 </button>
@@ -226,12 +226,12 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
 
                     {/* Roadmap Description */}
                     {(roadmap.goal || roadmap.description) && (
-                        <div className="mb-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-                            <div className="flex items-center gap-3 mb-4">
+                        <div className="mb-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                            <div className="flex items-center gap-3 mb-3">
                                 <Target className="w-4 h-4 text-accent" />
                                 <h2 className="manrope-body text-[12px] font-bold uppercase tracking-[0.2em] text-text-heading font-inter">Objective</h2>
                             </div>
-                            <p className="manrope-body text-[16px] text-text-primary leading-relaxed font-medium bg-accent-muted/30 p-6 rounded-2xl border border-accent/10 italic">
+                            <p className="manrope-body text-[15px] text-text-primary leading-relaxed font-medium bg-accent-muted/30 p-5 rounded-2xl border border-accent/10 italic">
                                 &ldquo;{roadmap.goal || roadmap.description}&rdquo;
                             </p>
                         </div>

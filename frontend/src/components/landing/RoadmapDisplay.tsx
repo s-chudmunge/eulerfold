@@ -203,7 +203,7 @@ const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({
       {!hideHeader && (
         <div className="flex flex-col md:flex-row md:items-start justify-between gap-8 mt-3">
           <div className="flex-1 min-w-0">
-            <h2 className="inconsolata-ui text-2xl font-semibold text-text-heading leading-tight   mb-4">
+            <h2 className="inconsolata-ui text-xl font-semibold text-text-heading leading-tight   mb-4">
               {roadmapData.title}
             </h2>
             <p className="text-[16px] text-text-muted leading-relaxed italic max-w-3xl font-medium">
