@@ -9,47 +9,49 @@ import {
     ChevronUp, 
     ExternalLink, 
     Download,
-    Share2,
     ShieldCheck,
     Award,
-    Settings,
     FileText,
     BarChart3,
     Search,
     Globe,
-    LayoutDashboard,
     ArrowRight,
-    AlertCircle,
-    Scale,
-    Menu,
-    X,
-    User as UserIcon,
-    Info,
-    MessageSquare
+    MessageSquare,
+    BookOpen,
+    Layout,
+    History,
+    Edit2,
+    Camera,
+    Loader2
 } from 'lucide-react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase/client';
-import { PublicProfile } from '@/lib/api';
-import ShareMenu from '@/components/ShareMenu';
+import { PublicProfile, profileAPI } from '@/lib/api';
 import PublicHeader from '@/components/PublicHeader';
+import ActivityChart from '@/components/dashboard/ActivityChart';
 
 interface Props {
     profile: PublicProfile;
 }
 
+type TabType = 'overview' | 'skills' | 'evidence' | 'assessments' | 'insights';
+
 export default function ProfileClient({ profile }: Props) {
     const [searchQuery, setSearchQuery] = useState("");
     const [isOwner, setIsOwner] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [authUser, setAuthUser] = useState<any>(null);
+    const [activeTab, setActiveTab] = useState<TabType>('overview');
+    const [uploading, setUploading] = useState(false);
+    const [currentAvatarUrl, setCurrentAvatarUrl] = useState(profile.avatar_url);
 
     // Section collapse states
     const [isExpertiseOpen, setIsExpertiseOpen] = useState(true);
     const [isAdvancingOpen, setIsAdvancingOpen] = useState(true);
-    const [isFoundationsOpen, setIsFoundationsOpen] = useState(false);
-    const [isLogsOpen, setIsLogsOpen] = useState(true);
-    const [isDiscussionsOpen, setIsDiscussionsOpen] = useState(true);
+
+    useEffect(() => {
+        setCurrentAvatarUrl(profile.avatar_url);
+    }, [profile.avatar_url]);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -73,9 +75,8 @@ export default function ProfileClient({ profile }: Props) {
         s.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    const strongSkills = filteredSkills.filter(s => s.confidence_score >= 80);
+    const strongSkills = (profile.skills || []).filter(s => s.confidence_score >= 80);
     const developingSkills = filteredSkills.filter(s => s.confidence_score >= 40 && s.confidence_score < 80);
-    const exposureSkills = filteredSkills.filter(s => s.confidence_score < 40);
 
     const handleExportPDF = async () => {
         try {
@@ -97,467 +98,368 @@ export default function ProfileClient({ profile }: Props) {
         }
     };
 
-    // Prioritize user_metadata if it's the owner
-    const effectiveAvatarUrl = isOwner ? (authUser?.user_metadata?.avatar_url || profile.avatar_url) : profile.avatar_url;
+    const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        try {
+            if (!event.target.files || event.target.files.length === 0) {
+                return;
+            }
+            setUploading(true);
+            const file = event.target.files[0];
+            const fileExt = file.name.split('.').pop();
+            const fileName = `${profile.username}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+            const filePath = `avatars/${fileName}`;
+
+            // Upload to Supabase Storage
+            const { error: uploadError } = await supabase.storage
+                .from('avatars')
+                .upload(filePath, file, { upsert: true });
+
+            if (uploadError) throw uploadError;
+
+            // Get Public URL
+            const { data: { publicUrl } } = supabase.storage
+                .from('avatars')
+                .getPublicUrl(filePath);
+
+            // Update Profile in DB via API
+            await profileAPI.updateAvatar(publicUrl);
+            
+            // Update local state
+            setCurrentAvatarUrl(publicUrl);
+            
+            // Also update auth user metadata if possible
+            await supabase.auth.updateUser({
+                data: { avatar_url: publicUrl }
+            });
+
+        } catch (error: any) {
+            console.error('Error uploading avatar:', error);
+            alert('Failed to upload image. Please try again.');
+        } finally {
+            setUploading(false);
+        }
+    };
+
+    const effectiveAvatarUrl = isOwner ? (authUser?.user_metadata?.avatar_url || currentAvatarUrl) : currentAvatarUrl;
+
+    const tabs: { id: TabType; label: string; icon: any; count?: number }[] = [
+        { id: 'overview', label: 'Overview', icon: Layout },
+        { id: 'skills', label: 'Skills', icon: BarChart3, count: profile.skills?.length },
+        { id: 'evidence', label: 'Evidence', icon: FileText, count: profile.submissions?.length },
+        { id: 'assessments', label: 'Assessments', icon: History, count: profile.mcq_history?.length },
+        { id: 'insights', label: 'Insights', icon: MessageSquare, count: profile.discussions?.length },
+    ];
 
     return (
         <div className="min-h-screen flex flex-col bg-background text-text-primary selection:bg-teal-500/30 selection:text-text-heading">
             <PublicHeader />
 
-            <div 
-                className="flex flex-1 relative h-full overflow-hidden transition-all duration-500 ease-in-out pt-[68px]"
-            >
-                {/* Mobile Overlay */}
-                {isSidebarOpen && (
-                    <div 
-                        className="fixed inset-0 bg-black/20 z-[35] lg:hidden backdrop-blur-[2px] transition-all top-[68px]"
-                        onClick={() => setIsSidebarOpen(false)}
-                    />
-                )}
-
-                {/* Sidebar */}
-                <aside 
-                    className={`
-                        manrope-body bg-sidebar border-r border-border w-[220px] flex flex-col shrink-0 z-40 
-                        fixed bottom-0 left-0 transition-all duration-200 ease-in-out
-                        lg:static lg:translate-x-0 pt-[20px]
-                        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
-                    `}
+            <div className="flex-1">
+                {/* Profile Header (Tabs Area) - GitHub style */}
+                <div 
+                    className="border-b border-border bg-sidebar/30 sticky top-[56px] z-30 hidden md:block backdrop-blur-md"
+                    style={{ top: 'calc(56px + var(--announcement-height, 0px))' }}
                 >
-                    <div className="p-5 flex flex-col h-full overflow-y-auto no-scrollbar">
-                        <div className="mb-5">
-                            <div className="w-16 h-16 rounded-full border-2 border-background shadow-md overflow-hidden bg-gradient-to-br from-teal-500/20 to-teal-700/20 flex items-center justify-center relative">
+                    <div className="max-w-[1280px] mx-auto px-6 lg:px-10 flex items-center justify-between">
+                        <div className="flex gap-8">
+                            {/* Space for sidebar alignment */}
+                            <div className="w-[260px] shrink-0"></div>
+                            
+                            <nav className="flex items-center">
+                                {tabs.map((tab) => (
+                                    <button
+                                        key={tab.id}
+                                        onClick={() => setActiveTab(tab.id)}
+                                        className={`
+                                            flex items-center gap-2 px-4 py-2 text-[12.5px] font-semibold border-b-2 transition-all relative manrope-body tracking-tight
+                                            ${activeTab === tab.id 
+                                                ? 'border-accent text-text-heading' 
+                                                : 'border-transparent text-text-muted hover:text-text-heading hover:border-border'}
+                                        `}
+                                    >
+                                        <tab.icon className={`w-3 h-3 ${activeTab === tab.id ? 'text-accent' : 'opacity-40'}`} />
+                                        <span>{tab.label}</span>
+                                        {tab.count !== undefined && (
+                                            <span className={`ml-1 text-[10.5px] opacity-40 font-medium`}>
+                                                ({tab.count})
+                                            </span>
+                                        )}
+                                    </button>
+                                ))}
+                            </nav>
+                            </div>
+
+                            <button 
+                            onClick={handleExportPDF}
+                            className="p-1.5 text-text-muted hover:text-accent transition-all opacity-40 hover:opacity-100"
+                            title="Download PDF Report"
+                            >
+                            <Download className="w-3.5 h-3.5" />
+                            </button>
+                            </div>
+                            </div>
+
+                            <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-10 flex flex-col md:flex-row gap-8 py-8">
+                            {/* Sidebar */}
+                            <aside className="w-full md:w-[260px] shrink-0 flex flex-col">
+                            {/* Avatar/Name Group */}
+                            <div className="flex md:flex-col items-center md:items-start gap-4 md:gap-0 mb-6 relative">
+                            <div className="w-20 h-20 md:w-full md:h-auto aspect-square rounded-none border border-border shadow-sm overflow-hidden bg-background flex items-center justify-center relative z-10 group">
                                 {effectiveAvatarUrl ? (
                                     <img src={effectiveAvatarUrl} alt={profile.username} className="w-full h-full object-cover" />
                                 ) : (
-                                    <div className="w-full h-full bg-teal-700 flex items-center justify-center text-white text-xl font-bold">
+                                    <div className="w-full h-full bg-sidebar flex items-center justify-center text-text-heading text-3xl font-bold inconsolata-ui">
                                         {profile.display_name?.[0] || profile.username[0].toUpperCase()}
                                     </div>
                                 )}
+
+                                {isOwner && (
+                                    <label className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-20">
+                                        {uploading ? (
+                                            <Loader2 className="w-6 h-6 text-white animate-spin" />
+                                        ) : (
+                                            <>
+                                                <Camera className="w-6 h-6 text-white mb-1" />
+                                                <span className="text-[9px] font-bold text-white uppercase tracking-widest inconsolata-ui">Change Photo</span>
+                                            </>
+                                        )}
+                                        <input 
+                                            type="file" 
+                                            className="hidden" 
+                                            accept="image/*" 
+                                            onChange={handleAvatarUpload}
+                                            disabled={uploading}
+                                        />
+                                    </label>
+                                )}
                             </div>
-                        </div>
 
-                        <div className="mb-6">
-                            <h1 className="text-[16px] font-bold text-text-heading tracking-tight leading-tight">
-                                {profile.display_name || profile.username}
-                            </h1>
-                            <p className="text-[12px] font-medium text-text-muted opacity-60 mt-0.5">@{profile.username}</p>
-                        </div>
+                            <div className="flex-1 md:mt-6">
+                                <h1 className="text-[20px] md:text-[22px] font-bold text-text-heading tracking-tight leading-tight inconsolata-ui">
+                                    {profile.display_name || profile.username}
+                                </h1>
+                                <p className="text-[14px] md:text-[15px] font-medium text-text-muted opacity-60 inconsolata-ui">@{profile.username}</p>
+                            </div>
+                            </div>
 
-                        {/* Highlights */}
-                        <div className="space-y-0.5 mb-6">
-                            <p className="px-2 mb-2 text-[10px] font-bold text-gray-400 tracking-widest">Highlights</p>
-                            {[
-                                { label: 'Skills', val: profile.skills?.length || 0, icon: BarChart3 },
-                                { label: 'Evidence', val: profile.submissions?.length || 0, icon: FileText },
-                                { label: 'Roadmaps', val: profile.total_roadmaps || 0, icon: Target },
-                                { label: 'Benchmarks', val: profile.skills?.filter(s => s.last_assessment_score).length || 0, icon: Award },
-                                { label: 'Insights', val: profile.discussions?.length || 0, icon: MessageSquare }
-                            ].map((item) => (
-                                <div key={item.label} className="flex items-center justify-between px-2 py-1.5 rounded-lg text-[12px] font-medium text-gray-700 dark:text-gray-300">
-                                    <div className="flex items-center gap-2">
-                                        <item.icon className="w-3.5 h-3.5 opacity-50" />
-                                        <span>{item.label}</span>
-                                    </div>
-                                    <span className="font-bold text-text-heading">{item.val}</span>
+                            {isOwner && (
+                            <Link 
+                                href="/settings"
+                                className="w-full py-1.5 mb-8 bg-sidebar border border-border hover:bg-callout-bg rounded-none text-[11px] font-bold text-text-heading flex items-center justify-center gap-2 transition-all uppercase tracking-widest inconsolata-ui"
+                            >
+                                <Edit2 className="w-3 h-3 opacity-60" /> Edit profile
+                            </Link>
+                            )}
+
+                            {/* Bio/Info */}
+                            <div className="space-y-4 mb-8">
+                            <div className="flex items-center gap-3 text-[12px] text-text-muted">
+                                <Target className="w-4 h-4 opacity-30 text-accent" />
+                                <span className="font-medium">{profile.total_roadmaps} Roadmaps Mastered</span>
+                            </div>
+                            <div className="flex items-center gap-3 text-[12px] text-text-muted">
+                                <Clock className="w-4 h-4 opacity-30 text-accent" />
+                                <span className="font-medium">{Math.round(profile.total_hours)} Hours Invested</span>
+                            </div>
+                            {profile.email && isOwner && (
+                                <div className="flex items-center gap-3 text-[12px] text-text-muted">
+                                    <Globe className="w-4 h-4 opacity-30 text-accent" />
+                                    <span className="truncate opacity-60">{profile.email}</span>
                                 </div>
-                            ))}
-                        </div>
-
-                        {/* Practice Stats */}
-                        <div className="px-2 mb-6">
-                            <p className="mb-3 text-[10px] font-bold text-gray-400 tracking-widest">Practice</p>
-                            <div className="space-y-3.5">
-                                {[
-                                    { label: 'Level I', count: profile.practice_stats?.easy || 0, color: 'bg-teal-500' },
-                                    { label: 'Level II', count: profile.practice_stats?.medium || 0, color: 'bg-teal-600' },
-                                    { label: 'Level III', count: profile.practice_stats?.hard || 0, color: 'bg-teal-700' }
-                                ].map((item) => {
-                                    const total = profile.practice_stats?.total || 1;
-                                    const percentage = (item.count / total) * 100;
-                                    return (
-                                        <div key={item.label} className="space-y-1.5">
-                                            <div className="flex justify-between items-end">
-                                                <span className="text-[10px] font-bold text-text-muted">{item.label}</span>
-                                                <span className="text-[11px] font-black text-text-heading">{item.count}</span>
-                                            </div>
-                                            <div className="h-1 w-full bg-callout-bg rounded-full overflow-hidden border border-border">
-                                                <div 
-                                                    className={`h-full ${item.color} rounded-full transition-all duration-1000`}
-                                                    style={{ width: `${item.count > 0 ? Math.max(percentage, 5) : 0}%` }}
-                                                />
-                                            </div>
-                                        </div>
-                                    );
-                                })}
+                            )}
                             </div>
-                        </div>
 
-                        {/* Grading Scale Reference */}
-                        <div className="px-2 mb-6 pt-2 border-t border-border/40">
-                            <p className="mb-3 text-[10px] font-bold text-gray-400 tracking-widest">Grading scale</p>
-                            <div className="grid grid-cols-2 gap-x-4 gap-y-1 mb-4">
-                                {[
-                                    { t: 'A+', s: '95+' },
-                                    { t: 'A', s: '90+' },
-                                    { t: 'A-', s: '85+' },
-                                    { t: 'B+', s: '80+' },
-                                    { t: 'B', s: '75+' },
-                                    { t: 'B-', s: '70+' },
-                                    { t: 'C', s: '60+' },
-                                    { t: 'D', s: '40+' },
-                                ].map((item) => (
-                                    <div key={item.t} className="flex items-center justify-between py-0.5 group/grade">
-                                        <span className="text-[10px] font-black text-accent opacity-70 group-hover/grade:opacity-100 transition-opacity">{item.t}</span>
-                                        <span className="text-[10px] font-bold text-text-muted/50 tabular-nums">{item.s}</span>
+                            {/* Intelligence Bars - Pricing page inspiration */}
+                            <div className="space-y-4 pt-8 border-t border-border">
+                            <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-[0.25em] mb-4 inconsolata-ui">Intelligence Analytics</h3>
+                            {[
+                                { label: 'Level I', count: profile.practice_stats?.easy || 0, color: 'bg-teal-500' },
+                                { label: 'Level II', count: profile.practice_stats?.medium || 0, color: 'bg-teal-600' },
+                                { label: 'Level III', count: profile.practice_stats?.hard || 0, color: 'bg-teal-700' }
+                            ].map((item) => {
+                                const total = profile.practice_stats?.total || 1;
+                                const percentage = (item.count / total) * 100;
+                                return (
+                                    <div key={item.label} className="space-y-2">
+                                        <div className="flex justify-between items-end">
+                                            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">{item.label}</span>
+                                            <span className="text-[11px] font-bold text-text-heading tabular-nums">{item.count}</span>
+                                        </div>
+                                        <div className="h-1 w-full bg-sidebar rounded-none overflow-hidden border border-border/50">
+                                            <div 
+                                                className={`h-full ${item.color} transition-all duration-1000`}
+                                                style={{ width: `${item.count > 0 ? Math.max(percentage, 5) : 0}%` }}
+                                            />
+                                        </div>
                                     </div>
+                                );
+                            })}
+                            </div>
+                            </aside>
+
+                            {/* Main Content Area */}
+                            <main className="flex-1 min-w-0">
+                            {/* Mobile Tabs */}
+                            <div 
+                            className="md:hidden border-b border-border mb-8 overflow-x-auto no-scrollbar bg-sidebar/20 sticky top-[56px] z-30 backdrop-blur-md"
+                            style={{ top: 'calc(56px + var(--announcement-height, 0px))' }}
+                            >
+                            <div className="flex whitespace-nowrap px-4">
+                                {tabs.map((tab) => (
+                                    <button
+                                        key={tab.id}
+                                        onClick={() => setActiveTab(tab.id)}
+                                        className={`px-3 py-2 text-[12.5px] font-semibold border-b-2 transition-all manrope-body tracking-tight ${activeTab === tab.id ? 'border-accent text-text-heading' : 'border-transparent text-text-muted'}`}
+                                    >
+                                        {tab.label}
+                                    </button>
                                 ))}
                             </div>
-
-                            {/* Subject Master Rule */}
-                            <div className="mt-4 p-3 rounded-xl bg-accent/[0.03] border border-accent/10">
-                                <div className="flex items-start gap-2 mb-2 text-accent">
-                                    <ShieldCheck className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-                                    <span className="text-[10px] font-bold tracking-tight leading-tight">Subject master rule</span>
-                                </div>
-                                <p className="text-[10px] leading-relaxed text-text-muted/80 font-medium italic">
-                                    Topic deviation is acceptable if the learner demonstrates mastery of the roadmap subject and module objectives.
-                                </p>
                             </div>
-                        </div>
-                    </div>
-
-                    <div className="mt-auto p-4 border-t border-border bg-sidebar/50">
-                        <div className="flex flex-col items-center gap-1.5 py-1">
-                            <div className="flex gap-1">
-                                <div className="w-1 h-1 rounded-full bg-accent"></div>
-                                <div className="w-1 h-1 rounded-full bg-accent"></div>
-                                <div className="w-1 h-1 rounded-full bg-accent"></div>
-                            </div>
-                        </div>
-                    </div>
-                </aside>
-
-                {/* Main Content */}
-                <main className="flex-1 min-w-0 h-full overflow-y-auto bg-background">
-                    <div className="max-w-[850px] mx-auto px-6 py-8 md:px-10">
-                        
-                        {/* Search Bar */}
-                        <div className="relative mb-8">
-                            <input 
-                                className="w-full bg-callout-bg border border-border rounded-xl px-10 py-2.5 text-[14px] text-text-heading placeholder:text-text-muted outline-none focus:ring-1 focus:ring-accent/20 focus:border-accent transition-all font-semibold manrope-body"
-                                placeholder="Search proven skills..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                            />
-                            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted opacity-50" />
-                        </div>
-
-                        {/* Skills Section */}
-                        <section className="mb-12">
-                            <div className="flex items-center gap-4 mb-6">
-                                <h2 className="manrope-body text-[12px] font-bold text-text-muted tracking-[0.1em]">Technical growth</h2>
-                                <div className="h-[1px] flex-1 bg-border opacity-50"></div>
-                            </div>
-
-                            <div className="space-y-6">
-                                {strongSkills.length > 0 && (
-                                    <div className="border border-border rounded-xl overflow-hidden bg-sidebar/10">
-                                        <button 
-                                            onClick={() => setIsExpertiseOpen(!isExpertiseOpen)}
-                                            className="w-full px-4 py-3 flex items-center justify-between hover:bg-sidebar/20 transition-colors"
-                                        >
-                                            <h3 className="manrope-body text-[10px] font-black text-accent tracking-widest flex items-center gap-2">
-                                                Expertise <span className="px-1.5 py-0.5 rounded-md bg-accent/10 text-[9px]">{strongSkills.length}</span>
-                                            </h3>
-                                            {isExpertiseOpen ? <ChevronUp className="w-3.5 h-3.5 text-text-muted" /> : <ChevronDown className="w-3.5 h-3.5 text-text-muted" />}
-                                        </button>
-                                        {isExpertiseOpen && (
-                                            <div className="px-4 pb-4 divide-y divide-border/50 animate-in fade-in slide-in-from-top-1 duration-200">
-                                                {strongSkills.map(skill => <SkillCard key={skill.id} skill={skill} />)}
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-
-                                {developingSkills.length > 0 && (
-                                    <div className="border border-border rounded-xl overflow-hidden bg-sidebar/5">
-                                        <button 
-                                            onClick={() => setIsAdvancingOpen(!isAdvancingOpen)}
-                                            className="w-full px-4 py-3 flex items-center justify-between hover:bg-sidebar/10 transition-colors"
-                                        >
-                                            <h3 className="manrope-body text-[10px] font-black text-text-muted tracking-widest flex items-center gap-2">
-                                                Advancing <span className="px-1.5 py-0.5 rounded-md bg-text-muted/10 text-[9px]">{developingSkills.length}</span>
-                                            </h3>
-                                            {isAdvancingOpen ? <ChevronUp className="w-3.5 h-3.5 text-text-muted" /> : <ChevronDown className="w-3.5 h-3.5 text-text-muted" />}
-                                        </button>
-                                        {isAdvancingOpen && (
-                                            <div className="px-4 pb-4 divide-y divide-border/50 animate-in fade-in slide-in-from-top-1 duration-200">
-                                                {developingSkills.map(skill => <SkillCard key={skill.id} skill={skill} />)}
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-
-                                {exposureSkills.length > 0 && (
-                                    <div className="border border-border rounded-xl overflow-hidden bg-sidebar/5">
-                                        <button 
-                                            onClick={() => setIsFoundationsOpen(!isFoundationsOpen)}
-                                            className="w-full px-4 py-3 flex items-center justify-between hover:bg-sidebar/10 transition-colors opacity-60"
-                                        >
-                                            <h3 className="manrope-body text-[10px] font-black text-text-muted tracking-widest flex items-center gap-2">
-                                                Foundations <span className="px-1.5 py-0.5 rounded-md bg-text-muted/10 text-[9px]">{exposureSkills.length}</span>
-                                            </h3>
-                                            {isFoundationsOpen ? <ChevronUp className="w-3.5 h-3.5 text-text-muted" /> : <ChevronDown className="w-3.5 h-3.5 text-text-muted" />}
-                                        </button>
-                                        {isFoundationsOpen && (
-                                            <div className="px-4 pb-4 divide-y divide-border/50 animate-in fade-in slide-in-from-top-1 duration-200">
-                                                {exposureSkills.map(skill => <SkillCard key={skill.id} skill={skill} />)}
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-
-                                {filteredSkills.length === 0 && (
-                                    <div className="py-12 text-center bg-callout-bg border border-dashed border-border rounded-xl">
-                                        <p className="manrope-body text-[13px] text-text-muted font-medium italic opacity-60">No artifacts matching &quot;{searchQuery}&quot; found.</p>
-                                    </div>
-                                )}
-                            </div>
-                        </section>
-
-                        {/* Submissions Section */}
-                        <section className="mb-12">
-                            <div className="flex items-center gap-4 mb-6">
-                                <h2 className="manrope-body text-[12px] font-bold text-text-muted tracking-[0.1em]">Verification logs</h2>
-                                <div className="h-[1px] flex-1 bg-border opacity-50"></div>
-                            </div>
-
-                            <div className="space-y-4">
-                                <div className="border border-border rounded-xl overflow-hidden bg-sidebar/5">
-                                    <button 
-                                        onClick={() => setIsLogsOpen(!isLogsOpen)}
-                                        className="w-full px-4 py-3 flex items-center justify-between hover:bg-sidebar/10 transition-colors"
-                                    >
-                                        <h3 className="manrope-body text-[10px] font-black text-text-muted tracking-widest flex items-center gap-2">
-                                            Evidence logs <span className="px-1.5 py-0.5 rounded-md bg-text-muted/10 text-[9px]">{profile.submissions?.length || 0}</span>
-                                        </h3>
-                                        {isLogsOpen ? <ChevronUp className="w-3.5 h-3.5 text-text-muted" /> : <ChevronDown className="w-3.5 h-3.5 text-text-muted" />}
-                                    </button>
-                                    {isLogsOpen && (
-                                        <div className="p-4 space-y-4 animate-in fade-in slide-in-from-top-1 duration-200">
-                                            {profile.submissions && profile.submissions.length > 0 ? (
-                                                profile.submissions.map((sub, idx) => (
-                                                    <div key={idx} className="bg-background border border-border rounded-xl p-6 relative group hover:border-accent/50 transition-all duration-200">
-                                                        <div className="flex justify-between items-start mb-4">
-                                                            <div className="flex flex-col gap-1.5">
-                                                                <div className="flex items-center gap-2">
-                                                                    <div className="manrope-body text-[9px] font-black text-accent bg-accent-muted px-2 py-0.5 rounded-full">
-                                                                        Log #{profile.submissions.length - idx}
-                                                                    </div>
-                                                                    <div className={`manrope-body text-[9px] font-black px-2 py-0.5 rounded-full border ${
-                                                                        sub.evaluation_level === 'Solid' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20' :
-                                                                        sub.evaluation_level === 'Developing' ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20' :
-                                                                        'bg-gray-500/10 text-gray-600 dark:text-gray-400 border-gray-500/20'
-                                                                    }`}>
-                                                                        {sub.evaluation_level}
-                                                                    </div>
-                                                                </div>
-                                                                <div className="flex items-center gap-2">
-                                                                    <span className="manrope-body text-[11px] font-bold text-text-muted tracking-tight opacity-70">
-                                                                        {sub.roadmaps?.title || 'Technical Roadmap'}
-                                                                    </span>
-                                                                    <span className="w-1 h-1 bg-border rounded-full"></span>
-                                                                    <span className="manrope-body text-[11px] font-bold text-text-muted tracking-tight opacity-70">
-                                                                        Module {sub.module_number}
-                                                                    </span>
-                                                                </div>
-                                                            </div>
-                                                            <span className="manrope-body text-[10px] font-bold text-text-muted opacity-40">
-                                                                {new Date(sub.submitted_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
-                                                            </span>
-                                                        </div>
-
-                                                        <div className="manrope-body prose prose-sm max-w-none text-text-primary mb-4 leading-relaxed font-medium">
-                                                            {sub.is_senate_eval && sub.senate_summary ? (
-                                                                <p className="text-[14px] font-bold text-text-heading leading-relaxed border-l-2 border-accent pl-4 py-1 italic bg-accent-muted/20 rounded-r-lg">
-                                                                    &ldquo;{sub.senate_summary}&rdquo;
-                                                                </p>
-                                                            ) : (
-                                                                <ReactMarkdown components={{
-                                                                    h3: ({node, ...props}) => <h3 className="manrope-body text-[14px] font-bold tracking-tight mt-4 mb-2 text-text-heading" {...props} />,
-                                                                    p: ({node, ...props}) => <p className="mb-3 leading-relaxed" {...props} />,
-                                                                    ul: ({node, ...props}) => <ul className="list-disc pl-5 mb-4 space-y-1.5 opacity-90" {...props} />,
-                                                                    li: ({node, ...props}) => <li className="text-[13px]" {...props} />,
-                                                                    code: ({node, ...props}) => <code className="bg-callout-bg border border-border px-1.5 py-0.5 rounded text-[12px] font-mono text-accent font-bold" {...props} />,
-                                                                    pre: ({node, ...props}) => <pre className="bg-text-heading text-background p-4 rounded-xl my-4 overflow-x-auto font-mono text-[11px]" {...props} />,
-                                                                }}>
-                                                                    {sub.evaluation}
-                                                                </ReactMarkdown>
-                                                            )}
-                                                        </div>
-
-                                                        {sub.is_senate_eval && sub.senate_reasoning && (
-                                                            <details className="group/audit mb-4">
-                                                                <summary className="manrope-body text-[10px] font-black text-text-muted cursor-pointer hover:text-accent transition-colors list-none flex items-center gap-2">
-                                                                    <ChevronDown className="w-3 h-3 group-open/audit:rotate-180 transition-transform" />
-                                                                    Audit evidence
-                                                                </summary>
-                                                                <div className="mt-3 space-y-2.5 animate-in fade-in slide-in-from-top-1 duration-200">
-                                                                    {[
-                                                                        { id: 'technician', label: 'Technical depth', data: sub.senate_reasoning.technician, vote: sub.senate_votes?.[0] },
-                                                                        { id: 'educator', label: 'Learning proof', data: sub.senate_reasoning.educator, vote: sub.senate_votes?.[1] },
-                                                                        { id: 'relevance_judge', label: 'Alignment', data: sub.senate_reasoning.relevance_judge, vote: sub.senate_votes?.[2] }
-                                                                    ].map((auditor) => (
-                                                                        <div key={auditor.id} className="flex flex-col md:flex-row gap-2 md:gap-6 p-4 rounded-xl bg-callout-bg border border-border hover:border-accent/30 transition-all">
-                                                                            <div className="w-full md:w-32 shrink-0">
-                                                                                <p className="manrope-body text-[9px] font-black text-text-muted mb-1">{auditor.label}</p>
-                                                                                <span className={`manrope-body text-[9px] font-black px-2 py-0.5 rounded-full border ${
-                                                                                    auditor.vote === 'Solid' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' :
-                                                                                    auditor.vote === 'Developing' ? 'bg-blue-500/10 text-blue-600 border-blue-500/20' : 'bg-red-500/10 text-red-600 border-red-500/20'
-                                                                                }`}>{auditor.vote}</span>
-                                                                            </div>
-                                                                            <p className="text-[13px] text-text-primary leading-relaxed italic opacity-90 manrope-body font-medium">&ldquo;{auditor.data}&rdquo;</p>
-                                                                        </div>
-                                                                    ))}
-                                                                </div>
-                                                            </details>
-                                                        )}
-
-                                                        {sub.link && (
-                                                            <Link href={sub.link} target="_blank" className="manrope-body text-[11px] font-bold text-accent hover:text-teal-500 flex items-center gap-1.5 tracking-wide mt-2 transition-colors">
-                                                                Source material <ArrowRight className="w-3 h-3" />
-                                                            </Link>
-                                                        )}
-                                                    </div>
-                                                ))
-                                            ) : (
-                                                <div className="py-12 text-center bg-callout-bg border border-dashed border-border rounded-xl">
-                                                    <p className="manrope-body text-[13px] text-text-muted font-medium italic opacity-60">Awaiting verification logs.</p>
+                        {activeTab === 'overview' && (
+                            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                                {/* Top Skills Grid */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {strongSkills.slice(0, 4).map(skill => (
+                                        <div key={skill.id} className="p-5 bg-sidebar/20 border border-border rounded-none hover:border-accent/40 transition-all group relative">
+                                            <div className="flex justify-between items-start mb-3">
+                                                <div className="flex items-center gap-2.5">
+                                                    <BookOpen className="w-4 h-4 text-accent opacity-40" />
+                                                    <h4 className="text-[14px] font-bold text-text-heading group-hover:text-accent transition-colors tracking-tight">
+                                                        {skill.name}
+                                                    </h4>
                                                 </div>
-                                            )}
+                                                <div className="px-2 py-0.5 border border-accent/20 bg-accent/5 text-[10px] font-black text-accent tabular-nums inconsolata-ui tracking-tighter">{skill.tier}</div>
+                                            </div>
+                                            <p className="text-[11px] text-text-muted mb-6 uppercase tracking-wider font-bold opacity-60">{skill.category}</p>
+                                            <div className="flex items-center gap-6 text-[10px] font-bold text-text-muted uppercase tracking-widest inconsolata-ui">
+                                                <span className="flex items-center gap-2"><Clock className="w-3.5 h-3.5 opacity-40" /> {Math.round(skill.time_invested)}H</span>
+                                                <span className="flex items-center gap-2"><Target className="w-3.5 h-3.5 opacity-40" /> {skill.confidence_score.toFixed(1)}</span>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+
+                                {/* Activity Graph */}
+                                <div className="p-6 border border-border rounded-none bg-background relative overflow-hidden">
+                                    <ActivityChart roadmaps={profile.roadmaps} profile={profile} />
+                                </div>
+                            </div>
+                        )}
+
+                        {activeTab === 'skills' && (
+                            <div className="space-y-6 animate-in fade-in duration-300">
+                                <div className="relative mb-8">
+                                    <input 
+                                        className="w-full bg-sidebar/20 border border-border rounded-none px-10 py-3 text-[13px] text-text-heading placeholder:text-text-muted outline-none focus:border-accent transition-all font-bold inconsolata-ui uppercase tracking-widest"
+                                        placeholder="Filter Skills..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                    />
+                                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted opacity-30" />
+                                </div>
+
+                                <div className="space-y-6">
+                                    {strongSkills.length > 0 && (
+                                        <div className="border border-border rounded-none overflow-hidden bg-sidebar/10">
+                                            <button onClick={() => setIsExpertiseOpen(!isExpertiseOpen)} className="w-full px-5 py-4 flex items-center justify-between hover:bg-sidebar/20 border-b border-border/50">
+                                                <h3 className="text-[11px] font-black text-accent tracking-[0.3em] uppercase inconsolata-ui">Expertise // {strongSkills.length}</h3>
+                                                {isExpertiseOpen ? <ChevronUp className="w-3.5 h-3.5 text-text-muted" /> : <ChevronDown className="w-3.5 h-3.5 text-text-muted" />}
+                                            </button>
+                                            {isExpertiseOpen && <div className="px-5 pb-5 divide-y divide-border/30">{strongSkills.map(skill => <SkillCard key={skill.id} skill={skill} />)}</div>}
+                                        </div>
+                                    )}
+                                    {developingSkills.length > 0 && (
+                                        <div className="border border-border rounded-none overflow-hidden bg-sidebar/5">
+                                            <button onClick={() => setIsAdvancingOpen(!isAdvancingOpen)} className="w-full px-5 py-4 flex items-center justify-between hover:bg-sidebar/10 border-b border-border/50">
+                                                <h3 className="text-[11px] font-black text-text-muted tracking-[0.3em] uppercase inconsolata-ui">Advancing // {developingSkills.length}</h3>
+                                                {isAdvancingOpen ? <ChevronUp className="w-3.5 h-3.5 text-text-muted" /> : <ChevronDown className="w-3.5 h-3.5 text-text-muted" />}
+                                            </button>
+                                            {isAdvancingOpen && <div className="px-5 pb-5 divide-y divide-border/30">{developingSkills.map(skill => <SkillCard key={skill.id} skill={skill} />)}</div>}
                                         </div>
                                     )}
                                 </div>
                             </div>
-                        </section>
+                        )}
 
-                        {/* Community Contributions Section */}
-                        <section className="mb-12">
-                            <div className="flex items-center gap-4 mb-6">
-                                <h2 className="manrope-body text-[12px] font-bold text-text-muted tracking-[0.1em]">Community insights</h2>
-                                <div className="h-[1px] flex-1 bg-border opacity-50"></div>
-                            </div>
-
-                            <div className="space-y-4">
-                                <div className="border border-border rounded-xl overflow-hidden bg-sidebar/5">
-                                    <button 
-                                        onClick={() => setIsDiscussionsOpen(!isDiscussionsOpen)}
-                                        className="w-full px-4 py-3 flex items-center justify-between hover:bg-sidebar/10 transition-colors"
-                                    >
-                                        <h3 className="manrope-body text-[10px] font-black text-text-muted tracking-widest flex items-center gap-2">
-                                            Community contributions <span className="px-1.5 py-0.5 rounded-md bg-text-muted/10 text-[9px]">{profile.discussions?.length || 0}</span>
-                                        </h3>
-                                        {isDiscussionsOpen ? <ChevronUp className="w-3.5 h-3.5 text-text-muted" /> : <ChevronDown className="w-3.5 h-3.5 text-text-muted" />}
-                                    </button>
-                                    {isDiscussionsOpen && (
-                                        <div className="p-4 space-y-4 animate-in fade-in slide-in-from-top-1 duration-200">
-                                            {profile.discussions && profile.discussions.length > 0 ? (
-                                                profile.discussions.map((disc, idx) => (
-                                                    <div key={idx} className="bg-background border border-border rounded-xl p-6 relative group hover:border-accent/50 transition-all duration-200">
-                                                        <div className="flex justify-between items-start mb-4">
-                                                            <div className="flex flex-col gap-1.5">
-                                                                <div className="flex items-center gap-2">
-                                                                    <div className="manrope-body text-[9px] font-black text-accent bg-accent-muted px-2 py-0.5 rounded-full">
-                                                                        Insight #{profile.discussions.length - idx}
-                                                                    </div>
-                                                                    <div className="manrope-body text-[9px] font-black px-2 py-0.5 rounded-full bg-sidebar border border-border text-text-muted">
-                                                                        {disc.context_type.split('-').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(' ')}
-                                                                    </div>
-                                                                </div>
-                                                                <div className="flex items-center gap-2">
-                                                                    <Link 
-                                                                        href={
-                                                                            disc.context_type === 'roadmap' ? `/roadmap/${disc.context_id}` :
-                                                                            disc.context_type === 'research-decoded' ? `/research-decoded/${disc.context_id}` :
-                                                                            disc.context_type === 'exam' ? `/archive/exams/previous-year-papers/${disc.context_id}` :
-                                                                            disc.context_type === 'paper' ? `/archive/exams/previous-year-papers/${disc.context_id.replace(':', '/')}` :
-                                                                            '#'
-                                                                        }
-                                                                        className="manrope-body text-[13px] font-bold text-text-heading hover:text-accent transition-colors"
-                                                                    >
-                                                                        {disc.context_id.replace('-', ' ').replace(':', ' - ')}
-                                                                    </Link>
-                                                                </div>
-                                                            </div>
-                                                            <span className="manrope-body text-[10px] font-bold text-text-muted opacity-40">
-                                                                {new Date(disc.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
-                                                            </span>
-                                                        </div>
-
-                                                        <div className="manrope-body prose prose-sm max-w-none text-text-primary mb-4 leading-relaxed font-medium">
-                                                            {disc.is_deleted ? (
-                                                                <p className="text-[14px] italic text-text-muted opacity-50">Comment deleted by author</p>
-                                                            ) : (
-                                                                <ReactMarkdown components={{
-                                                                    h3: ({node, ...props}) => <h3 className="manrope-body text-[14px] font-bold tracking-tight mt-4 mb-2 text-text-heading" {...props} />,
-                                                                    p: ({node, ...props}) => <p className="mb-3 leading-relaxed" {...props} />,
-                                                                    ul: ({node, ...props}) => <ul className="list-disc pl-5 mb-4 space-y-1.5 opacity-90" {...props} />,
-                                                                    li: ({node, ...props}) => <li className="text-[13px]" {...props} />,
-                                                                    code: ({node, ...props}) => <code className="bg-callout-bg border border-border px-1.5 py-0.5 rounded text-[12px] font-mono text-accent font-bold" {...props} />,
-                                                                    pre: ({node, ...props}) => <pre className="bg-text-heading text-background p-4 rounded-xl my-4 overflow-x-auto font-mono text-[11px]" {...props} />,
-                                                                }}>
-                                                                    {disc.content}
-                                                                </ReactMarkdown>
-                                                            )}
-                                                        </div>
-
-                                                        <div className="flex items-center gap-4">
-                                                            <Link 
-                                                                href={
-                                                                    disc.context_type === 'roadmap' ? `/roadmap/${disc.context_id}` :
-                                                                    disc.context_type === 'research-decoded' ? `/research-decoded/${disc.context_id}` :
-                                                                    disc.context_type === 'exam' ? `/archive/exams/previous-year-papers/${disc.context_id}` :
-                                                                    disc.context_type === 'paper' ? `/archive/exams/previous-year-papers/${disc.context_id.replace(':', '/')}` :
-                                                                    '#'
-                                                                }
-                                                                className="manrope-body text-[11px] font-bold text-accent hover:text-teal-500 flex items-center gap-1.5 tracking-wide transition-colors"
-                                                            >
-                                                                View context <ExternalLink className="w-3 h-3" />
-                                                            </Link>
-                                                        </div>
+                        {activeTab === 'evidence' && (
+                            <div className="space-y-4 animate-in fade-in duration-300">
+                                {profile.submissions && profile.submissions.length > 0 ? (
+                                    profile.submissions.map((sub, idx) => (
+                                        <div key={idx} className="bg-background border border-border rounded-none p-6 relative group hover:border-accent/40 transition-all duration-200">
+                                            <div className="flex justify-between items-start mb-6">
+                                                <div className="flex flex-col gap-2">
+                                                    <div className="flex items-center gap-3">
+                                                        <div className="text-[9px] font-black text-accent bg-accent-muted px-2 py-0.5 rounded-none border border-accent/20 inconsolata-ui tracking-widest uppercase">LOG #{profile.submissions.length - idx}</div>
+                                                        <div className={`text-[9px] font-black px-2 py-0.5 rounded-none border inconsolata-ui tracking-widest uppercase ${sub.evaluation_level === 'Solid' ? 'border-emerald-500/30 text-emerald-600 bg-emerald-500/5' : 'border-blue-500/30 text-blue-600 bg-blue-500/5'}`}>{sub.evaluation_level}</div>
                                                     </div>
-                                                ))
-                                            ) : (
-                                                <div className="py-12 text-center bg-callout-bg border border-dashed border-border rounded-xl">
-                                                    <p className="manrope-body text-[13px] text-text-muted font-medium italic opacity-60">Awaiting community insights.</p>
+                                                    <h4 className="text-[15px] font-bold text-text-heading tracking-tight">{sub.roadmaps?.title || 'Technical Roadmap'}</h4>
                                                 </div>
+                                                <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest inconsolata-ui opacity-40">{new Date(sub.submitted_at).toLocaleDateString()}</span>
+                                            </div>
+                                            <div className="manrope-body prose prose-sm max-w-none text-text-primary mb-6 leading-relaxed font-medium">
+                                                <ReactMarkdown>{sub.senate_summary || sub.evaluation}</ReactMarkdown>
+                                            </div>
+                                            {sub.link && (
+                                                <Link href={sub.link} target="_blank" className="text-[10px] font-bold text-accent hover:opacity-80 flex items-center gap-2 uppercase tracking-[0.2em] inconsolata-ui transition-all">
+                                                    Source Material <ArrowRight className="w-3 h-3" />
+                                                </Link>
                                             )}
                                         </div>
-                                    )}
-                                </div>
+                                    ))
+                                ) : (
+                                    <div className="py-20 text-center border border-dashed border-border rounded-none bg-sidebar/5">
+                                        <p className="text-[13px] text-text-muted italic opacity-60">Awaiting verification logs.</p>
+                                    </div>
+                                )}
                             </div>
-                        </section>
+                        )}
 
-                        {/* Export Section at Bottom */}
-                        <div className="mt-20 pt-12 border-t border-border/50 flex flex-col items-center text-center">
-                            <div className="mb-6">
-                                <EulerLogoCanvas size={32} className="opacity-20 grayscale" />
+                        {activeTab === 'assessments' && (
+                            <div className="space-y-4 animate-in fade-in duration-300">
+                                {profile.mcq_history && profile.mcq_history.length > 0 ? (
+                                    profile.mcq_history.map((mcq, idx) => (
+                                        <AssessmentCard key={idx} mcq={mcq} index={profile.mcq_history!.length - idx} />
+                                    ))
+                                ) : (
+                                    <div className="py-20 text-center border border-dashed border-border rounded-none bg-sidebar/5">
+                                        <p className="text-[13px] text-text-muted italic opacity-60">No practice records available.</p>
+                                    </div>
+                                )}
                             </div>
-                            <h3 className="manrope-body text-[16px] font-bold text-text-heading mb-2">Download your verified profile</h3>
-                            <p className="manrope-body text-[13px] text-text-muted max-w-sm mb-8">
-                                Get a PDF version of your skills to add to your resume or share on social media.
-                            </p>
-                            <button 
-                                onClick={handleExportPDF}
-                                className="inline-flex items-center gap-2.5 px-8 py-3 bg-text-heading text-background rounded-full font-bold text-[13px] hover:opacity-90 transition-all shadow-xl shadow-black/5"
-                            >
-                                <Download className="w-4 h-4" /> Download audit report (PDF)
-                            </button>
-                        </div>
+                        )}
 
-                    </div>
-                </main>
+                        {activeTab === 'insights' && (
+                            <div className="space-y-4 animate-in fade-in duration-300">
+                                {profile.discussions && profile.discussions.length > 0 ? (
+                                    profile.discussions.map((disc, idx) => (
+                                        <div key={idx} className="bg-background border border-border rounded-none p-6 relative group hover:border-accent/40 transition-all duration-200">
+                                            <div className="flex justify-between items-start mb-6">
+                                                <div className="flex flex-col gap-2">
+                                                    <div className="text-[9px] font-black text-accent bg-accent-muted px-2 py-0.5 rounded-none border border-accent/20 w-fit uppercase tracking-widest inconsolata-ui">{disc.context_type}</div>
+                                                    <Link href={`/roadmap/${disc.context_id}`} className="text-[15px] font-bold text-text-heading hover:text-accent transition-colors tracking-tight">
+                                                        {disc.context_id.replace('-', ' ')}
+                                                    </Link>
+                                                </div>
+                                                <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest inconsolata-ui opacity-40">{new Date(disc.created_at).toLocaleDateString()}</span>
+                                            </div>
+                                            <div className="text-[13px] text-text-primary leading-relaxed line-clamp-3 mb-6 font-medium">
+                                                {disc.content}
+                                            </div>
+                                            <Link href={`/roadmap/${disc.context_id}`} className="text-[10px] font-bold text-accent hover:opacity-80 flex items-center gap-2 uppercase tracking-[0.2em] inconsolata-ui transition-all">
+                                                View Context <ArrowRight className="w-3 h-3" />
+                                            </Link>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="py-20 text-center border border-dashed border-border rounded-none bg-sidebar/5">
+                                        <p className="text-[13px] text-text-muted italic opacity-60">Awaiting community insights.</p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+                    </main>
+                </div>
             </div>
         </div>
     );
@@ -567,48 +469,34 @@ function SkillCard({ skill }: { skill: any }) {
     const [isExpanded, setIsExpanded] = useState(false);
 
     return (
-        <div className="group py-1.5 flex flex-col transition-all">
+        <div className="group py-4 flex flex-col transition-all">
             <div className="flex items-center min-h-[40px] gap-4">
-                {/* Name & Category */}
                 <div className="flex-1 min-w-0 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3">
-                    <h4 className="manrope-body text-[14px] font-bold text-text-heading group-hover:text-accent transition-colors tracking-tight leading-tight">
+                    <h4 className="text-[14px] font-bold text-text-heading group-hover:text-accent transition-colors tracking-tight">
                         {skill.name}
                     </h4>
-                    <span className="manrope-body text-[9px] font-semibold text-text-muted opacity-40 bg-sidebar dark:bg-white/5 px-2 py-0.5 rounded-md whitespace-nowrap w-fit">
+                    <span className="text-[9px] font-bold text-text-muted uppercase tracking-wider opacity-40 bg-sidebar border border-border px-2 py-0.5 rounded-none whitespace-nowrap w-fit inconsolata-ui">
                         {skill.category}
                     </span>
                 </div>
 
-                {/* Stats - Tabular look */}
-                <div className="hidden lg:flex items-center gap-6 px-6 border-x border-border/50 h-4">
-                    <div className="flex items-center gap-1.5" title="Time invested">
-                        <Clock className="w-3 h-3 text-text-muted opacity-20" />
-                        <span className="manrope-body text-[11px] font-bold text-text-muted/60">{Math.round(skill.time_invested)}h</span>
-                    </div>
-                    <div className="flex items-center gap-1.5" title="Contributing units">
-                        <Target className="w-3 h-3 text-text-muted opacity-20" />
-                        <span className="manrope-body text-[11px] font-bold text-text-muted/60">{skill.contributing_roadmap_ids?.length || 1} units</span>
-                    </div>
-                </div>
-
-                {/* Report Card Style Grade/Score */}
-                <div className="flex items-center gap-2 shrink-0">
+                <div className="flex items-center gap-3 shrink-0">
                     <button 
                         onClick={() => setIsExpanded(!isExpanded)}
-                        className="p-1 text-text-muted/30 hover:text-accent hover:bg-sidebar rounded transition-all"
+                        className="p-1 text-text-muted/30 hover:text-accent transition-all"
                     >
                         {isExpanded ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
                     </button>
                     
-                    <div className="flex items-center h-[30px] bg-sidebar border border-border rounded-lg overflow-hidden shadow-sm">
-                        <div className="px-2.5 h-full flex items-center bg-accent/[0.03]">
-                            <span className="manrope-body text-[12px] font-black text-accent tracking-tighter">
+                    <div className="flex items-center h-[28px] bg-sidebar border border-border rounded-none overflow-hidden">
+                        <div className="px-2.5 h-full flex items-center bg-accent/[0.05]">
+                            <span className="text-[11px] font-black text-accent tracking-tighter inconsolata-ui">
                                 {skill.tier || 'F'}
                             </span>
                         </div>
                         <div className="w-px h-full bg-border/50" />
                         <div className="px-2.5 h-full flex items-center">
-                            <span className="manrope-body text-[12px] font-bold text-text-heading tabular-nums">
+                            <span className="text-[11px] font-bold text-text-heading tabular-nums inconsolata-ui">
                                 {skill.confidence_score.toFixed(1)}
                             </span>
                         </div>
@@ -617,26 +505,19 @@ function SkillCard({ skill }: { skill: any }) {
             </div>
 
             {isExpanded && (
-                <div className="mt-3 mb-4 pl-4 border-l-2 border-accent/20 space-y-3 animate-in fade-in slide-in-from-top-1 duration-200">
+                <div className="mt-4 mb-2 pl-4 border-l-2 border-accent/20 space-y-4 animate-in fade-in slide-in-from-top-1 duration-200">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-12 gap-y-2 max-w-[600px]">
                         {[
-                            { label: 'Project evidence', val: Math.min(skill.pow_score * 40, 40).toFixed(1), max: 40 },
-                            { label: 'Practice score', val: Math.min(skill.practice_score * 30, 30).toFixed(1), max: 30 },
-                            { label: 'Topic coverage', val: Math.min(skill.topic_completion * 15, 15).toFixed(1), max: 15 },
-                            { label: 'Concept depth', val: Math.min(skill.depth_score * 15, 15).toFixed(1), max: 15 }
+                            { label: 'Project Evidence', val: Math.min(skill.pow_score * 40, 40).toFixed(1), max: 40 },
+                            { label: 'Practice Score', val: Math.min(skill.practice_score * 30, 30).toFixed(1), max: 30 },
+                            { label: 'Topic Coverage', val: Math.min(skill.topic_completion * 15, 15).toFixed(1), max: 15 },
+                            { label: 'Concept Depth', val: Math.min(skill.depth_score * 15, 15).toFixed(1), max: 15 }
                         ].map((item) => (
-                            <div key={item.label} className="flex items-center justify-between group/metric py-0.5">
-                                <span className="manrope-body text-[11px] font-medium text-text-muted/80 whitespace-nowrap">
-                                    {item.label}
-                                </span>
-                                <div className="mx-2 h-px flex-1 border-b border-dotted border-border opacity-40 group-hover/metric:opacity-100 transition-opacity"></div>
+                            <div key={item.label} className="flex items-center justify-between py-1 group/metric">
+                                <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest inconsolata-ui">{item.label}</span>
                                 <div className="flex items-baseline gap-1">
-                                    <span className="manrope-body text-[11px] font-bold text-text-primary tabular-nums">
-                                        {item.val}
-                                    </span>
-                                    <span className="manrope-body text-[9px] font-medium text-text-muted opacity-30">
-                                        / {item.max}
-                                    </span>
+                                    <span className="text-[11px] font-bold text-text-primary tabular-nums inconsolata-ui">{item.val}</span>
+                                    <span className="text-[9px] font-medium text-text-muted opacity-30 inconsolata-ui">/ {item.max}</span>
                                 </div>
                             </div>
                         ))}
@@ -647,6 +528,106 @@ function SkillCard({ skill }: { skill: any }) {
     );
 }
 
-// Helper component for EulerLogoCanvas if needed, or import it if it exists globally
-// I'll assume it exists or use a simple image fallback if not found
-import EulerLogoCanvas from '@/components/EulerLogoCanvas';
+function AssessmentCard({ mcq, index }: { mcq: any; index: number }) {
+    const [isExpanded, setIsExpanded] = useState(false);
+
+    return (
+        <div className="bg-background border border-border rounded-none p-4 relative group hover:border-accent/40 transition-all duration-200">
+            <div className="flex justify-between items-start mb-3">
+                <div>
+                    <div className="text-[9px] font-black text-accent bg-accent-muted px-2 py-0.5 rounded-none mb-2 w-fit border border-accent/20 inconsolata-ui tracking-widest uppercase">RECORD #{index}</div>
+                    <h4 className="text-[14px] font-bold text-text-heading tracking-tight leading-tight">{mcq.topic_name}</h4>
+                    <p className="text-[10px] text-text-muted opacity-60 font-bold uppercase tracking-wider mt-0.5">{mcq.subject}</p>
+                </div>
+                <div className="text-right">
+                    <div className="text-[18px] font-black text-accent tabular-nums inconsolata-ui leading-none">{Math.round((mcq.score || 0) * 100)}%</div>
+                    <span className="text-[8px] font-bold text-text-muted opacity-40 uppercase tracking-[0.2em] block mt-1">Mastery</span>
+                </div>
+            </div>
+
+            <div className="flex items-center justify-between pt-4 border-t border-border/50 mt-3">
+                <div className="flex items-center gap-5">
+                    <div className="flex items-center gap-2 text-[10px] font-bold text-text-muted uppercase tracking-widest inconsolata-ui">
+                        <Award className="w-3 h-3 text-accent opacity-50" />
+                        {mcq.questions.length} Qs
+                    </div>
+                    <button 
+                        onClick={() => setIsExpanded(!isExpanded)}
+                        className="text-[10px] font-bold text-accent hover:underline flex items-center gap-1.5 uppercase tracking-widest inconsolata-ui"
+                    >
+                        {isExpanded ? (
+                            <>Collapse <ChevronUp className="w-2.5 h-2.5" /></>
+                        ) : (
+                            <>Questions <ChevronDown className="w-2.5 h-2.5" /></>
+                        )}
+                    </button>
+                </div>
+                <span className="text-[9px] font-bold text-text-muted uppercase tracking-widest inconsolata-ui opacity-40">{new Date(mcq.created_at).toLocaleDateString()}</span>
+            </div>
+
+            {isExpanded && (
+                <div className="mt-5 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300 border-t border-border/30 pt-5">
+                    {mcq.questions.map((q: any, qIdx: number) => {
+                        const isCorrect = q.user_answer === q.correct_answer;
+                        return (
+                            <div key={qIdx} className="space-y-3">
+                                <div className="flex gap-3">
+                                    <span className="text-[10px] font-black text-text-muted/30 inconsolata-ui mt-0.5">Q{qIdx + 1}</span>
+                                    <div className="flex-1 space-y-3">
+                                        <p className="text-[13px] font-bold text-text-heading leading-relaxed">{q.question}</p>
+                                        
+                                        <div className="grid grid-cols-1 gap-1.5">
+                                            {q.options.map((option: string, optIdx: number) => {
+                                                const isUserSelection = q.user_answer === option;
+                                                const isCorrectOption = q.correct_answer === option;
+                                                
+                                                let bgColor = "bg-sidebar/20";
+                                                let borderColor = "border-border/50";
+                                                let textColor = "text-text-muted";
+
+                                                if (isUserSelection) {
+                                                    if (isCorrect) {
+                                                        bgColor = "bg-emerald-500/10";
+                                                        borderColor = "border-emerald-500/30";
+                                                        textColor = "text-emerald-600";
+                                                    } else {
+                                                        bgColor = "bg-red-500/10";
+                                                        borderColor = "border-red-500/30";
+                                                        textColor = "text-red-600";
+                                                    }
+                                                } else if (isCorrectOption && !isCorrect) {
+                                                    bgColor = "bg-emerald-500/5";
+                                                    borderColor = "border-emerald-500/20";
+                                                    textColor = "text-emerald-600";
+                                                }
+
+                                                return (
+                                                    <div 
+                                                        key={optIdx} 
+                                                        className={`px-3 py-1.5 border rounded-none text-[11.5px] font-medium transition-all ${bgColor} ${borderColor} ${textColor} flex items-center justify-between`}
+                                                    >
+                                                        <span>{option}</span>
+                                                        {isUserSelection && (
+                                                            <span className="text-[8px] font-black uppercase tracking-widest inconsolata-ui opacity-60">
+                                                                {isCorrect ? 'Correct' : 'Your Choice'}
+                                                            </span>
+                                                        )}
+                                                        {isCorrectOption && !isCorrect && (
+                                                            <span className="text-[8px] font-black uppercase tracking-widest inconsolata-ui opacity-60">
+                                                                Correct
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
+        </div>
+    );
+}

@@ -622,6 +622,31 @@ export interface PracticeProgress {
     updated_at: string;
 }
 
+export interface MCQQuestion {
+    id: string;
+    question: string;
+    options: string[];
+    correct_answer_index: number;
+    explanation: string;
+}
+
+export interface MCQSessionRead {
+    id: string;
+    user_id: string;
+    roadmap_id: number;
+    subtopic_id: string;
+    topic_name: string;
+    subject: string;
+    week_number: number;
+    questions: MCQQuestion[];
+    user_answers?: number[];
+    score?: number;
+    credit_cost: number;
+    status: 'active' | 'completed' | 'abandoned';
+    created_at: string;
+    updated_at: string;
+}
+
 export const practiceAPI = {
     getOrCreateSession: async (payload: { roadmap_id: number, subtopic_id: string, topic_name: string, subject: string, goal: string }): Promise<PracticeSession> => {
         const response = await api.post('/practice/session', payload);
@@ -641,6 +666,35 @@ export const practiceAPI = {
     },
     getSessionProgress: async (sessionId: string): Promise<PracticeProgress[]> => {
         const response = await api.get(`/practice/session/${sessionId}/progress`);
+        return response.data;
+    },
+    generateMCQSession: async (payload: { roadmap_id: number, subtopic_id: string, topic_name: string, subject: string, week_number: number, num_questions: number }): Promise<MCQSessionRead> => {
+        const response = await api.post('/practice/mcq/generate', payload);
+        return response.data;
+    },
+    getIncompleteMCQSession: async (subtopicId: string): Promise<MCQSessionRead | null> => {
+        try {
+            const response = await api.get(`/practice/mcq/incomplete/${subtopicId}`);
+            return response.data;
+        } catch (error: any) {
+            if (error.response?.status === 404) return null;
+            throw error;
+        }
+    },
+    abandonMCQSession: async (sessionId: string): Promise<{ status: string }> => {
+        const response = await api.post(`/practice/mcq/${sessionId}/abandon`);
+        return response.data;
+    },
+    getMCQHistory: async (subtopicId: string): Promise<MCQSessionRead[]> => {
+        const response = await api.get(`/practice/mcq/history/${subtopicId}`);
+        return response.data;
+    },
+    getMCQSession: async (sessionId: string): Promise<MCQSessionRead> => {
+        const response = await api.get(`/practice/mcq/session/${sessionId}`);
+        return response.data;
+    },
+    submitMCQSession: async (sessionId: string, answers: number[]): Promise<MCQSessionRead> => {
+        const response = await api.post(`/practice/mcq/${sessionId}/submit`, { answers });
         return response.data;
     }
     };
@@ -674,6 +728,8 @@ export const practiceAPI = {
     last_active?: string;
     skills: UserSkill[];
     submissions?: any[];
+    mcq_history?: MCQSessionRead[];
+    discussions?: any[];
     practice_stats?: {
         easy: number;
         medium: number;
@@ -684,6 +740,10 @@ export const practiceAPI = {
     export const profileAPI = {
     getPublicProfile: async (username: string): Promise<PublicProfile> => {
         const response = await api.get(`/profile/${username}`);
+        return response.data;
+    },
+    updateAvatar: async (avatarUrl: string): Promise<{ status: string, avatar_url: string }> => {
+        const response = await api.patch(`/profile/avatar?avatar_url=${encodeURIComponent(avatarUrl)}`);
         return response.data;
     },
     getActivity: async (username: string): Promise<Record<string, number>> => {

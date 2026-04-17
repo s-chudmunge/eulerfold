@@ -33,6 +33,7 @@ import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 
 import CourseHeader from '@/components/CourseHeader';
+import MCQPractice from './MCQPractice';
 
 export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoadmap }: { id?: string, slug?: string[], initialRoadmap?: RoadmapData | null }) {
     const params = useParams();
@@ -67,6 +68,14 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
     const [isPracticeExpanded, setIsPracticeExpanded] = useState(false);
     const [isConfirmingMore, setIsConfirmingMore] = useState(false);
     const [viewMode, setViewMode] = useState<'video' | 'practice'>('video');
+
+    const refreshProfile = useCallback(async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+            const { data: userData } = await supabase.from('profiles').select('*').eq('supabase_uid', session.user.id).single();
+            if (userData) setProfile(userData);
+        }
+    }, []);
 
     const allWeekResources = useMemo(() => {
         if (!roadmap || !roadmap.roadmap_plan?.modules?.[currentModuleIndex]) return [];
@@ -737,17 +746,17 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                 <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
                                     <div className="max-w-[1000px] mx-auto">
                                         {/* Header */}
-                                        <div className="mb-8">
-                                            <div className="flex items-center gap-2 text-accent mb-3 text-[11px] font-bold tracking-widest">
-                                                <span className="bg-accent-muted px-2 py-0.5 rounded">Practice</span>
+                                        <div className="mb-6 border-b border-border pb-6">
+                                            <div className="flex items-center gap-2 text-accent mb-3 text-[9px] font-bold tracking-[0.15em] inconsolata-ui uppercase">
+                                                <span className="bg-accent text-white px-2 py-0.5 rounded-none">Practice</span>
                                                 <span className="text-[var(--border)]">/</span>
-                                                <span className="text-text-muted font-medium italic">{currentModule?.is_extension ? 'Extension' : `Week ${currentModuleIndex + 1}`}</span>
+                                                <span className="text-text-muted">{currentModule?.is_extension ? 'Extension' : `Week ${currentModuleIndex + 1}`}</span>
                                             </div>
-                                            <h2 className="text-2xl md:text-3xl font-bold text-text-heading mb-3 tracking-tight">
-                                                {currentModule?.title || 'Practice session'}
+                                            <h2 className="text-xl md:text-2xl font-bold text-text-heading mb-2 tracking-tight inconsolata-ui uppercase">
+                                                {currentModule?.title || 'Practice Session'}
                                             </h2>
-                                            <p className="manrope-body text-[14px] text-text-muted max-w-2xl italic">
-                                                A consolidated view of all study materials and practice resources for this week&apos;s curriculum.
+                                            <p className="manrope-body text-[12px] text-text-muted max-w-2xl italic leading-relaxed opacity-80">
+                                                Practice what you&apos;ve learned with study materials and interactive questions.
                                             </p>
                                         </div>
 
@@ -756,31 +765,26 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                             {/* Group 1: Study Materials */}
                                             <section>
                                                 <div className="flex items-center gap-4 mb-4">
-                                                    <h3 className="text-[14px] font-bold text-text-heading tracking-widest opacity-70">Study materials</h3>
-                                                    <div className="h-[1px] flex-1 bg-[var(--border)] opacity-30"></div>
+                                                    <h3 className="text-[11px] font-bold text-text-heading tracking-[0.2em] uppercase inconsolata-ui opacity-60">01 / Study Materials</h3>
+                                                    <div className="h-[1px] flex-1 bg-[var(--border)] opacity-10"></div>
                                                 </div>
                                                 
-                                                <div className="bg-sidebar border border-border rounded-xl overflow-hidden shadow-sm">
+                                                <div className="bg-sidebar border border-border rounded-none overflow-hidden shadow-sm">
                                                     <table className="w-full text-left border-collapse">
-                                                        <thead>
-                                                            <tr className="border-b border-border bg-sidebar/50">
-                                                                <th className="px-4 py-2.5 text-[10px] font-bold text-text-muted tracking-widest opacity-60">Resource</th>
-                                                            </tr>
-                                                        </thead>
                                                         <tbody className="divide-y divide-border/50">
                                                             {allWeekResources.length > 0 ? allWeekResources.map((res, idx) => (
-                                                                <tr key={idx} className="hover:bg-callout-bg transition-colors">
-                                                                    <td className="px-4 py-3">
-                                                                        <a href={res.url} target="_blank" rel="noreferrer" className="manrope-body text-[13.5px] font-bold text-text-heading hover:text-accent transition-colors flex items-center gap-2">
-                                                                            <ArrowRight className="h-3 w-3 opacity-30 group-hover:translate-x-1 transition-transform" />
+                                                                <tr key={idx} className="hover:bg-callout-bg transition-colors group">
+                                                                    <td className="px-5 py-3">
+                                                                        <a href={res.url} target="_blank" rel="noreferrer" className="manrope-body text-[13px] font-bold text-text-heading hover:text-accent transition-colors flex items-center gap-3">
+                                                                            <span className="text-[9px] text-text-muted inconsolata-ui opacity-30 group-hover:opacity-100 transition-all">{idx + 1}.</span>
                                                                             {res.title}
                                                                         </a>
                                                                     </td>
                                                                 </tr>
                                                             )) : (
                                                                 <tr>
-                                                                    <td className="px-4 py-12 text-center manrope-body text-[13px] text-text-muted italic opacity-60">
-                                                                        No materials listed for this week.
+                                                                    <td className="px-5 py-8 text-center manrope-body text-[12px] text-text-muted italic opacity-60">
+                                                                        No materials listed for this topic.
                                                                     </td>
                                                                 </tr>
                                                             )}
@@ -789,105 +793,73 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                                 </div>
                                             </section>
 
-                                            {/* Group 2: AI Practice Session */}
+                                            {/* Group 2: Interactive assessments */}
                                             <section>
                                                 <div className="flex items-center gap-4 mb-4">
-                                                    <h3 className="text-[14px] font-bold text-text-heading tracking-widest opacity-70">Interactive practice</h3>
-                                                    <div className="h-[1px] flex-1 bg-[var(--border)] opacity-30"></div>
-                                                    <div className="flex items-center gap-2 px-2 py-1 bg-amber-500/10 text-amber-600 rounded border border-amber-500/20 shrink-0">
-                                                        <Trophy className="h-3 w-3" />
-                                                        <span className="text-[9px] font-bold tracking-widest">+1 🤑 / Correct</span>
-                                                    </div>
+                                                    <h3 className="text-[11px] font-bold text-text-heading tracking-[0.2em] uppercase inconsolata-ui opacity-60">02 / Interactive Practice</h3>
+                                                    <div className="h-[1px] flex-1 bg-[var(--border)] opacity-10"></div>
                                                 </div>
 
-                                                {!practiceSession && !isGeneratingPractice ? (
-                                                    <div className="bg-callout-bg border border-dashed border-border rounded-2xl p-12 text-center">
-                                                        <Target className="h-8 w-8 text-accent/20 mx-auto mb-4" />
-                                                        <p className="manrope-body text-[14px] text-text-muted mb-6 italic">Ready to verify your understanding of &quot;{currentTopic?.title}&quot;?</p>
-                                                        <button 
-                                                            onClick={handleStartPractice}
-                                                            className="inline-flex items-center gap-3 px-8 py-2.5 bg-text-heading text-background rounded-full text-[12px] font-bold tracking-wide hover:opacity-90 transition-all shadow-xl"
-                                                        >                                                            Start Topic Assessment
-                                                        </button>
-                                                    </div>
-                                                ) : isGeneratingPractice ? (
-                                                    <div className="bg-sidebar/50 border border-border rounded-2xl p-12 text-center">
-                                                        <Loader className="w-6 h-6 animate-spin text-accent mx-auto mb-4" />
-                                                        <p className="text-[10px] font-bold text-text-muted tracking-widest animate-pulse">Building custom assessment...</p>
-                                                    </div>
-                                                ) : practiceSession && (
-                                                    <div className="bg-sidebar border border-border rounded-xl overflow-hidden shadow-sm">
-                                                         <div className="px-4 py-2 border-b border-border bg-sidebar/50 flex items-center justify-between">
-                                                             <span className="text-[9px] font-bold text-text-muted tracking-widest opacity-60">
-                                                                 Current unit: {currentTopic?.title}
-                                                             </span>
-                                                             <span className="text-[9px] font-bold text-text-muted tracking-widest opacity-60">
-                                                                 {practiceSession.resources.length} resources
-                                                             </span>
-                                                         </div>
-                                                         <div className="divide-y divide-border/50">
-                                                            {practiceSession.resources.map((res) => (
-                                                                <div key={res.id} className="p-4 flex items-center gap-4 hover:bg-callout-bg transition-colors group">
-                                                                    <button
-                                                                        onClick={() => handleToggleResource(res.id, !practiceProgress[res.id])}
-                                                                        className={`shrink-0 w-5 h-5 rounded border flex items-center justify-center transition-all ${practiceProgress[res.id] ? 'bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/20' : 'bg-background border border-border text-transparent group-hover:border-[var(--accent)]'}`}
-                                                                    >
-                                                                        <Check className="h-3 w-3" />
-                                                                    </button>
-                                                                    
-                                                                    <div className="flex-1 min-w-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                                                        <div className="flex items-center gap-3 min-w-0">
-                                                                            <a 
-                                                                                href={res.url} 
-                                                                                target="_blank" 
-                                                                                rel="noreferrer" 
-                                                                                className={`manrope-body text-[14px] font-bold text-text-heading hover:text-accent transition-colors truncate ${practiceProgress[res.id] ? 'opacity-40 line-through' : ''}`}
-                                                                            >
-                                                                                {res.title}
-                                                                            </a>
-                                                                            <span className="shrink-0 text-[9px] font-bold tracking-wide px-2 py-0.5 bg-background border border-border rounded text-text-muted opacity-50">{res.platform}</span>
-                                                                        </div>
-                                                                        
-                                                                        <div className="flex items-center gap-3 shrink-0">
-                                                                            {res.difficulty && (
-                                                                                <span className={`text-[9px] font-bold tracking-wide px-2 py-0.5 rounded ${
-                                                                                    res.difficulty.toLowerCase() === 'easy' ? 'bg-emerald-500/10 text-emerald-600' :
-                                                                                    res.difficulty.toLowerCase() === 'medium' ? 'bg-amber-500/10 text-amber-600' :
-                                                                                    'bg-red-500/10 text-red-600'
-                                                                                }`}>
-                                                                                    {res.difficulty}
-                                                                                </span>
-                                                                            )}
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            ))}
-                                                         </div>
-                                                         
-                                                         {practiceSession?.has_more && (
-                                                            <div className="p-8 border-t border-border bg-sidebar/40 text-center">
-                                                                {!isConfirmingMore ? (
-                                                                    <button 
-                                                                        onClick={() => setIsConfirmingMore(true)}
-                                                                        disabled={isGeneratingPractice}
-                                                                        className="inline-flex items-center gap-2 px-6 py-2 bg-background border border-border rounded-full text-[10px] font-bold tracking-widest text-text-muted hover:text-accent hover:border-accent transition-all shadow-sm"
-                                                                    >
-                                                                        <RefreshCcw className="h-3 w-3" />
-                                                                        Expand assessment pool
-                                                                    </button>
-                                                                ) : (
-                                                                    <div className="flex items-center justify-center gap-6 animate-in zoom-in-95">
-                                                                        <span className="text-[10px] font-bold text-text-muted tracking-widest">Execute additional content scan?</span>
-                                                                        <div className="flex items-center gap-4">
-                                                                            <button onClick={() => setIsConfirmingMore(false)} className="text-[10px] font-bold text-text-muted hover:text-text-heading transition-colors">Abort</button>
-                                                                            <button onClick={handleLoadMore} className="px-6 py-1.5 bg-accent text-white rounded-full text-[10px] font-bold hover:opacity-90 transition-all shadow-lg shadow-teal-500/20">Execute</button>
-                                                                        </div>
-                                                                    </div>
-                                                                )}
+                                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                                    {/* Find Questions Card */}
+                                                    <div className="bg-background border border-border rounded-none p-5 flex flex-col shadow-sm">
+                                                        <div className="flex items-center justify-between mb-4">
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="text-lg">🔍</span>
+                                                                <h4 className="inconsolata-ui text-[13px] font-bold text-text-heading uppercase tracking-widest">Find Questions</h4>
                                                             </div>
-                                                         )}
+                                                            <span className="inconsolata-ui text-[8px] font-bold tracking-widest px-1.5 py-0.5 bg-background border border-border text-text-muted uppercase">Free</span>
+                                                        </div>
+                                                        <p className="manrope-body text-[11px] text-text-muted mb-6 italic leading-relaxed opacity-70">
+                                                            Find high-quality practice questions from external platforms online.
+                                                        </p>
+                                                        
+                                                        {practiceSession ? (
+                                                            <div className="flex-1 space-y-2">
+                                                                {practiceSession.resources.slice(0, 3).map((res) => (
+                                                                    <div key={res.id} className="flex items-center gap-2.5 p-2.5 bg-sidebar border border-border/60 rounded-none">
+                                                                        {practiceProgress[res.id] ? <span className="text-emerald-500 text-[10px]">✅</span> : <span className="opacity-20 inconsolata-ui text-[9px] font-bold">TODO</span>}
+                                                                        <span className="text-[10px] font-bold text-text-heading truncate flex-1 inconsolata-ui uppercase tracking-tighter">{res.title}</span>
+                                                                    </div>
+                                                                ))}
+                                                                {practiceSession.resources.length > 3 && (
+                                                                    <p className="inconsolata-ui text-[8px] text-center text-text-muted font-bold tracking-[0.15em] pt-1.5 opacity-50">+{practiceSession.resources.length - 3} MORE</p>
+                                                                )}
+                                                                <div className="pt-5 mt-auto">
+                                                                    <p className="inconsolata-ui text-[8px] font-bold text-emerald-500 mb-1 flex items-center gap-1.5 justify-center uppercase tracking-widest">
+                                                                        <span>🤑</span> 01 COIN / TASK
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        ) : (
+                                                            <div className="flex-1 flex items-center justify-center py-8 border-t border-border/40 border-dashed">
+                                                                <button 
+                                                                    onClick={handleStartPractice}
+                                                                    disabled={isGeneratingPractice}
+                                                                    className="px-6 py-2 bg-[#111] dark:bg-text-heading text-background rounded-none text-[9px] font-bold inconsolata-ui uppercase tracking-[0.15em] hover:opacity-90 transition-all shadow-md active:scale-95"
+                                                                >
+                                                                    {isGeneratingPractice ? 'FINDING...' : 'FIND QUESTIONS'}
+                                                                </button>
+                                                            </div>
+                                                        )}
                                                     </div>
-                                                )}
+
+                                                    {/* Pro MCQ Assessment */}
+                                                    <MCQPractice 
+                                                        roadmapId={roadmap?.id || 0}
+                                                        subtopicId={currentTopic?.uuid || ''}
+                                                        topicName={currentTopic?.title || ''}
+                                                        subject={roadmap?.subject || roadmap?.title || ''}
+                                                        weekNumber={currentModuleIndex + 1}
+                                                        isPro={profile?.is_pro || false}
+                                                        userCredits={profile?.roadmap_credits || 0}
+                                                        onPointsEarned={(amount) => {
+                                                            setCoinToast({ show: true, amount });
+                                                            setTimeout(() => setCoinToast(null), 3000);
+                                                        }}
+                                                        onRefreshProfile={refreshProfile}
+                                                    />
+                                                </div>
                                             </section>
                                         </div>
                                     </div>
@@ -915,4 +887,3 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
         </div>
     );
 }
-

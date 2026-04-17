@@ -6,7 +6,7 @@ export const revalidate = 3600; // rebuild at most once per hour
 
 export const metadata: Metadata = {
   title: 'Research Decoded',
-  description: 'Foundational technical breakthroughs and academic papers, decoded for humans. Master the fundamentals of AI, distributed systems, and modern engineering.',
+  description: 'Foundational technical breakthroughs and academic papers, decoded for you. Master the fundamentals of AI, distributed systems, and modern engineering.',
   alternates: {
     canonical: '/research-decoded',
   },

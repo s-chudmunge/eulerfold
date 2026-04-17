@@ -208,8 +208,8 @@ export default function PublicHeader() {
       ref={headerRef}
       className={`manrope-body sticky top-0 z-50 w-full transition-all duration-300 ${
         isScrolled 
-            ? 'bg-header/90 backdrop-blur-md h-[54px] border-b border-border/40 shadow-[0_1px_2px_rgba(0,0,0,0.02)]' 
-            : 'bg-header h-[64px] border-b border-transparent'
+            ? 'bg-header/90 backdrop-blur-md h-[48px] border-b border-border/40 shadow-[0_1px_2px_rgba(0,0,0,0.02)]' 
+            : 'bg-header h-[56px] border-b border-transparent'
       }`}
       style={{ top: 'var(--announcement-height, 0px)' }}
     >
@@ -219,7 +219,7 @@ export default function PublicHeader() {
         <div className="flex items-center gap-8 h-full">
           <Link href="/" className="flex items-center gap-2.5 hover:opacity-85 transition-opacity active:scale-95 duration-200">
             <img src="/apple-touch-icon.png" alt="" className="w-7 h-7" />
-            <span className="text-[16px] font-bold text-text-heading tracking-tight hidden md:block">EulerFold</span>
+            <span className="text-[16px] font-bold text-text-heading tracking-tight hidden md:block">Euler<span className="text-accent">Fold</span></span>
           </Link>
 
           <nav className="hidden lg:flex items-center gap-0.5 h-full">
@@ -408,7 +408,7 @@ export default function PublicHeader() {
         className={`lg:hidden fixed inset-0 top-[var(--announcement-height,0px)] bg-header/98 backdrop-blur-2xl z-[45] transition-all duration-400 ease-[cubic-bezier(0.23,1,0.32,1)] ${
           isMobileMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-8 pointer-events-none'
         }`}
-        style={{ marginTop: isScrolled ? '56px' : '68px' }}
+        style={{ marginTop: isScrolled ? '48px' : '56px' }}
       >
         <div className="px-6 py-10 flex flex-col gap-10 h-full overflow-y-auto">
           <div className="flex flex-col gap-2">

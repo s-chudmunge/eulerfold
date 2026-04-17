@@ -55,7 +55,7 @@ class UserBase(BaseModel):
     unsubscribed: bool = False
     current_streak: int = 0
     eulercoins: int = 0
-    roadmap_credits: int = 1
+    roadmap_credits: float = 1.0
     is_pro: bool = False
     last_active_date: Optional[datetime] = None
     skills: List[UserSkill] = []
@@ -302,7 +302,7 @@ class PublicProfile(BaseModel):
     avatar_url: Optional[str] = None
     supabase_uid: Optional[str] = None
     is_pro: bool = False
-    roadmap_credits: int = 0
+    roadmap_credits: float = 0.0
     total_skills: int
     total_roadmaps: int
     total_hours: float
@@ -311,7 +311,44 @@ class PublicProfile(BaseModel):
     roadmaps: List[Dict[str, Any]] = []
     submissions: List[Dict[str, Any]] = []
     practice_stats: Optional[PracticeStats] = None
+    mcq_history: List[MCQSessionRead] = []
     discussions: List["DiscussionRead"] = []
+
+# --- MCQ Schemas ---
+
+class MCQQuestion(BaseModel):
+    id: str
+    question: str
+    options: List[str]
+    correct_answer_index: int
+    explanation: str
+
+class MCQSessionCreate(BaseModel):
+    roadmap_id: int
+    subtopic_id: uuid.UUID
+    topic_name: str
+    subject: str
+    week_number: int
+    num_questions: int = Field(10, ge=10, le=20)
+
+class MCQSessionRead(BaseModel):
+    id: uuid.UUID
+    user_id: uuid.UUID
+    roadmap_id: int
+    subtopic_id: uuid.UUID
+    topic_name: str
+    subject: str
+    week_number: int
+    questions: List[MCQQuestion]
+    user_answers: Optional[List[int]] = []
+    score: Optional[float] = None
+    credit_cost: float
+    status: str
+    created_at: datetime
+    updated_at: datetime
+
+class MCQSubmitAnswer(BaseModel):
+    answers: List[int] # List of chosen indices matching questions
 
 # --- Discussion Schemas ---
 

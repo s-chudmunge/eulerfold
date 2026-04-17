@@ -18,7 +18,7 @@ from reportlab.lib.utils import ImageReader
 
 from app.core.supabase_client import get_supabase_client, get_admin_supabase_client
 from app.core.auth import get_current_user
-from app.schemas import PublicProfile, UserSkill, PracticeStats, User, DiscussionRead
+from app.schemas import PublicProfile, UserSkill, PracticeStats, User, DiscussionRead, MCQSessionRead
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -62,6 +62,17 @@ async def delete_current_user_profile(current_user: User = Depends(get_current_u
     except Exception as e:
         logger.error(f"Failed to purge account for {email}: {e}")
         raise HTTPException(status_code=500, detail=f"Account purge failed: {str(e)}")
+
+@router.patch("/profile/avatar")
+async def update_avatar(avatar_url: str = Query(...), current_user: User = Depends(get_current_user)):
+    sb = get_supabase_client()
+    uid = current_user.supabase_uid
+    
+    result = sb.table("profiles").update({"avatar_url": avatar_url}).eq("supabase_uid", uid).execute()
+    if not result.data:
+        raise HTTPException(status_code=500, detail="Failed to update avatar")
+    
+    return {"status": "success", "avatar_url": avatar_url}
 
 @router.get("/profile/{username}", response_model=PublicProfile)
 async def get_public_profile(username: str):
@@ -152,6 +163,19 @@ async def get_public_profile(username: str):
                 else: p_stats.medium += 1
                 p_stats.total += 1
 
+    # 5b. Fetch MCQ Sessions
+    mcq_history = []
+    mcq_res = sb.table("mcq_sessions") \
+        .select("*") \
+        .eq("user_id", uid) \
+        .eq("status", "completed") \
+        .order("created_at", desc=True) \
+        .limit(20) \
+        .execute()
+    
+    if mcq_res.data:
+        mcq_history = [MCQSessionRead(**item) for item in mcq_res.data]
+
     # 6. Fetch Community Contributions (Discussions)
     disc_res = sb.table("discussion_threads").select("*").eq("author_id", profile["id"]).order("created_at", desc=True).limit(50).execute()
     discussions = []
@@ -193,6 +217,7 @@ async def get_public_profile(username: str):
         roadmaps=roadmaps_data,
         submissions=subs_data,
         practice_stats=p_stats,
+        mcq_history=mcq_history,
         discussions=discussions
     )
 

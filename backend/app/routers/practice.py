@@ -18,7 +18,11 @@ from app.schemas import (
     PracticeSessionRead, 
     PracticeResource, 
     PracticeProgressUpdate,
-    PracticeProgressRead
+    PracticeProgressRead,
+    MCQSessionCreate,
+    MCQSessionRead,
+    MCQSubmitAnswer,
+    MCQQuestion
 )
 from app.utils.gemini_client import generate_text, clean_json_string
 from app.core.coins import EulerCoins
@@ -275,6 +279,251 @@ async def retry_generation(session_id: uuid.UUID, data: PracticeSessionCreate, c
     result = sb.table("practice_sessions").update(update_data).eq("id", str(session_id)).execute()
     if not result.data:
         raise HTTPException(status_code=500, detail="Failed to retry generation")
+        
+    return result.data[0]
+
+async def _generate_mcq_questions(topic: str, subject: str, week: int, num_questions: int) -> List[dict]:
+    """Call Gemini to generate conceptual and MCQ questions."""
+    
+    prompt = f"""
+    You are a subject matter expert in "{subject}".
+    Generate {num_questions} Multiple Choice Questions (MCQs) for a learner currently in Week {week} studying the specific topic: "{topic}".
+    
+    CRITICAL QUALITY STANDARDS:
+    - Questions must be CONCEPTUAL and SITUATIONAL. Avoid simple recall or rote memorization.
+    - Focus on application of principles and "what would happen if" scenarios.
+    - Each question must have exactly 4 options.
+    - Only one option must be clearly correct.
+    - Options should be plausible but distinct.
+    - Do not generate questions that can be answered by simply recalling a definition. Every question must require the learner to think, apply, or reason.
+    - Provide a detailed explanation for why the correct answer is right.
+    
+    Return ONLY a JSON array of objects. Each object must have:
+    - id: a unique string ID for the question (e.g. "q1", "q2")
+    - question: string
+    - options: array of 4 strings
+    - correct_answer_index: integer (0-3)
+    - explanation: a concise one-line explanation of the correct choice
+    """
+    
+    try:
+        response_text = await generate_text(prompt, model=settings.GEMINI_MODEL, response_mime_type="application/json")
+        cleaned_json = clean_json_string(response_text)
+        questions = json.loads(cleaned_json)
+        
+        if not isinstance(questions, list):
+            return []
+            
+        # Basic validation of the structure
+        validated = []
+        for q in questions:
+            if all(k in q for k in ["question", "options", "correct_answer_index", "explanation"]):
+                if len(q["options"]) == 4:
+                    validated.append(q)
+                    
+        return validated[:num_questions]
+    except Exception as e:
+        logger.error(f"Gemini MCQ generation failed: {e}")
+        return []
+
+@router.post("/mcq/generate", response_model=MCQSessionRead)
+async def generate_mcq_session(data: MCQSessionCreate, current_user: User = Depends(get_current_user)):
+    logger.info(f"User {current_user.email} requesting MCQ session for: {data.topic_name}")
+    sb = get_supabase_client()
+    uid = current_user.supabase_uid
+
+    # 1. Fetch full profile to check Pro and Credits
+    profile_res = sb.table("profiles").select("roadmap_credits, is_pro").eq("supabase_uid", uid).execute()
+    if not profile_res.data:
+        raise HTTPException(status_code=404, detail="User profile not found")
+
+    profile = profile_res.data[0]
+    if not profile.get("is_pro"):
+        raise HTTPException(status_code=403, detail="MCQ Assessments are a Pro-only feature.")
+
+    # 1b. Check if an active session already exists for this subtopic to avoid duplicate credit deduction
+    active_res = sb.table("mcq_sessions") \
+        .select("*") \
+        .eq("user_id", uid) \
+        .eq("subtopic_id", str(data.subtopic_id)) \
+        .eq("status", "active") \
+        .execute()
+
+    if active_res.data:
+        logger.info(f"Active MCQ session already exists for user {uid} on subtopic {data.subtopic_id}. Returning existing session.")
+        return active_res.data[0]
+
+    current_credits = float(profile.get("roadmap_credits") or 0.0)
+    credit_cost = float(data.num_questions) * 0.01
+
+    if current_credits < credit_cost:
+        raise HTTPException(status_code=402, detail=f"Insufficient credits. This session costs {credit_cost} credits.")
+
+    # 2. Deduct credits first (Fail-safe: Refund if Gemini fails)
+    new_credit_balance = round(current_credits - credit_cost, 2)
+    sb.table("profiles").update({"roadmap_credits": new_credit_balance}).eq("supabase_uid", uid).execute()
+
+    try:
+        # 3. Generate Questions
+        questions = await _generate_mcq_questions(data.topic_name, data.subject, data.week_number, data.num_questions)
+
+        if not questions:
+            # Refund credits
+            sb.table("profiles").update({"roadmap_credits": current_credits}).eq("supabase_uid", uid).execute()
+            raise HTTPException(status_code=500, detail="Failed to generate high-quality questions. Credits have been refunded.")
+
+        # 4. Save Session
+        new_session = {
+            "user_id": uid,
+            "roadmap_id": data.roadmap_id,
+            "subtopic_id": str(data.subtopic_id),
+            "topic_name": data.topic_name,
+            "subject": data.subject,
+            "week_number": data.week_number,
+            "questions": questions,
+            "credit_cost": credit_cost,
+            "status": "active"
+        }
+
+        result = sb.table("mcq_sessions").insert(new_session).execute()
+        if not result.data:
+            # Refund credits
+            sb.table("profiles").update({"roadmap_credits": current_credits}).eq("supabase_uid", uid).execute()
+            raise HTTPException(status_code=500, detail="Failed to save MCQ session. Credits have been refunded.")
+
+        return result.data[0]
+
+    except Exception as e:
+        # Final safety refund
+        sb.table("profiles").update({"roadmap_credits": current_credits}).eq("supabase_uid", uid).execute()
+        if isinstance(e, HTTPException):
+            raise e
+        logger.error(f"MCQ generation flow failed: {e}")
+        raise HTTPException(status_code=500, detail="Generation failed. Credits refunded.")
+
+@router.get("/mcq/incomplete/{subtopic_id}", response_model=Optional[MCQSessionRead])
+async def get_incomplete_mcq_session(subtopic_id: uuid.UUID, current_user: User = Depends(get_current_user)):
+    """Check for an active MCQ session for a specific subtopic."""
+    sb = get_supabase_client()
+    uid = current_user.supabase_uid
+
+    result = sb.table("mcq_sessions") \
+        .select("*") \
+        .eq("user_id", uid) \
+        .eq("subtopic_id", str(subtopic_id)) \
+        .eq("status", "active") \
+        .order("created_at", desc=True) \
+        .execute()
+
+    if not result.data:
+        return None
+
+    return result.data[0]
+
+@router.get("/mcq/history/{subtopic_id}", response_model=List[MCQSessionRead])
+async def get_mcq_history(subtopic_id: uuid.UUID, current_user: User = Depends(get_current_user)):
+    """Get completed MCQ assessments for a specific subtopic."""
+    sb = get_supabase_client()
+    uid = current_user.supabase_uid
+
+    result = sb.table("mcq_sessions") \
+        .select("*") \
+        .eq("user_id", uid) \
+        .eq("subtopic_id", str(subtopic_id)) \
+        .eq("status", "completed") \
+        .order("created_at", desc=True) \
+        .execute()
+
+    return result.data or []
+
+@router.post("/mcq/{session_id}/abandon")
+async def abandon_mcq_session(session_id: uuid.UUID, current_user: User = Depends(get_current_user)):
+    """Mark an active MCQ session as abandoned."""
+    sb = get_supabase_client()
+    uid = current_user.supabase_uid
+
+    # 1. Verify ownership and status
+    session_res = sb.table("mcq_sessions").select("status").eq("id", str(session_id)).eq("user_id", uid).execute()
+    if not session_res.data:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    if session_res.data[0]["status"] != "active":
+        raise HTTPException(status_code=400, detail="Only active sessions can be abandoned")
+
+    # 2. Update status
+    result = sb.table("mcq_sessions").update({"status": "abandoned"}).eq("id", str(session_id)).execute()
+    if not result.data:
+        raise HTTPException(status_code=500, detail="Failed to abandon session")
+
+    return {"status": "success", "message": "Session abandoned"}
+
+@router.get("/mcq/session/{session_id}", response_model=MCQSessionRead)
+async def get_mcq_session(session_id: uuid.UUID, current_user: User = Depends(get_current_user)):
+    sb = get_supabase_client()
+    uid = current_user.supabase_uid
+    
+    result = sb.table("mcq_sessions").select("*").eq("id", str(session_id)).eq("user_id", uid).execute()
+    if not result.data:
+        raise HTTPException(status_code=404, detail="Session not found")
+        
+    return result.data[0]
+
+@router.post("/mcq/{session_id}/submit", response_model=MCQSessionRead)
+async def submit_mcq_session(
+    session_id: uuid.UUID, 
+    submission: MCQSubmitAnswer, 
+    background_tasks: BackgroundTasks,
+    current_user: User = Depends(get_current_user)
+):
+    sb = get_supabase_client()
+    uid = current_user.supabase_uid
+    
+    # 1. Fetch session
+    session_res = sb.table("mcq_sessions").select("*").eq("id", str(session_id)).eq("user_id", uid).execute()
+    if not session_res.data:
+        raise HTTPException(status_code=404, detail="Session not found")
+        
+    session = session_res.data[0]
+    if session.get("status") == "completed":
+        raise HTTPException(status_code=400, detail="Session already completed")
+        
+    questions = session.get("questions", [])
+    if len(submission.answers) != len(questions):
+        raise HTTPException(status_code=400, detail="Missing answers for some questions")
+        
+    # 2. Calculate score
+    correct_count = 0
+    for i, q in enumerate(questions):
+        if submission.answers[i] == q.get("correct_answer_index"):
+            correct_count += 1
+            
+    score = correct_count / len(questions) if questions else 0.0
+    
+    # 3. Update session
+    update_data = {
+        "user_answers": submission.answers,
+        "score": score,
+        "status": "completed",
+        "updated_at": datetime.now().isoformat()
+    }
+    
+    result = sb.table("mcq_sessions").update(update_data).eq("id", str(session_id)).execute()
+    if not result.data:
+        raise HTTPException(status_code=500, detail="Failed to update session results")
+    
+    # 4. Trigger background updates
+    # A. Recalculate skill scores
+    background_tasks.add_task(calculate_user_skill_scores_for_roadmap, int(session["roadmap_id"]), uid)
+    
+    # B. Award EulerCoins (1 per correct answer)
+    if correct_count > 0:
+        background_tasks.add_task(
+            award_coins, 
+            user_email=current_user.email, 
+            amount=correct_count, 
+            reason=f"MCQ Assessment Points: {session['topic_name']}",
+            roadmap_id=int(session["roadmap_id"])
+        )
         
     return result.data[0]
 

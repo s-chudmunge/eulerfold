@@ -212,29 +212,38 @@ async def calculate_user_skill_score(user_id: str, canonical_skill_id: str):
         comp_r = (len(completed_mapped) / len(mapped_topics)) if mapped_topics else 0.0
         total_topic_comp_sum += (min(comp_r, 1.0) * weight)
         
-        # D. Practice (Real practice progress if available, else proxy)
-        # Find practice sessions for this roadmap's topics
-        # First, we need to know the session IDs for these topics
+        # D. Practice (Real practice progress + MCQ sessions)
         ps_res = sb.table("practice_sessions").select("id, subtopic_id").eq("user_id", user_id).eq("roadmap_id", r["id"]).execute()
         relevant_sessions = ps_res.data or []
         
+        # Fetch completed MCQ sessions for this roadmap
+        mcq_res = sb.table("mcq_sessions").select("score, subtopic_id").eq("user_id", user_id).eq("roadmap_id", r["id"]).eq("status", "completed").execute()
+        relevant_mcqs = mcq_res.data or []
+        
+        total_possible_practice = 0
+        completed_practice = 0
+
+        # Standard Practice Sessions
         if relevant_sessions:
-            total_possible_practice = 0
-            completed_practice = 0
             for ps in relevant_sessions:
-                # Count resources in this session
-                # (Note: we'd need to fetch the session resources, but let's assume if it exists we check practice_progress)
                 session_progress = [pp for pp in all_pp if pp["session_id"] == ps["id"] and pp["completed"]]
                 completed_practice += len(session_progress)
                 # Proxy: assume each session has 3 resources
                 total_possible_practice += 3 
-            
-            if total_possible_practice > 0:
-                practice_r = min(completed_practice / total_possible_practice, 1.0)
-                # Boost if they also have POW proof
-                practice_r = max(practice_r, pow_r * 0.5) 
-            else:
-                practice_r = pow_r * 0.95
+        
+        # MCQ Sessions
+        if relevant_mcqs:
+            for mcq in relevant_mcqs:
+                score = mcq.get("score", 0.0)
+                # Treat a completed MCQ session as equivalent to 3 practice resources
+                # The score (0.0 to 1.0) determines how much of those "3 resources" are credited
+                completed_practice += (score * 3)
+                total_possible_practice += 3
+
+        if total_possible_practice > 0:
+            practice_r = min(completed_practice / total_possible_practice, 1.0)
+            # Boost if they also have POW proof
+            practice_r = max(practice_r, pow_r * 0.5) 
         else:
             practice_r = pow_r * 0.95
             

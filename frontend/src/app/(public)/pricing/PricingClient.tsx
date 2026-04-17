@@ -108,7 +108,7 @@ export default function PricingClient() {
                             <span className="text-accent">✓</span> Customized Roadmap Extensions
                         </div>
                         <div className="flex items-center gap-2.5">
-                            <span className="text-accent">✓</span> Downloadable PDF reports
+                            <span className="text-accent">✓</span> Premium Practice Mode
                         </div>
                     </div>
 
