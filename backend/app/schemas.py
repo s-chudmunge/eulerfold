@@ -295,25 +295,6 @@ class PracticeStats(BaseModel):
     hard: int = 0
     total: int = 0
 
-class PublicProfile(BaseModel):
-    username: str
-    display_name: Optional[str]
-    email: Optional[str] = None
-    avatar_url: Optional[str] = None
-    supabase_uid: Optional[str] = None
-    is_pro: bool = False
-    roadmap_credits: float = 0.0
-    total_skills: int
-    total_roadmaps: int
-    total_hours: float
-    last_active: Optional[datetime]
-    skills: List[UserSkill]
-    roadmaps: List[Dict[str, Any]] = []
-    submissions: List[Dict[str, Any]] = []
-    practice_stats: Optional[PracticeStats] = None
-    mcq_history: List[MCQSessionRead] = []
-    discussions: List["DiscussionRead"] = []
-
 # --- MCQ Schemas ---
 
 class MCQQuestion(BaseModel):
@@ -346,6 +327,25 @@ class MCQSessionRead(BaseModel):
     status: str
     created_at: datetime
     updated_at: datetime
+
+class PublicProfile(BaseModel):
+    username: str
+    display_name: Optional[str]
+    email: Optional[str] = None
+    avatar_url: Optional[str] = None
+    supabase_uid: Optional[str] = None
+    is_pro: bool = False
+    roadmap_credits: float = 0.0
+    total_skills: int
+    total_roadmaps: int
+    total_hours: float
+    last_active: Optional[datetime]
+    skills: List[UserSkill]
+    roadmaps: List[Dict[str, Any]] = []
+    submissions: List[Dict[str, Any]] = []
+    practice_stats: Optional[PracticeStats] = None
+    mcq_history: List[MCQSessionRead] = []
+    discussions: List["DiscussionRead"] = []
 
 class MCQSubmitAnswer(BaseModel):
     answers: List[int] # List of chosen indices matching questions
