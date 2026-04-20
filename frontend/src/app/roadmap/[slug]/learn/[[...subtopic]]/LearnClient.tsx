@@ -816,19 +816,86 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                                         
                                                         {practiceSession ? (
                                                             <div className="flex-1 space-y-2">
-                                                                {practiceSession.resources.slice(0, 3).map((res) => (
-                                                                    <div key={res.id} className="flex items-center gap-2.5 p-2.5 bg-sidebar border border-border/60 rounded-none">
-                                                                        {practiceProgress[res.id] ? <span className="text-emerald-500 text-[10px]">✅</span> : <span className="opacity-20 inconsolata-ui text-[9px] font-bold">TODO</span>}
-                                                                        <span className="text-[10px] font-bold text-text-heading truncate flex-1 inconsolata-ui uppercase tracking-tighter">{res.title}</span>
+                                                                {practiceSession.resources.map((res) => (
+                                                                    <div key={res.id} className="flex items-center gap-2.5 p-2.5 bg-sidebar border border-border/60 rounded-none group hover:border-accent/40 transition-colors">
+                                                                        <button 
+                                                                            onClick={() => handleToggleResource(res.id, !practiceProgress[res.id])}
+                                                                            className="flex-shrink-0 focus:outline-none"
+                                                                            title={practiceProgress[res.id] ? "Mark as TODO" : "Mark as Completed"}
+                                                                        >
+                                                                            {practiceProgress[res.id] ? (
+                                                                                <span className="text-emerald-500 text-[10px]">✅</span>
+                                                                            ) : (
+                                                                                <span className="opacity-20 group-hover:opacity-100 inconsolata-ui text-[9px] font-bold transition-opacity hover:text-accent">TODO</span>
+                                                                            )}
+                                                                        </button>
+                                                                        <div className="flex flex-col flex-1 min-w-0">
+                                                                            <a 
+                                                                                href={res.url} 
+                                                                                target="_blank" 
+                                                                                rel="noreferrer" 
+                                                                                className="text-[10px] font-bold text-text-heading truncate inconsolata-ui uppercase tracking-tighter hover:text-accent transition-colors flex items-center gap-1.5"
+                                                                            >
+                                                                                {res.title}
+                                                                                <span className="text-[8px] opacity-0 group-hover:opacity-40 transition-opacity">↗</span>
+                                                                            </a>
+                                                                            {res.platform && (
+                                                                                <span className="text-[8px] text-text-muted inconsolata-ui opacity-50 uppercase tracking-widest">{res.platform}</span>
+                                                                            )}
+                                                                        </div>
                                                                     </div>
                                                                 ))}
-                                                                {practiceSession.resources.length > 3 && (
-                                                                    <p className="inconsolata-ui text-[8px] text-center text-text-muted font-bold tracking-[0.15em] pt-1.5 opacity-50">+{practiceSession.resources.length - 3} MORE</p>
-                                                                )}
-                                                                <div className="pt-5 mt-auto">
+                                                                <div className="pt-5 mt-auto flex flex-col gap-3">
                                                                     <p className="inconsolata-ui text-[8px] font-bold text-emerald-500 mb-1 flex items-center gap-1.5 justify-center uppercase tracking-widest">
                                                                         <span>🤑</span> 01 COIN / TASK
                                                                     </p>
+                                                                    
+                                                                    <div className="flex items-center gap-2">
+                                                                        {practiceSession.has_more && (
+                                                                            <button 
+                                                                                onClick={() => setIsConfirmingMore(true)}
+                                                                                disabled={isGeneratingPractice}
+                                                                                className="flex-1 py-1.5 border border-border hover:bg-callout-bg text-text-muted inconsolata-ui text-[8px] font-bold uppercase tracking-widest transition-all"
+                                                                            >
+                                                                                {isGeneratingPractice ? '...' : `Load More (${3 - practiceSession.generation_count})`}
+                                                                            </button>
+                                                                        )}
+                                                                        {practiceSession.generation_count < 3 && (
+                                                                            <button 
+                                                                                onClick={handleRetryPractice}
+                                                                                disabled={isGeneratingPractice}
+                                                                                className="flex-1 py-1.5 border border-border hover:bg-callout-bg text-text-muted inconsolata-ui text-[8px] font-bold uppercase tracking-widest transition-all"
+                                                                            >
+                                                                                {isGeneratingPractice ? '...' : `Retry (${3 - practiceSession.generation_count})`}
+                                                                            </button>
+                                                                        )}
+                                                                    </div>
+
+                                                                    {practiceSession.generation_count >= 3 && (
+                                                                        <p className="manrope-body text-[8px] text-text-muted text-center italic opacity-60">
+                                                                            Generation limit reached for this session.
+                                                                        </p>
+                                                                    )}
+                                                                    
+                                                                    {isConfirmingMore && (
+                                                                        <div className="p-3 bg-sidebar border border-accent/20 animate-in fade-in zoom-in-95 duration-200">
+                                                                            <p className="manrope-body text-[9px] text-text-muted mb-2 italic">Finding more specific questions may take a few seconds.</p>
+                                                                            <div className="flex gap-2">
+                                                                                <button 
+                                                                                    onClick={handleLoadMore}
+                                                                                    className="flex-1 py-1.5 bg-accent text-white inconsolata-ui text-[8px] font-bold uppercase tracking-widest"
+                                                                                >
+                                                                                    Confirm
+                                                                                </button>
+                                                                                <button 
+                                                                                    onClick={() => setIsConfirmingMore(false)}
+                                                                                    className="flex-1 py-1.5 border border-border text-text-muted inconsolata-ui text-[8px] font-bold uppercase tracking-widest"
+                                                                                >
+                                                                                    Cancel
+                                                                                </button>
+                                                                            </div>
+                                                                        </div>
+                                                                    )}
                                                                 </div>
                                                             </div>
                                                         ) : (

@@ -224,7 +224,7 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
             }`}
           >
             <div className={`flex items-center justify-center gap-2.5 transition-transform duration-300 ${isGenerating ? 'translate-y-20' : ''}`}>
-              <Zap className={`w-3.5 h-3.5 fill-current ${credits === 0 ? 'text-text-muted' : ''}`} />
+              <span className={`text-[13px] ${credits === 0 ? 'grayscale opacity-50' : ''}`}>💎</span>
               {credits === 0 ? 'Insufficient Credits' : `Generate Roadmap (${credits ?? '...'})`}
             </div>
             {isGenerating && (

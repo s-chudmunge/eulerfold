@@ -171,7 +171,7 @@ export default function MCQPractice({
                 <div className="flex items-center justify-between mb-2">
                     <span className="inconsolata-ui text-[8px] font-bold text-accent uppercase tracking-[0.2em]">Pro Feature</span>
                     <div className="flex items-center gap-1 opacity-60">
-                        <Zap className="w-2.5 h-2.5 text-accent fill-accent/20" />
+                        <span className="text-[10px]">💎</span>
                         <span className="inconsolata-ui text-[8px] font-bold text-text-heading">{userCredits} Credits</span>
                     </div>
                 </div>

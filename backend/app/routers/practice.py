@@ -267,12 +267,20 @@ async def retry_generation(session_id: uuid.UUID, data: PracticeSessionCreate, c
     if not session_res.data:
         raise HTTPException(status_code=404, detail="Session not found")
         
+    session = session_res.data[0]
+    generation_count = session.get("generation_count", 0)
+    
+    if generation_count >= 3:
+        raise HTTPException(status_code=429, detail="Maximum generation limit reached for this session.")
+
     # Generate fresh resources (replacing the old empty/failed list)
     resources = await _generate_practice_resources(data.topic_name, data.subject, data.goal)
     
+    new_count = generation_count + 1
     update_data = {
         "resources": resources,
-        "has_more": len(resources) > 0,
+        "has_more": len(resources) > 0 and new_count < 3,
+        "generation_count": new_count,
         "updated_at": datetime.now().isoformat()
     }
     

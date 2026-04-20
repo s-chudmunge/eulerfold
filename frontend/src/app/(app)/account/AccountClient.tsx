@@ -214,7 +214,7 @@ export default function AccountClient() {
 
                             <div className="p-6 border border-border bg-accent-muted/5 relative overflow-hidden group">
                                 <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity">
-                                    <Zap className="w-16 h-16 fill-accent" />
+                                    <span className="text-6xl">💎</span>
                                 </div>
                                 <span className="inconsolata-ui text-[9px] font-bold text-accent uppercase tracking-widest mb-4 block">Credit Balance</span>
                                 <div className="flex items-center gap-4">

@@ -24,8 +24,8 @@ export default function PricingClient() {
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <div className="w-7 h-7 flex items-center justify-center text-accent">
-                        <Zap className="w-4 h-4 fill-[var(--accent)]/10" />
+                    <div className="w-7 h-7 flex items-center justify-center text-lg">
+                        💎
                     </div>
                     <div className="pr-4 border-r border-border">
                         <p className="inconsolata-ui text-[13px] font-bold text-text-heading leading-none">
