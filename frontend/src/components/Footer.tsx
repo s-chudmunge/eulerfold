@@ -57,9 +57,9 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      <div className="max-w-5xl mx-auto mt-12 pt-6 border-t border-border dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
-        <p className="text-[9px] font-medium text-gray-400 manrope-body opacity-50">
-          © {new Date().getFullYear()} EulerFold.
+      <div className="max-w-5xl mx-auto mt-12 pt-4 border-t border-border dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
+        <p className="text-[2px] text-gray-400 manrope-body opacity-60">
+          © {new Date().getFullYear()} EulerFold. All rights reserved.
         </p>
       </div>
     </footer>

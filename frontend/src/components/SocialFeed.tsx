@@ -76,10 +76,10 @@ export default function SocialFeed() {
 
   return (
     <section className="py-20 px-6 bg-background relative overflow-hidden border-t border-border/30">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-          <div className="max-w-2xl">
-            <h3 className="text-2xl md:text-3xl font-bold text-text-heading leading-tight font-inter tracking-tight">
+      <div className="lg:max-w-[60%] mx-auto">
+        <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+          <div className="max-w-md">
+            <h3 className="text-lg md:text-xl font-bold text-text-heading leading-tight font-inter tracking-tight">
               Latest updates from the <span className="text-accent italic">EulerFold</span> community.
             </h3>
           </div>
@@ -89,26 +89,26 @@ export default function SocialFeed() {
                className="p-2.5 rounded-xl border border-border/50 hover:border-accent/50 text-text-muted hover:text-accent transition-all bg-sidebar/30"
                title="Refresh Feed"
             >
-              <RefreshCcw className={`w-5 h-5 ${loading ? "animate-spin" : ""}`} />
+              <RefreshCcw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
             </button>
             <Link 
                href={platformLinks.YouTube}
                target="_blank"
                className="p-2.5 rounded-xl border border-border/50 hover:border-accent/50 text-text-muted hover:text-accent transition-all bg-sidebar/30"
             >
-              <Youtube className="w-5 h-5" />
+              <Youtube className="w-4 h-4" />
             </Link>
             <Link 
                href={platformLinks.Instagram}
                target="_blank"
                className="p-2.5 rounded-xl border border-border/50 hover:border-accent/50 text-text-muted hover:text-accent transition-all bg-sidebar/30"
             >
-              <Instagram className="w-5 h-5" />
+              <Instagram className="w-4 h-4" />
             </Link>
           </div>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
           {posts.map((post) => {
             const Icon = (platformIcons as any)[post.platform];
             return (
@@ -122,22 +122,22 @@ export default function SocialFeed() {
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2 text-accent">
                       <div className="p-1 rounded-md bg-accent/10">
-                        <Icon className="w-3.5 h-3.5" />
+                        <Icon className="w-3 h-3" />
                       </div>
-                      <span className="text-[10px] font-bold tracking-widest uppercase manrope-body">
+                      <span className="text-[9px] font-bold tracking-widest uppercase manrope-body">
                         {post.platform}
                       </span>
                     </div>
-                    <span className="text-[9px] text-text-muted font-bold uppercase tracking-wider">{post.date}</span>
+                    <span className="text-[8px] text-text-muted font-bold uppercase tracking-wider">{post.date}</span>
                   </div>
 
-                  <p className="text-text-primary text-[13px] leading-snug manrope-body font-medium">
+                  <p className="text-text-primary text-[12px] leading-snug manrope-body font-medium">
                     {post.content}
                   </p>
                 </div>
 
-                <div className="mt-3 flex items-center gap-1.5 text-[10px] font-bold text-accent opacity-0 group-hover:opacity-100 transition-opacity tracking-widest uppercase">
-                  View Post <ExternalLink className="w-2.5 h-2.5" />
+                <div className="mt-3 flex items-center gap-1.5 text-[9px] font-bold text-accent opacity-0 group-hover:opacity-100 transition-opacity tracking-widest uppercase">
+                  View Post <ExternalLink className="w-2 h-2" />
                 </div>
                 
                 {/* Subtle Hover Glow */}

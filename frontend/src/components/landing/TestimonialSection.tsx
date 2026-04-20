@@ -1,0 +1,207 @@
+"use client";
+
+import React from 'react';
+import { motion } from 'framer-motion';
+
+const testimonials = [
+  {
+    quote: "I was struggling with where to start with LLMs. EulerFold gave me a roadmap in like 5 seconds that actually made sense. The audits are tough but fair.",
+    author: "Alex M.",
+    role: "Software Engineer",
+    initials: "AM",
+    color: "bg-accent/10 text-accent",
+    layout: "author-top"
+  },
+  {
+    quote: "The search for research papers is usually a mess. This portal actually organizes them into a path. Saved me so much time on my thesis.",
+    author: "Sarah K.",
+    role: "Grad Student",
+    initials: "SK",
+    color: "bg-teal-500/10 text-teal-600",
+    layout: "quote-bottom"
+  },
+  {
+    quote: "I finally passed my systems design interview because I actually had to prove I knew the stuff. No more passive video watching.",
+    author: "James L.",
+    role: "CS Student",
+    initials: "JL",
+    color: "bg-blue-500/10 text-blue-600",
+    layout: "standard"
+  },
+  {
+    quote: "The AI roadmaps aren't just generic lists. They actually link to the right papers and videos. It's my go-to for any new skill.",
+    author: "Priya R.",
+    role: "Product Manager",
+    initials: "PR",
+    color: "bg-purple-500/10 text-purple-600",
+    tag: "Product Expert",
+    layout: "quote-tag"
+  },
+  {
+    quote: "Simple, clean, and does exactly what it says. Best tool for structured self-study I've found in a long time.",
+    author: "Chen W.",
+    role: "Self-taught Developer",
+    initials: "CW",
+    color: "bg-orange-500/10 text-orange-600",
+    layout: "standard"
+  },
+  {
+    quote: "Found a roadmap for quantum computing that didn't assume I was a math genius. Really approachable for beginners.",
+    author: "David O.",
+    role: "Researcher",
+    initials: "DO",
+    color: "bg-pink-500/10 text-pink-600",
+    tag: "PhD Student",
+    layout: "quote-tag"
+  }
+];
+
+const QuoteIcon = ({ className = "" }: { className?: string }) => (
+  <svg width="20" height="15" viewBox="0 0 24 18" fill="none" className={`shrink-0 ${className}`}>
+    <path d="M0 18V10.5C0 7.3 0.8 4.75 2.4 2.85C4.05 0.95 6.35 0 9.3 0L10.2 3C8.5 3.2 7.15 3.8 6.15 4.8C5.15 5.75 4.6 6.95 4.5 8.4H9.6V18H0ZM13.8 18V10.5C13.8 7.3 14.6 4.75 16.2 2.85C17.85 0.95 20.15 0 23.1 0L24 3C22.3 3.2 20.95 3.8 19.95 4.8C18.95 5.75 18.4 6.95 18.3 8.4H23.4V18H13.8Z" fill="currentColor"></path>
+  </svg>
+);
+
+export default function TestimonialSection() {
+  const column1 = [testimonials[0], testimonials[3], testimonials[0], testimonials[3]];
+  const column2 = [testimonials[1], testimonials[4], testimonials[1], testimonials[4]];
+  const column3 = [testimonials[2], testimonials[5], testimonials[2], testimonials[5]];
+
+  return (
+    <section className="py-24 px-6 bg-background overflow-hidden border-t border-border/30">
+      <div className="max-w-4xl mx-auto text-center mb-16 px-4">
+        <motion.h2 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="font-inter text-2xl md:text-3xl font-medium text-text-heading mb-8 tracking-tight"
+        >
+          Loved by learners like you
+        </motion.h2>
+        
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.1 }}
+          className="inline-flex items-center gap-3 bg-sidebar/50 border border-border px-5 py-2.5 rounded-full backdrop-blur-sm shadow-sm"
+        >
+          <div className="flex -space-x-2">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="w-8 h-8 rounded-full border-2 border-background bg-sidebar flex items-center justify-center overflow-hidden">
+                <img 
+                  src={`https://i.pravatar.cc/150?u=${i + 20}`} 
+                  alt="User" 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            ))}
+          </div>
+          <span className="text-xs font-bold text-text-primary manrope-body">
+            Trusted by 1,000+ users
+          </span>
+        </motion.div>
+      </div>
+
+      <div className="lg:max-w-[60%] mx-auto relative h-[600px] overflow-hidden">
+        {/* Gradient overlays to fade out top and bottom */}
+        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none" />
+        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-10 pointer-events-none" />
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 h-full">
+          {/* Column 1 */}
+          <motion.div 
+            animate={{ y: [0, -1000] }}
+            transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
+            className="flex flex-col gap-4"
+          >
+            {column1.map((t, idx) => (
+              <TestimonialCard key={idx} testimonial={t} />
+            ))}
+          </motion.div>
+
+          {/* Column 2 */}
+          <motion.div 
+            animate={{ y: [-1000, 0] }}
+            transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
+            className="flex flex-col gap-4 hidden md:flex"
+          >
+            {column2.map((t, idx) => (
+              <TestimonialCard key={idx} testimonial={t} />
+            ))}
+          </motion.div>
+
+          {/* Column 3 */}
+          <motion.div 
+            animate={{ y: [0, -1000] }}
+            transition={{ duration: 45, repeat: Infinity, ease: "linear" }}
+            className="flex flex-col gap-4 hidden lg:flex"
+          >
+            {column3.map((t, idx) => (
+              <TestimonialCard key={idx} testimonial={t} />
+            ))}
+          </motion.div>
+        </div>
+      </div>
+
+      <div className="mt-12 text-center">
+        <motion.button
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3 }}
+          className="px-8 py-3 bg-accent text-white rounded-full font-bold text-sm shadow-lg shadow-accent/20 hover:shadow-xl hover:shadow-accent/30 hover:-translate-y-0.5 transition-all duration-300"
+        >
+          See for Yourself
+        </motion.button>
+      </div>
+    </section>
+  );
+}
+
+function TestimonialCard({ testimonial: t }: { testimonial: any }) {
+  return (
+    <div className="break-inside-avoid bg-white dark:bg-sidebar/40 p-6 rounded-2xl border border-border shadow-sm hover:shadow-md transition-all duration-300 flex flex-col gap-4 group">
+      {t.layout === "author-top" && (
+        <div className="flex items-center gap-3 mb-2">
+          <div className={`size-10 shrink-0 flex items-center justify-center rounded-full text-xs font-bold ${t.color}`}>
+            {t.initials}
+          </div>
+          <div className="min-w-0">
+            <p className="truncate text-sm font-bold text-text-heading">{t.author}</p>
+            <p className="truncate text-[11px] text-text-muted font-medium">{t.role}</p>
+          </div>
+        </div>
+      )}
+
+      {(t.layout === "standard" || t.layout === "quote-bottom" || t.layout === "quote-tag") && (
+        <QuoteIcon className="text-accent/20 mb-1" />
+      )}
+
+      <p className="text-sm leading-relaxed text-text-primary manrope-body font-medium">
+        {t.quote}
+      </p>
+
+      {(t.layout === "standard" || t.layout === "quote-bottom") && (
+        <div className="flex items-center gap-3 pt-4 mt-auto border-t border-border/50">
+          <div className={`size-8 shrink-0 flex items-center justify-center rounded-full text-[11px] font-bold ${t.color}`}>
+            {t.initials}
+          </div>
+          <div className="min-w-0">
+            <p className="truncate text-xs font-bold text-text-heading">{t.author}</p>
+            <p className="truncate text-[10px] text-text-muted font-medium">{t.role}</p>
+          </div>
+        </div>
+      )}
+
+      {t.layout === "quote-tag" && t.tag && (
+        <div className="mt-auto">
+          <span className="text-[10px] font-semibold text-text-muted/60 uppercase tracking-wider">{t.tag}</span>
+        </div>
+      )}
+    </div>
+  );
+}
+
+
+

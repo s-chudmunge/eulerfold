@@ -8,6 +8,8 @@ import { LoginRequiredMessage, AlreadySignedInMessage, FAQAccordion, LandingOnbo
 
 import HeroBackground from '@/components/HeroBackground';
 import SocialFeed from '@/components/SocialFeed';
+import TestimonialSection from '@/components/landing/TestimonialSection';
+import PricingSection from '@/components/landing/PricingSection';
 import EulerLogoCanvas from '@/components/EulerLogoCanvas';
 import { ExploreRoadmap } from '@/lib/api';
 import VerifiedBadge from '@/components/VerifiedBadge';
@@ -224,9 +226,11 @@ export default async function LandingPage() {
           </section>
         )}
 
+        <TestimonialSection />
+
         {/* Features Section with Illustration Background */}
-        <section className="relative py-20 md:py-32 px-4 md:px-6">
-          <div className="max-w-7xl mx-auto relative rounded-[32px] md:rounded-[40px] overflow-hidden border border-border bg-sidebar/50 min-h-[550px] md:min-h-[600px] flex items-center shadow-2xl">
+        <section className="relative py-16 md:py-24 px-4 md:px-6">
+          <div className="lg:max-w-[60%] mx-auto relative rounded-[32px] md:rounded-[40px] overflow-hidden border border-border bg-sidebar/50 min-h-[480px] md:min-h-[520px] flex items-center shadow-2xl">
     {/* Background Image */}
     <div className="absolute inset-0 z-0">
       <img 
@@ -237,7 +241,7 @@ export default async function LandingPage() {
       <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent" />
     </div>
 
-    <div className="relative z-10 px-6 md:px-20 py-12 md:py-0 max-w-2xl">
+    <div className="relative z-10 px-6 md:px-16 py-12 md:py-0 max-w-2xl">
       <h2 className="text-[10px] md:text-[11px] font-bold text-accent tracking-[0.2em] uppercase mb-6 manrope-body">Retention based learning Architecture</h2>
       <h3 className="text-2xl md:text-4xl font-bold text-text-heading mb-6 leading-tight font-inter">
         Craft your path with <br className="hidden md:block" />mathematical precision.
@@ -265,7 +269,7 @@ export default async function LandingPage() {
         <section className="py-24 md:py-40 px-6 relative overflow-hidden border-t border-border/30 bg-sidebar/10">
           {/* Large Background Logo */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 opacity-[0.15] dark:opacity-[0.1] pointer-events-none select-none">
-            <EulerLogoCanvas size={600} rotationSpeed={0.002} />
+            <EulerLogoCanvas size={400} rotationSpeed={0.002} />
           </div>
 
           <div className="max-w-4xl mx-auto text-center relative z-10">
@@ -289,6 +293,8 @@ export default async function LandingPage() {
           </div>
         </section>
 
+        <PricingSection />
+
         {/* FAQ Section */}
         <section className="py-20 md:py-32 px-6 bg-background border-t border-border/30">
           <div className="max-w-4xl mx-auto">
@@ -304,7 +310,7 @@ export default async function LandingPage() {
 
         {/* Final CTA Section */}
         <section className="py-20 md:py-32 px-4 md:px-6 relative overflow-hidden">
-          <div className="max-w-7xl mx-auto relative rounded-[32px] md:rounded-[40px] overflow-hidden border border-border bg-sidebar/50 min-h-[450px] md:min-h-[500px] flex items-center justify-center">
+          <div className="lg:max-w-[60%] mx-auto relative rounded-[32px] md:rounded-[40px] overflow-hidden border border-border bg-sidebar/50 min-h-[400px] md:min-h-[450px] flex items-center justify-center shadow-xl">
             {/* Background Illustration */}
             <div className="absolute inset-0 z-0">
               <img 
