@@ -8,7 +8,23 @@ import { coinsAPI, LeaderboardEntry } from '@/lib/api';
 import Link from 'next/link';
 import { useAuth } from '@/components/AuthProvider';
 
-const CATEGORIES = ['All', 'DSA', 'Python', 'System Design', 'Algorithms', 'Other'];
+const CATEGORIES = [
+  'All', 
+  'Programming', 
+  'Data Structures', 
+  'Algorithms', 
+  'System Design', 
+  'Software Design',
+  'Web Development', 
+  'AI/ML', 
+  'Machine Learning',
+  'Data Science',
+  'Database',
+  'DevOps',
+  'Security',
+  'Tools',
+  'Career'
+];
 
 export default function LeaderboardPage({ 
   initialTopUsers = [], 
@@ -21,6 +37,7 @@ export default function LeaderboardPage({
   const [userRank, setUserRank] = useState<LeaderboardEntry | null>(initialUserRank);
   const [loading, setLoading] = useState(initialTopUsers.length === 0);
   const [category, setCategory] = useState('All');
+  const [visibleCount, setVisibleCount] = useState(100);
   const { user: authUser } = useAuth();
 
   useEffect(() => {
@@ -34,6 +51,7 @@ export default function LeaderboardPage({
         const lbData = await coinsAPI.getLeaderboard(category === 'All' ? undefined : category);
         setTopUsers(lbData.top_users);
         setUserRank(lbData.user_rank);
+        setVisibleCount(100); // Reset on category change
       } catch (err) {
         console.error('Failed to load data:', err);
       } finally {
@@ -121,17 +139,44 @@ export default function LeaderboardPage({
         ) : (
           <div className="space-y-12">
             <section>
-              <div className="flex items-center gap-4 mb-4">
-                <h2 className="inconsolata-ui text-[14px] font-black text-text-heading uppercase">
-                  Top Performers
-                </h2>
-                <div className="h-[1px] flex-1 bg-[var(--border)] opacity-30"></div>
-                <span className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-wider">
-                  {topUsers.length} MEMBERS
-                </span>
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                <div className="flex items-center gap-4 flex-1">
+                  <h2 className="inconsolata-ui text-[14px] font-black text-text-heading uppercase">
+                    Top Performers
+                  </h2>
+                  <div className="h-[1px] flex-1 bg-[var(--border)] opacity-30"></div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <span className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-wider">
+                    {topUsers.length} MEMBERS
+                  </span>
+                </div>
+              </div>
+
+              {/* Score breakdown explanation */}
+              <div className="mb-6 px-4 py-3 bg-sidebar/30 rounded-lg border border-border/50">
+                <p className="inconsolata-ui text-[11px] text-text-muted leading-relaxed">
+                  <span className="font-bold text-accent uppercase tracking-tighter">Composite Score:</span> 30% Skill Confidence + 25% Roadmaps + 20% Practice + 15% Streak + 10% Assessments.
+                </p>
               </div>
 
               <div className="divide-y divide-[var(--border)] border-t border-b border-border">
+                {/* Header Row */}
+                <div className="flex items-center justify-between px-4 py-2 bg-sidebar/10">
+                  <div className="flex items-center gap-4 min-w-0 flex-1">
+                    <span className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase w-10">Rank</span>
+                    <span className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase">Member</span>
+                  </div>
+                  <div className="flex items-center gap-8 shrink-0">
+                    <div className="hidden md:flex items-center gap-2">
+                      <span className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-tighter">Top Skill / Confidence</span>
+                    </div>
+                    <div className="w-16 text-right">
+                      <span className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-tighter">Composite</span>
+                    </div>
+                  </div>
+                </div>
+
                 {topUsers.length > 0 ? (
                   <>
                     {/* Top 3 */}
@@ -160,9 +205,20 @@ export default function LeaderboardPage({
                       <span className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-widest">Global Rankings</span>
                     </div>
 
-                    {topUsers.slice(3).map(user => (
+                    {topUsers.slice(3, visibleCount).map(user => (
                       <UserRow key={user.rank} user={user} />
                     ))}
+
+                    {topUsers.length > visibleCount && (
+                      <div className="p-8 flex justify-center border-t border-border">
+                        <button 
+                          onClick={() => setVisibleCount(prev => prev + 100)}
+                          className="inconsolata-ui px-8 py-2 bg-accent text-white rounded-xl text-[12px] font-bold hover:shadow-lg transition-all active:scale-95"
+                        >
+                          LOAD MORE
+                        </button>
+                      </div>
+                    )}
                   </>
                 ) : (
                   <div className="py-24 text-center">
