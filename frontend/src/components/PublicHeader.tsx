@@ -224,6 +224,7 @@ export default function PublicHeader() {
 
           <nav className="hidden lg:flex items-center gap-0.5 h-full">
             <Link href="/leaderboard" className="px-3 py-1.5 text-[13.5px] font-semibold text-text-muted hover:text-text-heading transition-all tracking-tight rounded-lg hover:bg-sidebar/40">Leaderboard</Link>
+            <Link href="/explore" className="px-3 py-1.5 text-[13.5px] font-semibold text-text-muted hover:text-text-heading transition-all tracking-tight rounded-lg hover:bg-sidebar/40">Explore</Link>
             <Link href="/pricing" className="px-3 py-1.5 text-[13.5px] font-semibold text-text-muted hover:text-text-heading transition-all tracking-tight rounded-lg hover:bg-sidebar/40">Pricing</Link>
 
             <DesktopDropdown id="learn" label="Learn" width="min-w-[850px]">

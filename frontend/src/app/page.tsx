@@ -7,6 +7,7 @@ import Footer from '@/components/Footer';
 import { LoginRequiredMessage, AlreadySignedInMessage, FAQAccordion, LandingOnboardingTrigger } from './HomeClientComponents';
 
 import HeroBackground from '@/components/HeroBackground';
+import AnimatedEfficient from '@/components/landing/AnimatedEfficient';
 import SocialFeed from '@/components/SocialFeed';
 import TestimonialSection from '@/components/landing/TestimonialSection';
 import PricingSection from '@/components/landing/PricingSection';
@@ -147,7 +148,7 @@ export default async function LandingPage() {
           <div className="max-w-7xl mx-auto w-full relative z-10">
             <div className="max-w-3xl">
               <h1 className="font-inter text-3xl sm:text-4xl md:text-5xl font-semibold text-text-heading mb-6 leading-[1.15] md:leading-[1.1] tracking-tight">
-                Infrastructure for <span className="text-accent">efficient</span>,<br className="hidden md:block" /> structured learning
+                Infrastructure for <AnimatedEfficient />,<br className="hidden md:block" /> structured learning
               </h1>
               <p className="text-text-muted text-base md:text-lg manrope-body font-medium mb-10 leading-relaxed max-w-2xl">
                 EulerFold builds personalized learning paths to help you bridge the gap between information and mastery.

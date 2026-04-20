@@ -53,7 +53,7 @@ async def get_leaderboard(
     query = sb.table("leaderboard_rankings") \
         .select("*") \
         .order("rank") \
-        .limit(100)
+        .limit(200)
     
     if category and category != "All":
         query = query.eq("top_skill_category", category)

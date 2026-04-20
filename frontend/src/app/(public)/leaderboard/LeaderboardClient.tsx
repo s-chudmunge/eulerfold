@@ -139,14 +139,14 @@ export default function LeaderboardPage({
                       <UserRow key={user.rank} user={user} />
                     ))}
 
-                    {/* Near You Separator */}
+                    {/* Near You Separator (only if NOT in top 3 and user exists) */}
                     {userRank && userRank.rank > 3 && (
                       <div className="flex items-center justify-center bg-callout-bg py-2 gap-4 border-y border-border">
-                        <span className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-widest">Near Your Rank</span>
+                        <span className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-widest">Your Position</span>
                       </div>
                     )}
 
-                    {/* Users Near Me */}
+                    {/* Users Near Me (only if NOT in top 3 and user exists) */}
                     {userRank && userRank.rank > 3 && (
                       <>
                         {nearMe.map(user => (
@@ -155,14 +155,14 @@ export default function LeaderboardPage({
                       </>
                     )}
 
-                    {/* Rest of Top 20 */}
-                    {!userRank && topUsers.length > 3 && (
-                      <>
-                        {topUsers.slice(3, 20).map(user => (
-                          <UserRow key={user.rank} user={user} />
-                        ))}
-                      </>
-                    )}
+                    {/* Rest of the leaderboard list */}
+                    <div className="flex items-center justify-center bg-sidebar/40 py-2 gap-4 border-y border-border">
+                      <span className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-widest">Global Rankings</span>
+                    </div>
+
+                    {topUsers.slice(3).map(user => (
+                      <UserRow key={user.rank} user={user} />
+                    ))}
                   </>
                 ) : (
                   <div className="py-24 text-center">

@@ -5,6 +5,7 @@ import { X, Gift } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
+import { motion } from 'framer-motion';
 
 export default function AnnouncementBar() {
   const [isVisible, setIsVisible] = useState(false);
@@ -56,7 +57,20 @@ export default function AnnouncementBar() {
     <div className="fixed top-0 inset-x-0 z-[70] bg-gradient-to-r from-teal-900 via-teal-700 to-teal-900 text-white h-[32px] flex items-center px-4 md:px-6 transition-all duration-500 ease-in-out border-b border-white/10 shadow-sm overflow-hidden">
       <div className="w-full max-w-7xl mx-auto flex items-center justify-center gap-3">
         <div className="flex items-center gap-2 text-[10px] md:text-[11px] font-bold uppercase tracking-widest">
-          <Gift className="w-3.5 h-3.5 text-teal-300" />
+          <motion.div
+            animate={{ 
+              rotate: [0, -15, 15, -15, 15, 0],
+              scale: [1, 1.2, 1],
+            }}
+            transition={{ 
+              duration: 1.2, 
+              repeat: Infinity, 
+              repeatDelay: 2.5,
+              ease: "easeInOut"
+            }}
+          >
+            <Gift className="w-3.5 h-3.5 text-teal-300" />
+          </motion.div>
           <span>LAUNCH OFFER: Get 5 free roadmaps on signup</span>
         </div>
         <Link 

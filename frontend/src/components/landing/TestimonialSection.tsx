@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
+import ActivityPill from '@/components/ActivityPill';
 
 const testimonials = [
   {
@@ -101,6 +102,10 @@ export default function TestimonialSection() {
             Trusted by 1,000+ users
           </span>
         </motion.div>
+
+        <div className="mt-12 flex justify-center">
+          <ActivityPill />
+        </div>
       </div>
 
       <div className="lg:max-w-[60%] mx-auto relative h-[600px] overflow-hidden">
