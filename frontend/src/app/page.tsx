@@ -11,6 +11,8 @@ import AnimatedEfficient from '@/components/landing/AnimatedEfficient';
 import SocialFeed from '@/components/SocialFeed';
 import TestimonialSection from '@/components/landing/TestimonialSection';
 import PricingSection from '@/components/landing/PricingSection';
+import RoadmapDiscovery from '@/components/landing/RoadmapDiscovery';
+import AuditEcosystemCarousel from '@/components/landing/AuditEcosystemCarousel';
 import EulerLogoCanvas from '@/components/EulerLogoCanvas';
 import { ExploreRoadmap } from '@/lib/api';
 import VerifiedBadge from '@/components/VerifiedBadge';
@@ -179,92 +181,11 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        {/* Featured Roadmaps Section */}
-        {featuredRoadmaps.length > 0 && (
-          <section className="py-12 md:py-16 px-6 bg-sidebar/10 border-t border-border/30">
-            <div className="max-w-4xl mx-auto">
-              <div className="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-6">
-                <div className="max-w-2xl">
-                  <h2 className="text-[10px] md:text-[11px] font-bold text-accent tracking-[0.2em] uppercase mb-4 manrope-body">Discovery</h2>
-                  <h3 className="text-2xl md:text-3xl font-bold text-text-heading leading-tight font-inter">
-                    Explore community roadmaps
-                  </h3>
-                </div>
-                <Link 
-                  href="/explore" 
-                  className="inline-flex items-center gap-2 text-accent font-bold text-[14px] hover:underline underline-offset-4 group"
-                >
-                  View all roadmaps <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-                </Link>
-              </div>
-
-              <div className="space-y-1">
-                {featuredRoadmaps.map((roadmap) => (
-                  <Link 
-                    key={roadmap.id} 
-                    href={`/roadmap/${roadmap.slug}`}
-                    className="group flex items-center justify-between py-3 border-b border-border/40 hover:border-accent transition-colors"
-                  >
-                    <div className="flex items-center gap-3 min-w-0">
-                      <span className="text-[15px] font-bold text-text-heading group-hover:text-accent transition-colors truncate">
-                        {roadmap.title}
-                      </span>
-                      {roadmap.username === 'eulerfold' && <VerifiedBadge size={16} className="shrink-0" />}
-                      <span className="hidden sm:inline-block text-[10px] font-bold text-text-muted bg-sidebar px-2 py-0.5 rounded uppercase tracking-wider inconsolata-ui opacity-70">
-                        {getCategory(roadmap.subject || '')}
-                      </span>
-                    </div>
-                    <div className="flex items-center gap-4 shrink-0">
-                      <span className="hidden md:inline-block text-[11px] font-bold text-text-muted inconsolata-ui uppercase tracking-tight">
-                        by @{roadmap.username || roadmap.author}
-                      </span>
-                      <ArrowRight className="w-4 h-4 text-accent opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
+        <RoadmapDiscovery roadmaps={featuredRoadmaps} />
 
         <TestimonialSection />
 
-        {/* Features Section with Illustration Background */}
-        <section className="relative py-16 md:py-24 px-4 md:px-6">
-          <div className="lg:max-w-[60%] mx-auto relative rounded-[32px] md:rounded-[40px] overflow-hidden border border-border bg-sidebar/50 min-h-[480px] md:min-h-[520px] flex items-center shadow-2xl">
-    {/* Background Image */}
-    <div className="absolute inset-0 z-0">
-      <img 
-        src="https://images.openai.com/static-rsc-4/x5LW12uiAPJaD8XEiZqvoIbyXHN1RY4Ty_wu9xNZLgKYmC5Qe3BYUq14MLAdFDs5A7LRds8W-_OtsSALtQ-24Y6qZph1ps7MZ1J8pC_navnG0_1LvfHSZcvMGCU1VtnJu1xtZGou-H0AAV_PZysEBBmtHHyZ6zUXWPFFf-G8lT3n90vdJ6d88SVV1hqhTQqK?purpose=fullsize" 
-        alt="" 
-        className="w-full h-full object-cover opacity-60 dark:opacity-40"
-      />
-      <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-transparent" />
-    </div>
-
-    <div className="relative z-10 px-6 md:px-16 py-12 md:py-0 max-w-2xl">
-      <h2 className="text-[10px] md:text-[11px] font-bold text-accent tracking-[0.2em] uppercase mb-6 manrope-body">Retention based learning Architecture</h2>
-      <h3 className="text-2xl md:text-4xl font-bold text-text-heading mb-6 leading-tight font-inter">
-        Craft your path with <br className="hidden md:block" />mathematical precision.
-      </h3>
-
-              <p className="text-text-muted text-lg manrope-body font-medium leading-relaxed mb-10">
-                Traditional education is linear. EulerFold is multi-dimensional. We map your current knowledge against your goals to find the most efficient route to mastery.
-              </p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 border-t border-border/50 pt-10">
-                <div className="space-y-1">
-                  <h4 className="font-bold text-text-heading text-[15px]">Atomic Units</h4>
-                  <p className="text-sm text-text-muted manrope-body leading-relaxed">Complex topics broken down into verifiable building blocks.</p>
-                </div>
-                <div className="space-y-1">
-                  <h4 className="font-bold text-text-heading text-[15px]">Audits</h4>
-                  <p className="text-sm text-text-muted manrope-body leading-relaxed">Verification of your understanding by the Audit Senate.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+        <AuditEcosystemCarousel />
 
         {/* Mission Statement */}
         <section className="py-24 md:py-40 px-6 relative overflow-hidden border-t border-border/30 bg-sidebar/10">

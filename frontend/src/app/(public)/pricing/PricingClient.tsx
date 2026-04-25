@@ -99,8 +99,11 @@ export default function PricingClient() {
 
                     <div className="space-y-2 mb-8 flex-1 text-[11px] text-text-primary font-medium">
                         <div className="flex items-center gap-2.5">
-                            <span className="text-accent">✓</span> 5 Premium roadmaps
+                            <span className="text-accent">✓</span> 5 Premium Credits
                         </div>
+                        <p className="text-[10px] text-text-muted ml-6 font-bold tracking-tight mb-3 italic">
+                            (1 Credit = 1 Premium AI Roadmap)
+                        </p>
                         <div className="flex items-center gap-2.5">
                             <span className="text-accent">✓</span> Full-length study paths
                         </div>
