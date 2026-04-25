@@ -54,6 +54,55 @@ const testimonials = [
     color: "bg-pink-500/10 text-pink-600",
     tag: "PhD Student",
     layout: "quote-tag"
+  },
+  {
+    quote: "The AI-generated practice questions are surprisingly good. They actually test your understanding instead of just rote memorization.",
+    author: "Liam S.",
+    role: "Data Scientist",
+    initials: "LS",
+    color: "bg-indigo-500/10 text-indigo-600",
+    layout: "author-top"
+  },
+  {
+    quote: "EulerFold's integration with ArXiv is a game-changer. I can go from a general topic to a specific foundational paper in minutes.",
+    author: "Dr. Elena V.",
+    role: "AI Researcher",
+    initials: "EV",
+    color: "bg-emerald-500/10 text-emerald-600",
+    layout: "standard"
+  },
+  {
+    quote: "I love the 'Auditor Senate' concept. It's much more motivating to have my work 'evaluated' than just checking a box.",
+    author: "Marcus T.",
+    role: "Backend Developer",
+    initials: "MT",
+    color: "bg-amber-500/10 text-amber-600",
+    layout: "quote-bottom"
+  },
+  {
+    quote: "The Learning Directory is so well-curated. It's like having a senior engineer pointing you to the best resources.",
+    author: "Sofia G.",
+    role: "UX Designer",
+    initials: "SG",
+    color: "bg-rose-500/10 text-rose-600",
+    layout: "standard"
+  },
+  {
+    quote: "I used the deep learning roadmap to prepare for my internship. The path was logical and the resources were top-notch.",
+    author: "Arjun K.",
+    role: "CS Undergrad",
+    initials: "AK",
+    color: "bg-cyan-500/10 text-cyan-600",
+    layout: "quote-tag",
+    tag: "Machine Learning"
+  },
+  {
+    quote: "The UI is beautiful and distraction-free. It makes long study sessions much more pleasant.",
+    author: "Isabella N.",
+    role: "Self-learner",
+    initials: "IN",
+    color: "bg-violet-500/10 text-violet-600",
+    layout: "standard"
   }
 ];
 
@@ -64,9 +113,13 @@ const QuoteIcon = ({ className = "" }: { className?: string }) => (
 );
 
 export default function TestimonialSection() {
-  const column1 = [testimonials[0], testimonials[3], testimonials[0], testimonials[3]];
-  const column2 = [testimonials[1], testimonials[4], testimonials[1], testimonials[4]];
-  const column3 = [testimonials[2], testimonials[5], testimonials[2], testimonials[5]];
+  const col1Items = [testimonials[0], testimonials[3], testimonials[6], testimonials[9]];
+  const col2Items = [testimonials[1], testimonials[4], testimonials[7], testimonials[10]];
+  const col3Items = [testimonials[2], testimonials[5], testimonials[8], testimonials[11]];
+
+  const column1 = [...col1Items, ...col1Items];
+  const column2 = [...col2Items, ...col2Items];
+  const column3 = [...col3Items, ...col3Items];
 
   return (
     <section className="py-24 px-6 bg-background overflow-hidden border-t border-border/30">
@@ -108,44 +161,50 @@ export default function TestimonialSection() {
         </div>
       </div>
 
-      <div className="lg:max-w-[60%] mx-auto relative h-[600px] overflow-hidden">
+      <div className="lg:max-w-[80%] mx-auto relative h-[600px] overflow-hidden">
         {/* Gradient overlays to fade out top and bottom */}
         <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none" />
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-10 pointer-events-none" />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 h-full">
           {/* Column 1 */}
-          <motion.div 
-            animate={{ y: [0, -1000] }}
-            transition={{ duration: 40, repeat: Infinity, ease: "linear" }}
-            className="flex flex-col gap-4"
-          >
-            {column1.map((t, idx) => (
-              <TestimonialCard key={idx} testimonial={t} />
-            ))}
-          </motion.div>
+          <div className="relative h-full overflow-hidden">
+            <motion.div 
+              animate={{ y: ["0%", "-50%"] }}
+              transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+              className="flex flex-col gap-4 absolute top-0 left-0 w-full"
+            >
+              {column1.map((t, idx) => (
+                <TestimonialCard key={idx} testimonial={t} />
+              ))}
+            </motion.div>
+          </div>
 
           {/* Column 2 */}
-          <motion.div 
-            animate={{ y: [-1000, 0] }}
-            transition={{ duration: 50, repeat: Infinity, ease: "linear" }}
-            className="flex flex-col gap-4 hidden md:flex"
-          >
-            {column2.map((t, idx) => (
-              <TestimonialCard key={idx} testimonial={t} />
-            ))}
-          </motion.div>
+          <div className="relative h-full overflow-hidden hidden md:block">
+            <motion.div 
+              animate={{ y: ["-50%", "0%"] }}
+              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+              className="flex flex-col gap-4 absolute top-0 left-0 w-full"
+            >
+              {column2.map((t, idx) => (
+                <TestimonialCard key={idx} testimonial={t} />
+              ))}
+            </motion.div>
+          </div>
 
           {/* Column 3 */}
-          <motion.div 
-            animate={{ y: [0, -1000] }}
-            transition={{ duration: 45, repeat: Infinity, ease: "linear" }}
-            className="flex flex-col gap-4 hidden lg:flex"
-          >
-            {column3.map((t, idx) => (
-              <TestimonialCard key={idx} testimonial={t} />
-            ))}
-          </motion.div>
+          <div className="relative h-full overflow-hidden hidden lg:block">
+            <motion.div 
+              animate={{ y: ["0%", "-50%"] }}
+              transition={{ duration: 28, repeat: Infinity, ease: "linear" }}
+              className="flex flex-col gap-4 absolute top-0 left-0 w-full"
+            >
+              {column3.map((t, idx) => (
+                <TestimonialCard key={idx} testimonial={t} />
+              ))}
+            </motion.div>
+          </div>
         </div>
       </div>
 
