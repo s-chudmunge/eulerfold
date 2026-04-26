@@ -60,8 +60,8 @@ html {
   :root {
     --background: #0f1717;
     --surface: #1a2424;
-    --text-primary: #9ca3af;
-    --text-secondary: #6b7280;
+    --text-primary: #d1d5db;
+    --text-secondary: #9ca3af;
     --border: #243333;
 
     /* Standard Font Weights for Dark Mode */
@@ -98,7 +98,6 @@ body {
 /* Global utility classes used across app pages */
 .manrope-body { 
   font-family: var(--font-sans), sans-serif; 
-  font-size: 0.875rem; /* 14px */
   line-height: 1.6; 
   font-weight: var(--font-weight-normal);
 }

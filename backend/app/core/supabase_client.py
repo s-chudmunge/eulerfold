@@ -3,7 +3,8 @@ Supabase client initialization and configuration.
 """
 import logging
 from typing import Optional
-from supabase import create_client, Client, ClientOptions
+from supabase import create_client, Client
+from supabase.lib.client_options import SyncClientOptions as ClientOptions
 from .config import settings
 
 logger = logging.getLogger(__name__)

@@ -235,7 +235,7 @@ export default function ResearchDecodedClientShell({
             hidden md:flex absolute top-1/2 -translate-y-1/2 z-[130]
             w-5 h-10 bg-sidebar border border-border border-l-0 rounded-r-lg
             items-center justify-center hover:bg-background transition-all duration-300 group shadow-sm
-            ${isSidebarCollapsed ? 'left-0' : 'left-[260px]'}
+            ${isSidebarCollapsed ? 'left-0' : 'left-[320px]'}
           `}
           title={isSidebarCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
         >
@@ -251,7 +251,7 @@ export default function ResearchDecodedClientShell({
           className={`
             ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
             manrope-body bg-sidebar border-r border-border transition-all duration-300 ease-in-out
-            ${isSidebarCollapsed ? 'md:w-0 md:opacity-0 md:-translate-x-4' : 'md:w-[260px] md:opacity-100 md:translate-x-0'}
+            ${isSidebarCollapsed ? 'md:w-0 md:opacity-0 md:-translate-x-4' : 'md:w-[320px] md:opacity-100 md:translate-x-0'}
             flex flex-col h-full overflow-y-auto no-scrollbar fixed md:relative inset-y-0 left-0 z-[120] shrink-0
           `}
         >
@@ -275,7 +275,7 @@ export default function ResearchDecodedClientShell({
                 <div key={nav.id} className="mb-0.5">
                   <button 
                     onClick={() => toggleSection(nav.id)}
-                    className={`w-full flex items-center px-3 py-2 text-[12px] font-bold group transition-all text-left rounded-lg ${
+                    className={`w-full flex items-center px-4 py-3 text-[14px] font-bold group transition-all text-left rounded-xl ${
                       isExpanded ? 'text-text-heading bg-background/30' : 'text-text-muted hover:text-text-primary hover:bg-background/50'
                     }`}
                   >
@@ -286,7 +286,7 @@ export default function ResearchDecodedClientShell({
                   </button>
                   
                   {isExpanded && (
-                    <div className="mt-0.5 space-y-0.5 ml-1 animate-in fade-in slide-in-from-left-1 duration-200">
+                    <div className="mt-1 space-y-1 ml-1 animate-in fade-in slide-in-from-left-1 duration-200">
                       {nav.sections.map((section: any, idx: number) => {
                         const active = pathname?.includes(section.slug);
                         return (
@@ -295,7 +295,7 @@ export default function ResearchDecodedClientShell({
                             href={`/research-decoded/${section.slug}?${searchParams.toString()}`}
                             onClick={() => setIsSidebarOpen(false)}
                             style={active ? { background: 'var(--active-bg)' } : {}}
-                            className={`block py-1.5 px-4 text-[13px] rounded-lg transition-all ${
+                            className={`block py-2.5 px-5 text-[16px] rounded-xl transition-all ${
                               active 
                                 ? 'text-[var(--active-text)] font-bold shadow-sm border border-border/50' 
                                 : 'text-text-muted font-medium hover:text-text-primary hover:bg-background/50'
@@ -318,7 +318,7 @@ export default function ResearchDecodedClientShell({
           </nav>
         </aside>
 
-        <main ref={scrollContainerRef} className="flex-1 min-w-0 h-full overflow-y-auto no-scrollbar bg-background">
+        <main ref={scrollContainerRef} className="flex-1 min-w-0 h-full overflow-y-auto no-scrollbar bg-background transition-all duration-300">
           {children}
         </main>
       </div>
