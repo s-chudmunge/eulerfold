@@ -156,7 +156,7 @@ export default function ProfileClient({ profile }: Props) {
         <div className="min-h-screen flex flex-col bg-background text-text-primary selection:bg-teal-500/30 selection:text-text-heading">
             <PublicHeader />
 
-            <div className="flex-1">
+            <div className="flex-1 pt-6 md:pt-12">
                 {/* Profile Header (Tabs Area) - GitHub style */}
                 <div 
                     className="border-b border-border bg-sidebar/30 sticky top-[56px] z-30 hidden md:block backdrop-blur-md"
@@ -201,7 +201,7 @@ export default function ProfileClient({ profile }: Props) {
                             </div>
                             </div>
 
-                            <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-10 flex flex-col md:flex-row gap-8 py-8">
+                            <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-10 flex flex-col md:flex-row gap-8 py-8 md:py-12">
                             {/* Sidebar */}
                             <aside className="w-full md:w-[260px] shrink-0 flex flex-col">
                             {/* Avatar/Name Group */}

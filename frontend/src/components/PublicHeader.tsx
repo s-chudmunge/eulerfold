@@ -154,10 +154,22 @@ const ARTICLES_DATA = {
   ],
   featured: [
     { title: "Transformer Architecture", slug: "transformer" },
+    { title: "Self-Attention Mechanism", slug: "self-attention-mechanism" },
+    { title: "Mixture of Experts (MoE)", slug: "mixture-of-experts" },
+    { title: "RLHF (Alignment)", slug: "rlhf" },
+    { title: "Model Quantization", slug: "quantization" },
+    { title: "Contrastive Learning", slug: "contrastive-learning" },
+    { title: "Vector Embeddings", slug: "embeddings" },
+    { title: "Vanishing Gradient", slug: "vanishing-gradient" },
     { title: "Backpropagation", slug: "backpropagation" },
     { title: "Double Descent", slug: "double-descent" },
-    { title: "Gradient Descent", slug: "gradient-descent" },
-    { title: "Overfitting", slug: "overfitting" }
+    { title: "Latent Space", slug: "latent-space" },
+    { title: "Regularization", slug: "regularization" },
+    { title: "Softmax Function", slug: "softmax" },
+    { title: "Tokens & Tokenization", slug: "tokens" },
+    { title: "Positional Encoding", slug: "positional-encoding" },
+    { title: "Overfitting", slug: "overfitting" },
+    { title: "Gradient Descent", slug: "gradient-descent" }
   ]
 };
 
@@ -427,17 +439,17 @@ export default function PublicHeader() {
                            </div>
                         </div>
                         <div className="p-6 flex-1 bg-header">
-                          <span className="text-[10px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-4 opacity-50">Latest Breakdowns</span>
-                          <div className="space-y-2.5">
+                          <span className="text-[10px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-4 opacity-50">Technical Glossary</span>
+                          <div className="grid grid-cols-2 gap-x-8 gap-y-2.5">
                             {ARTICLES_DATA.featured.map(article => (
                               <Link key={article.slug} href={`/articles/${article.slug}`} className="block group/p">
                                 <span className="text-[12px] font-semibold text-text-heading group-hover/p:text-accent transition-colors block">{article.title}</span>
                               </Link>
                             ))}
-                            <Link href="/articles" className="pt-3 border-t border-border/60 flex items-center gap-2 text-[11px] font-bold text-accent hover:gap-2.5 transition-all">
-                              Access Technical Glossary <ArrowRight className="w-3.5 h-3.5" />
-                            </Link>
                           </div>
+                          <Link href="/articles" className="mt-6 pt-3 border-t border-border/60 flex items-center gap-2 text-[11px] font-bold text-accent hover:gap-2.5 transition-all">
+                            Browse All Breakdowns <ArrowRight className="w-3.5 h-3.5" />
+                          </Link>
                         </div>
                     </div>
                   )}

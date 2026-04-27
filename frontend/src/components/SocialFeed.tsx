@@ -57,10 +57,10 @@ export default function SocialFeed() {
         });
       }
 
-      // 2. Instagram & X placeholders (clean and community-focused)
+      // 2. Instagram & X placeholders (reflecting current Flash Sale)
       combinedPosts.push(
-        { id: "ig-1", platform: "Instagram", content: "Visualizing the beauty of mathematical structures in modern AI.", date: "Community", link: platformLinks.Instagram },
-        { id: "tw-1", platform: "X", content: "Updates on the latest research and engineering breakthroughs at EulerFold.", date: "Community", link: platformLinks.X }
+        { id: "ig-1", platform: "Instagram", content: "FLASH SALE IS LIVE! ⚡️ 50% OFF on all EulerFold credits. Valid today until 9 PM IST. Don't miss out on your learning journey.", date: "Live Now", link: platformLinks.Instagram },
+        { id: "tw-1", platform: "X", content: "Flash Sale Alert: 50% discount on all credits from 2 PM to 9 PM IST today! Build your premium roadmaps at half the cost. 🚀", date: "Live Now", link: platformLinks.X }
       );
 
       setPosts(combinedPosts);

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Metadata } from 'next';
 import PricingClient from './PricingClient';
+import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
   title: 'Pricing & Credits',
@@ -45,16 +46,17 @@ export default function PricingPage() {
   };
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-      <main className="flex-1 min-w-0 h-full overflow-y-auto bg-background scroll-smooth">
+      <main className="flex-grow min-w-0 bg-background scroll-smooth">
         <div className="max-w-[700px] mx-auto px-6 py-10 md:py-16">
           <PricingClient />
         </div>
       </main>
-    </>
+      <Footer />
+    </div>
   );
 }
