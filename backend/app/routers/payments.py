@@ -5,6 +5,7 @@ import razorpay
 import hmac
 import hashlib
 import json
+from datetime import datetime, timezone, timedelta
 
 from app.core.config import settings
 from app.core.auth import get_current_user
@@ -23,6 +24,26 @@ razorpay_client = None
 if settings.RAZORPAY_KEY_ID and settings.RAZORPAY_KEY_SECRET:
     razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
 
+def get_current_price():
+    """
+    Returns (price_in_paise, has_discount)
+    Normal price: ₹299 (29900 paise)
+    Special discount: 50% off on April 28, 2026, from 2pm to 9pm IST.
+    """
+    # IST is UTC+5:30
+    ist_offset = timedelta(hours=5, minutes=30)
+    now_ist = datetime.now(timezone.utc) + ist_offset
+    
+    # Target date: April 28, 2026
+    is_today = now_ist.year == 2026 and now_ist.month == 4 and now_ist.day == 28
+    is_within_time = 14 <= now_ist.hour < 21  # 2pm to 9pm (exclusive of 9pm)
+    
+    if is_today and is_within_time:
+        # ₹299 * 0.5 = ₹149.5 -> Rounded to ₹149
+        return 14900, True
+    
+    return 29900, False
+
 class CheckoutRequest(BaseModel):
     currency: str = "INR"
 
@@ -38,10 +59,11 @@ async def create_checkout(req: CheckoutRequest, current_user: User = Depends(get
     if not razorpay_client:
         raise HTTPException(status_code=500, detail="Razorpay not configured")
     
+    price_paise, _ = get_current_price()
+    
     try:
-        # ₹299 = 29900 paise
         order_data = {
-            "amount": 29900,
+            "amount": price_paise,
             "currency": "INR",
             "receipt": f"receipt_{user_email[:20]}",
             "notes": {
@@ -60,7 +82,7 @@ async def create_checkout(req: CheckoutRequest, current_user: User = Depends(get
         logger.error(f"Razorpay order creation failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
-async def process_payment_success(email: str, payment_id: str, order_id: str = None, signature: str = None, amount: int = 29900, currency: str = "INR"):
+async def process_payment_success(email: str, payment_id: str, order_id: str = None, signature: str = None, amount: int = None, currency: str = "INR"):
     """
     Handles successful payment: 
     1. Check for duplicate payment_id
@@ -86,6 +108,9 @@ async def process_payment_success(email: str, payment_id: str, order_id: str = N
     display_name = profile_data.get("display_name")
     new_credits = current_credits + 5
     
+    if amount is None:
+        amount, _ = get_current_price()
+
     # 3. Update credits and record transaction
     try:
         # Update Profile (Add Credits and set is_pro=True)
@@ -168,7 +193,7 @@ async def razorpay_webhook(request: Request, x_razorpay_signature: str = Header(
         email = payload.get("notes", {}).get("email")
         payment_id = payload.get("id")
         order_id = payload.get("order_id")
-        amount = payload.get("amount", 29900)
+        amount = payload.get("amount")
         currency = payload.get("currency", "INR")
         
         if not email:
@@ -196,4 +221,3 @@ async def get_transactions(current_user: User = Depends(get_current_user)):
         .execute()
     
     return res.data
-

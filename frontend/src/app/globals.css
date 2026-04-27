@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "katex/dist/katex.min.css";
 
 @theme {
   --color-primary: var(--primary);
@@ -92,7 +93,7 @@ body {
   color: var(--text-primary);
   font-family: var(--font-inter), sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
-  font-size: 0.875rem; /* Minimum body font-size: 14px */
+  font-size: 1.125rem; /* Base body font-size: 18px */
 }
 
 /* Global utility classes used across app pages */
@@ -100,6 +101,7 @@ body {
   font-family: var(--font-sans), sans-serif; 
   line-height: 1.6; 
   font-weight: var(--font-weight-normal);
+  font-size: 1.2rem; /* ~19px */
 }
 
 .inconsolata-ui { 
@@ -111,8 +113,8 @@ body {
 .inconsolata-ui.uppercase.tracking-widest,
 .inconsolata-ui.uppercase.tracking-\[0\.2em\],
 .inconsolata-ui.uppercase.tracking-\[0\.08em\] {
-  font-size: 0.7rem !important; /* Minimum label font-size: 11px */
-  letter-spacing: 0.08em !important;
+  font-size: 0.9rem !important; /* Increased label font-size: ~14.5px */
+  letter-spacing: 0.12em !important;
   color: var(--text-label) !important;
 }
 
@@ -127,11 +129,11 @@ body {
 
 .prose-eulerfold h3 {
   font-family: var(--font-mono), monospace;
-  font-size: 1.125rem; /* 18px */
+  font-size: 1.375rem; /* 22px */
   font-weight: 700;
   color: var(--text-heading);
-  margin-top: 2rem;
-  margin-bottom: 1rem;
+  margin-top: 3rem;
+  margin-bottom: 1.5rem;
   letter-spacing: -0.02em;
   line-height: 1.3;
 }
@@ -170,6 +172,32 @@ body {
   .prose-eulerfold .katex {
     font-size: 1em;
   }
+}
+
+.d2-diagram svg {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  display: block;
+  margin: 0;
+}
+
+.d2-container {
+  background-color: var(--callout-bg);
+  border: 1px solid var(--callout-border);
+  border-radius: 1rem;
+  padding: 0;
+  margin: 3rem 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.dark .d2-diagram svg {
+  filter: invert(0.9) hue-rotate(180deg);
+  opacity: 0.9;
 }
 
 @keyframes shimmer {

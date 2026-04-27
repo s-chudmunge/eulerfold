@@ -35,6 +35,7 @@ export default function SitemapPage() {
         { name: "Explore Library", href: "/explore", icon: Map },
         { name: "Learning Directory", href: "/learn", icon: BookOpen },
         { name: "Research Decoded", href: "/research-decoded", icon: FileText },
+        { name: "Articles & Breakdowns", href: "/articles", icon: FileText },
         { name: "Archive & Exams", href: "/archive", icon: History },
         { name: "Pricing & Credits", href: "/pricing", icon: CreditCard },
         { name: "Leaderboard", href: "/leaderboard", icon: Shield },

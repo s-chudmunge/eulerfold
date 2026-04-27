@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState } from 'react';
-import { Share2, Copy, Twitter, Linkedin, Check } from 'lucide-react';
+import { Share2, Copy, Linkedin, Check } from 'lucide-react';
+import { FaXTwitter } from 'react-icons/fa6';
 
 interface ShareMenuProps {
   title: string;
@@ -75,8 +76,8 @@ export default function ShareMenu({ title, text, url, triggerClassName, showIcon
                 className="w-full flex items-center gap-3 px-3 py-2 text-[12px] font-bold text-text-primary hover:bg-callout-bg transition-colors text-left inconsolata-ui uppercase tracking-wider"
                 onClick={() => setIsOpen(false)}
               >
-                <Twitter className="w-3.5 h-3.5" />
-                X / Twitter
+                <FaXTwitter className="w-3.5 h-3.5" />
+                X
               </a>
 
               <a 

@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next';
 import { supabase } from '@/lib/supabase/client';
 import { papers } from './research-decoded/generatedData';
 import { archiveData } from './(public)/archive/generatedArchiveData';
+import { articles } from './articles/generatedArticles';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.eulerfold.com';
@@ -13,6 +14,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/roadmap',
     '/learn',
     '/research-decoded',
+    '/articles',
     '/leaderboard',
     '/help',
     '/privacy',
@@ -34,7 +36,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.9,
   }));
 
-  // 3. Archive Dynamic Routes (Exams and Papers)
+  // 3. Articles Dynamic Routes (from generatedArticles.ts)
+  const articleRoutes = Object.keys(articles).map((slug) => ({
+    url: `${baseUrl}/articles/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: 'weekly' as const,
+    priority: 0.9,
+  }));
+
+  // 4. Archive Dynamic Routes (Exams and Papers)
   const archiveRoutes: any[] = [];
   archiveData.forEach((category) => {
     // Exam Category Page
@@ -56,7 +66,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   });
 
-  // 4. Roadmap Dynamic Routes (from Supabase)
+  // 5. Roadmap Dynamic Routes (from Supabase)
   // Fetching public roadmaps from explore view or directly
   let roadmapRoutes: any[] = [];
   try {
@@ -78,7 +88,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     console.error('Sitemap: Failed to fetch roadmaps', e);
   }
 
-  // 5. User Profile Dynamic Routes (from Supabase)
+  // 6. User Profile Dynamic Routes (from Supabase)
   let profileRoutes: any[] = [];
   try {
     const { data: profiles } = await supabase
@@ -102,6 +112,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   return [
     ...staticRoutes,
     ...researchDecodedRoutes,
+    ...articleRoutes,
     ...archiveRoutes,
     ...roadmapRoutes,
     ...profileRoutes,

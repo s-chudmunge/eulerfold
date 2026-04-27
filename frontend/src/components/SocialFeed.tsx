@@ -1,19 +1,20 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Youtube, Instagram, Twitter, ExternalLink, RefreshCcw } from "lucide-react";
+import { Youtube, Instagram, ExternalLink, RefreshCcw } from "lucide-react";
+import { FaXTwitter } from "react-icons/fa6";
 import Link from "next/link";
 
 const platformIcons = {
   YouTube: Youtube,
   Instagram: Instagram,
-  Twitter: Twitter,
+  X: FaXTwitter,
 };
 
 const platformLinks = {
   YouTube: "https://www.youtube.com/@eulerfold",
   Instagram: "https://www.instagram.com/eulerfold",
-  Twitter: "https://twitter.com/eulerfold",
+  X: "https://x.com/eulerfold",
 };
 
 // YouTube Channel ID for @eulerfold (would normally be fetched or hardcoded)
@@ -56,10 +57,10 @@ export default function SocialFeed() {
         });
       }
 
-      // 2. Instagram & Twitter placeholders (clean and community-focused)
+      // 2. Instagram & X placeholders (clean and community-focused)
       combinedPosts.push(
         { id: "ig-1", platform: "Instagram", content: "Visualizing the beauty of mathematical structures in modern AI.", date: "Community", link: platformLinks.Instagram },
-        { id: "tw-1", platform: "Twitter", content: "Updates on the latest research and engineering breakthroughs at EulerFold.", date: "Community", link: platformLinks.Twitter }
+        { id: "tw-1", platform: "X", content: "Updates on the latest research and engineering breakthroughs at EulerFold.", date: "Community", link: platformLinks.X }
       );
 
       setPosts(combinedPosts);
@@ -122,22 +123,22 @@ export default function SocialFeed() {
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2 text-accent">
                       <div className="p-1 rounded-md bg-accent/10">
-                        <Icon className="w-3 h-3" />
+                        <Icon className="w-4 h-4" />
                       </div>
-                      <span className="text-[9px] font-bold tracking-widest uppercase manrope-body">
+                      <span className="text-[12px] font-bold tracking-widest uppercase manrope-body">
                         {post.platform}
                       </span>
                     </div>
-                    <span className="text-[8px] text-text-muted font-bold uppercase tracking-wider">{post.date}</span>
+                    <span className="text-[11px] text-text-muted font-bold uppercase tracking-wider">{post.date}</span>
                   </div>
 
-                  <p className="text-text-primary text-[12px] leading-snug manrope-body font-medium">
+                  <p className="text-text-primary text-[14px] leading-snug manrope-body font-medium">
                     {post.content}
                   </p>
                 </div>
 
-                <div className="mt-3 flex items-center gap-1.5 text-[9px] font-bold text-accent opacity-0 group-hover:opacity-100 transition-opacity tracking-widest uppercase">
-                  View Post <ExternalLink className="w-2 h-2" />
+                <div className="mt-3 flex items-center gap-1.5 text-[12px] font-bold text-accent opacity-0 group-hover:opacity-100 transition-opacity tracking-widest uppercase">
+                  View Post <ExternalLink className="w-3 h-3" />
                 </div>
                 
                 {/* Subtle Hover Glow */}

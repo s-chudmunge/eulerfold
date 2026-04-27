@@ -1,8 +1,78 @@
 import React, { useState } from 'react';
 import { MoreVertical, Reply, Trash2, Flag, Pin } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 import { formatDistanceToNow } from 'date-fns';
 import { useAuth } from '@/components/AuthProvider';
+
+const D2Diagram = ({ code }: { code: string }) => {
+  const [svg, setSvg] = React.useState<string>('');
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(false);
+
+  React.useEffect(() => {
+    let isMounted = true;
+    setLoading(true);
+    setError(false);
+    
+    fetch('https://kroki.io/d2/svg', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+      body: code,
+    })
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch SVG');
+        return res.text();
+      })
+      .then(data => {
+        if (isMounted) {
+          setSvg(data);
+          setLoading(false);
+        }
+      })
+      .catch(err => {
+        console.error('D2 rendering error:', err);
+        if (isMounted) {
+          setError(true);
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [code]);
+
+  if (error) {
+    return (
+      <div className="my-4 p-3 bg-callout-bg border border-error/20 rounded-lg">
+        <pre className="text-[10px] text-text-muted overflow-auto">
+          <code>{code}</code>
+        </pre>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="my-4 flex justify-center items-center h-[150px] bg-callout-bg rounded-lg animate-pulse border border-border">
+        <div className="text-text-muted text-[10px] font-medium inconsolata-ui tracking-widest uppercase">Generating...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="my-6 d2-diagram bg-callout-bg border border-callout-border rounded-xl overflow-hidden">
+      <div 
+        className="w-full"
+        dangerouslySetInnerHTML={{ __html: svg }}
+      />
+    </div>
+  );
+};
 
 export interface DiscussionComment {
   id: string;
@@ -117,7 +187,22 @@ export const CommentCard: React.FC<CommentCardProps> = ({
           {comment.is_deleted ? (
             <p className="italic text-text-muted opacity-60">This comment was deleted</p>
           ) : (
-            <ReactMarkdown>{comment.content || ''}</ReactMarkdown>
+            <ReactMarkdown 
+              remarkPlugins={[remarkMath]} 
+              rehypePlugins={[rehypeKatex]}
+              components={{
+                code: ({ node, className, children, ...props }: any) => {
+                  const match = /language-(\w+)/.exec(className || '');
+                  const isD2 = match && match[1] === 'd2';
+                  if (isD2) {
+                    return <D2Diagram code={String(children).replace(/\n$/, '')} />;
+                  }
+                  return <code className={className} {...props}>{children}</code>;
+                }
+              }}
+            >
+              {comment.content || ''}
+            </ReactMarkdown>
           )}
         </div>
 

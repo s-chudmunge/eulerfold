@@ -2,6 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
+import remarkMath from 'remark-math';
+import rehypeKatex from 'rehype-katex';
 import { 
     Clock, 
     Target, 
@@ -398,7 +400,12 @@ export default function ProfileClient({ profile }: Props) {
                                                 <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest inconsolata-ui opacity-40">{new Date(sub.submitted_at).toLocaleDateString()}</span>
                                             </div>
                                             <div className="manrope-body prose prose-sm max-w-none text-text-primary mb-6 leading-relaxed font-medium">
-                                                <ReactMarkdown>{sub.senate_summary || sub.evaluation}</ReactMarkdown>
+                                                <ReactMarkdown 
+                                                    remarkPlugins={[remarkMath]} 
+                                                    rehypePlugins={[rehypeKatex]}
+                                                >
+                                                    {sub.senate_summary || sub.evaluation}
+                                                </ReactMarkdown>
                                             </div>
                                             {sub.link && (
                                                 <Link href={sub.link} target="_blank" className="text-[10px] font-bold text-accent hover:opacity-80 flex items-center gap-2 uppercase tracking-[0.2em] inconsolata-ui transition-all">

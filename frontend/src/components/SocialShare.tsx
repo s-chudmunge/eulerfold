@@ -48,7 +48,7 @@ export default function SocialShare({
             color: 'bg-[#0077B5]/10 text-[#0077B5] hover:bg-[#0077B5]/20',
         },
         {
-            name: 'Twitter',
+            name: 'X',
             icon: FaXTwitter,
             href: mounted ? `https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}` : '#',
             color: 'bg-text-heading/5 text-text-heading hover:bg-text-heading/10',

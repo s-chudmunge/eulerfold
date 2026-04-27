@@ -6,7 +6,6 @@ import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
-import 'katex/dist/katex.min.css';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import { DiscussionSection } from '@/components/discussions/DiscussionSection';
@@ -44,6 +43,200 @@ interface Props {
   slug: string;
   papers: Record<string, Paper>;
 }
+
+import { articles } from '../../articles/generatedArticles';
+
+const D2Diagram = ({ code }: { code: string }) => {
+  const [svg, setSvg] = React.useState<string>('');
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState(false);
+
+  React.useEffect(() => {
+    let isMounted = true;
+    setLoading(true);
+    setError(false);
+    
+    fetch('https://kroki.io/d2/svg', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'text/plain',
+      },
+      body: code,
+    })
+      .then(res => {
+        if (!res.ok) throw new Error('Failed to fetch SVG');
+        return res.text();
+      })
+      .then(data => {
+        if (isMounted) {
+          setSvg(data);
+          setLoading(false);
+        }
+      })
+      .catch(err => {
+        console.error('D2 rendering error:', err);
+        if (isMounted) {
+          setError(true);
+          setLoading(false);
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [code]);
+
+  if (error) {
+    return (
+      <div className="my-8 p-4 bg-callout-bg border border-error/20 rounded-xl">
+        <div className="flex items-center gap-2 text-error mb-2 text-xs font-bold uppercase tracking-widest inconsolata-ui">
+          <span>⚠️ Diagram Render Error</span>
+        </div>
+        <pre className="text-[12px] text-text-muted overflow-auto p-4 bg-background/50 rounded-lg">
+          <code>{code}</code>
+        </pre>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="my-8 flex justify-center items-center h-[300px] bg-callout-bg rounded-2xl animate-pulse border border-border">
+        <div className="text-text-muted text-sm font-medium inconsolata-ui tracking-widest uppercase text-center px-6">
+          Generating Breakdown Diagram...
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="d2-container d2-diagram animate-in fade-in duration-700">
+      <div 
+        className="w-full"
+        dangerouslySetInnerHTML={{ __html: svg }}
+      />
+    </div>
+  );
+};
+
+const TermLink = ({ children, slug }: { children: React.ReactNode, slug: string }) => {
+  return (
+    <Link 
+      href={`/articles/${slug}`}
+      className="text-accent hover:underline decoration-dotted underline-offset-4 font-semibold"
+    >
+      {children}
+    </Link>
+  );
+};
+
+const MarkdownWithLinks = ({ content }: { content: string }) => {
+  // Dynamically build terms to link from the articles data
+  const termsToLink = Object.values(articles).flatMap(article => {
+    const terms = [
+      { term: article.title, slug: article.slug },
+      { term: article.slug.replace(/-/g, ' '), slug: article.slug },
+    ];
+    
+    // Add synonyms from the article data if they exist
+    if (article.synonyms && Array.isArray(article.synonyms)) {
+      article.synonyms.forEach(syn => {
+        terms.push({ term: syn, slug: article.slug });
+      });
+    }
+    
+    return terms;
+  }).sort((a, b) => b.term.length - a.term.length); // Longest terms first
+
+  const renderTextWithLinks = (text: string) => {
+    let parts: (string | React.ReactNode)[] = [text];
+
+    termsToLink.forEach(({ term, slug }) => {
+      const newParts: (string | React.ReactNode)[] = [];
+      parts.forEach(part => {
+        if (typeof part === 'string') {
+          // Case-insensitive match for the term as a whole word
+          const regex = new RegExp(`(\\b${term}\\b)`, 'gi');
+          const split = part.split(regex);
+          split.forEach((s, i) => {
+            if (s.toLowerCase() === term.toLowerCase()) {
+              newParts.push(<TermLink key={`${slug}-${i}-${s}`} slug={slug}>{s}</TermLink>);
+            } else if (s !== '') {
+              newParts.push(s);
+            }
+          });
+        } else {
+          newParts.push(part);
+        }
+      });
+      parts = newParts;
+    });
+
+    return parts;
+  };
+
+  const processChildren = (children: React.ReactNode): React.ReactNode => {
+    return React.Children.map(children, child => {
+      if (typeof child === 'string') {
+        return renderTextWithLinks(child);
+      }
+      
+      if (React.isValidElement(child)) {
+        const type = child.type as any;
+        const typeName = typeof type === 'string' ? type : type.name || type.displayName || '';
+        const props = child.props as any;
+        const className = props?.className || '';
+
+        // Strictly skip any math-related nodes or code blocks
+        if (
+          typeName === 'a' || 
+          typeName === 'Link' || 
+          typeName.includes('Link') ||
+          className.includes('katex') ||
+          className.includes('math') ||
+          typeName === 'code' ||
+          typeName === 'pre' ||
+          props?.['data-math']
+        ) {
+          return child;
+        }
+
+        if (props?.children) {
+          return React.cloneElement(child as React.ReactElement, {
+            children: processChildren(props.children)
+          } as any);
+        }
+      }
+      return child;
+    });
+  };
+
+  return (
+    <ReactMarkdown 
+      remarkPlugins={[remarkMath]} 
+      rehypePlugins={[rehypeKatex]}
+      components={{
+        // We target the paragraph and list items to process their text children
+        p: ({ children }) => {
+          return <p>{processChildren(children)}</p>;
+        },
+        li: ({ children }) => {
+          return <li>{processChildren(children)}</li>;
+        },
+        code: ({ node, className, children, ...props }: any) => {
+          const match = /language-(\w+)/.exec(className || '');
+          const isD2 = match && match[1] === 'd2';
+          if (isD2) {
+            return <D2Diagram code={String(children).replace(/\n$/, '')} />;
+          }
+          return <code className={className} {...props}>{children}</code>;
+        }
+      }}
+    >
+      {content}
+    </ReactMarkdown>
+  );
+};
 
 export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
   const { user } = useAuth();
@@ -140,7 +333,7 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
 
         {/* Paper Intro */}
         <div className="manrope-body mb-8 !text-[20px] md:!text-[24px] text-text-primary !leading-[1.85] prose-eulerfold max-w-none prose-p:!text-[20px] md:prose-p:!text-[24px] prose-p:!leading-[1.85]">
-          <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>{paper.intro}</ReactMarkdown>
+          <MarkdownWithLinks content={paper.intro} />
         </div>
 
         {/* Sections */}
@@ -167,7 +360,7 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
             )}
 
             <div className="manrope-body !text-[20px] md:!text-[24px] text-text-primary !leading-[1.85] prose-eulerfold max-w-none prose-p:!text-[20px] md:prose-p:!text-[24px] prose-p:!leading-[1.85]">
-              <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>{section.content}</ReactMarkdown>
+              <MarkdownWithLinks content={section.content} />
             </div>
           </section>
         ))}

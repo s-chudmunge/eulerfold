@@ -1,10 +1,11 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, Loader, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 import { api } from '../lib/api';
 import { supabase } from '../lib/supabase/client';
+import { getDiscountStatus, NORMAL_PRICE, DISCOUNTED_PRICE } from '@/lib/utils/pricing';
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -15,6 +16,15 @@ interface PaymentModalProps {
 export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModalProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [discountStatus, setDiscountStatus] = useState(getDiscountStatus());
+
+  useEffect(() => {
+    if (isOpen) {
+        setDiscountStatus(getDiscountStatus());
+    }
+  }, [isOpen]);
+
+  const currentPrice = discountStatus.hasDiscount ? DISCOUNTED_PRICE : NORMAL_PRICE;
 
   const loadRazorpayScript = () => {
     return new Promise((resolve) => {
@@ -108,7 +118,12 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
               <span className="inconsolata-ui text-[11px] font-bold uppercase text-text-muted tracking-wider">Add 5 Credits</span>
               <span className="inconsolata-ui text-[9px] text-text-muted opacity-60">Generate 5 Premium Roadmaps</span>
             </div>
-            <span className="inconsolata-ui text-[18px] font-bold text-accent">₹299</span>
+            <div className="flex flex-col items-end">
+                {discountStatus.hasDiscount && (
+                    <span className="inconsolata-ui text-[10px] text-text-muted line-through opacity-50">₹{NORMAL_PRICE}</span>
+                )}
+                <span className="inconsolata-ui text-[18px] font-bold text-accent">₹{currentPrice}</span>
+            </div>
           </div>
 
           {error && (
@@ -125,7 +140,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
           <button
             onClick={handleCheckout}
             disabled={loading}
-            className="w-full py-3 bg-[#111] dark:bg-[#14b8a6] !text-white rounded-none font-bold text-[11px] uppercase tracking-widest flex items-center justify-center hover:opacity-90 disabled:opacity-50 transition-opacity shadow-lg"
+            className={`w-full py-3 ${discountStatus.hasDiscount ? 'bg-orange-600' : 'bg-[#111] dark:bg-[#14b8a6]'} !text-white rounded-none font-bold text-[11px] uppercase tracking-widest flex items-center justify-center hover:opacity-90 disabled:opacity-50 transition-opacity shadow-lg`}
           >
             {loading ? <Loader className="w-4 h-4 animate-spin" /> : 'Purchase Now'}
           </button>
