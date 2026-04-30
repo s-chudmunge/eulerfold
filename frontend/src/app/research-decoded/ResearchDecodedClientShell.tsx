@@ -154,7 +154,10 @@ export default function ResearchDecodedClientShell({
     .slice(0, 10);
 
   return (
-    <div className="fixed inset-0 z-[100] flex flex-col bg-background text-text-primary selection:bg-teal-500/30 selection:text-text-heading overflow-hidden">
+    <div 
+      className="fixed inset-0 z-[100] flex flex-col bg-background text-text-primary selection:bg-teal-500/30 selection:text-text-heading overflow-hidden transition-all duration-300"
+      style={{ top: 'var(--announcement-height, 0px)' }}
+    >
       <React.Suspense fallback={null}>
         <SearchParamsHandler onParams={handleSearchParams} />
       </React.Suspense>

@@ -45,7 +45,7 @@ html {
   --bg-main: #f0f7f6;
   --bg-sidebar: #e8f2f1;
   --bg-header: #f0f7f6;
-  --text-muted: #374151;       /* Gray-700 for better contrast in light mode */
+  --text-muted: #4b5563;       /* Gray-600 for better contrast balance */
   --text-heading: #0a0a0a;     /* near pure black */
   --text-label: #1f2937;       /* Gray-800 for strong visibility */
   --callout-bg: #e5efee;

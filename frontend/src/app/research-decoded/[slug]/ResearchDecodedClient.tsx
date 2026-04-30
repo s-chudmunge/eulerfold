@@ -299,19 +299,19 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
             className="mb-8" 
           />
           
-          <h1 className="inconsolata-ui text-[32px] md:text-[44px] font-bold text-text-heading mb-10 leading-[1.15] tracking-tight group flex items-center md:-ml-12">
+          <h1 className="inconsolata-ui text-[28px] md:text-[38px] font-bold text-text-heading mb-10 leading-[1.15] tracking-tight group flex items-center md:-ml-12">
             <span className="text-accent opacity-0 group-hover:opacity-100 w-12 text-3xl transition-opacity hidden md:inline">#</span>
             {paper.title}
           </h1>
 
           <div className="manrope-body p-5 md:p-6 bg-callout-bg border-l-2 border-[var(--accent)] rounded-r-xl mb-12">
-            <p className="text-[15px] md:text-[16px] text-text-primary italic m-0 leading-relaxed font-medium">
+            <p className="text-[14px] md:text-[15px] text-text-primary italic m-0 leading-relaxed font-medium">
               {paper.citation}
             </p>
             <Link 
               href={paper.link} 
               target="_blank" 
-              className="inconsolata-ui text-accent text-[13px] font-bold hover:underline mt-3 inline-flex items-center gap-1"
+              className="inconsolata-ui text-accent text-[12px] font-bold hover:underline mt-3 inline-flex items-center gap-1"
             >
               Read Original Paper <ExternalLink className="w-3.5 h-3.5" />
             </Link>
@@ -332,14 +332,14 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
         )}
 
         {/* Paper Intro */}
-        <div className="manrope-body mb-8 !text-[20px] md:!text-[24px] text-text-primary !leading-[1.85] prose-eulerfold max-w-none prose-p:!text-[20px] md:prose-p:!text-[24px] prose-p:!leading-[1.85]">
+        <div className="manrope-body mb-8 !text-[17px] md:!text-[20px] text-text-primary !leading-[1.75] prose-eulerfold max-w-none prose-p:!text-[17px] md:prose-p:!text-[20px] prose-p:!leading-[1.75]">
           <MarkdownWithLinks content={paper.intro} />
         </div>
 
         {/* Sections */}
         {paper.sections.map((section) => (
           <section key={section.id} id={section.id} className="mt-16 md:mt-24">
-            <h2 className="inconsolata-ui text-[24px] md:text-[32px] font-bold text-text-heading mb-6 group flex items-center md:-ml-12">
+            <h2 className="inconsolata-ui text-[22px] md:text-[28px] font-bold text-text-heading mb-6 group flex items-center md:-ml-12">
               <span className="text-accent opacity-0 group-hover:opacity-100 w-12 text-2xl transition-opacity hidden md:inline">#</span>
               {section.title}
             </h2>
@@ -353,13 +353,13 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
                   className="mx-auto rounded-xl max-h-[300px] md:max-h-[400px] cursor-zoom-in" 
                   onClick={() => setSelectedImage(section.diagram.url)}
                 />
-                <p className="manrope-body !text-[15px] md:!text-[16px] text-text-muted mt-5 text-center italic font-medium">
+                <p className="manrope-body !text-[14px] md:!text-[15px] text-text-muted mt-5 text-center italic font-medium">
                   {section.diagram.caption}
                 </p>
               </div>
             )}
 
-            <div className="manrope-body !text-[20px] md:!text-[24px] text-text-primary !leading-[1.85] prose-eulerfold max-w-none prose-p:!text-[20px] md:prose-p:!text-[24px] prose-p:!leading-[1.85]">
+            <div className="manrope-body !text-[17px] md:!text-[20px] text-text-primary !leading-[1.75] prose-eulerfold max-w-none prose-p:!text-[17px] md:prose-p:!text-[20px] prose-p:!leading-[1.75]">
               <MarkdownWithLinks content={section.content} />
             </div>
           </section>
@@ -367,16 +367,16 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
 
         {/* Resources Section */}
         <div className="mt-24 pt-16 border-t border-border">
-          <h2 className="inconsolata-ui text-[24px] md:text-[32px] font-bold text-text-heading mb-10 group flex items-center md:-ml-12">
+          <h2 className="inconsolata-ui text-[22px] md:text-[28px] font-bold text-text-heading mb-10 group flex items-center md:-ml-12">
             <span className="text-accent opacity-0 group-hover:opacity-100 w-12 text-2xl transition-opacity hidden md:inline">#</span>
             Dive Deeper
           </h2>
           <ul className="manrope-body space-y-8 list-none p-0 mb-12">
             {paper.resources.map((res, idx) => (
               <li key={idx} className="border-b border-border pb-10 last:border-0 group">
-                <p className="font-bold text-text-heading m-0 text-[18px] md:text-[20px] mb-2 group-hover:text-accent transition-colors">{res.title}</p>
-                <p className="text-text-muted m-0 text-[14px] md:text-[15px] font-medium">{res.provider} • {res.type}</p>
-                <Link href={res.url} target="_blank" className="inconsolata-ui text-accent text-[15px] hover:underline mt-5 inline-flex items-center gap-2 font-bold">
+                <p className="font-bold text-text-heading m-0 text-[17px] md:text-[19px] mb-2 group-hover:text-accent transition-colors">{res.title}</p>
+                <p className="text-text-muted m-0 text-[13px] md:text-[14px] font-medium">{res.provider} • {res.type}</p>
+                <Link href={res.url} target="_blank" className="inconsolata-ui text-accent text-[14px] hover:underline mt-5 inline-flex items-center gap-2 font-bold">
                   Explore Resource <ExternalLink className="w-4 h-4" />
                 </Link>
               </li>

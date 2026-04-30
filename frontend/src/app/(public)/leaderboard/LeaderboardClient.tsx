@@ -114,8 +114,8 @@ export default function LeaderboardPage({
               onClick={() => setCategory(cat)}
               className={`inconsolata-ui px-4 py-1.5 rounded-xl text-[12px] font-bold transition-all border
                 ${category === cat 
-                  ? 'bg-accent text-white border-[var(--accent)] shadow-sm' 
-                  : 'bg-background dark:bg-[#1a1a1a] text-text-primary border-border hover:border-[var(--text-muted)]'
+                  ? 'bg-accent text-white border-accent shadow-sm' 
+                  : 'bg-sidebar text-text-muted border-border hover:border-accent/30 hover:text-text-heading'
                 }`}
             >
               {cat}
