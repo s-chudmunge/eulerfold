@@ -216,6 +216,21 @@ async def read_users_me(current_user: User = Depends(get_current_user)):
             return current_user
 
         user_data = res.data[0]
+
+        # Sync GitHub username if linked but not in profile
+        try:
+            from app.core.supabase_client import get_admin_supabase_client
+            admin_sb = get_admin_supabase_client()
+            auth_user_res = admin_sb.auth.admin.get_user_by_id(current_user.supabase_uid)
+            if auth_user_res and auth_user_res.user:
+                github_identity = next((id for id in (auth_user_res.user.identities or []) if id.provider == "github"), None)
+                if github_identity:
+                    github_username = github_identity.identity_data.get("user_name")
+                    if github_username and github_username != user_data.get("github_username"):
+                        supabase.table("profiles").update({"github_username": github_username}).eq("supabase_uid", current_user.supabase_uid).execute()
+                        user_data["github_username"] = github_username
+        except Exception as e:
+            logger.error(f"Failed to sync GitHub identity for {current_user.email}: {e}")
         
         # Fetch user skills
         uid = user_data.get("supabase_uid")

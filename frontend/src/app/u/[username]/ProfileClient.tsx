@@ -24,7 +24,8 @@ import {
     History,
     Edit2,
     Camera,
-    Loader2
+    Loader2,
+    Github
 } from 'lucide-react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase/client';
@@ -168,26 +169,29 @@ export default function ProfileClient({ profile }: Props) {
                             <div className="w-[260px] shrink-0"></div>
                             
                             <nav className="flex items-center">
-                                {tabs.map((tab) => (
-                                    <button
-                                        key={tab.id}
-                                        onClick={() => setActiveTab(tab.id)}
-                                        className={`
-                                            flex items-center gap-2 px-4 py-2 text-[12.5px] font-semibold border-b-2 transition-all relative manrope-body tracking-tight
-                                            ${activeTab === tab.id 
-                                                ? 'border-accent text-text-heading' 
-                                                : 'border-transparent text-text-muted hover:text-text-heading hover:border-border'}
-                                        `}
-                                    >
-                                        <tab.icon className={`w-3 h-3 ${activeTab === tab.id ? 'text-accent' : 'opacity-40'}`} />
-                                        <span>{tab.label}</span>
-                                        {tab.count !== undefined && (
-                                            <span className={`ml-1 text-[10.5px] opacity-40 font-medium`}>
-                                                ({tab.count})
-                                            </span>
-                                        )}
-                                    </button>
-                                ))}
+                                {tabs.map((tab) => {
+                                    const Icon = tab.icon;
+                                    return (
+                                        <button
+                                            key={tab.id}
+                                            onClick={() => setActiveTab(tab.id)}
+                                            className={`
+                                                flex items-center gap-2 px-4 py-2 text-[12.5px] font-semibold border-b-2 transition-all relative manrope-body tracking-tight
+                                                ${activeTab === tab.id 
+                                                    ? 'border-accent text-text-heading' 
+                                                    : 'border-transparent text-text-muted hover:text-text-heading hover:border-border'}
+                                            `}
+                                        >
+                                            <Icon className={`w-3 h-3 ${activeTab === tab.id ? 'text-accent' : 'opacity-40'}`} />
+                                            <span>{tab.label}</span>
+                                            {tab.count !== undefined && (
+                                                <span className={`ml-1 text-[10.5px] opacity-40 font-medium`}>
+                                                    ({tab.count})
+                                                </span>
+                                            )}
+                                        </button>
+                                    );
+                                })}
                             </nav>
                             </div>
 
@@ -269,6 +273,17 @@ export default function ProfileClient({ profile }: Props) {
                                     <span className="truncate opacity-60">{profile.email}</span>
                                 </div>
                             )}
+                            {profile.github_username && (
+                                <Link 
+                                    href={`https://github.com/${profile.github_username}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-3 text-[12px] text-text-muted hover:text-accent transition-colors"
+                                >
+                                    <Github className="w-4 h-4 opacity-30 text-accent" />
+                                    <span className="font-medium truncate">github.com/{profile.github_username}</span>
+                                </Link>
+                            )}
                             </div>
 
                             {/* Intelligence Bars - Pricing page inspiration */}
@@ -321,26 +336,28 @@ export default function ProfileClient({ profile }: Props) {
                         {activeTab === 'overview' && (
                             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
                                 {/* Top Skills Grid */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    {strongSkills.slice(0, 4).map(skill => (
-                                        <div key={skill.id} className="p-5 bg-sidebar/20 border border-border rounded-none hover:border-accent/40 transition-all group relative">
-                                            <div className="flex justify-between items-start mb-3">
-                                                <div className="flex items-center gap-2.5">
-                                                    <BookOpen className="w-4 h-4 text-accent opacity-40" />
-                                                    <h4 className="text-[14px] font-bold text-text-heading group-hover:text-accent transition-colors tracking-tight">
-                                                        {skill.name}
-                                                    </h4>
+                                {strongSkills.length > 0 && (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {strongSkills.slice(0, 4).map(skill => (
+                                            <div key={skill.id} className="p-5 bg-sidebar/20 border border-border rounded-none hover:border-accent/40 transition-all group relative">
+                                                <div className="flex justify-between items-start mb-3">
+                                                    <div className="flex items-center gap-2.5">
+                                                        <BookOpen className="w-4 h-4 text-accent opacity-40" />
+                                                        <h4 className="text-[14px] font-bold text-text-heading group-hover:text-accent transition-colors tracking-tight">
+                                                            {skill.name}
+                                                        </h4>
+                                                    </div>
+                                                    <div className="px-2 py-0.5 border border-accent/20 bg-accent/5 text-[10px] font-black text-accent tabular-nums inconsolata-ui tracking-tighter">{skill.tier}</div>
                                                 </div>
-                                                <div className="px-2 py-0.5 border border-accent/20 bg-accent/5 text-[10px] font-black text-accent tabular-nums inconsolata-ui tracking-tighter">{skill.tier}</div>
+                                                <p className="text-[11px] text-text-muted mb-6 uppercase tracking-wider font-bold opacity-60">{skill.category}</p>
+                                                <div className="flex items-center gap-6 text-[10px] font-bold text-text-muted uppercase tracking-widest inconsolata-ui">
+                                                    <span className="flex items-center gap-2"><Clock className="w-3.5 h-3.5 opacity-40" /> {Math.round(skill.time_invested)}H</span>
+                                                    <span className="flex items-center gap-2"><Target className="w-3.5 h-3.5 opacity-40" /> {skill.confidence_score.toFixed(1)}</span>
+                                                </div>
                                             </div>
-                                            <p className="text-[11px] text-text-muted mb-6 uppercase tracking-wider font-bold opacity-60">{skill.category}</p>
-                                            <div className="flex items-center gap-6 text-[10px] font-bold text-text-muted uppercase tracking-widest inconsolata-ui">
-                                                <span className="flex items-center gap-2"><Clock className="w-3.5 h-3.5 opacity-40" /> {Math.round(skill.time_invested)}H</span>
-                                                <span className="flex items-center gap-2"><Target className="w-3.5 h-3.5 opacity-40" /> {skill.confidence_score.toFixed(1)}</span>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
+                                        ))}
+                                    </div>
+                                )}
 
                                 {/* Activity Graph */}
                                 <div className="p-6 border border-border rounded-none bg-background relative overflow-hidden">

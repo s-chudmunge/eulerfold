@@ -2,6 +2,8 @@ import logging
 import os
 import httpx
 import asyncio
+import hashlib
+import json
 from datetime import datetime, timezone
 from typing import List, Optional, Dict, Any
 
@@ -20,6 +22,11 @@ from app.routers.roadmaps import _generate_unique_slug
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
+
+def _generate_plan_hash(plan: Dict[str, Any]) -> str:
+    """Generate a stable hash for a roadmap plan."""
+    plan_str = json.dumps(plan, sort_keys=True)
+    return hashlib.sha256(plan_str.encode()).hexdigest()
 
 async def ping_google_sitemap():
     # ... (rest of ping_google_sitemap)
@@ -307,7 +314,9 @@ async def clone_roadmap(id: int, current_user: User = Depends(get_current_user))
         "is_public": False, 
         "last_position": {"mIdx": 0, "tIdx": 0},
         "extension_count": 0,
-        "status": "active"
+        "status": "active",
+        "version": orig.get("version", 1),
+        "snapshot_hash": _generate_plan_hash(plan)
     }
     
     new_res = sb.table("roadmaps").insert(new_roadmap_data).execute()

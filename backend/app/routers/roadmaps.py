@@ -5,6 +5,7 @@ import re
 import uuid
 import logging
 import asyncio
+import hashlib
 from datetime import datetime, timezone, timedelta
 from typing import List, Optional, Any, Dict
 
@@ -28,13 +29,54 @@ from app.services.skills_service import extract_skills_from_roadmap, calculate_u
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
-def _update_roadmap_status_db(roadmap_id: int, status: str):
-    """Sync status to DB in background."""
+async def transition_roadmap_status(roadmap_id: int, new_status: str, user_email: str, user_uid: Optional[str] = None):
+    """
+    Centralized status transition logic. 
+    Handles database updates and side effects (Coins, Skill Extraction).
+    """
     try:
         sb = get_supabase_client()
-        sb.table("roadmaps").update({"status": status}).eq("id", roadmap_id).execute()
+        
+        # 1. Fetch current state for idempotency and side-effect checks
+        r_res = sb.table("roadmaps").select("status, title, skills_extracted, skills_extraction_error").eq("id", roadmap_id).execute()
+        if not r_res.data:
+            return
+        
+        roadmap = r_res.data[0]
+        old_status = roadmap.get("status", "active")
+        
+        if old_status == new_status:
+            return # No transition needed
+
+        # 2. Update Database
+        sb.table("roadmaps").update({
+            "status": new_status,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }).eq("id", roadmap_id).execute()
+        
+        logger.info(f"Roadmap {roadmap_id} transitioned: {old_status} -> {new_status}")
+
+        # 3. Handle Side Effects for COMPLETION
+        if new_status == "completed" and old_status == "active":
+            # A. Award Coins (50) - award_coins has its own internal idempotency check as well
+            await award_coins(
+                user_email, 
+                EulerCoins.ROADMAP_COMPLETED, 
+                f"Completed roadmap: {roadmap.get('title')}", 
+                roadmap_id=roadmap_id
+            )
+            
+            # B. Trigger Skill Extraction
+            if user_uid and (not roadmap.get("skills_extracted") or roadmap.get("skills_extraction_error")):
+                # Since we are already in an async function (possibly background), we can call it directly
+                # but to be safe and consistent with other triggers, we keep it as a clean call
+                try:
+                    await extract_skills_from_roadmap(roadmap_id, user_uid)
+                except Exception as e:
+                    logger.error(f"Skill extraction failed during transition: {e}")
+
     except Exception as e:
-        logger.error(f"Failed to update roadmap status in background: {e}")
+        logger.error(f"Failed to transition roadmap status for {roadmap_id}: {e}")
 
 def _parse_roadmap_dict(roadmap_val: Any) -> Dict[str, Any]:
     if isinstance(roadmap_val, str):
@@ -45,6 +87,11 @@ def _parse_roadmap_dict(roadmap_val: Any) -> Dict[str, Any]:
     if isinstance(roadmap_val, dict):
         return roadmap_val
     return {}
+
+def _generate_plan_hash(plan: Dict[str, Any]) -> str:
+    """Generate a stable hash for a roadmap plan."""
+    plan_str = json.dumps(plan, sort_keys=True)
+    return hashlib.sha256(plan_str.encode()).hexdigest()
 
 async def _enrich_roadmap_progress(roadmaps: List[Dict], email: str, uid: str, sb, background_tasks: Optional[BackgroundTasks] = None):
     if not email or not uid:
@@ -173,10 +220,11 @@ async def _enrich_roadmap_progress(roadmaps: List[Dict], email: str, uid: str, s
                 roadmap_status = "completed"
                 # Persist completion status to DB in background
                 if background_tasks:
-                    background_tasks.add_task(_update_roadmap_status_db, rid, "completed")
+                    background_tasks.add_task(transition_roadmap_status, rid, "completed", email, uid)
             
-            # Trigger extraction if never done OR if it previously failed (retry trigger)
-            if background_tasks and uid and (not r.get("skills_extracted") or r.get("skills_extraction_error")):
+            # Note: Skill extraction is now handled inside transition_roadmap_status if it's the first time
+            # However, if it was ALREADY completed but skills haven't been extracted, we still want this trigger:
+            elif background_tasks and uid and (not r.get("skills_extracted") or r.get("skills_extraction_error")):
                 background_tasks.add_task(extract_skills_from_roadmap, rid, uid)
             
         r["calculated_progress"] = {
@@ -495,12 +543,15 @@ Begin the JSON output immediately.
         if current_ext_count is None: current_ext_count = 0
         
         new_time_value = (roadmap.get("time_value", 0) or 0) + payload.weeks
+        current_version = roadmap.get("version", 1) or 1
         
         update_res = sb.table("roadmaps").update({
             "roadmap_plan": plan,
             "time_value": new_time_value,
             "extension_count": current_ext_count + 1,
-            "updated_at": datetime.now(timezone.utc).isoformat()
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+            "version": current_version + 1,
+            "snapshot_hash": _generate_plan_hash(plan)
         }).eq("id", roadmap_id).execute()
 
         if not update_res.data:
@@ -611,6 +662,8 @@ async def save_roadmap(
     roadmap_data["slug"] = slug
     roadmap_data["email"] = email
     roadmap_data["status"] = "active"
+    roadmap_data["version"] = 1
+    roadmap_data["snapshot_hash"] = _generate_plan_hash(plan)
     
     # Ensure all modules have IDs and Topics have UUIDs for the learning app
     plan = roadmap_data.get("roadmap_plan", {})
@@ -749,7 +802,9 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
             "model": model_to_use,
             "email": email,
             "slug": slug,
-            "status": "active"
+            "status": "active",
+            "version": 1,
+            "snapshot_hash": _generate_plan_hash(roadmap_plan)
         }
         
         response = sb.table("roadmaps").insert(db_data).execute()
@@ -900,17 +955,17 @@ async def delete_roadmap_extension(
     modules.pop()
     plan["modules"] = modules
     
-    # Decrement extension_count and update time_value (assuming each extension is 1-2 weeks, we subtract based on what was added but simple approach is decrementing count)
+    # Decrement extension_count and update time_value
     current_ext_count = roadmap.get("extension_count", 0)
     new_ext_count = max(0, (current_ext_count or 1) - 1)
-    
-    # We don't know exactly how many weeks were added last time easily, but we can subtract 1 or try to be smart.
-    # Let's just decrement count for now.
+    current_version = roadmap.get("version", 1) or 1
     
     update_res = sb.table("roadmaps").update({
         "roadmap_plan": plan,
         "extension_count": new_ext_count,
-        "updated_at": datetime.now(timezone.utc).isoformat()
+        "updated_at": datetime.now(timezone.utc).isoformat(),
+        "version": current_version + 1,
+        "snapshot_hash": _generate_plan_hash(plan)
     }).eq("id", roadmap_id).execute()
 
     if not update_res.data:
@@ -923,29 +978,25 @@ async def delete_roadmap_extension(
 async def update_roadmap_status(
     roadmap_id: int,
     payload: RoadmapStatusUpdate,
+    background_tasks: BackgroundTasks,
     current_user: User = Depends(get_current_user)
 ):
     """Update the status of a roadmap (active, completed, archived, quit)."""
     email = current_user.email
+    uid = current_user.supabase_uid
     sb = get_supabase_client()
     
-    # Verify ownership
+    # 1. Verify ownership (Synchronous check before background task)
     r_res = sb.table("roadmaps").select("email").eq("id", roadmap_id).execute()
     if not r_res.data:
         raise HTTPException(status_code=404, detail="Roadmap not found")
     
     if r_res.data[0].get("email", "").lower() != email.lower():
         raise HTTPException(status_code=403, detail="Not authorized to update this roadmap status")
+
+    # 2. Trigger transition with side effects
+    background_tasks.add_task(transition_roadmap_status, roadmap_id, payload.status, email, uid)
     
-    # Update status
-    update_res = sb.table("roadmaps").update({
-        "status": payload.status,
-        "updated_at": datetime.now(timezone.utc).isoformat()
-    }).eq("id", roadmap_id).execute()
-    
-    if not update_res.data:
-        raise HTTPException(status_code=500, detail="Failed to update roadmap status")
-        
     return {"status": "ok", "new_status": payload.status}
 
 

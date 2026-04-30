@@ -47,6 +47,7 @@ class UserBase(BaseModel):
     is_active: bool = True
     is_admin: bool = False
     display_name: Optional[str] = None
+    github_username: Optional[str] = None
     profile_completed: bool = False
     onboarding_completed: bool = False
     tos_accepted_at: Optional[datetime] = None
@@ -154,6 +155,8 @@ class RoadmapRead(BaseModel):
     cloned_id: Optional[int] = None
     extension_count: int = 0
     status: str = "active"
+    version: int = 1
+    snapshot_hash: Optional[str] = None
 
     @field_validator("roadmap_plan", "last_position", mode="before")
     @classmethod
@@ -335,11 +338,15 @@ class MCQSessionRead(BaseModel):
 class PublicProfile(BaseModel):
     username: str
     display_name: Optional[str]
+    github_username: Optional[str] = None
     email: Optional[str] = None
     avatar_url: Optional[str] = None
     supabase_uid: Optional[str] = None
     is_pro: bool = False
+    eulercoins: int = 0
     roadmap_credits: float = 0.0
+    audit_precision: float = 0.0 # % of Solid ratings
+    learning_momentum: Dict[str, int] = Field(default={"mastered": 0, "explored": 0})
     total_skills: int
     total_roadmaps: int
     total_hours: float

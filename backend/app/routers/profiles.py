@@ -138,10 +138,33 @@ async def get_public_profile(username: str):
 
     # 4. Fetch Proof of Work (Verified only) - Include Solid and Developing
     subs_data = []
+    audit_precision = 0.0
     user_email = profile.get("email")
     if user_email:
+        # Fetch ALL submissions for this user to calculate precision
+        all_s_res = sb.table("submissions").select("evaluation_level").eq("user_email", user_email).execute()
+        if all_s_res.data:
+            total_subs = len(all_s_res.data)
+            solid_subs = len([s for s in all_s_res.data if s.get("evaluation_level") == "Solid"])
+            audit_precision = (solid_subs / total_subs) * 100 if total_subs > 0 else 0.0
+
         s_res = sb.table("submissions").select("*, roadmaps(title)").eq("user_email", user_email).in_("roadmap_id", list(contributing_ids) if contributing_ids else [0]).in_("evaluation_level", ["Solid", "Developing"]).order("submitted_at", desc=True).execute()
         subs_data = s_res.data
+
+    # 4b. Calculate Knowledge Velocity (Last 30 days)
+    mastered_30d = 0
+    explored_30d = 0
+    now = datetime.now()
+    for s in skills:
+        # Check if last_updated is within 30 days
+        # last_updated is datetime
+        if (now - s.last_updated.replace(tzinfo=None)).days <= 30:
+            if s.confidence_score >= 80:
+                mastered_30d += 1
+            else:
+                explored_30d += 1
+    
+    learning_momentum = {"mastered": mastered_30d, "explored": explored_30d}
 
     # 5. Fetch Practice Stats
     prac_res = sb.table("practice_progress") \
@@ -204,11 +227,15 @@ async def get_public_profile(username: str):
     return PublicProfile(
         username=profile["username"],
         display_name=profile.get("display_name"),
+        github_username=profile.get("github_username"),
         email=profile.get("email"),
         avatar_url=profile.get("avatar_url"),
         supabase_uid=profile.get("supabase_uid"),
         is_pro=profile.get("is_pro", False),
+        eulercoins=profile.get("eulercoins", 0),
         roadmap_credits=profile.get("roadmap_credits", 0),
+        audit_precision=audit_precision,
+        learning_momentum=learning_momentum,
         total_skills=len(skills),
         total_roadmaps=total_roadmaps_count,
         total_hours=round(total_hours, 1),

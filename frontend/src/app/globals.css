@@ -45,9 +45,9 @@ html {
   --bg-main: #f0f7f6;
   --bg-sidebar: #e8f2f1;
   --bg-header: #f0f7f6;
-  --text-muted: #444444;       /* high contrast dark gray */
+  --text-muted: #374151;       /* Gray-700 for better contrast in light mode */
   --text-heading: #0a0a0a;     /* near pure black */
-  --text-label: #333333;       /* strong visibility for metadata */
+  --text-label: #1f2937;       /* Gray-800 for strong visibility */
   --callout-bg: #e5efee;
   --callout-border: #d8e6e5;
   --active-bg: #111111;
@@ -57,35 +57,33 @@ html {
   --image-bg: #ffffff;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0f1717;
-    --surface: #1a2424;
-    --text-primary: #d1d5db;
-    --text-secondary: #9ca3af;
-    --border: #243333;
+.dark {
+  --background: #0f1717;
+  --surface: #1a2424;
+  --text-primary: #d1d5db;
+  --text-secondary: #9ca3af;
+  --border: #243333;
 
-    /* Standard Font Weights for Dark Mode */
-    --font-weight-normal: 400;
-    --font-weight-medium: 500;
-    --font-weight-semibold: 600;
+  /* Standard Font Weights for Dark Mode */
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
 
-    /* Theme variables from pages */
-    --bg-main: #0f1717;
-    --bg-sidebar: #131d1d;
-    --bg-header: #0f1717;
-    --text-muted: #6b7280;
-    --text-heading: #d1d5db;
-    --text-label: #6b7280;
-    --border: #243333;
-    --callout-bg: #1a2424;
-    --callout-border: #2a3b3b;
-    --active-bg: linear-gradient(to bottom right, #1a2a2a, #0f1717);
-    --active-text: #f3f4f6;
-    --accent: #14b8a6;
-    --accent-muted: rgba(20, 184, 166, 0.1);
-    --image-bg: #f9fafb;
-  }
+  /* Theme variables from pages */
+  --bg-main: #0f1717;
+  --bg-sidebar: #131d1d;
+  --bg-header: #0f1717;
+  --text-muted: #9ca3af;       /* Gray-400 for better contrast in dark mode */
+  --text-heading: #d1d5db;
+  --text-label: #d1d5db;       /* Gray-300 for labels */
+  --border: #243333;
+  --callout-bg: #1a2424;
+  --callout-border: #2a3b3b;
+  --active-bg: linear-gradient(to bottom right, #1a2a2a, #0f1717);
+  --active-text: #f3f4f6;
+  --accent: #14b8a6;
+  --accent-muted: rgba(20, 184, 166, 0.1);
+  --image-bg: #f9fafb;
 }
 
 body {

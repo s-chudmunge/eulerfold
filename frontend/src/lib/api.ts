@@ -133,6 +133,7 @@ export interface User {
     email: string;
     display_name?: string;
     username?: string;
+    github_username?: string;
     is_active: boolean;
     is_admin: boolean;
     profile_completed: boolean;
@@ -723,9 +724,16 @@ export const practiceAPI = {
     export interface PublicProfile {
     username: string;
     display_name?: string;
+    github_username?: string;
     email?: string;
     avatar_url?: string;
     supabase_uid?: string;
+    eulercoins: number;
+    audit_precision: number;
+    learning_momentum: {
+        mastered: number;
+        explored: number;
+    };
     total_skills: number;
     total_roadmaps: number;
     total_hours: number;

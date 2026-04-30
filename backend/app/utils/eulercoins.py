@@ -19,7 +19,7 @@ async def award_coins(user_email: str, amount: int, reason: str, roadmap_id: Opt
     try:
         # Prevent double-awarding for certain recurring but unique events
         # e.g. "Completed all topics in 'Introduction'"
-        if roadmap_id and ("Completed all topics" in reason or "Completed module" in reason or "Practice Completed" in reason):
+        if roadmap_id and ("Completed all topics" in reason or "Completed module" in reason or "Practice Completed" in reason or "Completed roadmap" in reason):
             check_res = sb.table("eulercoin_transactions") \
                 .select("id") \
                 .eq("user_email", user_email) \

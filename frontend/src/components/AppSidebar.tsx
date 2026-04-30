@@ -131,8 +131,8 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
     const navLinkClass = (path: string) => `
         flex items-center gap-2 px-2.5 py-1 text-[13px] transition-colors rounded-md
         ${isActive(path) 
-            ? 'text-slate-950 font-semibold bg-sidebar/80 dark:text-white dark:bg-white/5' 
-            : 'text-gray-700 hover:text-slate-950 hover:bg-sidebar dark:text-gray-300 dark:hover:text-white dark:hover:bg-background/[0.02]'
+            ? 'text-text-heading font-semibold bg-sidebar/80 dark:bg-white/5' 
+            : 'text-text-muted hover:text-text-heading hover:bg-sidebar dark:hover:bg-background/[0.02]'
         }
     `;
 
@@ -204,12 +204,12 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                                     { label: 'Credits', val: stats.credits, icon: CreditCard },
                                     { label: 'Roadmaps', val: stats.roadmaps, icon: TrendingUp }
                                 ].map((item) => (
-                                    <div key={item.label} className="flex items-center justify-between px-2.5 py-1 text-[12px] font-medium text-gray-600 dark:text-gray-400">
+                                    <div key={item.label} className="flex items-center justify-between px-2.5 py-1 text-[12px] font-medium text-text-muted">
                                         <div className="flex items-center gap-2">
                                             <item.icon className="w-3.5 h-3.5 stroke-[1.5px]" />
                                             <span>{item.label}</span>
                                         </div>
-                                        <span className="font-bold text-black dark:text-white inconsolata-ui">{item.val}</span>
+                                        <span className="font-bold text-text-heading inconsolata-ui">{item.val}</span>
                                     </div>
                                 ))}
                             </div>
@@ -259,7 +259,7 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                                     ].map((item) => (
                                         <button 
                                             key={item.label}
-                                            className="flex items-center gap-2 w-full px-2 py-1 text-[11px] font-medium text-gray-600 dark:text-gray-400 hover:bg-sidebar dark:hover:bg-background/5 rounded transition-colors"
+                                            className="flex items-center gap-2 w-full px-2 py-1 text-[11px] font-medium text-text-muted hover:bg-sidebar dark:hover:bg-background/5 rounded transition-colors"
                                             onClick={() => { router.push(item.path); setIsMenuOpen(false); }}
                                         >
                                             <item.icon className="w-3 h-3 stroke-[1.5px]" /> 
@@ -287,19 +287,19 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                                     {user.user_metadata?.avatar_url ? (
                                         <img src={user.user_metadata.avatar_url} alt="" className="w-full h-full object-cover grayscale-[0.5]" />
                                     ) : (
-                                        <User className="w-3 h-3 text-gray-400" />
+                                        <User className="w-3 h-3 text-text-muted" />
                                     )}
                                 </div>
                                 <div className="min-w-0">
-                                    <p className="text-[11px] font-semibold text-black dark:text-white truncate leading-none">
+                                    <p className="text-[11px] font-semibold text-text-heading truncate leading-none">
                                         {user.user_metadata?.full_name?.split(' ')[0] || user.email?.split('@')[0]}
                                     </p>
-                                    <p className={`text-[9px] lowercase tracking-tight mt-0.5 ${stats.isPro ? 'text-accent font-bold' : 'text-gray-400'}`}>
+                                    <p className={`text-[9px] lowercase tracking-tight mt-0.5 ${stats.isPro ? 'text-accent font-bold' : 'text-text-muted'}`}>
                                         eulerfold {stats.isPro ? 'pro' : 'free'}
                                     </p>
                                 </div>
                             </div>
-                            <MoreHorizontal className="w-3 h-3 text-gray-400" />
+                            <MoreHorizontal className="w-3 h-3 text-text-muted" />
                         </div>
                     </div>
                 )}
