@@ -3,7 +3,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { submissionsAPI } from '@/lib/api';
 import { supabase } from '@/lib/supabase/client';
-import { X, CheckCircle, AlertCircle, Link as LinkIcon, FileText, Upload, Send, ChevronRight, Eye, RefreshCw, MessageSquare, Scale } from 'lucide-react';
+import { useAuth } from '@/components/AuthProvider';
+import { X, CheckCircle, AlertCircle, Link as LinkIcon, FileText, Upload, Send, ChevronRight, Eye, RefreshCw, MessageSquare, Scale, Github, ChevronDown } from 'lucide-react';
 
 interface Props {
   roadmapId: number;
@@ -19,6 +20,7 @@ interface Props {
 }
 
 export default function SubmissionModal({ roadmapId, moduleNumber, onClose, onCompleted, existingSubmission, instructions }: Props) {
+  const { user } = useAuth();
   const [link, setLink] = useState('');
   const [description, setDescription] = useState('');
   const [loading, setLoading] = useState(false);
@@ -28,6 +30,11 @@ export default function SubmissionModal({ roadmapId, moduleNumber, onClose, onCo
   const [selectedFiles, setSelectedFiles] = useState<any[]>([]);
   const [dragActive, setDragActive] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
+
+  // GitHub Repos State
+  const [repos, setRepos] = useState<any[]>([]);
+  const [fetchingRepos, setFetchingRepos] = useState(false);
+  const [showRepoDropdown, setShowRepoDropdown] = useState(false);
   
   // Dispute State
   const [showDisputeForm, setShowDisputeForm] = useState(false);
@@ -41,6 +48,27 @@ export default function SubmissionModal({ roadmapId, moduleNumber, onClose, onCo
       scrollRef.current.scrollTop = 0;
     }
   }, [evaluation, showDisputeForm, showPreview]);
+
+  // Fetch GitHub repos if connected
+  useEffect(() => {
+    if (user?.github_username && repos.length === 0) {
+      const fetchRepos = async () => {
+        setFetchingRepos(true);
+        try {
+          const res = await fetch(`https://api.github.com/users/${user.github_username}/repos?sort=updated&per_page=50`);
+          if (res.ok) {
+            const data = await res.json();
+            setRepos(data);
+          }
+        } catch (err) {
+          console.error("Failed to fetch GitHub repos:", err);
+        } finally {
+          setFetchingRepos(false);
+        }
+      };
+      fetchRepos();
+    }
+  }, [user?.github_username]);
 
   const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB per file
   const MAX_TOTAL_SIZE = 5 * 1024 * 1024; // 5MB total
@@ -338,6 +366,73 @@ export default function SubmissionModal({ roadmapId, moduleNumber, onClose, onCo
               </div>
             ) : (
               <div className="space-y-0 border-[0.5px] border-border">
+                {/* GitHub Repo Selection */}
+                {user?.github_username ? (
+                  <div className="border-b-[0.5px] border-border bg-sidebar/10 relative">
+                    <button 
+                      onClick={() => setShowRepoDropdown(!showRepoDropdown)}
+                      className="w-full px-3 h-[44px] flex items-center justify-between text-[11px] font-bold text-text-muted hover:text-text-heading transition-all"
+                    >
+                      <div className="flex items-center gap-2">
+                        <Github className="w-3.5 h-3.5" />
+                        <span className="uppercase tracking-widest">
+                          {fetchingRepos ? 'Loading Repos...' : 'Select GitHub Repository'}
+                        </span>
+                      </div>
+                      <ChevronDown className={`w-4 h-4 transition-transform ${showRepoDropdown ? 'rotate-180' : ''}`} />
+                    </button>
+
+                    {showRepoDropdown && (
+                      <div className="absolute top-full left-0 w-full bg-background border-x-[0.5px] border-b-[0.5px] border-border z-[110] max-h-[200px] overflow-y-auto no-scrollbar shadow-2xl animate-in slide-in-from-top-1">
+                        {repos.length > 0 ? (
+                          repos.map((repo) => (
+                            <button
+                              key={repo.id}
+                              onClick={() => {
+                                setLink(repo.html_url);
+                                if (!description) {
+                                  setDescription(`GitHub Repository: ${repo.name}\n\n${repo.description || ''}`);
+                                }
+                                setShowRepoDropdown(false);
+                              }}
+                              className="w-full px-4 py-3 text-left hover:bg-sidebar/20 border-b-[0.5px] border-border last:border-b-0 group flex flex-col gap-0.5"
+                            >
+                              <span className="text-[13px] font-bold text-text-heading group-hover:text-accent transition-colors">{repo.name}</span>
+                              <span className="text-[10px] text-text-muted opacity-60 truncate">{repo.description || 'No description'}</span>
+                            </button>
+                          ))
+                        ) : (
+                          <div className="p-4 text-center text-[11px] text-text-muted italic">
+                            {fetchingRepos ? 'Connecting to GitHub...' : 'No public repositories found.'}
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="border-b-[0.5px] border-border bg-sidebar/5">
+                    <button 
+                      onClick={async () => {
+                        try {
+                          await supabase.auth.signInWithOAuth({
+                            provider: 'github',
+                            options: {
+                              redirectTo: window.location.href,
+                              queryParams: { access_type: 'offline', prompt: 'consent' }
+                            }
+                          });
+                        } catch (err) {
+                          console.error("GitHub link failed:", err);
+                        }
+                      }}
+                      className="w-full px-3 h-[44px] flex items-center justify-start gap-2 text-[10px] font-bold text-text-muted hover:text-accent transition-all group"
+                    >
+                      <Github className="w-3.5 h-3.5 opacity-60 group-hover:opacity-100" />
+                      <span className="uppercase tracking-[0.15em]">Connect GitHub to select repositories</span>
+                    </button>
+                  </div>
+                )}
+
                 {/* Proof Link */}
                 <div className="border-b-[0.5px] border-border h-[40px] flex items-center">
                   <input value={link} onChange={(e) => setLink(e.target.value)} data-testid="submission-link-input" placeholder="Paste Proof Link (GitHub, demo, etc.)" className="w-full px-3 bg-transparent text-[13px] font-medium text-text-primary outline-none transition-all placeholder:text-text-muted rounded-none" />
