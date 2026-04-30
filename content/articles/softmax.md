@@ -1,5 +1,5 @@
 ---
-title: "The Softmax Function"
+title: "What is the Softmax Function?"
 slug: "softmax"
 author: "EulerFold"
 date: "April 25, 2026"

@@ -32,7 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const researchDecodedRoutes = Object.keys(papers).map((slug) => ({
     url: `${baseUrl}/research-decoded/${slug}`,
     lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
+    changeFrequency: 'daily' as const,
     priority: 0.9,
   }));
 
@@ -40,7 +40,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const articleRoutes = Object.keys(articles).map((slug) => ({
     url: `${baseUrl}/articles/${slug}`,
     lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
+    changeFrequency: 'daily' as const,
     priority: 0.9,
   }));
 
@@ -51,7 +51,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     archiveRoutes.push({
       url: `${baseUrl}/archive/exams/previous-year-papers/${category.id.toLowerCase()}`,
       lastModified: new Date(),
-      changeFrequency: 'monthly' as const,
+      changeFrequency: 'daily' as const,
       priority: 0.7,
     });
 
@@ -60,7 +60,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       archiveRoutes.push({
         url: `${baseUrl}/archive/exams/previous-year-papers/${category.id.toLowerCase()}/${entry.slug}`,
         lastModified: new Date(),
-        changeFrequency: 'monthly' as const,
+        changeFrequency: 'daily' as const,
         priority: 0.7,
       });
     });
@@ -80,7 +80,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       roadmapRoutes = roadmaps.map((r) => ({
         url: `${baseUrl}/roadmap/${r.slug}`,
         lastModified: new Date(r.updated_at || new Date()),
-        changeFrequency: 'weekly' as const,
+        changeFrequency: 'daily' as const,
         priority: 0.9,
       }));
     }
@@ -93,15 +93,15 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   try {
     const { data: profiles } = await supabase
       .from('profiles')
-      .select('username, updated_at')
+      .select('username, created_at')
       .not('username', 'is', null)
       .limit(1000);
 
     if (profiles) {
       profileRoutes = profiles.map((p) => ({
         url: `${baseUrl}/u/${p.username}`,
-        lastModified: new Date(p.updated_at || new Date()),
-        changeFrequency: 'weekly' as const,
+        lastModified: new Date(p.created_at || new Date()),
+        changeFrequency: 'daily' as const,
         priority: 0.5,
       }));
     }
@@ -111,10 +111,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
   return [
     ...staticRoutes,
+    ...roadmapRoutes,
+    ...profileRoutes,
     ...researchDecodedRoutes,
     ...articleRoutes,
     ...archiveRoutes,
-    ...roadmapRoutes,
-    ...profileRoutes,
   ];
 }

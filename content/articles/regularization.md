@@ -1,5 +1,5 @@
 ---
-title: "Regularization: Preventing Overfitting"
+title: "How does Regularization prevent Overfitting?"
 slug: "regularization"
 author: "EulerFold"
 date: "April 27, 2026"

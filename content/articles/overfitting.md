@@ -1,5 +1,5 @@
 ---
-title: "The Nature of Overfitting in Neural Networks"
+title: "What is the Nature of Overfitting?"
 slug: "overfitting"
 author: "EulerFold"
 date: "April 18, 2026"

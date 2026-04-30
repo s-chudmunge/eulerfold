@@ -1,5 +1,5 @@
 ---
-title: "Tokens and Tokenization"
+title: "What are Tokens and Tokenization?"
 slug: "tokens"
 author: "EulerFold"
 date: "April 24, 2026"

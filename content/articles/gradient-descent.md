@@ -1,5 +1,5 @@
 ---
-title: "The Geometry of Gradient Descent"
+title: "How does Gradient Descent work?"
 slug: "gradient-descent"
 author: "EulerFold"
 date: "April 20, 2026"

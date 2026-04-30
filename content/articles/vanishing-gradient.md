@@ -1,5 +1,5 @@
 ---
-title: "The Vanishing Gradient Problem"
+title: "What is the Vanishing Gradient Problem?"
 slug: "vanishing-gradient"
 author: "EulerFold"
 date: "April 21, 2026"
