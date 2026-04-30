@@ -306,7 +306,8 @@ async def clone_roadmap(id: int, current_user: User = Depends(get_current_user))
         "cloned_from": id,
         "is_public": False, 
         "last_position": {"mIdx": 0, "tIdx": 0},
-        "extension_count": 0
+        "extension_count": 0,
+        "status": "active"
     }
     
     new_res = sb.table("roadmaps").insert(new_roadmap_data).execute()

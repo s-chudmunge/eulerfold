@@ -110,6 +110,10 @@ export const roadmapsAPI = {
         const response = await api.post(`/roadmaps/${id}/progress/reset`);
         return response.data;
     },
+    updateStatus: async (id: number, status: 'active' | 'completed' | 'archived' | 'quit'): Promise<{ status: string, new_status: string }> => {
+        const response = await api.patch(`/roadmaps/${id}/status`, { status });
+        return response.data;
+    },
     deleteRoadmap: async (id: number): Promise<{ status: string, message: string }> => {
         const response = await api.delete(`/roadmaps/${id}`);
         return response.data;
@@ -320,7 +324,7 @@ export interface RoadmapMe extends RoadmapData {
         total_resources: number;
         bottleneck_module?: number;
     };
-    status?: 'active' | 'completed' | 'action_required';
+    status?: 'active' | 'completed' | 'action_required' | 'archived' | 'quit' | 'needs_improvement' | 'resubmit_required';
     user_rating?: number | null;
 }
 

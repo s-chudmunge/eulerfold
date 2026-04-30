@@ -153,6 +153,7 @@ class RoadmapRead(BaseModel):
     is_cloned: bool = False
     cloned_id: Optional[int] = None
     extension_count: int = 0
+    status: str = "active"
 
     @field_validator("roadmap_plan", "last_position", mode="before")
     @classmethod
@@ -199,6 +200,9 @@ class RatingCreate(BaseModel):
 class VisibilityUpdate(BaseModel):
     is_public: bool
     show_author: bool
+
+class RoadmapStatusUpdate(BaseModel):
+    status: Literal["active", "completed", "archived", "quit"]
 
 class ReportCreate(BaseModel):
     reason: str

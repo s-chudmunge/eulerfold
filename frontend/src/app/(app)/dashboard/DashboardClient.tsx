@@ -196,6 +196,15 @@ export default function DashboardPage() {
         }
     };
 
+    const handleUpdateStatus = async (id: number, status: 'active' | 'completed' | 'archived' | 'quit') => {
+        try {
+            await roadmapsAPI.updateStatus(id, status);
+            setRoadmaps(prev => prev.map(r => r.id === id ? { ...r, status } : r));
+        } catch (err: any) {
+            setError(err.message);
+        }
+    };
+
     const totalTimeInvested = totalSeconds / 3600;
 
     // Filter verified skills for Technical Signature - Reactive
@@ -321,7 +330,7 @@ export default function DashboardPage() {
                             <div className="border-t border-border divide-y divide-[var(--border)]">
                                 {roadmaps.length > 0 ? (
                                     roadmaps.map((r) => (
-                                        <div key={r.id} className="group flex flex-col md:flex-row md:items-center gap-4 py-2 hover:bg-sidebar/50 dark:hover:bg-background/[0.01] transition-colors">
+                                        <div key={r.id} className={`group flex flex-col md:flex-row md:items-center gap-4 py-2 hover:bg-sidebar/50 dark:hover:bg-background/[0.01] transition-colors ${r.status === 'archived' || r.status === 'quit' ? 'opacity-60' : ''}`}>
                                             {/* Title & Info */}
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-center gap-3">
@@ -338,6 +347,16 @@ export default function DashboardPage() {
                                                             <span className="inconsolata-ui text-[8px] font-black text-amber-500 uppercase tracking-tighter">Cloned</span>
                                                         </div>
                                                     )}
+                                                    {r.status && r.status !== 'active' && (
+                                                        <div className={`flex items-center px-1.5 py-0.5 rounded border ${
+                                                            r.status === 'completed' ? 'bg-teal-500/5 border-teal-500/20 text-teal-600' :
+                                                            r.status === 'archived' ? 'bg-zinc-500/5 border-zinc-500/20 text-zinc-500' :
+                                                            r.status === 'quit' ? 'bg-red-500/5 border-red-500/20 text-red-500' :
+                                                            'bg-amber-500/5 border-amber-500/20 text-amber-600'
+                                                        }`}>
+                                                            <span className="inconsolata-ui text-[8px] font-black uppercase tracking-tighter">{r.status.replace('_', ' ')}</span>
+                                                        </div>
+                                                    )}
                                                 </div>
 
                                             </div>
@@ -351,10 +370,34 @@ export default function DashboardPage() {
                                             <div className="flex items-center gap-1.5 shrink-0">
                                                 <Link
                                                     href={`/roadmap/${r.slug || r.id}/learn`}
-                                                    className="bg-[var(--text-heading)] text-[var(--bg-main)] px-3 py-1 rounded-md text-[10px] font-bold tracking-wide hover:opacity-90 transition-all"
+                                                    className={`px-3 py-1 rounded-md text-[10px] font-bold tracking-wide transition-all ${
+                                                        r.status === 'archived' || r.status === 'quit' 
+                                                        ? 'bg-callout-bg border border-border text-text-muted hover:text-text-heading' 
+                                                        : 'bg-[var(--text-heading)] text-[var(--bg-main)] hover:opacity-90'
+                                                    }`}
                                                 >
-                                                    Resume
+                                                    {(r.progress?.percent || 0) > 0 ? 'Resume' : 'Start'}
                                                 </Link>
+                                                
+                                                {r.status === 'active' && (
+                                                    <button 
+                                                        onClick={() => handleUpdateStatus(r.id, 'archived')}
+                                                        className="px-2.5 py-1 border border-border text-text-muted hover:text-text-heading hover:bg-callout-bg rounded-md text-[10px] font-bold tracking-wide transition-all hidden sm:block"
+                                                        title="Archive Roadmap"
+                                                    >
+                                                        Archive
+                                                    </button>
+                                                )}
+
+                                                {r.status === 'archived' && (
+                                                    <button 
+                                                        onClick={() => handleUpdateStatus(r.id, 'active')}
+                                                        className="px-2.5 py-1 border border-border text-text-muted hover:text-text-heading hover:bg-callout-bg rounded-md text-[10px] font-bold tracking-wide transition-all"
+                                                    >
+                                                        Re-activate
+                                                    </button>
+                                                )}
+
                                                 <Link
                                                     href={`/roadmap/${r.slug || r.id}`}
                                                     className="px-2.5 py-1 border border-border text-text-muted hover:text-text-heading hover:bg-callout-bg rounded-md text-[10px] font-bold tracking-wide transition-all"
@@ -364,6 +407,7 @@ export default function DashboardPage() {
                                                 <button 
                                                     onClick={() => setDeleteConfirm(r.id)}
                                                     className="text-text-muted hover:text-red-500 transition-colors p-1 rounded-md hover:bg-red-500/5"
+                                                    title="Delete Roadmap"
                                                 >
                                                     <Trash2 className="w-3.5 h-3.5" />
                                                 </button>

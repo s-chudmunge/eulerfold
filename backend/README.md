@@ -17,7 +17,7 @@ FastAPI application powered by Google Gemini AI and Supabase.
 
 3. Run locally:
    ```bash
-   uvicorn main:app --host 0.0.0.0 --port 8080 --reload
+   ./run.sh
    ```
 
 ## Key Modules

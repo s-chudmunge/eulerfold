@@ -14,7 +14,7 @@ from fastapi import APIRouter, HTTPException, Request, Depends, BackgroundTasks
 
 from app.core.config import settings
 from app.core.supabase_client import supabase, get_supabase_client
-from app.schemas import RoadmapCreate, RoadmapMe, RoadmapRead, RoadmapSave, User, ProgressUpdate, RoadmapExtend
+from app.schemas import RoadmapCreate, RoadmapMe, RoadmapRead, RoadmapSave, User, ProgressUpdate, RoadmapExtend, RoadmapStatusUpdate
 from app.utils.gemini_client import generate_text, clean_json_string
 from app.utils.resend_client import send_onboarding_email
 from app.utils.youtube_client import search_youtube_videos
@@ -27,6 +27,14 @@ from app.services.skills_service import extract_skills_from_roadmap, calculate_u
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
+
+def _update_roadmap_status_db(roadmap_id: int, status: str):
+    """Sync status to DB in background."""
+    try:
+        sb = get_supabase_client()
+        sb.table("roadmaps").update({"status": status}).eq("id", roadmap_id).execute()
+    except Exception as e:
+        logger.error(f"Failed to update roadmap status in background: {e}")
 
 def _parse_roadmap_dict(roadmap_val: Any) -> Dict[str, Any]:
     if isinstance(roadmap_val, str):
@@ -90,7 +98,8 @@ async def _enrich_roadmap_progress(roadmaps: List[Dict], email: str, uid: str, s
         total_modules = len(modules)
         
         module_scores = []
-        roadmap_status = "active"
+        db_status = r.get("status", "active")
+        roadmap_status = db_status
         bottleneck_module = None
         
         # Track counts for the summary object
@@ -140,11 +149,15 @@ async def _enrich_roadmap_progress(roadmaps: List[Dict], email: str, uid: str, s
                 if completed_topics_in_module < m_topic_count or not eval_level:
                     bottleneck_module = m_num
                     if eval_level == "Beginner":
-                        roadmap_status = "resubmit_required"
+                        # Calculated status can be resubmit_required, but if DB is 'completed' or 'archived', we might want to respect that?
+                        # Actually 'resubmit_required' is a temporary active state.
+                        if roadmap_status == "active":
+                            roadmap_status = "resubmit_required"
                     elif eval_level == "Developing" and completed_topics_in_module == m_topic_count:
                          # Good enough to proceed, but not Solid. 
                          # Actually we allow Developing to pass but label as "Needs Improvement"
-                         roadmap_status = "needs_improvement"
+                         if roadmap_status == "active":
+                            roadmap_status = "needs_improvement"
 
         # Overall Percent Calculation
         # Weights: 40% PoW (Submissions) + 30% Topics + 30% Practice
@@ -156,7 +169,12 @@ async def _enrich_roadmap_progress(roadmaps: List[Dict], email: str, uid: str, s
 
         # Final Completion Check
         if percent >= 100 and roadmap_status not in ["resubmit_required", "needs_improvement"]:
-            roadmap_status = "completed"
+            if db_status == "active":
+                roadmap_status = "completed"
+                # Persist completion status to DB in background
+                if background_tasks:
+                    background_tasks.add_task(_update_roadmap_status_db, rid, "completed")
+            
             # Trigger extraction if never done OR if it previously failed (retry trigger)
             if background_tasks and uid and (not r.get("skills_extracted") or r.get("skills_extraction_error")):
                 background_tasks.add_task(extract_skills_from_roadmap, rid, uid)
@@ -171,7 +189,12 @@ async def _enrich_roadmap_progress(roadmaps: List[Dict], email: str, uid: str, s
             "total_resources": total_practice_all,
             "bottleneck_module": bottleneck_module
         }
-        r["calculated_status"] = roadmap_status
+        # If DB status is terminal (archived, quit), keep it. 
+        # Otherwise use calculated (active, completed, resubmit_required, etc.)
+        if db_status in ["archived", "quit", "completed"]:
+            r["calculated_status"] = db_status
+        else:
+            r["calculated_status"] = roadmap_status
     
     return roadmaps
 
@@ -587,6 +610,7 @@ async def save_roadmap(
     roadmap_data = roadmap_save.dict()
     roadmap_data["slug"] = slug
     roadmap_data["email"] = email
+    roadmap_data["status"] = "active"
     
     # Ensure all modules have IDs and Topics have UUIDs for the learning app
     plan = roadmap_data.get("roadmap_plan", {})
@@ -724,7 +748,8 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
             "time_unit": roadmap_create.time_unit,
             "model": model_to_use,
             "email": email,
-            "slug": slug
+            "slug": slug,
+            "status": "active"
         }
         
         response = sb.table("roadmaps").insert(db_data).execute()
@@ -892,6 +917,36 @@ async def delete_roadmap_extension(
         raise HTTPException(status_code=500, detail="Failed to update roadmap after extension deletion.")
 
     return RoadmapRead(**update_res.data[0])
+
+
+@router.patch("/roadmaps/{roadmap_id}/status")
+async def update_roadmap_status(
+    roadmap_id: int,
+    payload: RoadmapStatusUpdate,
+    current_user: User = Depends(get_current_user)
+):
+    """Update the status of a roadmap (active, completed, archived, quit)."""
+    email = current_user.email
+    sb = get_supabase_client()
+    
+    # Verify ownership
+    r_res = sb.table("roadmaps").select("email").eq("id", roadmap_id).execute()
+    if not r_res.data:
+        raise HTTPException(status_code=404, detail="Roadmap not found")
+    
+    if r_res.data[0].get("email", "").lower() != email.lower():
+        raise HTTPException(status_code=403, detail="Not authorized to update this roadmap status")
+    
+    # Update status
+    update_res = sb.table("roadmaps").update({
+        "status": payload.status,
+        "updated_at": datetime.now(timezone.utc).isoformat()
+    }).eq("id", roadmap_id).execute()
+    
+    if not update_res.data:
+        raise HTTPException(status_code=500, detail="Failed to update roadmap status")
+        
+    return {"status": "ok", "new_status": payload.status}
 
 
 @router.delete("/roadmaps/{roadmap_id}")

@@ -28,17 +28,20 @@ def get_current_price():
     """
     Returns (price_in_paise, has_discount)
     Normal price: ₹299 (29900 paise)
-    Special discount: 50% off on April 28, 2026, from 2pm to 9pm IST.
+    Special discount: 50% off on May 1-2, 2026 (Maharashtra Day), all day IST.
     """
     # IST is UTC+5:30
     ist_offset = timedelta(hours=5, minutes=30)
     now_ist = datetime.now(timezone.utc) + ist_offset
     
-    # Target date: April 28, 2026
-    is_today = now_ist.year == 2026 and now_ist.month == 4 and now_ist.day == 28
-    is_within_time = 14 <= now_ist.hour < 21  # 2pm to 9pm (exclusive of 9pm)
+    # Target dates: May 1st and May 2nd, 2026
+    is_sale_period = (
+        now_ist.year == 2026 and 
+        now_ist.month == 5 and 
+        (now_ist.day == 1 or now_ist.day == 2)
+    )
     
-    if is_today and is_within_time:
+    if is_sale_period:
         # ₹299 * 0.5 = ₹149.5 -> Rounded to ₹149
         return 14900, True
     
