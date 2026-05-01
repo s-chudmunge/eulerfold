@@ -527,7 +527,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
             <div className="flex flex-1 relative overflow-hidden mt-12">
                 {/* Sidebar Overlay for Mobile */}
                 {isSidebarOpen && (
-                    <div className="fixed inset-0 bg-black/60 z-30 md:hidden backdrop-blur-sm" onClick={() => setIsSidebarOpen(false)} />
+                    <div className="fixed inset-0 bg-black/60 z-30 md:hidden" onClick={() => setIsSidebarOpen(false)} />
                 )}
 
                 {/* Sidebar */}

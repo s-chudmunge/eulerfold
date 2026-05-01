@@ -452,7 +452,7 @@ export default function DashboardPage() {
 
             {/* Modals */}
             {deleteConfirm !== null && (
-                <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-[200] p-4">
+                <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[200] p-4">
                     <div className="bg-background border border-border rounded-xl p-8 max-w-sm w-full shadow-2xl text-center">
                         <div className="w-12 h-12 bg-red-500/10 rounded-full flex items-center justify-center mb-6 mx-auto">
                             <AlertCircle className="w-6 h-6 text-red-500" />

@@ -34,7 +34,7 @@ export default function TOSModal({ isOpen, onAccept, onDecline }: TOSModalProps)
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-[2px] animate-in fade-in duration-200">
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 animate-in fade-in duration-200">
             <div className="w-full max-w-[500px] bg-background border border-border shadow-2xl flex flex-col max-h-[80vh] animate-in zoom-in-95 duration-200">
                 
                 {/* Header */}

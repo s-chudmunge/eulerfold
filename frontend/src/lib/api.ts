@@ -702,11 +702,11 @@ export const practiceAPI = {
         const response = await api.post(`/practice/mcq/${sessionId}/submit`, { answers });
         return response.data;
     }
-    };
+};
 
-    // --- Profile APIs ---
+// --- Profile APIs ---
 
-    export interface UserSkill {
+export interface UserSkill {
     id: string;
     canonical_skill_id: string;
     name?: string;
@@ -719,9 +719,9 @@ export const practiceAPI = {
     depth_score: number;
     time_invested: number;
     last_updated: string;
-    }
+}
 
-    export interface PublicProfile {
+export interface PublicProfile {
     username: string;
     display_name?: string;
     github_username?: string;
@@ -748,8 +748,8 @@ export const practiceAPI = {
         hard: number;
         total: number;
     };
-    }
-    export const profileAPI = {
+}
+export const profileAPI = {
     getPublicProfile: async (username: string): Promise<PublicProfile> => {
         const response = await api.get(`/profile/${username}`);
         return response.data;
@@ -770,9 +770,9 @@ export const practiceAPI = {
         const response = await api.delete('/profile/me');
         return response.data;
     }
-    };
+};
 
-    export const assessmentsAPI = {
+export const assessmentsAPI = {
     start: async (skillId: string) => {
         const response = await api.post('/assessments/start', null, { params: { skill_id: skillId } });
         return response.data;
@@ -789,58 +789,89 @@ export const practiceAPI = {
         const response = await api.get(`/assessments/${sessionId}`);
         return response.data;
     }
-    };
+};
 
-    export const paymentsAPI = {
-        getTransactions: async (): Promise<any[]> => {
-            const response = await api.get('/payments/transactions');
-            return response.data;
+export const paymentsAPI = {
+    getTransactions: async (): Promise<any[]> => {
+        const response = await api.get('/payments/transactions');
+        return response.data;
+    }
+};
+
+export const sessionsAPI = {
+    logSession: (durationSeconds: number, token?: string) => {
+        if (typeof window === 'undefined') return;
+        
+        // Ensure we have a protocol. If BACKEND_URL is just "localhost:8001", fetch will fail.
+        const base = BACKEND_URL.startsWith('http') ? BACKEND_URL : `http://${BACKEND_URL}`;
+        const url = `${base}/sessions/log`;
+        const body = JSON.stringify({ duration_seconds: durationSeconds });
+        
+        if (!token) {
+            // If no token provided, try to get it from Supabase cache (sync-ish)
+            // but if we are in a visibilitychange hidden event, this might be too late.
+            // Best to have the token passed in.
+            supabase.auth.getSession().then(({ data: { session } }) => {
+                if (session?.access_token) {
+                    sessionsAPI.performLog(url, body, session.access_token);
+                }
+            });
+        } else {
+            sessionsAPI.performLog(url, body, token);
         }
-    };
-
-    export const sessionsAPI = {
-        logSession: (durationSeconds: number, token?: string) => {
-            if (typeof window === 'undefined') return;
-            
-            // Ensure we have a protocol. If BACKEND_URL is just "localhost:8001", fetch will fail.
-            const base = BACKEND_URL.startsWith('http') ? BACKEND_URL : `http://${BACKEND_URL}`;
-            const url = `${base}/sessions/log`;
-            const body = JSON.stringify({ duration_seconds: durationSeconds });
-            
-            if (!token) {
-                // If no token provided, try to get it from Supabase cache (sync-ish)
-                // but if we are in a visibilitychange hidden event, this might be too late.
-                // Best to have the token passed in.
-                supabase.auth.getSession().then(({ data: { session } }) => {
-                    if (session?.access_token) {
-                        sessionsAPI.performLog(url, body, session.access_token);
-                    }
-                });
-            } else {
-                sessionsAPI.performLog(url, body, token);
-            }
-        },
-        performLog: (url: string, body: string, token: string) => {
-            try {
-                fetch(url, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
+    },
+    performLog: (url: string, body: string, token: string) => {
+        try {
+            fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                     },
-                    body,
-                    keepalive: true
-                }).catch(err => console.error("Session log fetch error:", err));
-            } catch (err) {
-                console.error("Failed to initiate session log:", err);
-            }
-        },
-        getTotalTime: async (): Promise<{ total_seconds: number, active_days: number }> => {
-            const response = await api.get('/sessions/total');
-            return response.data;
-        },
-        getWeeklyStats: async (): Promise<{ duration_seconds: number, created_at: string }[]> => {
-            const response = await api.get('/sessions/weekly-stats');
-            return response.data;
+                body,
+                keepalive: true
+            }).catch(err => console.error("Session log fetch error:", err));
+        } catch (err) {
+            console.error("Failed to initiate session log:", err);
         }
-    };
+    },
+    getTotalTime: async (): Promise<{ total_seconds: number, active_days: number }> => {
+        const response = await api.get('/sessions/total');
+        return response.data;
+    },
+    getWeeklyStats: async (): Promise<{ duration_seconds: number, created_at: string }[]> => {
+        const response = await api.get('/sessions/weekly-stats');
+        return response.data;
+    },
+    getSessionsRange: async (start: string, end: string): Promise<{ duration_seconds: number, created_at: string }[]> => {
+        const response = await api.get('/sessions/range', { params: { start_date: start, end_date: end } });
+        return response.data;
+    }
+};
+
+export const plannerAPI = {
+    getTasks: async (start?: string, end?: string): Promise<any[]> => {
+        const response = await api.get('/planner/tasks', { params: { start_date: start, end_date: end } });
+        return response.data;
+    },
+    createTask: async (data: any): Promise<any> => {
+        const response = await api.post('/planner/tasks', data);
+        return response.data;
+    },
+    updateTask: async (id: string, data: any): Promise<any> => {
+        const response = await api.patch(`/planner/tasks/${id}`, data);
+        return response.data;
+    },
+    deleteTask: async (id: string): Promise<any> => {
+        const response = await api.delete(`/planner/tasks/${id}`);
+        return response.data;
+    },
+    deleteTasksRange: async (start: string, end: string): Promise<any> => {
+        const response = await api.delete('/planner/tasks-range', { params: { start_date: start, end_date: end } });
+        return response.data;
+    },
+    generatePlan: async (data: { roadmap_ids: number[], start_date: string, target_date: string, intensity: string }): Promise<any> => {
+        const response = await api.post('/planner/generate', data);
+        return response.data;
+    }
+};

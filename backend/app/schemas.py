@@ -392,3 +392,36 @@ class DiscussionReportRead(BaseModel):
     comment_id: uuid.UUID
     reason: Optional[str] = None
     created_at: datetime
+
+# --- Study Task Schemas ---
+
+class StudyTaskBase(BaseModel):
+    roadmap_id: Optional[int] = None
+    module_number: Optional[int] = None
+    task_type: Literal['module', 'practice', 'pow', 'video', 'custom', 'research', 'article']
+    title: str
+    scheduled_date: date
+    metadata: Dict[str, Any] = {}
+
+class StudyTaskCreate(StudyTaskBase):
+    pass
+
+class StudyTaskUpdate(BaseModel):
+    scheduled_date: Optional[date] = None
+    is_completed: Optional[bool] = None
+    title: Optional[str] = None
+    metadata: Optional[Dict[str, Any]] = None
+
+class StudyTaskRead(StudyTaskBase):
+    id: uuid.UUID
+    user_email: str
+    is_completed: bool
+    created_at: datetime
+    updated_at: datetime
+
+class PlannerGenerateRequest(BaseModel):
+    roadmap_ids: List[int]
+    start_date: date
+    target_date: date
+    intensity: Literal['casual', 'balanced', 'intense'] # 1, 2, or 3 modules per week etc.
+

@@ -160,7 +160,7 @@ export default function ProfileClient({ profile }: Props) {
             <div className="flex-1 pt-6 md:pt-12">
                 {/* Profile Header (Tabs Area) - GitHub style */}
                 <div 
-                    className="border-b border-border bg-sidebar/30 sticky top-[56px] z-30 hidden md:block backdrop-blur-md"
+                    className="border-b border-border bg-sidebar/30 sticky top-[56px] z-30 hidden md:block"
                     style={{ top: 'calc(56px + var(--announcement-height, 0px))' }}
                 >
                     <div className="max-w-[1280px] mx-auto px-6 lg:px-10 flex items-center justify-between">
@@ -318,7 +318,7 @@ export default function ProfileClient({ profile }: Props) {
                             <main className="flex-1 min-w-0">
                             {/* Mobile Tabs */}
                             <div 
-                            className="md:hidden border-b border-border mb-8 overflow-x-auto no-scrollbar bg-sidebar/20 sticky top-[56px] z-30 backdrop-blur-md"
+                            className="md:hidden border-b border-border mb-8 overflow-x-auto no-scrollbar bg-sidebar/20 sticky top-[56px] z-30"
                             style={{ top: 'calc(56px + var(--announcement-height, 0px))' }}
                             >
                             <div className="flex whitespace-nowrap px-4">

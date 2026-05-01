@@ -36,7 +36,8 @@ import {
   Briefcase,
   Compass,
   Database,
-  GraduationCap
+  GraduationCap,
+  Calendar
 } from 'lucide-react';
 import UserNav from './UserNav';
 import { Suspense } from 'react';
@@ -222,7 +223,7 @@ export default function PublicHeader() {
             
             {isOpen && (
                 <div className="absolute top-[calc(100%-8px)] left-0 pt-3 z-[100] animate-in fade-in zoom-in-95 duration-200 ease-out">
-                    <div className={`bg-header border border-border shadow-[0_12px_40px_rgba(0,0,0,0.08)] rounded-xl overflow-hidden ${width} backdrop-blur-md`}>
+                    <div className={`bg-header border border-border shadow-[0_12px_40px_rgba(0,0,0,0.08)] rounded-xl overflow-hidden ${width}`}>
                         {children}
                     </div>
                 </div>
@@ -236,7 +237,7 @@ export default function PublicHeader() {
       ref={headerRef}
       className={`manrope-body sticky top-0 z-50 w-full transition-all duration-300 ${
         isScrolled 
-            ? 'bg-header/90 backdrop-blur-md h-[48px] border-b border-border/40 shadow-[0_1px_2px_rgba(0,0,0,0.02)]' 
+            ? 'bg-header/90 h-[48px] border-b border-border/40 shadow-[0_1px_2px_rgba(0,0,0,0.02)]' 
             : 'bg-header h-[56px] border-b border-transparent'
       }`}
       style={{ top: 'var(--announcement-height, 0px)' }}
@@ -253,6 +254,33 @@ export default function PublicHeader() {
           <nav className="hidden lg:flex items-center gap-0.5 h-full">
             <Link href="/leaderboard" className="px-3 py-1.5 text-[13.5px] font-semibold text-text-muted hover:text-text-heading transition-all tracking-tight rounded-lg hover:bg-sidebar/40">Leaderboard</Link>
             <Link href="/explore" className="px-3 py-1.5 text-[13.5px] font-semibold text-text-muted hover:text-text-heading transition-all tracking-tight rounded-lg hover:bg-sidebar/40">Explore</Link>
+
+            <DesktopDropdown id="products" label="Products" width="min-w-[320px]">
+              <div className="p-2 flex flex-col gap-1">
+                <Link href="/planner" className="flex items-start gap-3.5 p-3.5 rounded-xl hover:bg-sidebar/40 transition-all group">
+                  <div className="w-9 h-9 rounded-lg bg-accent/10 flex items-center justify-center text-accent shrink-0">
+                    <Calendar className="w-4.5 h-4.5" />
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[13px] font-bold text-text-heading group-hover:text-accent transition-colors">Study Planner</span>
+                      <span className="text-[8px] font-black uppercase tracking-widest bg-accent text-white px-1.5 py-0.5 rounded leading-none">New</span>
+                    </div>
+                    <span className="text-[11px] text-text-muted leading-relaxed">Visual calendar to organize your learning journey.</span>
+                  </div>
+                </Link>
+                <Link href="/generate" className="flex items-start gap-3.5 p-3.5 rounded-xl hover:bg-sidebar/40 transition-all group">
+                  <div className="w-9 h-9 rounded-lg bg-sidebar border border-border flex items-center justify-center text-text-muted shrink-0 group-hover:text-accent group-hover:border-accent/30 transition-colors">
+                    <Plus className="w-4.5 h-4.5" />
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[13px] font-bold text-text-heading group-hover:text-accent transition-colors">Roadmap Generator</span>
+                    <span className="text-[11px] text-text-muted leading-relaxed">AI-powered curricula tailored to your goals.</span>
+                  </div>
+                </Link>
+              </div>
+            </DesktopDropdown>
+
             <Link href="/pricing" className="px-3 py-1.5 text-[13.5px] font-semibold text-text-muted hover:text-text-heading transition-all tracking-tight rounded-lg hover:bg-sidebar/40">Pricing</Link>
 
             <DesktopDropdown id="learn" label="Learn" width="min-w-[850px]">
@@ -477,7 +505,7 @@ export default function PublicHeader() {
 
       {/* Mobile Menu Overlay */}
       <div 
-        className={`lg:hidden fixed inset-0 top-[var(--announcement-height,0px)] bg-header/98 backdrop-blur-2xl z-[45] transition-all duration-400 ease-[cubic-bezier(0.23,1,0.32,1)] ${
+        className={`lg:hidden fixed inset-0 top-[var(--announcement-height,0px)] bg-header/98 z-[45] transition-all duration-400 ease-[cubic-bezier(0.23,1,0.32,1)] ${
           isMobileMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-8 pointer-events-none'
         }`}
         style={{ marginTop: isScrolled ? '48px' : '56px' }}
@@ -487,6 +515,7 @@ export default function PublicHeader() {
             <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.15em] block mb-4 opacity-50">Menu Navigation</span>
             <div className="grid grid-cols-1 gap-3">
               {[
+                { l: "Study Planner", h: "/planner", i: Calendar, n: true },
                 { l: "Learning Hub", h: "/learn", i: GraduationCap },
                 { l: "Roadmap Explorer", h: "/explore", i: Globe },
                 { l: "Global Leaderboard", h: "/leaderboard", i: Trophy },
@@ -500,7 +529,10 @@ export default function PublicHeader() {
                     <div className="w-10 h-10 rounded-xl bg-background border border-border flex items-center justify-center">
                         <item.i className="w-5 h-5 text-accent" />
                     </div>
-                    <span className="text-[15px] font-bold text-text-heading">{item.l}</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[15px] font-bold text-text-heading">{item.l}</span>
+                      {item.n && <span className="text-[8px] font-black uppercase tracking-widest bg-accent text-white px-1.5 py-0.5 rounded leading-none">New</span>}
+                    </div>
                   </div>
                   <ArrowRight className="w-4 h-4 text-text-muted opacity-30" />
                 </Link>

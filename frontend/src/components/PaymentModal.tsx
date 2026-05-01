@@ -101,7 +101,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 backdrop-blur-[1px] animate-in fade-in duration-100">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 animate-in fade-in duration-100">
       <div className="bg-background border border-border rounded-none w-full max-w-[320px] shadow-2xl relative p-0">
         <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-callout-bg">
           <h2 className="inconsolata-ui text-[12px] font-bold text-text-heading uppercase tracking-widest">

@@ -203,7 +203,7 @@ export default function SubmissionModal({ roadmapId, moduleNumber, onClose, onCo
   const isRejected = evaluation?.evaluation_level === "Beginner";
 
   return (
-    <div data-testid="submission-modal" className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200 manrope-body">
+    <div data-testid="submission-modal" className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/40 animate-in fade-in duration-200 manrope-body">
       <div className="bg-background w-full max-w-[660px] border-[0.5px] border-border rounded-none relative max-h-[90vh] flex flex-col shadow-none transition-colors">
         
         {/* Header */}

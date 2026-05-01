@@ -377,7 +377,7 @@ export default function ExploreClient({
 
             {/* Report Prompt */}
             {reporting !== null && (
-                <div className="fixed inset-0 bg-black/90 backdrop-blur-xl flex items-center justify-center z-[110] p-4 animate-in fade-in duration-300">
+                <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-[110] p-4 animate-in fade-in duration-300">
                     <div className="bg-background rounded-2xl shadow-2xl max-w-sm w-full p-8 border border-border">
                         <h3 className="inconsolata-ui text-[18px] font-bold text-text-heading tracking-normal mb-6">Report Roadmap</h3>
                         <div className="space-y-2 mb-8">

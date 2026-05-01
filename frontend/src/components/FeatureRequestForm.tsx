@@ -38,7 +38,7 @@ export default function FeatureRequestForm({ onClose }: FeatureRequestFormProps)
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-[2px] animate-in fade-in duration-200 manrope-body">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 animate-in fade-in duration-200 manrope-body">
       <div className="bg-background w-full max-w-sm rounded-xl shadow-2xl border border-border relative overflow-hidden transition-colors">
         <button 
           onClick={onClose}

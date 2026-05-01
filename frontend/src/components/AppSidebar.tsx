@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { 
     LayoutDashboard, 
+    Calendar,
     Globe, 
     GraduationCap,
     Trophy, 
@@ -142,7 +143,7 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
             {isOpen && (
                 <div 
                     style={{ top: 'var(--announcement-height, 0px)' }}
-                    className="fixed inset-x-0 bottom-0 bg-black/20 z-[60] lg:hidden backdrop-blur-[2px] transition-all"
+                    className="fixed inset-x-0 bottom-0 bg-black/20 z-[60] lg:hidden transition-all"
                     onClick={onClose}
                 />
             )}
@@ -170,6 +171,9 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                         <nav className="space-y-0.5" aria-label="Operations navigation">
                             <Link href="/dashboard" aria-current={isActive('/dashboard') ? 'page' : undefined} className={navLinkClass('/dashboard')} onClick={onClose}>
                                 <LayoutDashboard className="w-3.5 h-3.5 stroke-[1.5px]" /> Dashboard
+                            </Link>
+                            <Link href="/planner" aria-current={isActive('/planner') ? 'page' : undefined} className={navLinkClass('/planner')} onClick={onClose}>
+                                <Calendar className="w-3.5 h-3.5 stroke-[1.5px]" /> Study Planner
                             </Link>
                             <Link href="/account" aria-current={isActive('/account') ? 'page' : undefined} className={navLinkClass('/account')} onClick={onClose}>
                                 <CreditCard className="w-3.5 h-3.5 stroke-[1.5px]" /> Account

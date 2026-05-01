@@ -69,3 +69,23 @@ async def get_weekly_stats(current_user: User = Depends(get_current_user)):
         .execute()
     
     return res.data
+
+@router.get("/range")
+async def get_sessions_range(
+    start_date: str,
+    end_date: str,
+    current_user: User = Depends(get_current_user)
+):
+    """Get sessions within a specific date range for the calendar"""
+    sb = get_supabase_client()
+    
+    # Supabase filter for date range
+    res = sb.table("learning_sessions") \
+        .select("duration_seconds, created_at") \
+        .eq("user_id", current_user.supabase_uid) \
+        .gte("created_at", start_date) \
+        .lte("created_at", end_date) \
+        .order("created_at") \
+        .execute()
+    
+    return res.data

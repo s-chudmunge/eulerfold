@@ -36,7 +36,7 @@ const FeatureRequestForm = ({ onClose }: { onClose: () => void }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-[200] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[200] bg-black/80 flex items-center justify-center p-4">
       <div className="bg-background border border-border w-full max-w-md rounded-2xl p-8 shadow-2xl animate-in zoom-in-95 duration-200">
         {!submitted ? (
           <>
