@@ -192,6 +192,22 @@ async def get_public_profile(username: str):
                 else: p_stats.medium += 1
                 p_stats.total += 1
 
+    # 5a. Fetch MCQ Stats
+    mcq_stats_res = sb.table("mcq_sessions") \
+        .select("questions, score") \
+        .eq("user_id", uid) \
+        .eq("status", "completed") \
+        .execute()
+    
+    if mcq_stats_res.data:
+        for session in mcq_stats_res.data:
+            questions = session.get("questions", [])
+            q_count = len(questions)
+            score = session.get("score", 0.0)
+            p_stats.mcq_total += q_count
+            p_stats.mcq_correct += round(score * q_count)
+            p_stats.total += q_count
+
     # 5b. Fetch MCQ Sessions
     mcq_history = []
     mcq_res = sb.table("mcq_sessions") \
@@ -274,6 +290,7 @@ async def get_activity(username: str):
     sub_res = sb.table("submissions").select("submitted_at").eq("user_email", email).gte("submitted_at", twelve_months_ago).execute()
     prac_res = sb.table("practice_progress").select("updated_at").eq("user_id", uid).eq("completed", True).gte("updated_at", twelve_months_ago).execute()
     sess_res = sb.table("learning_sessions").select("created_at").eq("user_id", uid).gte("created_at", twelve_months_ago).execute()
+    mcq_res = sb.table("mcq_sessions").select("created_at").eq("user_id", uid).eq("status", "completed").gte("created_at", twelve_months_ago).execute()
 
     activity = {}
     def add_to_activity(dt_str):
@@ -285,6 +302,7 @@ async def get_activity(username: str):
     for r in sub_res.data: add_to_activity(r["submitted_at"])
     for r in prac_res.data: add_to_activity(r["updated_at"])
     for r in sess_res.data: add_to_activity(r["created_at"])
+    for r in mcq_res.data: add_to_activity(r["created_at"])
     return activity
 @router.get("/profile/{username}/export")
 async def export_profile_pdf(username: str):
@@ -335,6 +353,23 @@ async def export_profile_pdf(username: str):
                 elif "hard" in diff: p_stats.hard += 1
                 else: p_stats.medium += 1
                 p_stats.total += 1
+
+    # Fetch MCQ Stats for PDF
+    mcq_stats_res = sb.table("mcq_sessions") \
+        .select("questions, score") \
+        .eq("user_id", uid) \
+        .eq("status", "completed") \
+        .execute()
+    
+    if mcq_stats_res.data:
+        for session in mcq_stats_res.data:
+            questions = session.get("questions", [])
+            q_count = len(questions)
+            score = session.get("score", 0.0)
+            p_stats.mcq_total += q_count
+            p_stats.mcq_correct += round(score * q_count)
+            # Add MCQ total questions to overall practice total for the "Practice Reps" stat
+            p_stats.total += q_count
 
     # 3. Fetch Proof of Work (Verified only)
     submissions = []

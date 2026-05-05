@@ -751,6 +751,8 @@ export interface PublicProfile {
         medium: number;
         hard: number;
         total: number;
+        mcq_correct: number;
+        mcq_total: number;
     };
 }
 export const profileAPI = {

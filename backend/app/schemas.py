@@ -301,6 +301,8 @@ class PracticeStats(BaseModel):
     medium: int = 0
     hard: int = 0
     total: int = 0
+    mcq_correct: int = 0
+    mcq_total: int = 0
 
 # --- MCQ Schemas ---
 

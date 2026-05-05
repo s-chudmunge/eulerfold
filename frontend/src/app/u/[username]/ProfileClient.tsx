@@ -308,30 +308,33 @@ export default function ProfileClient({ profile }: Props) {
                             {/* Intelligence Bars - Pricing page inspiration */}
                             <div className="space-y-4 pt-8 border-t border-border">
                             <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-[0.25em] mb-4 inconsolata-ui">Intelligence Analytics</h3>
-                            {[
-                                { label: 'Level I', count: profile.practice_stats?.easy || 0, color: 'bg-teal-500' },
-                                { label: 'Level II', count: profile.practice_stats?.medium || 0, color: 'bg-teal-600' },
-                                { label: 'Level III', count: profile.practice_stats?.hard || 0, color: 'bg-teal-700' }
-                            ].map((item) => {
-                                const total = profile.practice_stats?.total || 1;
-                                const percentage = (item.count / total) * 100;
-                                return (
-                                    <div key={item.label} className="space-y-2">
-                                        <div className="flex justify-between items-end">
-                                            <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">{item.label}</span>
-                                            <span className="text-[11px] font-bold text-text-heading tabular-nums">{item.count}</span>
+                            {(() => {
+                                const standardTotal = (profile.practice_stats?.easy || 0) + (profile.practice_stats?.medium || 0) + (profile.practice_stats?.hard || 0);
+                                const standardDisplayTotal = standardTotal || 1;
+                                return [
+                                    { label: 'Level I', count: profile.practice_stats?.easy || 0, color: 'bg-teal-500', total: standardDisplayTotal },
+                                    { label: 'Level II', count: profile.practice_stats?.medium || 0, color: 'bg-teal-600', total: standardDisplayTotal },
+                                    { label: 'Level III', count: profile.practice_stats?.hard || 0, color: 'bg-teal-700', total: standardDisplayTotal },
+                                    { label: 'MCQ Mastery', count: profile.practice_stats?.mcq_correct || 0, color: 'bg-accent', total: profile.practice_stats?.mcq_total || 1 }
+                                ].map((item) => {
+                                    const percentage = (item.count / item.total) * 100;
+                                    return (
+                                        <div key={item.label} className="space-y-2">
+                                            <div className="flex justify-between items-end">
+                                                <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">{item.label}</span>
+                                                <span className="text-[11px] font-bold text-text-heading tabular-nums">{item.count}{item.label === 'MCQ Mastery' && ` / ${item.total}`}</span>
+                                            </div>
+                                            <div className="h-1 w-full bg-sidebar rounded-none overflow-hidden border border-border/50">
+                                                <div
+                                                    className={`h-full ${item.color} transition-all duration-1000`}
+                                                    style={{ width: `${item.count > 0 ? Math.max(percentage, 5) : 0}%` }}
+                                                />
+                                            </div>
                                         </div>
-                                        <div className="h-1 w-full bg-sidebar rounded-none overflow-hidden border border-border/50">
-                                            <div 
-                                                className={`h-full ${item.color} transition-all duration-1000`}
-                                                style={{ width: `${item.count > 0 ? Math.max(percentage, 5) : 0}%` }}
-                                            />
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                            </div>
-                            </aside>
+                                    );
+                                });
+                            })()}
+                            </div>                            </aside>
 
                             {/* Main Content Area */}
                             <main className="flex-1 min-w-0">

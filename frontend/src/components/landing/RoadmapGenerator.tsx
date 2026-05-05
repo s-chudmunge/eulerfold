@@ -200,8 +200,8 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
                   onClick={() => setFormData(prev => ({ ...prev, time_value: w }))}
                   className={`inconsolata-ui px-4 py-1.5 rounded-none border text-[10px] font-bold uppercase tracking-widest transition-all
                     ${formData.time_value === w 
-                      ? 'bg-[var(--text-heading)] text-[var(--bg-main)] border-[var(--text-heading)]' 
-                      : 'bg-background text-text-muted border-border hover:border-[var(--accent)] hover:text-accent'
+                      ? 'bg-accent text-white border-accent shadow-lg shadow-accent/20' 
+                      : 'bg-background text-text-muted border-border hover:border-accent hover:text-accent'
                     }`}
                 >
                   {w} Weeks
