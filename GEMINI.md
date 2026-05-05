@@ -39,6 +39,8 @@ Read it fully before making any changes. Rules here are not suggestions.
 
 - Maintain high information density. Target ~44px row height in tables.
 - Keep cards and link components compact across Dashboard, Explore, and Learning Directory pages.
+- **Component Style:** Prefer squared edges over heavily rounded ones. Use `rounded-lg` or `rounded-md` for cards and inputs, and `rounded-xl` for larger containers. Avoid `rounded-2xl` or `rounded-3xl` unless specified.
+- **Spacing:** Minimize unnecessary padding and margins to keep the UI tight and focused.
 
 ---
 
@@ -100,5 +102,6 @@ Read it fully before making any changes. Rules here are not suggestions.
 
 - I am Sankalp. I write clean, logical code. Match that standard.
 - Prefer clarity over cleverness. If a solution is hard to read, it's wrong.
+- **Writing Style:** Use simple, direct English. Avoid "fluffy" or overly marketing-focused language.
 - ALWAYS use `https://www.eulerfold.com` for all links and assets. NEVER use the non-www `https://eulerfold.com` version.
 

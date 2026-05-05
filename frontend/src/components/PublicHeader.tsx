@@ -255,6 +255,7 @@ export default function PublicHeader() {
           </Link>
 
           <nav className="hidden lg:flex items-center gap-0.5 h-full">
+            <Link href="/about" className="px-3 py-1.5 text-[13.5px] font-semibold text-text-muted hover:text-text-heading transition-all tracking-tight rounded-lg hover:bg-sidebar/40">About</Link>
             <Link href="/leaderboard" className="px-3 py-1.5 text-[13.5px] font-semibold text-text-muted hover:text-text-heading transition-all tracking-tight rounded-lg hover:bg-sidebar/40">Leaderboard</Link>
             <Link href="/explore" className="px-3 py-1.5 text-[13.5px] font-semibold text-text-muted hover:text-text-heading transition-all tracking-tight rounded-lg hover:bg-sidebar/40">Explore</Link>
 
@@ -539,7 +540,9 @@ export default function PublicHeader() {
                 { l: "Exams & Papers", h: "/archive/exams/previous-year-papers", i: Archive },
                 { l: "Research Decoded", h: "/research-decoded", i: Microscope },
                 { l: "Glossary & Articles", h: "/articles", i: BookOpen },
-                { l: "Premium Plans", h: "/pricing", i: CreditCard }
+                { l: "Premium Plans", h: "/pricing", i: CreditCard },
+                { l: "About Us", h: "/about", i: Globe },
+                { l: "Careers", h: "/careers", i: Briefcase }
               ].map(item => (
                 <Link key={item.h} href={item.h} className="flex items-center justify-between p-4.5 bg-sidebar/40 rounded-2xl border border-border/50">
                   <div className="flex items-center gap-4">

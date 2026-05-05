@@ -22,6 +22,7 @@ export default function SitemapPage() {
         { name: "BuildPilot", href: "/buildpilot" },
         { name: "Roadmap Generator", href: "/generate" },
         { name: "Explore Roadmaps", href: "/explore" },
+        { name: "Roadmap Index", href: "/roadmap" },
         { name: "Leaderboard", href: "/leaderboard" },
         { name: "Pricing", href: "/pricing" },
       ]
@@ -51,6 +52,8 @@ export default function SitemapPage() {
     {
       title: "Support & Legal",
       links: [
+        { name: "About Us", href: "/about" },
+        { name: "Careers", href: "/careers" },
         { name: "Settings", href: "/settings" },
         { name: "Help Center", href: "/help" },
         { name: "Privacy Policy", href: "/privacy" },

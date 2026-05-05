@@ -19,16 +19,21 @@ export default function Footer() {
             <Link href="/dashboard" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Dashboard</Link>
             <Link href="/login" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Sign in</Link>
             <Link href="/explore" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Explore</Link>
+            <Link href="/roadmap" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Roadmap Index</Link>
             <Link href="/generate" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Generate</Link>
+            <Link href="/buildpilot" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">BuildPilot</Link>
+            <Link href="/planner" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Study Planner</Link>
             <Link href="/learn" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Learn</Link>
             <Link href="/pricing" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Pricing</Link>
             <Link href="/leaderboard" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Leaderboard</Link>
+            <Link href="/sitemap" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Sitemap</Link>
           </div>
         </div>
         <div className="flex flex-col gap-2">
           <h4 className="text-[13px] font-bold text-text-heading opacity-30">Resources</h4>
           <div className="flex flex-col gap-1">
             <Link href="/research-decoded" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Research</Link>
+            <Link href="/articles" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Article Index</Link>
             <Link href="/help" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Help center</Link>
             <Link href="/settings" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Settings</Link>
           </div>
@@ -36,6 +41,8 @@ export default function Footer() {
         <div className="flex flex-col gap-2">
           <h4 className="text-[13px] font-bold text-text-heading opacity-30">Company</h4>
           <div className="flex flex-col gap-1">
+            <Link href="/about" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">About us</Link>
+            <Link href="/careers" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Careers</Link>
             <Link href="/terms" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Terms of service</Link>
             <Link href="/privacy" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Privacy</Link>
           </div>
