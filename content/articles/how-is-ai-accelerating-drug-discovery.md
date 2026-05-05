@@ -31,36 +31,57 @@ AI acts as a high-speed navigator. Using **Generative Chemistry** (often based o
 ```d2
 direction: down
 
-Target: "Biological Target" {
-  Protein: "Disease-Related Protein" {
-    shape: cloud
-    style: { stroke: "#0f766e" }
-  }
+ChemicalSpace: "Virtual Chemical Universe" {
+  shape: cloud
+  tooltip: "10^60 possible molecules"
 }
 
-AI_Engine: "Generative Loop" {
-  style: { stroke: "#0f766e"; stroke-width: 2 }
-  Design: "Molecule Generator" {
+Discovery_Pipeline: "AI Discovery Funnel" {
+  style: {
+    stroke: "#0f766e"
+    stroke-width: 2
+  }
+
+  Generative: "1. Generative Design" {
     shape: diamond
+    Model: "Diffusion / VAEs"
+    Target: "Candidate Generation"
   }
-  Simulation: "3D Docking Simulation" {
-    shape: rectangle
+
+  Physics: "2. Geometric Filter" {
+    shape: hexagon
+    Docking: "3D Protein Docking"
+    Energy: "Binding Affinity (ΔG)"
   }
+
+  Safety: "3. ADMET Predictor" {
+    Toxicity: "Toxicity Screening"
+    Stability: "Metabolic Stability"
+  }
+
+  Generative -> Physics: "High-Hits"
+  Physics -> Safety: "Optimized Leads"
 }
 
 Lab: "Physical Validation" {
-  Synthesis: "Automated Synthesis" {
-    shape: parallelogram
-    style: { fill: "#fee2e2" }
-  }
+  style: {fill: "#f0fdfa"}
+  Synthesis: "Automated Chemistry"
   Assay: "Biological Testing"
 }
 
-Target.Protein -> AI_Engine.Design: "Structural Constraints"
-AI_Engine.Design -> AI_Engine.Simulation: "New Candidate"
-AI_Engine.Simulation -> AI_Engine.Design: "Feedback Loop"
-AI_Engine.Design -> Lab.Synthesis: "Optimal Candidate"
-Lab.Synthesis -> Lab.Assay
+ChemicalSpace -> Discovery_Pipeline.Generative
+Discovery_Pipeline.Safety -> Lab: "PCC (Pre-clinical Candidate)"
+Lab -> Discovery_Pipeline.Generative: "SAR Feedback Loop" {
+  style: {
+    stroke-dash: 3
+    stroke: "#0f766e"
+  }
+}
+
+Result: "Clinical Trial Entry" {
+  shape: parallelogram
+  style: {fill: "#fee2e2"}
+}
 ```
 
 ## The Lock and Key: Geometric Deep Learning {#geometric}
@@ -75,6 +96,20 @@ Even if a drug works perfectly on a protein in a test tube, it might fail in a h
 
 AI models are now trained on massive historical datasets of drug failures to predict these **ADMET properties** (Absorption, Distribution, Metabolism, Excretion, and Toxicity). By running these "Safety Filters" early in the digital phase, researchers can identify red flags years before they would have been discovered in expensive clinical trials. Advanced models can even predict **Drug-Drug Interactions (DDIs)**, ensuring a new medicine won't react dangerously with common treatments for other conditions.
 
-## The Future: Orphan Diseases and Personalization {#future}
+## The First AI Drugs {#success}
 
+This isn't just theoretical. In recent years, several AI-designed drugs have entered human clinical trials:
+- **Insilico Medicine:** Their drug for *Idiopathic Pulmonary Fibrosis* was the first to be discovered and designed by AI to reach Phase II clinical trials.
+- **Exscientia:** They successfully moved multiple AI-designed candidates into trials for cancer and obsessive-compulsive disorder (OCD).
+
+These milestones prove that AI can navigate the "Valley of Death"—the gap between a computer simulation and a working human medicine.
+
+## The Economic Impact {#economics}
+
+If AI can reduce the failure rate of drug discovery by even 10%, it would save the global healthcare system billions of dollars. More importantly, it shifts the economics of **Orphan Diseases**. 
+
+Previously, if a disease only affected 5,000 people, the \$2.6 billion cost of development made it impossible to pursue a cure. By dropping that cost into the tens of millions, AI makes it profitable to save lives that were previously deemed "unprofitable."
+
+## The Future: Orphan Diseases and Personalization {#future}
+...
 Because AI reduces the cost of discovery so dramatically, it is making it economically viable to develop drugs for **Orphan Diseases**—rare conditions that affect small numbers of people and were previously ignored by big pharmaceutical companies. Furthermore, we are moving toward **Personalized Medicine**, where AI could help design a treatment tailored to the specific genetic makeup of an individual's tumor. We are entering an era of "Programmable Medicine," where the path from identifying a new virus to deploying a treatment is measured in days, not years.

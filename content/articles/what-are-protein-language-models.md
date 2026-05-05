@@ -31,31 +31,38 @@ pLMs use **Self-Supervised Learning** to learn this grammar. By "reading" hundre
 ```d2
 direction: down
 
-Training: "Data & Scale" {
-  Database: "UniRef / BFD Database" {
-    shape: rectangle
-    style: { fill: "#f0fdfa" }
+Inputs: "Amino Acid Sequence" {
+  Seq: "M A T S L P ... (20-Letter Alphabet)" {shape: rectangle}
+}
+
+Engine: "Protein Transformer (pLM)" {
+  style: {
+    stroke: "#0f766e"
+    stroke-width: 2
+  }
+  Attention: "Self-Attention Mechanism" {shape: diamond}
+  Embeddings: "Contextual Latent Vectors"
+  Attention -> Embeddings
+}
+
+Latent_Space: "Biological Manifold" {
+  shape: cloud
+  style: {fill: "#e8f2f1"}
+  Cluster1: "Homologous Structures"
+  Cluster2: "Conserved Functions"
+}
+
+Downstream: "Predictive Heads" {
+  Structure: "3D Folding (e.g., ESMFold)"
+  Property: "Thermostability & Solubility" {
+    shape: parallelogram
+    style: {fill: "#fee2e2"}
   }
 }
 
-AI: "The Protein LLM" {
-  style: { stroke: "#0f766e"; stroke-width: 2 }
-  Transformer: "Self-Attention Mechanism" {
-    shape: diamond
-  }
-  Latent: "Biological Latent Space" {
-    shape: cloud
-  }
-  Transformer -> Latent
-}
-
-Output: "Downstream Tasks" {
-  Predict: "Function & Structure"
-  Design: "De Novo Design"
-}
-
-Training -> AI: "Self-Supervised Learning"
-AI -> Output: "Biological Inference"
+Inputs -> Engine.Attention: "Tokenization"
+Engine.Embeddings -> Latent_Space: "Mapping"
+Latent_Space -> Downstream: "Transfer Learning"
 ```
 
 ## The "Biological" Latent Space {#latent}

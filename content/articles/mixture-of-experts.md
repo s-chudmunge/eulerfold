@@ -82,6 +82,18 @@ In a standard dense Transformer, the "knowledge" of the model is spread across m
 
 The heart of the MoE system is the **Gating Network** or Router. For every input, the router performs a quick calculation to determine which experts have the necessary "skills" to handle the data. This isn't just about topic (e.g., sending math to a math expert); research shows that experts often specialize in **syntax and structure**, such as handling specific types of punctuation, verbs, or abstract logic. This selective activation is a form of **Conditional Computation**, where the model's path is determined dynamically in real-time.
 
+## The Routing Collapse Problem {#routing-collapse}
+
+The biggest risk in an MoE model is **Expert Imbalance** (or Routing Collapse). If the Gating Network decides that "Expert A" is slightly better than "Expert B" early in training, it will send more tokens to Expert A. This makes Expert A even smarter, causing the Gating Network to favor it even more.
+
+Soon, only one expert is doing all the work while the others remain "lazy" and untrained. To fix this, engineers use an **Auxiliary Loss**—a mathematical penalty that forces the model to distribute tokens evenly across all experts, ensuring the full capacity of the model is utilized.
+
+## The Communication Bottleneck {#communication}
+
+While MoE models are computationally efficient, they are a nightmare for hardware networking. In a distributed system, different experts often live on different GPUs or even different servers. 
+
+When a token needs to be routed to an expert on a different machine, it creates **All-to-All communication overhead**. The model might spend more time moving data across the network than it does actually performing calculations. This is why MoE models require extremely fast interconnects (like NVLink) to be effective at scale.
+
 ## The VRAM vs. Compute Trade-off {#vram-tradeoff}
 
 While MoE models are fast to run (low compute), they are heavy to store. Because the model needs to have all its experts ready at a moment's notice, the entire model—including the "inactive" experts—must be loaded into the GPU's memory (**VRAM**). This is why a model like Mixtral 8x7B runs as fast as a 13B model but requires the memory of a 47B model. 

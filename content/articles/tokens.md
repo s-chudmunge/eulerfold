@@ -86,6 +86,18 @@ Instead of treating "unbelievable" as one token, the tokenizer might break it in
 
 The "Vocabulary" of a model is a fixed list of all the tokens it knows. GPT-4, for example, has a vocabulary of roughly 100,000 tokens. Every token in this list is assigned a unique integer ID. During inference, the model predicts the *ID* of the next token, which the tokenizer then converts back into the text you see on the screen.
 
-## Efficiency and Cost {#efficiency}
+## The Multilingual Gap {#multilingual}
 
+Tokenization is not "language neutral." Because most models are trained on English-heavy datasets, tokenizers are highly efficient at English. A single complex word in English might be one token, but the same concept in Hindi, Japanese, or Arabic might require 4 or 5 tokens. 
+
+This creates a "Token Tax" for non-English speakers—it makes API calls more expensive, consumes the context window faster, and can actually make the model perform worse because it has to "think" in smaller, less meaningful fragments.
+
+## Security and Glitch Tokens {#glitch}
+
+Because tokenizers are trained on raw internet data, they sometimes include weird artifacts known as **"Glitch Tokens."** A famous example is the token for "SolidGoldMagikarp" (a Reddit user's name). 
+
+Because that specific name appeared thousands of times in the training data but was never properly linked to common language during fine-tuning, the model "glitches" when it sees it, often producing nonsensical or creepy outputs. Token boundaries are also a common target for **Prompt Injection** attacks, where users hide malicious instructions inside token sequences that the model's filters might miss.
+
+## Efficiency and Cost {#efficiency}
+...
 Tokenization directly impacts the cost and speed of AI. Since LLMs have a "context window" (a limit on how many tokens they can process at once), a more efficient tokenizer that uses fewer tokens to represent the same text allows the model to "remember" more information. This is why different models (Gemini vs. Llama) might have different costs for the same paragraph of text.

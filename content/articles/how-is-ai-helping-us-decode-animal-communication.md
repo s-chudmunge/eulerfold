@@ -37,39 +37,38 @@ Just as ChatGPT views text as a series of "tokens" (fragments of words), bioacou
 ```d2
 direction: down
 
-Translation_Pipeline: "Interspecies Decoding" {
-  style: {
-    stroke: "#0F766E"
-    stroke-width: 2
-  }
-
-  Acquisition: "Bioacoustic Capture" {
-    Hydrophones: "Raw Audio Data" {shape: cylinder}
-    PreProcess: "Denoising & FFT"
-    Hydrophones -> PreProcess
-  }
-
-  Analysis: "Transformer Engine" {
-    Tokenization: "Acoustic Units"
-    Encoder: "Neural Embedding" {
-      shape: diamond
-      style: { fill: "#e8f2f1" }
-    }
-    Syntax: "Grammar Discovery"
-    
-    Tokenization -> Encoder -> Syntax
-  }
-
-  Discovery: "Biological Semantic Map" {
-    Dialects: "Regional Identity"
-    Context: "Social Meaning" {
-      style: { stroke: "#dc2626" }
-    }
-  }
+Inputs: "Interspecies Data" {
+  Acoustic: "Vocal Sequences (Codas/Rumbles)" {shape: cylinder}
+  Behavior: "Contextual Data (Video/GPS)" {shape: cylinder}
 }
 
-Translation_Pipeline.Acquisition -> Translation_Pipeline.Analysis: "Spectrograms"
-Translation_Pipeline.Analysis -> Translation_Pipeline.Discovery: "Pattern Vectors"
+Processor: "Bioacoustic Alignment Engine" {
+  style: {
+    stroke: "#0f766e"
+    stroke-width: 2
+  }
+  pLM: "Bioacoustic Transformer" {
+    shape: diamond
+    style: {fill: "#e8f2f1"}
+  }
+  Latent: "Acoustic Latent Space" {shape: cloud}
+  pLM -> Latent
+}
+
+Mapping: "Decoding Pipeline" {
+  Contrastive: "Cross-Modal Contrastive Learning" {
+    tooltip: "Aligning sound clusters with behavioral clusters"
+  }
+  Dictionary: "Interspecies Semantic Map" {
+    shape: parallelogram
+    style: {fill: "#fee2e2"}
+  }
+  Contrastive -> Dictionary
+}
+
+Inputs.Acoustic -> Processor.pLM: "Spectrograms"
+Inputs.Behavior -> Mapping.Contrastive: "Ground Truth"
+Processor.Latent -> Mapping.Contrastive: "Encoded Patterns"
 ```
 
 ## Decoding the Sperm Whale Alphabet {#whales}
@@ -78,8 +77,16 @@ Sperm whales communicate through rhythmic patterns of clicks called **codas**. U
 
 More importantly, AI has helped identify "contextual" meaning. By correlating whale vocalizations with their behavior (diving, socializing, or sleeping), the AI can begin to map which sound sequences represent which social activities.
 
-## Beyond Whales: Bats and Elephants {#others}
+## The Ethics of Talking Back {#ethics}
 
+As we move from listening to communicating, we enter a moral minefield. If we can mimic whale codas or elephant rumbles, should we? Using AI to "broadcast" to animals could be used to steer them away from shipping lanes or poachers, but it could also accidentally disrupt their complex social hierarchies or mating rituals. There is a risk of creating "anthropomorphic noise"—essentially confusing animals with human-generated AI "gibberish" that looks like language but lacks the cultural context of the species.
+
+## Universal Grammar? {#universal-grammar}
+
+For decades, the famous linguist Noam Chomsky argued that humans have a "Universal Grammar" that separates us from all other species. AI is now testing this hypothesis. By applying the same mathematical tests we use on human languages (like Zipf's Law, which relates word frequency to rank), researchers are finding that some animal communication systems follow similar statistical rules. This raises a profound possibility: that the "rules of information" are universal across all biological life, and AI is simply the tool that allows us to see the shared code of nature.
+
+## Beyond Whales: Bats and Elephants {#others}
+...
 While whales are the "moonshot" of animal communication, AI is making strides elsewhere:
 - **Bats:** AI can now distinguish between individual Egyptian fruit bats in a dark cave and identify if they are "arguing" over food, sleep, or mating.
 - **Elephants:** Researchers are using AI to identify "low-frequency rumbles" that humans can't even hear, mapping how elephant families coordinate movements over hundreds of miles.

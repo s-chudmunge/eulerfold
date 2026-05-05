@@ -40,44 +40,48 @@ By "massaging" the data through layers of neural networks, the model learns the 
 ```d2
 direction: down
 
-Discovery_Cycle: "Active Learning Discovery" {
+SearchSpace: "Crystal Search Space" {
+  Combinations: "Atomic Combinations (10^12)" {shape: cloud}
+}
+
+Funnel: "Screening Funnel" {
   style: {
-    stroke: "#0F766E"
+    stroke: "#0f766e"
     stroke-width: 2
   }
 
-  Generator: "Candidate Engine" {
-    Substitution: "Atomic Substitution"
-    Symmetry: "Crystal Symmetry Search"
-    Substitution -> Symmetry: "Propose Structure"
-  }
-
-  GNoME_AI: "Stability Predictor (GNN)" {
+  GNN: "GNoME (GNN Predictor)" {
     shape: diamond
-    style: {
-      fill: "#e8f2f1"
-    }
+    Task: "Stability Estimation"
   }
 
-  Verification: "Ground Truth Validation" {
-    DFT: "Density Functional Theory" {
-      shape: cylinder
-      style: {
-        stroke: "#dc2626"
-      }
-    }
-    Lab: "A-Lab Synthesis" {
-      style: {
-        fill: "#f0fdfa"
-      }
-    }
+  Physics_Filter: "Convex Hull Analysis" {
+    shape: hexagon
+    Logic: "Energy Above Hull ≤ 0.0"
+  }
+
+  DFT: "DFT Validation" {
+    shape: cylinder
+    style: {fill: "#e8f2f1"}
+    tooltip: "Quantum Mechanical Ground Truth"
+  }
+
+  GNN -> Physics_Filter: "Candidates"
+  Physics_Filter -> DFT: "Stable Structures"
+}
+
+Result: "New Stable Materials" {
+  Data: "380,000 Verified Crystals" {
+    shape: parallelogram
+    style: {fill: "#fee2e2"}
   }
 }
 
-Discovery_Cycle.Generator -> Discovery_Cycle.GNoME_AI: "Candidates"
-Discovery_Cycle.GNoME_AI -> Discovery_Cycle.Verification.DFT: "High-Confidence"
-Discovery_Cycle.Verification.DFT -> Discovery_Cycle.Verification.Lab: "Physical Reality"
-Discovery_Cycle.Verification.DFT -> Discovery_Cycle.Generator: "Retraining Signal"
+SearchSpace -> Funnel.GNN
+Funnel.DFT -> Result: "Physical Realization"
+Funnel.DFT -> Funnel.GNN: "Active Learning Loop" {
+  style: {stroke-dash: 3}
+}
 ```
 
 ## Scaling to 800 Years of Knowledge {#scaling}

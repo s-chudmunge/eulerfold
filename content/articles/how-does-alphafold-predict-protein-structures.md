@@ -32,38 +32,56 @@ If amino acid A and amino acid B always change in tandem over millions of years,
 ```d2
 direction: down
 
-Data: "Evolutionary Inputs" {
-  Seq: "Amino Acid Sequence" {
-    shape: rectangle
-    style: { fill: "#f0fdfa" }
-  }
+Inputs: "Data Pipelines" {
   MSA: "Multiple Sequence Alignment" {
-    shape: rectangle
-    style: { fill: "#f0fdfa" }
+    tooltip: "Evolutionary History"
+    shape: cylinder
+  }
+  Templates: "Structural Templates" {
+    shape: cylinder
   }
 }
 
-Engine: "AlphaFold Core (Evoformer)" {
-  style: { stroke: "#0f766e"; stroke-width: 2 }
-  Attention: "Spatial Reasoning" {
+Evoformer: "Evoformer Engine" {
+  style: {
+    stroke: "#0f766e"
+    stroke-width: 2
+  }
+
+  MSATrack: "MSA Representation" {
+    RowAtt: "Row-wise Attention" {shape: diamond}
+    ColAtt: "Column-wise Attention" {shape: diamond}
+    RowAtt -> ColAtt
+  }
+
+  PairTrack: "Pair Representation" {
+    TriAtt: "Triangular Multiplicative Update" {shape: hexagon}
+    TriSelf: "Triangular Self-Attention" {shape: diamond}
+    TriAtt -> TriSelf
+  }
+
+  MSATrack.RowAtt <-> PairTrack.TriAtt: "Outer Product Mean" {
+    style: {stroke-dash: 3}
+  }
+}
+
+StructureModule: "3D Structure Module" {
+  IPA: "Invariant Point Attention" {
     shape: diamond
+    style: {fill: "#e8f2f1"}
   }
-  Graph: "Pairwise Distances" {
-    shape: cloud
-  }
-  Attention <-> Graph: "Co-evolutionary Signal"
+  Equiv: "3D Equivariant Refinement"
+  IPA -> Equiv
 }
 
-Prediction: "Final 3D Structure" {
-  Model: "XYZ Atomic Coordinates" {
-    shape: parallelogram
-    style: { fill: "#fee2e2" }
-  }
-  Confidence: "pLDDT Confidence Map"
-}
+Inputs -> Evoformer: "Embedding & Feature Extraction"
+Evoformer -> StructureModule: "Residue Pair Constraints"
+StructureModule -> Output: "Atomic Coordinates (PDB)"
 
-Data -> Engine: "Structural Templates"
-Engine -> Prediction: "Iterative Refinement"
+Output: "Validated Prediction" {
+  shape: parallelogram
+  style: {fill: "#fee2e2"}
+}
 ```
 
 ## Moving from 2D to 3D {#spatial}
@@ -88,4 +106,8 @@ Before AlphaFold, determining a single protein structure could take years of Ph.
 
 ## AlphaFold 3: The Full Machinery {#multimodal}
 
-The latest version, **AlphaFold 3**, goes beyond just proteins. It can predict how proteins interact with DNA, RNA, and small molecules (ligands). This is critical because proteins rarely work alone; they function as part of complex biological circuits. By seeing the entire assembly, we can understand the fundamental mechanisms of life at the atomic level.
+The latest version, **AlphaFold 3**, goes beyond just proteins. It can predict how proteins interact with DNA, RNA, and small molecules (ligands). This is critical because proteins rarely work alone; they function as part of complex biological circuits. By seeing the entire assembly, we can understand the fundamental mechanisms of life at the atomic level—from how a transcription factor binds to a gene to how a drug candidate locks onto a receptor.
+
+## The Open Source Ecosystem {#open-source}
+
+The impact of AlphaFold was so profound that it sparked a wave of open-source alternatives. **OpenFold** and **RoseTTAFold** have recreated and in some cases extended AlphaFold's capabilities. These models allow the scientific community to study the internal "weights" of the AI, fine-tune it for specific types of proteins (like antibodies), and run it on their own hardware without relying on proprietary clouds. This "democratization of structure" ensures that the protein revolution belongs to the entire global scientific community, enabling researchers in any lab to participate in structural biology.

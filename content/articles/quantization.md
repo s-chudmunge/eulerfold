@@ -97,6 +97,18 @@ The most common method is **PTQ**, where a model is trained normally in high pre
 2.  **Scaling**: Finding a constant value that maps the FP16 range to the target integer range (like -127 to 127 for 8-bit).
 3.  **Rounding**: Converting the values to the nearest integer.
 
-## Why it Matters {#importance}
+## PTQ vs. QAT: Two Paths to Compression {#ptq-vs-qat}
 
+There are two primary ways to approach quantization:
+- **Post-Training Quantization (PTQ):** The model is trained in full precision and compressed *after* training. It's fast and requires little data but can lead to a "quantization error" where the model loses some of its nuance.
+- **Quantization-Aware Training (QAT):** The model is trained to handle low precision from the start. During training, it "simulates" the rounding errors it will face later. This is much more computationally expensive but results in a model that is significantly more accurate at 4-bit or 8-bit.
+
+## The Open Source Edge: GGUF and Llama.cpp {#open-source}
+
+The true impact of quantization has been seen in the open-source community. Tools like **Llama.cpp** and formats like **GGUF** have revolutionized how people interact with AI. By quantizing models to 4-bit or 5-bit, developers have made it possible to run a 70B parameter model on a modern Mac Studio or an 8B model on a smartphone. 
+
+This has effectively "unlocked" AI from the cloud, enabling private, local execution that is faster and more secure. It also allows for **Mixed Precision** setups, where different parts of the model are stored at different bit-depths to optimize for both speed and accuracy.
+
+## Why it Matters {#importance}
+...
 Without quantization, the "AI Revolution" would be restricted to massive data centers. Techniques like **bitsandbytes** (4-bit) and **GGUF** allow researchers and hobbyists to run state-of-the-art models on laptops. It is the bridge between theoretical research and local, private execution.

@@ -23,22 +23,40 @@ At the heart of every modern AI system—whether it’s translating text, genera
 
 ```d2
 direction: down
-Input: "Raw Input (Text)" {shape: parallelogram}
-Processing: "Encoding Pipeline" {
-  Tokenizer: "Tokenizer"
-  Matrix: "Embedding Matrix"
-  Tokenizer -> Matrix: "ID Lookup"
+
+High_Dim: "Discrete Input Space" {
+  Vocab: "One-Hot / Raw IDs (100k+)" {shape: rectangle}
 }
-Space: "Latent Space" {
+
+Projection: "Encoder Stage" {
+  style: {
+    stroke: "#0f766e"
+    stroke-width: 2
+  }
+  Matrix: "Embedding Weights (W_E)" {shape: cylinder}
+  Lookup: "Vector Retrieval" {shape: diamond}
+  Matrix -> Lookup
+}
+
+Latent_Space: "Semantic Latent Space (z)" {
   shape: cloud
-  Vector: "Continuous Vector"
+  style: {fill: "#e8f2f1"}
+  
+  Relationships: "Vector Math" {
+    King: "King"
+    Man: "Man"
+    Woman: "Woman"
+    Queen: "Queen"
+    
+    King -> Man: "Gender Dir" {style: {stroke: "#dc2626"}}
+    King -> Queen: "Result: K - M + W" {
+      style: {stroke: "#0f766e"; stroke-width: 2}
+    }
+  }
 }
 
-Input -> Processing.Tokenizer
-Processing.Matrix -> Space.Vector
-
-Processing.Matrix.style: {stroke: "#0F766E"}
-Space.style: {fill: "#e8f2f1"}
+High_Dim -> Projection.Lookup
+Projection.Lookup -> Latent_Space: "Projected Coordinate"
 ```
 
 ## Meaning as a Coordinate {#coordinates}

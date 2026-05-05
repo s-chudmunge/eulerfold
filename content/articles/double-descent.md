@@ -21,24 +21,31 @@ For decades, the fundamental rule of statistics was simple: as you increase mode
 
 ```d2
 direction: down
-Classical: "Classical Regime" {
-  Under: "Under-parameterized"
-  Bias: "High Bias"
+
+Classical: "1. Classical Regime" {
+  shape: rectangle
+  tooltip: "Under-parameterized"
 }
-Threshold: "Interpolation Threshold" {
+
+Threshold: "2. Interpolation Threshold" {
   shape: diamond
-  Peak: "Maximum Test Error"
-}
-Modern: "Modern Regime" {
-  Over: "Over-parameterized"
-  Descent: "Second Descent"
+  style: {
+    fill: "#fee2e2"
+    stroke: "#dc2626"
+  }
 }
 
-Classical -> Threshold: "Capacity Increases"
-Threshold -> Modern: "Further Scaling"
+Modern: "3. Modern Regime" {
+  shape: rectangle
+  tooltip: "Over-parameterized"
+}
 
-Threshold.style: {stroke: "#dc2626"; fill: "#fee2e2"}
-Modern.style: {stroke: "#0F766E"; fill: "#e8f2f1"}
+Classical -> Threshold: "Error Drops (Bias reduction)"
+Threshold -> Modern: "Second Descent (Implicit Regularization)"
+
+Label: "Increasing Model Capacity --->" {
+  shape: text
+}
 ```
 
 ## The Classic View: Bias-Variance Tradeoff {#the-classic-view}

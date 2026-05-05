@@ -42,43 +42,40 @@ It maps the Earth onto a graph where nodes represent atmospheric data. These nod
 ```d2
 direction: down
 
-Forecasting_Pipeline: "Neural Weather Prediction" {
-  style: {
-    stroke: "#0F766E"
-    stroke-width: 2
-  }
-
-  Input_State: "Atmospheric Observations" {
-    Current: "Current (t0)"
-    Historical: "Past (t-6h)"
-    shape: rectangle
-    style: { fill: "#e8f2f1" }
-  }
-
-  Processing: "GraphCast Core" {
-    Grid_to_Mesh: "Multi-Resolution Encoder"
-    Processor: "Message Passing GNN" {
-      shape: diamond
-      style: { stroke: "#dc2626" }
-    }
-    Mesh_to_Grid: "Spatial Decoder"
-    
-    Grid_to_Mesh -> Processor -> Mesh_to_Grid
-  }
-
-  Output: "Forecast Horizon" {
-    Step: "Prediction (t+6h)"
-    Rollout: "10-Day Chain" {
-      shape: cylinder
-      style: { fill: "#f0fdfa" }
-    }
-    Step -> Rollout
-  }
+Observations: "Input State (ERA5)" {
+  shape: cylinder
+  T0: "Current (t)"
+  T_Minus: "Past (t-6h)"
 }
 
-Forecasting_Pipeline.Input_State -> Forecasting_Pipeline.Processing: "Global Snapshot"
-Forecasting_Pipeline.Processing -> Forecasting_Pipeline.Output.Step: "Inference"
-Forecasting_Pipeline.Output.Step -> Forecasting_Pipeline.Input_State: "Autoregressive Feedback"
+Engine: "GraphCast Architecture" {
+  style: {
+    stroke: "#0f766e"
+    stroke-width: 2
+  }
+  Encoder: "Grid-to-Mesh Mapping"
+  Processor: "Multi-Res GNN (Message Passing)" {
+    shape: diamond
+    style: {fill: "#e8f2f1"}
+  }
+  Decoder: "Mesh-to-Grid Mapping"
+  Encoder -> Processor -> Decoder
+}
+
+Forecast: "Autoregressive Rollout" {
+  T_Plus: "Next Step (t+6h)" {shape: rectangle}
+  Horizon: "10-Day Chain" {
+    shape: parallelogram
+    style: {fill: "#fee2e2"}
+  }
+  T_Plus -> Horizon
+}
+
+Observations -> Engine.Encoder: "Global Snapshot"
+Engine.Decoder -> Forecast.T_Plus: "Single Prediction"
+Forecast.T_Plus -> Observations.T0: "Recursive Feedback" {
+  style: {stroke-dash: 3}
+}
 ```
 
 ## Why It Matters: Extreme Events {#extreme}
@@ -88,8 +85,20 @@ The true test of a weather model isn't just a sunny day; it's the extremes. AI m
 2.  **Atmospheric Rivers:** These "rivers in the sky" cause massive flooding. AI can identify their formation and movement with higher precision.
 3.  **Heatwaves:** By understanding global connections (teleconnections), AI can see the precursors of a heatwave on the other side of the planet weeks before it arrives.
 
-## The Hybrid Future {#future}
+## Hyper-Local Forecasting {#local}
 
+While GraphCast handles the global picture, smaller AI models are being used for **Downscaling**. This involves taking a global 25km resolution forecast and "sharpening" it to a 1km resolution for a specific city or airport. 
+
+These models can learn how local geography—like a specific mountain range or a bay—influences the wind and rain. This is critical for precision agriculture, aviation safety, and managing city-wide energy grids during extreme heat.
+
+## Climate Adaptation {#adaptation}
+
+As climate change makes weather more volatile, our historical records (the data the AI was trained on) may become less reliable. However, AI is also being used to run **Climate Simulations** that project the weather 50 to 100 years into the future. 
+
+By identifying which areas will be most prone to "flash droughts" or "unprecedented floods," AI is helping governments build more resilient infrastructure. We are moving from a world where we "react" to the weather to one where we are digitally prepared for it.
+
+## The Hybrid Future {#future}
+...
 While AI models are currently "beating" physics models, the future is likely a hybrid. AI is great at predicting the *most likely* outcome, but physics models are still better at ensuring the results don't violate fundamental laws (like the conservation of energy). 
 
 Meteorologists are now using AI to "post-process" traditional models, cleaning up their errors and providing hyper-local forecasts for specific cities or farms. We are moving from a world where we "calculate" the weather to one where we "simulate" it with intelligence.

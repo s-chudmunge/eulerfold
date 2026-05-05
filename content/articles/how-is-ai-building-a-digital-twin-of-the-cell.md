@@ -29,34 +29,44 @@ While AlphaFold can tell us the shape of a single protein, it doesn't tell us ho
 ```d2
 direction: down
 
-Data: "Multi-Omics Inputs" {
-  Genomics: "DNA Instructions"
-  Proteomics: "Protein Interactions"
-  Metabolomics: "Chemical Flux"
-  style: { fill: "#f0fdfa" }
+MultiOmics: "Multi-Omics Inputs" {
+  shape: cylinder
+  Genomics: "Sequence Data"
+  Proteomics: "Abundance Data"
 }
 
-AI_Engine: "Integrative Simulation" {
-  style: { stroke: "#0f766e"; stroke-width: 2 }
-  Graph: "Biological Knowledge Graph" {
-    shape: cloud
+Simulation_Engine: "Dynamical AI System" {
+  style: {
+    stroke: "#0f766e"
+    stroke-width: 2
   }
-  Dynamics: "Neural ODEs / Simulations" {
+
+  Scales: "Multi-Scale Modeling" {
+    Molecular: "Fast: Metabolic Flux"
+    Signaling: "Medium: Pathway Crosstalk"
+    Cellular: "Slow: Cell Division"
+    Molecular -> Signaling -> Cellular
+  }
+
+  ODE_Solver: "Neural ODEs" {
     shape: diamond
+    style: {fill: "#e8f2f1"}
+    tooltip: "Predicting Continuous State Changes"
   }
-  Graph -> Dynamics
+
+  Scales.Signaling <-> ODE_Solver: "Gradient Flows"
 }
 
-Twin: "The Digital Cell" {
-  State: "Virtual Phenotype" {
+DigitalTwin: "Whole-Cell Simulation" {
+  Phenotype: "Virtual State Prediction" {
     shape: parallelogram
-    style: { fill: "#fee2e2" }
+    style: {fill: "#fee2e2"}
   }
-  Response: "Predictive Drug Response"
+  InSilico: "Drug Perturbation Analysis"
 }
 
-Data -> AI_Engine: "System Parameters"
-AI_Engine -> Twin: "Real-time Simulation"
+MultiOmics -> Simulation_Engine: "Initial Parameters"
+Simulation_Engine -> DigitalTwin: "Numerical Integration"
 ```
 
 ## The Data Integration Problem {#integration}

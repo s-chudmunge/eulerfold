@@ -20,18 +20,49 @@ synonyms:
 In the world of machine learning, the goal is not to memorize the past, but to predict the future. **Overfitting** is the failure of this goal—it is the state where a model learns the training data "too well," capturing random noise and coincidental patterns as if they were universal laws.
 
 ```d2
-direction: right
-Capacity: "High Model Capacity" {shape: rectangle}
-Complexity: "Low Data Complexity" {shape: rectangle}
-Gap: "Generalization Gap" {shape: diamond}
+direction: down
 
-Capacity -> Gap: "Memorizes Noise"
-Complexity -> Gap: "Insufficient Samples"
+Dataset: "Training Source" {
+  Signal: "True Underlying Patterns" {shape: cylinder}
+  Noise: "Random Fluctuations & Errors" {
+    shape: cylinder
+    style: {stroke-dash: 3}
+  }
+}
 
-Gap -> Result: "Low Train Error, High Test Error"
-Result: {shape: parallelogram; style: {fill: "#f87171"}}
+Model_Engine: "Learning Mechanism" {
+  style: {
+    stroke: "#0f766e"
+    stroke-width: 2
+  }
 
-Gap.style: {stroke: "#dc2626"}
+  Capacity: "Hypothesis Space (Capacity)" {
+    Low: "Under-parameterized"
+    Balanced: "Optimal Fit" {
+      style: {fill: "#e8f2f1"; stroke: "#0f766e"}
+    }
+    High: "Over-parameterized" {
+      style: {fill: "#fee2e2"; stroke: "#dc2626"}
+    }
+  }
+}
+
+Performance: "Generalization Outcomes" {
+  Generalization: "Low Generalization Error" {
+    shape: parallelogram
+    style: {fill: "#e8f2f1"; stroke: "#0f766e"}
+  }
+  Memorization: "High Generalization Error" {
+    shape: parallelogram
+    style: {fill: "#fee2e2"; stroke: "#dc2626"}
+  }
+}
+
+Dataset.Signal -> Model_Engine.Capacity.Balanced: "Signal Extraction"
+Dataset.Noise -> Model_Engine.Capacity.High: "Noise Memorization"
+
+Model_Engine.Capacity.Balanced -> Performance.Generalization: "Learning the Rule"
+Model_Engine.Capacity.High -> Performance.Memorization: "Learning the Noise"
 ```
 
 ## Signal vs. Noise {#signal-vs-noise}
@@ -42,8 +73,24 @@ Every dataset is composed of two parts: the **signal** (the true underlying rela
 
 Mathematically, overfitting is associated with **High Variance**. This means the model's predictions are highly sensitive to the specific data points it was trained on. Small changes in the training set lead to wildly different model weights. This is common in complex models like deep neural networks or high-degree polynomials that can wiggle and bend to hit every single point in the training set, creating a function that is far more complex than the reality it represents.
 
-## Regularization as the Cure {#regularization}
+## Bias vs. Variance: The Tug of War {#bias-variance}
 
+To understand overfitting, we must look at its opposite: **Underfitting**.
+- **Underfitting (High Bias):** The model is too simple to see the pattern. It's like trying to draw a circle with a single straight line. Both training and test error are high.
+- **Overfitting (High Variance):** The model is too complex. It's like trying to connect every single grain of sand on a beach with a continuous thread. Training error is zero, but test error is huge.
+
+The "Bias-Variance Tradeoff" is the central struggle of all machine learning—finding the exact point where the model is complex enough to learn the truth, but simple enough to ignore the noise.
+
+## The Human Analogy {#human}
+
+Overfitting isn't just a computer problem; it's a **human** one. 
+- **Stereotypes:** When we meet one person from a group and assume *everyone* in that group is exactly the same, we have overfit our "data." We have taken a single noisy data point and treated it as a universal law.
+- **Superstitions:** If a sports fan wears a "lucky" shirt and their team wins, they might believe the shirt *caused* the win. This is overfitting—attributing causality to a random coincidence.
+
+Just like AI, the best human thinkers are those who can distinguish between a random event (noise) and a recurring principle (signal).
+
+## Regularization as the Cure {#regularization}
+...
 To combat overfitting, engineers use techniques called **Regularization**. This involves adding a "penalty" for complexity to the model's loss function. Common methods include:
 - **L1/L2 Regularization:** Penalizing large weights to keep the model's function smooth.
 - **Dropout:** Randomly disabling neurons during training to prevent the model from relying too heavily on any single path.

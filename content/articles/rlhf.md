@@ -24,42 +24,49 @@ When a Large Language Model is first trained, it is a master of mimicry but a po
 ```d2
 direction: down
 
-Dataset: "Training Sources" {
-  Internet: "Internet Text" {shape: parallelogram}
-  Human: "Human Demonstrations" {shape: parallelogram}
-}
-
-Process: "RLHF Pipeline" {
-  Pretraining: "1. Pre-training" {
-    shape: diamond
-    Base: "Base LLM"
+Models: "Policy Components" {
+  Base_Model: "Reference Policy (Initial LLM)" {
+    shape: cylinder
+    style: {stroke-dash: 3}
   }
 
-  RM_Phase: "2. Reward Modeling" {
+  Active_Model: "Current Policy (Agent)" {
+    shape: cylinder
     style: {
-      stroke: "#0F766E"
+      stroke: "#0f766e"
       stroke-width: 2
     }
-    Ranker: "Human Feedback" {shape: person}
-    RM: "Reward Model" {shape: cylinder}
-    Ranker -> RM: "Comparison Rankings"
-  }
-
-  RL_Phase: "3. Policy Optimization" {
-    style: {
-      fill: "#e8f2f1"
-      stroke: "#0F766E"
-    }
-    PPO: "PPO Optimizer" {shape: diamond}
-    Agent: "Instruct Model" {shape: cylinder}
-    PPO -> Agent: "Policy Update"
   }
 }
 
-Dataset.Internet -> Process.Pretraining
-Process.Pretraining.Base -> Process.RL_Phase.Agent: "Initialization"
-Process.RM_Phase.RM -> Process.RL_Phase.PPO: "Reward Signal"
-Process.RL_Phase.Agent -> Process.RM_Phase.Ranker: "Generate Samples"
+Judgement: "Evaluation Logic" {
+  Reward_Model: "Reward Model (R)" {
+    shape: diamond
+    style: {fill: "#e8f2f1"}
+  }
+  
+  KL_Constraint: "KL-Divergence Penalty" {
+    shape: hexagon
+  }
+}
+
+Optimization: "PPO Update Cycle" {
+  style: {
+    stroke: "#0f766e"
+    stroke-width: 2
+  }
+  PPO: "PPO Optimizer" {shape: diamond}
+  Update: "Policy Gradient"
+  PPO -> Update
+}
+
+Models.Active_Model -> Judgement.Reward_Model: "Sample"
+Models.Active_Model -> Judgement.KL_Constraint: "Active Dist"
+Models.Base_Model -> Judgement.KL_Constraint: "Ref Dist"
+
+Judgement.Reward_Model -> Optimization.PPO: "Reward"
+Judgement.KL_Constraint -> Optimization.PPO: "Penalty"
+Optimization.Update -> Models.Active_Model: "Feedback"
 ```
 
 ## The Three Stages of Alignment {#the-stages}

@@ -24,25 +24,43 @@ synonyms:
 In machine learning, **Regularization** refers to a set of techniques used to prevent **overfitting**. Overfitting occurs when a model becomes so complex that it starts "memorizing" the noise and specific quirks of the training data, losing its ability to generalize to new, unseen information. Regularization acts as a constraint, discouraging the model from becoming overly complex.
 
 ```d2
-direction: right
-Loss: "Total Loss" {
-  shape: diamond
-}
-Original: "Original Error (MSE/Cross-Entropy)"
-Penalty: "Penalty Term (L1 or L2)"
+direction: down
 
-Original -> Loss
-Penalty -> Loss
-
-Penalty.L2: "L2: λ * Σ w²" {
-  tooltip: "Smoothly reduces weights"
-}
-Penalty.L1: "L1: λ * Σ |w|" {
-  tooltip: "Encourages sparsity (zeros)"
+Loss_Inputs: "Loss Function Components" {
+  Error: "Prediction Error (MSE/CE)" {shape: cylinder}
+  Penalty: "Complexity Penalty" {
+    shape: cylinder
+    style: {stroke: "#dc2626"}
+  }
 }
 
-Loss.style: {stroke: "#0F766E"}
-Penalty.style: {fill: "#e8f2f1"}
+Optimizer: "Constraint Optimizer" {
+  style: {
+    stroke: "#0f766e"
+    stroke-width: 2
+  }
+  Total_Loss: "L = Error + λ * Penalty" {shape: diamond}
+  Gradient: "Backpropagation"
+  Total_Loss -> Gradient
+}
+
+Penalty_Types: "Regularization Logic" {
+  L2: "L2 (Weight Decay)" {
+    tooltip: "λ * Σ w²"
+    style: {fill: "#e8f2f1"}
+  }
+  L1: "L1 (Sparsity)" {
+    tooltip: "λ * Σ |w|"
+  }
+}
+
+Loss_Inputs.Error -> Optimizer.Total_Loss
+Loss_Inputs.Penalty -> Optimizer.Total_Loss
+
+Penalty_Types.L2 -> Loss_Inputs.Penalty
+Penalty_Types.L1 -> Loss_Inputs.Penalty
+
+Optimizer.Gradient -> Model_Weights: "Constrained Update"
 ```
 
 ## Weight Decay ($L_2$ Regularization) {#weight-decay}

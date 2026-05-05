@@ -31,33 +31,48 @@ For a human, this task is impossible. Tracing just a small part of a fruit fly's
 ```d2
 direction: down
 
-Data: "Microscopy Stack" {
-  Slices: "Thin 2D Electron Micrographs"
-  Volume: "3D Reconstructed Block"
-  style: { fill: "#f0fdfa" }
+RawData: "Petabyte Microscopy Stack" {
+  Slices: "2D EM Images" {shape: rectangle}
+  Volume: "3D Voxel Grid" {shape: cylinder}
 }
 
-AI_Vision: "Neural Tracing" {
-  style: { stroke: "#0f766e"; stroke-width: 2 }
-  Segmentation: "3D Boundary Detection" {
+Segmentation_Pipeline: "AI Neural Tracing" {
+  style: {
+    stroke: "#0f766e"
+    stroke-width: 2
+  }
+
+  Boundary_AI: "1. Membrane Detection" {
     shape: diamond
+    Model: "3D U-Net / Transformer"
+    Output: "Boundary Probability Map"
   }
-  Synapse: "Synapse Identification" {
-    shape: cloud
+
+  Agglomeration: "2. Supervoxel Merging" {
+    shape: hexagon
+    Logic: "Watershed / Agglomeration"
+    Action: "Stitching Neuronal Fragments"
   }
-  Segmentation -> Synapse
+
+  Skeletonization: "3. Path Extraction" {
+    Centerline: "Medial Axis Transform"
+    Nodes: "Synapse Localization"
+  }
+
+  Boundary_AI -> Agglomeration: "Voxel Segments"
+  Agglomeration -> Skeletonization: "3D Neurite Shapes"
 }
 
-Result: "The Connectome" {
-  Graph: "Synaptic Wiring Diagram" {
+Connectome: "The Brain Graph" {
+  Wiring: "Synaptic Adjacency Matrix" {
     shape: parallelogram
-    style: { fill: "#fee2e2" }
+    style: {fill: "#fee2e2"}
   }
-  Insight: "Discovering Brain Logic"
+  Topology: "Circuit Motif Discovery"
 }
 
-Data -> AI_Vision: "Petabytes of Pixels"
-AI_Vision -> Result: "Automated Reconstruction"
+RawData -> Segmentation_Pipeline.Boundary_AI
+Segmentation_Pipeline.Skeletonization -> Connectome: "Graph Extraction"
 ```
 
 ## Discovering the "Hardware" of Thought {#logic}

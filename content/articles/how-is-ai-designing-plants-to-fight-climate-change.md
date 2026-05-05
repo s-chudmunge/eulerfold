@@ -31,33 +31,42 @@ Scientists are now using **Protein Language Models** to explore billions of pote
 ```d2
 direction: down
 
-Input: "Environmental Stressors" {
-  Heat: "Rising Temperatures"
-  Drought: "Water Scarcity"
-  CO2: "Atmospheric CO2 Levels"
-  style: { fill: "#f0fdfa" }
+Constraints: "Environmental Stressors" {
+  shape: cylinder
+  Heat: "Thermal Resistance"
+  H2O: "Water Efficiency"
 }
 
-AI_Design: "Biological Optimization" {
-  style: { stroke: "#0f766e"; stroke-width: 2 }
-  Enzyme: "Rubisco Optimization" {
+Search_Space: "Genetic Search Space" {
+  style: {
+    stroke: "#0f766e"
+    stroke-width: 2
+  }
+
+  pLM: "Protein Language Model" {
     shape: diamond
+    Action: "Sequence Variation Exploration"
   }
-  Resilience: "Drought Resistance Logic" {
-    shape: cloud
+
+  Fitness: "In Silico Evaluation" {
+    Rubisco: "Carbon Fixation Efficiency"
+    Resilience: "Stress Tolerance Prediction"
   }
+
+  pLM -> Fitness: "Propose Mutation"
+  Fitness -> pLM: "Performance Score"
 }
 
-Output: "Engineered Crops" {
-  Yield: "Higher Biomass / Yield" {
+Engineered_Output: "Optimized Genetics" {
+  Crops: "Enhanced Carbon-Capture Crops" {
     shape: parallelogram
-    style: { fill: "#fee2e2" }
+    style: {fill: "#fee2e2"}
   }
-  Capture: "Enhanced Carbon Sequestration"
+  Suberin: "Deep-Root Sequestration"
 }
 
-Input -> AI_Design: "Fitness Constraints"
-AI_Design -> Output: "Optimized Genetics"
+Constraints -> Search_Space: "Fitness Landscape Constraints"
+Search_Space -> Engineered_Output: "Optimal Sequence Export"
 ```
 
 ## Designing for Resilience {#resilience}

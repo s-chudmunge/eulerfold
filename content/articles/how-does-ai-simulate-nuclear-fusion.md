@@ -39,41 +39,38 @@ Instead of telling the computer *how* to move the magnets, researchers gave the 
 ```d2
 direction: down
 
-Fusion_Control: "Real-time Plasma Steering" {
-  style: {
-    stroke: "#0F766E"
-    stroke-width: 2
-  }
-
-  Tokamak: "The Reactor Environment" {
-    Plasma: "Magnetic Confinement" {shape: circle}
-    Sensors: "Flux Loops & Probes"
-    Plasma -> Sensors: "Physical State"
-  }
-
-  RL_Pilot: "Deep RL Controller" {
-    Observation: "Sensor Data (10kHz)"
-    Decision: "Voltage Policy" {
-      shape: diamond
-      style: { fill: "#e8f2f1" }
-    }
-    Actuators: "Coil Command"
-    
-    Observation -> Decision -> Actuators
-  }
-
-  Magnetic_Fields: "Magnetic Sculpting" {
-    Coils: "19 Control Magnets" {shape: cylinder}
-    Field: "Shaped Lorentz Force" {
-      style: { stroke: "#dc2626" }
-    }
-    Coils -> Field
-  }
+Environment: "The Tokamak (Hardware)" {
+  Plasma: "Magnetic Confinement" {shape: circle}
+  Sensors: "State Data (B-field, density)" {shape: cylinder}
+  Plasma -> Sensors
 }
 
-Fusion_Control.Tokamak.Sensors -> Fusion_Control.RL_Pilot.Observation: "State Input"
-Fusion_Control.RL_Pilot.Actuators -> Fusion_Control.Magnetic_Fields.Coils: "Voltage Update"
-Fusion_Control.Magnetic_Fields.Field -> Fusion_Control.Tokamak.Plasma: "Containment Force"
+AI_Controller: "Deep RL Agent" {
+  style: {
+    stroke: "#0f766e"
+    stroke-width: 2
+  }
+  CNN: "Visual State Encoder"
+  Policy: "Voltage Decision (PPO)" {
+    shape: diamond
+    style: {fill: "#e8f2f1"}
+  }
+  CNN -> Policy
+}
+
+Actuators: "Magnetic Control" {
+  Magnets: "19 Poloidal Coils" {shape: cylinder}
+  Action: "Voltage Adjustment (a_t)"
+  Magnets -> Action
+}
+
+Environment.Sensors -> AI_Controller.CNN: "State (s_t)"
+AI_Controller.Policy -> Actuators.Magnets: "Decision"
+Actuators.Action -> Environment.Plasma: "Containment Force"
+
+Loop: "10,000 Hz Feedback Cycle" {
+  style: {stroke-dash: 3; stroke: "#dc2626"}
+}
 ```
 
 ## Sculpting the Star {#sculpting}

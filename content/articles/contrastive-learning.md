@@ -25,26 +25,42 @@ synonyms:
 
 ```d2
 direction: down
-Anchor: "Anchor (Reference)" {
-  shape: person
+
+Inputs: "Sample Triplet" {
+  A: "Anchor (Reference)" {shape: person}
+  P: "Positive (Same)" {shape: person}
+  N: "Negative (Different)" {shape: person}
 }
-Pairs: "Comparison Pairs" {
-  Positive: "Positive (Same Class)" {
-    shape: person
-    style: {stroke: "#0F766E"}
+
+Encoder_Stack: "Siamese Architecture" {
+  style: {
+    stroke: "#0f766e"
+    stroke-width: 2
   }
-  Negative: "Negative (Different Class)" {
-    shape: person
-    style: {stroke: "#dc2626"}
+  Backbone: "Shared Weights (f)" {shape: cylinder}
+  Projection: "Non-Linear Head (g)" {shape: diamond}
+  Backbone -> Projection
+}
+
+Objective: "Latent Space Geometry" {
+  shape: cloud
+  style: {fill: "#e8f2f1"}
+  
+  Logic: "Metric Optimization" {
+    Pull: "Attract (A <-> P)" {
+      style: {stroke: "#0f766e"; stroke-width: 3}
+    }
+    Push: "Repel (A <-> N)" {
+      style: {stroke: "#dc2626"; stroke-width: 3; stroke-dash: 3}
+    }
   }
 }
 
-Anchor -> Pairs.Positive: "Pull (Attract)" {
-  style: {stroke-dash: 0}
-}
-Anchor -> Pairs.Negative: "Push (Repel)" {
-  style: {stroke-dash: 3}
-}
+Inputs.A -> Encoder_Stack.Backbone
+Inputs.P -> Encoder_Stack.Backbone
+Inputs.N -> Encoder_Stack.Backbone
+
+Encoder_Stack.Projection -> Objective: "z = g(f(x))"
 ```
 
 ## The Objective: Similarity as Distance {#objective}

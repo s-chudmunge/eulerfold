@@ -96,6 +96,20 @@ By using the exponential function ($e^x$), Softmax does two things:
 
 In a Large Language Model, the final layer produces a logit for every single token in its vocabulary (e.g., 100,000 values). Softmax turns these 100,000 raw numbers into a probability map. The model doesn't just "know" the next word; it has a statistical preference for several likely words. 
 
-## Softmax vs. Sigmoid {#softmax-sigmoid}
+## The Temperature Parameter {#temperature}
 
+In modern AI, Softmax is rarely used "raw." Instead, we apply a **Temperature ($T$)** parameter to the logits before the calculation:
+$$\sigma(z)_i = \frac{e^{z_i / T}}{\sum_{j=1}^{K} e^{z_j / T}}$$
+
+- **Low Temperature ($T < 1$):** Makes the model more confident and "sharp." It amplifies the highest scores even further, leading to predictable, conservative outputs.
+- **High Temperature ($T > 1$):** Flattens the distribution. The gaps between probabilities shrink, making the model more "creative" or random.
+
+## Numerical Stability: The Max Trick {#stability}
+
+If you try to implement Softmax exactly as written in the formula, your computer will likely crash. Why? Because $e^{1000}$ is an astronomically large number that causes **floating-point overflow**. 
+
+To fix this, engineers use a "Stable Softmax" trick: they subtract the maximum value in the logit array from every element before exponentiating. Because of the properties of exponents, the final probability remains identical, but the numbers stay within a range the computer can handle safely.
+
+## Softmax vs. Sigmoid {#softmax-sigmoid}
+...
 While **Sigmoid** is used for binary classification (Yes/No), **Softmax** is for multi-class classification. Softmax is "mutually exclusive"—if the probability of one class goes up, the others *must* go down. This makes it ideal for choosing the next most likely token in a sequence.
