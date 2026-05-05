@@ -1,6 +1,7 @@
 ---
 title: "What are Tokens and Tokenization?"
 slug: "tokens"
+shortSlug: "tokens"
 author: "EulerFold"
 date: "April 24, 2026"
 category: "Architectures"

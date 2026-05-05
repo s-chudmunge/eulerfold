@@ -1,6 +1,7 @@
 ---
 title: "What is a Latent Space?"
 slug: "latent-space"
+shortSlug: "latent-space"
 author: "EulerFold"
 date: "April 27, 2026"
 category: "Theory"

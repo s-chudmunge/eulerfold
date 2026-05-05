@@ -425,3 +425,8 @@ class PlannerGenerateRequest(BaseModel):
     target_date: date
     intensity: Literal['casual', 'balanced', 'intense'] # 1, 2, or 3 modules per week etc.
 
+class ManualBuildRequest(BaseModel):
+    title: str
+    goal: str
+    skills: Optional[str] = ""
+

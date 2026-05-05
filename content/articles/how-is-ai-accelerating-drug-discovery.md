@@ -1,6 +1,7 @@
 ---
 title: "How is AI accelerating Drug Discovery?"
 slug: "how-is-ai-accelerating-drug-discovery"
+shortSlug: "drug-discovery"
 author: "EulerFold"
 date: "April 30, 2026"
 category: "Science AI"

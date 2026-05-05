@@ -1,6 +1,7 @@
 ---
 title: "What is the Nature of Overfitting?"
 slug: "overfitting"
+shortSlug: "overfitting"
 author: "EulerFold"
 date: "April 18, 2026"
 category: "Theory"

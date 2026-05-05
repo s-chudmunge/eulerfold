@@ -1,6 +1,7 @@
 ---
 title: "What are Protein Language Models?"
 slug: "what-are-protein-language-models"
+shortSlug: "plm"
 author: "EulerFold"
 date: "April 30, 2026"
 category: "Science AI"

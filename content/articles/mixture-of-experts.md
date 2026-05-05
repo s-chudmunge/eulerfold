@@ -1,6 +1,7 @@
 ---
 title: "What is a Mixture of Experts (MoE)?"
 slug: "mixture-of-experts"
+shortSlug: "moe"
 author: "EulerFold"
 date: "April 19, 2026"
 category: "Architectures"

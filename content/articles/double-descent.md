@@ -1,6 +1,7 @@
 ---
 title: "What is the \"Double Descent\" phenomenon in Machine Learning?"
 slug: "double-descent"
+shortSlug: "double-descent"
 author: "EulerFold"
 date: "April 15, 2026"
 category: "Theory"

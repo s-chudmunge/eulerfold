@@ -2,11 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { RoadmapData, saveRoadmap, roadmapsAPI, submissionsAPI } from '../../lib/api';
-import { Download, CheckCircle, ChevronDown, ChevronUp, Play, BookOpen, X, Trophy, Plus, FileText, Copy, Target, MonitorPlay, BookText, Hash, Scroll, ChevronRight, Trash2 } from 'lucide-react';
+import { Download, CheckCircle, ChevronDown, ChevronUp, Play, BookOpen, X, Trophy, Plus, FileText, Copy, Target, MonitorPlay, BookText, Hash, Scroll, ChevronRight, Trash2, Rocket } from 'lucide-react';
 import SubmissionModal from '@/components/SubmissionModal';
 import { supabase } from '../../lib/supabase/client';
 import Link from 'next/link';
-import ReactMarkdown from 'react-markdown';
 
 interface RoadmapDisplayProps {
   roadmapData: RoadmapData;
@@ -306,6 +305,29 @@ const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({
                     </div>
                   </div>
                   <div className="flex items-center gap-2 md:gap-4 shrink-0">
+                    {isOwner && (
+                      <div className="flex items-center gap-2">
+                        <Link 
+                          href={`/roadmap/${roadmapData.cloned_id || roadmapData.slug || roadmapData.id}/learn?module=${index + 1}&topic=1`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-xl text-[10px] font-bold tracking-widest uppercase hover:bg-blue-700 transition-all active:scale-95 shadow-lg shadow-blue-600/20"
+                        >
+                          <Play className="w-3.5 h-3.5 fill-current" />
+                          <span className="hidden xs:inline">Learn</span>
+                        </Link>
+
+                        {!submissionsByModule[index+1]?.length && (
+                          <Link 
+                            href={`/roadmap/${roadmapData.slug || roadmapData.id}/build/${index + 1}`}
+                            onClick={(e) => e.stopPropagation()}
+                            className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-emerald-600 text-white rounded-xl text-[10px] font-bold tracking-widest uppercase hover:bg-emerald-700 transition-all active:scale-95 shadow-lg shadow-emerald-600/20"
+                          >
+                            <Rocket className="w-3.5 h-3.5" />
+                            <span className="hidden xs:inline">Build</span>
+                          </Link>
+                        )}
+                      </div>
+                    )}
                     {isOwner && isLast && isExtension && onDeleteExtension && (
                       <button
                         onClick={(e) => {
@@ -390,8 +412,8 @@ const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({
 
                       <ResourceList resources={module.resources || []} />
 
-                      <div className="pt-2 flex items-center gap-4 flex-wrap">
-                        {submissionsByModule[index+1] && submissionsByModule[index+1].length > 0 ? (
+                      {submissionsByModule[index+1] && submissionsByModule[index+1].length > 0 && (
+                        <div className="pt-4 flex items-center gap-4 flex-wrap">
                           <div className="flex items-center gap-3">
                             <span className="inconsolata-ui flex items-center gap-2 text-[10px] font-bold text-green-600 bg-green-500/5 px-3 py-1.5 rounded-lg border border-green-500/20  tracking-wide">
                               <CheckCircle className="h-3.5 w-3.5" /> Verified
@@ -406,18 +428,8 @@ const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({
                               {submissionsByModule[index+1][0].evaluation_level}
                             </span>
                           </div>
-                        ) : (
-                          isOwner && (
-                            <button
-                              onClick={() => setShowModalFor(index + 1)}
-                              className="inconsolata-ui flex items-center gap-2 px-5 py-2.5 bg-teal-700/5 border border-teal-700/20 text-teal-700 rounded-lg text-[10px] font-bold  tracking-wide hover:bg-teal-700/10 transition-all active:scale-95 group"
-                            >
-                              <Plus className="w-3.5 h-3.5 group-hover:rotate-90 transition-transform duration-300" /> 
-                              Submit Proof of Work
-                            </button>
-                          )
-                        )}
-                      </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}

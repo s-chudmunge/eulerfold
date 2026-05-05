@@ -15,7 +15,7 @@ from fastapi import APIRouter, HTTPException, Request, Depends, BackgroundTasks
 
 from app.core.config import settings
 from app.core.supabase_client import supabase, get_supabase_client
-from app.schemas import RoadmapCreate, RoadmapMe, RoadmapRead, RoadmapSave, User, ProgressUpdate, RoadmapExtend, RoadmapStatusUpdate
+from app.schemas import RoadmapCreate, RoadmapMe, RoadmapRead, RoadmapSave, User, ProgressUpdate, RoadmapExtend, RoadmapStatusUpdate, ManualBuildRequest
 from app.utils.gemini_client import generate_text, clean_json_string
 from app.utils.resend_client import send_onboarding_email
 from app.utils.youtube_client import search_youtube_videos
@@ -476,6 +476,7 @@ They now want to EXTEND this roadmap for {payload.weeks} more week(s) to learn: 
          "title": "string",
          "outcome": "string",
          "timeline": "string",
+         "workspace_type": "code|research|design",
          "proof_of_work_instructions": {{
            "what_to_build": "string",
            "what_counts_as_evidence": "string",
@@ -496,6 +497,10 @@ They now want to EXTEND this roadmap for {payload.weeks} more week(s) to learn: 
 3. **Crucial:** In the "resources" array, provide ONLY high-quality documentation, articles, or books (non-YouTube links).
 4. For each module, ensure a concrete "outcome" string starting with "By the end of this module you will be able to...".
 5. The extensions should build upon the last module which was about "{last_module_title}".
+6. **Workspace Selection:** 
+   - Set "workspace_type" to "code" for implementation, algorithms, or scripting tasks.
+   - Set "workspace_type" to "design" for system architecture, distributed systems, infrastructure, or UI/UX.
+   - Set "workspace_type" to "research" for theoretical science, mathematics, or technical writing.
 
 Begin the JSON output immediately.
 """
@@ -641,6 +646,80 @@ async def get_roadmap_by_id(roadmap_id: int, background_tasks: BackgroundTasks, 
         user_rating=user_rating
     )
 
+@router.post("/roadmaps/manual-build", response_model=RoadmapRead)
+async def create_manual_build(
+    payload: ManualBuildRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """Create a manual build project, consuming 0.5 credits."""
+    email = current_user.email
+    if not email:
+        raise HTTPException(status_code=401, detail="Authentication required")
+
+    sb = get_supabase_client()
+
+    # 1. Credit Check & Deduction (0.5 credits)
+    profile_res = sb.table("profiles").select("roadmap_credits").eq("email", email).single().execute()
+    if not profile_res.data:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    
+    current_credits = float(profile_res.data.get("roadmap_credits", 0))
+    if current_credits < 0.5:
+        raise HTTPException(status_code=402, detail="Insufficient credits. Manual builds cost 0.5 credits.")
+
+    # Deduct credits
+    sb.table("profiles").update({"roadmap_credits": current_credits - 0.5}).eq("email", email).execute()
+
+    # 2. Generate unique slug
+    slug = await _generate_unique_slug(payload.title, email, sb)
+
+    # 3. Construct a minimal roadmap plan
+    plan = {
+        "title": payload.title,
+        "description": payload.goal,
+        "modules": [
+            {
+                "id": "module_1",
+                "title": "Initial Build Phase",
+                "topics": [
+                    {
+                        "id": "topic_1_1",
+                        "uuid": str(uuid.uuid4()),
+                        "title": "Define & Prototype",
+                        "subtopics": [
+                            {"id": str(uuid.uuid4()), "title": "Setup workspace"},
+                            {"id": str(uuid.uuid4()), "title": "Core development"}
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+
+    # 4. Insert roadmap
+    roadmap_data = {
+        "title": payload.title,
+        "slug": slug,
+        "email": email,
+        "subject": payload.title,
+        "goal": payload.goal,
+        "description": payload.goal,
+        "roadmap_plan": plan,
+        "time_value": 4,
+        "time_unit": "weeks",
+        "model": "manual-build",
+        "status": "active",
+        "version": 1,
+        "snapshot_hash": _generate_plan_hash(plan)
+    }
+
+    response = sb.table("roadmaps").insert(roadmap_data).execute()
+    if not response.data:
+        # Note: In a production app, we might want to refund credits if insert fails
+        raise HTTPException(status_code=500, detail="Failed to create project")
+
+    return RoadmapRead(**response.data[0])
+
 @router.post("/roadmaps/save", response_model=RoadmapRead)
 async def save_roadmap(
     roadmap_save: RoadmapSave,
@@ -663,7 +742,6 @@ async def save_roadmap(
     roadmap_data["email"] = email
     roadmap_data["status"] = "active"
     roadmap_data["version"] = 1
-    roadmap_data["snapshot_hash"] = _generate_plan_hash(plan)
     
     # Ensure all modules have IDs and Topics have UUIDs for the learning app
     plan = roadmap_data.get("roadmap_plan", {})
@@ -678,7 +756,9 @@ async def save_roadmap(
             for s_idx, subtopic in enumerate(topic.get("subtopics", [])):
                 if not subtopic.get("id"):
                     subtopic["id"] = str(uuid.uuid4())
+    
     roadmap_data["roadmap_plan"] = plan
+    roadmap_data["snapshot_hash"] = _generate_plan_hash(plan)
 
     response = sb.table("roadmaps").insert(roadmap_data).execute()
     
@@ -733,6 +813,7 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
          "title": "string",
          "outcome": "string",
          "timeline": "string",
+         "workspace_type": "code|research|design",
          "proof_of_work_instructions": {{
             "what_to_build": "string",
             "what_counts_as_evidence": "string",
@@ -753,6 +834,10 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
 5. **Crucial:** In the "resources" array, provide ONLY high-quality documentation, articles, or books (non-YouTube links).
 6. For each module, ensure a concrete "outcome" string starting with "By the end of this module you will be able to...".
 7. Be specific. If learning React, include topics like "Hooks", "Concurrent Mode", etc.
+8. **Workspace Selection:** 
+   - Set "workspace_type" to "code" for implementation, algorithms, or scripting tasks.
+   - Set "workspace_type" to "design" for system architecture, distributed systems, infrastructure, or UI/UX.
+   - Set "workspace_type" to "research" for theoretical science, mathematics, or technical writing.
 """
     try:
         model_to_use = settings.GEMINI_MODEL

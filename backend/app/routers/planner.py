@@ -90,7 +90,7 @@ async def generate_study_plan(
     sb = get_supabase_client()
     
     # 1. Fetch the roadmaps to see module counts
-    roadmaps_res = sb.table("roadmaps").select("id, title, roadmap_plan").in_("id", payload.roadmap_ids).execute()
+    roadmaps_res = sb.table("roadmaps").select("id, title, slug, roadmap_plan").in_("id", payload.roadmap_ids).execute()
     if not roadmaps_res.data:
         raise HTTPException(status_code=404, detail="Roadmaps not found")
         
@@ -105,6 +105,7 @@ async def generate_study_plan(
     for roadmap in roadmaps_res.data:
         plan = roadmap.get("roadmap_plan") or {}
         modules = plan.get("modules", [])
+        roadmap_slug = roadmap.get("slug") or roadmap.get("title", "").lower().replace(" ", "-") # Fallback slug logic
         
         for i, mod in enumerate(modules):
             module_num = i + 1
@@ -116,7 +117,10 @@ async def generate_study_plan(
                 "task_type": "module",
                 "title": f"Study: {mod.get('title', f'Module {module_num}')}",
                 "scheduled_date": current_date.isoformat(),
-                "metadata": {"roadmap_title": roadmap["title"]}
+                "metadata": {
+                    "roadmap_title": roadmap["title"],
+                    "roadmap_slug": roadmap_slug
+                }
             })
             
             # Add Practice Task (next day)
@@ -128,7 +132,10 @@ async def generate_study_plan(
                 "task_type": "practice",
                 "title": f"Practice: {mod.get('title')}",
                 "scheduled_date": practice_date.isoformat(),
-                "metadata": {"roadmap_title": roadmap["title"]}
+                "metadata": {
+                    "roadmap_title": roadmap["title"],
+                    "roadmap_slug": roadmap_slug
+                }
             })
             
             # Add PoW Task (2 days later)
@@ -140,7 +147,10 @@ async def generate_study_plan(
                 "task_type": "pow",
                 "title": f"Proof of Work: {mod.get('title')}",
                 "scheduled_date": pow_date.isoformat(),
-                "metadata": {"roadmap_title": roadmap["title"]}
+                "metadata": {
+                    "roadmap_title": roadmap["title"],
+                    "roadmap_slug": roadmap_slug
+                }
             })
             
             # Increment date based on intensity

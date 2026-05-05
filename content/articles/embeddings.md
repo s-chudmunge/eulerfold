@@ -1,6 +1,7 @@
 ---
 title: "What are Vector Embeddings?"
 slug: "embeddings"
+shortSlug: "embeddings"
 author: "EulerFold"
 date: "April 17, 2026"
 category: "Theory"

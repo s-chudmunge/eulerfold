@@ -1,6 +1,7 @@
 ---
 title: "How does Backpropagation actually work?"
 slug: "backpropagation"
+shortSlug: "backpropagation"
 author: "EulerFold"
 date: "April 16, 2026"
 category: "Optimization"

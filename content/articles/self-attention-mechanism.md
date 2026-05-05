@@ -1,6 +1,7 @@
 ---
 title: "How Does the Self-Attention Mechanism Work?"
 slug: "self-attention-mechanism"
+shortSlug: "self-attention"
 author: "EulerFold"
 date: "April 27, 2026"
 category: "Architectures"

@@ -1,6 +1,7 @@
 ---
 title: "What is Model Quantization?"
 slug: "quantization"
+shortSlug: "quantization"
 author: "EulerFold"
 date: "April 23, 2026"
 category: "Optimization"

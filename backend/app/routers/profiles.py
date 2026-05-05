@@ -4,7 +4,7 @@ from typing import List, Optional, Dict, Any
 from fastapi import APIRouter, HTTPException, Depends, Query
 from fastapi.responses import StreamingResponse
 from io import BytesIO
-from datetime import datetime
+from datetime import datetime, timedelta
 import qrcode
 from qrcode.image.styledpil import StyledPilImage
 from qrcode.image.styles.moduledrawers import RoundedModuleDrawer
@@ -148,7 +148,13 @@ async def get_public_profile(username: str):
             solid_subs = len([s for s in all_s_res.data if s.get("evaluation_level") == "Solid"])
             audit_precision = (solid_subs / total_subs) * 100 if total_subs > 0 else 0.0
 
-        s_res = sb.table("submissions").select("*, roadmaps(title)").eq("user_email", user_email).in_("roadmap_id", list(contributing_ids) if contributing_ids else [0]).in_("evaluation_level", ["Solid", "Developing"]).order("submitted_at", desc=True).execute()
+        # Fetch verified submissions for the profile (include both skill-linked and standalone builds)
+        s_res = sb.table("submissions") \
+            .select("*, roadmaps(title)") \
+            .eq("user_email", user_email) \
+            .in_("evaluation_level", ["Solid", "Developing"]) \
+            .order("submitted_at", desc=True) \
+            .execute()
         subs_data = s_res.data
 
     # 4b. Calculate Knowledge Velocity (Last 30 days)
@@ -261,21 +267,25 @@ async def get_activity(username: str):
         raise HTTPException(status_code=404, detail="Email not found")
     email = email_res.data["email"]
     
-    tp_res = sb.table("module_progress").select("completed_at").eq("user_email", email).eq("completed", True).execute()
-    sub_res = sb.table("submissions").select("submitted_at").eq("user_email", email).execute()
-    prac_res = sb.table("practice_progress").select("updated_at").eq("user_id", uid).eq("completed", True).execute()
+    # Fetch activity for the last 12 months
+    twelve_months_ago = (datetime.now() - timedelta(days=365)).isoformat()
     
+    tp_res = sb.table("module_progress").select("completed_at").eq("user_email", email).eq("completed", True).gte("completed_at", twelve_months_ago).execute()
+    sub_res = sb.table("submissions").select("submitted_at").eq("user_email", email).gte("submitted_at", twelve_months_ago).execute()
+    prac_res = sb.table("practice_progress").select("updated_at").eq("user_id", uid).eq("completed", True).gte("updated_at", twelve_months_ago).execute()
+    sess_res = sb.table("learning_sessions").select("created_at").eq("user_id", uid).gte("created_at", twelve_months_ago).execute()
+
     activity = {}
     def add_to_activity(dt_str):
         if not dt_str: return
         date_str = dt_str.split("T")[0]
         activity[date_str] = activity.get(date_str, 0) + 1
-        
+
     for r in tp_res.data: add_to_activity(r["completed_at"])
     for r in sub_res.data: add_to_activity(r["submitted_at"])
     for r in prac_res.data: add_to_activity(r["updated_at"])
+    for r in sess_res.data: add_to_activity(r["created_at"])
     return activity
-
 @router.get("/profile/{username}/export")
 async def export_profile_pdf(username: str):
     sb = get_supabase_client()

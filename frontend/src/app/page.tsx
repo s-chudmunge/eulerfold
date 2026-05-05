@@ -50,23 +50,23 @@ async function getFeaturedRoadmaps(): Promise<ExploreRoadmap[]> {
 }
 
 export const metadata: Metadata = {
-  title: 'EulerFold - Infrastructure for efficient, structured learning',
-  description: 'EulerFold builds personalized learning paths to help you bridge the gap between information and mastery through high-density roadmaps and verifiable audits.',
+  title: 'EulerFold - Build and track your learning paths',
+  description: 'Create structured learning roadmaps, track your progress, and verify your technical skills.',
   keywords: 'learning roadmaps, skill tracking, AI learning paths, technical mastery, structured learning, EulerFold',
   alternates: {
     canonical: 'https://www.eulerfold.com',
   },
   openGraph: {
-    title: 'EulerFold - Infrastructure for efficient, structured learning',
-    description: 'EulerFold builds personalized learning paths to help you bridge the gap between information and mastery through high-density roadmaps and verifiable audits.',
+    title: 'EulerFold - Build and track your learning paths',
+    description: 'Create structured learning roadmaps, track your progress, and verify your technical skills.',
     url: 'https://www.eulerfold.com',
     siteName: 'EulerFold',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'EulerFold - Infrastructure for efficient, structured learning',
-    description: 'EulerFold builds personalized learning paths to help you bridge the gap between information and mastery.',
+    title: 'EulerFold - Build and track your learning paths',
+    description: 'Create structured learning roadmaps, track your progress, and verify your technical skills.',
     creator: '@eulerfold',
   },
 };
@@ -76,31 +76,31 @@ export default async function LandingPage() {
   const faqItems = [
     {
       question: "How accurate are the AI roadmaps?",
-      answer: "Our engine doesn't just \"guess.\" It cross-references millions of technical data points and \"Resources We Trust\" to build high-density paths that mirror industry expectations."
+      answer: "We use technical data and trusted resources to build paths that match real industry standards and expectations."
     },
     {
       question: "How does the Audit Senate evaluate my work?",
-      answer: "Your 'Proof of Work' is evaluated by a three-auditor system: a Technician (for correctness), an Educator (for clarity), and a Relevance Judge (for alignment). This ensures your mastery is verified by multiple perspectives."
+      answer: "Your work is reviewed for correctness, clarity, and relevance by three specialized AI models to ensure you have actually mastered the topic."
     },
     {
       question: "Can I customize my roadmap after it's generated?",
-      answer: "Absolutely. While the AI provides a high-signal starting point, you can add, remove, or reorder topics to suit your specific learning style and professional goals."
+      answer: "Yes. You can add, remove, or reorder topics at any time to fit your own goals."
     },
     {
       question: "What are EulerCoins and how do I earn them?",
-      answer: "EulerCoins are the platform's proof-of-progress currency. You earn them by maintaining learning streaks, passing audits, and contributing high-signal insights to the community."
+      answer: "EulerCoins are rewards for progress. You earn them by keeping up your learning streaks and passing audits."
     },
     {
       question: "Is my progress actually saved?",
-      answer: "Yes. Every module you finish, every practice session you complete, and every audit you pass is recorded in your global Technical Inventory and skill profile."
+      answer: "Yes. Every module you finish and every audit you pass is recorded on your public profile and skill inventory."
     },
     {
       question: "What makes EulerFold better than a video course?",
-      answer: "Videos are passive. EulerFold is active. We require \"Proof of Work\" through audits and recall sessions, ensuring you actually master the material rather than just watching it."
+      answer: "Videos are passive. EulerFold requires you to practice and prove what you've learned through audits and recall sessions."
     },
     {
       question: "Can I build roadmaps for free?",
-      answer: "All new users receive 5 free credits to generate premium AI roadmaps. After that, you can earn more through the community or purchase top-ups."
+      answer: "New users get 5 free credits to generate roadmaps. You can earn more through the community or buy them if you need more."
     }
   ];
 
@@ -186,25 +186,6 @@ export default async function LandingPage() {
 
         <RoadmapDiscovery roadmaps={featuredRoadmaps} />
 
-        {/* Articles & Readings Section */}
-        <section className="py-20 md:py-32 px-6 bg-background">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-              <div className="max-w-2xl">
-                <h2 className="text-[11px] font-bold text-accent tracking-[0.2em] uppercase mb-4 manrope-body">Articles & Readings</h2>
-              </div>
-              <Link 
-                href="/articles" 
-                className="inline-flex items-center gap-2 text-accent font-bold text-[14px] hover:underline underline-offset-4 group"
-              >
-                Browse all articles <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </div>
-
-            <LatestArticlesCarousel articles={Object.values(articles).slice(0, 6)} />
-          </div>
-        </section>
-
         <TestimonialSection />
 
         <PricingSection />
@@ -218,6 +199,24 @@ export default async function LandingPage() {
               items={faqItems}
             />
           </div>
+        </section>
+
+        {/* Articles & Readings Section */}
+        <section className="py-20 md:py-32 px-6 bg-background border-t border-border/30">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
+              <div className="max-w-2xl">
+                <h2 className="text-[11px] font-bold text-accent tracking-[0.2em] uppercase mb-4 manrope-body">Articles & Readings</h2>
+              </div>
+              <Link 
+                href="/articles" 
+                className="inline-flex items-center gap-2 text-accent font-bold text-[14px] hover:underline underline-offset-4 group"
+              >
+                Browse all articles <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </div>
+
+            <LatestArticlesCarousel articles={Object.values(articles).slice(0, 18)} />          </div>
         </section>
 
         <SocialFeed />
@@ -237,10 +236,10 @@ export default async function LandingPage() {
 
             <div className="max-w-3xl mx-auto text-center relative z-10 px-6 py-12 md:py-0">
               <h2 className="font-inter text-2xl md:text-4xl font-bold text-text-heading mb-4 tracking-tight">
-                Build your first roadmap in seconds.
+                Build your first roadmap.
               </h2>
               <p className="manrope-body text-[15px] md:text-[17px] text-text-primary mb-10 max-w-lg mx-auto leading-relaxed font-medium">
-                No credit card required. Join thousands of students building their paths on the world's most effective learning platform.
+                Start learning with a structured plan today. No credit card required.
               </p>
               <Link 
                 href="/generate"

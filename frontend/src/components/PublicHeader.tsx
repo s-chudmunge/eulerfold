@@ -13,6 +13,7 @@ import {
   Trophy,
   CreditCard,
   Plus,
+  Terminal,
   ChevronDown,
   ChevronRight,
   ArrowRight,
@@ -151,26 +152,28 @@ const ARTICLES_DATA = {
   categories: [
     { name: "Architectures", href: "/articles?category=Architectures" },
     { name: "Optimization", href: "/articles?category=Optimization" },
-    { name: "Theory", href: "/articles?category=Theory" }
+    { name: "Theory", href: "/articles?category=Theory" },
+    { name: "Science AI", href: "/articles?category=Science AI" }
   ],
   featured: [
     { title: "Transformer Architecture", slug: "transformer" },
-    { title: "Self-Attention Mechanism", slug: "self-attention-mechanism" },
+    { title: "AlphaFold (Proteins)", slug: "how-does-alphafold-predict-protein-structures" },
+    { title: "Protein Language Models", slug: "what-are-protein-language-models" },
     { title: "Mixture of Experts (MoE)", slug: "mixture-of-experts" },
+    { title: "Drug Discovery", slug: "how-is-ai-accelerating-drug-discovery" },
     { title: "RLHF (Alignment)", slug: "rlhf" },
-    { title: "Model Quantization", slug: "quantization" },
-    { title: "Contrastive Learning", slug: "contrastive-learning" },
+    { title: "Digital Twin (Cell)", slug: "how-is-ai-building-a-digital-twin-of-the-cell" },
     { title: "Vector Embeddings", slug: "embeddings" },
     { title: "Vanishing Gradient", slug: "vanishing-gradient" },
     { title: "Backpropagation", slug: "backpropagation" },
     { title: "Double Descent", slug: "double-descent" },
     { title: "Latent Space", slug: "latent-space" },
-    { title: "Regularization", slug: "regularization" },
-    { title: "Softmax Function", slug: "softmax" },
-    { title: "Tokens & Tokenization", slug: "tokens" },
+    { title: "Weather Prediction", slug: "how-does-ai-predict-extreme-weather" },
+    { title: "Connectomics (Brain)", slug: "how-is-ai-mapping-the-brain-connectomics" },
     { title: "Positional Encoding", slug: "positional-encoding" },
-    { title: "Overfitting", slug: "overfitting" },
-    { title: "Gradient Descent", slug: "gradient-descent" }
+    { title: "Gradient Descent", slug: "gradient-descent" },
+    { title: "Quantization", slug: "quantization" },
+    { title: "Nuclear Fusion", slug: "how-does-ai-simulate-nuclear-fusion" }
   ]
 };
 
@@ -237,7 +240,7 @@ export default function PublicHeader() {
       ref={headerRef}
       className={`manrope-body sticky top-0 z-50 w-full transition-all duration-300 ${
         isScrolled 
-            ? 'bg-header/90 h-[48px] border-b border-border/40 shadow-[0_1px_2px_rgba(0,0,0,0.02)]' 
+            ? 'bg-header h-[48px] border-b border-border shadow-[0_4px_12px_rgba(0,0,0,0.03)]' 
             : 'bg-header h-[56px] border-b border-transparent'
       }`}
       style={{ top: 'var(--announcement-height, 0px)' }}
@@ -246,36 +249,49 @@ export default function PublicHeader() {
         
         {/* Left: Brand & Nav */}
         <div className="flex items-center gap-8 h-full">
-          <Link href="/" className="flex items-center gap-2.5 hover:opacity-85 transition-opacity active:scale-95 duration-200">
+          <Link href="/" className="flex items-center gap-2.5 hover:opacity-100 transition-opacity active:scale-95 duration-200 group">
             <img src="/apple-touch-icon.png" alt="" className="w-7 h-7" />
-            <span className="text-[16px] font-bold text-text-heading tracking-tight hidden md:block">Euler<span className="text-accent">Fold</span></span>
+            <span className="text-[16px] font-bold text-text-heading tracking-tight hidden md:block group-hover:text-teal-700 transition-colors">Euler<span className="text-teal-700">Fold</span></span>
           </Link>
 
           <nav className="hidden lg:flex items-center gap-0.5 h-full">
             <Link href="/leaderboard" className="px-3 py-1.5 text-[13.5px] font-semibold text-text-muted hover:text-text-heading transition-all tracking-tight rounded-lg hover:bg-sidebar/40">Leaderboard</Link>
             <Link href="/explore" className="px-3 py-1.5 text-[13.5px] font-semibold text-text-muted hover:text-text-heading transition-all tracking-tight rounded-lg hover:bg-sidebar/40">Explore</Link>
 
-            <DesktopDropdown id="products" label="Products" width="min-w-[320px]">
-              <div className="p-2 flex flex-col gap-1">
-                <Link href="/planner" className="flex items-start gap-3.5 p-3.5 rounded-xl hover:bg-sidebar/40 transition-all group">
-                  <div className="w-9 h-9 rounded-lg bg-accent/10 flex items-center justify-center text-accent shrink-0">
-                    <Calendar className="w-4.5 h-4.5" />
+            <DesktopDropdown id="products" label="Products" width="min-w-[280px]">
+              <div className="p-1.5 flex flex-col gap-0.5">
+                <Link href="/planner" className="flex items-start gap-2.5 p-2.5 rounded-lg hover:bg-sidebar/40 transition-all group">
+                  <div className="w-8 h-8 rounded-md bg-accent/10 flex items-center justify-center text-accent shrink-0">
+                    <Calendar className="w-4 h-4" />
                   </div>
                   <div className="flex flex-col gap-0.5">
                     <div className="flex items-center gap-2">
-                      <span className="text-[13px] font-bold text-text-heading group-hover:text-accent transition-colors">Study Planner</span>
-                      <span className="text-[8px] font-black uppercase tracking-widest bg-accent text-white px-1.5 py-0.5 rounded leading-none">New</span>
+                      <span className="text-[12.5px] font-bold text-text-heading group-hover:text-accent transition-colors tracking-tight">Study Planner</span>
+                      <span className="text-[7px] font-black uppercase tracking-widest bg-accent text-white px-1 py-0.5 rounded leading-none">New</span>
                     </div>
-                    <span className="text-[11px] text-text-muted leading-relaxed">Visual calendar to organize your learning journey.</span>
+                    <span className="text-[10.5px] text-text-muted leading-relaxed">Organize your learning journey.</span>
                   </div>
                 </Link>
-                <Link href="/generate" className="flex items-start gap-3.5 p-3.5 rounded-xl hover:bg-sidebar/40 transition-all group">
-                  <div className="w-9 h-9 rounded-lg bg-sidebar border border-border flex items-center justify-center text-text-muted shrink-0 group-hover:text-accent group-hover:border-accent/30 transition-colors">
-                    <Plus className="w-4.5 h-4.5" />
+
+                <Link href="/buildpilot" className="flex items-start gap-2.5 p-2.5 rounded-lg hover:bg-sidebar/40 transition-all group">
+                  <div className="w-8 h-8 rounded-md bg-teal-500/10 flex items-center justify-center text-teal-700 shrink-0 group-hover:bg-teal-500/20 transition-all">
+                    <Terminal className="w-4 h-4" />
                   </div>
                   <div className="flex flex-col gap-0.5">
-                    <span className="text-[13px] font-bold text-text-heading group-hover:text-accent transition-colors">Roadmap Generator</span>
-                    <span className="text-[11px] text-text-muted leading-relaxed">AI-powered curricula tailored to your goals.</span>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[12.5px] font-bold text-text-heading group-hover:text-teal-700 transition-colors tracking-tight">BuildPilot</span>
+                    </div>
+                    <span className="text-[10.5px] text-text-muted leading-relaxed">Proof-of-work workspace.</span>
+                  </div>
+                </Link>
+
+                <Link href="/generate" className="flex items-start gap-2.5 p-2.5 rounded-lg hover:bg-sidebar/40 transition-all group">
+                  <div className="w-8 h-8 rounded-md bg-sidebar border border-border flex items-center justify-center text-text-muted shrink-0 group-hover:text-accent group-hover:border-accent/30 transition-colors">
+                    <Plus className="w-4 h-4" />
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-[12.5px] font-bold text-text-heading group-hover:text-accent transition-colors tracking-tight">Roadmap Generator</span>
+                    <span className="text-[10.5px] text-text-muted leading-relaxed">AI-powered curricula.</span>
                   </div>
                 </Link>
               </div>
@@ -516,6 +532,7 @@ export default function PublicHeader() {
             <div className="grid grid-cols-1 gap-3">
               {[
                 { l: "Study Planner", h: "/planner", i: Calendar, n: true },
+                { l: "BuildPilot", h: "/buildpilot", i: Terminal },
                 { l: "Learning Hub", h: "/learn", i: GraduationCap },
                 { l: "Roadmap Explorer", h: "/explore", i: Globe },
                 { l: "Global Leaderboard", h: "/leaderboard", i: Trophy },

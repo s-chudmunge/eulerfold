@@ -45,36 +45,43 @@ export default function UserNav() {
       <div className="relative" ref={dropdownRef}>
         <button 
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-1.5 p-0.5 rounded-full hover:bg-sidebar/60 transition-all active:scale-95 border border-transparent hover:border-border/40"
+          className="flex items-center gap-2 p-1 rounded-lg hover:bg-sidebar/40 transition-colors border border-transparent hover:border-border/40"
         >
-          <div className="w-7 h-7 rounded-full bg-accent/10 border border-border/50 flex items-center justify-center overflow-hidden shadow-sm">
+          <div className="w-6.5 h-6.5 rounded-md bg-accent/10 border border-accent/20 flex items-center justify-center overflow-hidden">
             {avatarUrl ? (
               <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
             ) : (
-              <span className="text-[10px] font-bold text-accent">
+              <span className="text-[10px] font-bold text-accent uppercase tracking-tighter">
                 {initials}
               </span>
             )}
           </div>
-          <ChevronDown className={`w-3 h-3 text-text-muted transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
+          <div className="flex items-center gap-1">
+            <span className="text-[13px] font-semibold text-text-heading tracking-tight max-w-[100px] truncate hidden sm:block">
+              {displayName.split(' ')[0]}
+            </span>
+            <ChevronDown className={`w-3.5 h-3.5 text-text-muted opacity-40 transition-transform duration-300 ${isOpen ? 'rotate-180 opacity-100' : ''}`} />
+          </div>
         </button>
 
         {isOpen && (
-          <div className="absolute right-0 mt-1.5 w-56 bg-header border border-border rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.12)] z-[100] animate-in fade-in zoom-in-95 duration-150 origin-top-right overflow-hidden">
+          <div className="absolute right-0 mt-2 w-60 bg-header border border-border shadow-[0_15px_50px_-12px_rgba(0,0,0,0.15)] z-[100] animate-in fade-in zoom-in-98 slide-in-from-top-2 duration-200 origin-top-right rounded-xl overflow-hidden">
             {/* User Info Section */}
-            <div className="px-3.5 py-2.5 border-b border-border/50 bg-sidebar/10">
-              <p className="text-[12px] font-bold text-text-heading truncate leading-tight">{displayName}</p>
-              <p className="text-[10px] text-text-muted truncate opacity-60 leading-tight mt-0.5">{user.email}</p>
+            <div className="px-4 py-3 border-b border-border/50">
+              <p className="text-[13px] font-bold text-text-heading truncate tracking-tight">{displayName}</p>
+              <p className="text-[11px] text-text-muted truncate opacity-70 mt-0.5 font-medium">{user.email}</p>
             </div>
 
             {/* Menu Items */}
-            <div className="p-1">
+            <div className="p-1.5">
               <Link 
                 href="/dashboard"
                 onClick={() => setIsOpen(false)}
-                className="flex items-center gap-2.5 px-2.5 py-1.5 text-[12px] font-medium text-text-muted hover:text-text-heading hover:bg-sidebar/60 rounded-lg transition-all group"
+                className="flex items-center gap-3 px-2.5 py-2 text-[13px] font-medium text-text-muted hover:text-text-heading hover:bg-sidebar/50 rounded-lg transition-all group"
               >
-                <LayoutDashboard className="w-3.5 h-3.5 opacity-50 group-hover:opacity-100 group-hover:text-accent transition-all" />
+                <div className="w-5 h-5 rounded-md bg-sidebar border border-border/50 flex items-center justify-center group-hover:bg-header group-hover:border-accent/30 transition-all">
+                  <LayoutDashboard className="w-3 h-3 opacity-60 group-hover:opacity-100 group-hover:text-accent" />
+                </div>
                 Dashboard
               </Link>
               
@@ -82,30 +89,36 @@ export default function UserNav() {
                 <Link 
                   href={`/u/${user.username}`}
                   onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-2.5 px-2.5 py-1.5 text-[12px] font-medium text-text-muted hover:text-text-heading hover:bg-sidebar/60 rounded-lg transition-all group"
+                  className="flex items-center gap-3 px-2.5 py-2 text-[13px] font-medium text-text-muted hover:text-text-heading hover:bg-sidebar/50 rounded-lg transition-all group"
                 >
-                  <UserCircle className="w-3.5 h-3.5 opacity-50 group-hover:opacity-100 group-hover:text-accent transition-all" />
-                  Public profile
+                  <div className="w-5 h-5 rounded-md bg-sidebar border border-border/50 flex items-center justify-center group-hover:bg-header group-hover:border-accent/30 transition-all">
+                    <UserCircle className="w-3 h-3 opacity-60 group-hover:opacity-100 group-hover:text-accent" />
+                  </div>
+                  Public Profile
                 </Link>
               )}
 
               <Link 
                 href="/settings"
                 onClick={() => setIsOpen(false)}
-                className="flex items-center gap-2.5 px-2.5 py-1.5 text-[12px] font-medium text-text-muted hover:text-text-heading hover:bg-sidebar/60 rounded-lg transition-all group"
+                className="flex items-center gap-3 px-2.5 py-2 text-[13px] font-medium text-text-muted hover:text-text-heading hover:bg-sidebar/50 rounded-lg transition-all group"
               >
-                <Settings className="w-3.5 h-3.5 opacity-50 group-hover:opacity-100 group-hover:text-accent transition-all" />
+                <div className="w-5 h-5 rounded-md bg-sidebar border border-border/50 flex items-center justify-center group-hover:bg-header group-hover:border-accent/30 transition-all">
+                  <Settings className="w-3 h-3 opacity-60 group-hover:opacity-100 group-hover:text-accent" />
+                </div>
                 Settings
               </Link>
             </div>
 
             {/* Sign Out Section */}
-            <div className="p-1 border-t border-border/50">
+            <div className="p-1.5 border-t border-border/50 bg-sidebar/5">
               <button 
                 onClick={handleSignOut}
-                className="w-full flex items-center gap-2.5 px-2.5 py-1.5 text-[12px] font-medium text-red-500 hover:bg-red-500/5 rounded-lg transition-all group"
+                className="w-full flex items-center gap-3 px-2.5 py-2 text-[13px] font-semibold text-red-500 hover:bg-red-500/10 rounded-lg transition-all group"
               >
-                <LogOut className="w-3.5 h-3.5 opacity-70 group-hover:opacity-100 transition-all" />
+                <div className="w-5 h-5 rounded-md bg-red-500/5 border border-red-500/10 flex items-center justify-center group-hover:bg-red-500/10 transition-all">
+                  <LogOut className="w-3 h-3 opacity-80 group-hover:opacity-100" />
+                </div>
                 Sign out
               </button>
             </div>
@@ -113,6 +126,7 @@ export default function UserNav() {
         )}
       </div>
     );
+
   }
 
   return (

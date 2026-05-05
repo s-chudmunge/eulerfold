@@ -125,6 +125,10 @@ export const roadmapsAPI = {
     deleteRoadmapExtension: async (id: number): Promise<RoadmapMe> => {
         const response = await api.post(`/roadmaps/${id}/delete-extension`);
         return response.data;
+    },
+    createManualBuild: async (payload: { title: string, goal: string, skills?: string }): Promise<RoadmapRead> => {
+        const response = await api.post('/roadmaps/manual-build', payload);
+        return response.data;
     }
 };
 

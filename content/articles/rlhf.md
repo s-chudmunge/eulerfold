@@ -1,6 +1,7 @@
 ---
 title: "What is RLHF?"
 slug: "rlhf"
+shortSlug: "rlhf"
 author: "EulerFold"
 date: "April 22, 2026"
 category: "Optimization"

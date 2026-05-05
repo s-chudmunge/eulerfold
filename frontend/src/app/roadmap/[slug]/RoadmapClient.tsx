@@ -49,9 +49,10 @@ const manrope = Manrope({
 interface Props {
   slug: string;
   initialRoadmap: any;
+  isProject?: boolean;
 }
 
-export default function RoadmapClient({ slug, initialRoadmap }: Props) {
+export default function RoadmapClient({ slug, initialRoadmap, isProject = false }: Props) {
     const [roadmap, setRoadmap] = useState<any>(initialRoadmap);
     const [loading, setLoading] = useState(!initialRoadmap);
     const [error, setError] = useState<string | null>(null);
@@ -74,6 +75,11 @@ export default function RoadmapClient({ slug, initialRoadmap }: Props) {
     const [extensionGoal, setExtensionGoal] = useState<string>('');
     const [extending, setExtending] = useState<boolean>(false);
     const router = useRouter();
+
+    // Determine if this is a project (BuildPilot) or a standard roadmap
+    const effectiveIsProject = isProject || roadmap?.model === 'manual-build';
+    const label = effectiveIsProject ? 'Project' : 'Roadmap';
+    const pathPrefix = effectiveIsProject ? '/project' : '/roadmap';
 
     useEffect(() => {
         const fetchUserStatus = async () => {
@@ -276,7 +282,11 @@ export default function RoadmapClient({ slug, initialRoadmap }: Props) {
         if (!roadmap) return;
         
         if (isOwner) {
-            router.push(`/roadmap/${roadmap.slug}/learn`);
+            if (effectiveIsProject) {
+                router.push(`/project/${roadmap.slug}/build/1`);
+            } else {
+                router.push(`/roadmap/${roadmap.slug}/learn`);
+            }
             return;
         }
 

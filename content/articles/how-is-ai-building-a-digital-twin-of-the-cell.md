@@ -1,6 +1,7 @@
 ---
 title: "Can we build a Digital Twin of a living cell?"
 slug: "how-is-ai-building-a-digital-twin-of-the-cell"
+shortSlug: "digital-twin"
 author: "EulerFold"
 date: "April 30, 2026"
 category: "Science AI"

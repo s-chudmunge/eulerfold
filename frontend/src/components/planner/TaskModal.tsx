@@ -105,12 +105,19 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh }: Pro
     if (!task) return null;
     if (task.task_type === 'research' && task.metadata?.slug) return `/research-decoded/${task.metadata.slug}`;
     if (task.task_type === 'article' && task.metadata?.slug) return `/articles/${task.metadata.slug}`;
-    if ((task.task_type === 'module' || task.task_type === 'practice' || task.task_type === 'pow') && task.roadmap_id) {
+    
+    if ((task.task_type === 'module' || task.task_type === 'pow' || task.task_type === 'practice') && task.roadmap_id) {
       const roadmap = roadmaps.find(r => r.id === task.roadmap_id);
-      const slug = roadmap?.slug || task.roadmap_id;
-      if (task.task_type === 'module' && task.module_number) return `/roadmap/${slug}/learn/module_${task.module_number}`;
-      return `/roadmap/${slug}`;
+      const slug = task.metadata?.roadmap_slug || roadmap?.slug;
+      
+      if (slug) {
+        if (task.task_type === 'module' || task.task_type === 'pow') {
+          return `/project/${slug}/build/${task.module_number || 1}`;
+        }
+        return `/roadmap/${slug}`;
+      }
     }
+    
     if (task.task_type === 'video' && task.metadata?.video_url) return task.metadata.video_url;
     return null;
   };

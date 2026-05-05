@@ -102,6 +102,81 @@ body {
   font-size: 1.2rem; /* ~19px */
 }
 
+:root {
+  --font-serif-stack: "Palatino", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  --serif-base-size: 1.125rem; /* 18px */
+  --serif-h1-size: 2.25rem;    /* 36px */
+  --serif-h2-size: 1.75rem;    /* 28px */
+  --serif-h3-size: 1.375rem;   /* 22px */
+  --serif-h4-size: 1.125rem;   /* 18px */
+  --serif-line-height: 1.65;
+  --serif-text-color: #0a0a0a;
+  --serif-h2-mt: 3.5rem;
+  --serif-h3-mt: 2.5rem;
+}
+
+.dark {
+  --serif-text-color: #e5e7eb;
+}
+
+/* Base scope styles - Apply serif only to content elements */
+.serif-page-scope {
+  --serif-line-height: 1.65;
+}
+
+.serif-page-scope p,
+.serif-page-scope li,
+.serif-page-scope .prose-eulerfold p,
+.serif-page-scope .prose-eulerfold li,
+.serif-page-scope .serif-content {
+  font-family: var(--font-serif-stack);
+  font-size: var(--serif-base-size);
+  line-height: var(--serif-line-height);
+  color: var(--serif-text-color);
+}
+
+/* Specific Element Overrides for Specificity */
+.serif-page-scope h1 { font-family: var(--font-serif-stack); font-size: var(--serif-h1-size); font-weight: 700; line-height: 1.2; }
+.serif-page-scope h2 { 
+  font-family: var(--font-serif-stack); 
+  font-size: var(--serif-h2-size); 
+  font-weight: 700; 
+  line-height: 1.3;
+  margin-top: var(--serif-h2-mt);
+  margin-bottom: 1.5rem;
+}
+.serif-page-scope h3 { 
+  font-family: var(--font-serif-stack); 
+  font-size: var(--serif-h3-size); 
+  font-weight: 600; 
+  line-height: 1.4;
+  margin-top: var(--serif-h3-mt);
+  margin-bottom: 1.25rem;
+}
+.serif-page-scope h4 { font-family: var(--font-serif-stack); font-size: var(--serif-h4-size); font-weight: 600; }
+
+/* Explicitly preserve UI fonts within the scope */
+.serif-page-scope .inconsolata-ui,
+.serif-page-scope .font-mono {
+  font-family: var(--font-mono), monospace !important;
+}
+
+.serif-page-scope .font-inter,
+.serif-page-scope .font-sans,
+.serif-page-scope button,
+.serif-page-scope label,
+.serif-page-scope input,
+.serif-page-scope nav,
+.serif-page-scope .date,
+.serif-page-scope .uppercase.tracking-widest {
+  font-family: var(--font-sans), sans-serif !important;
+}
+
+/* Prose scope handling */
+.serif-page-scope .prose-eulerfold {
+  font-family: var(--font-serif-stack);
+}
+
 .inconsolata-ui { 
   font-family: var(--font-mono), monospace; 
   letter-spacing: -0.01em; 

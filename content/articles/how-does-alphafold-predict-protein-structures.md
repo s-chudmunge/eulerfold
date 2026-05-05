@@ -1,6 +1,7 @@
 ---
 title: "How does AlphaFold predict protein structures?"
 slug: "how-does-alphafold-predict-protein-structures"
+shortSlug: "alphafold"
 author: "EulerFold"
 date: "April 30, 2026"
 category: "Science AI"

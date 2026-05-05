@@ -90,22 +90,22 @@ export default function ResearchDecodedIndexContent() {
       <Suspense fallback={null}>
         <SearchParamsHandler onParams={handleSearchParams} />
       </Suspense>
-      <div className="max-w-[1000px] mx-auto px-6 py-8 md:px-12 md:py-12">
+      <div className="max-w-[1000px] mx-auto px-6 py-6 md:px-10 md:py-10">
         
         {/* Header Section simplified as subheader is now in the Shell */}
         {!searchQuery && (
-          <header className="mb-12">
-            <div className="inconsolata-ui flex items-center gap-2 text-accent mb-4 text-[12px] md:text-[13px] font-bold uppercase tracking-widest flex-wrap">
+          <header className="mb-10">
+            <div className="inconsolata-ui flex items-center gap-2 text-accent mb-3 text-[12px] md:text-[13px] font-bold uppercase tracking-widest flex-wrap">
               <span className="bg-accent-muted px-2 py-0.5 rounded">Decoded</span>
               <span className="text-[var(--border)]">/</span>
               <span className="text-[var(--text-label)] font-medium">Curated Science</span>
             </div>
             
-            <h1 className="inconsolata-ui text-[28px] md:text-[42px] font-bold text-text-heading mb-4 leading-[1.1] tracking-tighter">
+            <h1 className="inconsolata-ui text-[26px] md:text-[38px] font-bold text-text-heading mb-4 leading-[1.1] tracking-tighter">
               Research Decoded
             </h1>
             
-            <p className="manrope-body text-[15px] md:text-[16px] text-text-primary max-w-2xl leading-relaxed">
+            <p className="manrope-body text-[14px] md:text-[15px] text-text-primary max-w-2xl leading-relaxed">
               The foundational breakthroughs of modern AI, decoded for the curious. 
               From Mendel&apos;s laws to Gemini&apos;s native multimodality, explore the specific technical shifts that changed the trajectory of human reasoning.
             </p>
@@ -113,18 +113,18 @@ export default function ResearchDecodedIndexContent() {
         )}
 
         {/* Community Banner */}
-        <div className="mb-16 bg-callout-bg rounded-3xl p-6 md:p-8 border border-border relative overflow-hidden group">
+        <div className="mb-12 bg-callout-bg rounded-2xl p-6 md:p-8 border border-border relative overflow-hidden group">
           <div className="relative z-10 max-w-xl">
-            <div className="flex items-center gap-2 text-accent mb-3">
-              <span className="inconsolata-ui text-[11px] md:text-[12px] font-bold uppercase tracking-wider">EulerFold Intelligence</span>
+            <div className="flex items-center gap-2 text-accent mb-2">
+              <span className="inconsolata-ui text-[11px] font-bold uppercase tracking-wider">EulerFold Intelligence</span>
             </div>
-            <h2 className="text-[20px] md:text-[22px] font-bold mb-3 text-text-heading tracking-tight inconsolata-ui">Join the EulerFold community</h2>
-            <p className="manrope-body text-[13px] md:text-[14px] mb-6 text-text-primary leading-relaxed font-medium">
+            <h2 className="text-[18px] md:text-[20px] font-bold mb-2 text-text-heading tracking-tight inconsolata-ui">Join the EulerFold community</h2>
+            <p className="manrope-body text-[13px] mb-6 text-text-primary leading-relaxed font-medium">
               Track progress and collaborate on roadmaps with students worldwide.
             </p>
             <button 
               onClick={user ? () => window.location.href = '/dashboard' : handleSignIn}
-              className="inline-flex items-center gap-2 bg-[var(--text-heading)] text-[var(--bg-main)] rounded-full px-6 py-2.5 text-[14px] font-bold hover:opacity-90 transition-all shadow-lg hover:shadow-teal-500/20"
+              className="inline-flex items-center gap-2 bg-[var(--text-heading)] text-[var(--bg-main)] rounded-lg px-6 py-2 text-[13px] font-bold hover:opacity-90 transition-all shadow-md hover:shadow-teal-500/20"
             >
               {user ? 'Go to Dashboard' : 'Start Your Journey'} <ArrowRight className="w-4 h-4" />
             </button>
@@ -133,20 +133,20 @@ export default function ResearchDecodedIndexContent() {
         </div>
 
         {/* Grid of Categories */}
-        <div className="space-y-16 md:space-y-24">
+        <div className="space-y-12 md:space-y-20">
           {filteredNavigation.map((category) => (
             <section key={category.id} id={category.id}>
-              <div className="flex items-center gap-4 mb-8 md:mb-10">
-                <h2 className="inconsolata-ui text-[18px] md:text-[22px] font-bold text-text-heading uppercase tracking-[0.2em]">
+              <div className="flex items-center gap-4 mb-6 md:mb-8">
+                <h2 className="inconsolata-ui text-[16px] md:text-[20px] font-bold text-text-heading uppercase tracking-[0.2em]">
                   {category.title}
                 </h2>
                 <div className="h-[1px] flex-1 bg-[var(--border)]"></div>
-                <span className="inconsolata-ui text-[10px] md:text-[12px] font-bold text-text-muted whitespace-nowrap">
+                <span className="inconsolata-ui text-[10px] md:text-[11px] font-bold text-text-muted whitespace-nowrap">
                   {category.sections.length} PAPERS
                 </span>
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-12">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-10">
                 {category.sections.map((section) => {
                   const paper = papers[section.slug];
                   return (
@@ -156,7 +156,7 @@ export default function ResearchDecodedIndexContent() {
                       className="group block"
                     >
                       <article className="h-full flex flex-col">
-                        <div className="relative mb-6 h-[180px] w-full overflow-hidden rounded-2xl bg-image-bg border border-border shadow-sm transition-all group-hover:border-accent/30">
+                        <div className="relative mb-5 h-[160px] w-full overflow-hidden rounded-xl bg-image-bg border border-border shadow-sm transition-all group-hover:border-accent/30">
                           {paper?.heroImage ? (
                             <img 
                               src={paper.heroImage} 
@@ -167,29 +167,29 @@ export default function ResearchDecodedIndexContent() {
                                 const parent = e.currentTarget.parentElement;
                                 if (parent) {
                                   const placeholder = document.createElement('div');
-                                  placeholder.className = 'w-full h-full flex items-center justify-center p-6 text-center bg-image-bg inconsolata-ui text-[0.85rem] font-bold text-text-muted uppercase tracking-tight';
+                                  placeholder.className = 'w-full h-full flex items-center justify-center p-6 text-center bg-image-bg inconsolata-ui text-[0.8rem] font-bold text-text-muted uppercase tracking-tight';
                                   placeholder.innerText = section.title;
                                   parent.appendChild(placeholder);
                                 }
                               }}
                             />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center p-6 text-center bg-image-bg inconsolata-ui text-[0.85rem] font-bold text-text-muted uppercase tracking-tight">
+                            <div className="w-full h-full flex items-center justify-center p-6 text-center bg-image-bg inconsolata-ui text-[0.8rem] font-bold text-text-muted uppercase tracking-tight">
                               {section.title}
                             </div>
                           )}
                           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                         </div>
                         
-                        <div className="inconsolata-ui text-text-muted mb-2 text-[12px] font-bold uppercase tracking-widest opacity-80 group-hover:opacity-100 transition-opacity">
+                        <div className="inconsolata-ui text-text-muted mb-1.5 text-[11px] font-bold uppercase tracking-widest opacity-80 group-hover:opacity-100 transition-opacity">
                           {paper?.authors || 'Research Team'}
                         </div>
                         
-                        <h3 className="inconsolata-ui text-[20px] font-bold text-text-heading mb-3 group-hover:text-accent transition-colors leading-tight">
+                        <h3 className="inconsolata-ui text-[18px] font-bold text-text-heading mb-2 group-hover:text-accent transition-colors leading-tight">
                           {section.title}
                         </h3>
                         
-                        <p className="manrope-body text-[14px] text-text-secondary line-clamp-2 leading-relaxed font-medium">
+                        <p className="manrope-body text-[13px] text-text-secondary line-clamp-2 leading-relaxed font-medium">
                           {paper?.intro || 'Exploring the foundational shifts that defined this breakthrough...'}
                         </p>
                         

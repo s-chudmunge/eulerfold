@@ -15,8 +15,10 @@ import { useAuth } from '@/components/AuthProvider';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import { motion, AnimatePresence } from 'framer-motion';
 import PublicHeader from '@/components/PublicHeader';
 import Footer from '@/components/Footer';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import { Article, articles } from '../generatedArticles';
 import { Paper, papers } from '../../research-decoded/generatedData';
 
@@ -99,36 +101,121 @@ const D2Diagram = ({ code, cache }: { code: string, cache?: Record<string, strin
   );
 };
 
-const TermLink = ({ children, slug }: { children: React.ReactNode, slug: string }) => {
+const ArticlePreview = ({ slug }: { slug: string }) => {
+  const article = articles[slug];
+  if (!article) return null;
+
   return (
-    <Link 
-      href={`/articles/${slug}`}
-      className="text-accent hover:underline decoration-dotted underline-offset-4 font-semibold"
-    >
-      {children}
-    </Link>
+    <div className="w-80 p-0 bg-sidebar border border-border rounded-2xl shadow-2xl overflow-hidden pointer-events-auto">
+      {article.heroImage && (
+        <div className="h-32 w-full overflow-hidden border-b border-border">
+          <img src={article.heroImage} alt={article.title} className="w-full h-full object-cover" />
+        </div>
+      )}
+      <div className="p-4">
+        <div className="flex items-center gap-2 mb-2">
+           <span className="inconsolata-ui text-[10px] font-black uppercase tracking-[0.2em] text-accent bg-accent/10 px-2 py-0.5 rounded">
+            {article.category}
+          </span>
+        </div>
+        <h4 className="text-[16px] font-bold text-text-heading mb-2 leading-tight font-inter tracking-tight">
+          {article.title}
+        </h4>
+        <p className="text-[13px] text-text-muted line-clamp-3 leading-relaxed manrope-body font-medium">
+          {article.excerpt}
+        </p>
+        <div className="mt-3 flex items-center gap-1 text-[11px] font-bold text-accent inconsolata-ui uppercase tracking-wider">
+          Read Article <ArrowRight className="w-3 h-3" />
+        </div>
+      </div>
+    </div>
   );
+};
+
+const TermLink = ({ children, slug }: { children: React.ReactNode, slug: string }) => {
+  const [isHovered, setIsHovered] = React.useState(false);
+  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setIsHovered(false);
+    }, 150);
+  };
+
+  return (
+    <span 
+      className="relative inline"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
+      <Link 
+        href={`/articles/${slug}`}
+        className="text-accent hover:text-accent/80 transition-colors underline decoration-accent/30 decoration-2 underline-offset-4 font-semibold"
+      >
+        {children}
+      </Link>
+      
+      <AnimatePresence>
+        {isHovered && (
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
+            className="absolute z-[100] bottom-full left-1/2 -translate-x-1/2 mb-4 hidden md:block"
+          >
+            <ArticlePreview slug={slug} />
+            {/* Arrow */}
+            <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 w-4 h-4 bg-sidebar border-r border-b border-border rotate-45" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </span>
+  );
+};
+
+const slugify = (text: string) => {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-');
 };
 
 const MarkdownWithLinks = ({ content, currentSlug, cache }: { content: string, currentSlug: string, cache?: Record<string, string> }) => {
   // Dynamically build terms to link from the articles data, excluding the current article
-  const termsToLink = Object.values(articles)
-    .filter(article => article.slug.toLowerCase() !== currentSlug.toLowerCase())
-    .flatMap(article => {
-      const terms = [
-        { term: article.title, slug: article.slug },
-        { term: article.slug.replace(/-/g, ' '), slug: article.slug },
-      ];
-      
-      // Add synonyms from the article data if they exist
-      if (article.synonyms && Array.isArray(article.synonyms)) {
-        article.synonyms.forEach(syn => {
-          terms.push({ term: syn, slug: article.slug });
-        });
-      }
-      
-      return terms;
-    }).sort((a, b) => b.term.length - a.term.length);
+  const termsToLink = React.useMemo(() => {
+    return Object.values(articles)
+      .filter(article => article.slug.toLowerCase() !== currentSlug.toLowerCase())
+      .flatMap(article => {
+        const terms = [
+          { term: article.title, slug: article.slug },
+        ];
+        
+        if (article.shortSlug) {
+          terms.push({ term: article.shortSlug, slug: article.slug });
+          const spaceTerm = article.shortSlug.replace(/-/g, ' ');
+          if (spaceTerm !== article.shortSlug) {
+            terms.push({ term: spaceTerm, slug: article.slug });
+          }
+        }
+        
+        // Add synonyms from the article data if they exist
+        if (article.synonyms && Array.isArray(article.synonyms)) {
+          article.synonyms.forEach(syn => {
+            if (!terms.some(t => t.term.toLowerCase() === syn.toLowerCase())) {
+              terms.push({ term: syn, slug: article.slug });
+            }
+          });
+        }
+        
+        return terms;
+      }).sort((a, b) => b.term.length - a.term.length);
+  }, [currentSlug]);
 
   const renderTextWithLinks = (text: string) => {
     let parts: (string | React.ReactNode)[] = [text];
@@ -199,7 +286,11 @@ const MarkdownWithLinks = ({ content, currentSlug, cache }: { content: string, c
       remarkPlugins={[remarkMath]}
       rehypePlugins={[rehypeKatex]}
       components={{
-        h2: ({node, ...props}) => <h2 className="text-[28px] md:text-[32px] font-bold leading-[1.2] mt-[60px] mb-[24px] text-text-heading font-inter tracking-tighter" {...props} />,
+        h2: ({node, children, ...props}) => {
+          const content = React.Children.toArray(children).join('');
+          const id = slugify(content);
+          return <h2 id={id} className="text-[28px] md:text-[32px] font-bold leading-[1.2] mt-[60px] mb-[24px] text-text-heading font-inter tracking-tighter scroll-mt-24" {...props}>{children}</h2>;
+        },
         p: ({ children }) => {
           return <p className="mb-[24px]">{processChildren(children)}</p>;
         },
@@ -236,6 +327,52 @@ export default function ArticleClient({ article }: Props) {
     articles: Article[],
     papers: Paper[]
   }>({ articles: [], papers: [] });
+  const [activeId, setActiveId] = React.useState<string>('');
+
+  const headings = React.useMemo(() => {
+    const h2s = article.content.split('\n').filter(line => line.startsWith('## '));
+    return h2s.map(line => {
+      const title = line.replace('## ', '').trim();
+      return { title, id: slugify(title) };
+    });
+  }, [article.content]);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 200;
+
+      let currentActiveId = '';
+      
+      // If we're at the very top, highlight the first section
+      if (window.scrollY < 100 && headings.length > 0) {
+        currentActiveId = headings[0].id;
+      } else {
+        for (let i = 0; i < headings.length; i++) {
+          const element = document.getElementById(headings[i].id);
+          if (!element) continue;
+          
+          const rect = element.getBoundingClientRect();
+          const top = rect.top + window.scrollY;
+          
+          if (scrollPosition >= top) {
+            currentActiveId = headings[i].id;
+          } else {
+            break;
+          }
+        }
+      }
+      
+      if (currentActiveId && currentActiveId !== activeId) {
+        setActiveId(currentActiveId);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    // Trigger once on mount
+    handleScroll();
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [headings, activeId]);
 
   const handleSignIn = () => {
     router.push(`/login?next=${encodeURIComponent(window.location.pathname)}`);
@@ -247,12 +384,39 @@ export default function ArticleClient({ article }: Props) {
   const encodedText = encodeURIComponent(shareText);
 
   React.useEffect(() => {
-    // Recommendation logic moved to useEffect to avoid hydration mismatch
+    // Advanced recommendation logic
     const allArticles = Object.values(articles);
-    const otherArticles = allArticles
+    const keywords = [
+      article.title.toLowerCase(),
+      article.category.toLowerCase(),
+      ...(article.synonyms || []).map(s => s.toLowerCase())
+    ];
+
+    const scoredArticles = allArticles
       .filter(a => a.slug !== article.slug)
-      .sort(() => 0.5 - Math.random())
-      .slice(0, 2);
+      .map(a => {
+        let score = 0;
+        if (a.category === article.category) score += 10;
+        
+        const aTitle = a.title.toLowerCase();
+        const aExcerpt = a.excerpt.toLowerCase();
+        
+        keywords.forEach(k => {
+          if (aTitle.includes(k)) score += 5;
+          if (aExcerpt.includes(k)) score += 2;
+        });
+
+        // Check if any of this article's synonyms appear in the target article's content
+        if (a.synonyms) {
+          a.synonyms.forEach(syn => {
+            if (article.content.toLowerCase().includes(syn.toLowerCase())) score += 3;
+          });
+        }
+
+        return { article: a, score };
+      })
+      .sort((a, b) => b.score - a.score || Math.random() - 0.5)
+      .slice(0, 3); // Increased to 3 for better density
 
     // Map entries to ensure we have the slug (the key) available
     const allPapers = Object.entries(papers).map(([slug, paper]) => ({
@@ -260,53 +424,72 @@ export default function ArticleClient({ article }: Props) {
       slug
     }));
 
-    const relatedPapers = allPapers
-      .filter(p => {
-        const keywords = [article.title, article.category, ...(article.synonyms || [])];
-        return keywords.some(k => 
-          p.title.toLowerCase().includes(k.toLowerCase()) || 
-          p.intro.toLowerCase().includes(k.toLowerCase())
-        );
-      })
-      .sort(() => 0.5 - Math.random())
-      .slice(0, 2);
+    const scoredPapers = allPapers
+      .map(p => {
+        let score = 0;
+        const pTitle = p.title.toLowerCase();
+        const pIntro = p.intro.toLowerCase();
 
-    const finalPapers = relatedPapers.length > 0 
-      ? relatedPapers 
-      : allPapers.sort(() => 0.5 - Math.random()).slice(0, 2);
+        keywords.forEach(k => {
+          if (pTitle.includes(k)) score += 10;
+          if (pIntro.includes(k)) score += 3;
+        });
+
+        // Bonus for matching authors (if applicable, though usually not)
+        return { paper: p, score };
+      })
+      .sort((a, b) => b.score - a.score || Math.random() - 0.5)
+      .slice(0, 3);
 
     setRecommendations({
-      articles: otherArticles,
-      papers: finalPapers
+      articles: scoredArticles.map(sa => sa.article),
+      papers: scoredPapers.map(sp => sp.paper)
     });
-  }, [article.slug, article.title, article.category, article.synonyms]);
+  }, [article.slug, article.title, article.category, article.synonyms, article.content]);
 
   return (
-    <div className="min-h-screen bg-background text-text-primary font-inter selection:bg-accent/20">
+    <div className="min-h-screen bg-background text-text-primary serif-page-scope selection:bg-accent/20">
       <PublicHeader />
-      
-      {/* Secondary Navigation (BibGuru Style) */}
-      <nav className="hidden md:flex items-center justify-center h-[48px] bg-background border-b border-border text-[15px]">
-        <ul className="flex items-center gap-6">
-          <li><Link href="/research-decoded" className="text-text-muted hover:text-accent transition-colors font-medium">Research Decoded</Link></li>
-          <li><Link href="#" className="text-text-muted hover:text-accent transition-colors font-medium">Neural Networks</Link></li>
-          <li><Link href="#" className="text-text-muted hover:text-accent transition-colors font-medium">Optimization</Link></li>
-          <li><Link href="#" className="text-text-muted hover:text-accent transition-colors font-medium">Theory</Link></li>
-        </ul>
-      </nav>
 
       {/* Site Content (BibGuru Layout) */}
-      <div className="max-w-[1100px] mx-auto flex flex-col md:flex-row justify-center gap-[60px] mt-[30px] md:mt-[60px] pb-[80px] px-6">
+      <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row justify-center xl:justify-start xl:pl-[120px] gap-[40px] lg:gap-[60px] mt-[30px] md:mt-[60px] pb-[80px] px-6">
         
+        {/* Table of Contents (Left Sidebar) */}
+        <aside className="hidden xl:block w-[200px] shrink-0">
+          <div className="sticky top-[100px]">
+            <h3 className="inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] text-text-muted mb-6 opacity-60">Contents</h3>
+            <nav className="flex flex-col gap-4">
+              {headings.map((heading) => (
+                <a 
+                  key={heading.id} 
+                  href={`#${heading.id}`}
+                  onClick={() => setActiveId(heading.id)}
+                  className={`text-[13px] font-medium leading-tight transition-all hover:text-accent ${
+                    activeId === heading.id 
+                      ? "text-accent border-l-2 border-accent pl-3 -ml-[2px]" 
+                      : "text-text-muted pl-3 border-l-2 border-transparent hover:border-accent/20"
+                  }`}
+                >
+                  {heading.title}
+                </a>
+              ))}
+            </nav>
+          </div>
+        </aside>
+
         {/* Content Area (Max 700px) */}
         <main className="w-full max-w-[700px]">
           <article>
             <header className="mb-[40px]">
-              <h1 className="text-[34px] font-bold leading-[1.1] text-text-heading mb-[20px] font-inter tracking-tighter">
+              <Breadcrumbs items={[
+                { label: 'Articles', href: '/articles' },
+                { label: article.category }
+              ]} />
+              <h1 className="text-text-heading mb-[20px] tracking-tighter">
                 {article.title}
               </h1>
-              <div className="text-[17px] text-text-muted opacity-70 font-medium inconsolata-ui uppercase tracking-widest">
-                By <span className="text-text-heading font-semibold">{article.author}</span> / <span className="date">{article.date}</span>
+              <div className="text-[17px] text-text-muted opacity-70 font-medium inconsolata-ui uppercase tracking-widest date">
+                By <span className="text-text-heading font-semibold">{article.author}</span> / {article.date}
               </div>
             </header>
 
@@ -324,7 +507,7 @@ export default function ArticleClient({ article }: Props) {
                 </figure>
               )}
 
-              <div className="prose prose-eulerfold max-w-none text-[18px] md:text-[20px] leading-[1.8] text-text-primary font-inter font-normal">
+              <div className="prose prose-eulerfold max-w-none text-text-primary">
                 <MarkdownWithLinks content={article.content} currentSlug={article.slug} cache={article.d2Cache} />
               </div>
 
@@ -333,7 +516,7 @@ export default function ArticleClient({ article }: Props) {
                 <div className="my-[60px] relative group">
                   <div className="absolute -inset-1 bg-gradient-to-r from-accent/50 to-accent/30 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
                   <div className="relative bg-callout-bg p-[30px] md:p-[45px] rounded-2xl border border-callout-border leading-relaxed">
-                    <p className="text-[20px] md:text-[22px] leading-[1.6] italic text-text-heading font-inter font-medium">
+                    <p className="italic text-text-heading font-medium">
                       "{article.technicalInsight}"
                     </p>
                   </div>
@@ -343,17 +526,17 @@ export default function ArticleClient({ article }: Props) {
               {/* FAQ Section */}
               {article.faq && article.faq.length > 0 && (
                 <div className="mt-[80px]">
-                  <h2 className="text-[28px] md:text-[32px] font-bold leading-[1.2] mb-[32px] text-text-heading font-inter tracking-tighter">
+                  <h2 className="mb-[32px] text-text-heading tracking-tighter">
                     Frequently Asked Questions
                   </h2>
                   <div className="space-y-4">
                     {article.faq.map((item, idx) => (
                       <details key={idx} className="group border border-border rounded-2xl bg-card overflow-hidden transition-all duration-300 hover:border-accent/30">
-                        <summary className="p-[24px] text-[19px] font-bold leading-[1.3] cursor-pointer list-none flex justify-between items-center group-open:bg-accent/5 transition-colors font-inter tracking-tight text-text-heading">
+                        <summary className="p-[24px] font-bold leading-[1.3] cursor-pointer list-none flex justify-between items-center group-open:bg-accent/5 transition-colors tracking-tight text-text-heading">
                           <span className="max-w-[90%]">{item.q}</span>
                           <span className="text-accent text-[24px] font-light transition-transform duration-300 group-open:rotate-45">+</span>
                         </summary>
-                        <div className="px-[24px] pb-[24px] pt-2 text-[17px] md:text-[18px] leading-[1.7] text-text-primary font-inter font-normal opacity-90">
+                        <div className="px-[24px] pb-[24px] pt-2 text-text-primary font-normal opacity-90">
                           {item.a}
                         </div>
                       </details>
@@ -368,7 +551,7 @@ export default function ArticleClient({ article }: Props) {
                   <div className="flex items-center gap-2 text-accent mb-3">
                     <span className="inconsolata-ui text-[11px] md:text-[12px] font-bold uppercase tracking-wider">EulerFold Intelligence</span>
                   </div>
-                  <h2 className="text-[20px] md:text-[22px] font-bold mb-3 text-text-heading tracking-tight inconsolata-ui">Join the EulerFold community</h2>
+                  <h2 className="font-bold mb-3 text-text-heading tracking-tight inconsolata-ui">Join the EulerFold community</h2>
                   <p className="manrope-body text-[13px] md:text-[14px] mb-6 text-text-primary leading-relaxed font-medium">
                     Track progress and collaborate on roadmaps with students worldwide.
                   </p>
@@ -418,37 +601,41 @@ export default function ArticleClient({ article }: Props) {
                 
                 <div className="space-y-10">
                   {/* Glossary Articles */}
-                  <div>
-                    <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.2em] inconsolata-ui mb-4 block opacity-60">From the Glossary</span>
-                    <div className="flex flex-col gap-4">
-                      {recommendations.articles.map((item) => (
-                        <Link key={item.slug} href={`/articles/${item.slug}`} className="group flex items-start justify-between py-2 border-b border-border/40 hover:border-accent/40 transition-colors">
-                          <span className="text-[17px] md:text-[19px] font-semibold text-text-heading group-hover:text-accent transition-colors leading-snug">
-                            {item.title}
-                          </span>
-                          <ArrowRight className="w-4 h-4 text-accent opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all shrink-0 mt-1" />
-                        </Link>
-                      ))}
+                  {recommendations.articles.length > 0 && (
+                    <div>
+                      <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.2em] inconsolata-ui mb-4 block opacity-60">From the Glossary</span>
+                      <div className="flex flex-col gap-4">
+                        {recommendations.articles.map((item) => (
+                          <Link key={item.slug} href={`/articles/${item.slug}`} className="group flex items-start justify-between py-2 border-b border-border/40 hover:border-accent/40 transition-colors">
+                            <span className="text-[17px] md:text-[19px] font-semibold text-text-heading group-hover:text-accent transition-colors leading-snug">
+                              {item.title}
+                            </span>
+                            <ArrowRight className="w-4 h-4 text-accent opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all shrink-0 mt-1" />
+                          </Link>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Research Papers */}
-                  <div>
-                    <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.2em] inconsolata-ui mb-4 block opacity-60">Research Decoded</span>
-                    <div className="flex flex-col gap-4">
-                      {recommendations.papers.map((paper) => (
-                        <Link key={paper.slug} href={`/research-decoded/${paper.slug}`} className="group flex items-start justify-between py-2 border-b border-border/40 hover:border-accent/40 transition-colors">
-                          <div className="flex flex-col gap-1">
-                            <span className="text-[17px] md:text-[19px] font-semibold text-text-heading group-hover:text-accent transition-colors leading-snug">
-                              {paper.title}
-                            </span>
-                            <span className="text-[13px] text-text-muted font-medium italic opacity-70">{paper.authors}</span>
-                          </div>
-                          <ArrowRight className="w-4 h-4 text-accent opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all shrink-0 mt-1" />
-                        </Link>
-                      ))}
+                  {recommendations.papers.length > 0 && (
+                    <div>
+                      <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.2em] inconsolata-ui mb-4 block opacity-60">Research Decoded</span>
+                      <div className="flex flex-col gap-4">
+                        {recommendations.papers.map((paper) => (
+                          <Link key={paper.slug} href={`/research-decoded/${paper.slug}`} className="group flex items-start justify-between py-2 border-b border-border/40 hover:border-accent/40 transition-colors">
+                            <div className="flex flex-col gap-1">
+                              <span className="text-[17px] md:text-[19px] font-semibold text-text-heading group-hover:text-accent transition-colors leading-snug">
+                                {paper.title}
+                              </span>
+                              <span className="text-[13px] text-text-muted font-medium italic opacity-70">{paper.authors}</span>
+                            </div>
+                            <ArrowRight className="w-4 h-4 text-accent opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all shrink-0 mt-1" />
+                          </Link>
+                        ))}
+                      </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
 
@@ -458,37 +645,33 @@ export default function ArticleClient({ article }: Props) {
                   The author of this article utilized generative AI (Google Gemini 3.1 Pro) to assist in part of the drafting and editing process.
                 </p>
               </div>
+
+              {/* Simplified About Card at Bottom */}
+              <div className="mt-16 pt-10 border-t border-border flex flex-col items-center">
+                <p className="text-[16px] text-text-primary manrope-body font-medium mb-6 text-center">
+                  Technical explainers on AI, research, and modern engineering.
+                </p>
+                <div className="flex items-center gap-4">
+                  <span className="text-[13px] font-bold text-text-muted inconsolata-ui uppercase tracking-widest">Follow us</span>
+                  <div className="flex gap-2">
+                    <a href="https://x.com/eulerfold" target="_blank" rel="noopener noreferrer" className="w-[32px] h-[32px] bg-[#000000] rounded flex items-center justify-center hover:opacity-80 transition-opacity">
+                      <FaXTwitter className="w-4 h-4 text-white" />
+                    </a>
+                    <a href="https://www.instagram.com/eulerfold" target="_blank" rel="noopener noreferrer" className="w-[32px] h-[32px] bg-[#E1306C] rounded flex items-center justify-center hover:opacity-80 transition-opacity">
+                      <Instagram className="w-4 h-4 text-white" />
+                    </a>
+                    <a href="https://www.youtube.com/@eulerfold" target="_blank" rel="noopener noreferrer" className="w-[32px] h-[32px] bg-[#FF0000] rounded flex items-center justify-center hover:opacity-80 transition-opacity">
+                      <Youtube className="w-4 h-4 text-white" />
+                    </a>
+                    <a href="mailto:eulerfold@gmail.com" className="w-[32px] h-[32px] bg-[#0F766E] rounded flex items-center justify-center hover:opacity-80 transition-opacity">
+                      <Rss className="w-4 h-4 text-white" />
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
           </article>
         </main>
-
-        {/* Sidebar Area */}
-        <aside className="w-full md:w-[325px] lg:w-[400px]">
-          <div className="sticky top-[100px] border border-border rounded-2xl p-[30px] bg-card shadow-sm">
-            <h2 className="text-[22px] font-bold text-center mb-[15px] text-text-heading inconsolata-ui uppercase tracking-widest">About</h2>
-            <div className="w-12 h-1 bg-accent mx-auto mb-[20px] rounded-full" />
-            <p className="text-[17px] leading-[1.5] text-text-primary mb-[25px] font-inter font-normal text-center">
-              Technical explainers on AI, research, and modern engineering.
-            </p>
-
-            <h2 className="text-[18px] font-bold text-center mb-[15px] text-text-heading inconsolata-ui uppercase tracking-widest">Follow us</h2>
-
-            <div className="flex justify-center gap-2">
-              <a href="https://x.com/eulerfold" target="_blank" rel="noopener noreferrer" className="w-[36px] h-[36px] bg-[#000000] rounded flex items-center justify-center hover:opacity-80 shadow-[inset_0_-3px_0_rgba(255,255,255,0.1)] transition-colors">
-                <FaXTwitter className="w-5 h-5 fill-white text-white" />
-              </a>
-              <a href="https://www.instagram.com/eulerfold" target="_blank" rel="noopener noreferrer" className="w-[36px] h-[36px] bg-[#E1306C] rounded flex items-center justify-center hover:opacity-80 shadow-[inset_0_-3px_0_rgba(0,0,0,0.2)] transition-colors">
-                <Instagram className="w-5 h-5 text-white" />
-              </a>
-              <a href="https://www.youtube.com/@eulerfold" target="_blank" rel="noopener noreferrer" className="w-[36px] h-[36px] bg-[#FF0000] rounded flex items-center justify-center hover:opacity-80 shadow-[inset_0_-3px_0_rgba(0,0,0,0.2)] transition-colors">
-                <Youtube className="w-5 h-5 fill-white text-white" />
-              </a>
-              <a href="mailto:eulerfold@gmail.com" className="w-[36px] h-[36px] bg-[#0F766E] rounded flex items-center justify-center hover:opacity-80 shadow-[inset_0_-3px_0_rgba(0,0,0,0.2)] transition-colors">
-                <Rss className="w-5 h-5 text-white" />
-              </a>
-            </div>
-          </div>
-        </aside>
       </div>
 
       <Footer />

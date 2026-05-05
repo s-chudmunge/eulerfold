@@ -1,6 +1,7 @@
 ---
 title: "How does Gradient Descent work?"
 slug: "gradient-descent"
+shortSlug: "gradient-descent"
 author: "EulerFold"
 date: "April 20, 2026"
 category: "Optimization"

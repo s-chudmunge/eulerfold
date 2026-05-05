@@ -1,6 +1,7 @@
 ---
 title: "Why Do Transformers Need Positional Encoding?"
 slug: "positional-encoding"
+shortSlug: "positional-encoding"
 author: "EulerFold"
 date: "April 27, 2026"
 category: "Architectures"

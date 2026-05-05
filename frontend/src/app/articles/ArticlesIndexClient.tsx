@@ -56,8 +56,8 @@ export default function ArticlesIndexClient({ articles }: Props) {
     <div className="min-h-screen bg-background text-text-primary">
       <PublicHeader />
       
-      <main className="max-w-[1200px] mx-auto py-12 px-6 flex flex-col md:flex-row gap-[60px]">
-        <div className="flex-grow max-w-[800px]">
+      <main className="max-w-[850px] mx-auto py-12 px-6">
+        <div className="w-full">
           <header className="mb-12">
             <h1 className="text-[40px] font-bold text-text-heading tracking-tighter mb-4 inconsolata-ui">
               Articles and Breakdowns
@@ -141,34 +141,31 @@ export default function ArticlesIndexClient({ articles }: Props) {
               </div>
             )}
           </div>
-        </div>
 
-        {/* Sidebar Area */}
-        <aside className="w-full md:w-[325px] shrink-0">
-          <div className="sticky top-[100px] border border-border rounded-2xl p-[30px] bg-card shadow-sm">
-            <h2 className="text-[22px] font-bold text-center mb-[15px] text-text-heading inconsolata-ui uppercase tracking-widest">About</h2>
-            <div className="w-12 h-1 bg-accent mx-auto mb-[20px] rounded-full" />
-            <p className="text-[16px] leading-[1.6] text-text-primary mb-[25px] font-inter font-normal text-center">
+          {/* Simplified About Card at Bottom */}
+          <div className="mt-20 pt-10 border-t border-border flex flex-col items-center">
+            <p className="text-[16px] text-text-primary manrope-body font-medium mb-6 text-center">
               Technical explainers on AI, research, and modern engineering.
             </p>
-
-            <h2 className="text-[18px] font-bold text-center mb-[15px] text-text-heading inconsolata-ui uppercase tracking-widest">Follow us</h2>
-            <div className="flex justify-center gap-2">
-              <a href="https://x.com/eulerfold" target="_blank" rel="noopener noreferrer" className="w-[36px] h-[36px] bg-[#000000] rounded flex items-center justify-center hover:opacity-80 shadow-[inset_0_-3px_0_rgba(255,255,255,0.1)] transition-colors">
-                <FaXTwitter className="w-5 h-5 fill-white text-white" />
-              </a>
-              <a href="https://www.instagram.com/eulerfold" target="_blank" rel="noopener noreferrer" className="w-[36px] h-[36px] bg-[#E1306C] rounded flex items-center justify-center hover:opacity-80 shadow-[inset_0_-3px_0_rgba(0,0,0,0.2)] transition-colors">
-                <Instagram className="w-5 h-5 text-white" />
-              </a>
-              <a href="https://www.youtube.com/@eulerfold" target="_blank" rel="noopener noreferrer" className="w-[36px] h-[36px] bg-[#FF0000] rounded flex items-center justify-center hover:opacity-80 shadow-[inset_0_-3px_0_rgba(0,0,0,0.2)] transition-colors">
-                <Youtube className="w-5 h-5 fill-white text-white" />
-              </a>
-              <a href="mailto:eulerfold@gmail.com" className="w-[36px] h-[36px] bg-[#0F766E] rounded flex items-center justify-center hover:opacity-80 shadow-[inset_0_-3px_0_rgba(0,0,0,0.2)] transition-colors">
-                <Rss className="w-5 h-5 text-white" />
-              </a>
+            <div className="flex items-center gap-4">
+              <span className="text-[13px] font-bold text-text-muted inconsolata-ui uppercase tracking-widest">Follow us</span>
+              <div className="flex gap-2">
+                <a href="https://x.com/eulerfold" target="_blank" rel="noopener noreferrer" className="w-[32px] h-[32px] bg-[#000000] rounded flex items-center justify-center hover:opacity-80 transition-opacity">
+                  <FaXTwitter className="w-4 h-4 text-white" />
+                </a>
+                <a href="https://www.instagram.com/eulerfold" target="_blank" rel="noopener noreferrer" className="w-[32px] h-[32px] bg-[#E1306C] rounded flex items-center justify-center hover:opacity-80 transition-opacity">
+                  <Instagram className="w-4 h-4 text-white" />
+                </a>
+                <a href="https://www.youtube.com/@eulerfold" target="_blank" rel="noopener noreferrer" className="w-[32px] h-[32px] bg-[#FF0000] rounded flex items-center justify-center hover:opacity-80 transition-opacity">
+                  <Youtube className="w-4 h-4 text-white" />
+                </a>
+                <a href="mailto:eulerfold@gmail.com" className="w-[32px] h-[32px] bg-[#0F766E] rounded flex items-center justify-center hover:opacity-80 transition-opacity">
+                  <Rss className="w-4 h-4 text-white" />
+                </a>
+              </div>
             </div>
           </div>
-        </aside>
+        </div>
       </main>
 
       <Footer />

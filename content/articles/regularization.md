@@ -1,6 +1,7 @@
 ---
 title: "How does Regularization prevent Overfitting?"
 slug: "regularization"
+shortSlug: "regularization"
 author: "EulerFold"
 date: "April 27, 2026"
 category: "Theory"

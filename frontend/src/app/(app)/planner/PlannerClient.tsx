@@ -19,12 +19,14 @@ import {
   X,
   FileText,
   Book,
-  Trash2
+  Trash2,
+  ArrowUpRight
 } from 'lucide-react';
 import { plannerAPI, sessionsAPI, User } from '@/lib/api';
 import AppSidebar from '@/components/AppSidebar';
 import { useAuth } from '@/components/AuthProvider';
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, isSameDay, addDays, parseISO } from 'date-fns';
+import Link from 'next/link';
 import TaskModal from '@/components/planner/TaskModal';
 import GeneratePlanModal from '@/components/planner/GeneratePlanModal';
 import DayDetailModal from '@/components/planner/DayDetailModal';
@@ -103,6 +105,21 @@ export default function PlannerClient() {
     }
   };
 
+  const getTaskLink = (task: any) => {
+    if (!task.roadmap_id) return null;
+    const roadmap = tasks.find(t => t.roadmap_id === task.roadmap_id)?.metadata?.roadmap_slug || task.metadata?.roadmap_slug;
+    
+    if (task.task_type === 'module' || task.task_type === 'pow') {
+      const slug = task.metadata?.roadmap_slug;
+      if (slug) return `/project/${slug}/build/${task.module_number || 1}`;
+    }
+    
+    if (task.metadata?.roadmap_slug) {
+      return `/project/${task.metadata.roadmap_slug}`;
+    }
+    return null;
+  };
+
   const getTaskColor = (type: string, completed: boolean) => {
     if (completed) return 'bg-sidebar/50 text-text-muted border-border';
     switch (type) {
@@ -121,16 +138,24 @@ export default function PlannerClient() {
       {/* Header */}
       <header className="inconsolata-ui border-b border-border bg-header h-[48px] shrink-0 z-50">
         <div className="w-full px-4 md:px-6 flex h-full items-center justify-between">
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             <button 
               onClick={() => setIsSidebarOpen(!isSidebarOpen)}
               className="p-2 -ml-2 lg:hidden text-text-muted hover:text-text-heading transition-colors"
             >
               {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
-            <div className="flex items-center gap-3">
-              <CalendarIcon className="w-5 h-5 text-accent" />
-              <h1 className="text-[14px] font-bold uppercase tracking-[0.2em] text-text-heading">Study Planner</h1>
+            
+            <Link href="/" className="flex items-center gap-2.5 hover:opacity-85 transition-opacity active:scale-95 duration-200">
+              <img src="/apple-touch-icon.png" alt="" className="w-5 h-5" />
+              <span className="text-[14px] font-bold text-text-muted tracking-tight hidden sm:block">Euler<span className="text-teal-700/80">Fold</span></span>
+            </Link>
+
+            <div className="h-4 w-[1px] bg-border hidden md:block" />
+
+            <div className="flex items-center gap-2">
+              <CalendarIcon className="w-4 h-4 text-accent opacity-60" />
+              <h1 className="text-[11px] font-bold uppercase tracking-[0.2em] text-text-heading">Study Planner</h1>
             </div>
           </div>
 
@@ -207,6 +232,10 @@ export default function PlannerClient() {
             {calendarDays.map((day, idx) => {
               const dayTasks = tasks.filter(t => isSameDay(parseISO(t.scheduled_date), day));
               const daySessions = sessions.filter(s => isSameDay(parseISO(s.created_at), day));
+              
+              // Calculate activity count (completed tasks + sessions)
+              const activityCount = dayTasks.filter(t => t.is_completed).length + daySessions.length;
+              
               const totalSeconds = daySessions.reduce((acc, s) => acc + s.duration_seconds, 0);
               const hours = Math.floor(totalSeconds / 3600);
               const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -214,11 +243,20 @@ export default function PlannerClient() {
               const isCurrentMonth = isSameMonth(day, monthStart);
               const isToday = isSameDay(day, new Date());
 
+              // Calculate intensity based on activityCount (matches ActivityHeatmap logic)
+              let intensityClass = 'bg-background';
+              if (isCurrentMonth) {
+                if (activityCount > 0) intensityClass = 'bg-teal-700/[0.03]';
+                if (activityCount > 2) intensityClass = 'bg-teal-700/[0.08]';
+                if (activityCount > 5) intensityClass = 'bg-teal-700/[0.15]';
+                if (activityCount > 10) intensityClass = 'bg-teal-700/[0.25]';
+              }
+
               return (
                 <div 
                   key={idx} 
                   onClick={() => setExpandedDate(day)}
-                  className={`min-h-[120px] p-2 border-r border-b border-border transition-colors group relative cursor-pointer hover:bg-sidebar/5 ${!isCurrentMonth ? 'bg-sidebar/5 opacity-30' : 'bg-background'}`}
+                  className={`min-h-[120px] p-2 border-r border-b border-border transition-colors group relative cursor-pointer hover:bg-sidebar/5 ${!isCurrentMonth ? 'bg-sidebar/5 opacity-30' : intensityClass}`}
                 >
                   <div className="flex justify-between items-start mb-2">
                     <div className="flex items-center gap-2">
@@ -227,10 +265,17 @@ export default function PlannerClient() {
                       >
                         {format(day, 'd')}
                       </span>
-                      {totalSeconds > 0 && (
-                        <span className="text-[9px] font-black text-accent/70 uppercase tracking-tighter">
-                          {hours > 0 ? `${hours}h ` : ''}{minutes}m
-                        </span>
+                      {activityCount > 0 && (
+                        <div className="flex flex-col">
+                          <span className="text-[9px] font-black text-accent uppercase tracking-tighter">
+                            {activityCount} {activityCount === 1 ? 'action' : 'actions'}
+                          </span>
+                          {totalSeconds > 0 && (
+                            <span className="text-[8px] font-bold text-text-muted/60 uppercase tracking-tighter">
+                              {hours > 0 ? `${hours}h ` : ''}{minutes}m
+                            </span>
+                          )}
+                        </div>
                       )}
                     </div>
                     <button 
@@ -246,26 +291,40 @@ export default function PlannerClient() {
                     </button>
                   </div>
 
-                  <div 
+                    <div 
                     className="space-y-1 overflow-y-auto max-h-[calc(100%-28px)] no-scrollbar"
                     onClick={(e) => e.stopPropagation()}
                   >
-                    {dayTasks.map((task) => (
-                      <button
-                        key={task.id}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedTask(task);
-                          setIsTaskModalOpen(true);
-                        }}
-                        className={`w-full text-left p-1.5 rounded border text-[10px] font-bold flex flex-col gap-1 transition-all hover:brightness-95 active:scale-[0.98] ${getTaskColor(task.task_type, task.is_completed)}`}
-                      >
-                        <div className="flex items-center gap-1.5 w-full">
-                          {getTaskIcon(task.task_type)}
-                          <span className="truncate flex-1">{task.title}</span>
-                        </div>
-                      </button>
-                    ))}
+                    {dayTasks.map((task) => {
+                      const link = getTaskLink(task);
+                      const TaskWrapper = link ? Link : 'div';
+                      
+                      return (
+                        <TaskWrapper
+                          key={task.id}
+                          href={link || '#'}
+                          onClick={(e: any) => {
+                            if (!link) {
+                              e.stopPropagation();
+                              setSelectedTask(task);
+                              setIsTaskModalOpen(true);
+                            }
+                          }}
+                          className={`w-full text-left p-1.5 rounded border text-[10px] font-bold flex flex-col gap-1 transition-all hover:brightness-95 active:scale-[0.98] ${getTaskColor(task.task_type, task.is_completed)}`}
+                        >
+                          <div className="flex items-center gap-1.5 w-full">
+                            {getTaskIcon(task.task_type)}
+                            <span className="truncate flex-1">{task.title}</span>
+                          </div>
+                          {link && (
+                            <div className="flex items-center justify-between mt-0.5 opacity-50 text-[8px] uppercase tracking-tighter">
+                               <span>Jump to workspace</span>
+                               <ArrowUpRight className="w-2.5 h-2.5" />
+                            </div>
+                          )}
+                        </TaskWrapper>
+                      );
+                    })}
                   </div>
                 </div>
               );

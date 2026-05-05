@@ -23,7 +23,8 @@ import {
     Coins,
     TrendingUp,
     Archive,
-    CreditCard
+    CreditCard,
+    Rocket
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase/client';
 import { authAPI, roadmapsAPI, coinsAPI } from '@/lib/api';
@@ -174,6 +175,9 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                             </Link>
                             <Link href="/planner" aria-current={isActive('/planner') ? 'page' : undefined} className={navLinkClass('/planner')} onClick={onClose}>
                                 <Calendar className="w-3.5 h-3.5 stroke-[1.5px]" /> Study Planner
+                            </Link>
+                            <Link href="/buildpilot" aria-current={isActive('/buildpilot') ? 'page' : undefined} className={navLinkClass('/buildpilot')} onClick={onClose}>
+                                <Rocket className="w-3.5 h-3.5 stroke-[1.5px]" /> BuildPilot
                             </Link>
                             <Link href="/account" aria-current={isActive('/account') ? 'page' : undefined} className={navLinkClass('/account')} onClick={onClose}>
                                 <CreditCard className="w-3.5 h-3.5 stroke-[1.5px]" /> Account

@@ -1,6 +1,7 @@
 ---
 title: "What is the Vanishing Gradient Problem?"
 slug: "vanishing-gradient"
+shortSlug: "vanishing-gradient"
 author: "EulerFold"
 date: "April 21, 2026"
 category: "Theory"

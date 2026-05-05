@@ -1,6 +1,7 @@
 ---
 title: "How is AI designing plants that fight Climate Change?"
 slug: "how-is-ai-designing-plants-to-fight-climate-change"
+shortSlug: "plant-design"
 author: "EulerFold"
 date: "April 30, 2026"
 category: "Science AI"

@@ -10,7 +10,23 @@ import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import { DiscussionSection } from '@/components/discussions/DiscussionSection';
 import SocialShare from '@/components/SocialShare';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import { motion, AnimatePresence } from 'framer-motion';
+
+interface Article {
+  title: string;
+  slug: string;
+  author: string;
+  date: string;
+  category: string;
+  heroImage: string;
+  excerpt: string;
+  technicalInsight?: string;
+  faq?: Array<{ q: string; a: string }>;
+  synonyms?: string[];
+  content: string;
+  d2Cache?: Record<string, string>;
+}
 
 interface Paper {
   title: string;
@@ -36,6 +52,7 @@ interface Paper {
   }>;
   next: string | null;
   prev: string | null;
+  slug?: string; // Optional slug for recommendations
 }
 
 interface Props {
@@ -45,6 +62,13 @@ interface Props {
 }
 
 import { articles } from '../../articles/generatedArticles';
+
+const slugify = (text: string) => {
+  return text
+    .toLowerCase()
+    .replace(/[^\w\s-]/g, '')
+    .replace(/\s+/g, '-');
+};
 
 const D2Diagram = ({ code }: { code: string }) => {
   const [svg, setSvg] = React.useState<string>('');
@@ -119,34 +143,112 @@ const D2Diagram = ({ code }: { code: string }) => {
   );
 };
 
-const TermLink = ({ children, slug }: { children: React.ReactNode, slug: string }) => {
+const ArticlePreview = ({ slug }: { slug: string }) => {
+  const article = articles[slug as keyof typeof articles];
+  if (!article) return null;
+
   return (
-    <Link 
-      href={`/articles/${slug}`}
-      className="text-accent hover:underline decoration-dotted underline-offset-4 font-semibold"
+    <div className="w-80 p-0 bg-sidebar border border-border rounded-2xl shadow-2xl overflow-hidden pointer-events-auto">
+      {article.heroImage && (
+        <div className="h-32 w-full overflow-hidden border-b border-border">
+          <img src={article.heroImage} alt={article.title} className="w-full h-full object-cover" />
+        </div>
+      )}
+      <div className="p-4 text-left">
+        <div className="flex items-center gap-2 mb-2">
+           <span className="inconsolata-ui text-[10px] font-black uppercase tracking-[0.2em] text-accent bg-accent/10 px-2 py-0.5 rounded">
+            {article.category}
+          </span>
+        </div>
+        <h4 className="text-[16px] font-bold text-text-heading mb-2 leading-tight font-inter tracking-tight">
+          {article.title}
+        </h4>
+        <p className="text-[13px] text-text-muted line-clamp-3 leading-relaxed manrope-body font-medium">
+          {article.excerpt}
+        </p>
+        <div className="mt-3 flex items-center gap-1 text-[11px] font-bold text-accent inconsolata-ui uppercase tracking-wider">
+          Read Article <ArrowRight className="w-3 h-3" />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const TermLink = ({ children, slug }: { children: React.ReactNode, slug: string }) => {
+  const [isHovered, setIsHovered] = React.useState(false);
+  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
+
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setIsHovered(true);
+  };
+
+  const handleMouseLeave = () => {
+    timeoutRef.current = setTimeout(() => {
+      setIsHovered(false);
+    }, 150);
+  };
+
+  return (
+    <span 
+      className="relative inline"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
-      {children}
-    </Link>
+      <Link 
+        href={`/articles/${slug}`}
+        className="text-accent hover:text-accent/80 transition-colors underline decoration-accent/30 decoration-2 underline-offset-4 font-semibold"
+      >
+        {children}
+      </Link>
+      
+      <AnimatePresence>
+        {isHovered && (
+          <motion.div
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            transition={{ duration: 0.15, ease: "easeOut" }}
+            className="absolute z-[100] bottom-full left-1/2 -translate-x-1/2 mb-4 hidden md:block"
+          >
+            <ArticlePreview slug={slug} />
+            {/* Arrow */}
+            <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 w-4 h-4 bg-sidebar border-r border-b border-border rotate-45" />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </span>
   );
 };
 
 const MarkdownWithLinks = ({ content }: { content: string }) => {
   // Dynamically build terms to link from the articles data
-  const termsToLink = Object.values(articles).flatMap(article => {
-    const terms = [
-      { term: article.title, slug: article.slug },
-      { term: article.slug.replace(/-/g, ' '), slug: article.slug },
-    ];
-    
-    // Add synonyms from the article data if they exist
-    if (article.synonyms && Array.isArray(article.synonyms)) {
-      article.synonyms.forEach(syn => {
-        terms.push({ term: syn, slug: article.slug });
-      });
-    }
-    
-    return terms;
-  }).sort((a, b) => b.term.length - a.term.length); // Longest terms first
+  const termsToLink = React.useMemo(() => {
+    return Object.values(articles).flatMap(article => {
+      const terms = [
+        { term: article.title, slug: article.slug },
+      ];
+      
+      if (article.shortSlug) {
+        terms.push({ term: article.shortSlug, slug: article.slug });
+        const spaceTerm = article.shortSlug.replace(/-/g, ' ');
+        if (spaceTerm !== article.shortSlug) {
+          terms.push({ term: spaceTerm, slug: article.slug });
+        }
+      }
+
+      // Add synonyms from the article data if they exist
+      if (article.synonyms && Array.isArray(article.synonyms)) {
+        article.synonyms.forEach(syn => {
+          if (!terms.some(t => t.term.toLowerCase() === syn.toLowerCase())) {
+            terms.push({ term: syn, slug: article.slug });
+          }
+        });
+      }
+      
+      return terms;
+    }).sort((a, b) => b.term.length - a.term.length);
+  }, []);
 
   const renderTextWithLinks = (text: string) => {
     let parts: (string | React.ReactNode)[] = [text];
@@ -216,6 +318,10 @@ const MarkdownWithLinks = ({ content }: { content: string }) => {
       remarkPlugins={[remarkMath]} 
       rehypePlugins={[rehypeKatex]}
       components={{
+        // Custom h2 for IDs (we disable automatic IDs here to avoid conflict with main section IDs)
+        h2: ({node, children, ...props}) => {
+          return <h2 className="text-[20px] md:text-[24px] font-bold text-text-heading mb-6 flex items-center gap-3" {...props}>{children}</h2>;
+        },
         // We target the paragraph and list items to process their text children
         p: ({ children }) => {
           return <p>{processChildren(children)}</p>;
@@ -243,6 +349,115 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
   const router = useRouter();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [scale, setScale] = useState(1);
+  const [activeId, setActiveId] = useState<string>('');
+  const [recommendations, setRecommendations] = React.useState<{
+    articles: Article[],
+    papers: Paper[]
+  }>({ articles: [], papers: [] });
+
+  const headings = React.useMemo(() => {
+    return paper.sections.map(section => ({
+      title: section.title,
+      id: section.id
+    }));
+  }, [paper.sections]);
+
+  React.useEffect(() => {
+    // Advanced recommendation logic for Research Decoded
+    const allArticles = Object.values(articles) as Article[];
+    
+    // Extract potential keywords from title and intro
+    const keywords = [
+      ...paper.title.toLowerCase().split(' ').filter(w => w.length > 4),
+      ...paper.intro.toLowerCase().split(' ').filter(w => w.length > 4)
+    ].slice(0, 10);
+
+    const scoredArticles = allArticles
+      .map(a => {
+        let score = 0;
+        const aTitle = a.title.toLowerCase();
+        const aExcerpt = a.excerpt.toLowerCase();
+        
+        keywords.forEach(k => {
+          if (aTitle.includes(k)) score += 5;
+          if (aExcerpt.includes(k)) score += 2;
+        });
+
+        if (a.synonyms) {
+          a.synonyms.forEach(syn => {
+            if (paper.title.toLowerCase().includes(syn.toLowerCase())) score += 5;
+            if (paper.intro.toLowerCase().includes(syn.toLowerCase())) score += 3;
+          });
+        }
+
+        return { article: a, score };
+      })
+      .sort((a, b) => b.score - a.score || Math.random() - 0.5)
+      .slice(0, 3);
+
+    const allPapers = Object.entries(papers).map(([pSlug, p]) => ({
+      ...p,
+      slug: pSlug
+    })) as (Paper & { slug: string })[];
+
+    const scoredPapers = allPapers
+      .filter(p => p.slug !== slug)
+      .map(p => {
+        let score = 0;
+        const pTitle = p.title.toLowerCase();
+        const pIntro = p.intro.toLowerCase();
+
+        keywords.forEach(k => {
+          if (pTitle.includes(k)) score += 10;
+          if (pIntro.includes(k)) score += 3;
+        });
+
+        return { paper: p, score };
+      })
+      .sort((a, b) => b.score - a.score || Math.random() - 0.5)
+      .slice(0, 3);
+
+    setRecommendations({
+      articles: scoredArticles.map(sa => sa.article),
+      papers: scoredPapers.map(sp => sp.paper)
+    });
+  }, [paper, slug, papers]);
+
+  React.useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + 200;
+
+      let currentActiveId = '';
+      
+      // If we're at the very top, highlight the first section
+      if (window.scrollY < 100 && headings.length > 0) {
+        currentActiveId = headings[0].id;
+      } else {
+        for (let i = 0; i < headings.length; i++) {
+          const element = document.getElementById(headings[i].id);
+          if (!element) continue;
+          
+          const rect = element.getBoundingClientRect();
+          const top = rect.top + window.scrollY;
+          
+          if (scrollPosition >= top) {
+            currentActiveId = headings[i].id;
+          } else {
+            break;
+          }
+        }
+      }
+      
+      if (currentActiveId && currentActiveId !== activeId) {
+        setActiveId(currentActiveId);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [headings, activeId]);
 
   const handleSignIn = () => {
     router.push(`/login?next=${encodeURIComponent(window.location.pathname)}`);
@@ -264,33 +479,61 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
   };
 
   return (
-    <div className="bg-background min-h-screen pb-24 text-text-primary">
+    <div className="bg-background min-h-screen pb-24 text-text-primary serif-page-scope">
       {/* Design matches strictly the refined example/topic-page */}
-      <div className="max-w-[1000px] mx-auto px-6 py-8 md:px-12 md:py-16">
+      <div className="max-w-[1400px] mx-auto flex flex-col xl:flex-row justify-center xl:justify-start xl:pl-[120px] gap-12 lg:gap-20 px-6 py-8 md:px-12 md:py-16">
         
-        {/* Community Banner */}
-        <div className="mb-12 bg-callout-bg rounded-2xl p-6 md:p-10 border border-callout-border relative overflow-hidden group">
+        {/* Table of Contents (Left Sidebar) */}
+        <aside className="hidden xl:block w-[220px] shrink-0">
+          <div className="sticky top-[40px]">
+            <h3 className="inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] text-text-muted mb-6 opacity-60">Structure</h3>
+            <nav className="flex flex-col gap-4">
+              {headings.map((heading) => (
+                <a 
+                  key={heading.id} 
+                  href={`#${heading.id}`}
+                  onClick={() => setActiveId(heading.id)}
+                  className={`text-[13px] font-medium leading-tight transition-all hover:text-accent ${
+                    activeId === heading.id 
+                      ? "text-accent border-l-2 border-accent pl-3 -ml-[2px]" 
+                      : "text-text-muted pl-3 border-l-2 border-transparent hover:border-accent/20"
+                  }`}
+                >
+                  {heading.title}
+                </a>
+              ))}
+            </nav>
+          </div>
+        </aside>
+
+        <div className="max-w-[720px] w-full">
+          {/* Community Banner */}
+        <div className="mb-10 bg-callout-bg rounded-2xl p-6 md:p-8 border border-callout-border relative overflow-hidden group">
           <div className="relative z-10">
-            <h2 className="text-[22px] md:text-[24px] font-bold mb-3 text-text-heading tracking-tight inconsolata-ui">Join the EulerFold community</h2>
-            <p className="manrope-body text-text-primary mb-8 max-w-lg text-[15px] md:text-[16px] font-medium">Track progress and collaborate on roadmaps with students worldwide.</p>
+            <h2 className="font-bold mb-2 text-text-heading tracking-tight text-lg">Join the EulerFold community</h2>
+            <p className="text-text-primary mb-6 max-w-md font-medium text-[14px] leading-relaxed">Track progress and collaborate on roadmaps with students worldwide.</p>
             <button 
               onClick={user ? () => window.location.href = '/dashboard' : handleSignIn}
-              className="inline-block bg-[var(--text-heading)] rounded-xl px-7 py-2.5 text-[15px] font-bold text-[var(--bg-main)] hover:opacity-90 shadow-lg transition-all inconsolata-ui"
+              className="inline-block bg-[var(--text-heading)] rounded-lg px-6 py-2 font-bold text-[13px] text-[var(--bg-main)] hover:opacity-90 shadow-md transition-all"
             >
               {user ? 'Go to Dashboard' : 'Sign In Free'}
             </button>
           </div>
-          <span className="absolute -bottom-6 -right-6 text-[100px] md:text-[140px] opacity-[0.03] grayscale -rotate-45 pointer-events-none group-hover:scale-110 transition-transform duration-700">🐢</span>
+          <span className="absolute -bottom-6 -right-6 text-[80px] md:text-[110px] opacity-[0.03] grayscale -rotate-45 pointer-events-none group-hover:scale-110 transition-transform duration-700">🐢</span>
         </div>
 
         {/* Paper Header */}
         <header className="mb-12">
-          <div className="inconsolata-ui flex items-center gap-2 text-accent mb-6 text-[13px] md:text-[14px] font-bold uppercase tracking-widest flex-wrap">
+          <Breadcrumbs items={[
+            { label: 'Research Decoded', href: '/research-decoded' },
+            { label: paper.authors }
+          ]} />
+          <div className="flex items-center gap-2 text-accent mb-6 font-bold uppercase tracking-widest flex-wrap">
             <Link href="/research-decoded" className="bg-accent-muted px-2 py-0.5 rounded hover:bg-accent/10 transition-colors">
               Research Decoded
             </Link>
             <span className="text-[var(--border)]">/</span>
-            <span className="text-[var(--text-label)] font-medium">{paper.authors}</span>
+            <span className="font-medium">{paper.authors}</span>
           </div>
 
           <SocialShare 
@@ -299,19 +542,19 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
             className="mb-8" 
           />
           
-          <h1 className="inconsolata-ui text-[28px] md:text-[38px] font-bold text-text-heading mb-10 leading-[1.15] tracking-tight group flex items-center md:-ml-12">
+          <h1 className="font-bold text-text-heading mb-10 leading-[1.15] tracking-tight group flex items-center md:-ml-12">
             <span className="text-accent opacity-0 group-hover:opacity-100 w-12 text-3xl transition-opacity hidden md:inline">#</span>
             {paper.title}
           </h1>
 
-          <div className="manrope-body p-5 md:p-6 bg-callout-bg border-l-2 border-[var(--accent)] rounded-r-xl mb-12">
-            <p className="text-[14px] md:text-[15px] text-text-primary italic m-0 leading-relaxed font-medium">
+          <div className="p-5 md:p-6 bg-callout-bg border-l-2 border-[var(--accent)] rounded-r-xl mb-12">
+            <p className="text-text-primary italic m-0 leading-relaxed font-medium">
               {paper.citation}
             </p>
             <Link 
               href={paper.link} 
               target="_blank" 
-              className="inconsolata-ui text-accent text-[12px] font-bold hover:underline mt-3 inline-flex items-center gap-1"
+              className="text-accent font-bold hover:underline mt-3 inline-flex items-center gap-1"
             >
               Read Original Paper <ExternalLink className="w-3.5 h-3.5" />
             </Link>
@@ -332,14 +575,14 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
         )}
 
         {/* Paper Intro */}
-        <div className="manrope-body mb-8 !text-[17px] md:!text-[20px] text-text-primary !leading-[1.75] prose-eulerfold max-w-none prose-p:!text-[17px] md:prose-p:!text-[20px] prose-p:!leading-[1.75]">
+        <div className="serif-page-scope mb-8 text-text-primary prose-eulerfold max-w-none">
           <MarkdownWithLinks content={paper.intro} />
         </div>
 
         {/* Sections */}
         {paper.sections.map((section) => (
-          <section key={section.id} id={section.id} className="mt-16 md:mt-24">
-            <h2 className="inconsolata-ui text-[22px] md:text-[28px] font-bold text-text-heading mb-6 group flex items-center md:-ml-12">
+          <section key={section.id} className="mt-16 md:mt-24">
+            <h2 id={section.id} className="text-text-heading mb-6 group flex items-center md:-ml-12 scroll-mt-24">
               <span className="text-accent opacity-0 group-hover:opacity-100 w-12 text-2xl transition-opacity hidden md:inline">#</span>
               {section.title}
             </h2>
@@ -353,13 +596,13 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
                   className="mx-auto rounded-xl max-h-[300px] md:max-h-[400px] cursor-zoom-in" 
                   onClick={() => setSelectedImage(section.diagram.url)}
                 />
-                <p className="manrope-body !text-[14px] md:!text-[15px] text-text-muted mt-5 text-center italic font-medium">
+                <p className="text-text-muted mt-5 text-center italic font-medium">
                   {section.diagram.caption}
                 </p>
               </div>
             )}
 
-            <div className="manrope-body !text-[17px] md:!text-[20px] text-text-primary !leading-[1.75] prose-eulerfold max-w-none prose-p:!text-[17px] md:prose-p:!text-[20px] prose-p:!leading-[1.75]">
+            <div className="text-text-primary prose-eulerfold max-w-none">
               <MarkdownWithLinks content={section.content} />
             </div>
           </section>
@@ -367,16 +610,16 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
 
         {/* Resources Section */}
         <div className="mt-24 pt-16 border-t border-border">
-          <h2 className="inconsolata-ui text-[22px] md:text-[28px] font-bold text-text-heading mb-10 group flex items-center md:-ml-12">
+          <h2 className="text-text-heading mb-10 group flex items-center md:-ml-12">
             <span className="text-accent opacity-0 group-hover:opacity-100 w-12 text-2xl transition-opacity hidden md:inline">#</span>
             Dive Deeper
           </h2>
-          <ul className="manrope-body space-y-8 list-none p-0 mb-12">
+          <ul className="space-y-8 list-none p-0 mb-12">
             {paper.resources.map((res, idx) => (
               <li key={idx} className="border-b border-border pb-10 last:border-0 group">
-                <p className="font-bold text-text-heading m-0 text-[17px] md:text-[19px] mb-2 group-hover:text-accent transition-colors">{res.title}</p>
-                <p className="text-text-muted m-0 text-[13px] md:text-[14px] font-medium">{res.provider} • {res.type}</p>
-                <Link href={res.url} target="_blank" className="inconsolata-ui text-accent text-[14px] hover:underline mt-5 inline-flex items-center gap-2 font-bold">
+                <p className="font-bold text-text-heading m-0 mb-2 group-hover:text-accent transition-colors">{res.title}</p>
+                <p className="text-text-muted m-0 font-medium">{res.provider} • {res.type}</p>
+                <Link href={res.url} target="_blank" className="text-accent hover:underline mt-5 inline-flex items-center gap-2 font-bold">
                   Explore Resource <ExternalLink className="w-4 h-4" />
                 </Link>
               </li>
@@ -387,8 +630,54 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
         {/* Discussion Section */}
         <DiscussionSection contextId={slug} contextType="research-decoded" />
 
+        {/* Recommended Readings */}
+        <div className="mt-20 pt-12 border-t border-border">
+          <h2 className="text-[22px] font-bold text-text-heading mb-8 tracking-tight font-inter">
+            Recommended Readings
+          </h2>
+          
+          <div className="space-y-10">
+            {/* Glossary Articles */}
+            {recommendations.articles.length > 0 && (
+              <div>
+                <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.2em] inconsolata-ui mb-4 block opacity-60">From the Glossary</span>
+                <div className="flex flex-col gap-4">
+                  {recommendations.articles.map((item) => (
+                    <Link key={item.slug} href={`/articles/${item.slug}`} className="group flex items-start justify-between py-2 border-b border-border/40 hover:border-accent/40 transition-colors">
+                      <span className="text-[17px] md:text-[19px] font-semibold text-text-heading group-hover:text-accent transition-colors leading-snug">
+                        {item.title}
+                      </span>
+                      <ArrowRight className="w-4 h-4 text-accent opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all shrink-0 mt-1" />
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Research Papers */}
+            {recommendations.papers.length > 0 && (
+              <div>
+                <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.2em] inconsolata-ui mb-4 block opacity-60">Research Decoded</span>
+                <div className="flex flex-col gap-4">
+                  {recommendations.papers.map((p) => (
+                    <Link key={p.slug} href={`/research-decoded/${p.slug}`} className="group flex items-start justify-between py-2 border-b border-border/40 hover:border-accent/40 transition-colors">
+                      <div className="flex flex-col gap-1">
+                        <span className="text-[17px] md:text-[19px] font-semibold text-text-heading group-hover:text-accent transition-colors leading-snug">
+                          {p.title}
+                        </span>
+                        <span className="text-[13px] text-text-muted font-medium italic opacity-70">{p.authors}</span>
+                      </div>
+                      <ArrowRight className="w-4 h-4 text-accent opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all shrink-0 mt-1" />
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Navigation */}
-        <footer className="inconsolata-ui mt-16 flex flex-col md:flex-row items-stretch md:items-center pb-16 text-[14px] md:text-[15px] font-medium border-t border-border pt-12 gap-8 md:gap-0">
+        <footer className="mt-16 flex flex-col md:flex-row items-stretch md:items-center pb-16 font-medium border-t border-border pt-12 gap-8 md:gap-0">
           {paper.prev ? (
             <Link href={`/research-decoded/${paper.prev}`} className="flex items-center text-text-muted hover:text-text-heading transition-all group">
               <span className="mr-3 text-xl md:text-2xl group-hover:-translate-x-1 transition-transform">←</span>
@@ -412,13 +701,14 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
 
         {/* AI Disclosure */}
         <div className="mt-12 text-center border-t border-border/20 pt-8">
-          <p className="text-[11px] text-text-muted opacity-50 manrope-body italic max-w-lg mx-auto leading-relaxed">
+          <p className="text-text-muted opacity-50 italic max-w-lg mx-auto leading-relaxed">
             The author of this article utilized generative AI (Google Gemini 3.1 Pro) to assist in part of the drafting and editing process.
           </p>
         </div>
       </div>
+    </div>
 
-      {/* Image Lightbox */}
+    {/* Image Lightbox */}
       <AnimatePresence>
         {selectedImage && (
           <div 

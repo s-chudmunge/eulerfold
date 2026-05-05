@@ -27,17 +27,25 @@ async def _scrape_with_jina(link: str) -> Optional[str]:
 
     from urllib.parse import quote
     encoded = quote(link, safe="")
-    jina_url = f"https://r.jina.ai/{encoded}"
+    
+    # Use g.jina.ai for GitHub links to get better repository snapshots
+    # g.jina.ai is specifically optimized for code/GitHub
+    if "github.com" in link:
+        jina_url = f"https://g.jina.ai/{encoded}"
+    else:
+        jina_url = f"https://r.jina.ai/{encoded}"
 
     for attempt in range(2):
         try:
-            async with httpx.AsyncClient(timeout=5.0, follow_redirects=True) as client:
+            async with httpx.AsyncClient(timeout=10.0, follow_redirects=True) as client:
                 r = await client.get(jina_url)
                 if r.status_code == 200 and r.text:
                     text = r.text.strip()
                     if len(text) < 50: continue
-                    return text[:1000]
-        except Exception:
+                    # Increased limit to 10,000 for better code context
+                    return text[:10000]
+        except Exception as e:
+            logger.error(f"Scraping attempt {attempt} failed for {link}: {e}")
             continue
     return None
 

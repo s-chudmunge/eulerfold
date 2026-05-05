@@ -108,12 +108,22 @@ async function compile() {
 
     const termFiles = fs.readdirSync(contentDir).filter(f => f.endsWith('.md'));
     const termsRecord = {};
+    const usedShortSlugs = new Set();
 
     for (const file of termFiles) {
         const slug = file.replace('.md', '');
         const mdContent = fs.readFileSync(path.join(contentDir, file), 'utf8');
         const parsed = parseMarkdown(mdContent);
         if (!parsed) continue;
+
+        if (parsed.shortSlug) {
+            if (usedShortSlugs.has(parsed.shortSlug)) {
+                throw new Error(`Duplicate shortSlug found: "${parsed.shortSlug}" in ${file}`);
+            }
+            usedShortSlugs.add(parsed.shortSlug);
+        } else {
+            console.warn(`Warning: No shortSlug defined for ${file}. Automatic interlinking might be limited.`);
+        }
 
         // Extract D2 blocks and pre-fetch them
         const d2Matches = parsed.content.matchAll(/```d2\n([\s\S]*?)\n```/g);
@@ -136,6 +146,7 @@ async function compile() {
 export interface Article {
   title: string;
   slug: string;
+  shortSlug?: string;
   author: string;
   date: string;
   category: string;

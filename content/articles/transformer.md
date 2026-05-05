@@ -1,6 +1,7 @@
 ---
 title: "What is a Transformer Architecture?"
 slug: "transformer"
+shortSlug: "transformer"
 author: "EulerFold"
 date: "April 27, 2026"
 category: "Architectures"

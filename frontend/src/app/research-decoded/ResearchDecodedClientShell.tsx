@@ -167,61 +167,6 @@ export default function ResearchDecodedClientShell({
         <PublicHeader />
       </div>
 
-      {/* 2. Sub-header with Search and Sidebar Toggle */}
-      <div className="inconsolata-ui border-b border-border bg-header h-[48px] shrink-0 relative z-[140]">
-        <div className="w-full px-4 md:px-6 flex h-full items-center">
-          {/* Left section: Toggle */}
-          <div className="flex items-center w-[40px] md:w-[200px] shrink-0">
-            {/* Desktop toggle moved to sidebar edge */}
-
-            {/* Mobile Hamburger */}
-            <button 
-              onClick={() => setIsSidebarOpen(true)}
-              className="flex md:hidden items-center justify-center p-2 hover:bg-sidebar rounded-lg text-text-muted transition-colors"
-            >
-              <Menu className="w-5 h-5" />
-            </button>
-          </div>
-
-          {/* Center section: Search Bar (Centered) */}
-          <div className="flex-1 flex justify-center">
-            <div className="relative w-full max-w-[500px]">
-              <input 
-                autoComplete="off" 
-                className="w-full pl-10 h-8 pr-3 rounded-full border border-border bg-sidebar focus:bg-background focus:ring-1 focus:ring-[var(--accent)] transition-all text-[13px] text-text-primary outline-none placeholder:text-text-muted" 
-                placeholder="Search across all breakthroughs..." 
-                type="text" 
-                value={searchQuery}
-                onChange={(e) => updateSearchQuery(e.target.value)}
-                onFocus={() => setIsTopSearchFocused(true)}
-                onBlur={() => setTimeout(() => setIsTopSearchFocused(false), 200)}
-              />
-              <Search className="absolute left-3.5 text-text-muted top-1/2 transform -translate-y-1/2 w-3.5 h-3.5" />
-              
-              {/* Dropdown Results */}
-              {isTopSearchFocused && searchQuery && topSearchResults.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-2 bg-sidebar border border-border rounded-xl shadow-2xl z-[150] overflow-hidden">
-                  {topSearchResults.map((result: any, idx: number) => (
-                    <Link
-                      key={idx}
-                      href={`/research-decoded/${result.slug}?${searchParams.toString()}`}
-                      className="block px-4 py-3 text-[13px] text-text-primary hover:bg-background transition-colors border-b border-border last:border-0"
-                    >
-                      <div className="font-bold text-text-heading">{result.title}</div>
-                      <div className="text-[11px] text-text-muted truncate opacity-80">{result.intro || 'Access full paper decoding'}</div>
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Right section: Placeholder for balance */}
-          <div className="hidden md:flex items-center justify-end w-[200px] shrink-0">
-          </div>
-        </div>
-      </div>
-
       <div className="flex flex-1 relative overflow-hidden">
         {/* Backdrop for mobile */}
         {isSidebarOpen && (
@@ -278,7 +223,7 @@ export default function ResearchDecodedClientShell({
                 <div key={nav.id} className="mb-0.5">
                   <button 
                     onClick={() => toggleSection(nav.id)}
-                    className={`w-full flex items-center px-4 py-3 text-[14px] font-bold group transition-all text-left rounded-xl ${
+                    className={`w-full flex items-center px-4 py-2.5 text-[12px] font-bold group transition-all text-left rounded-lg ${
                       isExpanded ? 'text-text-heading bg-background/30' : 'text-text-muted hover:text-text-primary hover:bg-background/50'
                     }`}
                   >
@@ -289,7 +234,7 @@ export default function ResearchDecodedClientShell({
                   </button>
                   
                   {isExpanded && (
-                    <div className="mt-1 space-y-1 ml-1 animate-in fade-in slide-in-from-left-1 duration-200">
+                    <div className="mt-0.5 space-y-0.5 ml-1 animate-in fade-in slide-in-from-left-1 duration-200">
                       {nav.sections.map((section: any, idx: number) => {
                         const active = pathname?.includes(section.slug);
                         return (
@@ -298,7 +243,7 @@ export default function ResearchDecodedClientShell({
                             href={`/research-decoded/${section.slug}?${searchParams.toString()}`}
                             onClick={() => setIsSidebarOpen(false)}
                             style={active ? { background: 'var(--active-bg)' } : {}}
-                            className={`block py-2.5 px-5 text-[16px] rounded-xl transition-all ${
+                            className={`block py-2 px-4 text-[13px] rounded-lg transition-all ${
                               active 
                                 ? 'text-[var(--active-text)] font-bold shadow-sm border border-border/50' 
                                 : 'text-text-muted font-medium hover:text-text-primary hover:bg-background/50'

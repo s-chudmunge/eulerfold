@@ -1,6 +1,7 @@
 ---
 title: "How is AI mapping the millions of connections in our brain?"
 slug: "how-is-ai-mapping-the-brain-connectomics"
+shortSlug: "connectomics"
 author: "EulerFold"
 date: "April 30, 2026"
 category: "Science AI"

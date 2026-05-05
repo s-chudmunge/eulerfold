@@ -47,7 +47,8 @@ Read it fully before making any changes. Rules here are not suggestions.
 ### Routing
 
 - In `roadmaps.py`, ALWAYS define `/roadmaps/me` BEFORE `/roadmaps/{id}`.
-- Reversing this order causes 422 errors because FastAPI matches `me` as the `{id}` param.
+- In `planner.py`, ALWAYS define `/tasks/range` BEFORE `/tasks/{task_id}` to avoid UUID validation errors.
+- Reversing these orders causes 422 errors because FastAPI matches the static string as a param.
 
 ### The Audit Senate (Submissions)
 
@@ -55,6 +56,12 @@ Read it fully before making any changes. Rules here are not suggestions.
 - A **10-minute cooldown** is enforced after a "Beginner" (failed) evaluation for a specific module.
 - Users have a **one-time dispute/re-evaluation limit** per submission.
 - Deviation from the topic is acceptable if the "Relevance Judge" determines the learner demonstrated mastery of the broader Roadmap Subject.
+
+### BuildPilot & Research Decoded
+
+- **BuildPilot** (Manual Builds) uses `model="manual-build"` in the database.
+- **Research Decoded** content is stored in `content/research-decoded/` and requires specific metadata for the UI.
+- Exportable PDFs are generated via `reportlab` in `profiles.py` and must include the teal/mint branding.
 
 ### SSR & Search Params
 

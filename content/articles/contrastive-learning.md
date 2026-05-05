@@ -1,6 +1,7 @@
 ---
 title: "What is the Logic of Contrastive Learning?"
 slug: "contrastive-learning"
+shortSlug: "contrastive"
 author: "EulerFold"
 date: "April 27, 2026"
 category: "Theory"

@@ -25,13 +25,18 @@ import {
     Edit2,
     Camera,
     Loader2,
-    Github
+    Github,
+    Code2,
+    X,
+    ChevronRight,
+    ArrowUpRight
 } from 'lucide-react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase/client';
 import { PublicProfile, profileAPI } from '@/lib/api';
 import PublicHeader from '@/components/PublicHeader';
 import ActivityChart from '@/components/dashboard/ActivityChart';
+import ActivityHeatmap from '@/components/profile/ActivityHeatmap';
 
 interface Props {
     profile: PublicProfile;
@@ -47,6 +52,8 @@ export default function ProfileClient({ profile }: Props) {
     const [activeTab, setActiveTab] = useState<TabType>('overview');
     const [uploading, setUploading] = useState(false);
     const [currentAvatarUrl, setCurrentAvatarUrl] = useState(profile.avatar_url);
+    const [selectedAudit, setSelectedAudit] = useState<any>(null);
+    const [activityMap, setActivityMap] = useState<Record<string, number> | undefined>(undefined);
 
     // Section collapse states
     const [isExpertiseOpen, setIsExpertiseOpen] = useState(true);
@@ -55,6 +62,18 @@ export default function ProfileClient({ profile }: Props) {
     useEffect(() => {
         setCurrentAvatarUrl(profile.avatar_url);
     }, [profile.avatar_url]);
+
+    useEffect(() => {
+        const fetchActivity = async () => {
+            try {
+                const data = await profileAPI.getActivity(profile.username);
+                setActivityMap(data);
+            } catch (err) {
+                console.error("Failed to fetch activity:", err);
+            }
+        };
+        fetchActivity();
+    }, [profile.username]);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -363,6 +382,8 @@ export default function ProfileClient({ profile }: Props) {
                                 <div className="p-6 border border-border rounded-none bg-background relative overflow-hidden">
                                     <ActivityChart roadmaps={profile.roadmaps} profile={profile} />
                                 </div>
+
+                                <ActivityHeatmap profile={profile} activityMap={activityMap} />
                             </div>
                         )}
 
@@ -410,9 +431,15 @@ export default function ProfileClient({ profile }: Props) {
                                                 <div className="flex flex-col gap-2">
                                                     <div className="flex items-center gap-3">
                                                         <div className="text-[9px] font-black text-accent bg-accent-muted px-2 py-0.5 rounded-none border border-accent/20 inconsolata-ui tracking-widest uppercase">LOG #{profile.submissions.length - idx}</div>
-                                                        <div className={`text-[9px] font-black px-2 py-0.5 rounded-none border inconsolata-ui tracking-widest uppercase ${sub.evaluation_level === 'Solid' ? 'border-emerald-500/30 text-emerald-600 bg-emerald-500/5' : 'border-blue-500/30 text-blue-600 bg-blue-500/5'}`}>{sub.evaluation_level}</div>
+                                                        <div className={`text-[9px] font-black px-2 py-0.5 rounded-none border inconsolata-ui tracking-widest uppercase ${
+                                                            sub.evaluation_level === 'Solid' || sub.evaluation_level === 'Expert' 
+                                                            ? 'border-emerald-500/30 text-emerald-600 bg-emerald-500/5' 
+                                                            : 'border-blue-500/30 text-blue-600 bg-blue-500/5'
+                                                        }`}>{sub.evaluation_level}</div>
                                                     </div>
-                                                    <h4 className="text-[15px] font-bold text-text-heading tracking-tight">{sub.roadmaps?.title || 'Technical Roadmap'}</h4>
+                                                    <h4 className="text-[15px] font-bold text-text-heading tracking-tight">
+                                                        {sub.roadmaps?.title || (sub.roadmap_id ? 'Technical Roadmap' : 'Independent Build')}
+                                                    </h4>
                                                 </div>
                                                 <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest inconsolata-ui opacity-40">{new Date(sub.submitted_at).toLocaleDateString()}</span>
                                             </div>
@@ -424,11 +451,23 @@ export default function ProfileClient({ profile }: Props) {
                                                     {sub.senate_summary || sub.evaluation}
                                                 </ReactMarkdown>
                                             </div>
-                                            {sub.link && (
-                                                <Link href={sub.link} target="_blank" className="text-[10px] font-bold text-accent hover:opacity-80 flex items-center gap-2 uppercase tracking-[0.2em] inconsolata-ui transition-all">
-                                                    Source Material <ArrowRight className="w-3 h-3" />
-                                                </Link>
-                                            )}
+                                            <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                                                <div className="flex items-center gap-4">
+                                                    {sub.link ? (
+                                                        <Link href={sub.link} target="_blank" className="text-[10px] font-bold text-accent hover:opacity-80 flex items-center gap-2 uppercase tracking-[0.2em] inconsolata-ui transition-all">
+                                                            Source Material <ArrowRight className="w-3 h-3" />
+                                                        </Link>
+                                                    ) : (
+                                                        <div />
+                                                    )}
+                                                </div>
+                                                <button 
+                                                    onClick={() => setSelectedAudit(sub)}
+                                                    className="text-[10px] font-bold text-text-muted hover:text-accent transition-colors uppercase tracking-widest inconsolata-ui flex items-center gap-1.5"
+                                                >
+                                                    View Full Log <ChevronRight className="w-3.5 h-3.5" />
+                                                </button>
+                                            </div>
                                         </div>
                                     ))
                                 ) : (
@@ -483,6 +522,112 @@ export default function ProfileClient({ profile }: Props) {
                             </div>
                         )}
                     </main>
+                </div>
+            </div>
+
+            {/* Audit Details Modal */}
+            {selectedAudit && (
+                <AuditModal 
+                    sub={selectedAudit} 
+                    onClose={() => setSelectedAudit(null)} 
+                />
+            )}
+        </div>
+    );
+}
+
+/* Audit Details Modal component inspired by ProjectClient */
+function AuditModal({ sub, onClose }: { sub: any; onClose: () => void }) {
+    return (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 animate-in fade-in duration-200">
+            <div className="w-full max-w-2xl max-h-[85vh] bg-background border border-border shadow-2xl rounded-none flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+                {/* Fixed Header */}
+                <div className="px-8 py-6 border-b border-border flex justify-between items-start bg-background shrink-0">
+                    <div className="space-y-1">
+                        <div className="flex items-center gap-3">
+                            <h3 className="inconsolata-ui text-xl font-bold text-text-heading tracking-tight">Audit Verification Record</h3>
+                            <div className={`px-2.5 py-1 rounded-none text-[10px] font-black uppercase tracking-widest inconsolata-ui border ${
+                                sub.evaluation_level === 'Solid' || sub.evaluation_level === 'Expert' ? 'bg-emerald-500/5 border-emerald-500/10 text-emerald-600' :
+                                sub.evaluation_level === 'Developing' ? 'bg-amber-500/5 border-amber-500/10 text-amber-600' :
+                                'bg-zinc-500/5 border-zinc-500/10 text-text-muted'
+                            }`}>
+                                {sub.evaluation_level}
+                            </div>
+                        </div>
+                        <p className="text-[12px] font-bold text-text-muted inconsolata-ui uppercase tracking-wider opacity-60">
+                            Submitted on {new Date(sub.submitted_at).toLocaleString()}
+                        </p>
+                    </div>
+                    <button onClick={onClose} className="text-text-muted hover:text-text-heading p-1 transition-colors">
+                        <X className="w-5 h-5" />
+                    </button>
+                </div>
+
+                {/* Scrollable Content */}
+                <div className="p-8 overflow-y-auto">
+                    <div className="space-y-8 pb-4">
+                        <section className="space-y-3">
+                            <h4 className="inconsolata-ui text-[11px] font-black uppercase tracking-widest text-text-muted">Builder Notes</h4>
+                            <div className="p-5 bg-sidebar/30 border border-border rounded-none">
+                                <p className="text-[15px] text-text-heading leading-relaxed italic">
+                                    &ldquo;{sub.description}&rdquo;
+                                </p>
+                            </div>
+                        </section>
+
+                        <section className="space-y-4">
+                            <h4 className="inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] text-text-muted">Senate Deliberation</h4>
+                            <div className="grid grid-cols-1 gap-4">
+                                {[
+                                    { role: 'Technician', vote: sub.senate_votes?.[0], reasoning: sub.senate_reasoning?.technician, icon: Code2 },
+                                    { role: 'Educator', vote: sub.senate_votes?.[1], reasoning: sub.senate_reasoning?.educator, icon: Target },
+                                    { role: 'Relevance Judge', vote: sub.senate_votes?.[2], reasoning: sub.senate_reasoning?.relevance_judge, icon: ShieldCheck }
+                                ].map((item) => (
+                                    <div key={item.role} className="p-6 bg-header border border-border rounded-none space-y-4">
+                                        <div className="flex items-center justify-between">
+                                            <div className="flex items-center gap-3">
+                                                <item.icon className="w-4 h-4 text-accent/50" />
+                                                <p className="text-[11px] font-black uppercase tracking-widest text-text-muted inconsolata-ui">{item.role}</p>
+                                            </div>
+                                            <p className={`text-[11px] font-black uppercase tracking-widest inconsolata-ui ${
+                                                item.vote === 'Solid' || item.vote === 'Expert' ? 'text-emerald-600' :
+                                                item.vote === 'Developing' ? 'text-amber-600' :
+                                                'text-text-muted'
+                                            }`}>{item.vote || 'Pending'}</p>
+                                        </div>
+                                        <p className="text-[14px] text-text-heading leading-relaxed font-medium">
+                                            {item.reasoning || 'No detailed reasoning provided.'}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                            {sub.senate_summary && (
+                                <div className="p-5 bg-accent/5 border border-accent/10 rounded-none">
+                                    <p className="text-[14px] text-accent font-bold leading-relaxed">
+                                        Verdict: {sub.senate_summary}
+                                    </p>
+                                </div>
+                            )}
+                        </section>
+
+                        {sub.link && (
+                            <section className="space-y-3">
+                                <h4 className="inconsolata-ui text-[11px] font-black uppercase tracking-widest text-text-muted">Evidence Chain</h4>
+                                <a 
+                                    href={sub.link}
+                                    target="_blank"
+                                    rel="noreferrer"
+                                    className="flex items-center justify-between p-4 bg-background border border-border rounded-none group hover:border-accent/30 transition-all"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <Github className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
+                                        <span className="text-[13px] font-bold text-text-heading">Source Code Repository</span>
+                                    </div>
+                                    <ArrowUpRight className="w-4 h-4 text-text-muted" />
+                                </a>
+                            </section>
+                        )}
+                    </div>
                 </div>
             </div>
         </div>
@@ -592,7 +737,8 @@ function AssessmentCard({ mcq, index }: { mcq: any; index: number }) {
             {isExpanded && (
                 <div className="mt-5 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300 border-t border-border/30 pt-5">
                     {mcq.questions.map((q: any, qIdx: number) => {
-                        const isCorrect = q.user_answer === q.correct_answer;
+                        const userChoiceIndex = mcq.user_answers?.[qIdx];
+                        const isCorrect = userChoiceIndex === q.correct_answer_index;
                         return (
                             <div key={qIdx} className="space-y-3">
                                 <div className="flex gap-3">
@@ -602,8 +748,8 @@ function AssessmentCard({ mcq, index }: { mcq: any; index: number }) {
                                         
                                         <div className="grid grid-cols-1 gap-1.5">
                                             {q.options.map((option: string, optIdx: number) => {
-                                                const isUserSelection = q.user_answer === option;
-                                                const isCorrectOption = q.correct_answer === option;
+                                                const isUserSelection = optIdx === userChoiceIndex;
+                                                const isCorrectOption = optIdx === q.correct_answer_index;
                                                 
                                                 let bgColor = "bg-sidebar/20";
                                                 let borderColor = "border-border/50";
@@ -645,6 +791,15 @@ function AssessmentCard({ mcq, index }: { mcq: any; index: number }) {
                                                 );
                                             })}
                                         </div>
+
+                                        {q.explanation && (
+                                            <div className="p-3 bg-accent/5 border border-accent/10 mt-2">
+                                                <p className="text-[11px] text-text-primary leading-relaxed">
+                                                    <span className="font-bold text-accent uppercase tracking-widest mr-2">Explanation:</span>
+                                                    {q.explanation}
+                                                </p>
+                                            </div>
+                                        )}
                                     </div>
                                 </div>
                             </div>
