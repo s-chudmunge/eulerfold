@@ -81,9 +81,6 @@ export default function RoadmapDiscovery({ roadmaps }: RoadmapDiscoveryProps) {
               </div>
 
               <div className="flex items-center gap-6 mt-3 sm:mt-0 shrink-0">
-                <span className="text-[10px] font-bold text-text-muted bg-sidebar/50 px-3 py-1.5 rounded-none uppercase tracking-widest inconsolata-ui border border-border/50 group-hover:border-accent/30 transition-colors">
-                  {getCategory(roadmap.subject || '')}
-                </span>
                 <ArrowRight className="w-5 h-5 text-accent opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all" />
               </div>
             </Link>

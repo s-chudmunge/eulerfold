@@ -11,6 +11,7 @@ import { useAuth } from '@/components/AuthProvider';
 import { DiscussionSection } from '@/components/discussions/DiscussionSection';
 import SocialShare from '@/components/SocialShare';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import RecommendedRoadmaps from '@/components/RecommendedRoadmaps';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Article {
@@ -563,13 +564,18 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
 
         {/* Hero Image */}
         {paper.heroImage && (
-          <div className="mb-12 p-4 md:p-6 bg-image-bg border border-border rounded-2xl shadow-xl max-w-[700px] mx-auto">
+          <div className="mb-12 p-4 md:p-6 bg-image-bg border border-border rounded-2xl shadow-xl max-w-[700px] mx-auto overflow-hidden">
             <motion.img 
-              layoutId={`img-${paper.heroImage}`}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
               src={paper.heroImage} 
               alt={`${paper.title} - Research Breakthrough Illustration`} 
-              className="w-full rounded-xl transition-all cursor-zoom-in" 
+              className="w-full rounded-xl transition-all cursor-zoom-in block" 
               onClick={() => setSelectedImage(paper.heroImage)}
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+              }}
             />
           </div>
         )}
@@ -588,13 +594,19 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
             </h2>
 
             {section.diagram && (
-              <div className="my-12 p-4 md:p-6 bg-image-bg border border-border rounded-2xl max-w-[700px] mx-auto shadow-sm">
+              <div className="my-12 p-4 md:p-6 bg-image-bg border border-border rounded-2xl max-w-[700px] mx-auto shadow-sm overflow-hidden">
                 <motion.img 
-                  layoutId={`img-${section.diagram.url}`}
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5 }}
                   src={section.diagram.url} 
                   alt={`${section.title} Diagram - ${section.diagram.caption}`} 
-                  className="mx-auto rounded-xl max-h-[300px] md:max-h-[400px] cursor-zoom-in" 
+                  className="mx-auto rounded-xl max-h-[300px] md:max-h-[400px] cursor-zoom-in block" 
                   onClick={() => setSelectedImage(section.diagram.url)}
+                  onError={(e) => {
+                    e.currentTarget.style.display = 'none';
+                  }}
                 />
                 <p className="text-text-muted mt-5 text-center italic font-medium">
                   {section.diagram.caption}
@@ -674,6 +686,8 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
               </div>
             )}
           </div>
+
+          <RecommendedRoadmaps query={paper.title} className="mt-10" />
         </div>
 
         {/* Navigation */}
@@ -768,14 +782,16 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
 
             <div className="w-full h-full flex items-center justify-center overflow-hidden">
               <motion.img 
-                layoutId={`img-${selectedImage}`}
-                src={selectedImage}
-                alt="Expanded view"
-                className={`max-w-full max-h-full shadow-2xl z-[205] relative !opacity-100 bg-white ${scale > 1 ? 'cursor-grab active:cursor-grabbing' : 'cursor-zoom-in'}`}
+                key={selectedImage}
+                initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ 
+                  opacity: 1,
                   scale: scale,
                   transition: { type: 'spring', damping: 25, stiffness: 200 }
                 }}
+                src={selectedImage}
+                alt="Expanded view"
+                className={`max-w-full max-h-full shadow-2xl z-[205] relative bg-white ${scale > 1 ? 'cursor-grab active:cursor-grabbing' : 'cursor-zoom-in'}`}
                 drag={scale > 1}
                 dragConstraints={{ left: -500 * scale, right: 500 * scale, top: -500 * scale, bottom: 500 * scale }}
                 onClick={(e) => {

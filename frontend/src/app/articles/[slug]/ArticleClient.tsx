@@ -19,6 +19,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import PublicHeader from '@/components/PublicHeader';
 import Footer from '@/components/Footer';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import RecommendedRoadmaps from '@/components/RecommendedRoadmaps';
 import { Article, articles } from '../generatedArticles';
 import { Paper, papers } from '../../research-decoded/generatedData';
 
@@ -637,6 +638,8 @@ export default function ArticleClient({ article }: Props) {
                     </div>
                   )}
                 </div>
+
+                <RecommendedRoadmaps query={article.title} className="mt-10" />
               </div>
 
               {/* AI Disclosure */}

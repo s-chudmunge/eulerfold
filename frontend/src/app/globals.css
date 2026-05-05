@@ -23,6 +23,13 @@
 
 html {
   scroll-behavior: smooth;
+  font-size: 17px; /* Desktop Base */
+}
+
+@media (max-width: 640px) {
+  html {
+    font-size: 16px; /* Explicit Mobile Base */
+  }
 }
 
 :root {
@@ -31,23 +38,23 @@ html {
   --primary: #0f766e;
   --primary-dark: #115e59;
   --text-primary: #111111;
-  --text-secondary: #444444;
+  --text-secondary: #222222;
   --border: #dee2e6;
   --success: #198754;
   --error: #dc3545;
 
-  /* Font Weight Normalization for Light Mode */
-  --font-weight-normal: 500;
-  --font-weight-medium: 600;
-  --font-weight-semibold: 700;
+  /* Refined Font Weights */
+  --font-weight-normal: 425; 
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
 
   /* Theme variables from pages */
   --bg-main: #f0f7f6;
   --bg-sidebar: #e8f2f1;
   --bg-header: #f0f7f6;
-  --text-muted: #4b5563;       /* Gray-600 for better contrast balance */
-  --text-heading: #0a0a0a;     /* near pure black */
-  --text-label: #1f2937;       /* Gray-800 for strong visibility */
+  --text-muted: #4b5563;
+  --text-heading: #111111;
+  --text-label: #111111;
   --callout-bg: #e5efee;
   --callout-border: #d8e6e5;
   --active-bg: #111111;
@@ -73,9 +80,9 @@ html {
   --bg-main: #0f1717;
   --bg-sidebar: #131d1d;
   --bg-header: #0f1717;
-  --text-muted: #9ca3af;       /* Gray-400 for better contrast in dark mode */
+  --text-muted: #9ca3af;
   --text-heading: #d1d5db;
-  --text-label: #d1d5db;       /* Gray-300 for labels */
+  --text-label: #d1d5db;
   --border: #243333;
   --callout-bg: #1a2424;
   --callout-border: #2a3b3b;
@@ -91,28 +98,30 @@ body {
   color: var(--text-primary);
   font-family: var(--font-inter), sans-serif;
   transition: background-color 0.3s ease, color 0.3s ease;
-  font-size: 1.125rem; /* Base body font-size: 18px */
+  font-size: 1rem; /* 17px on desktop */
+  line-height: 1.7;
+  font-weight: var(--font-weight-normal);
 }
 
 /* Global utility classes used across app pages */
 .manrope-body { 
   font-family: var(--font-sans), sans-serif; 
-  line-height: 1.6; 
+  line-height: 1.7; 
   font-weight: var(--font-weight-normal);
-  font-size: 1.2rem; /* ~19px */
+  font-size: 1rem;
 }
 
 :root {
   --font-serif-stack: "Palatino", "Palatino Linotype", "Book Antiqua", Georgia, serif;
-  --serif-base-size: 1.125rem; /* 18px */
-  --serif-h1-size: 2.25rem;    /* 36px */
-  --serif-h2-size: 1.75rem;    /* 28px */
-  --serif-h3-size: 1.375rem;   /* 22px */
-  --serif-h4-size: 1.125rem;   /* 18px */
-  --serif-line-height: 1.65;
-  --serif-text-color: #0a0a0a;
-  --serif-h2-mt: 3.5rem;
-  --serif-h3-mt: 2.5rem;
+  --serif-base-size: 1rem;
+  --serif-h1-size: 2.1rem;
+  --serif-h2-size: 1.6rem;
+  --serif-h3-size: 1.3rem;
+  --serif-h4-size: 1rem;
+  --serif-line-height: 1.75;
+  --serif-text-color: #111111;
+  --serif-h2-mt: 2.5rem;
+  --serif-h3-mt: 2rem;
 }
 
 .dark {
@@ -136,29 +145,30 @@ body {
 }
 
 /* Specific Element Overrides for Specificity */
-.serif-page-scope h1 { font-family: var(--font-serif-stack); font-size: var(--serif-h1-size); font-weight: 700; line-height: 1.2; }
+.serif-page-scope h1 { font-family: var(--font-serif-stack); font-size: var(--serif-h1-size); font-weight: 600; line-height: 1.2; }
 .serif-page-scope h2 { 
   font-family: var(--font-serif-stack); 
   font-size: var(--serif-h2-size); 
-  font-weight: 700; 
+  font-weight: 600; 
   line-height: 1.3;
   margin-top: var(--serif-h2-mt);
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
 }
 .serif-page-scope h3 { 
   font-family: var(--font-serif-stack); 
   font-size: var(--serif-h3-size); 
-  font-weight: 600; 
+  font-weight: 550; 
   line-height: 1.4;
   margin-top: var(--serif-h3-mt);
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.75rem;
 }
-.serif-page-scope h4 { font-family: var(--font-serif-stack); font-size: var(--serif-h4-size); font-weight: 600; }
+.serif-page-scope h4 { font-family: var(--font-serif-stack); font-size: var(--serif-h4-size); font-weight: 550; }
 
 /* Explicitly preserve UI fonts within the scope */
 .serif-page-scope .inconsolata-ui,
 .serif-page-scope .font-mono {
   font-family: var(--font-mono), monospace !important;
+  line-height: 1.5 !important;
 }
 
 .serif-page-scope .font-inter,
@@ -170,49 +180,58 @@ body {
 .serif-page-scope .date,
 .serif-page-scope .uppercase.tracking-widest {
   font-family: var(--font-sans), sans-serif !important;
+  line-height: 1.4 !important;
 }
 
 /* Prose scope handling */
 .serif-page-scope .prose-eulerfold {
   font-family: var(--font-serif-stack);
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .inconsolata-ui { 
   font-family: var(--font-mono), monospace; 
   letter-spacing: -0.01em; 
+  line-height: 1.5;
 }
 
 /* Section labels specific fix */
 .inconsolata-ui.uppercase.tracking-widest,
 .inconsolata-ui.uppercase.tracking-\[0\.2em\],
 .inconsolata-ui.uppercase.tracking-\[0\.08em\] {
-  font-size: 0.9rem !important; /* Increased label font-size: ~14.5px */
+  font-size: 0.75rem !important; /* Slightly smaller for cleaner UI */
   letter-spacing: 0.12em !important;
   color: var(--text-label) !important;
+  font-weight: 600 !important;
 }
 
 .prose-eulerfold a {
   text-decoration: none;
-  transition: opacity 0.2s ease-in-out;
+  border-bottom: 1px solid rgba(15, 118, 110, 0.2);
+  transition: all 0.2s ease-in-out;
 }
 
 .prose-eulerfold a:hover {
-  opacity: 0.8;
+  border-bottom-color: var(--accent);
+  background-color: var(--accent-muted);
 }
 
 .prose-eulerfold h3 {
   font-family: var(--font-mono), monospace;
-  font-size: 1.375rem; /* 22px */
-  font-weight: 700;
+  font-size: 1.3rem;
+  font-weight: 600;
   color: var(--text-heading);
-  margin-top: 3rem;
-  margin-bottom: 1.5rem;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
   letter-spacing: -0.02em;
-  line-height: 1.3;
+  line-height: 1.25;
 }
 
 .prose-eulerfold p {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
+  line-height: 1.75;
 }
 
 .prose-eulerfold p:last-child {

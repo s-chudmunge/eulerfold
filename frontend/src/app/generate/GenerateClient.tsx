@@ -4,15 +4,19 @@ import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import RoadmapGenerator from '@/components/landing/RoadmapGenerator';
 import RoadmapDisplay from '@/components/landing/RoadmapDisplay';
+import ManualRoadmapBuilder from '@/components/manual-build/ManualRoadmapBuilder';
 import { RoadmapData } from '@/lib/api';
 import { 
   Menu,
   X,
   LayoutDashboard,
-  Plus
+  Plus,
+  Sparkles,
+  Settings2
 } from 'lucide-react';
 import Link from 'next/link';
 import AppSidebar from '@/components/AppSidebar';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import { supabase } from '@/lib/supabase/client';
 
 export default function GeneratePage() {
@@ -21,6 +25,7 @@ export default function GeneratePage() {
   const [generatedFormData, setGeneratedFormData] = useState<any | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [profile, setProfile] = useState<any>(null);
+  const [mode, setMode] = useState<'ai' | 'manual'>('ai');
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -91,10 +96,6 @@ export default function GeneratePage() {
                 <span className="sm:hidden">Login</span>
               </Link>
             )}
-            <Link href="/generate" className="whitespace-nowrap rounded-full bg-[var(--text-heading)] px-4 md:px-5 py-1.5 text-[var(--bg-main)] text-[10px] md:text-[12px] font-bold hover:opacity-90 transition-opacity flex items-center gap-2">
-              <Plus className="w-3.5 h-3.5" /> <span className="hidden sm:inline">New Goal</span>
-              <span className="sm:hidden">New</span>
-            </Link>
           </div>
         </div>
       </header>
@@ -106,18 +107,51 @@ export default function GeneratePage() {
         />
 
         <main className="flex-1 min-w-0 h-full overflow-y-auto bg-background scroll-smooth">
-          <div className="max-w-[800px] mx-auto px-6 py-10 md:py-16">
+          <div className="max-w-[800px] mx-auto px-6 py-6 md:py-10">
             
+            <div className="mb-6">
+              <Breadcrumbs items={[{ label: 'Goal Architect' }]} />
+            </div>
+
             {/* Compact Header */}
-            <div className="mb-10">
+            <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
               <h1 className="inconsolata-ui text-[22px] font-bold text-text-heading tracking-tight">
-                {roadmapData ? 'Review Generation' : 'Define your Goal'}
+                {roadmapData ? 'Review Generation' : mode === 'ai' ? 'AI Architect' : 'Manual Build'}
               </h1>
+
+              {!roadmapData && (
+                <div className="flex bg-sidebar border border-border p-1 rounded-md shrink-0 self-start md:self-auto">
+                  <button 
+                    onClick={() => setMode('ai')}
+                    className={`flex items-center gap-2 px-4 py-1.5 rounded-sm text-[11px] font-bold tracking-widest uppercase transition-all ${
+                      mode === 'ai' 
+                        ? 'bg-background text-text-heading shadow-sm' 
+                        : 'text-text-muted hover:text-text-primary'
+                    }`}
+                  >
+                    <Sparkles className={`w-3.5 h-3.5 ${mode === 'ai' ? 'text-accent' : ''}`} /> AI Gen
+                  </button>
+                  <button 
+                    onClick={() => setMode('manual')}
+                    className={`flex items-center gap-2 px-4 py-1.5 rounded-sm text-[11px] font-bold tracking-widest uppercase transition-all ${
+                      mode === 'manual' 
+                        ? 'bg-background text-text-heading shadow-sm' 
+                        : 'text-text-muted hover:text-text-primary'
+                    }`}
+                  >
+                    <Settings2 className={`w-3.5 h-3.5 ${mode === 'manual' ? 'text-blue-500' : ''}`} /> Manual
+                  </button>
+                </div>
+              )}
             </div>
             
             {!roadmapData ? (
-              <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-                <RoadmapGenerator onRoadmapGenerated={handleRoadmapGenerated} />
+              <div key={mode} className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+                {mode === 'ai' ? (
+                  <RoadmapGenerator onRoadmapGenerated={handleRoadmapGenerated} />
+                ) : (
+                  <ManualRoadmapBuilder />
+                )}
               </div>
             ) : (
               <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
