@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Plus, GraduationCap, ArrowRight, BookOpen, Target, Zap } from 'lucide-react';
 import PublicHeader from '@/components/PublicHeader';
 import Footer from '@/components/Footer';
-import { LoginRequiredMessage, AlreadySignedInMessage, FAQAccordion, LandingOnboardingTrigger } from './HomeClientComponents';
+import { LoginRequiredMessage, AlreadySignedInMessage, FAQAccordion, LandingOnboardingTrigger, GoogleTrustBadge, TrustedSourcesTicker } from './HomeClientComponents';
 
 import HeroBackground from '@/components/HeroBackground';
 import AnimatedEfficient from '@/components/landing/AnimatedEfficient';
@@ -174,12 +174,16 @@ export default async function LandingPage() {
                 </Link>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 mb-10">
                 <span className="manrope-body text-[13px] text-text-muted">Already a member?</span>
                 <Link href="/login" className="manrope-body text-[13px] font-bold text-accent hover:underline">
                   Sign in to your account
                 </Link>
               </div>
+
+              <GoogleTrustBadge />
+
+              <TrustedSourcesTicker />
             </div>
           </div>
         </section>
@@ -227,7 +231,7 @@ export default async function LandingPage() {
             {/* Background Illustration */}
             <div className="absolute inset-0 z-0">
               <img 
-                src="/images/learning_aesthetic_bg_1.jpg" 
+                src="https://images.openai.com/static-rsc-4/lrrHRX8b_7fH_WXxgfdLY-oquyW3GmjNkbvH9-i7E6gmTnvWJ_ERRMdaL1gJ-rKTQgWarKVrwYKs97SnFa69EqP94Q1EFyT9BQVlaScU7STnO3YYuPzq-Ma4gJzfP7vjVsHE94Href9ozBnDstzpsQz258bQHQ7myQpRzAEOwxV1jskDj9TtJ6HxIDo_i5z5?purpose=fullsize" 
                 alt="" 
                 className="w-full h-full object-cover opacity-80 dark:opacity-50 transition-opacity duration-500"
               />

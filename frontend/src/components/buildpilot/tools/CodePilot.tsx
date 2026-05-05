@@ -136,18 +136,8 @@ const CodePilot: React.FC<CodePilotProps> = ({ roadmapSlug, moduleNumber, onComm
 
   if (!repoData) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center p-8 animate-in fade-in duration-500 bg-background overflow-y-auto">
+      <div className="flex-1 flex flex-col items-center justify-start pt-12 p-8 animate-in fade-in duration-500 bg-background overflow-y-auto no-scrollbar">
         <div className="max-w-xl w-full">
-          <div className="text-center mb-10">
-            <div className="w-16 h-16 bg-sidebar border border-border text-text-heading flex items-center justify-center mb-6 mx-auto shadow-sm">
-              <Github className="w-8 h-8" />
-            </div>
-            <h2 className="inconsolata-ui text-xl font-bold text-text-heading mb-3 tracking-tight uppercase tracking-[0.1em]">Code verification</h2>
-            <p className="manrope-body text-text-muted text-[14px] leading-relaxed max-w-md mx-auto">
-              Initialize your project repository and link it to EulerFold for auditing.
-            </p>
-          </div>
-          
           <div className="bg-header border border-border p-8 space-y-8 shadow-sm">
             <div className="space-y-6">
                <div className="p-4 bg-teal-700/5 border border-teal-700/20 flex items-start gap-4">
@@ -220,17 +210,17 @@ const CodePilot: React.FC<CodePilotProps> = ({ roadmapSlug, moduleNumber, onComm
   }
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-background text-text-primary overflow-hidden animate-in fade-in duration-300">
+    <div className="flex-1 flex flex-col min-h-0 bg-background text-text-primary overflow-hidden animate-in fade-in duration-300">
       {/* Repository Header */}
-      <div className="h-14 bg-sidebar/20 border-b border-border flex items-center justify-between px-6">
+      <div className="h-9 bg-sidebar/20 border-b border-border flex items-center justify-between px-6 shrink-0">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2 text-[13px] font-bold inconsolata-ui">
-            <Github className="w-4 h-4 opacity-40" />
+          <div className="flex items-center gap-2 text-[12px] font-bold inconsolata-ui">
+            <Github className="w-3.5 h-3.5 opacity-40" />
             <span className="text-teal-700">{repoUrl.replace('https://github.com/', '').split('/')[0]}</span>
             <span className="text-text-muted opacity-40">/</span>
             <span className="text-text-heading">{repoUrl.replace('https://github.com/', '').split('/')[1]}</span>
           </div>
-          <div className="px-2 py-0.5 border border-border text-[9px] text-text-muted font-black uppercase tracking-widest inconsolata-ui bg-background">
+          <div className="px-1.5 py-0.5 border border-border text-[8px] text-text-muted font-black uppercase tracking-widest inconsolata-ui bg-background">
             Connected
           </div>
         </div>
@@ -239,79 +229,79 @@ const CodePilot: React.FC<CodePilotProps> = ({ roadmapSlug, moduleNumber, onComm
           <button 
             onClick={() => fetchRepoData(repoUrl)}
             disabled={syncing}
-            className="p-2 hover:bg-sidebar transition-colors text-text-muted hover:text-teal-700"
+            className="p-1.5 hover:bg-sidebar transition-colors text-text-muted hover:text-teal-700"
             title="Sync with GitHub"
           >
-            <RefreshCw className={`w-4 h-4 ${syncing ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-3.5 h-3.5 ${syncing ? 'animate-spin' : ''}`} />
           </button>
-          <div className="h-6 w-[1px] bg-border mx-1" />
+          <div className="h-5 w-[1px] bg-border mx-1" />
           
           <div className="flex items-center bg-sidebar/30 border border-border p-0.5">
              <a 
                href={`cursor://vscode.git/clone?url=${repoUrl}`}
-               className="flex items-center gap-2 px-3 py-1.5 hover:bg-background text-[10px] font-bold text-text-heading transition-all inconsolata-ui uppercase tracking-widest border-r border-border"
+               className="flex items-center gap-2 px-3 py-1 hover:bg-background text-[9px] font-bold text-text-heading transition-all inconsolata-ui uppercase tracking-widest border-r border-border"
              >
-               <Terminal className="w-3.5 h-3.5 opacity-60" />
+               <Terminal className="w-3 h-3 opacity-60" />
                Cursor
              </a>
              <a 
                target="_blank"
                href={repoUrl}
-               className="flex items-center gap-2 px-3 py-1.5 hover:bg-background text-[10px] font-bold text-text-heading transition-all inconsolata-ui uppercase tracking-widest"
+               className="flex items-center gap-2 px-3 py-1 hover:bg-background text-[9px] font-bold text-text-heading transition-all inconsolata-ui uppercase tracking-widest"
              >
-               <Github className="w-3.5 h-3.5 opacity-60" />
+               <Github className="w-3 h-3 opacity-60" />
                View
              </a>
           </div>
         </div>
       </div>
 
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden min-h-0">
         {/* File Explorer (Real) */}
-        <aside className="w-64 border-r border-border bg-sidebar/10 hidden md:block overflow-y-auto no-scrollbar">
-           <div className="p-4 border-b border-border bg-background/50 sticky top-0 z-10">
+        <aside className="w-56 border-r border-border bg-sidebar/10 hidden md:block overflow-y-auto no-scrollbar">
+           <div className="p-3 border-b border-border bg-background/50 sticky top-0 z-10">
               <span className="text-[9px] font-black text-text-muted uppercase tracking-widest inconsolata-ui opacity-60">Directory</span>
            </div>
            <div className="p-2 space-y-0.5">
               {repoData.files.map((file: any) => (
-                <div key={file.path} className="flex items-center gap-2 px-3 py-1.5 hover:bg-sidebar cursor-default text-[12px] transition-colors group">
+                <div key={file.path} className="flex items-center gap-2 px-2 py-1 hover:bg-sidebar cursor-default text-[12px] transition-colors group">
                   {file.type === 'dir' ? (
-                    <Folder className="w-3.5 h-3.5 text-teal-700 opacity-60" />
+                    <Folder className="w-3 h-3 text-teal-700 opacity-60" />
                   ) : (
-                    <File className="w-3.5 h-3.5 text-text-muted opacity-40" />
+                    <File className="w-3 h-3 text-text-muted opacity-40" />
                   )}
-                  <span className="manrope-body font-medium text-[13px] truncate">{file.name}</span>
+                  <span className="manrope-body font-medium text-[12px] truncate">{file.name}</span>
                 </div>
               ))}
               {repoData.files.length === 0 && (
-                <p className="p-4 text-center text-[11px] text-text-muted italic">No files found.</p>
+                <p className="p-4 text-center text-[10px] text-text-muted italic">No files found.</p>
               )}
            </div>
         </aside>
 
         {/* Commit History (Real) */}
-        <main className="flex-1 overflow-y-auto no-scrollbar p-8">
-           <div className="max-w-3xl mx-auto space-y-6">
+        <main className="flex-1 overflow-y-auto no-scrollbar p-6">
+           <div className="max-w-2xl mx-auto space-y-4">
               <div className="flex items-center justify-between">
-                <h3 className="inconsolata-ui text-[13px] font-bold text-text-heading flex items-center gap-2">
-                   <GitCommit className="w-4 h-4 text-teal-700 opacity-40" />
+                <h3 className="inconsolata-ui text-[12px] font-bold text-text-heading flex items-center gap-2">
+                   <GitCommit className="w-3.5 h-3.5 text-teal-700 opacity-40" />
                    Verification Stream
                 </h3>
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1.5">
                 {repoData.commits.map((c: any) => (
                   <div 
                     key={c.sha}
-                    className="w-full flex items-center justify-between p-4 border border-border bg-sidebar/5 hover:border-teal-700/20 transition-all text-left group"
+                    className="w-full flex items-center justify-between p-3 border border-border bg-sidebar/5 hover:border-teal-700/20 transition-all text-left group"
                   >
-                    <div className="flex items-center gap-4">
-                      <div className="w-9 h-9 bg-background border border-border flex items-center justify-center">
-                        <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-background border border-border flex items-center justify-center shrink-0">
+                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                       </div>
-                      <div>
-                        <p className="text-[13px] font-bold text-text-heading mb-1 tracking-tight leading-tight">{c.commit.message}</p>
-                        <div className="flex items-center gap-3 text-[10px] font-bold text-text-muted inconsolata-ui uppercase tracking-wider opacity-60">
+                      <div className="min-w-0">
+                        <p className="text-[12px] font-bold text-text-heading mb-0.5 tracking-tight leading-tight truncate">{c.commit.message}</p>
+                        <div className="flex items-center gap-2 text-[9px] font-bold text-text-muted inconsolata-ui uppercase tracking-wider opacity-60">
                           <span className="font-mono text-teal-700">{c.sha.substring(0, 7)}</span>
                           <span>•</span>
                           <span>{getTimeAgo(c.commit.author.date)}</span>

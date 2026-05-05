@@ -37,7 +37,7 @@ export default function BuildPilotPage() {
   const [selectedCommit, setSelectedCommit] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [lastSaved, setLastSaved] = useState<string | null>(null);
-  const [workspaceType, setWorkspaceType] = useState<'code' | 'research' | 'design'>('research');
+  const [workspaceType, setWorkspaceType] = useState<'code' | 'research' | 'design'>('code');
 
   // URL Auth Errors
   const [authError, setAuthError] = useState<string | null>(null);
@@ -70,7 +70,7 @@ export default function BuildPilotPage() {
         setRoadmap(data);
         
         if (data.roadmap_plan?.modules[moduleNumber - 1]) {
-          setWorkspaceType(data.roadmap_plan.modules[moduleNumber - 1].workspace_type || 'research');
+          setWorkspaceType(data.roadmap_plan.modules[moduleNumber - 1].workspace_type || 'code');
         }
         
         // Load draft from localStorage
@@ -175,26 +175,26 @@ export default function BuildPilotPage() {
       style={{ paddingTop: 'var(--announcement-height, 0px)' }}
     >
       {/* Professional Navbar */}
-      <header className="h-14 border-b border-border flex items-center justify-between px-6 bg-background z-[60] shrink-0">
-        <div className="flex items-center gap-8">
-          <Link href="/" className="flex items-center gap-2.5 hover:opacity-85 transition-opacity active:scale-95 duration-200">
-            <img src="/apple-touch-icon.png" alt="" className="w-6 h-6" />
-            <span className="text-[15px] font-bold text-text-muted tracking-tight hidden md:block">Euler<span className="text-teal-700/80">Fold</span></span>
+      <header className="h-9 border-b border-border flex items-center justify-between px-6 bg-background z-[60] shrink-0">
+        <div className="flex items-center gap-6">
+          <Link href="/" className="flex items-center gap-2 hover:opacity-85 transition-opacity active:scale-95 duration-200">
+            <img src="/apple-touch-icon.png" alt="" className="w-4 h-4" />
+            <span className="text-[13px] font-bold text-text-muted tracking-tight hidden md:block">Euler<span className="text-teal-700/80">Fold</span></span>
           </Link>
 
-          <div className="h-4 w-[1px] bg-border hidden md:block" />
+          <div className="h-3 w-[1px] bg-border hidden md:block" />
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
            {lastSaved && (
-             <div className="hidden sm:flex items-center gap-2 px-3 py-1 bg-sidebar/30 border border-border rounded-none">
-                <div className="w-1.5 h-1.5 bg-teal-500 rounded-full animate-pulse" />
-                <span className="inconsolata-ui text-[9px] font-bold text-text-muted uppercase tracking-wider">Auto-Saved {lastSaved}</span>
+             <div className="hidden sm:flex items-center gap-1.5 px-2 py-0.5 bg-sidebar/30 border border-border rounded-none">
+                <div className="w-1 h-1 bg-teal-500 rounded-full animate-pulse" />
+                <span className="inconsolata-ui text-[8px] font-bold text-text-muted uppercase tracking-wider">Synced {lastSaved}</span>
              </div>
            )}
-           <div className="h-8 w-[1px] bg-border mx-1" />
-           <Link href={`/roadmap/${slug}`} className="p-2 hover:bg-sidebar transition-colors text-text-muted hover:text-text-heading">
-             <ChevronLeft className="w-5 h-5" />
+           <div className="h-5 w-[1px] bg-border mx-1" />
+           <Link href={`/roadmap/${slug}`} className="p-1.5 hover:bg-sidebar transition-colors text-text-muted hover:text-text-heading">
+             <ChevronLeft className="w-3.5 h-3.5" />
            </Link>
         </div>
       </header>
@@ -212,45 +212,40 @@ export default function BuildPilotPage() {
 
         <main className="flex-1 bg-background relative flex flex-col min-w-0">
           {authError && (
-            <div className="bg-red-500/10 border-b border-red-500/20 px-6 py-3 flex items-center justify-between animate-in slide-in-from-top duration-300">
+            <div className="bg-red-500/10 border-b border-red-500/20 px-6 py-1.5 flex items-center justify-between animate-in slide-in-from-top duration-300">
               <div className="flex items-center gap-3">
-                <AlertCircle className="w-4 h-4 text-red-500" />
-                <p className="manrope-body text-[13px] font-medium text-red-600">{authError}</p>
+                <AlertCircle className="w-3 h-3 text-red-500" />
+                <p className="manrope-body text-[11px] font-medium text-red-600">{authError}</p>
               </div>
               <button 
                 onClick={() => setAuthError(null)}
                 className="text-red-500 hover:text-red-600 transition-colors"
               >
-                <X className="w-4 h-4" />
+                <X className="w-3 h-3" />
               </button>
             </div>
           )}
 
           {/* Internal Workspace Header */}
-          <div className="h-12 border-b border-border flex items-center justify-between px-6 shrink-0 bg-background">
+          <div className="h-8 border-b border-border flex items-center justify-between px-6 shrink-0 bg-background">
              <div className="flex items-center gap-6">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 bg-teal-700" />
-                  <span className="inconsolata-ui text-[11px] font-black uppercase tracking-widest text-text-heading">Workspace</span>
-                </div>
-
                 <div className="flex items-center bg-sidebar/80 p-0.5 border border-border rounded-none">
                   {[
+                    { id: 'code', icon: Code, label: 'Code' },
                     { id: 'research', icon: Search, label: 'Editor' },
-                    { id: 'design', icon: Palette, label: 'Design' },
-                    { id: 'code', icon: Code, label: 'Code' }
+                    { id: 'design', icon: Palette, label: 'Design' }
                   ].map((type) => (
                     <button
                       key={type.id}
                       onClick={() => setWorkspaceType(type.id as any)}
                       className={`
-                        flex items-center gap-2 px-3 py-1 inconsolata-ui text-[10px] font-bold uppercase tracking-widest transition-all
+                        flex items-center gap-2 px-2.5 py-0.5 inconsolata-ui text-[9px] font-bold uppercase tracking-widest transition-all
                         ${workspaceType === type.id 
                           ? 'bg-background text-teal-700 shadow-sm border border-border/50' 
                           : 'text-text-muted hover:text-text-heading hover:bg-background/40'}
                       `}
                     >
-                      <type.icon className={`w-3 h-3 ${workspaceType === type.id ? 'text-teal-700' : 'opacity-40'}`} />
+                      <type.icon className={`w-2.5 h-2.5 ${workspaceType === type.id ? 'text-teal-700' : 'opacity-40'}`} />
                       <span className="hidden lg:block">{type.label}</span>
                     </button>
                   ))}

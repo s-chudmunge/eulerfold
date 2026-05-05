@@ -74,18 +74,18 @@ const MissionSidecar: React.FC<MissionSidecarProps> = ({ module, onSubmit, submi
 
   return (
     <aside className={`border-r border-border transition-all duration-500 ease-in-out bg-sidebar/30 flex flex-col shrink-0 ${isSidebarOpen ? 'w-[280px]' : 'w-14'}`}>
-      <div className="h-14 border-b border-border flex items-center justify-between px-4 shrink-0 bg-background/50">
+      <div className="h-10 border-b border-border flex items-center justify-between px-4 shrink-0 bg-background/50">
          {isSidebarOpen && (
             <div className="flex items-center gap-2 text-text-muted">
-               <Layers className="w-4 h-4 opacity-40" />
-               <span className="inconsolata-ui text-[11px] font-bold tracking-tight">Module Details</span>
+               <Layers className="w-3.5 h-3.5 opacity-40" />
+               <span className="inconsolata-ui text-[10px] font-bold tracking-tight">Module Details</span>
             </div>
          )}
          <button 
            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
            className="p-1.5 hover:bg-sidebar rounded-none text-text-muted transition-colors mx-auto"
          >
-            {isSidebarOpen ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
+            {isSidebarOpen ? <ChevronLeft className="w-3.5 h-3.5" /> : <ChevronRight className="w-3.5 h-3.5" />}
          </button>
       </div>
 

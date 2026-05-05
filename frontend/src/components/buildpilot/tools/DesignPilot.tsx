@@ -348,8 +348,8 @@ const DesignPilot: React.FC<DesignPilotProps> = ({ moduleTitle }) => {
   };
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-background animate-in fade-in duration-500 overflow-hidden">
-      <div className="h-14 border-b border-border flex items-center justify-between px-6 bg-background z-20 shrink-0">
+    <div className="flex-1 flex flex-col min-h-0 bg-background animate-in fade-in duration-500 overflow-hidden">
+      <div className="h-9 border-b border-border flex items-center justify-between px-6 bg-background z-20 shrink-0">
         <div className="flex items-center gap-4">
           <div className="flex items-center bg-sidebar/40 p-0.5 border border-border">
              {[
@@ -365,37 +365,37 @@ const DesignPilot: React.FC<DesignPilotProps> = ({ moduleTitle }) => {
                <button 
                  key={t.id}
                  onClick={() => { setTool(t.id as any); setSelectedElementId(null); }}
-                 className={`p-2 transition-all ${tool === t.id ? 'bg-teal-700 text-white shadow-sm' : 'hover:bg-sidebar text-text-muted opacity-60 hover:opacity-100'}`} 
+                 className={`p-1.5 transition-all ${tool === t.id ? 'bg-teal-700 text-white shadow-sm' : 'hover:bg-sidebar text-text-muted opacity-60 hover:opacity-100'}`} 
                  title={t.label}
                >
-                  <t.icon className="w-3.5 h-3.5" />
+                  <t.icon className="w-3 h-3" />
                </button>
              ))}
-             <div className="h-4 w-[1px] bg-border mx-1" />
-             <button onClick={() => fileInputRef.current?.click()} className="p-2 hover:bg-sidebar text-text-muted opacity-60 hover:opacity-100 transition-all" title="Import Image">
-                <Upload className="w-3.5 h-3.5" />
+             <div className="h-3 w-[1px] bg-border mx-1" />
+             <button onClick={() => fileInputRef.current?.click()} className="p-1.5 hover:bg-sidebar text-text-muted opacity-60 hover:opacity-100 transition-all" title="Import Image">
+                <Upload className="w-3 h-3" />
              </button>
           </div>
 
           <div className="flex items-center gap-1">
-             <button onClick={undo} disabled={historyIndex < 0} className="p-2 hover:bg-sidebar text-text-muted disabled:opacity-20"><Undo2 className="w-3.5 h-3.5" /></button>
-             <button onClick={redo} disabled={historyIndex >= history.length - 1} className="p-2 hover:bg-sidebar text-text-muted disabled:opacity-20"><Redo2 className="w-3.5 h-3.5" /></button>
+             <button onClick={undo} disabled={historyIndex < 0} className="p-1.5 hover:bg-sidebar text-text-muted disabled:opacity-20"><Undo2 className="w-3 h-3" /></button>
+             <button onClick={redo} disabled={historyIndex >= history.length - 1} className="p-1.5 hover:bg-sidebar text-text-muted disabled:opacity-20"><Redo2 className="w-3 h-3" /></button>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-           <button onClick={() => setShowGrid(!showGrid)} className={`p-2 border border-border transition-all ${showGrid ? 'bg-teal-700/10 text-teal-700 border-teal-700/20' : 'text-text-muted opacity-40'}`} title="Toggle Grid"><Grid3X3 className="w-3.5 h-3.5" /></button>
-           <div className="flex items-center bg-sidebar/40 p-1 border border-border gap-1 mr-2">
-              <button onClick={() => setScale(prev => Math.max(0.1, prev - 0.1))} className="p-1 hover:bg-background text-text-muted transition-all"><ZoomOut className="w-3.5 h-3.5" /></button>
-              <span className="inconsolata-ui text-[10px] font-bold w-10 text-center text-text-heading">{Math.round(scale * 100)}%</span>
-              <button onClick={() => setScale(prev => Math.min(5, prev + 0.1))} className="p-1 hover:bg-background text-text-muted transition-all"><ZoomIn className="w-3.5 h-3.5" /></button>
+           <button onClick={() => setShowGrid(!showGrid)} className={`p-1.5 border border-border transition-all ${showGrid ? 'bg-teal-700/10 text-teal-700 border-teal-700/20' : 'text-text-muted opacity-40'}`} title="Toggle Grid"><Grid3X3 className="w-3 h-3" /></button>
+           <div className="flex items-center bg-sidebar/40 p-0.5 border border-border gap-1 mr-2">
+              <button onClick={() => setScale(prev => Math.max(0.1, prev - 0.1))} className="p-1 hover:bg-background text-text-muted transition-all"><ZoomOut className="w-3 h-3" /></button>
+              <span className="inconsolata-ui text-[9px] font-bold w-8 text-center text-text-heading">{Math.round(scale * 100)}%</span>
+              <button onClick={() => setScale(prev => Math.min(5, prev + 0.1))} className="p-1 hover:bg-background text-text-muted transition-all"><ZoomIn className="w-3 h-3" /></button>
            </div>
-           <button onClick={clearCanvas} className="flex items-center gap-2 px-3 py-1.5 hover:bg-red-500/10 text-red-500/60 hover:text-red-500 transition-all text-[10px] font-bold uppercase tracking-widest inconsolata-ui"><Trash2 className="w-3.5 h-3.5" /> Clear</button>
-           <button onClick={exportCanvas} className="flex items-center gap-2 px-4 py-1.5 bg-teal-800 text-white hover:bg-teal-900 transition-all text-[10px] font-bold uppercase tracking-widest shadow-md"><Download className="w-3.5 h-3.5" /> Export</button>
+           <button onClick={clearCanvas} className="flex items-center gap-2 px-3 py-1 hover:bg-red-500/10 text-red-500/60 hover:text-red-500 transition-all text-[9px] font-bold uppercase tracking-widest inconsolata-ui"><Trash2 className="w-3 h-3" /> Clear</button>
+           <button onClick={exportCanvas} className="flex items-center gap-2 px-4 py-1 bg-teal-800 text-white hover:bg-teal-900 transition-all text-[9px] font-bold uppercase tracking-widest shadow-md"><Download className="w-3 h-3" /> Export</button>
         </div>
       </div>
 
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden min-h-0">
         <aside className="w-60 border-r border-border bg-sidebar/10 flex flex-col shrink-0 overflow-y-auto no-scrollbar">
            <div className="p-4 space-y-6">
               <div className="flex items-center gap-2 mb-2">
