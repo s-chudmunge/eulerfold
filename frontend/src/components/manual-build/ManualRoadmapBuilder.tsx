@@ -42,7 +42,11 @@ interface Module {
   resources: Resource[];
 }
 
-export default function ManualRoadmapBuilder() {
+interface ManualRoadmapBuilderProps {
+  onSuccess?: (data: any) => void;
+}
+
+export default function ManualRoadmapBuilder({ onSuccess }: ManualRoadmapBuilderProps) {
   const router = useRouter();
   const [title, setTitle] = useState("");
   const [goal, setGoal] = useState("");
@@ -183,7 +187,11 @@ export default function ManualRoadmapBuilder() {
       });
 
       if (response.data?.slug) {
-        router.push(`/roadmap/${response.data.slug}`);
+        if (onSuccess) {
+          onSuccess(response.data);
+        } else {
+          router.push(`/roadmap/${response.data.slug}`);
+        }
       }
     } catch (err: any) {
       setError(err.response?.data?.detail || "Failed to save roadmap.");

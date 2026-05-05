@@ -12,7 +12,8 @@ import {
   LayoutDashboard,
   Plus,
   Sparkles,
-  Settings2
+  Settings2,
+  Loader
 } from 'lucide-react';
 import Link from 'next/link';
 import AppSidebar from '@/components/AppSidebar';
@@ -26,6 +27,7 @@ export default function GeneratePage() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [profile, setProfile] = useState<any>(null);
   const [mode, setMode] = useState<'ai' | 'manual'>('ai');
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -49,6 +51,7 @@ export default function GeneratePage() {
     sessionStorage.setItem('roadmap_just_generated', 'true');
     
     if (data.slug) {
+      setIsRedirecting(true);
       router.push(`/roadmap/${data.slug}`);
     } else {
       setRoadmapData(data);
@@ -69,6 +72,28 @@ export default function GeneratePage() {
       style={{ top: 'var(--announcement-height, 0px)' }}
       className="fixed inset-0 flex flex-col bg-background manrope-body selection:bg-teal-500/30 overflow-hidden"
     >
+      {isRedirecting && (
+        <div className="fixed inset-0 z-[100] bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center animate-in fade-in duration-500">
+          <div className="flex flex-col items-center gap-6">
+            <div className="relative">
+              <div className="w-16 h-16 border-2 border-accent/20 rounded-full" />
+              <div className="absolute inset-0 w-16 h-16 border-t-2 border-accent rounded-full animate-spin" />
+              <Sparkles className="absolute inset-0 m-auto w-6 h-6 text-accent animate-pulse" />
+            </div>
+            <div className="flex flex-col items-center gap-2">
+              <p className="inconsolata-ui text-[14px] font-bold text-text-heading tracking-widest">
+                Finalizing Your Roadmap
+              </p>
+              <div className="flex gap-1">
+                {[0, 1, 2].map(i => (
+                  <div key={i} className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <header className="inconsolata-ui border-b border-border bg-header h-[48px] shrink-0 z-50">
         <div className="w-full px-4 md:px-6 flex h-full items-center justify-between">
@@ -150,7 +175,7 @@ export default function GeneratePage() {
                 {mode === 'ai' ? (
                   <RoadmapGenerator onRoadmapGenerated={handleRoadmapGenerated} />
                 ) : (
-                  <ManualRoadmapBuilder />
+                  <ManualRoadmapBuilder onSuccess={(data) => handleRoadmapGenerated(data, null)} />
                 )}
               </div>
             ) : (

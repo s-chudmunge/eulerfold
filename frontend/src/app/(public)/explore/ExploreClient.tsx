@@ -129,7 +129,7 @@ export default function ExploreClient({
     const [error, setError] = useState<string | null>(null);
     
     // Filtering & Sorting State
-    const [sortBy, setSortBy] = useState('alphabetical');
+    const [sortBy, setSortBy] = useState('newest');
     const [filter, setFilter] = useState('all');
 
     const handleSearchParams = React.useCallback((params: URLSearchParams) => {
@@ -153,7 +153,7 @@ export default function ExploreClient({
     const { data: roadmaps = [], isLoading: roadmapsLoading } = useQuery({
         queryKey: ['explore-roadmaps', debouncedSearch, sortBy, authUser?.id],
         queryFn: () => exploreAPI.getExploreRoadmaps(debouncedSearch, 0, 100, sortBy),
-        initialData: (debouncedSearch === '' && sortBy === 'alphabetical') ? initialRoadmaps : undefined,
+        initialData: (debouncedSearch === '' && sortBy === 'newest') ? initialRoadmaps : undefined,
         staleTime: 5 * 60 * 1000,
     });
 
