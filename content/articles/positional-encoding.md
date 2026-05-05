@@ -25,24 +25,41 @@ The Transformer architecture is inherently permutation-invariant. This means tha
 
 ```d2
 direction: down
-Input: "Input Signals" {
-  Token: "Token Embedding" {shape: cylinder}
-  Pos: "Positional Encoding" {shape: cylinder}
-}
-Mixer: "Summation Node" {
-  shape: diamond
-  Combine: "Token + Position"
-}
-Model: "Transformer Stack" {
-  Layer1: "Encoder Layer 1"
+
+Input: "Sequence Processing" {
+  Tokens: "Token Embeddings (d_model)" {shape: cylinder}
 }
 
-Input.Token -> Mixer.Combine
-Input.Pos -> Mixer.Combine
-Mixer.Combine -> Model.Layer1
+Encoding_Logic: "Positional Signal Generation" {
+  style: {
+    stroke: "#0f766e"
+    stroke-width: 2
+  }
+  
+  Functions: "Periodic Basis Functions" {
+    Sine: "sin(pos / 10000^(2i/d))" {style: {stroke: "#0f766e"}}
+    Cosine: "cos(pos / 10000^(2i/d))" {style: {stroke: "#dc2626"}}
+  }
 
-Mixer.style: {stroke: "#0F766E"}
-Input.Pos.style: {fill: "#e8f2f1"}
+  Interleaving: "Positional Vector (PE)" {
+    shape: rectangle
+    Logic: "Interleave [Sin, Cos] for each dimension"
+  }
+
+  Functions.Sine -> Interleaving
+  Functions.Cosine -> Interleaving
+}
+
+Integration: "Transformer Input" {
+  Add: "Summation (X + PE)" {
+    shape: diamond
+    style: {fill: "#e8f2f1"}
+  }
+}
+
+Input.Tokens -> Integration.Add
+Encoding_Logic.Interleaving -> Integration.Add
+Integration.Add -> Transformer: "Position-Aware Embeddings"
 ```
 
 ## The Signal Injection {#injection}

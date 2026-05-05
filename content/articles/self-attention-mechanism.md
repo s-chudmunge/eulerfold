@@ -26,47 +26,43 @@ Self-attention is the core engine of the Transformer architecture. It provides a
 ```d2
 direction: down
 
-Inputs: "Embedding Input" {
-  x: "Token Embedding (x_i)" {
-    shape: cylinder
-  }
+Inputs: "Token Embeddings" {
+  x: "x_i, x_j, ..." {shape: cylinder}
 }
 
 Projections: "Linear Transformations" {
   style: {
-    stroke: "#0F766E"
+    stroke: "#0f766e"
     stroke-width: 2
   }
-  Q: "Query (Q)" {shape: rectangle}
-  K: "Key (K)" {shape: rectangle}
-  V: "Value (V)" {shape: rectangle}
+  Q: "Query (Q)"
+  K: "Key (K)"
+  V: "Value (V)"
 }
 
-Calculation: "Attention Mechanism" {
-  style: {
-    fill: "#e8f2f1"
+Mechanism: "Attention Core" {
+  Score: "Dot Product (Q · K^T)" {shape: diamond}
+  Scale: "Scale & Softmax" {
+    style: {fill: "#e8f2f1"}
+    tooltip: "Normalizing scores to sum to 1.0"
   }
-  Score: "Dot Product (Q · Kᵀ)" {shape: diamond}
-  Scale: "Scaling (√d_k)"
-  Prob: "Softmax (Weights)" {shape: parallelogram}
+  Agg: "Weighted Sum (Σ α * V)" {
+    shape: parallelogram
+    style: {fill: "#fee2e2"}
+  }
   
-  Score -> Scale -> Prob
+  Score -> Scale -> Agg
 }
 
-Output_Stage: "Aggregated Context" {
-  Sum: "Σ (Weight_i * V_i)"
-  Z: "Context Vector (z_i)" {shape: cylinder}
-  Sum -> Z
-}
+Inputs.x -> Projections.Q
+Inputs.x -> Projections.K
+Inputs.x -> Projections.V
 
-Inputs.x -> Projections.Q: "W^Q"
-Inputs.x -> Projections.K: "W^K"
-Inputs.x -> Projections.V: "W^V"
+Projections.Q -> Mechanism.Score
+Projections.K -> Mechanism.Score
+Projections.V -> Mechanism.Agg: "Contextual Information"
 
-Projections.Q -> Calculation.Score
-Projections.K -> Calculation.Score
-Calculation.Prob -> Output_Stage.Sum
-Projections.V -> Output_Stage.Sum
+Mechanism.Agg -> Output: "Attention-Weighted Representation"
 ```
 
 ## The QKV Abstraction {#qkv-abstraction}

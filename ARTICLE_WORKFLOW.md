@@ -15,15 +15,19 @@ This document outlines the systematic process for researching, writing, and inte
 Articles should follow a high-signal, professional technical blog format. Unlike "Research Decoded" papers, these are designed for general readability while maintaining clinical depth.
 
 *   **Structure**: Use clear headers (`##`, `###`) to break up the text.
-*   **D2 Diagrams**: Use ` ```d2 ` blocks to create technical diagrams. These are automatically pre-rendered into SVGs during compilation.
-    *   Example:
-        ```d2
-        direction: down
-        Input -> Layer1: "Feature Flow"
-        Layer1 -> Output
-        ```
-*   **Visual Variety**: Use bolding for key terms on first mention and utilize bullet points/numbered lists where it improves clarity for architectural components.
-*   **Technical Detail**: Explain the "why" and "how" without truncating for brevity. Assume the reader is a peer (engineer or researcher).
+*   **Technical Sections**: Always go beyond basic definitions. Include sections on:
+    *   **Internal Mechanics**: The "hidden" logic (e.g., Numerical Stability, Expert Imbalance).
+    *   **Trade-offs**: The "cost" of the solution (e.g., VRAM vs. Compute).
+    *   **Ethics/Context**: The real-world impact or human analogy.
+*   **D2 Diagrams**: Use ` ```d2 ` blocks for technical visualizations.
+    *   **Architectural Standard**: Avoid simplistic horizontal flowcharts. Use a **vertical layout** (`direction: down`).
+    *   **Flow**: Map the journey from **Input State** (top) $\to$ **Core Engine/Logic** (middle) $\to$ **Outcome/Performance** (bottom).
+    *   **Visual Language**: 
+        *   `shape: cylinder` for data sources/weights.
+        *   `shape: diamond` for core logic/decision nodes.
+        *   `shape: parallelogram` with `fill: "#fee2e2"` for final results.
+        *   `style: { stroke: "#0f766e", stroke-width: 2 }` for the core engine grouping.
+*   **Visual Variety**: Use bolding for key terms on first mention and utilize bullet points where it improves clarity for architectural components.
 
 ## Phase 4: Metadata & Frontmatter
 
