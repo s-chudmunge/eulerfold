@@ -11,6 +11,7 @@ import AnimatedEfficient from '@/components/landing/AnimatedEfficient';
 import SocialFeed from '@/components/SocialFeed';
 import TestimonialSection from '@/components/landing/TestimonialSection';
 import PricingSection from '@/components/landing/PricingSection';
+import ProductEcosystem from '@/components/landing/ProductEcosystem';
 import RoadmapDiscovery from '@/components/landing/RoadmapDiscovery';
 import AuditEcosystemCarousel from '@/components/landing/AuditEcosystemCarousel';
 import LatestArticlesCarousel from '@/components/landing/LatestArticlesCarousel';
@@ -188,7 +189,9 @@ export default async function LandingPage() {
           </div>
         </section>
 
-        <RoadmapDiscovery roadmaps={featuredRoadmaps} />
+        <RoadmapDiscovery initialRoadmaps={featuredRoadmaps} />
+
+        <ProductEcosystem />
 
         <TestimonialSection />
 

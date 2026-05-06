@@ -261,7 +261,7 @@ export default function PublicHeader() {
 
             <DesktopDropdown id="products" label="Products" width="min-w-[280px]">
               <div className="p-1.5 flex flex-col gap-0.5">
-                <Link href="/planner" className="flex items-start gap-2.5 p-2.5 rounded-lg hover:bg-sidebar/40 transition-all group">
+                <Link href="/planner" className="flex items-start gap-2.5 px-2.5 py-2 rounded-lg hover:bg-sidebar/40 transition-all group">
                   <div className="w-8 h-8 rounded-md bg-accent/10 flex items-center justify-center text-accent shrink-0">
                     <Calendar className="w-4 h-4" />
                   </div>
@@ -274,7 +274,7 @@ export default function PublicHeader() {
                   </div>
                 </Link>
 
-                <Link href="/buildpilot" className="flex items-start gap-2.5 p-2.5 rounded-lg hover:bg-sidebar/40 transition-all group">
+                <Link href="/buildpilot" className="flex items-start gap-2.5 px-2.5 py-2 rounded-lg hover:bg-sidebar/40 transition-all group">
                   <div className="w-8 h-8 rounded-md bg-teal-500/10 flex items-center justify-center text-teal-700 shrink-0 group-hover:bg-teal-500/20 transition-all">
                     <Terminal className="w-4 h-4" />
                   </div>
@@ -286,7 +286,20 @@ export default function PublicHeader() {
                   </div>
                 </Link>
 
-                <Link href="/generate" className="flex items-start gap-2.5 p-2.5 rounded-lg hover:bg-sidebar/40 transition-all group">
+                <Link href="/generate?mode=job" className="flex items-start gap-2.5 px-2.5 py-2 rounded-lg hover:bg-sidebar/40 transition-all group">
+                  <div className="w-8 h-8 rounded-md bg-teal-700/10 flex items-center justify-center text-teal-700 shrink-0 group-hover:bg-teal-700/20 transition-all">
+                    <Briefcase className="w-4 h-4" />
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[12.5px] font-bold text-text-heading group-hover:text-teal-700 transition-colors tracking-tight">Job Decoded</span>
+                      <span className="text-[7px] font-black uppercase tracking-widest bg-teal-700 text-white px-1 py-0.5 rounded leading-none">New</span>
+                    </div>
+                    <span className="text-[10.5px] text-text-muted leading-relaxed">JD-to-Roadmap engine.</span>
+                  </div>
+                </Link>
+
+                <Link href="/generate" className="flex items-start gap-2.5 px-2.5 py-2 rounded-lg hover:bg-sidebar/40 transition-all group">
                   <div className="w-8 h-8 rounded-md bg-sidebar border border-border flex items-center justify-center text-text-muted shrink-0 group-hover:text-accent group-hover:border-accent/30 transition-colors">
                     <Plus className="w-4 h-4" />
                   </div>
@@ -533,6 +546,7 @@ export default function PublicHeader() {
             <div className="grid grid-cols-1 gap-3">
               {[
                 { l: "Study Planner", h: "/planner", i: Calendar, n: true },
+                { l: "Job Decoded", h: "/generate?mode=job", i: Briefcase, n: true },
                 { l: "BuildPilot", h: "/buildpilot", i: Terminal },
                 { l: "Learning Hub", h: "/learn", i: GraduationCap },
                 { l: "Roadmap Explorer", h: "/explore", i: Globe },

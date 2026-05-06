@@ -11,12 +11,13 @@ EulerFold is a simple tool to help you actually learn things. Most people just c
 The core idea is to move from "reading" to "doing".
 
 1. **Plan**: You type in a goal (like "Quantum Physics" or "React"). A model builds a week-by-week curriculum for you.
-2. **Schedule**: Use the **Study Planner** to generate tasks based on your intensity (Casual, Balanced, or Intense).
-3. **Research**: Explore **Research Decoded** to master technical papers and breakthroughs.
-4. **Build**: Use **BuildPilot** for manual projects and tracking missions outside of generated roadmaps.
-5. **Practice**: You get questions for every topic. You have to answer them to move on.
-6. **Proof**: At the end, you upload your work (images, code, or PDFs). We check if your work actually hits the goals. 
-7. **Profile**: Your progress is tracked on a public page. You can export your **Earned Record** as a verified PDF with a QR code.
+2. **Career**: Use **Job Decoded** to paste a raw Job Description and get an adaptive roadmap that bridges the gap between your current experience and the role requirements.
+3. **Schedule**: Use the **Study Planner** to generate tasks based on your intensity (Casual, Balanced, or Intense).
+4. **Research**: Explore **Research Decoded** to master technical papers and breakthroughs.
+5. **Build**: Use **BuildPilot** for manual projects and tracking missions outside of generated roadmaps.
+6. **Practice**: You get questions for every topic. You have to answer them to move on.
+7. **Proof**: At the end, you upload your work (images, code, or PDFs). We check if your work actually hits the goals. 
+8. **Profile**: Your progress is tracked on a public page. You can export your **Earned Record** as a verified PDF with a QR code.
 
 ## Tech
 

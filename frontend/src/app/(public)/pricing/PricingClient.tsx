@@ -140,6 +140,9 @@ export default function PricingClient() {
                         <div className="flex items-center gap-2.5">
                             <span className="text-accent">✓</span> 5 Initial roadmaps
                         </div>
+                        <div className="flex items-center gap-2.5">
+                            <span className="text-accent">✓</span> Job Decoded (Up to 4w)
+                        </div>
                         <div className="pt-2 mt-2 border-t border-border/40 opacity-50">
                             <div className="flex items-center gap-2.5 text-text-muted">
                                 <span className="text-red-500/60">✗</span> Uses Basic AI Model
@@ -196,11 +199,17 @@ export default function PricingClient() {
                         <div className="flex items-center gap-2.5">
                             <span className="text-accent">✓</span> Full EulerFold Intelligence
                         </div>
+                        <div className="flex items-center gap-2.5 font-bold text-accent">
+                            <span className="text-accent">✓</span> Job Decoded (Full Engine)
+                        </div>
                         <div className="flex items-center gap-2.5">
                             <span className="text-accent">✓</span> Customized Roadmap Extensions
                         </div>
                         <div className="flex items-center gap-2.5">
                             <span className="text-accent">✓</span> Premium Practice Mode
+                        </div>
+                        <div className="flex items-center gap-2.5">
+                            <span className="text-accent">✓</span> Up to 12 Week Durations
                         </div>
                     </div>
 

@@ -15,7 +15,7 @@ from fastapi import APIRouter, HTTPException, Request, Depends, BackgroundTasks
 
 from app.core.config import settings
 from app.core.supabase_client import supabase, get_supabase_client
-from app.schemas import RoadmapCreate, RoadmapMe, RoadmapRead, RoadmapSave, User, ProgressUpdate, RoadmapExtend, RoadmapStatusUpdate, ManualBuildRequest
+from app.schemas import RoadmapCreate, RoadmapMe, RoadmapRead, RoadmapSave, User, ProgressUpdate, RoadmapExtend, RoadmapStatusUpdate, ManualBuildRequest, JobRoadmapCreate
 from app.utils.gemini_client import generate_text, clean_json_string
 from app.utils.resend_client import send_onboarding_email
 from app.utils.youtube_client import search_youtube_videos
@@ -775,15 +775,21 @@ async def generate_roadmap(
     current_user: User = Depends(get_current_user)
 ):
     """Generate a full roadmap using Gemini AI and save it."""
+    # ... existing implementation ...
+
+@router.post("/roadmaps/generate-from-jd", response_model=RoadmapRead)
+async def generate_from_jd(
+    payload: JobRoadmapCreate,
+    background_tasks: BackgroundTasks,
+    current_user: User = Depends(get_current_user)
+):
+    """Job Decoded: Generate a roadmap from a Job Description."""
     email = current_user.email
     uid = current_user.supabase_uid
     if not email:
         raise HTTPException(status_code=401, detail="Could not determine user email")
 
-    # Roadmap Credit Check (Standard: 5 roadmaps total)
     sb = get_supabase_client()
-    
-    # Get user profile
     profile_res = sb.table("profiles").select("roadmap_credits, is_pro").eq("email", email).execute()
     if not profile_res.data:
         raise HTTPException(status_code=404, detail="User profile not found")
@@ -794,24 +800,60 @@ async def generate_roadmap(
     if credits <= 0:
         raise HTTPException(status_code=402, detail="No roadmap credits left. Please upgrade to Pro.")
 
-    # 1. Generate Roadmap Structure with Gemini
-    prompt = f"""
-Generate a professional, high-signal technical learning roadmap for the subject: "{roadmap_create.subject}".
-The learner's specific goal is: "{roadmap_create.goal}".
-Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
+    # Validate Duration Constraints
+    allowed_weeks_pro = [2, 3, 4, 6, 10, 12]
+    if not is_pro:
+        if payload.time_value > 4:
+            raise HTTPException(status_code=403, detail="Free users are limited to a maximum of 4 weeks.")
+    else:
+        if payload.time_value not in allowed_weeks_pro:
+             # If not in the list, we cap it or pick the nearest? Let's be strict for now.
+             raise HTTPException(status_code=400, detail=f"Invalid duration. Pro users can select: {allowed_weeks_pro} weeks.")
 
-**Rules:**
-1. Focus on depth and verifiable skills.
-2. Break it down into logical modules.
-3. For each module, include a "proof_of_work_instructions" object that details what the user must build or solve to prove mastery.
-4. **Output JSON ONLY** matching this schema:
+    generation_strategy = ""
+    if payload.generation_type == "incremental":
+        generation_strategy = f"""
+**INCREMENTAL MODE (Bridge Strategy):**
+The user wants a manageable start. Focus the first {payload.time_value} weeks on 'Bridging the Gap'.
+Identify the most critical missing skills between their current experience and the JD. 
+Do NOT try to cover the entire JD. Cover the foundations and 'Day 1' requirements first.
+"""
+    else:
+        generation_strategy = f"""
+**FULL MODE (Comprehensive Strategy):**
+Generate a complete path to mastery for this specific role over {payload.time_value} weeks.
+Structure it logically from current level to high-level JD requirements.
+"""
+
+    prompt = f"""
+You are an expert hiring manager and technical lead.
+Your task is to "Decode" a Job Description into a high-signal learning roadmap.
+
+**JOB DESCRIPTION:**
+{payload.job_description}
+
+**USER'S CURRENT EXPERIENCE:**
+{payload.current_experience}
+
+**CONSTRAINTS:**
+Duration: {payload.time_value} {payload.time_unit}.
+{generation_strategy}
+
+**RULES:**
+1. **Staircase Learning:** Structure the path to avoid burnout. Start with foundational or 'Bridge' topics if there's a gap.
+2. **Professional Perspective:** Prioritize skills and competencies that actually get someone hired for this specific JD.
+3. **Density & Searchability:** Ensure each module has 3-5 distinct topics. The `title` of each `topic` must be a specific, searchable term related to the field (e.g., 'Financial Modeling' or 'Structural Engineering' instead of 'Basic Concepts').
+4. **Proof of Work:** Design module tasks that mirror actual work performed by someone in this role.
+5. **Beyond the JD:** In later modules, include 'Standout' topics or advanced competencies that make the candidate elite.
+6. **Conciseness:** Roadmap description must be max 2 sentences. Each module 'outcome' must be max 1 sentence.
+7. **Output JSON ONLY** matching this schema:
    {{
-     "title": "string",
-     "description": "string",
+     "title": "string", (e.g., Senior Analyst @ Goldman Sachs or Lead Designer @ Nike)
+     "description": "Concise, high-signal analysis of the JD and the chosen strategy (max 2 sentences).",
      "modules": [
        {{
          "title": "string",
-         "outcome": "string",
+         "outcome": "One punchy, impactful sentence on mastery achieved.",
          "timeline": "string",
          "workspace_type": "code|research|design",
          "proof_of_work_instructions": {{
@@ -820,10 +862,7 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
             "eval_criteria": ["string", "string"]
          }},
          "topics": [
-           {{
-             "title": "string",
-             "subtopics": [ {{ "title": "string" }} ]
-           }}
+           {{ "title": "string", "subtopics": [ {{ "title": "string" }} ] }}
          ],
          "resources": [
             {{ "title": "string", "url": "string", "type": "docs|article" }}
@@ -831,14 +870,8 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
        }}
      ]
    }}
-5. **Crucial:** In the "resources" array, provide ONLY high-quality documentation, articles, or books (non-YouTube links).
-6. For each module, ensure a concrete "outcome" string starting with "By the end of this module you will be able to...".
-7. Be specific. If learning React, include topics like "Hooks", "Concurrent Mode", etc.
-8. **Workspace Selection:** 
-   - Set "workspace_type" to "code" for implementation, algorithms, or scripting tasks.
-   - Set "workspace_type" to "design" for system architecture, distributed systems, infrastructure, or UI/UX.
-   - Set "workspace_type" to "research" for theoretical science, mathematics, or technical writing.
 """
+
     try:
         model_to_use = settings.GEMINI_MODEL
         if is_pro:
@@ -848,42 +881,41 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
         cleaned_text = clean_json_string(generated_text)
         roadmap_plan = json.loads(cleaned_text)
 
-        # 2. Add IDs and YouTube Videos
+        # Enrichment logic (IDs, YouTube) - Shared with standard generator
         for i, module in enumerate(roadmap_plan.get("modules", [])):
             module["id"] = f"module_{i+1}"
             if not module.get("outcome"):
                  module["outcome"] = "By the end of this module you will be able to apply the listed topics and solve basic related problems."
+            
             for t_idx, topic in enumerate(module.get("topics", [])):
                 topic["id"] = f"topic_{i+1}_{t_idx+1}"
                 topic["uuid"] = str(uuid.uuid4())
                 for s_idx, subtopic in enumerate(topic.get("subtopics", [])):
                     subtopic["id"] = str(uuid.uuid4())
                 
-                # YouTube Enrichment
                 if settings.YOUTUBE_API_KEY:
                     try:
-                        search_query = f"{roadmap_create.subject} {topic['title']} tutorial"
+                        # Clean search query: Field/Role + Topic for high signal
+                        clean_title = roadmap_plan['title'].replace("Job Decoded: ", "").split("@")[0].strip()
+                        search_query = f"{clean_title} {topic['title']} tutorial"
                         results = await search_youtube_videos(search_query, max_results=1)
                         if results:
                             topic["youtube_video_id"] = results[0]["video_id"]
                             topic["youtube_video_title"] = results[0]["video_title"]
                             topic["duration"] = results[0]["duration_minutes"]
-                        # Throttle a bit
                         await asyncio.sleep(0.1)
-                    except Exception as yt_err:
-                        logger.error(f"YouTube enrichment failed for topic {topic['title']}: {yt_err}")
+                    except: pass
 
-        # 3. Save to DB
         slug = await _generate_unique_slug(roadmap_plan["title"], email, sb)
         
         db_data = {
             "title": roadmap_plan["title"],
             "description": roadmap_plan["description"],
             "roadmap_plan": roadmap_plan,
-            "subject": roadmap_create.subject,
-            "goal": roadmap_create.goal,
-            "time_value": roadmap_create.time_value,
-            "time_unit": roadmap_create.time_unit,
+            "subject": f"JD: {roadmap_plan['title']}",
+            "goal": "Job Readiness",
+            "time_value": payload.time_value,
+            "time_unit": payload.time_unit,
             "model": model_to_use,
             "email": email,
             "slug": slug,
@@ -893,22 +925,19 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
         }
         
         response = sb.table("roadmaps").insert(db_data).execute()
-        
         if not response.data:
-            raise HTTPException(status_code=500, detail="Failed to save generated roadmap")
+            raise HTTPException(status_code=500, detail="Failed to save roadmap")
             
-        # 4. Deduct credit
         sb.table("profiles").update({"roadmap_credits": credits - 1}).eq("email", email).execute()
         
-        # 5. Background task to extract skills
         if uid:
             background_tasks.add_task(extract_skills_from_roadmap, response.data[0]["id"], uid)
 
         return RoadmapRead(**response.data[0])
 
     except Exception as e:
-        logger.error(f"Roadmap generation failed: {e}")
-        raise HTTPException(status_code=500, detail=f"Generation error: {str(e)}")
+        logger.error(f"Job Decoded generation failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 async def _generate_unique_slug(title: str, email: str, sb) -> str:

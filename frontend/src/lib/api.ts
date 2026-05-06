@@ -129,6 +129,10 @@ export const roadmapsAPI = {
     createManualBuild: async (payload: { title: string, goal: string, skills?: string }): Promise<RoadmapRead> => {
         const response = await api.post('/roadmaps/manual-build', payload);
         return response.data;
+    },
+    generateFromJD: async (payload: { job_description: string, current_experience: string, generation_type: 'incremental' | 'full', time_value: number, time_unit: string }): Promise<RoadmapRead> => {
+        const response = await api.post('/roadmaps/generate-from-jd', payload);
+        return response.data;
     }
 };
 

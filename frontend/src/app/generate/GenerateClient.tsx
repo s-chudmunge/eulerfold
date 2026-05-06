@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import RoadmapGenerator from '@/components/landing/RoadmapGenerator';
 import RoadmapDisplay from '@/components/landing/RoadmapDisplay';
 import ManualRoadmapBuilder from '@/components/manual-build/ManualRoadmapBuilder';
+import JobDecodedGenerator from '@/components/job-decoded/JobDecodedGenerator';
 import { RoadmapData } from '@/lib/api';
 import { 
   Menu,
@@ -13,7 +14,8 @@ import {
   Plus,
   Sparkles,
   Settings2,
-  Loader
+  Loader,
+  Briefcase
 } from 'lucide-react';
 import Link from 'next/link';
 import AppSidebar from '@/components/AppSidebar';
@@ -22,12 +24,23 @@ import { supabase } from '@/lib/supabase/client';
 
 export default function GeneratePage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const initialMode = searchParams.get('mode') as 'ai' | 'manual' | 'job' || 'ai';
+
   const [roadmapData, setRoadmapData] = useState<RoadmapData | null>(null);
   const [generatedFormData, setGeneratedFormData] = useState<any | null>(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [profile, setProfile] = useState<any>(null);
-  const [mode, setMode] = useState<'ai' | 'manual'>('ai');
+  const [mode, setMode] = useState<'ai' | 'manual' | 'job'>(initialMode);
   const [isRedirecting, setIsRedirecting] = useState(false);
+
+  // Sync mode with query param if it changes
+  useEffect(() => {
+    const m = searchParams.get('mode');
+    if (m === 'job' || m === 'ai' || m === 'manual') {
+      setMode(m as any);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchProfile = async () => {
@@ -141,14 +154,14 @@ export default function GeneratePage() {
             {/* Compact Header */}
             <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
               <h1 className="inconsolata-ui text-[22px] font-bold text-text-heading tracking-tight">
-                {roadmapData ? 'Review Generation' : mode === 'ai' ? 'AI Architect' : 'Manual Build'}
+                {roadmapData ? 'Review Generation' : mode === 'ai' ? 'AI Architect' : mode === 'job' ? 'Job Decoded' : 'Manual Build'}
               </h1>
 
               {!roadmapData && (
-                <div className="flex bg-sidebar border border-border p-1 rounded-md shrink-0 self-start md:self-auto">
+                <div className="flex bg-sidebar border border-border p-1 rounded-md shrink-0 self-start md:self-auto overflow-x-auto no-scrollbar">
                   <button 
                     onClick={() => setMode('ai')}
-                    className={`flex items-center gap-2 px-4 py-1.5 rounded-sm text-[11px] font-bold tracking-widest uppercase transition-all ${
+                    className={`flex items-center gap-2 px-4 py-1.5 rounded-sm text-[11px] font-bold tracking-widest uppercase transition-all shrink-0 ${
                       mode === 'ai' 
                         ? 'bg-background text-text-heading shadow-sm' 
                         : 'text-text-muted hover:text-text-primary'
@@ -157,8 +170,18 @@ export default function GeneratePage() {
                     <Sparkles className={`w-3.5 h-3.5 ${mode === 'ai' ? 'text-accent' : ''}`} /> AI Gen
                   </button>
                   <button 
+                    onClick={() => setMode('job')}
+                    className={`flex items-center gap-2 px-4 py-1.5 rounded-sm text-[11px] font-bold tracking-widest uppercase transition-all shrink-0 ${
+                      mode === 'job' 
+                        ? 'bg-background text-text-heading shadow-sm' 
+                        : 'text-text-muted hover:text-text-primary'
+                    }`}
+                  >
+                    <Briefcase className={`w-3.5 h-3.5 ${mode === 'job' ? 'text-teal-600' : ''}`} /> Job Decoded
+                  </button>
+                  <button 
                     onClick={() => setMode('manual')}
-                    className={`flex items-center gap-2 px-4 py-1.5 rounded-sm text-[11px] font-bold tracking-widest uppercase transition-all ${
+                    className={`flex items-center gap-2 px-4 py-1.5 rounded-sm text-[11px] font-bold tracking-widest uppercase transition-all shrink-0 ${
                       mode === 'manual' 
                         ? 'bg-background text-text-heading shadow-sm' 
                         : 'text-text-muted hover:text-text-primary'
@@ -172,9 +195,13 @@ export default function GeneratePage() {
             
             {!roadmapData ? (
               <div key={mode} className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-                {mode === 'ai' ? (
+                {mode === 'ai' && (
                   <RoadmapGenerator onRoadmapGenerated={handleRoadmapGenerated} />
-                ) : (
+                )}
+                {mode === 'job' && (
+                  <JobDecodedGenerator onRoadmapGenerated={handleRoadmapGenerated} />
+                )}
+                {mode === 'manual' && (
                   <ManualRoadmapBuilder onSuccess={(data) => handleRoadmapGenerated(data, null)} />
                 )}
               </div>
