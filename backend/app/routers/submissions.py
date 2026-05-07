@@ -9,7 +9,7 @@ from fastapi import APIRouter, HTTPException, Request, Body, Depends, Background
 from app.services.skills_service import calculate_user_skill_scores_for_roadmap
 
 from app.core.supabase_client import get_supabase_client
-from app.utils.gemini_client import generate_text, clean_json_string
+from app.utils.gemini_client import generate_text, clean_json_string, robust_json_loads
 from app.core.config import settings
 from app.core.coins import EulerCoins
 from app.utils.eulercoins import award_coins
@@ -131,7 +131,7 @@ Then explain your reasoning in 2-3 sentences.
     
     try:
         gen_raw = await generate_text([full_prompt] + multimodal_parts, model=settings.GEMINI_MODEL, response_mime_type="application/json")
-        return json.loads(clean_json_string(gen_raw))
+        return robust_json_loads(gen_raw)
     except Exception as e:
         logger.error(f"Auditor {persona} failed: {e}")
         return {"level": "Developing", "reasoning": "Evaluation error, defaulted to Developing."}
@@ -314,7 +314,7 @@ Respond as JSON: {{"summary": "..."}}
     senate_summary = "Awaiting final summary."
     try:
         clerk_raw = await generate_text(clerk_prompt, model=settings.GEMINI_MODEL, response_mime_type="application/json")
-        clerk_parsed = json.loads(clean_json_string(clerk_raw))
+        clerk_parsed = robust_json_loads(clerk_raw)
         senate_summary = clerk_parsed.get("summary", "Verified by the Audit Senate.")
     except Exception as e:
         logger.error(f"Senate Clerk failed: {e}")
@@ -434,7 +434,7 @@ async def request_re_evaluation(background_tasks: BackgroundTasks, submission_id
     senate_summary = "Re-evaluation complete."
     try:
         clerk_raw = await generate_text(clerk_prompt, model=settings.GEMINI_MODEL, response_mime_type="application/json")
-        senate_summary = json.loads(clean_json_string(clerk_raw)).get("summary", "Verified by Audit.")
+        senate_summary = robust_json_loads(clerk_raw).get("summary", "Verified by Audit.")
     except Exception: pass
 
     update_data = {

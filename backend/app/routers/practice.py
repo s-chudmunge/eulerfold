@@ -24,7 +24,7 @@ from app.schemas import (
     MCQSubmitAnswer,
     MCQQuestion
 )
-from app.utils.gemini_client import generate_text, clean_json_string
+from app.utils.gemini_client import generate_text, clean_json_string, robust_json_loads
 from app.core.coins import EulerCoins
 from app.utils.eulercoins import award_coins
 
@@ -118,22 +118,8 @@ async def _generate_practice_resources(topic: str, subject: str, goal: str, exis
             else:
                 raise e
                 
-        # More robust JSON extraction
-        resources = None
-        try:
-            cleaned_json = clean_json_string(response_text)
-            resources = json.loads(cleaned_json)
-        except json.JSONDecodeError:
-            match = re.search(r"(\[.*\])", response_text, re.DOTALL)
-            if match:
-                try:
-                    resources = json.loads(match.group(1))
-                except json.JSONDecodeError:
-                    logger.error(f"Failed to parse practice JSON even with regex fallback. Text starts with: {response_text[:200]}")
-                    return []
-            else:
-                logger.error(f"No JSON-like array structure found in: {response_text[:200]}")
-                return []
+        # Use robust_json_loads for parsing
+        resources = robust_json_loads(response_text)
         
         if not isinstance(resources, list):
             return []
@@ -316,8 +302,7 @@ async def _generate_mcq_questions(topic: str, subject: str, week: int, num_quest
     
     try:
         response_text = await generate_text(prompt, model=settings.GEMINI_MODEL, response_mime_type="application/json")
-        cleaned_json = clean_json_string(response_text)
-        questions = json.loads(cleaned_json)
+        questions = robust_json_loads(response_text)
         
         if not isinstance(questions, list):
             return []

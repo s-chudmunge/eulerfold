@@ -21,16 +21,17 @@ if settings.GEMINI_API_KEY or os.getenv("GEMINI_API_KEY"):
         transport='rest'
     )
 
-async def generate_text(prompt: str, model: str = "models/gemini-2.5-flash", response_mime_type: str = None) -> str:
+async def generate_text(prompt: str, model: str = "models/gemini-2.0-flash", response_mime_type: str = None) -> str:
     """Generates text from Gemini with standard config and retry logic."""
+    # Updated default to 2.0-flash for better stability
     VALID_MODELS = [
         "models/gemini-2.5-flash",
+        "models/gemini-2.5-pro",
         "models/gemini-2.0-flash",
         "models/gemini-2.0-flash-lite-preview-02-05",
         "models/gemini-1.5-flash",
         "models/gemini-1.5-flash-8b",
         "models/gemini-1.5-pro",
-        "models/gemini-2.5-pro",
         "models/gemma-3-1b-it",
         "models/gemma-3-4b-it",
         "models/gemini-2.0-flash-exp",
@@ -47,9 +48,13 @@ async def generate_text(prompt: str, model: str = "models/gemini-2.5-flash", res
     if not api_key:
         raise RuntimeError("GEMINI_API_KEY not configured")
 
-    max_retries = 2
+    max_retries = 3
     for attempt in range(max_retries):
         try:
+            # Check for proxy environment variables and log if found (for debugging region issues)
+            http_proxy = os.getenv("HTTP_PROXY") or os.getenv("http_proxy")
+            https_proxy = os.getenv("HTTPS_PROXY") or os.getenv("https_proxy")
+            
             gen_model = genai.GenerativeModel(model)
             
             config = {
@@ -78,14 +83,24 @@ async def generate_text(prompt: str, model: str = "models/gemini-2.5-flash", res
 
         except Exception as e:
             error_msg = str(e)
+            
+            # Handle Location Error with high priority
             if "User location is not supported" in error_msg:
-                logger.error(f"Gemini Location Error: {error_msg}. Server region: {os.getenv('RENDER_REGION', 'Unknown')}. Suggestion: Change Render region to Oregon (us-west-2) or Frankfurt (eu-central-1).")
+                logger.error(f"Gemini Location Error: {error_msg}. Server region: {os.getenv('RENDER_REGION', 'Unknown')}.")
+                # If we have a fallback model or a proxy setup, we could try here. 
+                # For now, we give a very clear instruction.
+                if attempt == max_retries - 1:
+                    raise RuntimeError(
+                        "Gemini API is not available in your current deployment region. "
+                        "Action Required: In Render Dashboard, change 'Region' to 'Oregon (us-west-2)' or 'Frankfurt (eu-central-1)'."
+                    )
             
             if attempt == max_retries - 1:
-                raise RuntimeError(f"Gemini generation failed: {error_msg}")
+                raise RuntimeError(f"Gemini generation failed after {max_retries} attempts: {error_msg}")
             
-            logger.warning(f"Gemini attempt {attempt + 1} failed, retrying... Error: {error_msg}")
-            await asyncio.sleep(1)
+            wait_time = (attempt + 1) * 2
+            logger.warning(f"Gemini attempt {attempt + 1} failed, retrying in {wait_time}s... Error: {error_msg}")
+            await asyncio.sleep(wait_time)
 
 def clean_json_string(text: str) -> str:
     """Extracts and prepares JSON string for parsing."""
@@ -110,30 +125,60 @@ def clean_json_string(text: str) -> str:
 
 def robust_json_loads(text: str):
     """Parses JSON with multiple fallback and repair strategies."""
+    if not text:
+        return {}
+        
     cleaned = clean_json_string(text)
     
     # Strategy 1: Standard JSON
     try:
         return json.loads(cleaned)
-    except json.JSONDecodeError:
+    except json.JSONDecodeError as e:
+        logger.debug(f"Standard json.loads failed: {e}")
         pass
         
-    # Strategy 2: json_repair
-    if HAS_JSON_REPAIR:
-        try:
-            return repair_loads(cleaned)
-        except Exception as e:
-            logger.warning(f"repair_loads failed: {e}")
-            
-    # Strategy 3: Manual repair + Standard JSON
-    # Remove trailing commas
-    fixed = re.sub(r',\s*([\]\}])', r'\1', cleaned)
-    # Fix unescaped newlines in values
-    # (Matches "key": "value with \n" but not legitimate structure)
+    # Strategy 2: json_repair (Try direct import to handle cases where it was installed after startup)
     try:
+        from json_repair import loads as repair_loads
+        return repair_loads(cleaned)
+    except Exception as e:
+        logger.warning(f"json_repair failed: {e}")
+            
+    # Strategy 3: Manual repair for common Gemini issues
+    try:
+        # Fix unescaped newlines in values
+        fixed = cleaned.replace('\n', '\\n').replace('\r', '\\r')
+        # But wait, we shouldn't escape the structural newlines. 
+        # This is tricky. Let's try a simpler approach.
+        
+        # Remove trailing commas before closing braces/brackets
+        fixed = re.sub(r',\s*([\]\}])', r'\1', cleaned)
+        
+        # Fix missing commas between objects/arrays
+        fixed = re.sub(r'\}\s*\{', '}, {', fixed)
+        fixed = re.sub(r'\]\s*\[', '], [', fixed)
+        
         return json.loads(fixed)
     except:
         pass
         
-    # If all else fails, re-raise original error or try one last ditch
+    # Strategy 4: Last ditch - attempt to find the last valid closing character
+    try:
+        # If truncated, try to close it
+        open_braces = cleaned.count('{') - cleaned.count('}')
+        open_brackets = cleaned.count('[') - cleaned.count(']')
+        
+        last_ditch = cleaned
+        if open_brackets > 0:
+            last_ditch += ']' * open_brackets
+        if open_braces > 0:
+            last_ditch += '}' * open_braces
+            
+        from json_repair import loads as repair_loads_last
+        return repair_loads_last(last_ditch)
+    except:
+        pass
+
+    # If all else fails, log the context and raise
+    logger.error(f"Failed to parse JSON. Length: {len(cleaned)}. Error context: {cleaned[-500:]}")
     return json.loads(cleaned) # This will throw the definitive error

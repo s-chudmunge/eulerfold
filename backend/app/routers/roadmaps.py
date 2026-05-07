@@ -16,7 +16,7 @@ from fastapi import APIRouter, HTTPException, Request, Depends, BackgroundTasks
 from app.core.config import settings
 from app.core.supabase_client import supabase, get_supabase_client
 from app.schemas import RoadmapCreate, RoadmapMe, RoadmapRead, RoadmapSave, User, ProgressUpdate, RoadmapExtend, RoadmapStatusUpdate, ManualBuildRequest, JobRoadmapCreate
-from app.utils.gemini_client import generate_text, clean_json_string
+from app.utils.gemini_client import generate_text, clean_json_string, robust_json_loads
 from app.utils.resend_client import send_onboarding_email
 from app.utils.youtube_client import search_youtube_videos
 from app.core.coins import EulerCoins
@@ -507,8 +507,7 @@ Begin the JSON output immediately.
     try:
         model_to_use = "models/gemini-2.5-pro" # Pro users get Pro model
         generated_text = await generate_text(prompt, model=model_to_use, response_mime_type="application/json")
-        cleaned_text = clean_json_string(generated_text)
-        extension_data = json.loads(cleaned_text)
+        extension_data = robust_json_loads(generated_text)
         new_modules = extension_data.get("modules", [])
 
         # Inject IDs and mark as extension
@@ -845,8 +844,7 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
             model_to_use = "models/gemini-2.5-pro"
             
         generated_text = await generate_text(prompt, model=model_to_use, response_mime_type="application/json")
-        cleaned_text = clean_json_string(generated_text)
-        roadmap_plan = json.loads(cleaned_text)
+        roadmap_plan = robust_json_loads(generated_text)
 
         # 2. Add IDs and YouTube Videos
         for i, module in enumerate(roadmap_plan.get("modules", [])):
@@ -1011,8 +1009,7 @@ Duration: {payload.time_value} {payload.time_unit}.
             model_to_use = "models/gemini-2.5-pro"
             
         generated_text = await generate_text(prompt, model=model_to_use, response_mime_type="application/json")
-        cleaned_text = clean_json_string(generated_text)
-        roadmap_plan = json.loads(cleaned_text)
+        roadmap_plan = robust_json_loads(generated_text)
 
         # Enrichment logic (IDs, YouTube) - Shared with standard generator
         for i, module in enumerate(roadmap_plan.get("modules", [])):

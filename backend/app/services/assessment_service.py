@@ -6,7 +6,7 @@ from typing import List, Dict, Any, Optional
 from datetime import datetime, timezone
 
 from app.core.supabase_client import get_supabase_client
-from app.utils.gemini_client import generate_text, clean_json_string
+from app.utils.gemini_client import generate_text, clean_json_string, robust_json_loads
 from app.core.config import settings
 
 logger = logging.getLogger(__name__)
@@ -47,7 +47,7 @@ Begin the JSON output immediately.
 
     try:
         gen_raw = await generate_text(prompt, model=settings.GEMINI_MODEL, response_mime_type="application/json")
-        data = json.loads(clean_json_string(gen_raw))
+        data = robust_json_loads(gen_raw)
         problems = data.get("problems", [])
         
         # Ensure every problem has a UUID
@@ -113,7 +113,7 @@ Criteria: Technical accuracy, use of correct terminology, and conciseness.
 """
         try:
             gen_raw = await generate_text(eval_prompt, model=settings.GEMINI_MODEL, response_mime_type="application/json")
-            eval_data = json.loads(clean_json_string(gen_raw))
+            eval_data = robust_json_loads(gen_raw)
             evals = eval_data.get("evaluations", [])
             
             for ev in evals:

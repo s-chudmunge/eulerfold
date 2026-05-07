@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 import asyncio
 
 from app.core.supabase_client import get_supabase_client
-from app.utils.gemini_client import generate_text, clean_json_string
+from app.utils.gemini_client import generate_text, clean_json_string, robust_json_loads
 from app.core.config import settings
 from app.utils.scoring import calculate_confidence_score_formula, get_letter_grade
 
@@ -75,7 +75,7 @@ Topics:
 
     try:
         gen_raw = await generate_text(prompt, model=settings.GEMINI_MODEL, response_mime_type="application/json")
-        data = json.loads(clean_json_string(gen_raw))
+        data = robust_json_loads(gen_raw)
         mappings = data.get("mappings", [])
         depths = data.get("skill_depths", {})
         
