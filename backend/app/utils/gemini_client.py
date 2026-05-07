@@ -21,9 +21,9 @@ if settings.GEMINI_API_KEY or os.getenv("GEMINI_API_KEY"):
         transport='rest'
     )
 
-async def generate_text(prompt: str, model: str = "models/gemini-2.0-flash", response_mime_type: str = None) -> str:
+async def generate_text(prompt: str, model: str = "models/gemini-2.5-flash", response_mime_type: str = None) -> str:
     """Generates text from Gemini with standard config and retry logic."""
-    # Updated default to 2.0-flash for better stability
+    # Updated default to 2.5-flash to match user preference
     VALID_MODELS = [
         "models/gemini-2.5-flash",
         "models/gemini-2.5-pro",
