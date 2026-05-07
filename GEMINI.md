@@ -90,6 +90,10 @@ Read it fully before making any changes. Rules here are not suggestions.
 - Skill confidence uses a fixed **40/30/15/15** split: 40% Proof of Work + 30% Practice Score + 15% Topic Completion + 15% Concept Depth.
 - NEVER change these weights without explicit instruction.
 
+### Requirements & Dependencies
+
+- ALWAYS synchronize `backend/requirements.prod.txt` whenever `backend/app/requirements.txt` is updated or changed. The production environment on Render depends on `requirements.prod.txt` being an exact match of the confirmed working local setup.
+
 ---
 
 ## SEO & Sitemaps

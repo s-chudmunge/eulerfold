@@ -15,7 +15,13 @@ logger = logging.getLogger(__name__)
 
 # Initialize genai if key is present
 if settings.GEMINI_API_KEY or os.getenv("GEMINI_API_KEY"):
-    # Attempting to use rest transport
+    # Explicitly check for proxy and apply to environment for the SDK
+    proxy = os.getenv("GEMINI_PROXY") or os.getenv("HTTPS_PROXY") or os.getenv("https_proxy")
+    if proxy:
+        logger.info(f"Applying proxy to environment for Gemini: {proxy}")
+        os.environ["HTTP_PROXY"] = proxy
+        os.environ["HTTPS_PROXY"] = proxy
+        
     genai.configure(
         api_key=settings.GEMINI_API_KEY or os.getenv("GEMINI_API_KEY"),
         transport='rest'
