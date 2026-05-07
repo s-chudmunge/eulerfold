@@ -36,6 +36,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import AppSidebar from '@/components/AppSidebar';
 import ShareMenu from '@/components/ShareMenu';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import TTSListenButton from '@/components/TTSListenButton';
 
 interface Props {
   slug: string;
@@ -388,6 +389,9 @@ export default function ProjectClient({ slug, initialProject }: Props) {
                                                     <div className="flex items-center gap-3">
                                                         <item.icon className="w-4 h-4 text-teal-700/50" />
                                                         <p className="text-[11px] font-black uppercase tracking-widest text-text-muted inconsolata-ui">{item.role}</p>
+                                                        {item.reasoning && (
+                                                            <TTSListenButton text={`${item.role} evaluation: ${item.reasoning}`} label={item.role} />
+                                                        )}
                                                     </div>
                                                     <p className={`text-[11px] font-black uppercase tracking-widest inconsolata-ui ${
                                                         item.vote === 'Solid' ? 'text-emerald-600' :
@@ -402,10 +406,15 @@ export default function ProjectClient({ slug, initialProject }: Props) {
                                         ))}
                                     </div>
                                     {selectedAudit.senate_summary && (
-                                        <div className="p-5 bg-teal-700/5 border border-teal-700/10 rounded-none">
+                                        <div className="p-5 bg-teal-700/5 border border-teal-700/10 rounded-none flex items-center justify-between gap-4">
                                             <p className="text-[14px] text-teal-700 font-bold leading-relaxed">
                                                 Verdict: {selectedAudit.senate_summary}
                                             </p>
+                                            <TTSListenButton 
+                                                text={`Final Verdict: ${selectedAudit.senate_summary}`} 
+                                                variant="full" 
+                                                label="Listen to Verdict" 
+                                            />
                                         </div>
                                     )}
                                 </section>

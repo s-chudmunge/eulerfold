@@ -37,6 +37,7 @@ import { PublicProfile, profileAPI } from '@/lib/api';
 import PublicHeader from '@/components/PublicHeader';
 import ActivityChart from '@/components/dashboard/ActivityChart';
 import ActivityHeatmap from '@/components/profile/ActivityHeatmap';
+import TTSListenButton from '@/components/TTSListenButton';
 
 interface Props {
     profile: PublicProfile;
@@ -586,31 +587,40 @@ function AuditModal({ sub, onClose }: { sub: any; onClose: () => void }) {
                                     { role: 'Educator', vote: sub.senate_votes?.[1], reasoning: sub.senate_reasoning?.educator, icon: Target },
                                     { role: 'Relevance Judge', vote: sub.senate_votes?.[2], reasoning: sub.senate_reasoning?.relevance_judge, icon: ShieldCheck }
                                 ].map((item) => (
-                                    <div key={item.role} className="p-6 bg-header border border-border rounded-none space-y-4">
-                                        <div className="flex items-center justify-between">
-                                            <div className="flex items-center gap-3">
-                                                <item.icon className="w-4 h-4 text-accent/50" />
-                                                <p className="text-[11px] font-black uppercase tracking-widest text-text-muted inconsolata-ui">{item.role}</p>
-                                            </div>
-                                            <p className={`text-[11px] font-black uppercase tracking-widest inconsolata-ui ${
-                                                item.vote === 'Solid' || item.vote === 'Expert' ? 'text-emerald-600' :
-                                                item.vote === 'Developing' ? 'text-amber-600' :
-                                                'text-text-muted'
-                                            }`}>{item.vote || 'Pending'}</p>
-                                        </div>
-                                        <p className="text-[14px] text-text-heading leading-relaxed font-medium">
-                                            {item.reasoning || 'No detailed reasoning provided.'}
-                                        </p>
-                                    </div>
+                                   <div key={item.role} className="p-6 bg-header border border-border rounded-none space-y-4">
+                                       <div className="flex items-center justify-between">
+                                           <div className="flex items-center gap-3">
+                                               <item.icon className="w-4 h-4 text-accent/50" />
+                                               <p className="text-[11px] font-black uppercase tracking-widest text-text-muted inconsolata-ui">{item.role}</p>
+                                               {item.reasoning && (
+                                                   <TTSListenButton text={`${item.role} evaluation: ${item.reasoning}`} label={item.role} />
+                                               )}
+                                           </div>
+                                           <p className={`text-[11px] font-black uppercase tracking-widest inconsolata-ui ${
+                                               item.vote === 'Solid' || item.vote === 'Expert' ? 'text-emerald-600' :
+                                               item.vote === 'Developing' ? 'text-amber-600' :
+                                               'text-text-muted'
+                                           }`}>{item.vote || 'Pending'}</p>
+                                       </div>
+                                       <p className="text-[14px] text-text-heading leading-relaxed font-medium">
+                                           {item.reasoning || 'No detailed reasoning provided.'}
+                                       </p>
+                                   </div>
                                 ))}
-                            </div>
-                            {sub.senate_summary && (
-                                <div className="p-5 bg-accent/5 border border-accent/10 rounded-none">
-                                    <p className="text-[14px] text-accent font-bold leading-relaxed">
-                                        Verdict: {sub.senate_summary}
-                                    </p>
                                 </div>
-                            )}
+                                {sub.senate_summary && (
+                                <div className="p-5 bg-accent/5 border border-accent/10 rounded-none flex items-center justify-between gap-4">
+                                   <p className="text-[14px] text-accent font-bold leading-relaxed">
+                                       Verdict: {sub.senate_summary}
+                                   </p>
+                                   <TTSListenButton 
+                                       text={`Final Verdict: ${sub.senate_summary}`} 
+                                       variant="full" 
+                                       label="Listen to Verdict" 
+                                   />
+                                </div>
+                                )}
+
                         </section>
 
                         {sub.link && (

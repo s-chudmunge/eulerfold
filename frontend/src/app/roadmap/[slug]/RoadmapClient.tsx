@@ -32,6 +32,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import AppSidebar from '@/components/AppSidebar';
 import ShareMenu from '@/components/ShareMenu';
+import TTSListenButton from '@/components/TTSListenButton';
 import { Inconsolata, Manrope } from 'next/font/google';
 
 const inconsolata = Inconsolata({
@@ -631,9 +632,12 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
 
                                             <div className="manrope-body mb-8">
                                                 {sub.is_senate_eval && sub.senate_summary ? (
-                                                    <p className="text-[15px] font-bold text-text-heading leading-relaxed border-l-4 border-[var(--accent)] pl-4 py-1 italic">
-                                                        &ldquo;{sub.senate_summary}&rdquo;
-                                                    </p>
+                                                    <div className="flex items-start justify-between gap-4 border-l-4 border-[var(--accent)] pl-4 py-1 italic">
+                                                        <p className="text-[15px] font-bold text-text-heading leading-relaxed">
+                                                            &ldquo;{sub.senate_summary}&rdquo;
+                                                        </p>
+                                                        <TTSListenButton text={`Senate Summary: ${sub.senate_summary}`} label="Verdict" />
+                                                    </div>
                                                 ) : (
                                                     <p className="text-[14px] text-text-primary leading-relaxed italic">
                                                         &ldquo;{sub.evaluation}&rdquo;
@@ -650,7 +654,10 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                                     ].map((auditor) => (
                                                         <div key={auditor.id} className="flex flex-col md:flex-row gap-2 md:gap-6 p-4 rounded-none bg-callout-bg border border-border group/item hover:border-[var(--accent)] transition-all">
                                                             <div className="w-full md:w-32 shrink-0">
-                                                                <p className="inconsolata-ui text-[9px] font-bold text-text-muted  tracking-wider mb-1">{auditor.label}</p>
+                                                                <div className="flex items-center justify-between md:flex-col md:items-start mb-1">
+                                                                    <p className="inconsolata-ui text-[9px] font-bold text-text-muted  tracking-wider">{auditor.label}</p>
+                                                                    <TTSListenButton text={`${auditor.label}: ${auditor.data}`} label={auditor.label} />
+                                                                </div>
                                                                 <span className={`inconsolata-ui text-[9px] font-bold  px-2 py-0.5 rounded border ${
                                                                     auditor.vote === 'Solid' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' :
                                                                     auditor.vote === 'Developing' ? 'bg-blue-500/10 text-blue-600 border-blue-500/20' : 'bg-red-500/10 text-red-600 border-red-500/20'

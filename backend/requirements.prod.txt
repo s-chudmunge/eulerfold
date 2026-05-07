@@ -100,3 +100,5 @@ fastapi-crudrouter==0.8.6
 json-fix==1.0.0
 types-jinja2==2.11.9
 razorpay==2.0.1
+edge-tts==7.2.8
+stripe>=8.0.0

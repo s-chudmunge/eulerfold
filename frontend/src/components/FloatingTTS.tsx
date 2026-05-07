@@ -1,214 +1,71 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Play, Pause, Square, Volume2, Loader2, Settings2, X, Headphones } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
+import { useTTS } from '@/hooks/useTTS';
 
 export default function FloatingTTS({ content: manualContent }: { content?: string }) {
   const pathname = usePathname();
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [rate, setRate] = useState(1.0);
-  const [voice, setVoice] = useState("en-US-AndrewNeural");
   const [selectedText, setSelectedText] = useState("");
   
-  // High-performance refs for gapless control
-  const audio1 = useRef<HTMLAudioElement | null>(null);
-  const audio2 = useRef<HTMLAudioElement | null>(null);
-  const activeRef = useRef<1 | 2>(1);
-  const chunksRef = useRef<string[]>([]);
-  const currentIndexRef = useRef<number>(0);
-  const [activeBuffer, setActiveBuffer] = useState<1 | 2>(1);
+  const { isPlaying, isLoading, play, stop, updateSettings, settings } = useTTS();
 
   const isAllowedPath = pathname?.startsWith('/articles') || pathname?.startsWith('/research-decoded');
 
-  const cleanText = (rawText: string) => {
-    return rawText
-      .replace(/#{1,6}\s/g, '')
-      .replace(/\*\*/g, '')
-      .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1')
-      .replace(/`{1,3}[^`]*`{1,3}/g, '')
-      .replace(/\\\[[\s\S]*?\\\]/g, '')
-      .replace(/\\\( [\s\S]*? \\\)/g, '')
-      .replace(/\n\s*\n/g, '\n')
-      .trim();
-  };
-
-  const generateUrl = useCallback((text: string, v: string, r: number) => {
-    if (!text || text.length < 1) return "";
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
-    const rateVal = Math.round((r - 1.0) * 100);
-    const rateParam = rateVal >= 0 ? `+${rateVal}%` : `${rateVal}%`;
-    return `${backendUrl}/tts/stream?text=${encodeURIComponent(text)}&voice=${v}&rate=${encodeURIComponent(rateParam)}`;
-  }, []);
-
-  const splitIntoSmartChunks = (text: string) => {
-    const rawParagraphs = text.split(/\n+/).filter(p => p.trim().length > 0);
-    const superChunks: string[] = [];
-    let currentBuffer = "";
-    
-    // Merge short paragraphs/headers to prevent "staccato" reading
-    rawParagraphs.forEach(p => {
-        const trimmed = p.trim();
-        if ((currentBuffer.length + trimmed.length) < 800) {
-            currentBuffer += (currentBuffer ? " " : "") + trimmed;
-        } else {
-            if (currentBuffer) superChunks.push(currentBuffer);
-            if (trimmed.length > 800) {
-                // Split very long paragraphs by sentences
-                const sentences = trimmed.match(/[^.!?]+[.!?]+/g) || [trimmed];
-                let subBuffer = "";
-                sentences.forEach(s => {
-                    if ((subBuffer.length + s.length) > 800) {
-                        superChunks.push(subBuffer.trim());
-                        subBuffer = s;
-                    } else subBuffer += s;
-                });
-                currentBuffer = subBuffer;
-            } else {
-                currentBuffer = trimmed;
-            }
-        }
-    });
-    if (currentBuffer) superChunks.push(currentBuffer);
-    return superChunks.filter(c => c.length > 2);
-  };
-
-  const handleStop = useCallback(() => {
-    [audio1, audio2].forEach(ref => {
-      if (ref.current) {
-        ref.current.pause();
-        ref.current.src = "";
-        ref.current.load();
-      }
-    });
-    setIsPlaying(false);
-    currentIndexRef.current = 0;
-    chunksRef.current = [];
-    activeRef.current = 1;
-    setActiveBuffer(1);
-  }, []);
-
-  const playNext = useCallback(() => {
-    const nextIdx = currentIndexRef.current + 1;
-    
-    if (nextIdx >= chunksRef.current.length) {
-        handleStop();
-        return;
-    }
-
-    currentIndexRef.current = nextIdx;
-    
-    // Swap buffers: play the one that was preloading
-    const current = activeRef.current === 1 ? audio1.current : audio2.current;
-    const next = activeRef.current === 1 ? audio2.current : audio1.current;
-    
-    if (next && next.src) {
-        next.play().catch(e => console.error("Ping-pong failed:", e));
-        activeRef.current = activeRef.current === 1 ? 2 : 1;
-        setActiveBuffer(activeRef.current);
-        
-        // Preload the following chunk into the now-available buffer
-        const followingIdx = nextIdx + 1;
-        if (followingIdx < chunksRef.current.length && current) {
-            current.src = generateUrl(chunksRef.current[followingIdx], voice, rate);
-            current.load();
-        }
-    } else {
-        handleStop();
-    }
-  }, [generateUrl, voice, rate, handleStop]);
-
   const handlePlay = async () => {
-    if (isPlaying) {
-      const active = activeRef.current === 1 ? audio1.current : audio2.current;
-      active?.pause();
-      setIsPlaying(false);
-      return;
+    let textToPlay = selectedText;
+    
+    // 1. Prioritize manual content prop (e.g. from Article page)
+    if (!textToPlay && manualContent) {
+      textToPlay = manualContent;
     }
-
-    // Resume if paused
-    const active = activeRef.current === 1 ? audio1.current : audio2.current;
-    if (active && active.src && active.readyState >= 2) {
-      active.play();
-      setIsPlaying(true);
-      return;
-    }
-
-    try {
-      setIsLoading(true);
+    
+    // 2. Fallback to DOM scraping
+    if (!textToPlay) {
+      const selectors = ['.prose-eulerfold', '.page-content', 'article', 'main'];
+      const blocks: HTMLElement[] = [];
       
-      let text = selectedText;
-      
-      // 1. Prioritize manual content prop (the "smart" way)
-      if (!text && manualContent) {
-        text = manualContent;
-      }
-      
-      // 2. Fallback to DOM scraping if no manual content
-      if (!text) {
-        const selectors = ['.prose-eulerfold', '.page-content', 'article', 'main'];
-        const blocks: HTMLElement[] = [];
-        
-        selectors.forEach(s => {
-          document.querySelectorAll(s).forEach(el => {
-            if (el instanceof HTMLElement) blocks.push(el);
-          });
+      selectors.forEach(s => {
+        document.querySelectorAll(s).forEach(el => {
+          if (el instanceof HTMLElement) blocks.push(el);
         });
+      });
 
-        if (blocks.length > 0) {
-          text = blocks.map(block => {
-            const clone = block.cloneNode(true) as HTMLElement;
-            // Remove non-textual or noisy elements
-            ['pre', 'code', '.katex', '.math', '.d2-diagram', 'nav', 'footer', 'button', '.no-tts'].forEach(s => {
-                clone.querySelectorAll(s).forEach(el => el.remove());
-            });
-            return clone.innerText;
-          }).join('\n\n');
-        }
-      }
+      if (blocks.length > 0) {
+        textToPlay = blocks.map(block => {
+          const clone = block.cloneNode(true) as HTMLElement;
+          // Remove non-textual or noisy elements
+          ['pre', 'code', '.katex', '.math', '.d2-diagram', 'nav', 'footer', 'button', '.no-tts'].forEach(s => {
+              clone.querySelectorAll(s).forEach(el => el.remove());
+          });
+          
+          // Add a period after all headings to force a pause in TTS
+          clone.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(el => {
+            el.innerHTML = el.innerHTML.trim() + '. ';
+          });
 
-      if (!text || text.length < 5) return;
-      
-      const newChunks = splitIntoSmartChunks(cleanText(text));
-      if (newChunks.length === 0) return;
-      
-      handleStop(); // Reset first
-      chunksRef.current = newChunks;
-      
-      // Initialize both buffers
-      if (audio1.current) {
-        audio1.current.src = generateUrl(newChunks[0], voice, rate);
-        audio1.current.load();
+          return clone.innerText;
+        }).join('\n\n');
       }
-      if (audio2.current && newChunks[1]) {
-        audio2.current.src = generateUrl(newChunks[1], voice, rate);
-        audio2.current.load();
-      }
-      
-      // Kick off playback
-      audio1.current?.play();
-      setIsPlaying(true);
-      activeRef.current = 1;
-      setActiveBuffer(1);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setIsLoading(false);
+    }
+
+    if (textToPlay) {
+      await play(textToPlay);
     }
   };
 
   const handleTextSelection = useCallback(() => {
     const text = window.getSelection()?.toString().trim();
     if (text && text.length > 5) {
-      handleStop();
+      stop();
       setSelectedText(text);
       setIsExpanded(true);
     }
-  }, [handleStop]);
+  }, [stop]);
 
   useEffect(() => {
     document.addEventListener('mouseup', handleTextSelection);
@@ -238,7 +95,7 @@ export default function FloatingTTS({ content: manualContent }: { content?: stri
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-1.5 bg-accent/5 px-2 py-1.5 rounded-xl border border-accent/10">
                   <Volume2 className={`w-3.5 h-3.5 text-accent ${isPlaying ? "animate-pulse" : ""}`} />
-                  <span className="text-[10px] font-black text-accent tracking-tighter">{rate.toFixed(1)}x</span>
+                  <span className="text-[10px] font-black text-accent tracking-tighter">{settings.rate.toFixed(1)}x</span>
                 </div>
 
                 <div className="flex items-center gap-0.5">
@@ -253,8 +110,8 @@ export default function FloatingTTS({ content: manualContent }: { content?: stri
                       <button onClick={handlePlay} className="p-1.5 bg-accent text-white rounded-lg hover:scale-110 active:scale-95 transition-all shadow-md shadow-accent/20">
                         {isPlaying ? <Pause className="w-3.5 h-3.5 fill-current" /> : <Play className="w-3.5 h-3.5 fill-current ml-0.5" />}
                       </button>
-                      {(isPlaying || currentIndexRef.current > 0) ? (
-                        <button onClick={handleStop} className="p-1.5 bg-error/10 text-error rounded-lg hover:bg-error/20 transition-all">
+                      {(isPlaying || selectedText) ? (
+                        <button onClick={() => { stop(); setSelectedText(""); }} className="p-1.5 bg-error/10 text-error rounded-lg hover:bg-error/20 transition-all">
                           <Square className="w-3.5 h-3.5 fill-current" />
                         </button>
                       ) : (
@@ -271,13 +128,22 @@ export default function FloatingTTS({ content: manualContent }: { content?: stri
                     <div className="flex flex-col gap-1.5">
                       <div className="flex justify-between text-[8px] font-black text-text-muted uppercase tracking-wider">
                         <span>Speed</span>
-                        <span className="text-accent">{rate.toFixed(1)}x</span>
+                        <span className="text-accent">{settings.rate.toFixed(1)}x</span>
                       </div>
-                      <input type="range" min="0.5" max="2.5" step="0.1" value={rate} onChange={(e) => { setRate(parseFloat(e.target.value)); handleStop(); }} className="w-full h-1 bg-accent/10 rounded-lg appearance-none cursor-pointer accent-accent" />
+                      <input 
+                        type="range" min="0.5" max="2.5" step="0.1" 
+                        value={settings.rate} 
+                        onChange={(e) => updateSettings({ rate: parseFloat(e.target.value) })} 
+                        className="w-full h-1 bg-accent/10 rounded-lg appearance-none cursor-pointer accent-accent" 
+                      />
                     </div>
                     <div className="flex flex-col gap-1.5">
                       <label className="text-[8px] font-black text-text-muted uppercase tracking-wider">Voice Profile</label>
-                      <select value={voice} onChange={(e) => { setVoice(e.target.value); handleStop(); }} className="w-full bg-background border border-accent/10 rounded-lg py-1 px-1.5 text-[9px] font-bold text-text-primary focus:ring-1 focus:ring-accent outline-none">
+                      <select 
+                        value={settings.voice} 
+                        onChange={(e) => updateSettings({ voice: e.target.value })} 
+                        className="w-full bg-background border border-accent/10 rounded-lg py-1 px-1.5 text-[9px] font-bold text-text-primary focus:ring-1 focus:ring-accent outline-none"
+                      >
                         <option value="en-US-AndrewNeural">Andrew (M)</option>
                         <option value="en-US-AvaNeural">Ava (F)</option>
                         <option value="en-GB-SoniaNeural">Sonia (UK)</option>
@@ -291,9 +157,6 @@ export default function FloatingTTS({ content: manualContent }: { content?: stri
           </motion.div>
         )}
       </AnimatePresence>
-
-      <audio ref={audio1} onEnded={playNext} className="hidden" />
-      <audio ref={audio2} onEnded={playNext} className="hidden" />
     </div>
   );
 }
