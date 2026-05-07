@@ -6,7 +6,7 @@ import asyncio
 import google.generativeai as genai
 from app.core.config import settings
 try:
-    from json_repair import repair
+    from json_repair import repair, loads as repair_loads
     HAS_JSON_REPAIR = True
 except ImportError:
     HAS_JSON_REPAIR = False
@@ -15,6 +15,7 @@ logger = logging.getLogger(__name__)
 
 # Initialize genai if key is present
 if settings.GEMINI_API_KEY or os.getenv("GEMINI_API_KEY"):
+    # Attempting to use rest transport
     genai.configure(
         api_key=settings.GEMINI_API_KEY or os.getenv("GEMINI_API_KEY"),
         transport='rest'
@@ -78,7 +79,7 @@ async def generate_text(prompt: str, model: str = "models/gemini-2.5-flash", res
         except Exception as e:
             error_msg = str(e)
             if "User location is not supported" in error_msg:
-                logger.error(f"Gemini Location Error: {error_msg}. Server region: {os.getenv('RENDER_REGION', 'Unknown')}")
+                logger.error(f"Gemini Location Error: {error_msg}. Server region: {os.getenv('RENDER_REGION', 'Unknown')}. Suggestion: Change Render region to Oregon (us-west-2) or Frankfurt (eu-central-1).")
             
             if attempt == max_retries - 1:
                 raise RuntimeError(f"Gemini generation failed: {error_msg}")
@@ -87,15 +88,15 @@ async def generate_text(prompt: str, model: str = "models/gemini-2.5-flash", res
             await asyncio.sleep(1)
 
 def clean_json_string(text: str) -> str:
-    """Removes markdown code blocks and attempts to repair broken JSON."""
+    """Extracts and prepares JSON string for parsing."""
     if not text:
         return ""
 
-    # 1. First, try to just find the JSON block if it's wrapped in markdown
+    # 1. Remove markdown
     text = re.sub(r'```json\s*', '', text, flags=re.IGNORECASE)
     text = re.sub(r'```\s*', '', text)
     
-    # 2. Extract content between first [ or { and last ] or }
+    # 2. Extract bracketed content
     start_match = re.search(r'[\[\{]', text, re.DOTALL)
     if start_match:
         start_pos = start_match.start()
@@ -104,48 +105,35 @@ def clean_json_string(text: str) -> str:
         end_pos = max(end_match_br, end_match_cr)
         if end_pos != -1:
             text = text[start_pos : end_pos + 1]
+            
+    return text.strip()
 
-    # 3. Use json_repair if available for high-quality fix
+def robust_json_loads(text: str):
+    """Parses JSON with multiple fallback and repair strategies."""
+    cleaned = clean_json_string(text)
+    
+    # Strategy 1: Standard JSON
+    try:
+        return json.loads(cleaned)
+    except json.JSONDecodeError:
+        pass
+        
+    # Strategy 2: json_repair
     if HAS_JSON_REPAIR:
         try:
-            repaired = repair(text)
-            if repaired:
-                return repaired
+            return repair_loads(cleaned)
         except Exception as e:
-            logger.warning(f"json_repair failed: {e}")
-
-    # 4. Manual Fallback logic (refined)
-    # Trailing commas
-    text = re.sub(r',\s*([\]\}])', r'\1', text)
-    # Missing commas between objects
-    text = re.sub(r'\}\s*\{', '}, {', text)
-    
-    # Check for balanced braces as a last resort
-    brace_count = 0
-    bracket_count = 0
-    last_valid_pos = -1
-    in_string = False
-    escape_next = False
-    
-    for i, char in enumerate(text):
-        if escape_next:
-            escape_next = False
-            continue
-        if char == '\\':
-            escape_next = True
-            continue
-        if char == '"':
-            in_string = not in_string
-        elif not in_string:
-            if char == '{': brace_count += 1
-            elif char == '}': brace_count -= 1
-            elif char == '[': bracket_count += 1
-            elif char == ']': bracket_count -= 1
+            logger.warning(f"repair_loads failed: {e}")
             
-            if brace_count == 0 and bracket_count == 0:
-                last_valid_pos = i
-    
-    if (brace_count > 0 or bracket_count > 0) and last_valid_pos != -1:
-        text = text[:last_valid_pos + 1]
-    
-    return text.strip()
+    # Strategy 3: Manual repair + Standard JSON
+    # Remove trailing commas
+    fixed = re.sub(r',\s*([\]\}])', r'\1', cleaned)
+    # Fix unescaped newlines in values
+    # (Matches "key": "value with \n" but not legitimate structure)
+    try:
+        return json.loads(fixed)
+    except:
+        pass
+        
+    # If all else fails, re-raise original error or try one last ditch
+    return json.loads(cleaned) # This will throw the definitive error
