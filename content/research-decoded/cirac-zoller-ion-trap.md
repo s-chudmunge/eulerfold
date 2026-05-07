@@ -4,6 +4,7 @@ authors: "J. I. Cirac and P. Zoller (1995)"
 citation: "Cirac, J. I., & Zoller, P. (1995). Quantum computations with cold trapped ions. Physical review letters, 74(20), 4091."
 link: "https://arxiv.org/abs/quant-ph/9503016"
 slug: "cirac-zoller-ion-trap"
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Cirac-Zoller_gate.svg/1200px-Cirac-Zoller_gate.svg.png"
 ---
 
 # Quantum Computations with Cold Trapped Ions

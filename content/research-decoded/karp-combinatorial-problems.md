@@ -4,6 +4,7 @@ authors: "Richard Karp (1972)"
 citation: "Karp, R. M. (1972). Reducibility among combinatorial problems. In Complexity of Computer Computations (pp. 85-103). Springer, Boston, MA."
 link: "https://www.cs.umd.edu/~gasarch/BLOGPAPERS/Karp.pdf"
 slug: "karp-combinatorial-problems"
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/b/ba/Karp%27s_21_NP-complete_problems.png"
 ---
 
 # Karp: Combinatorial Problems

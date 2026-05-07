@@ -12,8 +12,20 @@ export const getCategory = (subject: string) => {
     if (/vue/i.test(s) || /angular/i.test(s)) return 'Vue/Angular';
     if (/frontend|web|css|html|javascript|typescript/i.test(s)) return 'Frontend';
 
+    // Specific Exam Categories
+    if (/jee/i.test(s)) return 'JEE';
+    if (/neet/i.test(s)) return 'NEET';
+    if (/upsc/i.test(s)) return 'UPSC';
+    if (/gate/i.test(s)) return 'GATE';
+    if (/cat/i.test(s)) return 'CAT';
+    
+    if (/clat/i.test(s)) return 'CLAT';
+    if (/gre/i.test(s)) return 'GRE';
+    if (/gmat/i.test(s)) return 'GMAT';
+    if (/sat/i.test(s)) return 'SAT';
+    
     // Move Exam Prep and Career higher to catch specific prep roadmaps
-    if (/jee|neet|gate|upsc|cat|clat|sat|gre|gmat|ibps|ssc|exam|test|prep|certification|certified/i.test(s)) return 'Exam Prep';
+    if (/ibps|ssc|exam|test|prep|certification|certified/i.test(s)) return 'Exam Prep';
     if (/freelan|placement|career|interview|\bjob\b|resume|aptitude/i.test(s)) return 'Career';
     
     if (/backend|node|express|django|fastapi|laravel/i.test(s)) return 'Backend';

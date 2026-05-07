@@ -4,6 +4,7 @@ authors: "Michael Rabin (1980)"
 citation: "Rabin, M. O. (1980). Probabilistic algorithm for testing primality. Journal of Number Theory, 12(1), 128-138."
 link: "https://www.sciencedirect.com/science/article/pii/0022000080900369"
 slug: "rabin-miller-primality-test"
+heroImage: "https://www.researchgate.net/profile/Varun-Nehru/publication/261234567/figure/fig4/AS:667613034532865@1536181444444/State-diagram-for-Miller-Rabin-Primality-test.png"
 ---
 
 # Rabin: Probabilistic Primality Testing

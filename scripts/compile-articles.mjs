@@ -24,7 +24,7 @@ async function fetchDiagram(code) {
         return fs.readFileSync(cachePath, 'utf8');
     }
 
-    return new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
         const options = {
             hostname: 'kroki.io',
             path: '/d2/svg',

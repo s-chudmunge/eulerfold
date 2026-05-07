@@ -4,6 +4,7 @@ authors: "Lov K. Grover (1996)"
 citation: "Grover, L. K. (1996). A fast quantum mechanical algorithm for database search. Proceedings of the twenty-eighth annual ACM symposium on Theory of computing, 212-219."
 link: "https://arxiv.org/abs/quant-ph/9605043"
 slug: "grover-database-search"
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/3/3e/Grovers_algorithm.svg"
 ---
 
 # A Fast Quantum Mechanical Algorithm for Database Search

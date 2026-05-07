@@ -4,6 +4,7 @@ authors: "Rasmus Pagh & Flemming Rodler (2004)"
 citation: "Pagh, R., & Rodler, F. F. (2004). Cuckoo hashing. Journal of Algorithms, 51(2), 122-144."
 link: "https://www.itu.dk/people/pagh/papers/cuckoo-jour.pdf"
 slug: "pagh-rodler-cuckoo-hashing"
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c9/Cuckoo_hashing_example.svg/1200px-Cuckoo_hashing_example.svg.png"
 ---
 
 # Pagh & Rodler: Cuckoo Hashing

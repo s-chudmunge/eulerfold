@@ -19,52 +19,6 @@ synonyms:
 
 In the world of machine learning, the goal is not to memorize the past, but to predict the future. **Overfitting** is the failure of this goal—it is the state where a model learns the training data "too well," capturing random noise and coincidental patterns as if they were universal laws.
 
-```d2
-direction: down
-
-Dataset: "Training Source" {
-  Signal: "True Underlying Patterns" {shape: cylinder}
-  Noise: "Random Fluctuations & Errors" {
-    shape: cylinder
-    style: {stroke-dash: 3}
-  }
-}
-
-Model_Engine: "Learning Mechanism" {
-  style: {
-    stroke: "#0f766e"
-    stroke-width: 2
-  }
-
-  Capacity: "Hypothesis Space (Capacity)" {
-    Low: "Under-parameterized"
-    Balanced: "Optimal Fit" {
-      style: {fill: "#e8f2f1"; stroke: "#0f766e"}
-    }
-    High: "Over-parameterized" {
-      style: {fill: "#fee2e2"; stroke: "#dc2626"}
-    }
-  }
-}
-
-Performance: "Generalization Outcomes" {
-  Generalization: "Low Generalization Error" {
-    shape: parallelogram
-    style: {fill: "#e8f2f1"; stroke: "#0f766e"}
-  }
-  Memorization: "High Generalization Error" {
-    shape: parallelogram
-    style: {fill: "#fee2e2"; stroke: "#dc2626"}
-  }
-}
-
-Dataset.Signal -> Model_Engine.Capacity.Balanced: "Signal Extraction"
-Dataset.Noise -> Model_Engine.Capacity.High: "Noise Memorization"
-
-Model_Engine.Capacity.Balanced -> Performance.Generalization: "Learning the Rule"
-Model_Engine.Capacity.High -> Performance.Memorization: "Learning the Noise"
-```
-
 ## Signal vs. Noise {#signal-vs-noise}
 
 Every dataset is composed of two parts: the **signal** (the true underlying relationship) and the **noise** (random variation, measurement error, or irrelevant details). A well-trained model identifies the signal and ignores the noise. Overfitting occurs when the model has too much "capacity" or flexibility relative to the amount of data available. Like a student who memorizes the answers to a specific practice test rather than understanding the principles of the subject, an overfit model fails when faced with a new problem.

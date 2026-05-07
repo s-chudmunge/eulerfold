@@ -4,7 +4,7 @@ authors: "Farhi et al. (2000)"
 citation: "Farhi, E., Goldstone, J., Gutmann, S., & Sipser, M. (2000). Quantum computation by adiabatic evolution. arXiv preprint quant-ph/0001106."
 link: "https://arxiv.org/abs/quant-ph/0001106"
 slug: "adiabatic-quantum-computation"
-heroImage: ""
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a1/Adiabatic.svg/800px-Adiabatic.svg.png"
 ---
 
 # Adiabatic Quantum Computation

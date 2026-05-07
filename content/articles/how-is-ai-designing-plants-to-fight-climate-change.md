@@ -28,47 +28,6 @@ Photosynthesis is the process by which plants turn sunlight and CO2 into sugar a
 
 Scientists are now using **Protein Language Models** to explore billions of potential variations of the Rubisco enzyme. By identifying mutations that make the enzyme faster and more selective, AI is helping design plants that can grow faster while pulling significantly more CO2 out of the atmosphere.
 
-```d2
-direction: down
-
-Constraints: "Environmental Stressors" {
-  shape: cylinder
-  Heat: "Thermal Resistance"
-  H2O: "Water Efficiency"
-}
-
-Search_Space: "Genetic Search Space" {
-  style: {
-    stroke: "#0f766e"
-    stroke-width: 2
-  }
-
-  pLM: "Protein Language Model" {
-    shape: diamond
-    Action: "Sequence Variation Exploration"
-  }
-
-  Fitness: "In Silico Evaluation" {
-    Rubisco: "Carbon Fixation Efficiency"
-    Resilience: "Stress Tolerance Prediction"
-  }
-
-  pLM -> Fitness: "Propose Mutation"
-  Fitness -> pLM: "Performance Score"
-}
-
-Engineered_Output: "Optimized Genetics" {
-  Crops: "Enhanced Carbon-Capture Crops" {
-    shape: parallelogram
-    style: {fill: "#fee2e2"}
-  }
-  Suberin: "Deep-Root Sequestration"
-}
-
-Constraints -> Search_Space: "Fitness Landscape Constraints"
-Search_Space -> Engineered_Output: "Optimal Sequence Export"
-```
-
 ## Designing for Resilience {#resilience}
 
 Climate change isn't just about carbon; it's about survival. As the world gets hotter and drier, our food crops (like wheat, rice, and corn) are at risk. AI is being used to predict how plants respond to stress at the genetic level.

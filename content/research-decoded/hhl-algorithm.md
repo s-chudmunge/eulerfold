@@ -4,7 +4,7 @@ authors: "Harrow et al. (2008)"
 citation: "Harrow, A. W., Hassidim, A., & Lloyd, S. (2009). Quantum algorithm for linear systems of equations. Physical review letters, 103(15), 150502."
 link: "https://arxiv.org/abs/0811.3171"
 slug: "hhl-algorithm"
-heroImage: ""
+heroImage: "https://learn.qiskit.org/content/v2/introduction/images/hhl/hhl_circuit.png"
 ---
 
 # HHL Algorithm

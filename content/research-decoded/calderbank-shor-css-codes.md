@@ -4,6 +4,7 @@ authors: "A. R. Calderbank and Peter W. Shor (1996)"
 citation: "Calderbank, A. R., & Shor, P. W. (1996). Good quantum error-correcting codes exist. Physical Review A, 54(2), 1098."
 link: "https://arxiv.org/abs/quant-ph/9602019"
 slug: "calderbank-shor-css-codes"
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Lattice_quantum_circuit.png/1200px-Lattice_quantum_circuit.png"
 ---
 
 # Good Quantum Error-Correcting Codes Exist

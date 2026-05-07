@@ -4,6 +4,7 @@ authors: "Robert Tarjan (1972)"
 citation: "Tarjan, R. (1972). Depth-first search and linear graph algorithms. SIAM journal on computing, 1(2), 146-160."
 link: "https://www.cs.cmu.edu/~cdm/resources/Tarjan1972-sccs.pdf"
 slug: "tarjan-dfs-linear-algorithms"
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1f/Depth-first-tree.svg/1200px-Depth-first-tree.svg.png"
 ---
 
 # Tarjan: Linear Graph Algorithms

@@ -4,7 +4,7 @@ authors: "Aliferis et al. (2005)"
 citation: "Aliferis, P., Gottesman, D., & Preskill, J. (2006). Quantum accuracy threshold for concatenated distance-3 codes. Quantum Information & Computation, 6(2), 97-165."
 link: "https://arxiv.org/abs/quant-ph/0504218"
 slug: "threshold-theorem-concatenated-codes"
-heroImage: ""
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Quantum_threshold_theorem.svg/500px-Quantum_threshold_theorem.svg.png"
 ---
 
 # The Threshold Theorem

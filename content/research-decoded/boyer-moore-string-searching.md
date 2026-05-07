@@ -4,6 +4,7 @@ authors: "Robert Boyer & J. Strother Moore (1977)"
 citation: "Boyer, R. S., & Moore, J. S. (1977). A fast string searching algorithm. Communications of the ACM, 20(10), 762-772."
 link: "https://dl.acm.org/doi/10.1145/359842.359859"
 slug: "boyer-moore-string-searching"
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/b/be/Boyer-Moore_string_search_example.svg"
 ---
 
 # Boyer & Moore: String Searching

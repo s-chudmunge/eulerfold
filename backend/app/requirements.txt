@@ -21,6 +21,7 @@ psycopg2-binary>=2.9.7
 supabase>=2.3.4
 websockets>=13.0,<15.0
 reportlab==4.0.9
+edge-tts==7.2.8
 qrcode==7.4.2
 pillow>=10.0.0
 sentry-sdk[fastapi]==1.40.6

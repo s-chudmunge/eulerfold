@@ -4,6 +4,7 @@ authors: "Arora, Lund, Motwani, Sudan, Szegedy (1998)"
 citation: "Arora, S., Lund, C., Motwani, R., Sudan, M., & Szegedy, M. (1998). Proof verification and the hardness of approximation problems. Journal of the ACM (JACM), 45(3), 501-555."
 link: "https://dl.acm.org/doi/10.1145/278298.278306"
 slug: "arora-pcp-theorem"
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/P_np_np-complete.svg/1200px-P_np_np-complete.svg.png"
 ---
 
 # Arora et al: The PCP Theorem

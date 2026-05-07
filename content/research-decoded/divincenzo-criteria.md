@@ -4,7 +4,7 @@ authors: "David P. DiVincenzo (2000)"
 citation: "DiVincenzo, D. P. (2000). The physical implementation of quantum computation. Fortschritte der Physik: Progress of Physics, 48(9‐11), 771-783."
 link: "https://arxiv.org/abs/quant-ph/0002077"
 slug: "divincenzo-criteria"
-heroImage: ""
+heroImage: "https://www.researchgate.net/profile/M-Asad-2/publication/335112445/figure/fig1/AS:790643411304448@1565514444444/DiVincenzo-Criteria.png"
 ---
 
 # The DiVincenzo Criteria

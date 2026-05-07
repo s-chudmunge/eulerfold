@@ -58,15 +58,6 @@ export default function ArticlesIndexClient({ articles }: Props) {
       
       <main className="max-w-[850px] mx-auto py-12 px-6">
         <div className="w-full">
-          <header className="mb-12">
-            <h1 className="text-[40px] font-bold text-text-heading tracking-tighter mb-4 inconsolata-ui">
-              Articles and Breakdowns
-            </h1>
-            <p className="text-[17px] text-text-muted max-w-2xl font-inter leading-relaxed">
-              Simple explanations of complex technical terms and research breakthroughs. Master the "how" and "why" behind modern technology.
-            </p>
-          </header>
-
           {/* Controls: Search, Sort, Filter */}
           <div className="mb-10 flex flex-col gap-4">
             <div className="relative group">

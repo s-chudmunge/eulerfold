@@ -4,6 +4,7 @@ authors: "Michael Rabin & Dana Scott (1959)"
 citation: "Rabin, M. O., & Scott, D. (1959). Finite automata and their decision problems. IBM journal of research and development, 3(2), 114-125."
 link: "http://faculty.otterbein.edu/dstucki/COMP3200/RabinScott1959.pdf"
 slug: "rabin-scott-finite-automata"
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9d/DFAexample.svg/1200px-DFAexample.svg.png"
 ---
 
 # Rabin & Scott: Finite Automata

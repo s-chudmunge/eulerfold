@@ -4,6 +4,7 @@ authors: "Baker, Gill, Solovay (1975)"
 citation: "Baker, T., Gill, J., & Solovay, R. (1975). Relativizations of the P=?NP question. SIAM Journal on Computing, 4(4), 431-442."
 link: "https://epubs.siam.org/doi/10.1137/0204037"
 slug: "baker-gill-solovay-relativization"
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/P_np_np-complete_np-hard.svg/500px-P_np_np-complete_np-hard.svg.png"
 ---
 
 # Baker, Gill, Solovay: Relativization

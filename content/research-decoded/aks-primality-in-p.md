@@ -4,6 +4,7 @@ authors: "Agrawal, Kayal, Saxena (2004)"
 citation: "Agrawal, M., Kayal, N., & Saxena, N. (2004). PRIMES is in P. Annals of Mathematics, 781-793."
 link: "https://www.cse.iitk.ac.in/users/manindra/algebra/primality_v6.pdf"
 slug: "aks-primality-in-p"
+heroImage: "https://www.researchgate.net/profile/Mohammed-Asad-4/publication/335112445/figure/fig2/AS:790643411304449@1565514444445/The-improved-AKS-algorithm.png"
 ---
 
 # Agrawal, Kayal, Saxena: PRIMES is in P

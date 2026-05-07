@@ -4,6 +4,7 @@ authors: "Ryan Williams (2011)"
 citation: "Williams, R. (2011). Non-uniform ACC circuit lower bounds. In Proceedings of the twenty-sixth annual IEEE conference on Computational Complexity (pp. 115-125)."
 link: "https://arxiv.org/abs/1004.3913"
 slug: "williams-acc-circuit-lower-bounds"
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Circuit_complexity.svg/1200px-Circuit_complexity.svg.png"
 ---
 
 # Williams: ACC Circuit Lower Bounds

@@ -4,6 +4,7 @@ authors: "Razborov & Rudich (1994)"
 citation: "Razborov, A. A., & Rudich, S. (1997). Natural proofs. Journal of Computer and System Sciences, 55(1), 24-35."
 link: "https://mit6875.github.io/PAPERS/natural_proofs.pdf"
 slug: "razborov-rudich-natural-proofs"
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Diagonalization_argument.svg/1200px-Diagonalization_argument.svg.png"
 ---
 
 # Razborov & Rudich: Natural Proofs

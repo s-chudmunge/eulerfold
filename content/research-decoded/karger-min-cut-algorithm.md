@@ -4,6 +4,7 @@ authors: "David Karger (1993)"
 citation: "Karger, D. R. (1993). Global min-cuts in RNC, and other ramifications of a simple min-cut algorithm. In Proceedings of the fourth annual ACM-SIAM Symposium on Discrete algorithms (pp. 21-30)."
 link: "https://dl.acm.org/doi/10.5555/313559.313605"
 slug: "karger-min-cut-algorithm"
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/e/e7/Karger_algorithm_steps.png"
 ---
 
 # Karger: Global Min-Cuts

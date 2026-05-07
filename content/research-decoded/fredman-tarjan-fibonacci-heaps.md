@@ -4,6 +4,7 @@ authors: "Michael Fredman & Robert Tarjan (1987)"
 citation: "Fredman, M. L., & Tarjan, R. E. (1987). Fibonacci heaps and their uses in improved network optimization algorithms. Journal of the ACM (JACM), 34(3), 596-615."
 link: "https://web.eecs.umich.edu/~pettie/matching/Fredman-Tarjan-Fibonacci-Heaps.pdf"
 slug: "fredman-tarjan-fibonacci-heaps"
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e5/Fibonacci_heap.svg/1200px-Fibonacci_heap.svg.png"
 ---
 
 # Fredman & Tarjan: Fibonacci Heaps

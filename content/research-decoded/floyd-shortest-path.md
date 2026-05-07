@@ -4,6 +4,7 @@ authors: "Robert Floyd (1962)"
 citation: "Floyd, R. W. (1962). Algorithm 97: Shortest path. Communications of the ACM, 5(6), 345."
 link: "https://dl.acm.org/doi/10.1145/367766.368168"
 slug: "floyd-shortest-path"
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/2/2e/Floyd-Warshall_example.gif"
 ---
 
 # Floyd: All-Pairs Shortest Path

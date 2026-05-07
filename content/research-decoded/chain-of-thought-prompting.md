@@ -1,37 +1,37 @@
 ---
-title: "Chain of Thought Prompting"
-authors: "Wei et al. (Google Research, 2022)"
-citation: "Wei, J., Wang, X., Schuurmans, D., Maeda, M., ... & Zhou, D. (2022). Chain-of-thought prompting elicits reasoning in large language models. arXiv preprint arXiv:2201.11903."
-link: "https://ar5iv.org/abs/2201.11903"
-slug: "chain-of-thought-prompting"
+title: "Chain of Thought Prompting: Eliciting Reasoning in Large Language Models"
+authors: "Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Brian Ichter, Fei Xia, Ed Chi, Quoc Le, Denny Zhou"
+citation: "Wei, J., et al. (2022). Chain-of-thought prompting elicits reasoning in large language models. NeurIPS."
+link: "https://arxiv.org/abs/2201.11903"
 heroImage: "https://ar5iv.labs.arxiv.org/html/2201.11903/assets/x1.png"
+slug: "chain-of-thought-prompting"
 ---
 
-# Chain of Thought Prompting
+The 2022 "Chain of Thought" (CoT) paper introduced a fundamental structural shift in the way Large Language Models (LLMs) are used to solve complex problems. Before this work, standard few-shot prompting relied on direct input-output mapping, forcing the model to solve multi-step logic in a single computational leap. Researchers at Google demonstrated that by simply prompting the model to generate intermediate reasoning steps, they could unlock latent capabilities in arithmetic, symbolic logic, and commonsense reasoning. This discovery moved the field from viewing LLMs as associative memory engines to viewing them as sequential logical processors.
 
-The 2022 'Chain of Thought' (CoT) paper introduced a fundamental structural shift in how large language models are prompted to solve complex problems. Before this work, standard few-shot prompting relied on simple input-output pairs, where the model was expected to map a question directly to a final answer in a single forward pass. Researchers at Google demonstrated that by providing the model with examples that include intermediate reasoning steps, the system could solve arithmetic, commonsense, and symbolic tasks that were previously far beyond its capabilities. It was a transition from viewing an LLM as a direct lookup table to viewing it as a sequential processor of logic.
+## The Arithmetic Wall {#arithmetic-wall}
 
-## The Sequential Decomposition Shift {#sequential-decomposition}
+The primary motivation for Chain of Thought was the consistent failure of even the largest models to solve grade-school level math word problems. In standard prompting, a model is given a question and expected to produce the final answer immediately. For a multi-step problem, this requires the model to perform all internal logic within the fixed depth of its layers before generating the first output token. CoT resolves this by allowing the model to allocate "token-compute" to each logical step. By writing out the intermediate reasoning, the model effectively uses the sequence length as an external working memory, ensuring that the input to each subsequent step is grounded in the results of the previous one.
 
-![Chain-of-thought prompting enabling models to tackle complex tasks by generating intermediate reasoning steps.](https://ar5iv.labs.arxiv.org/html/2201.11903/assets/x1.png)
+## The 100B Emergence Threshold {#emergence}
 
-_Chain-of-thought prompting enabling models to tackle complex tasks by generating intermediate reasoning steps._
+A critical finding of the paper was that Chain of Thought is an "emergent" property—it is not present in smaller models and only materializes once architectures cross a specific size threshold, typically around 100 billion parameters. In models like PaLM (540B), CoT leads to a dramatic performance leap; on the GSM8K benchmark, accuracy jumped from 17.9% with standard prompting to 58.1% with CoT. Conversely, in models smaller than 10B parameters, CoT often *degrades* performance, as the model generates "fluent hallucinations"—reasoning traces that sound logical but are riddled with arithmetic errors that mislead the final prediction.
 
-Chain of Thought prompting resolved the failure of large language models to solve multi-step problems by replacing standard input-output exemplars with triples that include an intermediate reasoning trace. In this framework, the model is shown how to break a difficult leap into a series of manageable logical deductions before arriving at the final result. This shift from direct mapping to sequential decomposition allows the model to allocate more tokens—and thus more internal computation—to the most difficult parts of a query. It revealed that the 'intelligence' of a model is not just a function of its parameters, but of the structural freedom it is given to process a thought step-by-step rather than all at once.
+## Zero-Shot CoT: "Let's Think Step by Step" {#zero-shot-cot}
 
-## The Scaling Threshold {#emergence-of-reasoning}
+While the original paper focused on few-shot prompting, subsequent research (Kojima et al., 2022) revealed that CoT reasoning can be triggered without any examples at all. By simply appending the phrase "Let's think step by step" to a prompt, models exhibit a similar jump in reasoning quality. For PaLM 540B, this "zero-shot" nudge increased accuracy on math tasks from 12.5% to over 40%. This suggests that the capacity for structured logic is already present in the pre-trained weights of large models, but it remains "dormant" until a specific linguistic trigger activates the sequential reasoning path.
 
-![Error analysis across model scales: PaLM 540B fixes substantial portions of reasoning and semantic errors found in smaller versions.](https://ar5iv.labs.arxiv.org/html/2201.11903/assets/x3.png)
+## Self-Consistency: Voting on Thought Traces {#self-consistency}
 
-_Error analysis across model scales: PaLM 540B fixes substantial portions of reasoning and semantic errors found in smaller versions._
+The reasoning chains generated by CoT are not always perfect; a model might make a calculation error in one path but find the correct logic in another. This led to the development of **Self-Consistency**, an extension where the model generates multiple, independent chain-of-thought traces for the same problem. By taking a majority vote over the final answers across these different traces, performance is boosted even further. In PaLM 540B, adding self-consistency to CoT pushed GSM8K accuracy from 58.1% to 74.4%, proving that the diversity of potential reasoning paths can be used to "filter" out individual logical failures.
 
-A critical discovery of the paper was that Chain of Thought reasoning is an emergent capability that only appears when models reach a specific size threshold. While CoT often fails or even degrades performance in models with fewer than 10 billion parameters, significant gains appear once architectures reach the 100-billion parameter scale. This 'Aha Moment' revealed that as models grow, they develop a latent ability to handle logical dependencies that cannot be activated by standard prompting alone. This finding proved that the bottleneck in artificial intelligence was not always a lack of knowledge, but a failure to provide the model with the right structural interface to access the complex patterns it has already learned.
+## Decomposition and Interpretability {#interpretability}
 
-## Generality and Interpretability {#generality-of-logic}
-
-The success of CoT demonstrated that human-like reasoning can be elicited across diverse domains—from mathematical word problems to commonsense ethics—using only natural language as the medium. Beyond performance, this approach introduced a new level of interpretability into the 'black box' of neural networks, as the generated chain provides a window into where a logical error occurred. This shift toward inspectable reasoning traces proved that the most effective way to align a machine's logic with our own is to treat language as a shared space for problem-solving. It raises the question of whether the future of reasoning lies in larger models or in more sophisticated prompting architectures that can better structure the flow of these intermediate thoughts.
+Beyond raw performance, Chain of Thought introduced a new level of interpretability to the "black box" of neural networks. Because the model externalizes its logic, researchers can pinpoint exactly where a reasoning chain broke down—whether it was a failure in arithmetic, a misunderstanding of the prompt, or a hallucinated fact. This transparency is vital for aligning models with human logic, as it allows developers to debug the model's "thought process" rather than just its final output. It established language as the universal interface for both giving instructions and verifying the machine's path to the solution.
 
 ## Resources
 
-- [Chain of Thought Paper (arXiv)](https://arxiv.org/abs/2201.11903) {type: article, provider: arXiv}
-- [Google Research Blog: CoT](https://ai.googleblog.com/2022/05/language-models-cause-reasoning.html) {type: article, provider: Google Research}
+- [Chain-of-Thought Prompting Elicits Reasoning in LLMs (Original Paper)](https://arxiv.org/abs/2201.11903) {type: article, provider: arXiv}
+- [Google Research: Language Models Cause Reasoning](https://ai.googleblog.com/2022/05/language-models-cause-reasoning.html) {type: article, provider: Google Research}
+- [Zero-shot CoT: Let's Think Step by Step](https://arxiv.org/abs/2205.11916) {type: article, provider: arXiv}
+- [Self-Consistency Improves CoT Reasoning](https://arxiv.org/abs/2203.11171) {type: article, provider: arXiv}

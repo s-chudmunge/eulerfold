@@ -4,7 +4,7 @@ authors: "Farhi et al. (2014)"
 citation: "Farhi, E., Goldstone, J., & Gutmann, S. (2014). A quantum approximate optimization algorithm. arXiv preprint arXiv:1411.4028."
 link: "https://arxiv.org/abs/1411.4028"
 slug: "qaoa-quantum-approximate-optimization"
-heroImage: ""
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/QAOA_quantum_circuit.png/1200px-QAOA_quantum_circuit.png"
 ---
 
 # The QAOA Algorithm

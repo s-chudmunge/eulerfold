@@ -4,6 +4,7 @@ authors: "Alfred Aho & Margaret Corasick (1975)"
 citation: "Aho, A. V., & Corasick, M. J. (1975). Efficient string matching: an aid to bibliographic search. Communications of the ACM, 18(6), 333-340."
 link: "https://cr.yp.to/bib/1975/aho.pdf"
 slug: "aho-corasick-string-matching"
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/6/62/Aho-Corasick.svg"
 ---
 
 # Aho & Corasick: Efficient String Matching

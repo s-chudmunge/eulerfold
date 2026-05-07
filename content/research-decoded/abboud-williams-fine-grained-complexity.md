@@ -4,6 +4,7 @@ authors: "Amir Abboud & Virginia Vassilevska Williams (2014)"
 citation: "Abboud, A., & Williams, V. V. (2014). Popular conjectures imply strong lower bounds for dynamic problems. In Foundations of Computer Science (FOCS), 2014 IEEE 55th Annual Symposium on (pp. 434-443)."
 link: "https://arxiv.org/abs/1402.0054"
 slug: "abboud-williams-fine-grained-complexity"
+heroImage: "https://theory.cs.princeton.edu/complexity/finegrained.png"
 ---
 
 # Abboud & Williams: Fine-Grained Complexity

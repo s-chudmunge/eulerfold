@@ -407,6 +407,10 @@
         "slug": "tree-of-thoughts-deliberate-search"
       },
       {
+        "title": "s1: Simple Test-Time Scaling (2025)",
+        "slug": "s1-test-time-scaling"
+      },
+      {
         "title": "DeepSeek R1: Reasoning (2025)",
         "slug": "deepseek-r1-incentivizing-reasoning"
       }
@@ -531,8 +535,16 @@
     "expanded": true,
     "sections": [
       {
+        "title": "DPO: Direct Preference Optimization (2023)",
+        "slug": "direct-preference-optimization"
+      },
+      {
         "title": "DoRA: Weight-Decomposed LoRA (2024)",
         "slug": "dora-weight-decomposed-lora"
+      },
+      {
+        "title": "BitNet b1.58: 1-Bit LLMs (2024)",
+        "slug": "bitnet-b158-ternary-llm"
       },
       {
         "title": "Scaling LLM Test-Time Compute (2024)",
@@ -545,6 +557,10 @@
     "id": "architectures",
     "expanded": true,
     "sections": [
+      {
+        "title": "Mamba: Selective State Spaces (2023)",
+        "slug": "mamba-linear-time-ssm"
+      },
       {
         "title": "KAN: Kolmogorov-Arnold Networks (2024)",
         "slug": "kan-kolmogorov-arnold-networks"
@@ -559,6 +575,10 @@
       {
         "title": "AlphaFold 2 (2021)",
         "slug": "alphafold-2-structure-prediction"
+      },
+      {
+        "title": "AlphaFold 3: Unified Biomolecular Prediction (2024)",
+        "slug": "alphafold-3-unified-biology"
       },
       {
         "title": "Evo — DNA Language Model (2024)",

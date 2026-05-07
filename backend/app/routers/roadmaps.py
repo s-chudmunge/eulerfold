@@ -775,7 +775,140 @@ async def generate_roadmap(
     current_user: User = Depends(get_current_user)
 ):
     """Generate a full roadmap using Gemini AI and save it."""
-    # ... existing implementation ...
+    email = current_user.email
+    uid = current_user.supabase_uid
+    if not email:
+        raise HTTPException(status_code=401, detail="Could not determine user email")
+
+    # Roadmap Credit Check (Standard: 5 roadmaps total)
+    sb = get_supabase_client()
+    
+    # Get user profile
+    profile_res = sb.table("profiles").select("roadmap_credits, is_pro").eq("email", email).execute()
+    if not profile_res.data:
+        raise HTTPException(status_code=404, detail="User profile not found")
+    
+    is_pro = profile_res.data[0].get("is_pro", False)
+    credits = profile_res.data[0].get("roadmap_credits", 0)
+    
+    if credits <= 0:
+        raise HTTPException(status_code=402, detail="No roadmap credits left. Please upgrade to Pro.")
+
+    # 1. Generate Roadmap Structure with Gemini
+    prompt = f"""
+Generate a professional, high-signal technical learning roadmap for the subject: "{roadmap_create.subject}".
+The learner's specific goal is: "{roadmap_create.goal}".
+Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
+
+**Rules:**
+1. Focus on depth and verifiable skills.
+2. Break it down into logical modules.
+3. For each module, include a "proof_of_work_instructions" object that details what the user must build or solve to prove mastery.
+4. **Output JSON ONLY** matching this schema:
+   {{
+     "title": "string",
+     "description": "string",
+     "modules": [
+       {{
+         "title": "string",
+         "outcome": "string",
+         "timeline": "string",
+         "workspace_type": "code|research|design",
+         "proof_of_work_instructions": {{
+            "what_to_build": "string",
+            "what_counts_as_evidence": "string",
+            "eval_criteria": ["string", "string"]
+         }},
+         "topics": [
+           {{
+             "title": "string",
+             "subtopics": [ {{ "title": "string" }} ]
+           }}
+         ],
+         "resources": [
+            {{ "title": "string", "url": "string", "type": "docs|article" }}
+         ]
+       }}
+     ]
+   }}
+5. **Crucial:** In the "resources" array, provide ONLY high-quality documentation, articles, or books (non-YouTube links).
+6. For each module, ensure a concrete "outcome" string starting with "By the end of this module you will be able to...".
+7. Be specific. If learning React, include topics like "Hooks", "Concurrent Mode", etc.
+8. **Workspace Selection:** 
+   - Set "workspace_type" to "code" for implementation, algorithms, or scripting tasks.
+   - Set "workspace_type" to "design" for system architecture, distributed systems, infrastructure, or UI/UX.
+   - Set "workspace_type" to "research" for theoretical science, mathematics, or technical writing.
+"""
+    try:
+        model_to_use = settings.GEMINI_MODEL
+        if is_pro:
+            model_to_use = "models/gemini-2.5-pro"
+            
+        generated_text = await generate_text(prompt, model=model_to_use, response_mime_type="application/json")
+        cleaned_text = clean_json_string(generated_text)
+        roadmap_plan = json.loads(cleaned_text)
+
+        # 2. Add IDs and YouTube Videos
+        for i, module in enumerate(roadmap_plan.get("modules", [])):
+            module["id"] = f"module_{i+1}"
+            if not module.get("outcome"):
+                 module["outcome"] = "By the end of this module you will be able to apply the listed topics and solve basic related problems."
+            for t_idx, topic in enumerate(module.get("topics", [])):
+                topic["id"] = f"topic_{i+1}_{t_idx+1}"
+                topic["uuid"] = str(uuid.uuid4())
+                for s_idx, subtopic in enumerate(topic.get("subtopics", [])):
+                    subtopic["id"] = str(uuid.uuid4())
+                
+                # YouTube Enrichment
+                if settings.YOUTUBE_API_KEY:
+                    try:
+                        search_query = f"{roadmap_create.subject} {topic['title']} tutorial"
+                        results = await search_youtube_videos(search_query, max_results=1)
+                        if results:
+                            topic["youtube_video_id"] = results[0]["video_id"]
+                            topic["youtube_video_title"] = results[0]["video_title"]
+                            topic["duration"] = results[0]["duration_minutes"]
+                        # Throttle a bit
+                        await asyncio.sleep(0.1)
+                    except Exception as yt_err:
+                        logger.error(f"YouTube enrichment failed for topic {topic['title']}: {yt_err}")
+
+        # 3. Save to DB
+        slug = await _generate_unique_slug(roadmap_plan["title"], email, sb)
+        
+        db_data = {
+            "title": roadmap_plan["title"],
+            "description": roadmap_plan["description"],
+            "roadmap_plan": roadmap_plan,
+            "subject": roadmap_create.subject,
+            "goal": roadmap_create.goal,
+            "time_value": roadmap_create.time_value,
+            "time_unit": roadmap_create.time_unit,
+            "model": model_to_use,
+            "email": email,
+            "slug": slug,
+            "status": "active",
+            "version": 1,
+            "snapshot_hash": _generate_plan_hash(roadmap_plan)
+        }
+        
+        response = sb.table("roadmaps").insert(db_data).execute()
+        
+        if not response.data:
+            raise HTTPException(status_code=500, detail="Failed to save generated roadmap")
+            
+        # 4. Deduct credit
+        sb.table("profiles").update({"roadmap_credits": credits - 1}).eq("email", email).execute()
+        
+        # 5. Background task to extract skills
+        if uid:
+            background_tasks.add_task(extract_skills_from_roadmap, response.data[0]["id"], uid)
+
+        return RoadmapRead(**response.data[0])
+
+    except Exception as e:
+        logger.error(f"Roadmap generation failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Generation error: {str(e)}")
 
 @router.post("/roadmaps/generate-from-jd", response_model=RoadmapRead)
 async def generate_from_jd(

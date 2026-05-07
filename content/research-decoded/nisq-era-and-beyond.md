@@ -4,7 +4,7 @@ authors: "John Preskill (2018)"
 citation: "Preskill, J. (2018). Quantum Computing in the NISQ era and beyond. Quantum, 2, 79."
 link: "https://arxiv.org/abs/1801.00862"
 slug: "nisq-era-and-beyond"
-heroImage: ""
+heroImage: "https://quantum-journal.org/wp-content/uploads/2018/08/preskill_nisq_fig1.png"
 ---
 
 # The NISQ Era

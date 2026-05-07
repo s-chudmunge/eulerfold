@@ -4,6 +4,7 @@ authors: "Richard Bellman (1958)"
 citation: "Bellman, R. (1958). On a routing problem. Quarterly of applied mathematics, 16(1), 87-90."
 link: "https://www.ams.org/journals/qam/1958-16-01/S0033-569X-1958-0102435-2/"
 slug: "bellman-routing-problem"
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/7/77/Bellman-Ford_algorithm_example.gif"
 ---
 
 # Bellman: On a Routing Problem

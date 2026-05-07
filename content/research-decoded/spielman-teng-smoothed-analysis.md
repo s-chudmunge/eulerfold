@@ -4,6 +4,7 @@ authors: "Daniel Spielman & Shang-Hua Teng (2001)"
 citation: "Spielman, D. A., & Teng, S. H. (2004). Smoothed analysis of algorithms: Why the simplex algorithm usually takes polynomial time. Journal of the ACM (JACM), 51(3), 385-463."
 link: "https://arxiv.org/abs/cs/0111050"
 slug: "spielman-teng-smoothed-analysis"
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/Smoothed_analysis.svg/500px-Smoothed_analysis.svg.png"
 ---
 
 # Spielman & Teng: Smoothed Analysis

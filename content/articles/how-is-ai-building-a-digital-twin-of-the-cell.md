@@ -26,49 +26,6 @@ For decades, biology was a science of parts. We studied individual genes, single
 
 While AlphaFold can tell us the shape of a single protein, it doesn't tell us how that protein behaves when it's crowded inside a cell with 10,000 other molecules. A Digital Twin seeks to model the **dynamics**: how signals travel from the cell surface to the nucleus, and how the cell decides to divide, move, or die.
 
-```d2
-direction: down
-
-MultiOmics: "Multi-Omics Inputs" {
-  shape: cylinder
-  Genomics: "Sequence Data"
-  Proteomics: "Abundance Data"
-}
-
-Simulation_Engine: "Dynamical AI System" {
-  style: {
-    stroke: "#0f766e"
-    stroke-width: 2
-  }
-
-  Scales: "Multi-Scale Modeling" {
-    Molecular: "Fast: Metabolic Flux"
-    Signaling: "Medium: Pathway Crosstalk"
-    Cellular: "Slow: Cell Division"
-    Molecular -> Signaling -> Cellular
-  }
-
-  ODE_Solver: "Neural ODEs" {
-    shape: diamond
-    style: {fill: "#e8f2f1"}
-    tooltip: "Predicting Continuous State Changes"
-  }
-
-  Scales.Signaling <-> ODE_Solver: "Gradient Flows"
-}
-
-DigitalTwin: "Whole-Cell Simulation" {
-  Phenotype: "Virtual State Prediction" {
-    shape: parallelogram
-    style: {fill: "#fee2e2"}
-  }
-  InSilico: "Drug Perturbation Analysis"
-}
-
-MultiOmics -> Simulation_Engine: "Initial Parameters"
-Simulation_Engine -> DigitalTwin: "Numerical Integration"
-```
-
 ## The Data Integration Problem {#integration}
 
 The biggest hurdle is that biological data is "noisy" and disconnected. Genomics tells you the blueprint, but Proteomics tells you what's actually being built. AI uses **Multi-modal Transformers** to "translate" between these different layers of data, finding the hidden correlations that allow the model to predict how a mutation in DNA will eventually change the behavior of the whole cell.

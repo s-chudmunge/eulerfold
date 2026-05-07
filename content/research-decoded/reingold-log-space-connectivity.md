@@ -4,6 +4,7 @@ authors: "Omer Reingold (2005)"
 citation: "Reingold, O. (2008). Undirected connectivity in log-space. Journal of the ACM (JACM), 55(4), 1-24."
 link: "https://dl.acm.org/doi/10.1145/1391289.1391291"
 slug: "reingold-log-space-connectivity"
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Zig-zag_product.svg/400px-Zig-zag_product.svg.png"
 ---
 
 # Reingold: Undirected Connectivity in Log-Space

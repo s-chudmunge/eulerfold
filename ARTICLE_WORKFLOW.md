@@ -67,7 +67,7 @@ The `synonyms` field is critical. The system automatically scans all content (bo
     node scripts/compile-articles.mjs
     ```
     This script:
-    *   Parses markdown files and extracts metadata.
+    *   Parses markdown files and extracts metadata (enforcing unique `shortSlug` values).
     *   Identifies D2 diagram blocks and pre-fetches SVGs from Kroki.
     *   Caches diagrams using **SHA-256 hashes** in the `.d2_cache/` directory to avoid redundant network calls and filename length errors.
     *   Generates `frontend/src/app/articles/generatedArticles.ts`.

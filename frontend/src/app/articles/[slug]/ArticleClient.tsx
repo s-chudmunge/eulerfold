@@ -20,6 +20,7 @@ import PublicHeader from '@/components/PublicHeader';
 import Footer from '@/components/Footer';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import RecommendedRoadmaps from '@/components/RecommendedRoadmaps';
+import FloatingTTS from '@/components/FloatingTTS';
 import { Article, articles } from '../generatedArticles';
 import { Paper, papers } from '../../research-decoded/generatedData';
 
@@ -450,6 +451,7 @@ export default function ArticleClient({ article }: Props) {
 
   return (
     <div className="min-h-screen bg-background text-text-primary serif-page-scope selection:bg-accent/20">
+      <FloatingTTS content={article.content} />
       <PublicHeader />
 
       {/* Site Content (BibGuru Layout) */}

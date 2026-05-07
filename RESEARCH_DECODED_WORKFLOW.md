@@ -20,7 +20,8 @@ This document outlines the systematic process for researching, writing, and inte
 All content must adhere to the **Sankalp Writing Style**:
 
 *   **Continuous Prose**: No bullet points, lists, or bold text for emphasis. Use paragraphs that flow naturally.
-*   **Technical Depth**: Do not truncate the explanation for the sake of brevity. Communicate all the main ideas of the paper, ensuring the "how" is explained in clinical detail. The goal is a deep understanding, not a surface-level summary.
+*   **Technical Depth**: Do not truncate the explanation for the sake of brevity. Communicate all the main ideas of the paper, ensuring the "how" is explained in clinical detail. The goal is a deep understanding, not a surface-level summary. The number of sections and the total length must be dictated by the paper's technical density, not a predetermined limit.
+*   **Granular Sectioning**: Use as many sections as necessary to decode the mathematical, architectural, and empirical nuances. If a paper introduces three distinct mechanisms, each deserves its own deep-dive section.
 *   **Specific to Abstract**: Start with a concrete observation (e.g., "The memory cost of a KV cache increases linearly with sequence length...") and reason outward to the bigger implication.
 *   **Intellectual Honesty**: Avoid hype, superlatives, and repetitive formulaic phrases (e.g., "the technical shift," "the core shift"). Let the logic of the argument provide the transitions.
 *   **Open Endings**: End sections with an open observation about the future or a lingering question. Never summarize the preceding paragraphs.

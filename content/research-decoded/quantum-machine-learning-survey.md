@@ -4,7 +4,7 @@ authors: "Biamonte et al. (2017)"
 citation: "Biamonte, J., Wittek, P., Nicola, P., Rebentrost, P., Wiebe, N., & Lloyd, S. (2017). Quantum machine learning. Nature, 549(7671), 195-202."
 link: "https://arxiv.org/abs/1611.09347"
 slug: "quantum-machine-learning-survey"
-heroImage: ""
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Quantum_Machine_Learning_Diagram.png/1200px-Quantum_Machine_Learning_Diagram.png"
 ---
 
 # Quantum Machine Learning

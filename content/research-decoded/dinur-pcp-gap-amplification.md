@@ -4,6 +4,7 @@ authors: "Irit Dinur (2007)"
 citation: "Dinur, I. (2007). The PCP theorem by gap amplification. Journal of the ACM (JACM), 54(3), 12-es."
 link: "https://arxiv.org/abs/cs/0604037"
 slug: "dinur-pcp-gap-amplification"
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/P_np_np-complete.svg/1200px-P_np_np-complete.svg.png"
 ---
 
 # Dinur: PCP by Gap Amplification

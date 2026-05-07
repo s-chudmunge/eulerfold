@@ -12,6 +12,7 @@ import { DiscussionSection } from '@/components/discussions/DiscussionSection';
 import SocialShare from '@/components/SocialShare';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import RecommendedRoadmaps from '@/components/RecommendedRoadmaps';
+import FloatingTTS from '@/components/FloatingTTS';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Article {
@@ -479,8 +480,16 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
     setScale(1);
   };
 
+  const fullContent = React.useMemo(() => {
+    return [
+      paper.intro,
+      ...paper.sections.map(s => `${s.title}\n${s.content}`)
+    ].join('\n\n');
+  }, [paper]);
+
   return (
     <div className="bg-background min-h-screen pb-24 text-text-primary serif-page-scope">
+      <FloatingTTS content={fullContent} />
       {/* Design matches strictly the refined example/topic-page */}
       <div className="max-w-[1400px] mx-auto flex flex-col xl:flex-row justify-center xl:justify-start xl:pl-[120px] gap-12 lg:gap-20 px-6 py-8 md:px-12 md:py-16">
         
