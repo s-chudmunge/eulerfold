@@ -16,6 +16,7 @@ import {
   ShieldCheck,
   RefreshCw
 } from 'lucide-react';
+import { useAuth } from '@/components/AuthProvider';
 
 interface MissionSidecarProps {
   module: any;
@@ -58,6 +59,7 @@ const CollapsibleSection: React.FC<CollapsibleSectionProps> = ({ title, icon: Ic
 );
 
 const MissionSidecar: React.FC<MissionSidecarProps> = ({ module, onSubmit, submitting }) => {
+  const { user } = useAuth();
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   
   // Section collapse states
@@ -163,6 +165,22 @@ const MissionSidecar: React.FC<MissionSidecarProps> = ({ module, onSubmit, submi
 
            {/* Sidebar Action Footer */}
            <div className="p-4 border-t border-border bg-background/50 flex flex-col items-center">
+              <div className="flex flex-col items-center mb-3">
+                 {!user?.is_pro && (
+                   <div className="mb-2 px-2 py-0.5 bg-teal-700/5 border border-teal-700/20 rounded-none">
+                     <p className="inconsolata-ui text-[8px] font-bold text-teal-700 uppercase tracking-widest">
+                       {user?.senate_eval_count || 0}/2 Free Audits
+                     </p>
+                   </div>
+                 )}
+                 {user?.is_pro && (
+                   <div className="mb-2 px-2 py-0.5 bg-accent/5 border border-accent/20 rounded-none">
+                     <p className="inconsolata-ui text-[8px] font-bold text-accent uppercase tracking-widest">
+                       Pro Audit (0.1 Credits)
+                     </p>
+                   </div>
+                 )}
+              </div>
               <button 
                 onClick={onSubmit}
                 disabled={submitting}

@@ -167,6 +167,36 @@ async def create_submission(background_tasks: BackgroundTasks, payload: dict = B
     email = current_user.email
     sb = get_supabase_client()
     
+    # 0. Pro / Free Tier Limit Check for Audit Senate
+    profile_res = sb.table("profiles").select("is_pro, roadmap_credits").eq("email", email).single().execute()
+    if not profile_res.data:
+        raise HTTPException(status_code=404, detail="Profile not found")
+        
+    is_pro = profile_res.data.get("is_pro", False)
+    current_credits = float(profile_res.data.get("roadmap_credits", 0))
+    
+    # Count existing senate evaluations
+    senate_count_res = sb.table("submissions").select("id", count="exact").eq("user_email", email).eq("is_senate_eval", True).execute()
+    senate_count = senate_count_res.count or 0
+
+    if not is_pro:
+        if senate_count >= 2:
+             logger.warning(f"Submission rejected for {email}: Audit Senate limit reached for free user.")
+             raise HTTPException(
+                 status_code=403, 
+                 detail="You've reached the limit of 2 free Audit Senate evaluations. Upgrade to Pro to continue with high-depth audits."
+             )
+    else:
+        # Pro users are charged 0.1 credits per evaluation
+        if current_credits < 0.1:
+            logger.warning(f"Submission rejected for {email}: Insufficient credits for Pro Audit.")
+            raise HTTPException(
+                status_code=402,
+                detail="Insufficient credits. Each Audit Senate evaluation costs 0.1 credits."
+            )
+        # Deduct credits
+        sb.table("profiles").update({"roadmap_credits": current_credits - 0.1}).eq("email", email).execute()
+
     # 0. Backend File Size Guard
     if files:
         total_size = 0

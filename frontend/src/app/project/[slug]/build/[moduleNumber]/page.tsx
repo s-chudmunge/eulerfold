@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState, Suspense } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
-import { roadmapsAPI, submissionsAPI } from '@/lib/api';
-import { ChevronLeft, Rocket, Shield, Info, CheckCircle, ExternalLink, Github, FileText, Layout, Plus, Sparkles, User as UserIcon, Code, Palette, Search, AlertCircle, X } from 'lucide-react';
+import { roadmapsAPI, submissionsAPI, authAPI } from '@/lib/api';
+import { ChevronLeft, Rocket, Shield, ShieldCheck, Info, CheckCircle, ExternalLink, Github, FileText, Layout, Plus, Sparkles, User as UserIcon, Code, Palette, Search, AlertCircle, X } from 'lucide-react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase/client';
 
@@ -63,17 +63,21 @@ export default function BuildPilotPage() {
         router.push(`/project/${slug}`);
         return;
       }
-      setUser(session.user);
 
       try {
-        const data = await roadmapsAPI.getRoadmapBySlug(slug);
-        setRoadmap(data);
-        
-        if (data.roadmap_plan?.modules[moduleNumber - 1]) {
+        const [roadmapData, userData] = await Promise.all([
+          roadmapsAPI.getRoadmapBySlug(slug),
+          authAPI.getMe()
+        ]);
+
+        setRoadmap(roadmapData);
+        setUser(userData);
+
+        if (roadmapData.roadmap_plan?.modules[moduleNumber - 1]) {
           // Default to code as per user preference
           setWorkspaceType('code');
         }
-        
+
         // Load draft from localStorage
         const draftKey = `buildpilot_draft_${slug}_${moduleNumber}`;
         const savedDraft = localStorage.getItem(draftKey);
@@ -89,6 +93,7 @@ export default function BuildPilotPage() {
     }
     init();
   }, [slug, moduleNumber, router]);
+
 
   const handleSaveResearch = (content: string) => {
     setMarkdown(content);
@@ -106,6 +111,17 @@ export default function BuildPilotPage() {
     }
     if (type === 'code' && !selectedCommit) {
       alert("Please provide a GitHub repository URL to submit for audit.");
+      return;
+    }
+
+    // Client-side limit check
+    if (!user?.is_pro && (user?.senate_eval_count || 0) >= 2) {
+      alert("You've reached the limit of 2 free Audit Senate evaluations. Upgrade to Pro to continue with high-depth audits.");
+      return;
+    }
+
+    if (user?.is_pro && (user?.roadmap_credits || 0) < 0.1) {
+      alert("Insufficient credits. Each Audit Senate evaluation costs 0.1 credits.");
       return;
     }
 
@@ -135,15 +151,32 @@ export default function BuildPilotPage() {
   };
 
   if (loading) return (
-    <div className="min-h-screen bg-background flex items-center justify-center">
-      <div className="flex flex-col items-center gap-6">
+    <div className="fixed inset-0 z-[100] bg-background flex flex-col items-center justify-center animate-in fade-in duration-500 manrope-body">
+      <div className="flex flex-col items-center gap-8">
         <div className="relative">
-          <div className="w-12 h-12 border-2 border-teal-700/10 border-t-teal-700 rounded-full animate-spin" />
-          <Rocket className="w-5 h-5 text-teal-700 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
+          <div className="w-20 h-20 border-2 border-teal-700/10 rounded-full" />
+          <div className="absolute inset-0 w-20 h-20 border-t-2 border-teal-700 rounded-full animate-spin" />
+          <ShieldCheck className="absolute inset-0 m-auto w-8 h-8 text-teal-700 animate-pulse" />
         </div>
-        <div className="text-center">
-           <p className="inconsolata-ui text-[11px] font-bold text-text-heading uppercase tracking-widest mb-1">Connecting</p>
-           <p className="manrope-body text-[11px] text-text-muted italic">Establishing secure workspace...</p>
+        
+        <div className="flex flex-col items-center gap-3">
+          <h2 className="inconsolata-ui text-[16px] font-black text-text-heading tracking-[0.2em] uppercase">
+            Connecting
+          </h2>
+          <div className="flex flex-col items-center gap-4">
+            <p className="manrope-body text-[13px] text-text-muted font-medium italic opacity-80 text-center">
+              Establishing secure workspace for Module {moduleNumber}...
+            </p>
+            <div className="flex gap-1.5">
+              {[0, 1, 2].map(i => (
+                <div 
+                  key={i} 
+                  className="w-1.5 h-1.5 bg-teal-700/40 rounded-full animate-bounce" 
+                  style={{ animationDelay: `${i * 0.15}s` }} 
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>

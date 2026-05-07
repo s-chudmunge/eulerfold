@@ -428,9 +428,14 @@ export default function BuildPilotPage() {
              </div>
 
              <div className="p-6 bg-header border border-border rounded-xl shadow-sm">
-                <h3 className="inconsolata-ui text-[11px] font-black uppercase tracking-widest text-text-muted mb-4">How it works</h3>
+                <div className="flex items-center justify-between mb-4">
+                  <h3 className="inconsolata-ui text-[11px] font-black uppercase tracking-widest text-text-muted">How it works</h3>
+                  <div className="px-2 py-0.5 bg-accent/5 border border-accent/20 rounded-none">
+                     <span className="inconsolata-ui text-[8px] font-bold text-accent uppercase tracking-widest">Pro Feature</span>
+                  </div>
+                </div>
                 <p className="text-[12px] text-text-muted leading-relaxed mb-6">
-                  Your work is reviewed by three specialized criteria:
+                  The <span className="text-text-heading font-bold">Audit Senate</span> reviews your work across three specialized criteria:
                 </p>
                 <div className="space-y-5">
                    {[
@@ -450,8 +455,11 @@ export default function BuildPilotPage() {
                    ))}
                 </div>
                 <div className="mt-8 p-4 bg-sidebar/30 border border-border rounded-lg">
-                   <p className="text-[11px] text-text-muted italic leading-relaxed">
+                   <p className="text-[11px] text-text-muted italic leading-relaxed mb-2">
                      <span className="font-bold text-text-heading not-italic">Note:</span> Manual builds cost 0.5 credits. There is a 10-minute cooldown if a submission does not pass.
+                   </p>
+                   <p className="text-[11px] text-text-muted italic leading-relaxed">
+                     <span className="font-bold text-text-heading not-italic underline decoration-teal-700/30">Senate Evaluation:</span> Free users get 2 full audits. Pro users get unlimited deep evaluations.
                    </p>
                 </div>
              </div>

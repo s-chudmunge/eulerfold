@@ -257,6 +257,12 @@ export default function DashboardPage() {
                             <CreditCard className="w-3 h-3" />
                             <span className="inconsolata-ui text-[10px] font-bold">{profile?.roadmap_credits || 0}</span>
                         </div>
+                        {!profile?.is_pro && (
+                            <div className="flex items-center gap-1 text-text-muted px-2 py-1 rounded bg-callout-bg border border-border">
+                                <ShieldCheck className="w-3 h-3 text-teal-700 opacity-60" />
+                                <span className="inconsolata-ui text-[10px] font-bold">{profile?.senate_eval_count || 0}/2</span>
+                            </div>
+                        )}
                         {profile?.username && (
                             <Link 
                                 href={`/u/${profile.username}`}

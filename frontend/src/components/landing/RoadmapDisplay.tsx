@@ -3,7 +3,6 @@
 import React, { useState, useEffect } from 'react';
 import { RoadmapData, saveRoadmap, roadmapsAPI, submissionsAPI } from '../../lib/api';
 import { Download, CheckCircle, ChevronDown, ChevronUp, Play, BookOpen, X, Trophy, Plus, FileText, Copy, Target, MonitorPlay, BookText, Hash, Scroll, ChevronRight, Trash2, Rocket } from 'lucide-react';
-import SubmissionModal from '@/components/SubmissionModal';
 import { supabase } from '../../lib/supabase/client';
 import Link from 'next/link';
 
@@ -192,13 +191,6 @@ const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-  };
-
-  const [showModalFor, setShowModalFor] = useState<number | null>(null);
-  const handleModalClose = () => setShowModalFor(null);
-  const handleCompleted = (result?: any) => {
-    setShowModalFor(null);
-    window.location.reload();
   };
 
   return (
@@ -459,16 +451,6 @@ const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({
           </div>
         )}
       </div>
-
-      {showModalFor && (
-        <SubmissionModal
-          roadmapId={(roadmapData as any).id}
-          moduleNumber={showModalFor}
-          onClose={handleModalClose}
-          onCompleted={handleCompleted}
-          instructions={(roadmapData.roadmap_plan as any).modules[showModalFor - 1]?.proof_of_work_instructions}
-        />
-      )}
     </div>
   );
 };

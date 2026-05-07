@@ -58,6 +58,7 @@ class UserBase(BaseModel):
     eulercoins: int = 0
     roadmap_credits: float = 1.0
     is_pro: bool = False
+    senate_eval_count: int = 0
     last_active_date: Optional[datetime] = None
     skills: List[UserSkill] = []
 
