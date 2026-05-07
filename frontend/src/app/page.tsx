@@ -72,6 +72,7 @@ export const metadata: Metadata = {
   },
 };
 
+// Main landing page component for EulerFold
 export default async function LandingPage() {
   const featuredRoadmaps = await getFeaturedRoadmaps();
   const faqItems = [
