@@ -14,7 +14,7 @@ import {
   X,
   Loader,
   ArrowLeft,
-  BookOpen,
+  Library,
   CheckCircle,
   Check,
   Circle,
@@ -27,13 +27,18 @@ import {
   Target,
   Zap,
   FileText,
-  Info
+  Info,
+  Terminal,
+  Box,
+  Calendar
 } from 'lucide-react';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 
 import CourseHeader from '@/components/CourseHeader';
 import MCQPractice from './MCQPractice';
+import SyllabusModal from './SyllabusModal';
+import TaskModal from '@/components/planner/TaskModal';
 
 export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoadmap }: { id?: string, slug?: string[], initialRoadmap?: RoadmapData | null }) {
     const params = useParams();
@@ -49,6 +54,8 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
     const [currentModuleIndex, setCurrentModuleIndex] = useState(0);
     const [currentTopicIndex, setCurrentTopicIndex] = useState(0);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [isSyllabusOpen, setIsSyllabusOpen] = useState(false);
+    const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
     const [completedTopics, setCompletedTopics] = useState<Set<string>>(new Set());
     const [isUpdatingProgress, setIsUpdatingProgress] = useState(false);
     
@@ -522,9 +529,13 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                 hasPrev={currentModuleIndex > 0 || currentTopicIndex > 0}
                 hasNext={!!upNextTopic}
                 onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                onOpenSyllabus={() => setIsSyllabusOpen(true)}
+                modules={modules}
+                currentModuleIndex={currentModuleIndex}
+                onModuleChange={(idx) => handleTopicChange(idx, 0)}
             />
 
-            <div className="flex flex-1 relative overflow-hidden mt-12">
+            <div className="flex flex-1 relative overflow-hidden mt-14">
                 {/* Sidebar Overlay for Mobile */}
                 {isSidebarOpen && (
                     <div className="fixed inset-0 bg-black/60 z-30 md:hidden" onClick={() => setIsSidebarOpen(false)} />
@@ -533,110 +544,166 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                 {/* Sidebar */}
                 <aside className={`${
                     isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-                } fixed inset-y-0 left-0 z-40 w-[240px] bg-sidebar border-r border-border transition-all duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col`}>
-                    <div className="flex-1 overflow-y-auto p-3 no-scrollbar">
-                        <div className="flex items-center justify-between mb-4 px-1">
-                            <h2 className="text-[0.6rem] font-bold text-text-muted tracking-wider opacity-70">Curriculum</h2>
-                            <button onClick={() => setIsSidebarOpen(false)} className="md:hidden p-1 hover:bg-callout-bg rounded text-text-muted">
-                                <X className="h-3.5 w-3.5" />
-                            </button>
+                } fixed inset-y-0 left-0 z-40 w-[280px] bg-sidebar border-r border-border transition-all duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col`}>
+                    <div className="flex-1 overflow-y-auto p-4 no-scrollbar">
+                        <div className="mb-6">
+                            <h2 className="text-[13px] font-bold text-text-heading leading-tight">
+                                {currentModule?.title?.toLowerCase().startsWith('module') 
+                                    ? currentModule.title 
+                                    : `Module ${currentModuleIndex + 1}: ${currentModule?.title}`}
+                            </h2>
                         </div>
                         
-                        <div className="space-y-4">
-                            {modules.map((module: any, mIdx: number) => (
-                                <div key={mIdx} className="relative">
-                                    <div className="flex items-center justify-between mb-1 px-1">
-                                        <span className="text-[8px] font-bold text-text-muted tracking-tight opacity-60">
-                                            {module.is_extension ? 'EXTENSION' : `WEEK ${mIdx + 1}`}
+                        <div className="space-y-1">
+                            {currentModule?.topics?.map((topic: any, tIdx: number) => {
+                                const isCompleted = completedTopics.has(`${currentModuleIndex + 1}-${tIdx}`);
+                                const isActive = tIdx === currentTopicIndex;
+                                const hasVideo = !!topic.youtube_video_id;
+                                
+                                return (
+                                    <button
+                                        key={tIdx}
+                                        onClick={() => handleTopicChange(currentModuleIndex, tIdx)}
+                                        className={`w-full flex items-start text-left px-3 py-3 rounded-lg text-[13px] transition-all group ${
+                                            isActive 
+                                                ? 'bg-[var(--accent)]/10 text-[var(--accent)] font-semibold shadow-sm' 
+                                                : 'hover:bg-callout-bg text-text-primary hover:text-text-heading'
+                                        }`}
+                                    >
+                                        <div className="mr-3 mt-0.5 shrink-0">
+                                            {isCompleted ? (
+                                                <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                                            ) : hasVideo ? (
+                                                <PlayCircle className={`h-5 w-5 ${isActive ? 'text-accent' : 'opacity-60 group-hover:opacity-100'}`} />
+                                            ) : (
+                                                <Library className={`h-5 w-5 ${isActive ? 'text-accent' : 'opacity-60 group-hover:opacity-100'}`} />
+                                            )}
+                                        </div>
+                                        <div className="flex flex-col min-w-0">
+                                            <span className="line-clamp-2 leading-snug font-medium">{topic.title}</span>
+                                            <span className="text-[10px] mt-1 opacity-80">
+                                                {hasVideo ? (
+                                                    `Video • ${typeof topic.duration === 'string' ? topic.duration.replace('m', ' min') : (topic.duration ? `${topic.duration} min` : '8 min')}`
+                                                ) : (
+                                                    'Resources available'
+                                                )}
+                                            </span>
+                                        </div>
+                                    </button>
+                                );
+                            })}
+
+                            <div className="pt-2 space-y-2">
+                                <button 
+                                    onClick={() => setViewMode('practice')}
+                                    className={`w-full flex items-start gap-3 px-3 py-3 rounded-lg text-[13px] transition-all group ${
+                                        viewMode === 'practice' 
+                                            ? "bg-[var(--accent)]/10 text-[var(--accent)] font-semibold shadow-sm" 
+                                            : "text-text-primary hover:text-text-heading hover:bg-callout-bg"
+                                    }`}
+                                >
+                                    <Target className={`h-5 w-5 mt-0.5 ${viewMode === 'practice' ? 'text-accent' : 'opacity-60'}`} />
+                                    <div className="flex flex-col">
+                                        <span className="font-medium">Interactive Practice</span>
+                                        <span className="text-[10px] mt-1 opacity-80 group-hover:opacity-100 transition-opacity">Test your knowledge</span>
+                                    </div>
+                                </button>
+
+                                <Link 
+                                    href={`${roadmap?.model === 'manual-build' ? '/project' : '/roadmap'}/${roadmap?.slug || id}/build/${currentModuleIndex + 1}`}
+                                    className="w-full flex items-start gap-3 px-3 py-3 rounded-lg text-[13px] text-text-primary hover:text-text-heading hover:bg-callout-bg transition-all group"
+                                >
+                                    <Box className="h-5 w-5 opacity-60 mt-0.5 group-hover:opacity-100" />
+                                    <div className="flex flex-col">
+                                        <span className="font-medium">BuildPilot</span>
+                                        <span className="text-[10px] mt-1 opacity-80 group-hover:opacity-100 transition-opacity">Submit proof of work for audit</span>
+                                    </div>
+                                </Link>                            </div>
+                        </div>
+
+                        {/* Module Navigation */}
+                        <div className="mt-8 pt-6 border-t border-border/50 space-y-4">
+                            {currentModuleIndex > 0 && (
+                                <div>
+                                    <p className="text-[11px] font-bold text-text-primary uppercase tracking-wider mb-2 px-1">Previous</p>
+                                    <button 
+                                        onClick={() => handleTopicChange(currentModuleIndex - 1, 0)}
+                                        className="w-full flex items-center justify-between px-3 py-3 rounded-lg text-[13px] font-bold text-text-heading hover:bg-callout-bg transition-all group"
+                                    >
+                                        <ChevronLeft className="h-4 w-4 shrink-0 transition-transform group-hover:-translate-x-0.5" />
+                                        <span className="truncate ml-2 text-right">
+                                            {modules[currentModuleIndex - 1].title?.toLowerCase().startsWith('module')
+                                                ? modules[currentModuleIndex - 1].title
+                                                : `Module ${currentModuleIndex}: ${modules[currentModuleIndex - 1].title}`}
                                         </span>
-                                        {Array.from(completedTopics).filter(k => k.startsWith(`${mIdx + 1}-`)).length === (module.topics?.length || 0) && (
-                                            <Check className="h-2 w-2 text-emerald-500" />
-                                        )}                                    </div>
-                                    <h3 className="text-[12px] font-bold text-text-primary mb-2 px-1 leading-tight tracking-tight">{module.title}</h3>
-                                    <div className="space-y-0.5">
-                                        {module.topics?.map((topic: any, tIdx: number) => {
-                                            const isCompleted = completedTopics.has(`${mIdx + 1}-${tIdx}`);
-                                            const isActive = mIdx === currentModuleIndex && tIdx === currentTopicIndex;
-                                            return (
-                                                <button
-                                                    key={tIdx}
-                                                    onClick={() => handleTopicChange(mIdx, tIdx)}
-                                                    className={`w-full flex items-start text-left px-2 py-1.5 rounded-md text-[13.5px] transition-colors group ${
-                                                        isActive ? 'bg-[var(--active-bg)] text-[var(--active-text)] font-bold' : 'hover:bg-callout-bg text-text-primary hover:text-text-heading'
-                                                    }`}
-                                                >
-                                                    <div className="mr-2.5 mt-1 shrink-0">
-                                                        {isCompleted ? <Check className={`h-3 w-3 ${isActive ? 'text-emerald-400' : 'text-emerald-500'}`} /> : <PlayCircle className={`h-3 w-3 ${isActive ? 'text-accent' : 'opacity-30'}`} />}
-                                                    </div>                                                    <span className="line-clamp-2 leading-tight">{topic.title}</span>
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                    
-                                    <div className="mt-1 px-1">
-                                        <button 
-                                            onClick={() => {
-                                                setViewMode('practice');
-                                            }}
-                                            disabled={isPracticeLoading}
-                                            className={`w-full flex items-center gap-2.5 px-2 py-1.5 rounded-md text-[13.5px] transition-colors ${
-                                                viewMode === 'practice' 
-                                                    ? "bg-[var(--active-bg)] text-[var(--active-text)] font-bold shadow-sm" 
-                                                    : "text-text-primary hover:text-text-heading hover:bg-callout-bg"
-                                            }`}
-                                        >
-                                            <div className="shrink-0 flex items-center justify-center">
-                                                {isPracticeLoading ? <Loader className="h-3 w-3 animate-spin" /> : <Target className={`h-3 w-3 ${viewMode === 'practice' ? 'text-accent' : 'opacity-40'}`} />}
-                                            </div>
-                                            <span className="leading-tight">Practice</span>
-                                        </button>
-                                    </div>
+                                    </button>
                                 </div>
-                            ))}
+                            )}
+
+                            {currentModuleIndex < modules.length - 1 && (
+                                <div>
+                                    <p className="text-[11px] font-bold text-text-primary uppercase tracking-wider mb-2 px-1">Next</p>
+                                    <button 
+                                        onClick={() => handleTopicChange(currentModuleIndex + 1, 0)}
+                                        className="w-full flex items-center justify-between px-3 py-3 rounded-lg text-[13px] font-bold text-text-heading hover:bg-callout-bg transition-all group"
+                                    >
+                                        <span className="truncate mr-2 text-left">
+                                            {modules[currentModuleIndex + 1].title?.toLowerCase().startsWith('module')
+                                                ? modules[currentModuleIndex + 1].title
+                                                : `Module ${currentModuleIndex + 2}: ${modules[currentModuleIndex + 1].title}`}
+                                        </span>
+                                        <ChevronRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5" />
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Sidebar Footer with Progress */}
+                    <div className="p-4 border-t border-border bg-sidebar/50">
+                        <div className="mb-4">
+                            <div className="flex items-center justify-between text-[11px] font-bold mb-1.5 px-1">
+                                <span className="text-text-primary uppercase tracking-wider">Progress</span>
+                                <span className="text-text-heading">{Math.round((completedInCurrentWeekCount / currentWeekTopicsCount) * 100)}%</span>
+                            </div>
+                            <div className="h-1.5 w-full bg-border rounded-full overflow-hidden">
+                                <div 
+                                    className="h-full bg-accent transition-all duration-500 ease-out rounded-full"
+                                    style={{ width: `${(completedInCurrentWeekCount / currentWeekTopicsCount) * 100}%` }}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="flex items-center justify-between px-1">
+                            <div className="flex items-center gap-4">
+                                <button className="text-text-primary hover:text-text-heading transition-colors" title="Help">
+                                    <Info className="h-4 w-4 opacity-70 group-hover:opacity-100" />
+                                </button>
+                                <button 
+                                    onClick={() => setIsTaskModalOpen(true)}
+                                    className="text-text-primary hover:text-text-heading transition-colors" 
+                                    title="Add to Planner"
+                                >
+                                    <Calendar className="h-4 w-4 opacity-70 group-hover:opacity-100" />
+                                </button>
+                            </div>
+                            <Link href={`/roadmap/${roadmap?.slug || id}`} className="text-text-primary hover:text-text-heading transition-colors">
+                                <LayoutDashboard className="h-4 w-4 opacity-70 group-hover:opacity-100" />
+                            </Link>
                         </div>
                     </div>
                 </aside>
 
                 {/* Main Content Area */}
-                <main className="flex-1 flex flex-col h-full bg-background relative overflow-hidden transition-colors duration-300">
-                    <div className="flex-1 overflow-y-auto pt-2 pb-8 px-4 md:pt-4 md:pb-10 md:px-10 no-scrollbar">
-                        <div className="max-w-[1400px] mx-auto w-full">
+                <main className="flex-1 flex flex-col h-full bg-background relative overflow-hidden">
+                    <div className="flex-1 overflow-y-auto no-scrollbar">
+                        <div className="max-w-[1200px] mx-auto w-full p-4 md:p-8">
                             
-                            {viewMode === 'video' && (
-                                <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-4">
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex items-center gap-2 mb-1.5">
-                                            <div className="flex items-center gap-2 text-accent text-[10px] font-bold tracking-tight">
-                                                <span className="bg-teal-500/10 px-2 py-0.5 rounded">Unit {currentTopicIndex + 1}</span>
-                                                <span className="text-[var(--border)]">/</span>
-                                                <span className="text-text-muted italic">Week {currentModuleIndex + 1}</span>
-                                            </div>
-                                        </div>
-                                        <h2 className="text-xl md:text-2xl font-bold text-text-heading leading-tight tracking-tight">{currentTopic?.title}</h2>
-                                    </div>
-
-                                    <button
-                                        onClick={handleMarkAsCompleted}
-                                        disabled={isUpdatingProgress}
-                                        className={`flex items-center gap-2 px-5 py-2 rounded-xl font-bold text-[11px] tracking-tight transition-all shrink-0 ${
-                                            isTopicCompleted
-                                                ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 hover:bg-emerald-500/20 animate-in zoom-in-95 duration-300'
-                                                : 'bg-[var(--text-heading)] text-[var(--bg-main)] hover:opacity-90 shadow-xl active:scale-95'
-                                        }`}
-                                    >                                    {isUpdatingProgress ? (
-                                            <><Loader className="h-3.5 w-3.5 animate-spin" /> Syncing...</>
-                                        ) : isTopicCompleted ? (
-                                            <><Check className="h-3.5 w-3.5" /> Mastered</>
-                                        ) : (
-                                            "Mark Complete"
-                                        )}                                </button>
-                                </div>
-                            )}
-
                             {viewMode === 'video' ? (
                                 <div className="animate-in fade-in duration-500">
-                                    <div className="mb-8 flex justify-center">
-                                        <div className="w-full max-w-[1000px] aspect-video bg-black rounded-xl overflow-hidden shadow-2xl border border-border relative group">
+                                    {/* Video Player Container */}
+                                    <div className="bg-image-bg border border-border rounded-xl overflow-hidden shadow-sm mb-8">
+                                        <div className="aspect-video w-full bg-black relative group">
                                             {activeVideoId ? (
                                                 <iframe
                                                     src={`https://www.youtube.com/embed/${activeVideoId}?autoplay=1&mute=1&rel=0&modestbranding=1&iv_load_policy=3&showinfo=0&controls=1`}
@@ -647,309 +714,153 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                                 />
                                             ) : (
                                                 <div className="w-full h-full flex flex-col items-center justify-center text-text-muted p-8 text-center bg-callout-bg">
-                                                    <BookOpen className="h-12 w-12 mb-4 opacity-20" />
-                                                    <h3 className="text-lg font-bold text-text-heading mb-2 tracking-tight">No video available</h3>                                                    <p className="manrope-body text-sm max-w-xs italic opacity-60">Please refer to the materials section for this topic to learn more and continue your progress.</p>
+                                                    <Library className="h-12 w-12 mb-4 opacity-20" />
+                                                    <h3 className="text-lg font-bold text-text-heading mb-2">No video available</h3>
+                                                    <p className="manrope-body text-sm max-w-xs italic opacity-60">Please refer to the materials section for this topic.</p>
                                                 </div>
                                             )}
+                                        </div>
+                                        
+                                        <div className="p-4 border-t border-border flex items-center justify-between">
+                                            <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border text-[12px] font-bold text-text-muted hover:bg-callout-bg transition-all">
+                                                <Menu className="h-3.5 w-3.5" />
+                                                Show Transcript
+                                            </button>
 
-                                            {showMuteTooltip && activeVideoId && (
-                                                <div className="absolute top-6 right-6 z-10 animate-in fade-in zoom-in duration-300">
-                                                    <div className="bg-black/80 backdrop-blur-xl border border-white/10 text-white px-4 py-2.5 rounded-xl shadow-2xl flex items-center gap-3">
-                                                        <VolumeX className="h-4 w-4 text-white/60" />
-                                                        <p className="text-[10px] font-bold tracking-wide">Muted autoplay</p>
-                                                        <button onClick={dismissMuteTooltip} className="ml-1 text-white/40 hover:text-white transition-colors">
-                                                            <X className="h-3.5 w-3.5" />
-                                                        </button>
-                                                    </div>
-                                                </div>
-                                            )}
+                                            <button
+                                                onClick={handleMarkAsCompleted}
+                                                disabled={isUpdatingProgress}
+                                                className={`flex items-center gap-2 px-6 py-2 rounded-xl font-bold text-[12px] transition-all ${
+                                                    isTopicCompleted
+                                                        ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20'
+                                                        : 'bg-text-heading text-background hover:opacity-90 shadow-lg active:scale-95'
+                                                }`}
+                                            >
+                                                {isUpdatingProgress ? (
+                                                    <Loader className="h-3.5 w-3.5 animate-spin" />
+                                                ) : isTopicCompleted ? (
+                                                    <><Check className="h-3.5 w-3.5" /> Completed</>
+                                                ) : (
+                                                    "Mark as Mastered"
+                                                )}
+                                            </button>
                                         </div>
                                     </div>
 
-                                    <div className="space-y-8 pb-20 mt-12">
-                                        {/* Objectives */}
-                                        <div>
-                                            <h4 className="text-[12px] font-bold text-text-muted mb-3">
-                                                Learning objectives
-                                            </h4>
-                                            {currentTopic?.subtopics && currentTopic.subtopics.length > 0 ? (
-                                                <ul className="space-y-2 max-w-3xl">
-                                                    {currentTopic.subtopics.map((sub: any, idx: number) => (
-                                                        <li key={idx} className="manrope-body text-[14px] text-text-primary font-medium list-none flex gap-2">
-                                                            <span className="text-accent opacity-50">•</span>
-                                                            {sub.title}
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            ) : (
-                                                <p className="manrope-body text-[13px] text-text-muted italic">No specific objectives defined.</p>
-                                            )}
-                                        </div>
+                                    {/* Content Info */}
+                                    <div className="max-w-4xl">
+                                        <h1 className="text-2xl md:text-3xl font-bold text-text-heading mb-6 tracking-tight">
+                                            {currentTopic?.title}
+                                        </h1>
 
-                                        {/* Materials */}
-                                        <div>
-                                            <h4 className="text-[12px] font-bold text-text-muted mb-3">
-                                                Study materials
-                                            </h4>
-                                            {currentModule?.resources && currentModule.resources.length > 0 ? (
-                                                <div className="flex flex-col gap-2">
-                                                    {currentModule.resources.map((res: any, idx: number) => (
-                                                        <a 
-                                                            key={idx}
-                                                            href={res.url || res.link} 
-                                                            target="_blank" 
-                                                            rel="noreferrer"
-                                                            className="manrope-body text-[13px] text-accent hover:underline flex items-center gap-2"
-                                                        >
-                                                            <span>→</span> {res.title || res.name}
-                                                        </a>
-                                                    ))}
-                                                </div>
-                                            ) : (
-                                                <p className="manrope-body text-[13px] text-text-muted italic">No materials available.</p>
-                                            )}
-                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-20">
+                                            <div className="md:col-span-2 space-y-8">
+                                                <section>
+                                                    <h4 className="text-[12px] font-bold text-text-muted uppercase tracking-[0.1em] mb-4">
+                                                        Learning Objectives
+                                                    </h4>
+                                                    {currentTopic?.subtopics?.length > 0 ? (
+                                                        <ul className="space-y-3">
+                                                            {currentTopic.subtopics.map((sub: any, idx: number) => (
+                                                                <li key={idx} className="manrope-body text-[15px] text-text-primary flex gap-3">
+                                                                    <span className="text-accent/40 font-bold">•</span>
+                                                                    {sub.title}
+                                                                </li>
+                                                            ))}
+                                                        </ul>
+                                                    ) : (
+                                                        <p className="text-[14px] text-text-muted italic">No specific objectives defined for this node.</p>
+                                                    )}
+                                                </section>
 
-                                        {/* Weekly Target */}
-                                        <div>
-                                            <h4 className="text-[12px] font-bold text-text-muted mb-3">
-                                                Weekly target
-                                            </h4>
-                                            <div className="max-w-2xl">
-                                                <p className="manrope-body text-[14px] font-bold text-text-heading">
-                                                    {currentModule?.outcome}
-                                                </p>
+                                                <section>
+                                                    <h4 className="text-[12px] font-bold text-text-muted uppercase tracking-[0.1em] mb-4">
+                                                        Weekly Outcome
+                                                    </h4>
+                                                    <div className="p-5 bg-callout-bg border border-callout-border rounded-xl">
+                                                        <p className="manrope-body text-[15px] font-medium text-text-heading leading-relaxed">
+                                                            {currentModule?.outcome}
+                                                        </p>
+                                                    </div>
+                                                </section>
                                             </div>
-                                        </div>
 
-                                        <div className="pt-10 mt-10 border-t border-border flex items-center justify-between">
-                                            <div className="flex items-center gap-4">
-                                                <Link 
-                                                    href={`/roadmap/${roadmap?.slug || id}`} 
-                                                    className={`px-6 py-2 rounded-lg border border-border bg-background text-[11px] font-bold tracking-wide text-text-heading hover:bg-callout-bg transition-all shadow-sm`}
-                                                >
-                                                    Exit Learning
-                                                </Link>
-                                                {isWeekFullyCompleted && (
-                                                    <Link 
-                                                        href={`/roadmap/${roadmap?.slug || id}`} 
-                                                        className="px-8 py-2 bg-emerald-600 text-white rounded-lg text-[11px] font-bold tracking-wide hover:bg-emerald-700 shadow-xl transition-all"
-                                                    >
-                                                        Submit Weekly Work
-                                                    </Link>
-                                                )}
+                                            <div className="space-y-8">
+                                                <section>
+                                                    <h4 className="text-[12px] font-bold text-text-muted uppercase tracking-[0.1em] mb-4">
+                                                        Resources
+                                                    </h4>
+                                                    <div className="flex flex-col gap-2">
+                                                        {currentModule?.resources?.map((res: any, idx: number) => (
+                                                            <a 
+                                                                key={idx}
+                                                                href={res.url || res.link} 
+                                                                target="_blank" 
+                                                                rel="noreferrer"
+                                                                className="text-[13px] text-accent hover:underline flex items-start gap-2 group"
+                                                            >
+                                                                <FileText className="h-4 w-4 shrink-0 opacity-40 group-hover:opacity-100" />
+                                                                <span className="leading-tight">{res.title || res.name}</span>
+                                                            </a>
+                                                        ))}
+                                                        {(!currentModule?.resources || currentModule.resources.length === 0) && (
+                                                            <p className="text-[12px] text-text-muted italic">No supplementary materials.</p>
+                                                        )}
+                                                    </div>
+                                                </section>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             ) : (
-                                <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
-                                    <div className="max-w-[1000px] mx-auto">
-                                        {/* Header */}
-                                        <div className="mb-6 border-b border-border pb-6">
-                                            <div className="flex items-center gap-2 text-accent mb-3 text-[9px] font-bold tracking-[0.15em] inconsolata-ui uppercase">
-                                                <span className="bg-accent text-white px-2 py-0.5 rounded-none">Practice</span>
-                                                <span className="text-[var(--border)]">/</span>
-                                                <span className="text-text-muted">{currentModule?.is_extension ? 'Extension' : `Week ${currentModuleIndex + 1}`}</span>
-                                            </div>
-                                            <h2 className="text-xl md:text-2xl font-bold text-text-heading mb-2 tracking-tight inconsolata-ui uppercase">
-                                                {currentModule?.title || 'Practice Session'}
-                                            </h2>
-                                            <p className="manrope-body text-[12px] text-text-muted max-w-2xl italic leading-relaxed opacity-80">
-                                                Practice what you&apos;ve learned with study materials and interactive questions.
-                                            </p>
-                                        </div>
-
-                                        {/* Content Groups */}
-                                        <div className="space-y-10">
-                                            {/* Group 1: Study Materials */}
-                                            <section>
-                                                <div className="flex items-center gap-4 mb-4">
-                                                    <h3 className="text-[11px] font-bold text-text-heading tracking-[0.2em] uppercase inconsolata-ui opacity-60">01 / Study Materials</h3>
-                                                    <div className="h-[1px] flex-1 bg-[var(--border)] opacity-10"></div>
-                                                </div>
-                                                
-                                                <div className="bg-sidebar border border-border rounded-none overflow-hidden shadow-sm">
-                                                    <table className="w-full text-left border-collapse">
-                                                        <tbody className="divide-y divide-border/50">
-                                                            {allWeekResources.length > 0 ? allWeekResources.map((res, idx) => (
-                                                                <tr key={idx} className="hover:bg-callout-bg transition-colors group">
-                                                                    <td className="px-5 py-3">
-                                                                        <a href={res.url} target="_blank" rel="noreferrer" className="manrope-body text-[13px] font-bold text-text-heading hover:text-accent transition-colors flex items-center gap-3">
-                                                                            <span className="text-[9px] text-text-muted inconsolata-ui opacity-30 group-hover:opacity-100 transition-all">{idx + 1}.</span>
-                                                                            {res.title}
-                                                                        </a>
-                                                                    </td>
-                                                                </tr>
-                                                            )) : (
-                                                                <tr>
-                                                                    <td className="px-5 py-8 text-center manrope-body text-[12px] text-text-muted italic opacity-60">
-                                                                        No materials listed for this topic.
-                                                                    </td>
-                                                                </tr>
-                                                            )}
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                            </section>
-
-                                            {/* Group 2: Interactive assessments */}
-                                            <section>
-                                                <div className="flex items-center gap-4 mb-4">
-                                                    <h3 className="text-[11px] font-bold text-text-heading tracking-[0.2em] uppercase inconsolata-ui opacity-60">02 / Interactive Practice</h3>
-                                                    <div className="h-[1px] flex-1 bg-[var(--border)] opacity-10"></div>
-                                                </div>
-
-                                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                                                    {/* Find Questions Card */}
-                                                    <div className="bg-background border border-border rounded-none p-5 flex flex-col shadow-sm">
-                                                        <div className="flex items-center justify-between mb-4">
-                                                            <div className="flex items-center gap-2">
-                                                                <span className="text-lg">🔍</span>
-                                                                <h4 className="inconsolata-ui text-[13px] font-bold text-text-heading uppercase tracking-widest">Find Questions</h4>
-                                                            </div>
-                                                            <span className="inconsolata-ui text-[8px] font-bold tracking-widest px-1.5 py-0.5 bg-background border border-border text-text-muted uppercase">Free</span>
-                                                        </div>
-                                                        <p className="manrope-body text-[11px] text-text-muted mb-6 italic leading-relaxed opacity-70">
-                                                            Find high-quality practice questions from external platforms online.
-                                                        </p>
-                                                        
-                                                        {practiceSession ? (
-                                                            <div className="flex-1 space-y-2">
-                                                                {practiceSession.resources.map((res) => (
-                                                                    <div key={res.id} className="flex items-center gap-2.5 p-2.5 bg-sidebar border border-border/60 rounded-none group hover:border-accent/40 transition-colors">
-                                                                        <button 
-                                                                            onClick={() => handleToggleResource(res.id, !practiceProgress[res.id])}
-                                                                            className="flex-shrink-0 focus:outline-none"
-                                                                            title={practiceProgress[res.id] ? "Mark as TODO" : "Mark as Completed"}
-                                                                        >
-                                                                            {practiceProgress[res.id] ? (
-                                                                                <span className="text-emerald-500 text-[10px]">✅</span>
-                                                                            ) : (
-                                                                                <span className="opacity-20 group-hover:opacity-100 inconsolata-ui text-[9px] font-bold transition-opacity hover:text-accent">TODO</span>
-                                                                            )}
-                                                                        </button>
-                                                                        <div className="flex flex-col flex-1 min-w-0">
-                                                                            <a 
-                                                                                href={res.url} 
-                                                                                target="_blank" 
-                                                                                rel="noreferrer" 
-                                                                                className="text-[10px] font-bold text-text-heading truncate inconsolata-ui uppercase tracking-tighter hover:text-accent transition-colors flex items-center gap-1.5"
-                                                                            >
-                                                                                {res.title}
-                                                                                <span className="text-[8px] opacity-0 group-hover:opacity-40 transition-opacity">↗</span>
-                                                                            </a>
-                                                                            {res.platform && (
-                                                                                <span className="text-[8px] text-text-muted inconsolata-ui opacity-50 uppercase tracking-widest">{res.platform}</span>
-                                                                            )}
-                                                                        </div>
-                                                                    </div>
-                                                                ))}
-                                                                <div className="pt-5 mt-auto flex flex-col gap-3">
-                                                                    <p className="inconsolata-ui text-[8px] font-bold text-emerald-500 mb-1 flex items-center gap-1.5 justify-center uppercase tracking-widest">
-                                                                        <span>🤑</span> 01 COIN / TASK
-                                                                    </p>
-                                                                    
-                                                                    <div className="flex items-center gap-2">
-                                                                        {practiceSession.has_more && (
-                                                                            <button 
-                                                                                onClick={() => setIsConfirmingMore(true)}
-                                                                                disabled={isGeneratingPractice}
-                                                                                className="flex-1 py-1.5 border border-border hover:bg-callout-bg text-text-muted inconsolata-ui text-[8px] font-bold uppercase tracking-widest transition-all"
-                                                                            >
-                                                                                {isGeneratingPractice ? '...' : `Load More (${3 - practiceSession.generation_count})`}
-                                                                            </button>
-                                                                        )}
-                                                                        {practiceSession.generation_count < 3 && (
-                                                                            <button 
-                                                                                onClick={handleRetryPractice}
-                                                                                disabled={isGeneratingPractice}
-                                                                                className="flex-1 py-1.5 border border-border hover:bg-callout-bg text-text-muted inconsolata-ui text-[8px] font-bold uppercase tracking-widest transition-all"
-                                                                            >
-                                                                                {isGeneratingPractice ? '...' : `Retry (${3 - practiceSession.generation_count})`}
-                                                                            </button>
-                                                                        )}
-                                                                    </div>
-
-                                                                    {practiceSession.generation_count >= 3 && (
-                                                                        <p className="manrope-body text-[8px] text-text-muted text-center italic opacity-60">
-                                                                            Generation limit reached for this session.
-                                                                        </p>
-                                                                    )}
-                                                                    
-                                                                    {isConfirmingMore && (
-                                                                        <div className="p-3 bg-sidebar border border-accent/20 animate-in fade-in zoom-in-95 duration-200">
-                                                                            <p className="manrope-body text-[9px] text-text-muted mb-2 italic">Finding more specific questions may take a few seconds.</p>
-                                                                            <div className="flex gap-2">
-                                                                                <button 
-                                                                                    onClick={handleLoadMore}
-                                                                                    className="flex-1 py-1.5 bg-accent text-white inconsolata-ui text-[8px] font-bold uppercase tracking-widest"
-                                                                                >
-                                                                                    Confirm
-                                                                                </button>
-                                                                                <button 
-                                                                                    onClick={() => setIsConfirmingMore(false)}
-                                                                                    className="flex-1 py-1.5 border border-border text-text-muted inconsolata-ui text-[8px] font-bold uppercase tracking-widest"
-                                                                                >
-                                                                                    Cancel
-                                                                                </button>
-                                                                            </div>
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-                                                            </div>
-                                                        ) : (
-                                                            <div className="flex-1 flex items-center justify-center py-8 border-t border-border/40 border-dashed">
-                                                                <button 
-                                                                    onClick={handleStartPractice}
-                                                                    disabled={isGeneratingPractice}
-                                                                    className="px-6 py-2 bg-[#111] dark:bg-text-heading text-background rounded-none text-[9px] font-bold inconsolata-ui uppercase tracking-[0.15em] hover:opacity-90 transition-all shadow-md active:scale-95"
-                                                                >
-                                                                    {isGeneratingPractice ? 'FINDING...' : 'FIND QUESTIONS'}
-                                                                </button>
-                                                            </div>
-                                                        )}
-                                                    </div>
-
-                                                    {/* Pro MCQ Assessment */}
-                                                    <MCQPractice 
-                                                        roadmapId={roadmap?.id || 0}
-                                                        subtopicId={currentTopic?.uuid || ''}
-                                                        topicName={currentTopic?.title || ''}
-                                                        subject={roadmap?.subject || roadmap?.title || ''}
-                                                        weekNumber={currentModuleIndex + 1}
-                                                        isPro={profile?.is_pro || false}
-                                                        userCredits={profile?.roadmap_credits || 0}
-                                                        onPointsEarned={(amount) => {
-                                                            setCoinToast({ show: true, amount });
-                                                            setTimeout(() => setCoinToast(null), 3000);
-                                                        }}
-                                                        onRefreshProfile={refreshProfile}
-                                                    />
-                                                </div>
-                                            </section>
-                                        </div>
-                                    </div>
-                                </div>
+                                <MCQPractice
+                                    roadmapId={roadmap.id}
+                                    subtopicId={currentTopic?.uuid || ''}
+                                    topicTitle={currentTopic?.title || ''}
+                                    onComplete={() => {
+                                        setCoinToast({ show: true, amount: 5 });
+                                        setTimeout(() => setCoinToast(null), 4000);
+                                    }}
+                                />
                             )}
-
                         </div>
                     </div>
                 </main>
             </div>
 
             {coinToast && (
-                <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[110] animate-in fade-in slide-in-from-bottom-4 duration-500">
-                    <div className="bg-black/90 backdrop-blur-xl text-white px-6 py-4 rounded-2xl shadow-2xl border border-white/10 flex items-center gap-4 min-w-[260px]">
-                        <div className="bg-emerald-500 text-white p-2 rounded-lg shadow-lg shadow-emerald-500/20">
-                            <Trophy className="h-5 w-5" />
+                <div className="fixed bottom-8 right-8 z-[200] animate-in slide-in-from-bottom-4 duration-500">
+                    <div className="bg-[var(--text-heading)] text-[var(--bg-main)] px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 border border-white/10">
+                        <div className="h-10 w-10 bg-white/20 rounded-full flex items-center justify-center">
+                            <Zap className="h-5 w-5 fill-current" />
                         </div>
                         <div>
-                            <p className="text-[10px] font-bold text-emerald-400 tracking-wide leading-none mb-1.5">Node mastered</p>
-                            <p className="text-[15px] font-bold tracking-tight">+{coinToast.amount}🤑 System Points</p>
+                         <p className="text-[15px] font-bold tracking-tight">+{coinToast.amount}🤑 System Points</p>
                         </div>
                     </div>
                 </div>
+            )}
+
+            <SyllabusModal 
+                isOpen={isSyllabusOpen}
+                onClose={() => setIsSyllabusOpen(false)}
+                roadmap={roadmap}
+                currentModuleIndex={currentModuleIndex}
+                completedTopics={completedTopics}
+                onTopicChange={handleTopicChange}
+            />
+
+            {isTaskModalOpen && (
+                <TaskModal 
+                    task={null}
+                    initialDate={new Date()}
+                    onClose={() => setIsTaskModalOpen(false)}
+                    onRefresh={() => {
+                        // Optional: show a toast or refresh some state
+                    }}
+                    initialRoadmapId={roadmap.id}
+                    initialModuleNumber={currentModuleIndex + 1}
+                />
             )}
         </div>
     );

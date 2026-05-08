@@ -3,7 +3,7 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { roadmapsAPI, submissionsAPI, authAPI } from '@/lib/api';
-import { ChevronLeft, Rocket, Shield, ShieldCheck, Info, CheckCircle, ExternalLink, Github, FileText, Layout, Plus, Sparkles, User as UserIcon, Code, Palette, Search, AlertCircle, X } from 'lucide-react';
+import { ChevronLeft, Rocket, Shield, ShieldCheck, Info, CheckCircle, ExternalLink, Github, FileText, Layout, Plus, Sparkles, User as UserIcon, Code, Palette, Search, AlertCircle, X, GraduationCap } from 'lucide-react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase/client';
 
@@ -233,9 +233,18 @@ export default function BuildPilotPage() {
              </div>
            )}
            <div className="h-5 w-[1px] bg-border mx-1" />
-           <Link href={`/project/${slug}`} className="p-1.5 hover:bg-sidebar transition-colors text-text-muted hover:text-text-heading">
-             <ChevronLeft className="w-3.5 h-3.5" />
-           </Link>
+           <div className="flex items-center gap-1">
+             <Link 
+               href={`/roadmap/${slug}/learn?module=${moduleNumber}`} 
+               className="flex items-center gap-2 px-3 py-1 bg-teal-700 hover:bg-teal-800 transition-all rounded-none shadow-md shadow-teal-700/10 active:scale-95"
+             >
+                <GraduationCap className="w-3.5 h-3.5 text-white" />
+                <span className="inconsolata-ui text-[10px] font-bold uppercase tracking-widest hidden sm:block text-white">Back to Learning</span>
+             </Link>
+             <Link href={`/project/${slug}`} className="p-1.5 hover:bg-sidebar transition-colors text-text-muted hover:text-text-heading" title="Return to Project">
+               <ChevronLeft className="w-3.5 h-3.5" />
+             </Link>
+           </div>
         </div>
       </header>
 

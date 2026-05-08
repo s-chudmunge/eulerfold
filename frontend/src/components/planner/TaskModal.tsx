@@ -13,18 +13,20 @@ interface Props {
   initialDate: Date | null;
   onClose: () => void;
   onRefresh: () => void;
+  initialRoadmapId?: number;
+  initialModuleNumber?: number;
 }
 
-export default function TaskModal({ task, initialDate, onClose, onRefresh }: Props) {
+export default function TaskModal({ task, initialDate, onClose, onRefresh, initialRoadmapId, initialModuleNumber }: Props) {
   const [loading, setLoading] = useState(false);
   const [roadmaps, setRoadmaps] = useState<RoadmapMe[]>([]);
   
   // Form State
   const [title, setTitle] = useState(task?.title || '');
-  const [type, setType] = useState<any>(task?.task_type || 'custom');
+  const [type, setType] = useState<any>(task?.task_type || (initialRoadmapId ? 'module' : 'custom'));
   const [date, setDate] = useState(task ? task.scheduled_date : (initialDate ? format(initialDate, 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd')));
-  const [roadmapId, setRoadmapId] = useState<number | undefined>(task?.roadmap_id || undefined);
-  const [moduleNumber, setModuleNumber] = useState<number | undefined>(task?.module_number || undefined);
+  const [roadmapId, setRoadmapId] = useState<number | undefined>(task?.roadmap_id || initialRoadmapId);
+  const [moduleNumber, setModuleNumber] = useState<number | undefined>(task?.module_number || initialModuleNumber);
   const [isCompleted, setIsCompleted] = useState(task?.is_completed || false);
   const [videoUrl, setVideoUrl] = useState(task?.metadata?.video_url || '');
   const [contentSlug, setContentSlug] = useState(task?.metadata?.slug || '');
@@ -32,6 +34,17 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh }: Pro
   useEffect(() => {
     fetchRoadmaps();
   }, []);
+
+  useEffect(() => {
+    if (initialRoadmapId && initialModuleNumber && roadmaps.length > 0 && !title) {
+      const selectedRoadmap = roadmaps.find(r => r.id === initialRoadmapId);
+      const modules = selectedRoadmap?.roadmap_plan?.modules || [];
+      const module = modules[initialModuleNumber - 1];
+      if (module) {
+        setTitle(`Study: ${module.title}`);
+      }
+    }
+  }, [roadmaps, initialRoadmapId, initialModuleNumber, title]);
 
   const fetchRoadmaps = async () => {
     try {

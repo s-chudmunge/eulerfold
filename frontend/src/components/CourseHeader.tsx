@@ -101,7 +101,11 @@ export default function CourseHeader({
   onNext,
   hasPrev,
   hasNext,
-  onMenuClick
+  onMenuClick,
+  onOpenSyllabus,
+  modules = [],
+  currentModuleIndex = 0,
+  onModuleChange
 }: { 
   roadmapId: number | string, 
   roadmapSlug?: string,
@@ -112,11 +116,27 @@ export default function CourseHeader({
   onNext?: () => void,
   hasPrev?: boolean,
   hasNext?: boolean,
-  onMenuClick?: () => void
+  onMenuClick?: () => void,
+  onOpenSyllabus?: () => void,
+  modules?: any[],
+  currentModuleIndex?: number,
+  onModuleChange?: (idx: number) => void
 }) {
   const [user, setUser] = useState<any>(null);
   const [profile, setProfile] = useState<any>(null);
+  const [isModuleDropdownOpen, setIsModuleDropdownOpen] = useState(false);
   const router = useRouter();
+  const dropdownRef = React.useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsModuleDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   useEffect(() => {
     const checkUser = async () => {
@@ -149,60 +169,110 @@ export default function CourseHeader({
   };
 
   return (
-    <header className="fixed top-0 inset-x-0 z-50 bg-header border-b border-border px-4 md:px-6 h-[48px] flex items-center justify-between transition-colors duration-300">
-      {/* Left: Menu & Logo */}
-      <div className="flex items-center gap-1 md:gap-4 shrink-0">
+    <header className="fixed top-0 inset-x-0 z-50 bg-header border-b border-border px-4 md:px-6 h-[56px] flex items-center justify-between transition-colors duration-300">
+      {/* Left: Logo & Breadcrumbs */}
+      <div className="flex items-center gap-4 min-w-0">
+        <Link href="/" className="flex items-center group shrink-0">
+          <img src="/apple-touch-icon.png" alt="EulerFold" className="w-8 h-8 group-hover:opacity-80 transition-opacity" />
+        </Link>
+        
+        <div className="h-4 w-px bg-border hidden md:block"></div>
+        
+        <nav className="hidden md:flex items-center gap-2 text-[13px] font-medium text-text-muted">
+          <Link 
+            href={`/roadmap/${roadmapSlug || roadmapId}`}
+            className="hover:text-text-heading transition-colors truncate max-w-[150px] lg:max-w-[200px]"
+          >
+            {roadmapTitle}
+          </Link>
+          <span className="text-border">/</span>
+          
+          <div className="relative" ref={dropdownRef}>
+            <button 
+              onClick={() => setIsModuleDropdownOpen(!isModuleDropdownOpen)}
+              className="flex items-center gap-1.5 text-text-heading font-semibold hover:bg-callout-bg px-2 py-1 rounded-md transition-colors truncate max-w-[200px]"
+            >
+              <span className="truncate">
+                {modules[currentModuleIndex]?.title?.toLowerCase().startsWith('module')
+                  ? modules[currentModuleIndex].title
+                  : `Module ${currentModuleIndex + 1}: ${modules[currentModuleIndex]?.title}`}
+              </span>
+              <ChevronDown className={`h-3 w-3 transition-transform duration-200 ${isModuleDropdownOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            {isModuleDropdownOpen && (
+              <div className="absolute top-full left-0 mt-1 w-72 bg-background border border-border rounded-xl shadow-2xl py-2 z-[60] animate-in fade-in slide-in-from-top-1 duration-200">
+                <p className="px-4 py-1.5 text-[10px] font-bold text-text-muted uppercase tracking-wider">Select Module</p>
+                <div className="max-h-[60vh] overflow-y-auto no-scrollbar">
+                  {modules.map((m, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        onModuleChange?.(idx);
+                        setIsModuleDropdownOpen(false);
+                      }}
+                      className={`w-full text-left px-4 py-2.5 text-[13px] transition-colors flex flex-col gap-0.5 ${
+                        idx === currentModuleIndex 
+                          ? 'bg-accent/5 text-accent font-bold' 
+                          : 'text-text-primary hover:bg-callout-bg'
+                      }`}
+                    >
+                      <span className="truncate">
+                        {m.title?.toLowerCase().startsWith('module')
+                          ? m.title
+                          : `Module ${idx + 1}: ${m.title}`}
+                      </span>
+                      <span className="text-[10px] text-text-muted font-normal">{m.topics?.length || 0} Units</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </nav>
+
         {onMenuClick && (
           <button 
             onClick={onMenuClick}
-            className="p-2 -ml-2 text-text-muted hover:text-text-heading transition-colors"
-            aria-label="Toggle curriculum sidebar"
+            className="md:hidden p-2 text-text-muted hover:text-text-heading transition-colors"
           >
             <Menu className="w-5 h-5" />
           </button>
         )}
-        
-        <div className="h-3 w-px bg-[var(--border)] hidden md:block mx-1"></div>
-        
-        <Link href="/" className="flex items-center group shrink-0">
-          <img src="/apple-touch-icon.png" alt="EulerFold" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
-        </Link>
       </div>
 
-      {/* Center: Unit Info & Navigation - Redesigned Pill */}
-      <div className="flex-1 flex items-center justify-center min-w-0 px-4">
-        <div className="flex items-center bg-callout-bg dark:bg-white/[0.03] border border-border rounded-full p-0.5 transition-all shadow-sm hover:shadow-md hover:border-[var(--accent)]/30 group/nav">
+      {/* Right: Actions & Profile */}
+      <div className="flex items-center gap-3">
+        <div className="flex items-center gap-1 border-r border-border pr-3 mr-1">
           <button 
-            onClick={onPrev} 
-            disabled={!hasPrev}
-            className="w-8 h-8 flex items-center justify-center rounded-full transition-all text-text-muted hover:text-accent hover:bg-background disabled:opacity-10 disabled:hover:bg-transparent"
-            aria-label="Previous unit"
+            onClick={onOpenSyllabus}
+            className="hidden sm:flex items-center px-4 py-1.5 rounded-lg text-[13px] font-bold text-text-muted hover:text-text-heading hover:bg-callout-bg transition-all"
           >
-            <ChevronLeft className="h-4 w-4" />
+            Course Syllabus
           </button>
           
-          <div className="px-4 md:px-8 flex flex-col items-center justify-center overflow-hidden max-w-[140px] sm:max-w-[220px] md:max-w-md border-x border-border/50">
-            <span className="text-[8px] font-bold text-accent leading-none mb-0.5 truncate w-full text-center tracking-widest uppercase opacity-80">{unitInfo}</span>
-            <span className="text-[10px] md:text-[12px] font-bold text-text-heading truncate w-full text-center transition-colors tracking-tight leading-tight">{unitTitle}</span>
+          <div className="flex items-center bg-callout-bg rounded-lg p-0.5">
+            <button 
+              onClick={onPrev} 
+              disabled={!hasPrev}
+              className="w-8 h-8 flex items-center justify-center rounded-md transition-all text-text-muted hover:text-text-heading hover:bg-background disabled:opacity-20"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+            <button 
+              onClick={onNext} 
+              disabled={!hasNext}
+              className="w-8 h-8 flex items-center justify-center rounded-md transition-all text-text-muted hover:text-text-heading hover:bg-background disabled:opacity-20"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
           </div>
-
-          <button 
-            onClick={onNext} 
-            disabled={!hasNext}
-            className="w-8 h-8 flex items-center justify-center rounded-full transition-all text-text-muted hover:text-accent hover:bg-background disabled:opacity-10 disabled:hover:bg-transparent"
-            aria-label="Next unit"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </button>
         </div>
-      </div>
 
-      {/* Right: Actions */}
-      <div className="flex items-center gap-4 shrink-0">
         {user ? (
           <ProfileDropdown user={user} profile={profile} handleSignOut={handleSignOut} />
         ) : (
-          <div className="w-16 h-7 bg-callout-bg animate-pulse rounded-full" />
+          <div className="w-8 h-8 bg-callout-bg animate-pulse rounded-full" />
         )}
       </div>
     </header>
