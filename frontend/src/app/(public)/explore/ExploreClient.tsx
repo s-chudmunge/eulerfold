@@ -35,10 +35,11 @@ import {
   Binary,
   Coins,
   Network,
-  Atom
+  Atom,
+  Loader2
 } from 'lucide-react';
 import { exploreAPI, ExploreRoadmap, coinsAPI, LeaderboardEntry } from '@/lib/api';
-import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/components/AuthProvider';
 import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -157,14 +158,29 @@ export default function ExploreClient({
     }, []);
 
     const queryClient = useQueryClient();
+    const PAGE_SIZE = 100;
 
     // 1. Roadmaps Query
-    const { data: roadmaps = [], isLoading: roadmapsLoading } = useQuery({
+    const { 
+        data: infiniteData, 
+        fetchNextPage, 
+        hasNextPage, 
+        isFetchingNextPage,
+        isLoading: roadmapsLoading 
+    } = useInfiniteQuery({
         queryKey: ['explore-roadmaps', debouncedSearch, sortBy, authUser?.id],
-        queryFn: () => exploreAPI.getExploreRoadmaps(debouncedSearch, 0, 100, sortBy),
-        initialData: (debouncedSearch === '' && sortBy === 'newest') ? initialRoadmaps : undefined,
+        queryFn: ({ pageParam = 0 }) => exploreAPI.getExploreRoadmaps(debouncedSearch, pageParam as number, PAGE_SIZE, sortBy),
+        getNextPageParam: (lastPage, allPages) => {
+            return lastPage.length === PAGE_SIZE ? allPages.length : undefined;
+        },
+        initialData: (debouncedSearch === '' && sortBy === 'newest') ? { pages: [initialRoadmaps], pageParams: [0] } : undefined,
         staleTime: 5 * 60 * 1000,
+        initialPageParam: 0,
     });
+
+    const roadmaps = React.useMemo(() => {
+        return infiniteData?.pages.flat() || [];
+    }, [infiniteData]);
 
     // 2. Leaderboard Query
     const { data: leaderboardData } = useQuery({
@@ -235,7 +251,7 @@ export default function ExploreClient({
                                 placeholder="Find a goal..."
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full bg-callout-bg border border-border rounded-full py-1.5 pl-9 pr-4 manrope-body text-[12px] focus:outline-none focus:border-[var(--accent)] transition-all shadow-sm focus:bg-background dark:focus:bg-[#1a1a1a]"
+                                className="w-full bg-callout-bg border border-border rounded-full py-1.5 pl-9 pr-4 manrope-body text-[12px] focus:outline-none focus:border-[var(--accent)] transition-all shadow-sm focus:bg-white dark:focus:bg-white/[0.05]"
                             />
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
@@ -284,7 +300,7 @@ export default function ExploreClient({
                             onClick={() => setFilter(cat)}
                             className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-[11px] font-bold tracking-normal transition-all border
                                 ${filter === cat 
-                                ? 'bg-black text-white border-black dark:bg-white dark:text-black dark:border-white' 
+                                ? 'bg-teal-700 text-white border-teal-700' 
                                 : 'bg-transparent text-gray-500 border-border hover:border-[var(--text-muted)]'
                             }`}
                         >
@@ -366,6 +382,26 @@ export default function ExploreClient({
                         </tbody>
                     </table>
                 </div>
+
+                {/* Load More Action */}
+                {hasNextPage && (
+                    <div className="mt-8 flex justify-center">
+                        <button
+                            onClick={() => fetchNextPage()}
+                            disabled={isFetchingNextPage}
+                            className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-sidebar border border-border text-[11px] font-bold tracking-wide hover:bg-background hover:border-text-muted transition-all disabled:opacity-50"
+                        >
+                            {isFetchingNextPage ? (
+                                <>
+                                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                    <span>Loading...</span>
+                                </>
+                            ) : (
+                                <span>Load More</span>
+                            )}
+                        </button>
+                    </div>
+                )}
             </main>
 
             {/* Error/Success Alerts */}
