@@ -3,8 +3,9 @@ import logging
 import os
 import re
 import asyncio
-import google.generativeai as genai
+from google import genai
 from app.core.config import settings
+
 try:
     from json_repair import repair, loads as repair_loads
     HAS_JSON_REPAIR = True
@@ -13,23 +14,38 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-# Initialize genai if key is present
-if settings.GEMINI_API_KEY or os.getenv("GEMINI_API_KEY"):
-    # Explicitly check for proxy and apply to environment for the SDK
-    proxy = os.getenv("GEMINI_PROXY") or os.getenv("HTTPS_PROXY") or os.getenv("https_proxy")
-    if proxy:
-        logger.info(f"Applying proxy to environment for Gemini: {proxy}")
-        os.environ["HTTP_PROXY"] = proxy
-        os.environ["HTTPS_PROXY"] = proxy
-        
-    genai.configure(
-        api_key=settings.GEMINI_API_KEY or os.getenv("GEMINI_API_KEY"),
-        transport='rest'
-    )
+# Global client for reuse
+_client = None
+
+def get_gemini_client():
+    global _client
+    if _client is None:
+        api_key = settings.GEMINI_API_KEY or os.getenv("GEMINI_API_KEY")
+        if not api_key:
+            logger.error("GEMINI_API_KEY not configured")
+            return None
+            
+        try:
+            # Proxy handling for new SDK
+            proxy = os.getenv("GEMINI_PROXY") or os.getenv("HTTPS_PROXY") or os.getenv("https_proxy")
+            if proxy:
+                logger.info(f"Using proxy for Gemini Client: {proxy}")
+                os.environ["HTTP_PROXY"] = proxy
+                os.environ["HTTPS_PROXY"] = proxy
+            
+            _client = genai.Client(api_key=api_key, http_options={'api_version': 'v1alpha'})
+            logger.info("New google-genai client initialized successfully")
+        except Exception as e:
+            logger.error(f"Failed to initialize google-genai client: {e}")
+            
+    return _client
 
 async def generate_text(prompt: str, model: str = "models/gemini-2.5-flash", response_mime_type: str = None) -> str:
-    """Generates text from Gemini with standard config and retry logic."""
-    # Updated default to 2.5-flash to match user preference
+    """Generates text from Gemini using the modern google-genai SDK with native async."""
+    # Strip 'models/' prefix if present for the new SDK's model string
+    clean_model = model.replace("models/", "") if model.startswith("models/") else model
+    
+    # Restored original model list
     VALID_MODELS = [
         "models/gemini-2.5-flash",
         "models/gemini-2.5-pro",
@@ -45,41 +61,33 @@ async def generate_text(prompt: str, model: str = "models/gemini-2.5-flash", res
         "models/gemini-2.0-flash-thinking-exp",
     ]
     
-    is_valid = model in VALID_MODELS or model.startswith("models/gemini") or model.startswith("models/gemma")
+    is_valid = model in VALID_MODELS or model.startswith("models/gemini") or model.startswith("models/gemma") or clean_model.startswith("gemini-")
     
     if not is_valid:
         raise ValueError(f"Invalid model '{model}'.")
     
-    api_key = settings.GEMINI_API_KEY or os.getenv("GEMINI_API_KEY")
-    if not api_key:
-        raise RuntimeError("GEMINI_API_KEY not configured")
+    client = get_gemini_client()
+    if not client:
+        raise RuntimeError("Gemini Client not initialized")
+
+    config = {
+        "temperature": 0.1,
+        "top_p": 0.95,
+        "top_k": 40,
+        "max_output_tokens": 8192,
+    }
+    
+    if response_mime_type:
+        config["response_mime_type"] = response_mime_type
 
     max_retries = 3
     for attempt in range(max_retries):
         try:
-            # Check for proxy environment variables and log if found (for debugging region issues)
-            http_proxy = os.getenv("HTTP_PROXY") or os.getenv("http_proxy")
-            https_proxy = os.getenv("HTTPS_PROXY") or os.getenv("https_proxy")
-            
-            gen_model = genai.GenerativeModel(model)
-            
-            config = {
-                "temperature": 0.1,
-                "top_p": 0.95,
-                "top_k": 40,
-                "max_output_tokens": 8192,
-            }
-            
-            if response_mime_type:
-                config["response_mime_type"] = response_mime_type
-                
-            loop = asyncio.get_event_loop()
-            response = await loop.run_in_executor(
-                None, 
-                lambda: gen_model.generate_content(
-                    prompt,
-                    generation_config=config,
-                )
+            # Use native async generate_content
+            response = await client.aio.models.generate_content(
+                model=clean_model,
+                contents=prompt,
+                config=config
             )
 
             if not response or not response.text:
@@ -90,15 +98,13 @@ async def generate_text(prompt: str, model: str = "models/gemini-2.5-flash", res
         except Exception as e:
             error_msg = str(e)
             
-            # Handle Location Error with high priority
+            # Handle Location Error
             if "User location is not supported" in error_msg:
                 logger.error(f"Gemini Location Error: {error_msg}. Server region: {os.getenv('RENDER_REGION', 'Unknown')}.")
-                # If we have a fallback model or a proxy setup, we could try here. 
-                # For now, we give a very clear instruction.
                 if attempt == max_retries - 1:
                     raise RuntimeError(
                         "Gemini API is not available in your current deployment region. "
-                        "Action Required: In Render Dashboard, change 'Region' to 'Oregon (us-west-2)' or 'Frankfurt (eu-central-1)'."
+                        "Fix: Change Render region to 'Oregon (us-west-2)' or 'Frankfurt (eu-central-1)'."
                     )
             
             if attempt == max_retries - 1:
@@ -143,7 +149,7 @@ def robust_json_loads(text: str):
         logger.debug(f"Standard json.loads failed: {e}")
         pass
         
-    # Strategy 2: json_repair (Try direct import to handle cases where it was installed after startup)
+    # Strategy 2: json_repair
     try:
         from json_repair import loads as repair_loads
         return repair_loads(cleaned)
@@ -152,25 +158,17 @@ def robust_json_loads(text: str):
             
     # Strategy 3: Manual repair for common Gemini issues
     try:
-        # Fix unescaped newlines in values
-        fixed = cleaned.replace('\n', '\\n').replace('\r', '\\r')
-        # But wait, we shouldn't escape the structural newlines. 
-        # This is tricky. Let's try a simpler approach.
-        
         # Remove trailing commas before closing braces/brackets
         fixed = re.sub(r',\s*([\]\}])', r'\1', cleaned)
-        
         # Fix missing commas between objects/arrays
         fixed = re.sub(r'\}\s*\{', '}, {', fixed)
         fixed = re.sub(r'\]\s*\[', '], [', fixed)
-        
         return json.loads(fixed)
     except:
         pass
         
     # Strategy 4: Last ditch - attempt to find the last valid closing character
     try:
-        # If truncated, try to close it
         open_braces = cleaned.count('{') - cleaned.count('}')
         open_brackets = cleaned.count('[') - cleaned.count(']')
         
@@ -185,6 +183,5 @@ def robust_json_loads(text: str):
     except:
         pass
 
-    # If all else fails, log the context and raise
     logger.error(f"Failed to parse JSON. Length: {len(cleaned)}. Error context: {cleaned[-500:]}")
-    return json.loads(cleaned) # This will throw the definitive error
+    return json.loads(cleaned)

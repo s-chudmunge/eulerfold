@@ -17,6 +17,8 @@ from app.utils.streaks import track_activity
 from app.core.auth import get_current_user
 from app.schemas import User
 
+from app.database.monitor import monitor_query
+
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
@@ -153,6 +155,7 @@ def resolve_senate_verdict(votes: list) -> tuple:
     return "Developing", 1, note
 
 @router.post("/submissions")
+@monitor_query(query_type="create_submission", table="submissions")
 async def create_submission(background_tasks: BackgroundTasks, payload: dict = Body(...), current_user: User = Depends(get_current_user)):
     roadmap_id = payload.get("roadmap_id")
     module_number = payload.get("module_number")
@@ -300,38 +303,46 @@ async def create_submission(background_tasks: BackgroundTasks, payload: dict = B
     
     final_level, agreement, dissent = resolve_senate_verdict(votes)
     
-    # SENATE CLERK: Generate a high-impact, 1-sentence summary
-    clerk_prompt = f"""
+    # SENATE CLERK: Generate a high-impact summary in the BACKGROUND
+    async def generate_clerk_summary(sub_id: int, reasoning_dict: dict, level: str):
+        clerk_prompt = f"""
 Summarize these 3 audit findings into ONE SHORT, HIGH-IMPACT SENTENCE for the user (Max 20 words).
-Focus on why they got {final_level}.
+Focus on why they got {level}.
 
-1. Technician: {reasoning["technician"]}
-2. Educator: {reasoning["educator"]}
-3. Relevance: {reasoning["relevance_judge"]}
+1. Technician: {reasoning_dict["technician"]}
+2. Educator: {reasoning_dict["educator"]}
+3. Relevance: {reasoning_dict["relevance_judge"]}
 
 Respond as JSON: {{"summary": "..."}}
 """
-    senate_summary = "Awaiting final summary."
-    try:
-        clerk_raw = await generate_text(clerk_prompt, model=settings.GEMINI_MODEL, response_mime_type="application/json")
-        clerk_parsed = robust_json_loads(clerk_raw)
-        senate_summary = clerk_parsed.get("summary", "Verified by the Audit Senate.")
-    except Exception as e:
-        logger.error(f"Senate Clerk failed: {e}")
+        try:
+            clerk_raw = await generate_text(clerk_prompt, model=settings.GEMINI_MODEL, response_mime_type="application/json")
+            clerk_parsed = robust_json_loads(clerk_raw)
+            summary = clerk_parsed.get("summary", "Verified by the Audit Senate.")
+            
+            # Update the submission with the summary
+            sb_admin = get_supabase_client() # Use standard or admin as needed
+            sb_admin.table("submissions").update({"senate_summary": summary}).eq("id", sub_id).execute()
+            logger.info(f"Senate Clerk summary generated for submission {sub_id}")
+        except Exception as e:
+            logger.error(f"Background Senate Clerk failed: {e}")
 
     follow_up = "What was the most challenging part of this module for you?" # Default
 
     sub_data = {
         "roadmap_id": roadmap_id, "module_number": module_number, "link": link, "description": description,
-        "scraped_content": scraped_text, "evaluation": reasoning["technician"], # For legacy compatibility
+        "scraped_content": scraped_text, "evaluation": reasoning["technician"], 
         "evaluation_level": final_level, "follow_up_question": follow_up, "user_email": email,
         "submitted_at": datetime.now(timezone.utc).isoformat(), "files": files,
         "senate_votes": votes, "senate_reasoning": reasoning, "senate_agreement": agreement,
-        "dissent_note": dissent, "is_senate_eval": True, "senate_summary": senate_summary
+        "dissent_note": dissent, "is_senate_eval": True, "senate_summary": "Summarizing findings..."
     }
 
     ins = sb.table("submissions").insert(sub_data).execute()
     created = ins.data[0] if ins.data else None
+
+    if created:
+        background_tasks.add_task(generate_clerk_summary, created["id"], reasoning, final_level)
 
     if final_level in ["Solid", "Developing"]:
         # Mark module completed

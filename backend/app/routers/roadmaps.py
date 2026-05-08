@@ -26,6 +26,8 @@ from app.core.auth import get_current_user
 from app.routers.optional_auth import get_optional_current_user
 from app.services.skills_service import extract_skills_from_roadmap, calculate_user_skill_scores_for_roadmap, cleanup_skills_after_roadmap_deletion
 
+from app.database.monitor import monitor_query
+
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
@@ -646,6 +648,7 @@ async def get_roadmap_by_id(roadmap_id: int, background_tasks: BackgroundTasks, 
     )
 
 @router.post("/roadmaps/manual-build", response_model=RoadmapRead)
+@monitor_query(query_type="manual_build", table="roadmaps")
 async def create_manual_build(
     payload: ManualBuildRequest,
     current_user: User = Depends(get_current_user)
@@ -768,6 +771,7 @@ async def save_roadmap(
 
 
 @router.post("/roadmaps/generate", response_model=RoadmapRead)
+@monitor_query(query_type="generate_roadmap", table="roadmaps")
 async def generate_roadmap(
     roadmap_create: RoadmapCreate,
     background_tasks: BackgroundTasks,
@@ -909,6 +913,7 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
         raise HTTPException(status_code=500, detail=f"Generation error: {str(e)}")
 
 @router.post("/roadmaps/generate-from-jd", response_model=RoadmapRead)
+@monitor_query(query_type="generate_from_jd", table="roadmaps")
 async def generate_from_jd(
     payload: JobRoadmapCreate,
     background_tasks: BackgroundTasks,

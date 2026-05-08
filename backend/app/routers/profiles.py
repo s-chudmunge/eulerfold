@@ -283,7 +283,7 @@ async def get_activity(username: str):
         raise HTTPException(status_code=404, detail="Email not found")
     email = email_res.data["email"]
     
-    # Fetch activity for the last 12 months
+    # Fetch activity for the last 12 months - selecting ONLY the timestamp column to save memory
     twelve_months_ago = (datetime.now() - timedelta(days=365)).isoformat()
     
     tp_res = sb.table("module_progress").select("completed_at").eq("user_email", email).eq("completed", True).gte("completed_at", twelve_months_ago).execute()

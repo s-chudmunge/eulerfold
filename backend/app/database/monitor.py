@@ -178,40 +178,67 @@ class DatabaseMonitor:
 db_monitor = DatabaseMonitor()
 
 def monitor_query(query_type: str = "unknown", table: str = "unknown"):
-    """Decorator to monitor database query execution"""
+    """Decorator to monitor database query execution (Supports both sync and async)"""
     def decorator(func):
-        @wraps(func)
-        def wrapper(*args, **kwargs):
-            # Check rate limits
-            user_id = kwargs.get('user_id') or (args[0].supabase_uid if args and hasattr(args[0], 'supabase_uid') else None)
-            
-            allowed, reason = db_monitor.check_rate_limit(user_id)
-            if not allowed:
-                logger.warning(f"Rate limit exceeded: {reason}")
-                from fastapi import HTTPException, status
-                raise HTTPException(
-                    status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                    detail=f"Rate limit exceeded: {reason}. Please try again later."
-                )
-            
-            # Execute query with timing
-            start_time = time.time()
-            success = True
-            
-            try:
-                result = func(*args, **kwargs)
-                return result
-            except Exception as e:
-                success = False
-                logger.error(f"Query failed: {e}")
-                raise
-            finally:
-                duration_ms = (time.time() - start_time) * 1000
-                db_monitor.track_query(query_type, duration_ms, table, user_id, success)
-        
-        return wrapper
-    return decorator
+        if asyncio.iscoroutinefunction(func):
+            @wraps(func)
+            async def async_wrapper(*args, **kwargs):
+                user_id = kwargs.get('user_id') or (args[0].supabase_uid if args and hasattr(args[0], 'supabase_uid') else None)
+                if not user_id and 'current_user' in kwargs:
+                    user_id = getattr(kwargs['current_user'], 'supabase_uid', None)
 
+                allowed, reason = db_monitor.check_rate_limit(user_id)
+                if not allowed:
+                    logger.warning(f"Rate limit exceeded: {reason}")
+                    from fastapi import HTTPException, status
+                    raise HTTPException(
+                        status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                        detail=f"Rate limit exceeded: {reason}. Please try again later."
+                    )
+
+                start_time = time.time()
+                success = True
+                try:
+                    result = await func(*args, **kwargs)
+                    return result
+                except Exception as e:
+                    success = False
+                    logger.error(f"Async Query failed: {e}")
+                    raise
+                finally:
+                    duration_ms = (time.time() - start_time) * 1000
+                    db_monitor.track_query(query_type, duration_ms, table, user_id, success)
+            return async_wrapper
+        else:
+            @wraps(func)
+            def sync_wrapper(*args, **kwargs):
+                user_id = kwargs.get('user_id') or (args[0].supabase_uid if args and hasattr(args[0], 'supabase_uid') else None)
+                if not user_id and 'current_user' in kwargs:
+                    user_id = getattr(kwargs['current_user'], 'supabase_uid', None)
+
+                allowed, reason = db_monitor.check_rate_limit(user_id)
+                if not allowed:
+                    logger.warning(f"Rate limit exceeded: {reason}")
+                    from fastapi import HTTPException, status
+                    raise HTTPException(
+                        status_code=status.HTTP_429_TOO_MANY_REQUESTS,
+                        detail=f"Rate limit exceeded: {reason}. Please try again later."
+                    )
+
+                start_time = time.time()
+                success = True
+                try:
+                    result = func(*args, **kwargs)
+                    return result
+                except Exception as e:
+                    success = False
+                    logger.error(f"Sync Query failed: {e}")
+                    raise
+                finally:
+                    duration_ms = (time.time() - start_time) * 1000
+                    db_monitor.track_query(query_type, duration_ms, table, user_id, success)
+            return sync_wrapper
+    return decorator
 # Context manager for monitoring database sessions
 class MonitoredSession:
     """Context manager for monitoring database session usage"""

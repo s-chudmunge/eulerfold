@@ -23,10 +23,16 @@ The core idea is to move from "reading" to "doing".
 
 I tried to keep the plumbing as clean as possible:
 
-- **Frontend**: Next.js + Tailwind v4. High density, simple layout.
-- **Backend**: FastAPI (Python). It's a basic state machine for your learning path.
-- **Logic**: Google Gemini. It generates the paths and reviews your proof of work.
-- **Database**: Supabase for the data and auth.
+- **Frontend**: Next.js (Optimized SSG/SSR) + Tailwind v4.
+- **Backend**: FastAPI (Python) with Redis & In-memory caching.
+- **Logic**: Google Gemini via `google-genai` (Native Async).
+- **Database**: Supabase (Postgres) with composite indexing for scale.
+- **Security**: Multi-tier Rate Limiting via `DatabaseMonitor`.
+
+## Viral Readiness
+- **Rate Limited**: Protects AI quotas and DB bandwidth from spikes.
+- **Optimized**: $O(\log n)$ query speed and memory-surgical data fetching.
+- **Async Core**: Natively asynchronous AI operations & background task offloading.
 - **Payments**: Razorpay for Pro access and roadmap credits.
 - **PDFs**: We generate your credentials on the server using `reportlab`.
 

@@ -30,21 +30,25 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [credits, setCredits] = useState<number | null>(null);
+  const [profile, setProfile] = useState<any>(null);
 
-  const fetchCredits = async () => {
+  const fetchProfileAndCredits = async () => {
     const { data: { session } } = await supabase.auth.getSession();
     if (session?.user) {
       const { data } = await supabase
         .from('profiles')
-        .select('roadmap_credits')
+        .select('*')
         .eq('supabase_uid', session.user.id)
         .single();
-      if (data) setCredits(data.roadmap_credits);
+      if (data) {
+        setProfile(data);
+        setCredits(data.roadmap_credits);
+      }
     }
   };
 
   useEffect(() => {
-    fetchCredits();
+    fetchProfileAndCredits();
   }, []);
 
   useEffect(() => {
@@ -193,7 +197,7 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
               Target Duration
             </label>
             <div className="flex flex-wrap gap-2">
-              {[2, 3, 4, 6, 8].map(w => (
+              {(profile?.is_pro ? [2, 3, 4, 6, 8, 10, 12] : [2, 3, 4]).map(w => (
                 <button
                   type="button"
                   key={w}
@@ -207,6 +211,15 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
                   {w} Weeks
                 </button>
               ))}
+              {!profile?.is_pro && (
+                <button 
+                  type="button"
+                  onClick={() => setIsPaymentModalOpen(true)}
+                  className="inconsolata-ui px-3 py-1.5 text-[9px] font-bold text-accent border border-accent/20 border-dashed hover:bg-accent/5"
+                >
+                  Unlock 6-12 Weeks (Pro)
+                </button>
+              )}
             </div>
           </div>
         </div>
@@ -275,7 +288,7 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
           onClose={() => setIsPaymentModalOpen(false)} 
           onSuccess={() => {
             setIsPaymentModalOpen(false);
-            fetchCredits();
+            fetchProfileAndCredits();
             const btn = document.getElementById('trigger-generate');
             if (btn) btn.click();
           }} 
@@ -316,7 +329,7 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
           onClose={() => setIsPaymentModalOpen(false)} 
           onSuccess={() => {
             setIsPaymentModalOpen(false);
-            fetchCredits();
+            fetchProfileAndCredits();
             const btn = document.getElementById('trigger-generate');
             if (btn) btn.click();
           }} 
