@@ -334,17 +334,18 @@ async def generate_mcq_session(data: MCQSessionCreate, current_user: User = Depe
     if not profile.get("is_pro"):
         raise HTTPException(status_code=403, detail="MCQ Assessments are a Pro-only feature.")
 
-    # 1b. Check if an active session already exists for this subtopic to avoid duplicate credit deduction
-    active_res = sb.table("mcq_sessions") \
-        .select("*") \
-        .eq("user_id", uid) \
-        .eq("subtopic_id", str(data.subtopic_id)) \
-        .eq("status", "active") \
-        .execute()
+    # 1b. Check if an active session already exists for this subtopic (if subtopic_id is provided)
+    if data.subtopic_id:
+        active_res = sb.table("mcq_sessions") \
+            .select("*") \
+            .eq("user_id", uid) \
+            .eq("subtopic_id", str(data.subtopic_id)) \
+            .eq("status", "active") \
+            .execute()
 
-    if active_res.data:
-        logger.info(f"Active MCQ session already exists for user {uid} on subtopic {data.subtopic_id}. Returning existing session.")
-        return active_res.data[0]
+        if active_res.data:
+            logger.info(f"Active MCQ session already exists for user {uid} on subtopic {data.subtopic_id}. Returning existing session.")
+            return active_res.data[0]
 
     current_credits = float(profile.get("roadmap_credits") or 0.0)
     credit_cost = float(data.num_questions) * 0.01
@@ -369,7 +370,7 @@ async def generate_mcq_session(data: MCQSessionCreate, current_user: User = Depe
         new_session = {
             "user_id": uid,
             "roadmap_id": data.roadmap_id,
-            "subtopic_id": str(data.subtopic_id),
+            "subtopic_id": str(data.subtopic_id) if data.subtopic_id else None,
             "topic_name": data.topic_name,
             "subject": data.subject,
             "week_number": data.week_number,
@@ -412,6 +413,20 @@ async def get_incomplete_mcq_session(subtopic_id: uuid.UUID, current_user: User 
         return None
 
     return result.data[0]
+
+@router.get("/mcq/history", response_model=List[MCQSessionRead])
+async def get_all_mcq_history(current_user: User = Depends(get_current_user)):
+    """Get all MCQ assessments for the current user."""
+    sb = get_supabase_client()
+    uid = current_user.supabase_uid
+
+    result = sb.table("mcq_sessions") \
+        .select("*") \
+        .eq("user_id", uid) \
+        .order("created_at", desc=True) \
+        .execute()
+
+    return result.data or []
 
 @router.get("/mcq/history/{subtopic_id}", response_model=List[MCQSessionRead])
 async def get_mcq_history(subtopic_id: uuid.UUID, current_user: User = Depends(get_current_user)):
@@ -505,8 +520,9 @@ async def submit_mcq_session(
         raise HTTPException(status_code=500, detail="Failed to update session results")
     
     # 4. Trigger background updates
-    # A. Recalculate skill scores
-    background_tasks.add_task(calculate_user_skill_scores_for_roadmap, int(session["roadmap_id"]), uid)
+    # A. Recalculate skill scores (only if roadmap_id exists)
+    if session.get("roadmap_id"):
+        background_tasks.add_task(calculate_user_skill_scores_for_roadmap, int(session["roadmap_id"]), uid)
     
     # B. Award EulerCoins (1 per correct answer)
     if correct_count > 0:
@@ -515,7 +531,7 @@ async def submit_mcq_session(
             user_email=current_user.email, 
             amount=correct_count, 
             reason=f"MCQ Assessment Points: {session['topic_name']}",
-            roadmap_id=int(session["roadmap_id"])
+            roadmap_id=int(session["roadmap_id"]) if session.get("roadmap_id") else None
         )
         
     return result.data[0]

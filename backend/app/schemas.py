@@ -323,8 +323,8 @@ class MCQQuestion(BaseModel):
     explanation: str
 
 class MCQSessionCreate(BaseModel):
-    roadmap_id: int
-    subtopic_id: uuid.UUID
+    roadmap_id: Optional[int] = None
+    subtopic_id: Optional[uuid.UUID] = None
     topic_name: str
     subject: str
     week_number: int
@@ -333,8 +333,8 @@ class MCQSessionCreate(BaseModel):
 class MCQSessionRead(BaseModel):
     id: uuid.UUID
     user_id: uuid.UUID
-    roadmap_id: int
-    subtopic_id: uuid.UUID
+    roadmap_id: Optional[int] = None
+    subtopic_id: Optional[uuid.UUID] = None
     topic_name: str
     subject: str
     week_number: int

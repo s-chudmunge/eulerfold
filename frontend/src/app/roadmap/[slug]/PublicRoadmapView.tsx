@@ -10,6 +10,7 @@ import Footer from '@/components/Footer';
 import RoadmapDisplay from '@/components/landing/RoadmapDisplay';
 import StarRating from '@/components/roadmap/StarRating';
 import { DiscussionSection } from '@/components/discussions/DiscussionSection';
+import MCQPractice from '@/components/roadmap/MCQPractice';
 import SocialShare from '@/components/SocialShare';
 import { 
     Library, 
@@ -31,6 +32,7 @@ interface Props {
 export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Props) {
     const [roadmap, setRoadmap] = useState(initialRoadmap);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [profile, setProfile] = useState<any>(null);
     const [isOwner, setIsOwner] = useState(false);
     const [saving, setSaving] = useState(false);
     const [rating, setRating] = useState(initialRoadmap?.average_rating || 0);
@@ -45,23 +47,29 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
     const [extending, setExtending] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [successMsg, setSuccessMsg] = useState<string | null>(null);
+    const [selectedPracticeTopic, setSelectedPracticeTopic] = useState<{topic: any, moduleIndex: number} | null>(null);
 
     const router = useRouter();
 
-    useEffect(() => {
-        const fetchUserStatus = async () => {
-            if (isAuthenticated) {
-                try {
-                    const user = await authAPI.getMe();
-                    if (user) {
-                        setIsPro(!!user.is_pro);
-                    }
-                } catch (err) {
-                    console.error("Failed to fetch user profile:", err);
-                }
+    const refreshProfile = React.useCallback(async () => {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (session) {
+            const { data: userData } = await supabase.from('profiles').select('*').eq('supabase_uid', session.user.id).single();
+            if (userData) {
+                setProfile(userData);
+                setIsPro(userData.is_pro);
             }
+        }
+    }, []);
+
+    useEffect(() => {
+        refreshProfile();
+    }, [refreshProfile, isAuthenticated]);
+
+    useEffect(() => {
+        const fetchSubmissions = async () => {
+            // Placeholder if needed later
         };
-        fetchUserStatus();
     }, [isAuthenticated]);
 
     useEffect(() => {
@@ -343,6 +351,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                 : undefined
                             }
                             onDeleteExtension={handleDeleteExtension}
+                            onPractice={(topic, mIdx) => setSelectedPracticeTopic({ topic, moduleIndex: mIdx })}
                         />
                     </div>
 
@@ -500,6 +509,38 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                     </p>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Practice Modal */}
+            {selectedPracticeTopic && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-background/80 animate-in fade-in duration-200">
+                    <div className="w-full max-w-2xl bg-background border border-border shadow-2xl rounded-3xl overflow-hidden animate-in zoom-in-95 duration-200 relative">
+                        <button 
+                            onClick={() => setSelectedPracticeTopic(null)}
+                            className="absolute top-6 right-6 z-[210] p-2 hover:bg-callout-bg rounded-full transition-colors text-text-muted"
+                        >
+                            <X className="w-5 h-5" />
+                        </button>
+                        
+                        <div className="max-h-[90vh] overflow-y-auto no-scrollbar">
+                            <MCQPractice
+                                roadmapId={roadmap.id}
+                                subtopicId={selectedPracticeTopic.topic.uuid || ''}
+                                topicName={selectedPracticeTopic.topic.title || ''}
+                                subject={roadmap.subject || roadmap.title || ''}
+                                weekNumber={selectedPracticeTopic.moduleIndex + 1}
+                                isPro={profile?.is_pro || false}
+                                userCredits={profile?.roadmap_credits || 0}
+                                onPointsEarned={(amount) => {
+                                    setSuccessMsg(`+${amount} EulerCoins earned!`);
+                                    setTimeout(() => setSuccessMsg(null), 4000);
+                                }}
+                                onRefreshProfile={refreshProfile}
+                                onClose={() => setSelectedPracticeTopic(null)}
+                            />
                         </div>
                     </div>
                 </div>

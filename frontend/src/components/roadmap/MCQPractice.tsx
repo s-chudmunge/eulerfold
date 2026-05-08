@@ -5,10 +5,11 @@ import { Loader, X, Trophy, Check, ArrowRight, Zap } from 'lucide-react';
 import { practiceAPI, MCQSessionRead, MCQQuestion } from '@/lib/api';
 import Link from 'next/link';
 import EulerLogoCanvas from '@/components/EulerLogoCanvas';
+import TTSListenButton from '@/components/TTSListenButton';
 
 interface MCQPracticeProps {
-    roadmapId: number;
-    subtopicId: string;
+    roadmapId?: number;
+    subtopicId?: string;
     topicName: string;
     subject: string;
     weekNumber: number;
@@ -16,6 +17,7 @@ interface MCQPracticeProps {
     userCredits: number;
     onPointsEarned: (amount: number) => void;
     onRefreshProfile: () => Promise<void>;
+    onClose?: () => void;
 }
 
 export default function MCQPractice({
@@ -27,7 +29,8 @@ export default function MCQPractice({
     isPro,
     userCredits,
     onPointsEarned,
-    onRefreshProfile
+    onRefreshProfile,
+    onClose
 }: MCQPracticeProps) {
     const [mcqSession, setMcqSession] = useState<MCQSessionRead | null>(null);
     const [incompleteSession, setIncompleteSession] = useState<MCQSessionRead | null>(null);
@@ -128,6 +131,7 @@ export default function MCQPractice({
     const reset = () => {
         setMcqSession(null);
         setShowResults(false);
+        if (onClose) onClose();
     };
 
     if (!isPro) {
@@ -281,7 +285,7 @@ export default function MCQPractice({
                             <div className="flex items-center gap-2.5">
                                 <div className="w-6 h-6 border border-border flex items-center justify-center text-sm">🧠</div>
                                 <div>
-                                    <h3 className="inconsolata-ui text-xs font-bold text-text-heading tracking-tight uppercase">Challenge Session</h3>
+                                    <h3 className="inconsolata-ui text-xs font-bold text-text-heading tracking-tight uppercase">MCQ practice session</h3>
                                     <p className="inconsolata-ui text-[7px] font-bold text-text-muted uppercase tracking-widest">{subject.replace('DEVELOPEMENT', 'DEVELOPMENT')} / {topicName}</p>
                                 </div>
                             </div>
@@ -309,7 +313,13 @@ export default function MCQPractice({
 
                         <div className="flex-1">
                             <div className="mb-4">
-                                <span className="inconsolata-ui text-[7px] font-bold text-accent uppercase tracking-[0.2em] mb-1 block">Task {currentMcqIdx + 1} // {mcqSession.questions.length}</span>
+                                <div className="flex items-center justify-between mb-1">
+                                    <span className="inconsolata-ui text-[7px] font-bold text-accent uppercase tracking-[0.2em] block">Question {currentMcqIdx + 1} // {mcqSession.questions.length}</span>
+                                    <TTSListenButton 
+                                        text={`Question: ${mcqSession.questions[currentMcqIdx].question}. Options are: ${mcqSession.questions[currentMcqIdx].options.map((o, idx) => `${String.fromCharCode(65 + idx)}: ${o}`).join(', ')}.`}
+                                        label="Question"
+                                    />
+                                </div>
                                 <h2 className="inconsolata-ui text-[13px] md:text-[14px] font-bold text-text-heading leading-snug">
                                     {mcqSession.questions[currentMcqIdx].question}
                                 </h2>
@@ -354,16 +364,16 @@ export default function MCQPractice({
                                 <button
                                     onClick={handleSubmit}
                                     disabled={isSubmitting}
-                                    className="px-10 py-3 bg-[#111] dark:bg-[#14b8a6] !text-white rounded-none inconsolata-ui text-[11px] font-bold uppercase tracking-widest hover:opacity-90 shadow-xl transition-all"
+                                    className="px-10 py-3 bg-text-heading text-background rounded-none inconsolata-ui text-[11px] font-bold uppercase tracking-widest hover:opacity-90 shadow-xl transition-all"
                                 >
                                     {isSubmitting ? 'Finalizing...' : 'Submit Session 🏁'}
                                 </button>
                             ) : mcqAnswers[currentMcqIdx] !== undefined ? (
                                 <button
                                     onClick={() => setCurrentMcqIdx(prev => prev + 1)}
-                                    className="px-10 py-3 bg-[#111] dark:bg-[#14b8a6] !text-white rounded-none inconsolata-ui text-[11px] font-bold uppercase tracking-widest hover:opacity-90 shadow-xl transition-all flex items-center gap-2"
+                                    className="px-10 py-3 bg-text-heading text-background rounded-none inconsolata-ui text-[11px] font-bold uppercase tracking-widest hover:opacity-90 shadow-xl transition-all flex items-center gap-2"
                                 >
-                                    Next Task <ArrowRight className="w-3.5 h-3.5" />
+                                    Next Question <ArrowRight className="w-3.5 h-3.5" />
                                 </button>
                             ) : (
                                 null
@@ -401,11 +411,17 @@ export default function MCQPractice({
                                 const isCorrect = mcqAnswers[i] === q.correct_answer_index;
                                 return (
                                     <div key={i} className={`p-5 border rounded-none transition-all ${isCorrect ? 'border-emerald-500/20 bg-emerald-500/5' : 'border-red-500/20 bg-red-500/5'}`}>
-                                        <div className="flex items-start gap-4 mb-3">
-                                            <div className={`shrink-0 w-6 h-6 border flex items-center justify-center inconsolata-ui text-[10px] font-bold ${isCorrect ? 'border-emerald-500 text-emerald-500' : 'border-red-500 text-red-500'}`}>
-                                                {i + 1}
+                                        <div className="flex items-start justify-between gap-4 mb-3">
+                                            <div className="flex items-start gap-4">
+                                                <div className={`shrink-0 w-6 h-6 border flex items-center justify-center inconsolata-ui text-[10px] font-bold ${isCorrect ? 'border-emerald-500 text-emerald-500' : 'border-red-500 text-red-500'}`}>
+                                                    {i + 1}
+                                                </div>
+                                                <h4 className="inconsolata-ui text-[14px] font-bold text-text-heading leading-tight">{q.question}</h4>
                                             </div>
-                                            <h4 className="inconsolata-ui text-[14px] font-bold text-text-heading leading-tight">{q.question}</h4>
+                                            <TTSListenButton 
+                                                text={`Question ${i+1}: ${q.question}. Correct answer: ${q.options[q.correct_answer_index]}. Explanation: ${q.explanation}`}
+                                                label="Explanation"
+                                            />
                                         </div>
                                         
                                         <div className="ml-10 space-y-3">
@@ -432,7 +448,7 @@ export default function MCQPractice({
                         <div className="mt-12 text-center border-t border-border pt-8">
                             <button 
                                 onClick={reset}
-                                className="px-16 py-3 bg-[var(--text-heading)] text-[var(--bg-main)] rounded-none inconsolata-ui text-[11px] font-bold uppercase tracking-widest hover:opacity-90 shadow-xl transition-all"
+                                className="px-16 py-3 bg-text-heading text-background rounded-none inconsolata-ui text-[11px] font-bold uppercase tracking-widest hover:opacity-90 shadow-xl transition-all"
                             >
                                 Sync Progress & Exit 🚀
                             </button>

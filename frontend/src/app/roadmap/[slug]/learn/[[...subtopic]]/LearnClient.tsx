@@ -36,7 +36,7 @@ import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 
 import CourseHeader from '@/components/CourseHeader';
-import MCQPractice from './MCQPractice';
+import MCQPractice from '@/components/roadmap/MCQPractice';
 import SyllabusModal from './SyllabusModal';
 import TaskModal from '@/components/planner/TaskModal';
 import YouTubePlayer from '@/components/roadmap/YouTubePlayer';
@@ -814,15 +814,23 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                     </div>
                                 </div>
                             ) : (
-                                <MCQPractice
-                                    roadmapId={roadmap.id}
-                                    subtopicId={currentTopic?.uuid || ''}
-                                    topicTitle={currentTopic?.title || ''}
-                                    onComplete={() => {
-                                        setCoinToast({ show: true, amount: 5 });
-                                        setTimeout(() => setCoinToast(null), 4000);
-                                    }}
-                                />
+                                <div className="max-w-3xl mx-auto w-full">
+                                    <MCQPractice
+                                        roadmapId={roadmap.id}
+                                        subtopicId={currentTopic?.uuid || ''}
+                                        topicName={currentTopic?.title || ''}
+                                        subject={roadmap.subject || roadmap.title || ''}
+                                        weekNumber={currentModuleIndex + 1}
+                                        isPro={profile?.is_pro || false}
+                                        userCredits={profile?.roadmap_credits || 0}
+                                        onPointsEarned={(amount) => {
+                                            setCoinToast({ show: true, amount });
+                                            setTimeout(() => setCoinToast(null), 4000);
+                                        }}
+                                        onRefreshProfile={refreshProfile}
+                                        onClose={() => setViewMode('video')}
+                                    />
+                                </div>
                             )}
                         </div>
                     </div>

@@ -8,6 +8,7 @@ import {
   X, 
   Globe,
   Archive,
+  Target,
   Microscope,
   BookOpen,
   Trophy,
@@ -286,6 +287,19 @@ export default function PublicHeader() {
                   </div>
                 </Link>
 
+                <Link href="/practice" className="flex items-start gap-2.5 px-2.5 py-2 rounded-lg hover:bg-sidebar/40 transition-all group">
+                  <div className="w-8 h-8 rounded-md bg-emerald-500/10 flex items-center justify-center text-emerald-600 shrink-0 group-hover:bg-emerald-500/20 transition-all">
+                    <Target className="w-4 h-4" />
+                  </div>
+                  <div className="flex flex-col gap-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[12.5px] font-bold text-text-heading group-hover:text-emerald-600 transition-colors tracking-tight">Interactive Practice</span>
+                      <span className="text-[7px] font-black uppercase tracking-widest bg-emerald-600 text-white px-1 py-0.5 rounded leading-none">New</span>
+                    </div>
+                    <span className="text-[10.5px] text-text-muted leading-relaxed">Standalone AI assessments.</span>
+                  </div>
+                </Link>
+
                 <Link href="/generate?mode=job" className="flex items-start gap-2.5 px-2.5 py-2 rounded-lg hover:bg-sidebar/40 transition-all group">
                   <div className="w-8 h-8 rounded-md bg-teal-700/10 flex items-center justify-center text-teal-700 shrink-0 group-hover:bg-teal-700/20 transition-all">
                     <Briefcase className="w-4 h-4" />
@@ -548,6 +562,7 @@ export default function PublicHeader() {
                 { l: "Study Planner", h: "/planner", i: Calendar, n: true },
                 { l: "Job Decoded", h: "/generate?mode=job", i: Briefcase, n: true },
                 { l: "BuildPilot", h: "/buildpilot", i: Terminal },
+                { l: "Interactive Practice", h: "/practice", i: Target, n: true },
                 { l: "Learning Hub", h: "/learn", i: GraduationCap },
                 { l: "Roadmap Explorer", h: "/explore", i: Globe },
                 { l: "Global Leaderboard", h: "/leaderboard", i: Trophy },

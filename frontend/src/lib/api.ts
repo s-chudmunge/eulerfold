@@ -619,8 +619,8 @@ export interface PracticeResource {
 export interface PracticeSession {
     id: string;
     user_id: string;
-    roadmap_id: number;
-    subtopic_id: string;
+    roadmap_id?: number;
+    subtopic_id?: string;
     resources: PracticeResource[];
     has_more: boolean;
     generation_count: number;
@@ -646,8 +646,8 @@ export interface MCQQuestion {
 export interface MCQSessionRead {
     id: string;
     user_id: string;
-    roadmap_id: number;
-    subtopic_id: string;
+    roadmap_id?: number;
+    subtopic_id?: string;
     topic_name: string;
     subject: string;
     week_number: number;
@@ -661,15 +661,15 @@ export interface MCQSessionRead {
 }
 
 export const practiceAPI = {
-    getOrCreateSession: async (payload: { roadmap_id: number, subtopic_id: string, topic_name: string, subject: string, goal: string }): Promise<PracticeSession> => {
+    getOrCreateSession: async (payload: { roadmap_id?: number, subtopic_id?: string, topic_name: string, subject: string, goal: string }): Promise<PracticeSession> => {
         const response = await api.post('/practice/session', payload);
         return response.data;
     },
-    loadMore: async (sessionId: string, payload: { roadmap_id: number, subtopic_id: string, topic_name: string, subject: string, goal: string }): Promise<PracticeSession> => {
+    loadMore: async (sessionId: string, payload: { roadmap_id?: number, subtopic_id?: string, topic_name: string, subject: string, goal: string }): Promise<PracticeSession> => {
         const response = await api.post(`/practice/session/${sessionId}/more`, payload);
         return response.data;
     },
-    retrySession: async (sessionId: string, payload: { roadmap_id: number, subtopic_id: string, topic_name: string, subject: string, goal: string }): Promise<PracticeSession> => {
+    retrySession: async (sessionId: string, payload: { roadmap_id?: number, subtopic_id?: string, topic_name: string, subject: string, goal: string }): Promise<PracticeSession> => {
         const response = await api.post(`/practice/session/${sessionId}/retry`, payload);
         return response.data;
     },
@@ -681,11 +681,12 @@ export const practiceAPI = {
         const response = await api.get(`/practice/session/${sessionId}/progress`);
         return response.data;
     },
-    generateMCQSession: async (payload: { roadmap_id: number, subtopic_id: string, topic_name: string, subject: string, week_number: number, num_questions: number }): Promise<MCQSessionRead> => {
+    generateMCQSession: async (payload: { roadmap_id?: number, subtopic_id?: string, topic_name: string, subject: string, week_number: number, num_questions: number }): Promise<MCQSessionRead> => {
         const response = await api.post('/practice/mcq/generate', payload);
         return response.data;
     },
     getIncompleteMCQSession: async (subtopicId: string): Promise<MCQSessionRead | null> => {
+        if (!subtopicId) return null;
         try {
             const response = await api.get(`/practice/mcq/incomplete/${subtopicId}`);
             return response.data;
@@ -699,7 +700,12 @@ export const practiceAPI = {
         return response.data;
     },
     getMCQHistory: async (subtopicId: string): Promise<MCQSessionRead[]> => {
+        if (!subtopicId) return [];
         const response = await api.get(`/practice/mcq/history/${subtopicId}`);
+        return response.data;
+    },
+    getAllMCQHistory: async (): Promise<MCQSessionRead[]> => {
+        const response = await api.get('/practice/mcq/history');
         return response.data;
     },
     getMCQSession: async (sessionId: string): Promise<MCQSessionRead> => {

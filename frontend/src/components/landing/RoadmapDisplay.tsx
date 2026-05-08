@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { RoadmapData, saveRoadmap, roadmapsAPI, submissionsAPI } from '../../lib/api';
-import { Download, CheckCircle, ChevronDown, ChevronUp, Play, BookOpen, X, Trophy, Plus, FileText, Copy, Target, MonitorPlay, BookText, Hash, Scroll, ChevronRight, Trash2, Rocket } from 'lucide-react';
+import { Download, CheckCircle, ChevronDown, ChevronUp, Play, BookOpen, X, Trophy, Plus, FileText, Copy, Target, MonitorPlay, BookText, Hash, Scroll, ChevronRight, Trash2, Rocket, Edit3 } from 'lucide-react';
 import { supabase } from '../../lib/supabase/client';
 import Link from 'next/link';
 
@@ -20,6 +20,7 @@ interface RoadmapDisplayProps {
   onClone?: () => void;
   onExtend?: () => void;
   onDeleteExtension?: () => void;
+  onPractice?: (topic: any, moduleIndex: number) => void;
   hideHeader?: boolean;
 }
 
@@ -31,6 +32,7 @@ const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({
   onClone,
   onExtend,
   onDeleteExtension,
+  onPractice,
   hideHeader = false
 }) => {
   const currentModule = (roadmapData as any).current_module || 1;
@@ -375,11 +377,27 @@ const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({
                                       </div>
                                     )}
                                   </div>
-                                  {duration && (
-                                    <span className="manrope-body text-[12px] text-text-muted opacity-40 shrink-0 tabular-nums italic">
-                                      {duration} minutes
-                                    </span>
-                                  )}
+                                  
+                                  <div className="flex items-center gap-3 shrink-0">
+                                    {isOwner && onPractice && (
+                                      <button
+                                        onClick={(e) => {
+                                          e.preventDefault();
+                                          e.stopPropagation();
+                                          onPractice(topic, index);
+                                        }}
+                                        className="p-1.5 rounded-md bg-emerald-500/5 border border-emerald-500/20 text-emerald-600 hover:bg-emerald-500/15 hover:border-emerald-500/40 hover:scale-105 transition-all shadow-sm flex items-center justify-center"
+                                        title="Interactive Practice"
+                                      >
+                                        <Edit3 className="w-3.5 h-3.5" />
+                                      </button>
+                                    )}
+                                    {duration && (
+                                      <span className="manrope-body text-[12px] text-text-muted opacity-40 shrink-0 tabular-nums italic">
+                                        {duration} minutes
+                                      </span>
+                                    )}
+                                  </div>
                                 </div>
                               </div>
                             );
