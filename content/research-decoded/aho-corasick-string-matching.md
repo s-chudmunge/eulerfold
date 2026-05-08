@@ -13,11 +13,34 @@ In 1975, Alfred Aho and Margaret Corasick published 'Efficient String Matching: 
 
 ## The Multi-Pattern Automaton and Failure Links {#aho-corasick-automaton}
 
-The primary technical contribution of the Aho-Corasick algorithm is the construction of a deterministic finite automaton (DFA) that processes an input text in a single pass. The algorithm builds a 'trie'—a prefix tree—representing the set of all keywords to be searched. The breakthrough was the addition of 'failure links' that point from a node representing a prefix to the longest proper suffix of that prefix that is also a prefix of some keyword in the trie. This technical mechanism allows the automaton to transition to a new potential match immediately upon a mismatch, without ever re-scanning the characters in the text. It proved that the 'memory' of a search can be precomputed and stored as a static graph of transitions.
+The primary technical contribution of the Aho-Corasick algorithm is the construction of a deterministic finite automaton (DFA) that processes an input text in a single pass. The algorithm builds a 'trie'—a prefix tree—representing the set of all keywords to be searched. 
+
+The breakthrough was the addition of 'failure links' that point from a node representing a prefix to the longest proper suffix of that prefix that is also a prefix of some keyword in the trie. This technical mechanism allows the automaton to transition to a new potential match immediately upon a mismatch, without ever re-scanning the characters in the text. It proved that the 'memory' of a search can be precomputed and stored as a static graph of transitions.
+
+## DFA vs. NFA: The Construction Pipeline {#dfa-nfa-pipeline}
+
+The construction of the Aho-Corasick automaton proceeds in three distinct phases:
+1. **Trie Building**: Inserting all keywords into a prefix tree.
+2. **Failure Link Computation (NFA)**: Using a breadth-first search (BFS) to identify the longest suffix-prefix overlaps. This creates a non-deterministic machine where a single character can trigger a transition or a failure jump.
+3. **DFA Flattening**: To achieve true $O(1)$ per-character processing, the NFA is often "flattened" into a full transition table. Each state $s$ and character $c$ has a single, precomputed next state, eliminating the need to traverse multiple failure links during the search phase.
+
+This pipeline revealed that the computational cost of a search can be front-loaded into a compilation phase, allowing the execution phase to run at the speed of the memory's throughput.
 
 ## Simultaneous Matching and Output Links {#simultaneous-matching}
 
-The technical significance of the Aho-Corasick algorithm lies in its ability to handle overlapping patterns and sub-patterns in O(n) time, where n is the length of the text. By using 'output links'—which connect a node to other patterns that end at the same position in the text—the algorithm ensures that every occurrence of every keyword is identified in a single pass. This finding revealed that the cost of searching for a set of patterns is not a summation of individual searches, but a function of the text's length and the total number of matches found. It established that a properly constructed automaton can maintain multiple, parallel search states without any computational overhead.
+The technical significance of the Aho-Corasick algorithm lies in its ability to handle overlapping patterns and sub-patterns in $O(n)$ time, where $n$ is the length of the text. By using 'output links'—which connect a node to other patterns that end at the same position in the text—the algorithm ensures that every occurrence of every keyword is identified in a single pass. This finding revealed that the cost of searching for a set of patterns is not a summation of individual searches, but a function of the text's length and the total number of matches found. It established that a properly constructed automaton can maintain multiple, parallel search states without any computational overhead.
+
+## Security and Intrusion Detection {#intrusion-detection}
+
+In the field of cybersecurity, Aho-Corasick is the engine behind many Network Intrusion Detection Systems (NIDS) like Snort and Suricata. These systems must scan every incoming packet for thousands of known malicious signatures (e.g., shellcode or virus fragments) in real-time. 
+
+By compiling these signatures into a single Aho-Corasick DFA, the system can monitor gigabits of traffic with a constant time-per-byte complexity. This application proved that high-performance security is a function of efficient state management, allowing for the immediate detection of threats even as the library of known attacks grows exponentially.
+
+## Bioinformatics: DNA Sequence Alignment {#bioinformatics}
+
+The algorithm is equally foundational to bioinformatics, where it is used to search for specific DNA or protein motifs across massive genomic datasets. When a researcher needs to find all instances of a specific set of regulatory sequences in a genome, Aho-Corasick provides a more efficient alternative to repeated individual searches. 
+
+By treating the four-letter genetic alphabet ($A, T, C, G$) as the input stream, the automaton can identify complex, overlapping patterns of biological interest. This revealed that the same principles used for bibliographic search are essential for decoding the "text" of life itself.
 
 ## The Logic of Finite-State Processing {#aho-corasick-logic}
 
