@@ -47,7 +47,7 @@ export default function SyllabusModal({
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-          <h2 className="text-[16px] font-bold text-text-heading">Course Syllabus</h2>
+          <h2 className="text-[16px] font-bold text-text-heading">Roadmap Syllabus</h2>
           <button onClick={onClose} className="p-1 hover:bg-callout-bg rounded-lg text-text-muted transition-colors">
             <X className="w-5 h-5" />
           </button>
@@ -63,7 +63,7 @@ export default function SyllabusModal({
             <div className="flex items-center gap-6">
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[12px] font-bold text-text-muted uppercase tracking-wider">Course Progress</span>
+                  <span className="text-[12px] font-bold text-text-muted uppercase tracking-wider">Roadmap Progress</span>
                   <span className="text-[12px] font-bold text-text-heading">{progressPercent}%</span>
                 </div>
                 <div className="h-2 w-full bg-border rounded-full overflow-hidden">

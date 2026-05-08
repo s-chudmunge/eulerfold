@@ -248,7 +248,7 @@ export default function CourseHeader({
             onClick={onOpenSyllabus}
             className="hidden sm:flex items-center px-4 py-1.5 rounded-lg text-[13px] font-bold text-text-muted hover:text-text-heading hover:bg-callout-bg transition-all"
           >
-            Course Syllabus
+            Roadmap Syllabus
           </button>
           
           <div className="flex items-center bg-callout-bg rounded-lg p-0.5">
