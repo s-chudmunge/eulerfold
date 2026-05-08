@@ -39,6 +39,7 @@ import CourseHeader from '@/components/CourseHeader';
 import MCQPractice from './MCQPractice';
 import SyllabusModal from './SyllabusModal';
 import TaskModal from '@/components/planner/TaskModal';
+import YouTubePlayer from '@/components/roadmap/YouTubePlayer';
 
 export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoadmap }: { id?: string, slug?: string[], initialRoadmap?: RoadmapData | null }) {
     const params = useParams();
@@ -705,12 +706,12 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                     <div className="bg-image-bg border border-border rounded-xl overflow-hidden shadow-sm mb-8">
                                         <div className="aspect-video w-full bg-black relative group">
                                             {activeVideoId ? (
-                                                <iframe
-                                                    src={`https://www.youtube.com/embed/${activeVideoId}?autoplay=1&mute=1&rel=0&modestbranding=1&iv_load_policy=3&showinfo=0&controls=1`}
-                                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                                    allowFullScreen
-                                                    className="w-full h-full border-0"
+                                                <YouTubePlayer
+                                                    videoId={activeVideoId}
                                                     title={currentTopic.youtube_video_title || currentTopic.title}
+                                                    onComplete={handleMarkAsCompleted}
+                                                    onNext={handleNext}
+                                                    isCompleted={isTopicCompleted}
                                                 />
                                             ) : (
                                                 <div className="w-full h-full flex flex-col items-center justify-center text-text-muted p-8 text-center bg-callout-bg">
