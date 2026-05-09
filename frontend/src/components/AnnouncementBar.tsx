@@ -131,9 +131,9 @@ export default function AnnouncementBar() {
                 </motion.div>
                 <span className="text-white">
                     {discountStatus.hasDiscount ? (
-                        <>MAHARASHTRA DAY SALE: 50% OFF — <span className="font-black text-orange-300 font-mono">{formatTime(discountStatus.remainingSeconds)}</span> LEFT</>
+                        <>MOTHER&apos;S DAY SALE: 50% OFF — <span className="font-black text-orange-300 font-mono">{formatTime(discountStatus.remainingSeconds)}</span> LEFT</>
                     ) : (
-                        <>MAHARASHTRA DAY SALE STARTING IN — <span className="font-black text-orange-300 font-mono">{formatTime(discountStatus.remainingSeconds)}</span></>
+                        <>MOTHER&apos;S DAY SALE STARTING IN — <span className="font-black text-orange-300 font-mono">{formatTime(discountStatus.remainingSeconds)}</span></>
                     )}
                 </span>
               </div>

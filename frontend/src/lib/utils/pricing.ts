@@ -19,27 +19,27 @@ export function getDiscountStatus(): DiscountStatus {
     // Current time in UTC
     const now = new Date();
     
-    // Target dates in IST: May 1st and May 2nd, 2026
+    // Target dates in IST: May 10th and May 11th, 2026
     // All day (00:00 to 23:59:59 IST)
     // IST is UTC+5:30
     
-    const startTimeIST = new Date('2026-05-01T00:00:00+05:30');
-    const endTimeIST = new Date('2026-05-03T00:00:00+05:30'); // End at start of May 3rd
+    const startTimeIST = new Date('2026-05-10T00:00:00+05:30');
+    const endTimeIST = new Date('2026-05-12T00:00:00+05:30'); // End at start of May 12th
     
-    const isToday = now.getFullYear() === 2026 && now.getMonth() === 4 && (now.getDate() === 1 || now.getDate() === 2);
+    const isToday = now.getFullYear() === 2026 && now.getMonth() === 4 && (now.getDate() === 10 || now.getDate() === 11);
     const isWithinTime = now >= startTimeIST && now < endTimeIST;
     const hasDiscount = isWithinTime;
     
     let remainingSeconds = 0;
     if (isWithinTime) {
         remainingSeconds = Math.max(0, Math.floor((endTimeIST.getTime() - now.getTime()) / 1000));
-    } else if (now < startTimeIST && (now.getFullYear() === 2026 && now.getMonth() === 3 && now.getDate() === 30)) {
-        // If it's April 30, show countdown to May 1st
+    } else if (now < startTimeIST && (now.getFullYear() === 2026 && now.getMonth() === 4 && now.getDate() === 9)) {
+        // If it's May 9, show countdown to May 10th
         remainingSeconds = Math.max(0, Math.floor((startTimeIST.getTime() - now.getTime()) / 1000));
     }
     
     return {
-        isToday: isToday || (now.getFullYear() === 2026 && now.getMonth() === 3 && now.getDate() === 30),
+        isToday: isToday || (now.getFullYear() === 2026 && now.getMonth() === 4 && now.getDate() === 9),
         isWithinTime,
         hasDiscount,
         remainingSeconds,

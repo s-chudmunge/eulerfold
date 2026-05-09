@@ -39,7 +39,7 @@ export default function PricingClient() {
                         <div>
                             <div className="flex items-center gap-2 mb-1">
                                 <span className="px-2 py-0.5 bg-orange-900/20 rounded text-[10px] font-black text-white uppercase tracking-tighter">Live Now</span>
-                                <h3 className="inconsolata-ui text-[16px] font-black text-white uppercase tracking-tight leading-none">Maharashtra Day Flash Sale</h3>
+                                <h3 className="inconsolata-ui text-[16px] font-black text-white uppercase tracking-tight leading-none">Mother&apos;S Day Flash Sale</h3>
                             </div>
                             <p className="manrope-body text-[12px] text-orange-50/90 font-medium">50% discount applied. Build your roadmaps at half the cost.</p>
                         </div>
@@ -64,7 +64,7 @@ export default function PricingClient() {
                         <div>
                             <div className="flex items-center gap-2 mb-1">
                                 <span className="px-2 py-0.5 bg-teal-600/10 border border-teal-600/20 rounded text-[10px] font-bold text-teal-700 uppercase tracking-widest">Upcoming Event</span>
-                                <h3 className="inconsolata-ui text-[16px] font-black text-text-heading uppercase tracking-tight leading-none">Maharashtra Day Sale</h3>
+                                <h3 className="inconsolata-ui text-[16px] font-black text-text-heading uppercase tracking-tight leading-none">Mother&apos;S Day Sale</h3>
                             </div>
                             <p className="manrope-body text-[12px] text-text-muted font-medium">Get 50% off all credits starting very soon. Don't miss out!</p>
                         </div>

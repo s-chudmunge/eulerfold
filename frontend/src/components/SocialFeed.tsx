@@ -59,8 +59,8 @@ export default function SocialFeed() {
 
       // 2. Instagram & X placeholders (reflecting current Flash Sale)
       combinedPosts.push(
-        { id: "ig-1", platform: "Instagram", content: "MAHARASHTRA DAY FLASH SALE! ⚡️ 50% OFF on all EulerFold credits. Valid May 1st & 2nd. Don't miss out on your learning journey.", date: "Live Now", link: platformLinks.Instagram },
-        { id: "tw-1", platform: "X", content: "Maharashtra Day Flash Sale Alert: 50% discount on all credits today and tomorrow! Build your premium roadmaps at half the cost. 🚀", date: "Live Now", link: platformLinks.X }
+        { id: "ig-1", platform: "Instagram", content: "MOTHER'S DAY FLASH SALE! ⚡️ 50% OFF on all EulerFold credits. Valid May 10th & 11th. Don't miss out on your learning journey.", date: "Coming Soon", link: platformLinks.Instagram },
+        { id: "tw-1", platform: "X", content: "Mother's Day Flash Sale Alert: 50% discount on all credits tomorrow and day after tomorrow! Build your premium roadmaps at half the cost. 🚀", date: "Coming Soon", link: platformLinks.X }
       );
 
       setPosts(combinedPosts);
