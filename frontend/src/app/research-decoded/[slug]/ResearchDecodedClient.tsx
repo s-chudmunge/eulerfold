@@ -199,7 +199,7 @@ const TermLink = ({ children, slug }: { children: React.ReactNode, slug: string 
     >
       <Link 
         href={`/articles/${slug}`}
-        className="text-accent hover:text-accent/80 transition-colors underline decoration-accent/30 decoration-2 underline-offset-4 font-semibold"
+        className="text-link hover:opacity-80 transition-opacity underline decoration-link/30 decoration-2 underline-offset-4 font-semibold"
       >
         {children}
       </Link>
@@ -322,7 +322,7 @@ const MarkdownWithLinks = ({ content }: { content: string }) => {
       components={{
         // Custom h2 for IDs (we disable automatic IDs here to avoid conflict with main section IDs)
         h2: ({node, children, ...props}) => {
-          return <h2 className="text-[20px] md:text-[24px] font-bold text-text-heading mb-6 flex items-center gap-3" {...props}>{children}</h2>;
+          return <h2 className="text-[20px] md:text-[24px] font-bold text-accent mb-6 flex items-center gap-3" {...props}>{children}</h2>;
         },
         // We target the paragraph and list items to process their text children
         p: ({ children }) => {
@@ -331,6 +331,7 @@ const MarkdownWithLinks = ({ content }: { content: string }) => {
         li: ({ children }) => {
           return <li>{processChildren(children)}</li>;
         },
+        hr: () => null,
         code: ({ node, className, children, ...props }: any) => {
           const match = /language-(\w+)/.exec(className || '');
           const isD2 = match && match[1] === 'd2';

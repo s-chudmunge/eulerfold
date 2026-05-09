@@ -34,6 +34,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     title: `${article.title} - EulerFold Articles`,
     description: article.excerpt,
     keywords: keywords,
+    authors: [{ name: article.author }],
     openGraph: {
       title: article.title,
       description: article.excerpt,
@@ -41,6 +42,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       url: `https://www.eulerfold.com/articles/${params.slug}`,
       siteName: 'EulerFold',
       images: article.heroImage ? [{ url: article.heroImage }] : [],
+      publishedTime: new Date(article.date).toISOString(),
+      authors: [article.author],
     },
     twitter: {
       card: 'summary_large_image',

@@ -59,6 +59,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     title: title,
     description: description,
     keywords: keywords,
+    authors: [{ name: paper.authors }],
     openGraph: {
       title: title,
       description: description,
@@ -66,6 +67,8 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       url: `https://www.eulerfold.com/research-decoded/${params.slug}`,
       siteName: 'EulerFold',
       images: paper.heroImage ? [{ url: paper.heroImage }] : [],
+      publishedTime: "2026-03-27T00:00:00Z", // Default base date for the series
+      authors: [paper.authors],
     },
     twitter: {
       card: paper.heroImage ? 'summary_large_image' : 'summary',

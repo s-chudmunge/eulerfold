@@ -21,6 +21,7 @@ import Footer from '@/components/Footer';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import RecommendedRoadmaps from '@/components/RecommendedRoadmaps';
 import FloatingTTS from '@/components/FloatingTTS';
+import { DiscussionSection } from '@/components/discussions/DiscussionSection';
 import { Article, articles } from '../generatedArticles';
 import { Paper, papers } from '../../research-decoded/generatedData';
 
@@ -157,7 +158,7 @@ const TermLink = ({ children, slug }: { children: React.ReactNode, slug: string 
     >
       <Link 
         href={`/articles/${slug}`}
-        className="text-accent hover:text-accent/80 transition-colors underline decoration-accent/30 decoration-2 underline-offset-4 font-semibold"
+        className="text-link hover:opacity-80 transition-opacity underline decoration-link/30 decoration-2 underline-offset-4 font-semibold"
       >
         {children}
       </Link>
@@ -291,7 +292,12 @@ const MarkdownWithLinks = ({ content, currentSlug, cache }: { content: string, c
         h2: ({node, children, ...props}) => {
           const content = React.Children.toArray(children).join('');
           const id = slugify(content);
-          return <h2 id={id} className="text-[28px] md:text-[32px] font-bold leading-[1.2] mt-[60px] mb-[24px] text-text-heading font-inter tracking-tighter scroll-mt-24" {...props}>{children}</h2>;
+          return <h2 id={id} className="text-[28px] md:text-[32px] font-bold leading-[1.2] mt-[60px] mb-[24px] text-accent font-inter tracking-tighter scroll-mt-24" {...props}>{children}</h2>;
+        },
+        h3: ({node, children, ...props}) => {
+          const content = React.Children.toArray(children).join('');
+          const id = slugify(content);
+          return <h3 id={id} className="text-[22px] md:text-[24px] font-bold leading-[1.2] mt-[40px] mb-[16px] text-accent font-inter tracking-tighter scroll-mt-24" {...props}>{children}</h3>;
         },
         p: ({ children }) => {
           return <p className="mb-[24px]">{processChildren(children)}</p>;
@@ -303,6 +309,7 @@ const MarkdownWithLinks = ({ content, currentSlug, cache }: { content: string, c
           return <li>{processChildren(children)}</li>;
         },
         strong: ({node, ...props}) => <strong className="font-bold text-text-heading" {...props} />,
+        hr: () => null,
         code: ({ node, className, children, ...props }: any) => {
           const match = /language-(\w+)/.exec(className || '');
           const isD2 = match && match[1] === 'd2';
@@ -332,10 +339,13 @@ export default function ArticleClient({ article }: Props) {
   const [activeId, setActiveId] = React.useState<string>('');
 
   const headings = React.useMemo(() => {
-    const h2s = article.content.split('\n').filter(line => line.startsWith('## '));
-    return h2s.map(line => {
-      const title = line.replace('## ', '').trim();
-      return { title, id: slugify(title) };
+    // Match both ## and ### headers
+    const rawHeadings = article.content.split('\n').filter(line => /^##+ /.test(line));
+    return rawHeadings.map(line => {
+      const match = line.match(/^(##+) (.*)$/);
+      const level = match ? match[1].length : 2;
+      const title = match ? match[2].trim() : line.replace(/^##+ /, '').trim();
+      return { title, id: slugify(title), level };
     });
   }, [article.content]);
 
@@ -349,6 +359,7 @@ export default function ArticleClient({ article }: Props) {
       if (window.scrollY < 100 && headings.length > 0) {
         currentActiveId = headings[0].id;
       } else {
+        // Iterate through headings to find the current active one
         for (let i = 0; i < headings.length; i++) {
           const element = document.getElementById(headings[i].id);
           if (!element) continue;
@@ -471,7 +482,7 @@ export default function ArticleClient({ article }: Props) {
                     activeId === heading.id 
                       ? "text-accent border-l-2 border-accent pl-3 -ml-[2px]" 
                       : "text-text-muted pl-3 border-l-2 border-transparent hover:border-accent/20"
-                  }`}
+                  } ${heading.level === 3 ? "ml-4" : ""}`}
                 >
                   {heading.title}
                 </a>
@@ -492,7 +503,7 @@ export default function ArticleClient({ article }: Props) {
                 {article.title}
               </h1>
               <div className="text-[17px] text-text-muted opacity-70 font-medium inconsolata-ui uppercase tracking-widest date">
-                By <span className="text-text-heading font-semibold">{article.author}</span> / {article.date}
+                By <span className="text-text-heading font-semibold" rel="author">{article.author}</span> / <time dateTime={new Date(article.date).toISOString()}>{article.date}</time>
               </div>
             </header>
 
@@ -516,13 +527,11 @@ export default function ArticleClient({ article }: Props) {
 
               {/* Box Component (Technical Insight) */}
               {article.technicalInsight && (
-                <div className="my-[60px] relative group">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-accent/50 to-accent/30 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000 group-hover:duration-200"></div>
-                  <div className="relative bg-callout-bg p-[30px] md:p-[45px] rounded-2xl border border-callout-border leading-relaxed">
-                    <p className="italic text-text-heading font-medium">
-                      "{article.technicalInsight}"
-                    </p>
-                  </div>
+                <div className="my-16 pl-8 border-l-4 border-accent">
+                  <div className="text-[11px] font-bold text-accent uppercase tracking-[0.2em] mb-2 inconsolata-ui">Insight</div>
+                  <p className="text-[20px] md:text-[22px] text-text-heading font-medium leading-relaxed tracking-tight italic">
+                    {article.technicalInsight}
+                  </p>
                 </div>
               )}
 
@@ -594,6 +603,11 @@ export default function ArticleClient({ article }: Props) {
                 >
                   <FaWhatsapp className="w-4 h-4 fill-white" /> WhatsApp
                 </a>
+              </div>
+
+              {/* Discussion Section */}
+              <div className="mt-16">
+                <DiscussionSection contextId={article.slug} contextType="article" />
               </div>
 
               {/* Recommended Readings */}
