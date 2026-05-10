@@ -11,8 +11,10 @@ export default function PricingClient() {
     const { user, loading } = useAuth();
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
     const [discountStatus, setDiscountStatus] = useState(getDiscountStatus());
+    const [hasMounted, setHasMounted] = useState(false);
 
     useEffect(() => {
+        setHasMounted(true);
         const timer = setInterval(() => {
             setDiscountStatus(getDiscountStatus());
         }, 1000);
@@ -23,6 +25,11 @@ export default function PricingClient() {
     const isLoggedIn = !!user;
 
     const currentPrice = discountStatus.hasDiscount ? DISCOUNTED_PRICE : NORMAL_PRICE;
+
+    const renderTimer = (seconds: number) => {
+        if (!hasMounted) return "00:00:00";
+        return formatTime(seconds);
+    };
 
     return (
         <>
@@ -47,7 +54,7 @@ export default function PricingClient() {
                     <div className="flex flex-col items-end gap-1 relative z-10">
                         <div className="flex items-center gap-2 px-4 py-2 bg-black/20 backdrop-blur-md border border-white/10 rounded text-white inconsolata-ui text-[14px] font-black shadow-lg">
                             <Clock className="w-4 h-4 text-orange-300" />
-                            <span className="font-mono">{formatTime(discountStatus.remainingSeconds)}</span>
+                            <span className="font-mono">{renderTimer(discountStatus.remainingSeconds)}</span>
                             <span className="text-[10px] text-orange-200 ml-1 uppercase tracking-tighter">Left</span>
                         </div>
                     </div>
@@ -72,7 +79,7 @@ export default function PricingClient() {
                     <div className="flex flex-col items-center sm:items-end gap-1">
                         <div className="flex items-center gap-2 px-4 py-2 bg-[var(--text-heading)] text-[var(--bg-main)] rounded shadow-md inconsolata-ui text-[14px] font-black">
                             <Clock className="w-4 h-4 text-teal-400" />
-                            <span className="font-mono">{formatTime(discountStatus.remainingSeconds)}</span>
+                            <span className="font-mono">{renderTimer(discountStatus.remainingSeconds)}</span>
                         </div>
                         <span className="text-[9px] text-text-muted uppercase tracking-[0.2em] font-bold">Starts in</span>
                     </div>
