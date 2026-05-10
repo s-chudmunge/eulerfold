@@ -61,11 +61,9 @@ export default function FloatingTTS({ content: manualContent }: { content?: stri
   const handleTextSelection = useCallback(() => {
     const text = window.getSelection()?.toString().trim();
     if (text && text.length > 5) {
-      stop();
       setSelectedText(text);
-      setIsExpanded(true);
     }
-  }, [stop]);
+  }, []);
 
   useEffect(() => {
     document.addEventListener('mouseup', handleTextSelection);

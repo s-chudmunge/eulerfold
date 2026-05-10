@@ -154,27 +154,20 @@ const ARTICLES_DATA = {
     { name: "Architectures", href: "/articles?category=Architectures" },
     { name: "Optimization", href: "/articles?category=Optimization" },
     { name: "Theory", href: "/articles?category=Theory" },
-    { name: "Science AI", href: "/articles?category=Science AI" }
+    { name: "Science AI", href: "/articles?category=Science AI" },
+    { name: "Profiles", href: "/articles?category=Profiles" }
   ],
   featured: [
     { title: "Transformer Architecture", slug: "transformer" },
-    { title: "AlphaFold (Proteins)", slug: "how-does-alphafold-predict-protein-structures" },
-    { title: "Protein Language Models", slug: "what-are-protein-language-models" },
-    { title: "Mixture of Experts (MoE)", slug: "mixture-of-experts" },
-    { title: "Drug Discovery", slug: "how-is-ai-accelerating-drug-discovery" },
-    { title: "RLHF (Alignment)", slug: "rlhf" },
-    { title: "Digital Twin (Cell)", slug: "how-is-ai-building-a-digital-twin-of-the-cell" },
-    { title: "Vector Embeddings", slug: "embeddings" },
-    { title: "Vanishing Gradient", slug: "vanishing-gradient" },
+    { title: "DeepSeek R1 Reasoning", slug: "deepseek-r1-incentivizing-reasoning" },
+    { title: "AlphaFold 3 Logic", slug: "how-does-alphafold-predict-protein-structures" },
+    { title: "Mixture of Experts", slug: "mixture-of-experts" },
+    { title: "Karpathy: First Principles", slug: "andrej-karpathy-first-principles" },
+    { title: "Ilya: Scaling Laws", slug: "ilya-sutskever-superalignment" },
     { title: "Backpropagation", slug: "backpropagation" },
+    { title: "Vector Embeddings", slug: "embeddings" },
     { title: "Double Descent", slug: "double-descent" },
-    { title: "Latent Space", slug: "latent-space" },
-    { title: "Weather Prediction", slug: "how-does-ai-predict-extreme-weather" },
-    { title: "Connectomics (Brain)", slug: "how-is-ai-mapping-the-brain-connectomics" },
-    { title: "Positional Encoding", slug: "positional-encoding" },
-    { title: "Gradient Descent", slug: "gradient-descent" },
-    { title: "Quantization", slug: "quantization" },
-    { title: "Nuclear Fusion", slug: "how-does-ai-simulate-nuclear-fusion" }
+    { title: "RLHF (Alignment)", slug: "rlhf" }
   ]
 };
 
@@ -227,7 +220,7 @@ export default function PublicHeader() {
             
             {isOpen && (
                 <div className="absolute top-[calc(100%-8px)] left-0 pt-3 z-[100] animate-in fade-in zoom-in-95 duration-200 ease-out">
-                    <div className={`bg-header border border-border shadow-[0_12px_40px_rgba(0,0,0,0.08)] rounded-xl overflow-hidden ${width}`}>
+                    <div className={`bg-header border border-border shadow-[0_12px_40px_rgba(0,0,0,0.08)] rounded-lg overflow-hidden ${width}`}>
                         {children}
                     </div>
                 </div>
@@ -260,68 +253,25 @@ export default function PublicHeader() {
             <Link href="/leaderboard" className="px-3 py-1.5 text-[13.5px] font-semibold text-text-muted hover:text-text-heading transition-all tracking-tight rounded-lg hover:bg-sidebar/40">Leaderboard</Link>
             <Link href="/explore" className="px-3 py-1.5 text-[13.5px] font-semibold text-text-muted hover:text-text-heading transition-all tracking-tight rounded-lg hover:bg-sidebar/40">Explore</Link>
 
-            <DesktopDropdown id="products" label="Products" width="min-w-[280px]">
-              <div className="p-1.5 flex flex-col gap-0.5">
-                <Link href="/planner" className="flex items-start gap-2.5 px-2.5 py-2 rounded-lg hover:bg-sidebar/40 transition-all group">
-                  <div className="w-8 h-8 rounded-md bg-accent/10 flex items-center justify-center text-accent shrink-0">
-                    <Calendar className="w-4 h-4" />
-                  </div>
-                  <div className="flex flex-col gap-0.5">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[12.5px] font-bold text-text-heading group-hover:text-accent transition-colors tracking-tight">Study Planner</span>
-                      <span className="text-[7px] font-black uppercase tracking-widest bg-accent text-white px-1 py-0.5 rounded leading-none">New</span>
-                    </div>
-                    <span className="text-[10.5px] text-text-muted leading-relaxed">Organize your learning journey.</span>
-                  </div>
-                </Link>
-
-                <Link href="/buildpilot" className="flex items-start gap-2.5 px-2.5 py-2 rounded-lg hover:bg-sidebar/40 transition-all group">
-                  <div className="w-8 h-8 rounded-md bg-teal-500/10 flex items-center justify-center text-teal-700 shrink-0 group-hover:bg-teal-500/20 transition-all">
-                    <Terminal className="w-4 h-4" />
-                  </div>
-                  <div className="flex flex-col gap-0.5">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[12.5px] font-bold text-text-heading group-hover:text-teal-700 transition-colors tracking-tight">BuildPilot</span>
-                    </div>
-                    <span className="text-[10.5px] text-text-muted leading-relaxed">Proof-of-work workspace.</span>
-                  </div>
-                </Link>
-
-                <Link href="/practice" className="flex items-start gap-2.5 px-2.5 py-2 rounded-lg hover:bg-sidebar/40 transition-all group">
-                  <div className="w-8 h-8 rounded-md bg-emerald-500/10 flex items-center justify-center text-emerald-600 shrink-0 group-hover:bg-emerald-500/20 transition-all">
-                    <Target className="w-4 h-4" />
-                  </div>
-                  <div className="flex flex-col gap-0.5">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[12.5px] font-bold text-text-heading group-hover:text-emerald-600 transition-colors tracking-tight">Interactive Practice</span>
-                      <span className="text-[7px] font-black uppercase tracking-widest bg-emerald-600 text-white px-1 py-0.5 rounded leading-none">New</span>
-                    </div>
-                    <span className="text-[10.5px] text-text-muted leading-relaxed">Standalone AI assessments.</span>
-                  </div>
-                </Link>
-
-                <Link href="/generate?mode=job" className="flex items-start gap-2.5 px-2.5 py-2 rounded-lg hover:bg-sidebar/40 transition-all group">
-                  <div className="w-8 h-8 rounded-md bg-teal-700/10 flex items-center justify-center text-teal-700 shrink-0 group-hover:bg-teal-700/20 transition-all">
-                    <Briefcase className="w-4 h-4" />
-                  </div>
-                  <div className="flex flex-col gap-0.5">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[12.5px] font-bold text-text-heading group-hover:text-teal-700 transition-colors tracking-tight">Job Decoded</span>
-                      <span className="text-[7px] font-black uppercase tracking-widest bg-teal-700 text-white px-1 py-0.5 rounded leading-none">New</span>
-                    </div>
-                    <span className="text-[10.5px] text-text-muted leading-relaxed">JD-to-Roadmap engine.</span>
-                  </div>
-                </Link>
-
-                <Link href="/generate" className="flex items-start gap-2.5 px-2.5 py-2 rounded-lg hover:bg-sidebar/40 transition-all group">
-                  <div className="w-8 h-8 rounded-md bg-sidebar border border-border flex items-center justify-center text-text-muted shrink-0 group-hover:text-accent group-hover:border-accent/30 transition-colors">
-                    <Plus className="w-4 h-4" />
-                  </div>
-                  <div className="flex flex-col gap-0.5">
-                    <span className="text-[12.5px] font-bold text-text-heading group-hover:text-accent transition-colors tracking-tight">Roadmap Generator</span>
-                    <span className="text-[10.5px] text-text-muted leading-relaxed">AI-powered curricula.</span>
-                  </div>
-                </Link>
+            <DesktopDropdown id="products" label="Products" width="min-w-[200px]">
+              <div className="p-1.5 flex flex-col">
+                {[
+                  { label: "Study Planner", href: "/planner" },
+                  { label: "BuildPilot", href: "/buildpilot" },
+                  { label: "Interactive Practice", href: "/practice" },
+                  { label: "Job Decoded", href: "/generate?mode=job" },
+                  { label: "Roadmap Generator", href: "/generate" }
+                ].map((item, idx, arr) => (
+                  <React.Fragment key={item.href}>
+                    <Link 
+                      href={item.href} 
+                      className="px-3 py-2 text-[13px] font-bold text-text-heading hover:text-accent hover:bg-sidebar/40 rounded-lg transition-all tracking-tight"
+                    >
+                      {item.label}
+                    </Link>
+                    {idx < arr.length - 1 && <div className="h-[1px] bg-border/40 mx-2 my-0.5" />}
+                  </React.Fragment>
+                ))}
               </div>
             </DesktopDropdown>
 
@@ -338,7 +288,7 @@ export default function PublicHeader() {
                   
                   <button 
                     onMouseEnter={() => setLearnTab('roadmaps')}
-                    className={`flex items-center justify-between p-3 rounded-xl transition-all border ${learnTab === 'roadmaps' ? 'bg-header border-border shadow-sm text-accent' : 'border-transparent text-text-muted hover:bg-header/50'}`}
+                    className={`flex items-center justify-between p-3 rounded-lg transition-all border ${learnTab === 'roadmaps' ? 'bg-header border-border shadow-sm text-accent' : 'border-transparent text-text-muted hover:bg-header/50'}`}
                   >
                     <div className="flex items-center gap-3">
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${learnTab === 'roadmaps' ? 'bg-accent/10 text-accent' : 'bg-background border border-border text-text-muted'}`}>
@@ -354,7 +304,7 @@ export default function PublicHeader() {
 
                   <button 
                     onMouseEnter={() => setLearnTab('exams')}
-                    className={`flex items-center justify-between p-3 rounded-xl transition-all border ${learnTab === 'exams' ? 'bg-header border-border shadow-sm text-accent' : 'border-transparent text-text-muted hover:bg-header/50'}`}
+                    className={`flex items-center justify-between p-3 rounded-lg transition-all border ${learnTab === 'exams' ? 'bg-header border-border shadow-sm text-accent' : 'border-transparent text-text-muted hover:bg-header/50'}`}
                   >
                     <div className="flex items-center gap-3">
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${learnTab === 'exams' ? 'bg-accent/10 text-accent' : 'bg-background border border-border text-text-muted'}`}>
@@ -370,7 +320,7 @@ export default function PublicHeader() {
 
                   <button 
                     onMouseEnter={() => setLearnTab('research')}
-                    className={`flex items-center justify-between p-3 rounded-xl transition-all border ${learnTab === 'research' ? 'bg-header border-border shadow-sm text-accent' : 'border-transparent text-text-muted hover:bg-header/50'}`}
+                    className={`flex items-center justify-between p-3 rounded-lg transition-all border ${learnTab === 'research' ? 'bg-header border-border shadow-sm text-accent' : 'border-transparent text-text-muted hover:bg-header/50'}`}
                   >
                     <div className="flex items-center gap-3">
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${learnTab === 'research' ? 'bg-accent/10 text-accent' : 'bg-background border border-border text-text-muted'}`}>
@@ -386,14 +336,14 @@ export default function PublicHeader() {
 
                   <button 
                     onMouseEnter={() => setLearnTab('articles')}
-                    className={`flex items-center justify-between p-3 rounded-xl transition-all border ${learnTab === 'articles' ? 'bg-header border-border shadow-sm text-accent' : 'border-transparent text-text-muted hover:bg-header/50'}`}
+                    className={`flex items-center justify-between p-3 rounded-lg transition-all border ${learnTab === 'articles' ? 'bg-header border-border shadow-sm text-accent' : 'border-transparent text-text-muted hover:bg-header/50'}`}
                   >
                     <div className="flex items-center gap-3">
                       <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${learnTab === 'articles' ? 'bg-accent/10 text-accent' : 'bg-background border border-border text-text-muted'}`}>
                         <BookOpen className="w-4 h-4" />
                       </div>
                       <div className="flex flex-col items-start">
-                        <span className="text-[13px] font-bold">Glossary</span>
+                        <span className="text-[13px] font-bold">Articles</span>
                         <span className="text-[10px] opacity-60">Technical breakdowns</span>
                       </div>
                     </div>
@@ -426,12 +376,15 @@ export default function PublicHeader() {
                       {/* Featured Items */}
                       <div className="p-6 flex-1 bg-header">
                         <span className="text-[10px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-4 opacity-50">Featured Roadmaps</span>
-                        <div className="space-y-3.5">
-                          {ROADMAP_DATA.featured.map(r => (
-                            <Link key={r.slug} href={`/roadmap/${r.slug}`} className="flex items-start justify-between group/item">
-                              <span className="text-[12.5px] font-semibold text-text-heading group-hover/item:text-accent transition-colors pr-4">{r.title}</span>
-                              <ArrowRight className="w-3.5 h-3.5 text-accent opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all shrink-0 mt-0.5" />
-                            </Link>
+                        <div className="flex flex-col">
+                          {ROADMAP_DATA.featured.map((r, idx, arr) => (
+                            <React.Fragment key={r.slug}>
+                              <Link href={`/roadmap/${r.slug}`} className="flex items-start justify-between group/item py-2 transition-all">
+                                <span className="text-[12.5px] font-semibold text-text-heading group-hover/item:text-accent transition-colors pr-4">{r.title}</span>
+                                <ArrowRight className="w-3.5 h-3.5 text-accent opacity-0 -translate-x-2 group-hover/item:opacity-100 group-hover/item:translate-x-0 transition-all shrink-0 mt-0.5" />
+                              </Link>
+                              {idx < arr.length - 1 && <div className="h-[1px] bg-border/40 my-1" />}
+                            </React.Fragment>
                           ))}
                         </div>
                         <Link href="/explore" className="mt-8 pt-4 border-t border-border/60 flex items-center gap-2 text-[11px] font-bold text-accent hover:gap-2.5 transition-all">
@@ -445,16 +398,19 @@ export default function PublicHeader() {
                         {EXAM_CATEGORIES.map(reg => (
                           <div key={reg.title}>
                             <span className="text-[10px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-4 opacity-50">{reg.title}</span>
-                            <div className="space-y-2.5">
-                              {reg.exams.map(ex => (
-                                <Link key={ex.slug} href={`/archive/exams/previous-year-papers/${ex.slug}`} className="block text-[12.5px] font-semibold text-text-heading hover:text-accent transition-colors">{ex.name}</Link>
+                            <div className="flex flex-col">
+                              {reg.exams.map((ex, idx, arr) => (
+                                <React.Fragment key={ex.slug}>
+                                  <Link href={`/archive/exams/previous-year-papers/${ex.slug}`} className="block text-[12.5px] font-semibold text-text-heading hover:text-accent transition-colors py-1.5">{ex.name}</Link>
+                                  {idx < arr.length - 1 && <div className="h-[1px] bg-border/40" />}
+                                </React.Fragment>
                               ))}
                             </div>
                           </div>
                         ))}
                       </div>
                       <div className="mt-auto">
-                        <Link href="/archive/exams/previous-year-papers" className="p-4 bg-sidebar/30 rounded-xl flex items-center justify-between group/full border border-border/40 hover:border-accent/30 transition-all">
+                        <Link href="/archive/exams/previous-year-papers" className="p-4 bg-sidebar/30 rounded-lg flex items-center justify-between group/full border border-border/40 hover:border-accent/30 transition-all">
                           <div className="flex items-center gap-4">
                               <div className="w-10 h-10 rounded-lg bg-background border border-border flex items-center justify-center shadow-sm">
                                   <Archive className="w-5 h-5 text-accent" />
@@ -485,13 +441,16 @@ export default function PublicHeader() {
                         </div>
                         <div className="p-6 flex-1 bg-header">
                           <span className="text-[10px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-4 opacity-50">Latest Decoded Papers</span>
-                          <div className="space-y-2.5">
-                            {RESEARCH_DATA.featured.map(paper => (
-                              <Link key={paper.slug} href={`/research-decoded/${paper.slug}`} className="block group/p">
-                                <span className="text-[12px] font-semibold text-text-heading group-hover/p:text-accent transition-colors block">{paper.title}</span>
-                              </Link>
+                          <div className="flex flex-col">
+                            {RESEARCH_DATA.featured.map((paper, idx, arr) => (
+                              <React.Fragment key={paper.slug}>
+                                <Link href={`/research-decoded/${paper.slug}`} className="block group/p py-2">
+                                  <span className="text-[12px] font-semibold text-text-heading group-hover/p:text-accent transition-colors block">{paper.title}</span>
+                                </Link>
+                                {idx < arr.length - 1 && <div className="h-[1px] bg-border/40" />}
+                              </React.Fragment>
                             ))}
-                            <Link href="/research-decoded" className="pt-3 border-t border-border/60 flex items-center gap-2 text-[11px] font-bold text-accent hover:gap-2.5 transition-all">
+                            <Link href="/research-decoded" className="mt-4 pt-3 border-t border-border/60 flex items-center gap-2 text-[11px] font-bold text-accent hover:gap-2.5 transition-all">
                               Access Research Portal <ArrowRight className="w-3.5 h-3.5" />
                             </Link>
                           </div>
@@ -511,16 +470,19 @@ export default function PublicHeader() {
                            </div>
                         </div>
                         <div className="p-6 flex-1 bg-header">
-                          <span className="text-[10px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-4 opacity-50">Technical Glossary</span>
-                          <div className="grid grid-cols-2 gap-x-8 gap-y-2.5">
-                            {ARTICLES_DATA.featured.map(article => (
-                              <Link key={article.slug} href={`/articles/${article.slug}`} className="block group/p">
-                                <span className="text-[12px] font-semibold text-text-heading group-hover/p:text-accent transition-colors block">{article.title}</span>
-                              </Link>
+                          <span className="text-[10px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-4 opacity-50">Articles</span>
+                          <div className="grid grid-cols-2 gap-x-8">
+                            {ARTICLES_DATA.featured.map((article, idx, arr) => (
+                              <div key={article.slug} className="flex flex-col">
+                                <Link href={`/articles/${article.slug}`} className="block group/p py-2">
+                                  <span className="text-[12px] font-semibold text-text-heading group-hover/p:text-accent transition-colors block">{article.title}</span>
+                                </Link>
+                                {idx < arr.length && <div className="h-[1px] bg-border/40" />}
+                              </div>
                             ))}
                           </div>
                           <Link href="/articles" className="mt-6 pt-3 border-t border-border/60 flex items-center gap-2 text-[11px] font-bold text-accent hover:gap-2.5 transition-all">
-                            Browse All Breakdowns <ArrowRight className="w-3.5 h-3.5" />
+                            Explore All Articles <ArrowRight className="w-3.5 h-3.5" />
                           </Link>
                         </div>
                     </div>
@@ -559,36 +521,28 @@ export default function PublicHeader() {
             <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.15em] block mb-4 opacity-50">Menu Navigation</span>
             <div className="grid grid-cols-1 gap-3">
               {[
-                { l: "Study Planner", h: "/planner", i: Calendar, n: true },
-                { l: "Job Decoded", h: "/generate?mode=job", i: Briefcase, n: true },
-                { l: "BuildPilot", h: "/buildpilot", i: Terminal },
-                { l: "Interactive Practice", h: "/practice", i: Target, n: true },
-                { l: "Learning Hub", h: "/learn", i: GraduationCap },
-                { l: "Roadmap Explorer", h: "/explore", i: Globe },
-                { l: "Global Leaderboard", h: "/leaderboard", i: Trophy },
-                { l: "Exams & Papers", h: "/archive/exams/previous-year-papers", i: Archive },
-                { l: "Research Decoded", h: "/research-decoded", i: Microscope },
-                { l: "Glossary & Articles", h: "/articles", i: BookOpen },
-                { l: "Premium Plans", h: "/pricing", i: CreditCard },
-                { l: "About Us", h: "/about", i: Globe },
-                { l: "Careers", h: "/careers", i: Briefcase }
+                { l: "Study Planner", h: "/planner" },
+                { l: "Job Decoded", h: "/generate?mode=job" },
+                { l: "BuildPilot", h: "/buildpilot" },
+                { l: "Interactive Practice", h: "/practice" },
+                { l: "Learning Hub", h: "/learn" },
+                { l: "Roadmap Explorer", h: "/explore" },
+                { l: "Global Leaderboard", h: "/leaderboard" },
+                { l: "Exams & Papers", h: "/archive/exams/previous-year-papers" },
+                { l: "Research Decoded", h: "/research-decoded" },
+                { l: "Articles", h: "/articles" },
+                { l: "Premium Plans", h: "/pricing" },
+                { l: "About Us", h: "/about" },
+                { l: "Careers", h: "/careers" }
               ].map(item => (
-                <Link key={item.h} href={item.h} className="flex items-center justify-between p-4.5 bg-sidebar/40 rounded-2xl border border-border/50">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-xl bg-background border border-border flex items-center justify-center">
-                        <item.i className="w-5 h-5 text-accent" />
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="text-[15px] font-bold text-text-heading">{item.l}</span>
-                      {item.n && <span className="text-[8px] font-black uppercase tracking-widest bg-accent text-white px-1.5 py-0.5 rounded leading-none">New</span>}
-                    </div>
-                  </div>
+                <Link key={item.h} href={item.h} className="flex items-center justify-between p-4 bg-sidebar/40 rounded-lg border border-border/50">
+                  <span className="text-[15px] font-bold text-text-heading ml-2">{item.l}</span>
                   <ArrowRight className="w-4 h-4 text-text-muted opacity-30" />
                 </Link>
               ))}
             </div>
           </div>
-          <Link href="/generate" className="mt-auto w-full bg-text-heading text-background py-4.5 rounded-2xl flex items-center justify-center gap-3 text-[15px] font-bold shadow-xl active:scale-[0.98] transition-transform">
+          <Link href="/generate" className="mt-auto w-full bg-text-heading text-background py-4.5 rounded-lg flex items-center justify-center gap-3 text-[15px] font-bold shadow-xl active:scale-[0.98] transition-transform">
             <Plus className="w-5 h-5" /> Create Custom Roadmap
           </Link>
         </div>

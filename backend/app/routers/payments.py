@@ -108,7 +108,7 @@ async def process_payment_success(email: str, payment_id: str, order_id: str = N
     profile_data = res.data[0]
     current_credits = profile_data.get("roadmap_credits") or 0
     display_name = profile_data.get("display_name")
-    new_credits = current_credits + 5
+    new_credits = current_credits + 20
     
     if amount is None:
         amount, _ = get_current_price()
@@ -132,7 +132,7 @@ async def process_payment_success(email: str, payment_id: str, order_id: str = N
             "status": "captured"
         }).execute()
         
-        logger.info(f"Successfully processed payment {payment_id}. Added 5 credits to {email}.")
+        logger.info(f"Successfully processed payment {payment_id}. Added 20 credits to {email}.")
         
         # 4. Send Pro Activation Email
         asyncio.create_task(send_pro_activation_email(email, display_name))

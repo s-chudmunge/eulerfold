@@ -84,7 +84,7 @@ export default function PricingSection() {
 
                 <div className="space-y-1.5 mb-6 flex-1 text-[10px] text-text-primary font-medium">
                     <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> 5 Premium Credits
+                        <span className="text-accent">✓</span> 20 Premium Credits
                     </div>
                     <p className="text-[9px] text-text-muted ml-5 font-bold tracking-tight mb-2 italic">
                         (1 Credit = 1 Premium AI Roadmap)

@@ -115,8 +115,8 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
             <div className="flex flex-col">
-              <span className="inconsolata-ui text-[11px] font-bold uppercase text-text-muted tracking-wider">Add 5 Credits</span>
-              <span className="inconsolata-ui text-[9px] text-text-muted opacity-60">Generate 5 Premium Roadmaps</span>
+              <span className="inconsolata-ui text-[11px] font-bold uppercase text-text-muted tracking-wider">Add 20 Credits</span>
+              <span className="inconsolata-ui text-[9px] text-text-muted opacity-60">Generate 20 Premium Roadmaps</span>
             </div>
             <div className="flex flex-col items-end">
                 {discountStatus.hasDiscount && (
