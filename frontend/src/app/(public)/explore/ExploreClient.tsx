@@ -46,6 +46,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import StarRating from '@/components/roadmap/StarRating';
 import VerifiedBadge from '@/components/VerifiedBadge';
 import { getCategory } from '@/lib/roadmapUtils';
+import ResearchLibrarySidebar from '@/components/research-lab/ResearchLibrarySidebar';
 
 const CATEGORY_METADATA: Record<string, { icon: any }> = {
     'all': { icon: LayoutDashboard },
@@ -239,170 +240,178 @@ export default function ExploreClient({
             <Suspense fallback={null}>
                 <SearchParamsHandler onParams={handleSearchParams} />
             </Suspense>
-            <main className="max-w-[900px] mx-auto px-6 pt-6 pb-12">
-                <header className="mb-6">
-                    <div className="flex flex-col sm:flex-row gap-3 mt-4">
-                        <div className="flex-1 relative group">
-                            <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                                <Search className="w-3.5 h-3.5 text-text-muted group-focus-within:text-accent transition-colors" />
-                            </div>
-                            <input 
-                                type="text" 
-                                placeholder="Find a goal..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full bg-callout-bg border border-border rounded-full py-1.5 pl-9 pr-4 manrope-body text-[12px] focus:outline-none focus:border-[var(--accent)] transition-all shadow-sm focus:bg-white dark:focus:bg-white/[0.05]"
-                            />
-                        </div>
-                        <div className="flex items-center gap-2 shrink-0">
-                            <div className="relative">
-                                <select 
-                                    value={sortBy}
-                                    onChange={(e) => setSortBy(e.target.value)}
-                                    className="appearance-none bg-transparent border border-border rounded-lg pl-8 pr-7 py-1.5 text-[11px] font-bold focus:outline-none focus:border-[var(--text-heading)] transition-all manrope-body cursor-pointer min-w-[120px]"
-                                >
-                                    <option value="alphabetical">Alphabetical (A-Z)</option>
-                                    <option value="newest">Newest First</option>
-                                    <option value="highest_rated">Highest Rated</option>
-                                    <option value="most_cloned">Most Popular</option>
-                                </select>
-                                <Filter className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400 pointer-events-none" />
-                                <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400 pointer-events-none" />
-                            </div>
-                        </div>
-                    </div>
-                </header>
-
-                {/* Leaderboard Strip - Compact */}
-                {leaderboard.length > 0 && (
-                    <div className="mb-8 flex items-center gap-4 py-2 px-4 bg-sidebar dark:bg-white/[0.01] border border-border rounded-lg overflow-x-auto whitespace-nowrap scrollbar-hide">
-                        <div className="flex items-center gap-2 text-[10px] font-bold tracking-wide text-text-muted shrink-0 inconsolata-ui">
-                            <Trophy className="h-3 w-3 text-amber-500" />
-                            <span>Top Contributors</span>
-                        </div>
-                        <div className="h-3 w-px bg-[var(--border)] shrink-0"></div>
-                        <div className="flex items-center gap-6">
-                            {leaderboard.map((entry, i) => (
-                                <div key={i} className="flex items-center gap-2">
-                                    <span className="text-[12px] font-bold text-text-heading">@{entry.username}</span>
-                                    <span className="inconsolata-ui text-[10px] font-black text-teal-700 dark:text-teal-400">{entry.eulercoins}</span>
+            <div className="max-w-6xl mx-auto px-6 pt-6 pb-12">
+                <div className="flex flex-col lg:flex-row gap-16">
+                    <main className="flex-1 min-w-0">
+                        <header className="mb-6">
+                            <div className="flex flex-col sm:flex-row gap-3 mt-4">
+                                <div className="flex-1 relative group">
+                                    <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
+                                        <Search className="w-3.5 h-3.5 text-text-muted group-focus-within:text-accent transition-colors" />
+                                    </div>
+                                    <input 
+                                        type="text" 
+                                        placeholder="Find a goal..."
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        className="w-full bg-callout-bg border border-border rounded-full py-1.5 pl-9 pr-4 manrope-body text-[12px] focus:outline-none focus:border-[var(--accent)] transition-all shadow-sm focus:bg-white dark:focus:bg-white/[0.05]"
+                                    />
                                 </div>
+                                <div className="flex items-center gap-2 shrink-0">
+                                    <div className="relative">
+                                        <select 
+                                            value={sortBy}
+                                            onChange={(e) => setSortBy(e.target.value)}
+                                            className="appearance-none bg-transparent border border-border rounded-lg pl-8 pr-7 py-1.5 text-[11px] font-bold focus:outline-none focus:border-[var(--text-heading)] transition-all manrope-body cursor-pointer min-w-[120px]"
+                                        >
+                                            <option value="alphabetical">Alphabetical (A-Z)</option>
+                                            <option value="newest">Newest First</option>
+                                            <option value="highest_rated">Highest Rated</option>
+                                            <option value="most_cloned">Most Popular</option>
+                                        </select>
+                                        <Filter className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400 pointer-events-none" />
+                                        <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400 pointer-events-none" />
+                                    </div>
+                                </div>
+                            </div>
+                        </header>
+
+                        {/* Leaderboard Strip - Compact */}
+                        {leaderboard.length > 0 && (
+                            <div className="mb-8 flex items-center gap-4 py-2 px-4 bg-sidebar dark:bg-white/[0.01] border border-border rounded-lg overflow-x-auto whitespace-nowrap scrollbar-hide">
+                                <div className="flex items-center gap-2 text-[10px] font-bold tracking-wide text-text-muted shrink-0 inconsolata-ui">
+                                    <Trophy className="h-3 w-3 text-amber-500" />
+                                    <span>Top Contributors</span>
+                                </div>
+                                <div className="h-3 w-px bg-[var(--border)] shrink-0"></div>
+                                <div className="flex items-center gap-6">
+                                    {leaderboard.map((entry, i) => (
+                                        <div key={i} className="flex items-center gap-2">
+                                            <span className="text-[12px] font-bold text-text-heading">@{entry.username}</span>
+                                            <span className="inconsolata-ui text-[10px] font-black text-teal-700 dark:text-teal-400">{entry.eulercoins}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Filter Bar - Compact */}
+                        <div className="mb-6 flex flex-wrap gap-1.5">
+                            {Object.keys(CATEGORY_METADATA).map((cat) => (
+                                <button
+                                    key={cat}
+                                    onClick={() => setFilter(cat)}
+                                    className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-[11px] font-bold tracking-normal transition-all border
+                                        ${filter === cat 
+                                        ? 'bg-teal-700 text-white border-teal-700' 
+                                        : 'bg-transparent text-gray-500 border-border hover:border-[var(--text-muted)]'
+                                    }`}
+                                >
+                                    <CategoryIcon category={cat} className="w-3 h-3 stroke-[2px]" />
+                                    {cat === 'all' ? 'All' : cat}
+                                </button>
                             ))}
                         </div>
-                    </div>
-                )}
 
-                {/* Filter Bar - Compact */}
-                <div className="mb-6 flex flex-wrap gap-1.5">
-                    {Object.keys(CATEGORY_METADATA).map((cat) => (
-                        <button
-                            key={cat}
-                            onClick={() => setFilter(cat)}
-                            className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-[11px] font-bold tracking-normal transition-all border
-                                ${filter === cat 
-                                ? 'bg-teal-700 text-white border-teal-700' 
-                                : 'bg-transparent text-gray-500 border-border hover:border-[var(--text-muted)]'
-                            }`}
-                        >
-                            <CategoryIcon category={cat} className="w-3 h-3 stroke-[2px]" />
-                            {cat === 'all' ? 'All' : cat}
-                        </button>
-                    ))}
-                </div>
-
-                {/* Professional Table View - Tightened heights */}
-                <div className="bg-background border border-border rounded-lg overflow-hidden">
-                    <table className="w-full text-left border-collapse table-fixed">
-                        <thead>
-                            <tr className="border-b border-border bg-sidebar/50 dark:bg-white/[0.01]">
-                                <th scope="col" className="w-[60%] px-4 py-2.5 text-[10px] font-bold tracking-wide text-gray-400 inconsolata-ui">Roadmap</th>
-                                <th scope="col" className="hidden md:table-cell w-[20%] px-4 py-2.5 text-[10px] font-bold tracking-wide text-gray-400 inconsolata-ui">Duration</th>
-                                <th scope="col" className="w-[20%] px-4 py-2.5 text-[10px] font-bold tracking-wide text-gray-400 inconsolata-ui text-right">Activity</th>
-                            </tr>
-                        </thead>
-                        <tbody className={`divide-y divide-gray-100 dark:divide-white/[0.03] transition-opacity ${roadmapsLoading ? 'opacity-50' : 'opacity-100'}`}>
-                            {filteredRoadmaps.map((r) => {
-                                const cat = getCategory(r.subject || '');
-                                return (
-                                    <tr key={r.id} className="group hover:bg-sidebar/50 dark:hover:bg-background/[0.01] transition-all">
-                                        <td className="px-4 py-3">
-                                            <Link href={`/roadmap/${r.slug}`} className="flex flex-col min-w-0 group/title">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="flex items-center justify-center w-6 h-6 rounded bg-sidebar dark:bg-white/[0.02] border border-border dark:border-white/[0.05] text-gray-400 shrink-0">
-                                                        <CategoryIcon category={cat} className="w-3.5 h-3.5 stroke-[1.5px]" />
-                                                    </div>
-                                                    <div className="flex items-center gap-3 min-w-0">
-                                                        <span className="text-[14px] font-bold text-text-heading truncate group-hover/title:underline">
-                                                            {r.title}
-                                                        </span>
-                                                        {r.username === 'eulerfold' && <VerifiedBadge size={18} className="shrink-0" />}
-                                                        {r.average_rating > 0 && (
-                                                            <StarRating 
-                                                                rating={r.average_rating} 
-                                                                minimal={true}
-                                                            />
-                                                        )}
-                                                    </div>
-                                                </div>
-                                                <div className="flex items-center justify-between pl-9 mt-0.5">
-                                                    <span className="text-[9px] font-bold text-gray-400 tracking-normal">{cat}</span>
-                                                    <span className="text-[10px] font-medium text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity duration-200">by @{r.username || r.author}</span>
-                                                </div>
-                                            </Link>
-                                        </td>
-                                        <td className="hidden md:table-cell px-4 py-3">
-                                            <span className="inconsolata-ui text-[12px] font-bold text-gray-500">
-                                                {r.time_value} {r.time_unit}
-                                            </span>
-                                        </td>
-                                        <td className="px-4 py-3 text-right">
-                                            <div className="group-hover:hidden flex items-center justify-end gap-2 text-[12px] font-bold text-gray-400 inconsolata-ui">
-                                                <Copy className="h-3 w-3 opacity-50" />
-                                                {r.clone_count}
-                                            </div>
-                                            <div className="hidden group-hover:flex items-center justify-end gap-2">
-                                                <button 
-                                                    onClick={(e) => handleReport(e, r.id)}
-                                                    className="p-1 text-gray-400 hover:text-red-500 transition-colors"
-                                                >
-                                                    <Flag className="h-3.5 w-3.5" />
-                                                </button>
-                                            </div>
-                                        </td>
+                        {/* Professional Table View - Tightened heights */}
+                        <div className="bg-background border border-border rounded-lg overflow-hidden">
+                            <table className="w-full text-left border-collapse table-fixed">
+                                <thead>
+                                    <tr className="border-b border-border bg-sidebar/50 dark:bg-white/[0.01]">
+                                        <th scope="col" className="w-[60%] px-4 py-2.5 text-[10px] font-bold tracking-wide text-gray-400 inconsolata-ui">Roadmap</th>
+                                        <th scope="col" className="hidden md:table-cell w-[20%] px-4 py-2.5 text-[10px] font-bold tracking-wide text-gray-400 inconsolata-ui">Duration</th>
+                                        <th scope="col" className="w-[20%] px-4 py-2.5 text-[10px] font-bold tracking-wide text-gray-400 inconsolata-ui text-right">Activity</th>
                                     </tr>
-                                );
-                            })}
-                            {filteredRoadmaps.length === 0 && !roadmapsLoading && (
-                                <tr>
-                                    <td colSpan={3} className="px-4 py-20 text-center text-gray-400 italic manrope-body text-sm">
-                                        No roadmaps found matching your search.
-                                    </td>
-                                </tr>
-                            )}
-                        </tbody>
-                    </table>
-                </div>
+                                </thead>
+                                <tbody className={`divide-y divide-gray-100 dark:divide-white/[0.03] transition-opacity ${roadmapsLoading ? 'opacity-50' : 'opacity-100'}`}>
+                                    {filteredRoadmaps.map((r) => {
+                                        const cat = getCategory(r.subject || '');
+                                        return (
+                                            <tr key={r.id} className="group hover:bg-sidebar/50 dark:hover:bg-background/[0.01] transition-all">
+                                                <td className="px-4 py-3">
+                                                    <Link href={`/roadmap/${r.slug}`} className="flex flex-col min-w-0 group/title">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="flex items-center justify-center w-6 h-6 rounded bg-sidebar dark:bg-white/[0.02] border border-border dark:border-white/[0.05] text-gray-400 shrink-0">
+                                                                <CategoryIcon category={cat} className="w-3.5 h-3.5 stroke-[1.5px]" />
+                                                            </div>
+                                                            <div className="flex items-center gap-3 min-w-0">
+                                                                <span className="text-[14px] font-bold text-text-heading truncate group-hover/title:underline">
+                                                                    {r.title}
+                                                                </span>
+                                                                {r.username === 'eulerfold' && <VerifiedBadge size={18} className="shrink-0" />}
+                                                                {r.average_rating > 0 && (
+                                                                    <StarRating 
+                                                                        rating={r.average_rating} 
+                                                                        minimal={true}
+                                                                    />
+                                                                )}
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex items-center justify-between pl-9 mt-0.5">
+                                                            <span className="text-[9px] font-bold text-gray-400 tracking-normal">{cat}</span>
+                                                            <span className="text-[10px] font-medium text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity duration-200">by @{r.username || r.author}</span>
+                                                        </div>
+                                                    </Link>
+                                                </td>
+                                                <td className="hidden md:table-cell px-4 py-3">
+                                                    <span className="inconsolata-ui text-[12px] font-bold text-gray-500">
+                                                        {r.time_value} {r.time_unit}
+                                                    </span>
+                                                </td>
+                                                <td className="px-4 py-3 text-right">
+                                                    <div className="group-hover:hidden flex items-center justify-end gap-2 text-[12px] font-bold text-gray-400 inconsolata-ui">
+                                                        <Copy className="h-3 w-3 opacity-50" />
+                                                        {r.clone_count}
+                                                    </div>
+                                                    <div className="hidden group-hover:flex items-center justify-end gap-2">
+                                                        <button 
+                                                            onClick={(e) => handleReport(e, r.id)}
+                                                            className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+                                                        >
+                                                            <Flag className="h-3.5 w-3.5" />
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    })}
+                                    {filteredRoadmaps.length === 0 && !roadmapsLoading && (
+                                        <tr>
+                                            <td colSpan={3} className="px-4 py-20 text-center text-gray-400 italic manrope-body text-sm">
+                                                No roadmaps found matching your search.
+                                            </td>
+                                        </tr>
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
 
-                {/* Load More Action */}
-                {hasNextPage && (
-                    <div className="mt-8 flex justify-center">
-                        <button
-                            onClick={() => fetchNextPage()}
-                            disabled={isFetchingNextPage}
-                            className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-sidebar border border-border text-[11px] font-bold tracking-wide hover:bg-background hover:border-text-muted transition-all disabled:opacity-50"
-                        >
-                            {isFetchingNextPage ? (
-                                <>
-                                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                                    <span>Loading...</span>
-                                </>
-                            ) : (
-                                <span>Load More</span>
-                            )}
-                        </button>
-                    </div>
-                )}
-            </main>
+                        {/* Load More Action */}
+                        {hasNextPage && (
+                            <div className="mt-8 flex justify-center">
+                                <button
+                                    onClick={() => fetchNextPage()}
+                                    disabled={isFetchingNextPage}
+                                    className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-sidebar border border-border text-[11px] font-bold tracking-wide hover:bg-background hover:border-text-muted transition-all disabled:opacity-50"
+                                >
+                                    {isFetchingNextPage ? (
+                                        <>
+                                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                            <span>Loading...</span>
+                                        </>
+                                    ) : (
+                                        <span>Load More</span>
+                                    )}
+                                </button>
+                            </div>
+                        )}
+                    </main>
+
+                    {/* Sidebar Links (Right) */}
+                    <div className="lg:w-[260px] shrink-0 pt-4 sticky top-32">
+                        <ResearchLibrarySidebar />
+                    </div>                </div>
+            </div>
 
             {/* Error/Success Alerts */}
             {error && (

@@ -105,14 +105,14 @@ export default function ResearchToolbox({
 
     return (
         <div className={`flex flex-row lg:flex-col items-center lg:items-start gap-2 lg:gap-4 ${className}`}>
-            <div className="flex flex-row lg:flex-col items-center lg:items-start gap-2 lg:gap-3 bg-background/80 backdrop-blur-md p-1.5 lg:p-2 rounded-2xl border border-border/40 shadow-xl lg:shadow-2xl transition-all duration-300">
+            <div className="flex flex-row lg:flex-col items-center lg:items-start gap-2 lg:gap-3 bg-background/80 backdrop-blur-md p-1.5 lg:p-2 rounded-2xl border border-border/40 shadow-xl lg:shadow-2xl transition-all duration-300 group/toolbox">
                 {tools.map((tool) => (
                     <a
                         key={tool.name}
                         href={tool.href || '#'}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={`h-11 lg:h-10 flex items-center rounded-xl bg-sidebar/40 border border-transparent text-text-muted transition-all duration-500 group ${tool.color} hover:bg-background hover:border-accent/20 hover:shadow-lg active:scale-95 shrink-0 overflow-hidden w-11 lg:w-10 lg:hover:w-44 px-3 lg:px-0 lg:hover:px-3 justify-center lg:justify-start`}
+                        className={`h-11 lg:h-10 flex items-center rounded-xl bg-sidebar/40 border border-transparent text-text-muted transition-all duration-500 group ${tool.color} hover:bg-background hover:border-accent/20 hover:shadow-lg active:scale-95 shrink-0 overflow-hidden w-11 lg:w-10 lg:group-hover/toolbox:w-44 px-3 lg:px-0 lg:group-hover/toolbox:px-3 justify-center lg:justify-start`}
                         title={tool.name}
                     >
                         <div className="flex items-center justify-center lg:w-10 shrink-0">
@@ -126,7 +126,7 @@ export default function ResearchToolbox({
                                 <tool.icon className="w-4.5 h-4.5 lg:w-4 lg:h-4 transition-transform group-hover:scale-110" />
                             )}
                         </div>
-                        <span className="max-w-0 overflow-hidden group-hover:max-w-[140px] transition-all duration-500 ease-in-out whitespace-nowrap text-[12px] font-semibold opacity-0 group-hover:opacity-100 ml-0 group-hover:ml-1 text-text-primary">
+                        <span className="max-w-0 overflow-hidden group-hover/toolbox:max-w-[140px] transition-all duration-500 ease-in-out whitespace-nowrap text-[12px] font-semibold opacity-0 group-hover/toolbox:opacity-100 ml-0 group-hover/toolbox:ml-1 text-text-primary">
                             {tool.name}
                         </span>
                     </a>
@@ -136,17 +136,17 @@ export default function ResearchToolbox({
 
                 <button 
                     onClick={copyBibtex}
-                    className={`h-11 lg:h-10 flex items-center rounded-xl transition-all duration-500 border active:scale-95 shrink-0 overflow-hidden w-11 lg:w-10 lg:hover:w-44 px-3 lg:px-0 lg:hover:px-3 justify-center lg:justify-start ${
+                    className={`h-11 lg:h-10 flex items-center rounded-xl transition-all duration-500 border active:scale-95 shrink-0 overflow-hidden w-11 lg:w-10 lg:group-hover/toolbox:w-44 px-3 lg:px-0 lg:group-hover/toolbox:px-3 justify-center lg:justify-start ${
                         copiedBibtex 
                             ? 'bg-accent text-white border-accent shadow-accent/20 shadow-lg' 
-                            : 'bg-sidebar/40 border-transparent text-text-muted hover:bg-background hover:text-accent hover:border-accent/20 hover:shadow-lg'
+                            : 'bg-sidebar/40 border-transparent text-text-muted hover:bg-background hover:text-accent hover:border-accent/20 hover:shadow-lg group'
                     }`}
                     title="Copy BibTeX"
                 >
                     <div className="flex items-center justify-center lg:w-10 shrink-0">
                         {copiedBibtex ? <Check className="w-4.5 h-4.5 lg:w-4 lg:h-4" /> : <Hash className="w-4.5 h-4.5 lg:w-4 lg:h-4" />}
                     </div>
-                    <span className={`max-w-0 overflow-hidden group-hover:max-w-[140px] transition-all duration-500 ease-in-out whitespace-nowrap text-[12px] font-semibold opacity-0 group-hover:opacity-100 ml-0 group-hover:ml-1 ${copiedBibtex ? 'text-white' : 'text-text-primary'}`}>
+                    <span className={`max-w-0 overflow-hidden group-hover/toolbox:max-w-[140px] transition-all duration-500 ease-in-out whitespace-nowrap text-[12px] font-semibold opacity-0 group-hover/toolbox:opacity-100 ml-0 group-hover/toolbox:ml-1 ${copiedBibtex ? 'text-white' : 'text-text-primary'}`}>
                         {copiedBibtex ? 'Copied!' : 'BibTeX'}
                     </span>
                 </button>

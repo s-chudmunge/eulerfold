@@ -10,6 +10,7 @@ import { format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import Footer from '@/components/Footer';
+import ResearchLibrarySidebar from '@/components/research-lab/ResearchLibrarySidebar';
 
 const TechnicalCube = () => (
     <div className="relative w-20 h-20 flex items-center justify-center" style={{ perspective: '800px' }}>
@@ -144,19 +145,6 @@ export default function ResearchLabClient() {
             setIsProcessing(false);
         }
     };
-
-    const recentDecoded = [
-        { title: "Concrete Problems in AI Safety", slug: "concrete-problems-ai-safety" },
-        { title: "Einstein: Special Relativity", slug: "einstein-special-relativity" },
-        { title: "Shannon: Information Theory", slug: "shannon-information-theory" },
-        { title: "Dijkstra: Graph Search", slug: "dijkstra-graph-problems" }
-    ];
-
-    const featuredArticles = [
-        { title: "How Backpropagation Works", slug: "backpropagation" },
-        { title: "Logic of Contrastive Learning", slug: "contrastive-learning" },
-        { title: "The Teacher of AGI: Karpathy", slug: "andrej-karpathy-first-principles" }
-    ];
 
     if (authLoading && !user) return (
         <div className="flex flex-col items-center justify-center min-h-[80vh] gap-10">
@@ -383,56 +371,8 @@ export default function ResearchLabClient() {
                     </div>
 
                     {/* Sidebar Links (Right) */}
-                    <div className="lg:w-[260px] shrink-0 pt-2">
-                        <div className="space-y-14 sticky top-32">
-                            {/* Research Decoded */}
-                            <div className="space-y-6 text-left">
-                                <h2 className="inconsolata-ui text-[11px] font-black text-text-muted uppercase tracking-[0.25em] flex items-center gap-2">
-                                    <BookOpen className="w-3.5 h-3.5" /> Curated library
-                                </h2>
-                                <div className="flex flex-col gap-5">
-                                    {recentDecoded.map((paper) => (
-                                        <Link 
-                                            key={paper.slug}
-                                            href={`/research-decoded/${paper.slug}`}
-                                            className="text-[13px] font-medium text-text-primary hover:text-accent transition-colors leading-tight line-clamp-2"
-                                        >
-                                            {paper.title}
-                                        </Link>
-                                    ))}
-                                    <Link 
-                                        href="/research-decoded"
-                                        className="text-[10px] font-black text-accent uppercase tracking-[0.2em] hover:underline flex items-center gap-1.5 pt-2"
-                                    >
-                                        Browse all <ArrowRight className="w-3 h-3" />
-                                    </Link>
-                                </div>
-                            </div>
-
-                            {/* Technical Articles */}
-                            <div className="space-y-6 text-left">
-                                <h2 className="inconsolata-ui text-[11px] font-black text-text-muted uppercase tracking-[0.25em] flex items-center gap-2">
-                                    <FileText className="w-3.5 h-3.5" /> Deep dives
-                                </h2>
-                                <div className="flex flex-col gap-5">
-                                    {featuredArticles.map((article) => (
-                                        <Link 
-                                            key={article.slug}
-                                            href={`/articles/${article.slug}`}
-                                            className="text-[13px] font-medium text-text-primary hover:text-accent transition-colors leading-tight line-clamp-2"
-                                        >
-                                            {article.title}
-                                        </Link>
-                                    ))}
-                                    <Link 
-                                        href="/articles"
-                                        className="text-[10px] font-black text-accent uppercase tracking-[0.2em] hover:underline flex items-center gap-1.5 pt-2"
-                                    >
-                                        Read more <ArrowRight className="w-3 h-3" />
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
+                    <div className="lg:w-[260px] shrink-0 lg:-mt-52 relative z-30 sticky top-32">
+                        <ResearchLibrarySidebar />
                     </div>
                 </div>
             </main>

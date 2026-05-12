@@ -9,6 +9,7 @@ import { BrainCircuit, Target, ArrowRight, ArrowLeft, Sparkles, Command, History
 import Breadcrumbs from '@/components/Breadcrumbs';
 import Footer from '@/components/Footer';
 import TTSListenButton from '@/components/TTSListenButton';
+import ResearchLibrarySidebar from '@/components/research-lab/ResearchLibrarySidebar';
 
 const SUGGESTIONS: Record<string, string[]> = {
     "Computer Science": ["Distributed Systems", "Algorithms", "Operating Systems", "Networking", "Compilers", "Cryptography", "Database Theory", "Graph Theory", "Parallel Computing", "Computer Graphics", "Formal Languages", "Complexity Theory", "Cloud Computing", "Computer Architecture", "Quantum Computing", "Information Theory", "Distributed Hash Tables", "Formal Verification", "Type Theory", "Computability", "Raft/Paxos Consensus", "HCI", "Randomized Algorithms", "Logic Programming", "Automata Theory"],
@@ -99,236 +100,245 @@ function PracticeContent() {
     return (
         <div className="flex-1 flex flex-col bg-background manrope-body">
             <main className="flex-1 overflow-y-auto">
-                <div className="max-w-[800px] mx-auto px-6 py-10 md:py-16">
-                    
-                    <div className="mb-8">
-                        <Breadcrumbs items={[{ label: 'Practice Lab' }]} />
-                    </div>
-
-                    {!isStarted ? (
-                        <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-                            <div className="mb-10">
-                                <h1 className="inconsolata-ui text-[24px] md:text-[28px] font-bold text-text-heading tracking-tight uppercase mb-2">
-                                    Interactive <span className="text-emerald-600">Practice</span> Lab
-                                </h1>
+                <div className="max-w-6xl mx-auto px-6 py-10 md:py-16">
+                    <div className="flex flex-col lg:flex-row gap-16">
+                        <div className="flex-1 min-w-0">
+                            <div className="mb-8">
+                                <Breadcrumbs items={[{ label: 'Practice Lab' }]} />
                             </div>
 
-                            <div className="bg-sidebar/30 border border-border p-6 md:p-8 rounded-none relative overflow-hidden max-w-2xl">
-                                <div className="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none text-emerald-600">
-                                    <Command className="w-32 h-32" />
-                                </div>
-
-                                <div className="space-y-8 relative z-10">
-                                    <div className="space-y-4">
-                                        <div className="space-y-2">
-                                            <label className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-[0.2em] ml-0.5 flex items-center gap-2">
-                                                Subject or Domain
-                                            </label>
-                                            <input 
-                                                type="text"
-                                                placeholder="Select or type a subject..."
-                                                className="w-full bg-callout-bg border border-border rounded-none px-4 py-2.5 text-[14px] font-bold text-text-heading manrope-body focus:outline-none focus:border-emerald-500 transition-all placeholder:text-text-muted/30 placeholder:font-normal"
-                                                value={subject}
-                                                onChange={(e) => setSubject(e.target.value)}
-                                            />
-                                        </div>
-                                        <div className="flex flex-wrap gap-1.5">
-                                            {subjects.map(s => (
-                                                <button
-                                                    key={s}
-                                                    onClick={() => { setSubject(s); setTopic(''); }}
-                                                    className={`px-3 py-1 text-[10px] font-bold inconsolata-ui border transition-all ${
-                                                        subject === s 
-                                                        ? 'bg-emerald-600 border-emerald-600 text-white' 
-                                                        : 'bg-background border-border text-text-muted hover:border-emerald-500/50 hover:text-emerald-600'
-                                                    }`}
-                                                >
-                                                    {s}
-                                                </button>
-                                            ))}
-                                        </div>
+                            {!isStarted ? (
+                                <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+                                    <div className="mb-10">
+                                        <h1 className="inconsolata-ui text-[24px] md:text-[28px] font-bold text-text-heading tracking-tight uppercase mb-2">
+                                            Interactive <span className="text-emerald-600">Practice</span> Lab
+                                        </h1>
                                     </div>
 
-                                    <div className="space-y-4">
-                                        <div className="space-y-2">
-                                            <label className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-[0.2em] ml-0.5 flex items-center gap-2">
-                                                Specific Topic
-                                            </label>
-                                            <input 
-                                                type="text"
-                                                placeholder="Select or type a topic..."
-                                                className="w-full bg-callout-bg border border-border rounded-none px-4 py-2.5 text-[14px] font-bold text-text-heading manrope-body focus:outline-none focus:border-emerald-500 transition-all placeholder:text-text-muted/30 placeholder:font-normal"
-                                                value={topic}
-                                                onChange={(e) => setTopic(e.target.value)}
-                                            />
+                                    <div className="bg-sidebar/30 border border-border p-5 md:p-6 rounded-none relative overflow-hidden max-w-xl">
+                                        <div className="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none text-emerald-600">
+                                            <Command className="w-32 h-32" />
                                         </div>
-                                        {topicSuggestions.length > 0 && (
-                                            <div className="flex flex-wrap gap-1.5 animate-in fade-in slide-in-from-top-1 duration-300">
-                                                {topicSuggestions.map(t => (
-                                                    <button
-                                                        key={t}
-                                                        onClick={() => setTopic(t)}
-                                                        className={`px-3 py-1 text-[10px] font-bold inconsolata-ui border transition-all ${
-                                                            topic === t 
-                                                            ? 'bg-emerald-600 border-emerald-600 text-white' 
-                                                            : 'bg-background/50 border-border/50 text-text-muted hover:border-emerald-500/50 hover:text-emerald-600'
-                                                        }`}
-                                                    >
-                                                        {t}
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
 
-                                    <div className="pt-2 flex items-center justify-between gap-4">
-                                        <button
-                                            onClick={handleStart}
-                                            disabled={!subject.trim() || !topic.trim()}
-                                            className="group relative inline-flex items-center justify-center px-10 py-3 bg-text-heading text-background rounded-none text-[11px] font-bold uppercase tracking-widest transition-all disabled:opacity-50 disabled:grayscale hover:opacity-90 active:scale-[0.98]"
-                                        >
-                                            <div className="flex items-center gap-2.5">
-                                                <span>Begin Assessment</span>
-                                                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
-                                            </div>
-                                        </button>
-
-                                        <div className="hidden sm:block">
-                                             {!isAuthenticated && !loading ? (
-                                                <div className="flex items-center gap-2 text-[10px] manrope-body text-text-muted italic">
-                                                    <Sparkles className="w-3 h-3 text-emerald-600" />
-                                                    <span>Sign in to begin</span>
+                                        <div className="space-y-8 relative z-10">
+                                            <div className="space-y-4">
+                                                <div className="space-y-2">
+                                                    <label className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-[0.2em] ml-0.5 flex items-center gap-2">
+                                                        Subject or Domain
+                                                    </label>
+                                                    <input 
+                                                        type="text"
+                                                        placeholder="Select or type a subject..."
+                                                        className="w-full bg-callout-bg border border-border rounded-none px-4 py-2.5 text-[14px] font-bold text-text-heading manrope-body focus:outline-none focus:border-emerald-500 transition-all placeholder:text-text-muted/30 placeholder:font-normal"
+                                                        value={subject}
+                                                        onChange={(e) => setSubject(e.target.value)}
+                                                    />
                                                 </div>
-                                            ) : isAuthenticated && profile && !profile.is_pro ? (
-                                                <div className="flex items-center gap-2 text-[10px] manrope-body text-text-muted italic">
-                                                    <Target className="w-3 h-3 text-emerald-600" />
-                                                    <span>Requires Pro Status</span>
+                                                <div className="flex flex-wrap gap-1.5">
+                                                    {subjects.map(s => (
+                                                        <button
+                                                            key={s}
+                                                            onClick={() => { setSubject(s); setTopic(''); }}
+                                                            className={`px-3 py-1 text-[10px] font-bold inconsolata-ui border transition-all ${
+                                                                subject === s 
+                                                                ? 'bg-emerald-600 border-emerald-600 text-white' 
+                                                                : 'bg-background border-border text-text-muted hover:border-emerald-500/50 hover:text-emerald-600'
+                                                            }`}
+                                                        >
+                                                            {s}
+                                                        </button>
+                                                    ))}
                                                 </div>
-                                            ) : null}
-                                        </div>
-                                    </div>
-
-                                    <div className="pt-4 border-t border-border/50 sm:hidden">
-                                        {!isAuthenticated && !loading ? (
-                                            <div className="flex items-center gap-3 text-[10px] manrope-body text-text-muted italic">
-                                                <Sparkles className="w-3 h-3 text-emerald-600 shrink-0" />
-                                                <span>Sign in to generate AI questions.</span>
                                             </div>
-                                        ) : isAuthenticated && profile && !profile.is_pro ? (
-                                            <div className="flex items-center gap-3 text-[10px] manrope-body text-text-muted italic">
-                                                <Target className="w-3 h-3 text-emerald-600 shrink-0" />
-                                                <span>Requires Pro Status (0.10 credits).</span>
+
+                                            <div className="space-y-4">
+                                                <div className="space-y-2">
+                                                    <label className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-[0.2em] ml-0.5 flex items-center gap-2">
+                                                        Specific Topic
+                                                    </label>
+                                                    <input 
+                                                        type="text"
+                                                        placeholder="Select or type a topic..."
+                                                        className="w-full bg-callout-bg border border-border rounded-none px-4 py-2.5 text-[14px] font-bold text-text-heading manrope-body focus:outline-none focus:border-emerald-500 transition-all placeholder:text-text-muted/30 placeholder:font-normal"
+                                                        value={topic}
+                                                        onChange={(e) => setTopic(e.target.value)}
+                                                    />
+                                                </div>
+                                                {topicSuggestions.length > 0 && (
+                                                    <div className="flex flex-wrap gap-1.5 animate-in fade-in slide-in-from-top-1 duration-300">
+                                                        {topicSuggestions.map(t => (
+                                                            <button
+                                                                key={t}
+                                                                onClick={() => setTopic(t)}
+                                                                className={`px-3 py-1 text-[10px] font-bold inconsolata-ui border transition-all ${
+                                                                    topic === t 
+                                                                    ? 'bg-emerald-600 border-emerald-600 text-white' 
+                                                                    : 'bg-background/50 border-border/50 text-text-muted hover:border-emerald-500/50 hover:text-emerald-600'
+                                                                }`}
+                                                            >
+                                                                {t}
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                )}
                                             </div>
-                                        ) : null}
-                                    </div>
-                                </div>
-                            </div>
 
-                            {isAuthenticated && (
-                                <div className="mt-16 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
-                                    <div className="flex items-center gap-3 mb-6">
-                                        <History className="w-5 h-5 text-emerald-600" />
-                                        <h2 className="inconsolata-ui text-[16px] font-bold text-text-heading uppercase tracking-widest">Assessment History</h2>
-                                    </div>
-
-                                    {loadingHistory ? (
-                                        <div className="py-20 text-center border border-border border-dashed">
-                                            <div className="animate-spin w-5 h-5 border-2 border-emerald-600 border-t-transparent rounded-full mx-auto mb-4"></div>
-                                            <p className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-widest">Recalling past sessions...</p>
-                                        </div>
-                                    ) : history.length > 0 ? (
-                                        <div className="grid grid-cols-1 gap-3">
-                                            {history.map((session) => (
+                                            <div className="pt-2 flex items-center justify-between gap-4">
                                                 <button
-                                                    key={session.id}
-                                                    onClick={() => setSelectedHistorySession(session)}
-                                                    className="group flex flex-col md:flex-row md:items-center justify-between p-5 bg-sidebar/20 border border-border hover:border-emerald-500/30 transition-all text-left relative overflow-hidden"
+                                                    onClick={handleStart}
+                                                    disabled={!subject.trim() || !topic.trim()}
+                                                    className="group relative inline-flex items-center justify-center px-10 py-3 bg-text-heading text-background rounded-none text-[11px] font-bold uppercase tracking-widest transition-all disabled:opacity-50 disabled:grayscale hover:opacity-90 active:scale-[0.98]"
                                                 >
-                                                    <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
-                                                        <ChevronRight className="w-12 h-12" />
-                                                    </div>
-                                                    
-                                                    <div className="flex-1 mb-4 md:mb-0">
-                                                        <div className="flex items-center gap-3 mb-1.5">
-                                                            <span className="inconsolata-ui text-[9px] font-bold text-emerald-600 uppercase tracking-widest bg-emerald-500/10 px-2 py-0.5 border border-emerald-500/20">
-                                                                {session.subject}
-                                                            </span>
-                                                            <span className="inconsolata-ui text-[9px] font-bold text-text-muted uppercase tracking-widest">
-                                                                {new Date(session.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-                                                            </span>
-                                                        </div>
-                                                        <h3 className="inconsolata-ui text-[14px] font-bold text-text-heading uppercase tracking-tight group-hover:text-emerald-600 transition-colors">
-                                                            {session.topic_name}
-                                                        </h3>
-                                                    </div>
-
-                                                    <div className="flex items-center gap-8">
-                                                        <div className="text-center">
-                                                            <div className="inconsolata-ui text-[18px] font-bold text-text-heading leading-none mb-1">
-                                                                {session.questions.length}
-                                                            </div>
-                                                            <div className="inconsolata-ui text-[8px] font-bold text-text-muted uppercase tracking-widest">Items</div>
-                                                        </div>
-                                                        
-                                                        <div className="text-center min-w-[60px]">
-                                                            <div className={`inconsolata-ui text-[18px] font-bold leading-none mb-1 ${
-                                                                (session.score || 0) >= 0.8 ? 'text-emerald-600' : 
-                                                                (session.score || 0) >= 0.5 ? 'text-amber-600' : 'text-red-600'
-                                                            }`}>
-                                                                {Math.round((session.score || 0) * 100)}%
-                                                            </div>
-                                                            <div className="inconsolata-ui text-[8px] font-bold text-text-muted uppercase tracking-widest">Mastery</div>
-                                                        </div>
-
-                                                        <div className="h-8 w-[1px] bg-border mx-2 hidden md:block"></div>
-                                                        
-                                                        <div className="hidden md:flex items-center gap-2 group-hover:translate-x-1 transition-transform">
-                                                            <span className="inconsolata-ui text-[9px] font-bold text-emerald-600 uppercase tracking-widest">Review</span>
-                                                            <ArrowRight className="w-3.5 h-3.5 text-emerald-600" />
-                                                        </div>
+                                                    <div className="flex items-center gap-2.5">
+                                                        <span>Begin Assessment</span>
+                                                        <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
                                                     </div>
                                                 </button>
-                                            ))}
+
+                                                <div className="hidden sm:block">
+                                                     {!isAuthenticated && !loading ? (
+                                                        <div className="flex items-center gap-2 text-[10px] manrope-body text-text-muted italic">
+                                                            <Sparkles className="w-3 h-3 text-emerald-600" />
+                                                            <span>Sign in to begin</span>
+                                                        </div>
+                                                    ) : isAuthenticated && profile && !profile.is_pro ? (
+                                                        <div className="flex items-center gap-2 text-[10px] manrope-body text-text-muted italic">
+                                                            <Target className="w-3 h-3 text-emerald-600" />
+                                                            <span>Requires Pro Status</span>
+                                                        </div>
+                                                    ) : null}
+                                                </div>
+                                            </div>
+
+                                            <div className="pt-4 border-t border-border/50 sm:hidden">
+                                                {!isAuthenticated && !loading ? (
+                                                    <div className="flex items-center gap-3 text-[10px] manrope-body text-text-muted italic">
+                                                        <Sparkles className="w-3 h-3 text-emerald-600 shrink-0" />
+                                                        <span>Sign in to generate AI questions.</span>
+                                                    </div>
+                                                ) : isAuthenticated && profile && !profile.is_pro ? (
+                                                    <div className="flex items-center gap-3 text-[10px] manrope-body text-text-muted italic">
+                                                        <Target className="w-3 h-3 text-emerald-600 shrink-0" />
+                                                        <span>Requires Pro Status (0.10 credits).</span>
+                                                    </div>
+                                                ) : null}
+                                            </div>
                                         </div>
-                                    ) : (
-                                        <div className="py-16 text-center border border-border border-dashed bg-sidebar/5">
-                                            <BrainCircuit className="w-8 h-8 text-text-muted/20 mx-auto mb-4" />
-                                            <p className="manrope-body text-[11px] text-text-muted italic opacity-60">No practice records available yet.</p>
-                                            <p className="inconsolata-ui text-[8px] font-bold text-text-muted uppercase tracking-[0.2em] mt-2">Start your first lab session above</p>
+                                    </div>
+
+                                    {isAuthenticated && (
+                                        <div className="mt-16 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
+                                            <div className="flex items-center gap-3 mb-6">
+                                                <History className="w-5 h-5 text-emerald-600" />
+                                                <h2 className="inconsolata-ui text-[16px] font-bold text-text-heading uppercase tracking-widest">Assessment History</h2>
+                                            </div>
+
+                                            {loadingHistory ? (
+                                                <div className="py-20 text-center border border-border border-dashed">
+                                                    <div className="animate-spin w-5 h-5 border-2 border-emerald-600 border-t-transparent rounded-full mx-auto mb-4"></div>
+                                                    <p className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-widest">Recalling past sessions...</p>
+                                                </div>
+                                            ) : history.length > 0 ? (
+                                                <div className="grid grid-cols-1 gap-3">
+                                                    {history.map((session) => (
+                                                        <button
+                                                            key={session.id}
+                                                            onClick={() => setSelectedHistorySession(session)}
+                                                            className="group flex flex-col md:flex-row md:items-center justify-between p-4 bg-sidebar/20 border border-border hover:border-emerald-500/30 transition-all text-left relative overflow-hidden"
+                                                        >
+                                                            <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
+                                                                <ChevronRight className="w-10 h-10" />
+                                                            </div>
+
+                                                            <div className="flex-1 mb-3 md:mb-0">
+                                                                <div className="flex items-center gap-2 mb-1">
+                                                                    <span className="inconsolata-ui text-[8px] font-bold text-emerald-600 uppercase tracking-widest bg-emerald-500/10 px-1.5 py-0.5 border border-emerald-500/20">
+                                                                        {session.subject}
+                                                                    </span>
+                                                                    <span className="inconsolata-ui text-[8px] font-bold text-text-muted uppercase tracking-widest">
+                                                                        {new Date(session.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                                    </span>
+                                                                </div>
+                                                                <h3 className="inconsolata-ui text-[13px] font-bold text-text-heading uppercase tracking-tight group-hover:text-emerald-600 transition-colors">
+                                                                    {session.topic_name}
+                                                                </h3>
+                                                            </div>
+
+                                                            <div className="flex items-center gap-6">
+                                                                <div className="text-center">
+                                                                    <div className="inconsolata-ui text-[16px] font-bold text-text-heading leading-none mb-1">
+                                                                        {session.questions.length}
+                                                                    </div>
+                                                                    <div className="inconsolata-ui text-[7px] font-bold text-text-muted uppercase tracking-widest">Items</div>
+                                                                </div>
+
+                                                                <div className="text-center min-w-[50px]">
+                                                                    <div className={`inconsolata-ui text-[16px] font-bold leading-none mb-1 ${
+                                                                        (session.score || 0) >= 0.8 ? 'text-emerald-600' : 
+                                                                        (session.score || 0) >= 0.5 ? 'text-amber-600' : 'text-red-600'
+                                                                    }`}>
+                                                                        {Math.round((session.score || 0) * 100)}%
+                                                                    </div>
+                                                                    <div className="inconsolata-ui text-[7px] font-bold text-text-muted uppercase tracking-widest">Mastery</div>
+                                                                </div>
+
+                                                                <div className="h-6 w-[1px] bg-border mx-1 hidden md:block"></div>
+
+                                                                <div className="hidden md:flex items-center gap-1.5 group-hover:translate-x-1 transition-transform">
+                                                                    <span className="inconsolata-ui text-[8px] font-bold text-emerald-600 uppercase tracking-widest">Review</span>
+                                                                    <ArrowRight className="w-3 h-3 text-emerald-600" />
+                                                                </div>
+                                                            </div>
+                                                        </button>                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <div className="py-16 text-center border border-border border-dashed bg-sidebar/5">
+                                                    <BrainCircuit className="w-8 h-8 text-text-muted/20 mx-auto mb-4" />
+                                                    <p className="manrope-body text-[11px] text-text-muted italic opacity-60">No practice records available yet.</p>
+                                                    <p className="inconsolata-ui text-[8px] font-bold text-text-muted uppercase tracking-[0.2em] mt-2">Start your first lab session above</p>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                 </div>
+                            ) : (
+                                <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
+                                    <div className="mb-10 flex items-center justify-between">
+                                        <button 
+                                            onClick={() => setIsStarted(false)}
+                                            className="inconsolata-ui text-[10px] font-bold text-text-muted hover:text-emerald-600 flex items-center gap-2 transition-all uppercase tracking-widest bg-callout-bg px-4 py-1.5 border border-border"
+                                        >
+                                            <ArrowLeft className="w-3.5 h-3.5" /> Back to Lab
+                                        </button>
+                                        <div className="text-right">
+                                            <span className="inconsolata-ui text-[9px] font-bold text-emerald-600 uppercase tracking-[0.2em] block mb-1">Active Session</span>
+                                            <h2 className="inconsolata-ui text-[14px] font-bold text-text-heading uppercase tracking-tight">{topic}</h2>
+                                        </div>
+                                    </div>
+
+                                    <div className="max-w-3xl mx-auto">
+                                        <MCQPractice
+                                            topicName={topic}
+                                            subject={subject}
+                                            weekNumber={1}
+                                            isPro={profile?.is_pro || false}
+                                            userCredits={profile?.roadmap_credits || 0}
+                                            onPointsEarned={() => {}}
+                                            onRefreshProfile={refreshProfile}
+                                            onClose={() => setIsStarted(false)}
+                                        />
+                                    </div>
+                                </div>
                             )}
                         </div>
-                    ) : (
-                        <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-                            <div className="mb-10 flex items-center justify-between">
-                                <button 
-                                    onClick={() => setIsStarted(false)}
-                                    className="inconsolata-ui text-[10px] font-bold text-text-muted hover:text-emerald-600 flex items-center gap-2 transition-all uppercase tracking-widest bg-callout-bg px-4 py-1.5 border border-border"
-                                >
-                                    <ArrowLeft className="w-3.5 h-3.5" /> Back to Lab
-                                </button>
-                                <div className="text-right">
-                                    <span className="inconsolata-ui text-[9px] font-bold text-emerald-600 uppercase tracking-[0.2em] block mb-1">Active Session</span>
-                                    <h2 className="inconsolata-ui text-[14px] font-bold text-text-heading uppercase tracking-tight">{topic}</h2>
-                                </div>
-                            </div>
 
-                            <div className="max-w-3xl mx-auto">
-                                <MCQPractice
-                                    topicName={topic}
-                                    subject={subject}
-                                    weekNumber={1}
-                                    isPro={profile?.is_pro || false}
-                                    userCredits={profile?.roadmap_credits || 0}
-                                    onPointsEarned={() => {}}
-                                    onRefreshProfile={refreshProfile}
-                                    onClose={() => setIsStarted(false)}
-                                />
+                        {/* Sidebar Links (Right) */}
+                        {!isStarted && (
+                            <div className="lg:w-[260px] shrink-0 pt-4 sticky top-32">
+                                <ResearchLibrarySidebar />
                             </div>
-                        </div>
-                    )}
+                        )}
+                    </div>
                 </div>
             </main>
             <Footer />
