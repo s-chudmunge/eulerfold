@@ -13,6 +13,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import Footer from '@/components/Footer';
 import { motion, AnimatePresence } from 'framer-motion';
 import ResearchToolbox from '@/components/research-lab/ResearchToolbox';
+import ResearchHelpBot from '@/components/research-lab/ResearchHelpBot';
 
 const TechnicalCube = () => (
     <div className="relative w-16 h-16 flex items-center justify-center mx-auto mb-8" style={{ perspective: '1000px' }}>
@@ -46,13 +47,8 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
     const [error, setError] = useState<string | null>(null);
     const [activeStage, setActiveStage] = useState(0);
     const [statusIndex, setStatusIndex] = useState(0);
+    const [isPro, setIsPro] = useState(false);
     
-    const [messages, setMessages] = useState<Message[]>([]);
-    const [input, setInput] = useState('');
-    const [isSending, setIsSending] = useState(false);
-    const [isChatOpen, setIsChatOpen] = useState(false);
-    const chatEndRef = useRef<HTMLDivElement>(null);
-
     const statusMessages = ["Analyzing...", "Extracting Math...", "Checking Logic...", "Reasoning...", "Simplifying..."];
 
     useEffect(() => {
@@ -65,12 +61,14 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
     useEffect(() => {
         const fetchData = async () => {
             try {
+                // Fetch profile to check pro status
+                const profileRes = await api.get('/profile/me');
+                setIsPro(profileRes.data.is_pro || false);
+
                 const res = await api.get(`/research-lab/decodes/${id}`);
                 setData(res.data);
                 if (res.data.status === 'processing' || res.data.status === 'pending') {
                     setTimeout(fetchData, 5000);
-                } else if (res.data.status === 'completed') {
-                    fetchMessages();
                 }
             } catch (err: any) {
                 setError(err.response?.data?.detail || "Failed to load report.");
@@ -79,32 +77,8 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
             }
         };
 
-        const fetchMessages = async () => {
-            try {
-                const res = await api.get(`/research-lab/decodes/${id}/messages`);
-                setMessages(res.data.map((m: any) => ({ role: m.role, content: m.content })));
-            } catch (err) { console.error(err); }
-        };
-
         if (id) fetchData();
     }, [id]);
-
-    useEffect(() => { if (isChatOpen) chatEndRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages, isChatOpen]);
-
-    const handleSendMessage = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!input.trim() || isSending) return;
-        const userMsg = input.trim();
-        setInput('');
-        setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
-        setIsSending(true);
-        try {
-            const res = await api.post(`/research-lab/decodes/${id}/chat`, { message: userMsg });
-            setMessages(prev => [...prev, { role: 'assistant', content: res.data.response }]);
-        } catch (err) {
-            setMessages(prev => [...prev, { role: 'assistant', content: "Error in peer-to-peer connection." }]);
-        } finally { setIsSending(false); }
-    };
 
     if (loading && !data) return (
         <div className="flex flex-col items-center justify-center min-h-[80vh] gap-6">
@@ -371,7 +345,7 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
                 <div className="flex items-center justify-between mb-6">
                     <Breadcrumbs items={[
                         { label: 'Research Lab', href: '/research-lab' }, 
-                        { label: analysis?.paper_title ? (analysis.paper_title.length > 30 ? analysis.paper_title.slice(0, 30) + '...' : analysis.paper_title) : 'Technical Report' }
+                        { label: analysis?.paper_title || 'Technical Report' }
                     ]} />
                     <Link href="/research-lab" className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] hover:text-accent transition-colors flex items-center gap-1">
                         <ArrowLeft className="w-3 h-3" /> Back
@@ -504,86 +478,7 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
 </main>
 
             {/* FLOATING HELP BOT */}
-            <div className="fixed bottom-6 right-6 z-[100] flex flex-col items-end">
-                <AnimatePresence>
-                    {isChatOpen && (
-                        <motion.div 
-                            initial={{ opacity: 0, scale: 0.95, y: 10 }}
-                            animate={{ opacity: 1, scale: 1, y: 0 }}
-                            exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                            className="w-[320px] h-[480px] bg-background border border-border shadow-2xl rounded-xl overflow-hidden flex flex-col mb-4"
-                        >
-                            <div className="p-3 bg-sidebar border-b border-border flex items-center justify-between">
-                                <div className="flex items-center gap-2.5">
-                                    <div className="w-7 h-7 rounded-full bg-accent/10 flex items-center justify-center">
-                                        <Bot className="w-3.5 h-3.5 text-accent" />
-                                    </div>
-                                    <span className="text-[12px] font-bold text-text-heading block">Help Bot</span>
-                                </div>
-                                <button onClick={() => setIsChatOpen(false)} className="text-text-muted hover:text-text-heading transition-colors">
-                                    <X className="w-4 h-4" />
-                                </button>
-                            </div>
-
-                            <div className="flex-1 overflow-y-auto p-4 space-y-5 no-scrollbar bg-header/10">
-                                {messages.length === 0 && (
-                                    <div className="h-full flex flex-col items-center justify-center text-center opacity-30 px-6">
-                                        <p className="text-[12px] manrope-body text-left">Ask any technical question about this paper.</p>
-                                    </div>
-                                )}
-                                {messages.map((msg, i) => (
-                                    <div key={i} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse text-right' : 'text-left'}`}>
-                                        <div className={`max-w-[85%] p-2.5 text-[12.5px] leading-relaxed serif-content ${msg.role === 'user' ? 'bg-accent text-white rounded-xl rounded-tr-sm shadow-sm' : 'bg-sidebar text-text-primary rounded-xl rounded-tl-sm border border-border/40 shadow-sm'}`}>
-                                            <div className={msg.role === 'user' ? 'prose prose-sm prose-invert max-w-none text-[12.5px]' : 'prose prose-sm dark:prose-invert max-w-none text-[12.5px]'}>
-                                                <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
-                                                    {msg.content}
-                                                </ReactMarkdown>
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                                {isSending && (
-                                    <div className="flex gap-1.5 p-2 bg-sidebar rounded-full w-12 justify-center ml-2 border border-border/30">
-                                        <div className="w-1 h-1 bg-accent rounded-full animate-bounce" />
-                                        <div className="w-1 h-1 bg-accent rounded-full animate-bounce [animation-delay:0.2s]" />
-                                        <div className="w-1 h-1 bg-accent rounded-full animate-bounce [animation-delay:0.4s]" />
-                                    </div>
-                                )}
-                                <div ref={chatEndRef} />
-                            </div>
-
-                            <form onSubmit={handleSendMessage} className="p-3 bg-background border-t border-border">
-                                <div className="relative">
-                                    <input 
-                                        type="text" 
-                                        value={input} 
-                                        onChange={(e) => setInput(e.target.value)} 
-                                        placeholder="Message..." 
-                                        className="w-full bg-sidebar border border-border px-3 py-2 pr-10 text-[12px] focus:outline-none focus:border-accent transition-all rounded-lg" 
-                                        disabled={isSending} 
-                                    />
-                                    <button 
-                                        type="submit" 
-                                        disabled={isSending || !input.trim()} 
-                                        className="absolute right-1 top-1/2 -translate-y-1/2 w-8 h-8 flex items-center justify-center text-accent disabled:opacity-20 transition-colors"
-                                    >
-                                        <Send className="w-3.5 h-3.5" />
-                                    </button>
-                                </div>
-                            </form>
-                        </motion.div>
-                    )}
-                </AnimatePresence>
-
-                <motion.button 
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => setIsChatOpen(!isChatOpen)}
-                    className={`w-11 h-11 rounded-full shadow-xl flex items-center justify-center transition-all ${isChatOpen ? 'bg-header border border-border text-text-heading' : 'bg-accent text-white'}`}
-                >
-                    {isChatOpen ? <X className="w-5 h-5" /> : <MessageSquare className="w-5 h-5" />}
-                </motion.button>
-            </div>
+            <ResearchHelpBot decodeId={id} isPro={isPro} />
 
             <Footer />
         </div>

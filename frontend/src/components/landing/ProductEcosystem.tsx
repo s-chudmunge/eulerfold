@@ -42,7 +42,7 @@ const products = [
     bgColor: "bg-purple-500/10"
   },
   {
-    title: "Interactive Practice",
+    title: "Practice",
     description: "Test your knowledge with AI-generated assessments and practice problems across 20+ domains.",
     icon: Target,
     href: "/practice",

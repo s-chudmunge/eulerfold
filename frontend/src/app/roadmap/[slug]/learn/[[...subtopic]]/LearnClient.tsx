@@ -605,7 +605,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                 >
                                     <Target className={`h-5 w-5 mt-0.5 ${viewMode === 'practice' ? 'text-accent' : 'opacity-60'}`} />
                                     <div className="flex flex-col">
-                                        <span className="font-medium">Interactive Practice</span>
+                                        <span className="font-medium">Practice</span>
                                         <span className="text-[10px] mt-1 opacity-80 group-hover:opacity-100 transition-opacity">Test your knowledge</span>
                                     </div>
                                 </button>

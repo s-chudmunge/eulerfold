@@ -26,7 +26,9 @@ import {
     Lock,
     Scale,
     Plus,
-    ArrowRight
+    ArrowRight,
+    User,
+    Calendar
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -565,6 +567,27 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                             <p className="inconsolata-ui text-[0.875rem] font-bold text-text-heading">{roadmap.time_value} {roadmap.time_unit}</p>
                         </div>
 
+                        {(roadmap.author || roadmap.username) && (
+                            <div className="space-y-1 pt-2">
+                                <p className="inconsolata-ui text-[0.7rem] font-bold text-text-muted  tracking-wide">Owner</p>
+                                <div className="flex items-center gap-2">
+                                    <User className="w-3.5 h-3.5 text-accent" />
+                                    <p className="inconsolata-ui text-[0.875rem] font-bold text-text-heading">{roadmap.author || roadmap.username}</p>
+                                </div>
+                            </div>
+                        )}
+                        {roadmap.created_at && (
+                            <div className="space-y-1 pt-2">
+                                <p className="inconsolata-ui text-[0.7rem] font-bold text-text-muted  tracking-wide">Created</p>
+                                <div className="flex items-center gap-2">
+                                    <Calendar className="w-3.5 h-3.5 text-accent" />
+                                    <p className="inconsolata-ui text-[0.875rem] font-bold text-text-heading">
+                                        {new Date(roadmap.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                                    </p>
+                                </div>
+                            </div>
+                        )}
+
                         {isAuthenticated && (isOwner || roadmap.is_cloned) && submissions.length > 0 && (
                             <div className="pt-4 mt-4 border-t border-border">
                                 <button 
@@ -684,11 +707,27 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                             <>
                                 <header className="mb-0">
                                     <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                        <div className="inconsolata-ui flex items-center gap-2 text-accent text-[13px] font-bold  tracking-wide">
-                                            <span className="bg-teal-500/10 px-2 py-0.5 rounded text-accent font-bold">Roadmap</span>
-                                            <span className="text-[var(--border)]">/</span>
-                                            <span className="text-text-muted italic">{roadmap.subject}</span>
+                                        <div className="inconsolata-ui flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] font-bold tracking-wide">
+                                    <div className="flex items-center gap-2 text-accent">
+                                        <span className="bg-teal-500/10 px-2 py-0.5 rounded text-accent font-bold">Roadmap</span>
+                                        <span className="text-[var(--border)]">/</span>
+                                        <span className="text-text-muted italic">{roadmap.subject}</span>
+                                    </div>
+                                    {(roadmap.author || roadmap.username) && (
+                                        <div className="flex items-center gap-1.5 text-text-muted">
+                                            <span className="text-[var(--border)] hidden sm:inline">•</span>
+                                            <User className="w-3 h-3" />
+                                            <span className="text-[11px]">{roadmap.author || roadmap.username}</span>
                                         </div>
+                                    )}
+                                    {roadmap.created_at && (
+                                        <div className="flex items-center gap-1.5 text-text-muted">
+                                            <span className="text-[var(--border)] hidden sm:inline">•</span>
+                                            <Calendar className="w-3 h-3" />
+                                            <span className="text-[11px]">{new Date(roadmap.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                                        </div>
+                                    )}
+                                </div>
                                         
                                         {roadmap.is_public && (
                                             <StarRating 

@@ -13,10 +13,10 @@ interface BreadcrumbsProps {
 
 export default function Breadcrumbs({ items }: BreadcrumbsProps) {
   return (
-    <nav className="flex items-center gap-2 mb-6 text-[12px] font-bold inconsolata-ui" aria-label="Breadcrumb">
+    <nav className="flex items-center gap-2 mb-6 text-[12px] font-bold inconsolata-ui min-w-0" aria-label="Breadcrumb">
       <Link 
         href="/" 
-        className="text-text-muted hover:text-text-heading transition-colors flex items-center"
+        className="text-text-muted hover:text-text-heading transition-colors flex items-center shrink-0"
       >
         <Home className="w-3.5 h-3.5" />
       </Link>
@@ -27,12 +27,14 @@ export default function Breadcrumbs({ items }: BreadcrumbsProps) {
           {item.href ? (
             <Link 
               href={item.href}
-              className="text-text-muted hover:text-text-heading transition-colors whitespace-nowrap"
+              className="text-text-muted hover:text-text-heading transition-colors whitespace-nowrap shrink-0"
             >
               {item.label}
             </Link>
           ) : (
-            <span className="text-teal-600 truncate">{item.label}</span>
+            <span className="text-teal-600 truncate max-w-[250px] sm:max-w-[400px] md:max-w-none" title={item.label}>
+              {item.label}
+            </span>
           )}
         </React.Fragment>
       ))}

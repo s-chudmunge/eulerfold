@@ -8,7 +8,7 @@ import {
   Plus,
   X,
   RefreshCw,
-  Rocket,
+  Hammer,
   ShieldAlert,
   Activity,
   Package,
@@ -378,7 +378,7 @@ export default function BuildPilotPage() {
                    <div className="grid grid-cols-2 gap-4">
                       <div className="p-4 bg-background border border-border rounded-lg">
                          <div className="flex items-center gap-2 mb-1">
-                            <Rocket className="w-3.5 h-3.5 text-purple-500" />
+                            <Hammer className="w-3.5 h-3.5 text-purple-500" />
                             <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest">Projects</span>
                          </div>
                          <span className="text-lg font-black text-text-heading">{totalProjectsCount}</span>
@@ -476,7 +476,7 @@ export default function BuildPilotPage() {
                  <div className="flex items-center justify-between mb-8">
                     <div className="flex items-center gap-3">
                        <div className="w-10 h-10 bg-teal-700/10 flex items-center justify-center text-teal-700">
-                          <Rocket className="w-5 h-5" />
+                          <Hammer className="w-5 h-5" />
                        </div>
                        <div>
                           <h2 className="text-xl font-black text-text-heading tracking-tight">New Project</h2>

@@ -23,6 +23,21 @@ from app.schemas import PublicProfile, UserSkill, PracticeStats, User, Discussio
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
+@router.get("/profile/me", response_model=PublicProfile)
+async def get_current_user_profile(current_user: User = Depends(get_current_user)):
+    """
+    Fetch the profile of the currently authenticated user.
+    """
+    sb = get_supabase_client()
+    
+    # 1. Fetch Profile by email (current_user has email)
+    p_res = sb.table("profiles").select("*").eq("email", current_user.email).maybe_single().execute()
+    if not p_res.data:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    
+    # Use the existing logic by calling get_public_profile with the username
+    return await get_public_profile(p_res.data["username"])
+
 @router.delete("/profile/me")
 async def delete_current_user_profile(current_user: User = Depends(get_current_user)):
     """

@@ -24,8 +24,10 @@ import {
     TrendingUp,
     Archive,
     CreditCard,
-    Rocket,
-    Target
+    Hammer,
+    Target,
+    Microscope,
+    Briefcase
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase/client';
 import { authAPI, roadmapsAPI, coinsAPI } from '@/lib/api';
@@ -174,22 +176,6 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                             <Link href="/dashboard" aria-current={isActive('/dashboard') ? 'page' : undefined} className={navLinkClass('/dashboard')} onClick={onClose}>
                                 <LayoutDashboard className="w-3.5 h-3.5 stroke-[1.5px]" /> Dashboard
                             </Link>
-                            <Link href="/planner" aria-current={isActive('/planner') ? 'page' : undefined} className={navLinkClass('/planner')} onClick={onClose}>
-                                <Calendar className="w-3.5 h-3.5 stroke-[1.5px]" /> Study Planner
-                            </Link>
-                            <Link href="/practice" aria-current={isActive('/practice') ? 'page' : undefined} className={navLinkClass('/practice')} onClick={onClose}>
-                                <Target className="w-3.5 h-3.5 stroke-[1.5px]" /> Interactive Practice
-                            </Link>
-                            <Link href="/buildpilot" aria-current={isActive('/buildpilot') ? 'page' : undefined} className={navLinkClass('/buildpilot')} onClick={onClose}>
-                                <Rocket className="w-3.5 h-3.5 stroke-[1.5px]" /> BuildPilot
-                            </Link>
-                            <Link href="/account" aria-current={isActive('/account') ? 'page' : undefined} className={navLinkClass('/account')} onClick={onClose}>
-                                <CreditCard className="w-3.5 h-3.5 stroke-[1.5px]" /> Account
-                            </Link>
-                            <Link href="/generate" aria-current={isActive('/generate') ? 'page' : undefined} className={navLinkClass('/generate')} onClick={onClose}>
-
-                                <Plus className="w-3.5 h-3.5 stroke-[1.5px]" /> New Goal
-                            </Link>
                             <Link href="/explore" aria-current={isActive('/explore') ? 'page' : undefined} className={navLinkClass('/explore')} onClick={onClose}>
                                 <Globe className="w-3.5 h-3.5 stroke-[1.5px]" /> Explore
                             </Link>
@@ -202,10 +188,34 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                             <Link href="/archive/exams/previous-year-papers" aria-current={isActive('/archive/exams/previous-year-papers') ? 'page' : undefined} className={navLinkClass('/archive/exams/previous-year-papers')} onClick={onClose}>
                                 <Archive className="w-3.5 h-3.5 stroke-[1.5px]" /> Archives
                             </Link>
-                            <Link href="/pricing" aria-current={isActive('/pricing') ? 'page' : undefined} className={navLinkClass('/pricing')} onClick={onClose}>
-                                <CreditCard className="w-3.5 h-3.5 stroke-[1.5px]" /> Pricing
-                            </Link>
                         </nav>
+
+                        {/* Products */}
+                        <div className="pt-3 border-t border-border dark:border-white/[0.05]">
+                            <span className="px-2.5 text-[10px] font-bold text-text-muted uppercase tracking-[0.15em] block mb-2 opacity-50">Products</span>
+                            <nav className="space-y-0.5" aria-label="Products navigation">
+                                <Link href="/research-lab" aria-current={isActive('/research-lab') ? 'page' : undefined} className={navLinkClass('/research-lab')} onClick={onClose}>
+                                    <Microscope className="w-3.5 h-3.5 stroke-[1.5px]" /> 
+                                    <span className="flex-1">Research Lab</span>
+                                    <span className="text-[8px] font-black uppercase tracking-widest bg-accent text-white px-1 py-0.5 rounded leading-none shrink-0">New</span>
+                                </Link>
+                                <Link href="/planner" aria-current={isActive('/planner') ? 'page' : undefined} className={navLinkClass('/planner')} onClick={onClose}>
+                                    <Calendar className="w-3.5 h-3.5 stroke-[1.5px]" /> Study Planner
+                                </Link>
+                                <Link href="/buildpilot" aria-current={isActive('/buildpilot') ? 'page' : undefined} className={navLinkClass('/buildpilot')} onClick={onClose}>
+                                    <Hammer className="w-3.5 h-3.5 stroke-[1.5px]" /> BuildPilot
+                                </Link>
+                                <Link href="/practice" aria-current={isActive('/practice') ? 'page' : undefined} className={navLinkClass('/practice')} onClick={onClose}>
+                                    <Target className="w-3.5 h-3.5 stroke-[1.5px]" /> Practice
+                                </Link>
+                                <Link href="/generate?mode=job" aria-current={isActive('/generate?mode=job') ? 'page' : undefined} className={navLinkClass('/generate?mode=job')} onClick={onClose}>
+                                    <Briefcase className="w-3.5 h-3.5 stroke-[1.5px]" /> Job Decoded
+                                </Link>
+                                <Link href="/generate" aria-current={isActive('/generate') ? 'page' : undefined} className={navLinkClass('/generate')} onClick={onClose}>
+                                    <Plus className="w-3.5 h-3.5 stroke-[1.5px]" /> Roadmap Generator
+                                </Link>
+                            </nav>
+                        </div>
 
                         {/* Persistent Stats */}
                         {user && (
@@ -234,9 +244,15 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                             </div>
                         )}
 
-                        {/* Information Section */}
+                        {/* Information & Settings */}
                         <div className="pt-3 border-t border-border dark:border-white/[0.05]">
                             <nav className="space-y-0.5" aria-label="Information navigation">
+                                <Link href="/pricing" aria-current={isActive('/pricing') ? 'page' : undefined} className={navLinkClass('/pricing')} onClick={onClose}>
+                                    <CreditCard className="w-3.5 h-3.5 stroke-[1.5px]" /> Pricing
+                                </Link>
+                                <Link href="/account" aria-current={isActive('/account') ? 'page' : undefined} className={navLinkClass('/account')} onClick={onClose}>
+                                    <User className="w-3.5 h-3.5 stroke-[1.5px]" /> Account
+                                </Link>
                                 <Link href="/help" aria-current={isActive('/help') ? 'page' : undefined} className={navLinkClass('/help')} onClick={onClose}>
                                     <HelpCircle className="w-3.5 h-3.5 stroke-[1.5px]" /> Help Center
                                 </Link>

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { RoadmapData, saveRoadmap, roadmapsAPI, submissionsAPI } from '../../lib/api';
-import { Download, CheckCircle, ChevronDown, ChevronUp, Play, BookOpen, X, Trophy, Plus, FileText, Copy, Target, MonitorPlay, BookText, Hash, Scroll, ChevronRight, Trash2, Rocket, Edit3 } from 'lucide-react';
+import { Download, CheckCircle, ChevronDown, ChevronUp, Play, BookOpen, X, Trophy, Plus, FileText, Copy, Target, MonitorPlay, BookText, Hash, Scroll, ChevronRight, Trash2, Hammer, Edit3 } from 'lucide-react';
 import { supabase } from '../../lib/supabase/client';
 import Link from 'next/link';
 
@@ -316,7 +316,7 @@ const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({
                             onClick={(e) => e.stopPropagation()}
                             className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-emerald-600 text-white rounded-xl text-[10px] font-bold tracking-widest uppercase hover:bg-emerald-700 transition-all active:scale-95 shadow-lg shadow-emerald-600/20"
                           >
-                            <Rocket className="w-3.5 h-3.5" />
+                            <Hammer className="w-3.5 h-3.5" />
                             <span className="hidden xs:inline">Build</span>
                           </Link>
                         )}
@@ -387,7 +387,7 @@ const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({
                                           onPractice(topic, index);
                                         }}
                                         className="p-1.5 rounded-md bg-emerald-500/5 border border-emerald-500/20 text-emerald-600 hover:bg-emerald-500/15 hover:border-emerald-500/40 hover:scale-105 transition-all shadow-sm flex items-center justify-center"
-                                        title="Interactive Practice"
+                                        title="Practice"
                                       >
                                         <Edit3 className="w-3.5 h-3.5" />
                                       </button>

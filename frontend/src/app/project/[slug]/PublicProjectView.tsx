@@ -22,7 +22,7 @@ import {
     AlertCircle,
     ArrowUpRight,
     Info,
-    Rocket,
+    Hammer,
     X,
     Calendar,
     Share2
@@ -139,7 +139,7 @@ export default function PublicProjectView({ project: initialProject, slug }: Pub
                                         onClick={() => router.push('/buildpilot')}
                                         className="inline-flex items-center justify-center gap-3 px-6 py-3.5 bg-text-heading text-background font-bold text-[13px] uppercase tracking-widest hover:opacity-90 transition-all shadow-xl active:scale-[0.98] rounded-none"
                                     >
-                                        <Rocket className="w-4 h-4" /> Start BuildPilot
+                                        <Hammer className="w-4 h-4" /> Start BuildPilot
                                     </button>
                                 )}
                                 

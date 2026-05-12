@@ -113,7 +113,7 @@ export default function RoadmapIndexClient({ initialRoadmaps }: { initialRoadmap
                                                         />
                                                     )}
                                                 </div>
-                                                <div className="flex items-center gap-3">
+                                                <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
                                                     <span className="text-accent font-bold uppercase tracking-widest text-[10px] font-inter">{roadmap.subject}</span>
                                                     <span className="w-1 h-1 rounded-full bg-border" />
                                                     <span className="manrope-body text-[12px] text-text-muted font-medium">
@@ -123,6 +123,22 @@ export default function RoadmapIndexClient({ initialRoadmaps }: { initialRoadmap
                                                     <span className="manrope-body text-[12px] text-text-muted font-medium">
                                                         {roadmap.clone_count || 0} Learners
                                                     </span>
+                                                    {roadmap.author && (
+                                                        <>
+                                                            <span className="w-1 h-1 rounded-full bg-border" />
+                                                            <span className="manrope-body text-[12px] text-text-muted font-medium">
+                                                                by {roadmap.author}
+                                                            </span>
+                                                        </>
+                                                    )}
+                                                    {roadmap.created_at && (
+                                                        <>
+                                                            <span className="w-1 h-1 rounded-full bg-border" />
+                                                            <span className="manrope-body text-[12px] text-text-muted font-medium">
+                                                                {new Date(roadmap.created_at).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}
+                                                            </span>
+                                                        </>
+                                                    )}
                                                 </div>
                                             </div>
                                             <div className="flex items-center gap-2 shrink-0 md:opacity-0 group-hover:opacity-100 transition-opacity">

@@ -82,6 +82,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
             url: `https://www.eulerfold.com/roadmap/${params.slug}`,
             siteName: 'EulerFold',
             authors: [author],
+            publishedTime: roadmap.created_at,
         },
         twitter: {
             card: 'summary',

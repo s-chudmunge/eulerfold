@@ -24,7 +24,7 @@ import {
     CheckCircle2,
     Clock,
     ArrowUpRight,
-    Rocket,
+    Hammer,
     Menu,
     X,
     Trash2,
@@ -275,7 +275,7 @@ export default function ProjectClient({ slug, initialProject }: Props) {
                                             ))
                                         ) : (
                                             <div className="py-20 text-center border border-dashed border-border rounded-none">
-                                                <Rocket className="w-8 h-8 text-text-muted opacity-20 mx-auto mb-4" />
+                                                <Hammer className="w-8 h-8 text-text-muted opacity-20 mx-auto mb-4" />
                                                 <p className="text-[13px] text-text-muted mb-6">No audits recorded yet.</p>
                                                 <Link href={`/project/${slug}/build/1`} className="inline-flex items-center gap-2 px-6 py-2.5 bg-sidebar border border-border text-[11px] font-bold uppercase tracking-widest text-text-heading hover:bg-background transition-all rounded-none">
                                                     Initiate first audit

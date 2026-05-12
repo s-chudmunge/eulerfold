@@ -24,11 +24,12 @@ razorpay_client = None
 if settings.RAZORPAY_KEY_ID and settings.RAZORPAY_KEY_SECRET:
     razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
 
-def get_current_price():
+def get_current_price(coupon_code: Optional[str] = None):
     """
     Returns (price_in_paise, has_discount)
     Normal price: ₹299 (29900 paise)
     Special discount: 50% off on May 10-11, 2026 (Mother's Day Sale), all day IST.
+    Coupon code: #SANKALP21 gives 50% discount.
     """
     # IST is UTC+5:30
     ist_offset = timedelta(hours=5, minutes=30)
@@ -40,19 +41,36 @@ def get_current_price():
         now_ist.month == 5 and
         (now_ist.day == 10 or now_ist.day == 11)
     )    
-    if is_sale_period:
-        # ₹299 * 0.5 = ₹149.5 -> Rounded to ₹149
-        return 14900, True
+
+    # Coupon Logic
+    VALID_COUPONS = {
+        "#SANKALP21": 0.5, # 50% discount
+    }
+
+    coupon_discount = 0
+    if coupon_code and coupon_code.upper() in VALID_COUPONS:
+        coupon_discount = VALID_COUPONS[coupon_code.upper()]
+
+    if is_sale_period or coupon_discount > 0:
+        discount = 0.5 # Default sale discount
+        if coupon_discount > 0:
+            discount = coupon_discount
+            
+        # ₹299 * (1 - discount)
+        final_price_rs = 299 * (1 - discount)
+        return int(final_price_rs * 100), True
     
     return 29900, False
 
 class CheckoutRequest(BaseModel):
     currency: str = "INR"
+    coupon_code: Optional[str] = None
 
 class RazorpayVerifyRequest(BaseModel):
     razorpay_order_id: str
     razorpay_payment_id: str
     razorpay_signature: str
+    coupon_code: Optional[str] = None
 
 @router.post("/payments/checkout")
 async def create_checkout(req: CheckoutRequest, current_user: User = Depends(get_current_user)):
@@ -61,7 +79,7 @@ async def create_checkout(req: CheckoutRequest, current_user: User = Depends(get
     if not razorpay_client:
         raise HTTPException(status_code=500, detail="Razorpay not configured")
     
-    price_paise, _ = get_current_price()
+    price_paise, _ = get_current_price(req.coupon_code)
     
     try:
         order_data = {
@@ -69,7 +87,8 @@ async def create_checkout(req: CheckoutRequest, current_user: User = Depends(get
             "currency": "INR",
             "receipt": f"receipt_{user_email[:20]}",
             "notes": {
-                "email": user_email
+                "email": user_email,
+                "coupon_code": req.coupon_code
             }
         }
         order = razorpay_client.order.create(data=order_data)
@@ -155,11 +174,15 @@ async def verify_razorpay(req: RazorpayVerifyRequest, current_user: User = Depen
     ).hexdigest()
 
     if hmac.compare_digest(generated_signature, req.razorpay_signature):
+        # Calculate amount with coupon if provided
+        amount, _ = get_current_price(req.coupon_code)
+        
         success = await process_payment_success(
             email=current_user.email,
             payment_id=req.razorpay_payment_id,
             order_id=req.razorpay_order_id,
-            signature=req.razorpay_signature
+            signature=req.razorpay_signature,
+            amount=amount
         )
         if success:
             return {"status": "success", "message": "Payment received and credit added"}
@@ -167,6 +190,30 @@ async def verify_razorpay(req: RazorpayVerifyRequest, current_user: User = Depen
             return {"status": "success", "message": "Payment already processed or recorded"}
     else:
         raise HTTPException(status_code=400, detail="Invalid Razorpay signature")
+
+class CouponValidateRequest(BaseModel):
+    code: str
+
+@router.post("/payments/validate-coupon")
+async def validate_coupon(req: CouponValidateRequest):
+    """Validate a coupon code and return discount info"""
+    # Coupon Logic (should be synced with get_current_price or moved to a shared util)
+    VALID_COUPONS = {
+        "#SANKALP21": 0.5, # 50% discount
+    }
+    
+    code = req.code.upper()
+    if code in VALID_COUPONS:
+        discount = VALID_COUPONS[code]
+        new_price_rs = 299 * (1 - discount)
+        return {
+            "valid": True,
+            "discount": discount,
+            "new_price": int(new_price_rs),
+            "message": f"Coupon applied! {int(discount * 100)}% discount."
+        }
+    else:
+        raise HTTPException(status_code=404, detail="Invalid or expired coupon code")
 
 @router.post("/payments/webhook/razorpay")
 async def razorpay_webhook(request: Request, x_razorpay_signature: str = Header(None)):

@@ -143,6 +143,10 @@ async def run_research_analysis(decode_id: str, paper_url: str):
 
 @router.post("/decodes/{decode_id}/chat")
 async def lab_chat(decode_id: str, payload: dict = Body(...), current_user: User = Depends(get_current_user)):
+    # Pro check
+    if not current_user.is_pro:
+        raise HTTPException(status_code=403, detail="The technical peer is only available for Pro members.")
+
     user_message = payload.get("message")
     if not user_message:
         raise HTTPException(status_code=400, detail="Missing message")
@@ -170,6 +174,8 @@ async def lab_chat(decode_id: str, payload: dict = Body(...), current_user: User
     Full Text Excerpt: {paper_context['extracted_text'][:15000]}
     
     RULES:
+    - BE EXTREMELY CONCISE AND BRIEF.
+    - DO NOT provide long explanations unless explicitly asked for a deep dive.
     - BE PLAIN AND DIRECT. No fluff.
     - BE GROUNDED. Only answer based on the paper or established math/science.
     - BE TECHNICAL.

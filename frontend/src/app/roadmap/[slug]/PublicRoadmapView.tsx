@@ -21,7 +21,9 @@ import {
     Target,
     X,
     Plus,
-    ArrowRight
+    ArrowRight,
+    User,
+    Calendar
 } from 'lucide-react';
 
 interface Props {
@@ -282,7 +284,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                             </h1>
                             
                             {/* Metadata */}
-                            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 manrope-body text-[13px] text-text-muted font-medium">
+                            <div className="flex flex-wrap items-center gap-x-6 gap-y-3 manrope-body text-[13px] text-text-muted font-medium">
                                 <div className="flex items-center gap-1.5">
                                     <Clock className="w-3.5 h-3.5" />
                                     <span>{roadmap.time_value} {roadmap.time_unit}</span>
@@ -291,7 +293,19 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                     <Users className="w-3.5 h-3.5" />
                                     <span>{roadmap.clone_count || 0} Learners</span>
                                 </div>
-                                <div className="text-accent/60">•</div>
+                                {(roadmap.author || roadmap.username) && (
+                                    <div className="flex items-center gap-1.5">
+                                        <User className="w-3.5 h-3.5" />
+                                        <span>{roadmap.author || roadmap.username}</span>
+                                    </div>
+                                )}
+                                {roadmap.created_at && (
+                                    <div className="flex items-center gap-1.5">
+                                        <Calendar className="w-3.5 h-3.5" />
+                                        <span>{new Date(roadmap.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
+                                    </div>
+                                )}
+                                <div className="text-accent/60 hidden sm:block">•</div>
                                 <span className="text-accent font-bold uppercase tracking-widest text-[11px] font-inter">{roadmap.subject}</span>
                             </div>
 
