@@ -13,6 +13,7 @@ import SocialShare from '@/components/SocialShare';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import RecommendedRoadmaps from '@/components/RecommendedRoadmaps';
 import FloatingTTS from '@/components/FloatingTTS';
+import NextStepsSidebar from '@/components/NextStepsSidebar';
 import { motion, AnimatePresence } from 'framer-motion';
 
 interface Article {
@@ -159,7 +160,7 @@ const ArticlePreview = ({ slug }: { slug: string }) => {
       <div className="p-4 text-left">
         <div className="flex items-center gap-2 mb-2">
            <span className="inconsolata-ui text-[10px] font-black uppercase tracking-[0.2em] text-accent bg-accent/10 px-2 py-0.5 rounded">
-            {article.category}
+            {article.subject}
           </span>
         </div>
         <h4 className="text-[16px] font-bold text-text-heading mb-2 leading-tight font-inter tracking-tight">
@@ -492,7 +493,7 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
     <div className="bg-background min-h-screen pb-24 text-text-primary serif-page-scope">
       <FloatingTTS content={fullContent} />
       {/* Design matches strictly the refined example/topic-page */}
-      <div className="max-w-[1400px] mx-auto flex flex-col xl:flex-row justify-center xl:justify-start xl:pl-[120px] gap-12 lg:gap-20 px-6 py-8 md:px-12 md:py-16">
+      <div className="max-w-[1400px] mx-auto flex flex-col lg:flex-row justify-center xl:justify-start xl:pl-[120px] gap-12 lg:gap-20 px-6 py-8 md:px-12 md:py-16">
         
         {/* Table of Contents (Left Sidebar) */}
         <aside className="hidden xl:block w-[220px] shrink-0">
@@ -730,6 +731,12 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
           </p>
         </div>
       </div>
+
+      {/* Action Sidebar (Right) */}
+      <NextStepsSidebar 
+        subject="Research" 
+        topic={paper.title} 
+      />
     </div>
 
     {/* Image Lightbox */}

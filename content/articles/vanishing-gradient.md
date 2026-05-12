@@ -2,9 +2,9 @@
 title: "What is the Vanishing Gradient Problem?"
 slug: "vanishing-gradient"
 shortSlug: "vanishing-gradient"
-author: "EulerFold"
+author: "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence"
 date: "April 21, 2026"
-category: "Theory"
+subject: "AI & Data Science"
 heroImage: "https://images.openai.com/static-rsc-4/E2Fr7AunuhUPh9XP7kO_fnprFaUXelcFsip2IxAod34m53eWJbTZbncECQ_2KKKJu2edyHPvczBQ5g_YidSj0zZ5b0JbLgxkGysCyOdBIgtw88feF39JnqEQqabKW_-UorBb0cOlYwOMlRCJ02ZqFnBLlAFBqHDnCd2ZMeVG4imEa7X2Gfx9UnRCpaMTry3j?purpose=fullsize"
 excerpt: "Why deep networks stop learning. Understanding the mathematical hurdle that plagued AI for decades."
 technicalInsight: "As gradients are propagated backward through many layers, they are repeatedly multiplied by weights; if those weights are small, the gradient shrinks exponentially, leaving early layers with no signal to update."
@@ -19,35 +19,6 @@ synonyms:
 ---
 
 For a long time, researchers believed that simply adding more layers to a neural network would make it more powerful. However, they quickly hit a wall: as networks grew deeper, they became harder to train. The models weren't just slow; they often stopped learning entirely. This phenomenon is known as the **Vanishing Gradient Problem**.
-
-```d2
-direction: down
-Loss: "Loss Function" {
-  shape: diamond
-}
-DeepNetwork: "Deep Neural Network" {
-  LayerN: "Layer N (Near Output)" {
-    Gradient: "Gradient: 0.8"
-  }
-  Layer2: "Layer 2" {
-    Gradient: "Gradient: 0.1"
-  }
-  Layer1: "Layer 1 (Near Input)" {
-    Gradient: "Gradient: 0.0001"
-  }
-  LayerN -> Layer2 -> Layer1: "Backpropagation"
-}
-
-Loss -> DeepNetwork.LayerN: "Error Signal"
-DeepNetwork.Layer1 -> Update: "Signal Vanished"
-
-Update: "Weight Update" {
-  shape: cloud
-}
-
-DeepNetwork.LayerN.style: {stroke: "#0F766E"; stroke-width: 4}
-DeepNetwork.Layer1.style: {stroke: "#dc2626"; stroke-width: 1}
-```
 
 ## The Chain of Multiplication {#the-chain}
 

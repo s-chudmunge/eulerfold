@@ -23,6 +23,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import { navigation, papers } from '../research-decoded/generatedData';
 import { archiveData } from '../(public)/archive/generatedArchiveData';
+import { articles } from '../articles/generatedArticles';
 import { exploreAPI } from '@/lib/api';
 import { cleanSearchQuery, getSearchKeywords } from '@/lib/search';
 import EulerLogoCanvas from '@/components/EulerLogoCanvas';
@@ -63,7 +64,7 @@ interface UnifiedSuggestion {
   id?: string | number;
   title: string;
   path: string;
-  type: 'Roadmap' | 'Paper' | 'Exam' | 'Archive';
+  type: 'Roadmap' | 'Paper' | 'Exam' | 'Archive' | 'Article';
   relevance: number;
   icon?: any;
   logo?: string;
@@ -96,6 +97,7 @@ function LearnContent() {
     const searchParams = useSearchParams();
 
     const paperCount = Object.keys(papers).length;
+    const articleCount = Object.keys(articles).length;
     const archiveCount = archiveData.reduce((acc, cat) => acc + cat.entries.length, 0);
     const categoryCount = navigation.length;
 
@@ -141,6 +143,20 @@ function LearnContent() {
             const paperResults = paperFuse.search(query).slice(0, 3);
             paperResults.forEach(res => {
               combinedResults.push({ title: res.item.title, path: `/research-decoded/${res.item.slug}`, type: 'Paper', relevance: (1 - (res.score || 0)) * 1200, icon: Microscope });
+            });
+
+            // Article Search
+            const flatArticles = Object.values(articles).map(art => ({
+                title: art.title,
+                slug: art.slug,
+                excerpt: art.excerpt,
+                author: art.author,
+                synonyms: art.synonyms || []
+            }));
+            const articleFuse = new Fuse(flatArticles, { keys: ['title', 'excerpt', 'author', 'synonyms'], threshold: 0.4, includeScore: true });
+            const articleResults = articleFuse.search(query).slice(0, 3);
+            articleResults.forEach(res => {
+              combinedResults.push({ title: res.item.title, path: `/articles/${res.item.slug}`, type: 'Article', relevance: (1 - (res.score || 0)) * 1300, icon: FileText });
             });
     
             archiveData.forEach(cat => {
@@ -217,7 +233,7 @@ function LearnContent() {
                                     <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted opacity-40 group-focus-within:text-accent group-focus-within:opacity-100 transition-all" />
                                     <input 
                                         type="text"
-                                        placeholder="Search topics or exam papers..."
+                                        placeholder="Search topics, articles or exam papers..."
                                         className="w-full bg-sidebar/50 border border-border rounded-xl pl-10 pr-20 py-2.5 text-[14px] focus:outline-none focus:ring-1 focus:ring-accent/20 focus:border-accent transition-all manrope-body font-medium placeholder:text-text-muted/40"
                                         value={query}
                                         onChange={(e) => setQuery(e.target.value)}
@@ -300,6 +316,19 @@ function LearnContent() {
                                 </div>
                                 <p className="manrope-body text-[13px] text-text-muted leading-relaxed">
                                     Foundational paper breakthroughs simplified for students and researchers.
+                                </p>
+                            </Link>
+
+                            {/* Articles Link */}
+                            <Link href="/articles" className="group flex flex-col items-start gap-1">
+                                <div className="flex items-center gap-2">
+                                    <h3 className="manrope-body text-[15px] font-bold text-text-heading group-hover:text-teal-600 transition-colors underline decoration-border group-hover:decoration-teal-600 underline-offset-4 decoration-1">
+                                        Technical articles
+                                    </h3>
+                                    <span className="manrope-body text-[10px] font-bold text-text-muted/40">({articleCount} articles)</span>
+                                </div>
+                                <p className="manrope-body text-[13px] text-text-muted leading-relaxed">
+                                    Deep dives into engineering philosophies and technical architecture from industry experts.
                                 </p>
                             </Link>
 

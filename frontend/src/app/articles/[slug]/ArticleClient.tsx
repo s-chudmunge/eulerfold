@@ -21,6 +21,7 @@ import Footer from '@/components/Footer';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import RecommendedRoadmaps from '@/components/RecommendedRoadmaps';
 import FloatingTTS from '@/components/FloatingTTS';
+import NextStepsSidebar from '@/components/NextStepsSidebar';
 import { DiscussionSection } from '@/components/discussions/DiscussionSection';
 import { Article, articles } from '../generatedArticles';
 import { Paper, papers } from '../../research-decoded/generatedData';
@@ -118,7 +119,7 @@ const ArticlePreview = ({ slug }: { slug: string }) => {
       <div className="p-4">
         <div className="flex items-center gap-2 mb-2">
            <span className="inconsolata-ui text-[10px] font-black uppercase tracking-[0.2em] text-accent bg-accent/10 px-2 py-0.5 rounded">
-            {article.category}
+            {article.subject}
           </span>
         </div>
         <h4 className="text-[16px] font-bold text-text-heading mb-2 leading-tight font-inter tracking-tight">
@@ -401,7 +402,7 @@ export default function ArticleClient({ article }: Props) {
     const allArticles = Object.values(articles);
     const keywords = [
       article.title.toLowerCase(),
-      article.category.toLowerCase(),
+      article.subject.toLowerCase(),
       ...(article.synonyms || []).map(s => s.toLowerCase())
     ];
 
@@ -409,7 +410,7 @@ export default function ArticleClient({ article }: Props) {
       .filter(a => a.slug !== article.slug)
       .map(a => {
         let score = 0;
-        if (a.category === article.category) score += 10;
+        if (a.subject === article.subject) score += 10;
         
         const aTitle = a.title.toLowerCase();
         const aExcerpt = a.excerpt.toLowerCase();
@@ -458,7 +459,7 @@ export default function ArticleClient({ article }: Props) {
       articles: scoredArticles.map(sa => sa.article),
       papers: scoredPapers.map(sp => sp.paper)
     });
-  }, [article.slug, article.title, article.category, article.synonyms, article.content]);
+  }, [article.slug, article.title, article.subject, article.synonyms, article.content]);
 
   return (
     <div className="min-h-screen bg-background text-text-primary serif-page-scope selection:bg-accent/20">
@@ -466,7 +467,7 @@ export default function ArticleClient({ article }: Props) {
       <PublicHeader />
 
       {/* Site Content (BibGuru Layout) */}
-      <div className="max-w-[1400px] mx-auto flex flex-col md:flex-row justify-center xl:justify-start xl:pl-[120px] gap-[40px] lg:gap-[60px] mt-[30px] md:mt-[60px] pb-[80px] px-6">
+      <div className="max-w-[1400px] mx-auto flex flex-col lg:flex-row justify-center xl:justify-start xl:pl-[120px] gap-[40px] lg:gap-[60px] mt-[30px] md:mt-[60px] pb-[80px] px-6">
         
         {/* Table of Contents (Left Sidebar) */}
         <aside className="hidden xl:block w-[200px] shrink-0">
@@ -497,7 +498,7 @@ export default function ArticleClient({ article }: Props) {
             <header className="mb-[40px]">
               <Breadcrumbs items={[
                 { label: 'Articles', href: '/articles' },
-                { label: article.category }
+                { label: article.subject }
               ]} />
               <h1 className="text-text-heading mb-[20px] tracking-tighter">
                 {article.title}
@@ -691,6 +692,12 @@ export default function ArticleClient({ article }: Props) {
             </div>
           </article>
         </main>
+
+        {/* Action Sidebar (Right) */}
+        <NextStepsSidebar 
+          subject={article.subject} 
+          topic={article.title} 
+        />
       </div>
 
       <Footer />

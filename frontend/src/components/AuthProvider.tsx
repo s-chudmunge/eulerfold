@@ -77,8 +77,12 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         setShowTOS(false);
         setLoading(false);
         isInitialized = true;
-      } else if ((event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') && session) {
+      } else if (event === 'SIGNED_IN' && session) {
         setLoading(true);
+        fetchUserProfile(session);
+        isInitialized = true;
+      } else if (event === 'TOKEN_REFRESHED' && session) {
+        // Background refresh only - do NOT set loading to true
         fetchUserProfile(session);
         isInitialized = true;
       }

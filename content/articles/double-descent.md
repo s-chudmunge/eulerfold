@@ -2,9 +2,9 @@
 title: "What is the \"Double Descent\" phenomenon in Machine Learning?"
 slug: "double-descent"
 shortSlug: "double-descent"
-author: "EulerFold"
+author: "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence"
 date: "April 15, 2026"
-category: "Theory"
+subject: "AI & Data Science"
 heroImage: "https://images.openai.com/static-rsc-4/EWhEhVw8NFcxMv1Wxn3ZIl2Mv5btWpJPNjrlz3wNFXb6qJvQjQGpG9M-Qdz81rs64-m8VWbcLdYr_EKAQ92yR6qreNthsrUmX6LJfC3QZbQORJ6r0vNp_XyvbmXVogO9rXLRNTtw8g3AVS9e0Fpe8h1b38_62rdZejaJ4wBzQePmw9Zgqpn57dulEckDA5Vu?purpose=fullsize"
 excerpt: "Exploring why larger models sometimes perform better even when they should be overfitting. A deep dive into the modern understanding of deep learning."
 technicalInsight: "The interpolation threshold is the critical point where the model has just enough parameters to achieve zero training error. Surprisingly, this is often the point of maximum test error, before the second descent begins."
@@ -18,35 +18,6 @@ synonyms:
 ---
 
 For decades, the fundamental rule of statistics was simple: as you increase model complexity, you eventually start to overfit your data. However, modern deep learning has revealed a strange, counter-intuitive second act known as **Double Descent**. This phenomenon explains why massive models often perform better than their smaller counterparts, challenging the traditional limits of learning theory.
-
-```d2
-direction: down
-
-Classical: "1. Classical Regime" {
-  shape: rectangle
-  tooltip: "Under-parameterized"
-}
-
-Threshold: "2. Interpolation Threshold" {
-  shape: diamond
-  style: {
-    fill: "#fee2e2"
-    stroke: "#dc2626"
-  }
-}
-
-Modern: "3. Modern Regime" {
-  shape: rectangle
-  tooltip: "Over-parameterized"
-}
-
-Classical -> Threshold: "Error Drops (Bias reduction)"
-Threshold -> Modern: "Second Descent (Implicit Regularization)"
-
-Label: "Increasing Model Capacity --->" {
-  shape: text
-}
-```
 
 ## The Classic View: Bias-Variance Tradeoff {#the-classic-view}
 

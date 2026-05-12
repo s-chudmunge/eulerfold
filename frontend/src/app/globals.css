@@ -115,12 +115,12 @@ body {
 }
 
 :root {
-  --font-serif-stack: "Palatino", "Palatino Linotype", "Book Antiqua", Georgia, serif;
-  --serif-base-size: 1rem;
-  --serif-h1-size: 2.1rem;
-  --serif-h2-size: 1.6rem;
-  --serif-h3-size: 1.3rem;
-  --serif-h4-size: 1rem;
+  --font-serif-stack: Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif;
+  --serif-base-size: 1.05rem;
+  --serif-h1-size: 2.2rem;
+  --serif-h2-size: 1.7rem;
+  --serif-h3-size: 1.4rem;
+  --serif-h4-size: 1.1rem;
   --serif-line-height: 1.75;
   --serif-text-color: #111111;
   --serif-h2-mt: 2.5rem;
@@ -293,7 +293,6 @@ body {
 }
 
 .dark .d2-diagram svg {
-  filter: invert(0.9) hue-rotate(180deg);
   opacity: 0.9;
 }
 

@@ -2,9 +2,9 @@
 title: "How is AI mapping the millions of connections in our brain?"
 slug: "how-is-ai-mapping-the-brain-connectomics"
 shortSlug: "connectomics"
-author: "EulerFold"
+author: "Dr. Kavya Nair — Bioinformatics Research Lead, PhD Computational Biology"
 date: "April 30, 2026"
-category: "Science AI"
+subject: "Neuroscience"
 heroImage: "https://images.openai.com/static-rsc-4/HHliW1TQXGwx-DyB_qLcP2vyFlKD0LqcUwh78JaNxi6Av1wYB4g6Zqj_eiz_zrUXSQbAdElP4ZtakZlSrCMXJHP7IClu4hdTUcPeHziCkZF4oY7Vt2X3O3kYAiu4aue-BN1_aJOKqxCBEBanbhCiqVhXPJ_oVrSUtIPw-YdmMzCsS5DVgJFCh39sgBFR3VL0?purpose=fullsize"
 excerpt: "Tracing the wires of the mind. Understanding how computer vision is unlocking the brain's 3D wiring diagram, or Connectome."
 technicalInsight: "Connectomics relies on automated image segmentation using 3D Convolutional Neural Networks (CNNs) or Vision Transformers to trace neuronal boundaries across petabytes of electron microscopy data."
@@ -27,53 +27,6 @@ The human brain is the most complex object in the known universe. It contains ro
 To map the brain, scientists slice a tiny piece of tissue into thousands of ultra-thin layers and take high-resolution pictures using an electron microscope. The result is a massive stack of 2D images. The goal is to "segment" these images—tracing every single neuron as it winds its way through the 3D volume.
 
 For a human, this task is impossible. Tracing just a small part of a fruit fly's brain would take a person hundreds of years. AI, using **3D Computer Vision**, can do this in weeks, recognizing the boundaries of neurons and identifying the synapses where they touch.
-
-```d2
-direction: down
-
-RawData: "Petabyte Microscopy Stack" {
-  Slices: "2D EM Images" {shape: rectangle}
-  Volume: "3D Voxel Grid" {shape: cylinder}
-}
-
-Segmentation_Pipeline: "AI Neural Tracing" {
-  style: {
-    stroke: "#0f766e"
-    stroke-width: 2
-  }
-
-  Boundary_AI: "1. Membrane Detection" {
-    shape: diamond
-    Model: "3D U-Net / Transformer"
-    Output: "Boundary Probability Map"
-  }
-
-  Agglomeration: "2. Supervoxel Merging" {
-    shape: hexagon
-    Logic: "Watershed / Agglomeration"
-    Action: "Stitching Neuronal Fragments"
-  }
-
-  Skeletonization: "3. Path Extraction" {
-    Centerline: "Medial Axis Transform"
-    Nodes: "Synapse Localization"
-  }
-
-  Boundary_AI -> Agglomeration: "Voxel Segments"
-  Agglomeration -> Skeletonization: "3D Neurite Shapes"
-}
-
-Connectome: "The Brain Graph" {
-  Wiring: "Synaptic Adjacency Matrix" {
-    shape: parallelogram
-    style: {fill: "#fee2e2"}
-  }
-  Topology: "Circuit Motif Discovery"
-}
-
-RawData -> Segmentation_Pipeline.Boundary_AI
-Segmentation_Pipeline.Skeletonization -> Connectome: "Graph Extraction"
-```
 
 ## Discovering the "Hardware" of Thought {#logic}
 

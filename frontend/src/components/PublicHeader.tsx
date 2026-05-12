@@ -46,24 +46,24 @@ import { Suspense } from 'react';
 
 const ROADMAP_DATA = {
   categories: [
-    { name: "Programming", icon: Code, href: "/explore?category=Programming" },
-    { name: "AI & Machine Learning", icon: Cpu, href: "/explore?category=AI/ML" },
-    { name: "Frontend", icon: Monitor, href: "/explore?category=Frontend" },
-    { name: "Backend", icon: Server, href: "/explore?category=Backend" },
-    { name: "Data Science", icon: TrendingUp, href: "/explore?category=Data Science" },
-    { name: "System Design", icon: Network, href: "/explore?category=System Design" },
-    { name: "Cloud & DevOps", icon: Cloud, href: "/explore?category=Cloud" },
-    { name: "Mobile Development", icon: Smartphone, href: "/explore?category=Mobile" },
-    { name: "Cybersecurity", icon: Shield, href: "/explore?category=Security" },
-    { name: "Quantum Computing", icon: Atom, href: "/explore?category=Quantum" },
-    { name: "Blockchain & Web3", icon: Coins, href: "/explore?category=Blockchain" },
-    { name: "Game Development", icon: Gamepad2, href: "/explore?category=Game Dev" },
-    { name: "ECE & Hardware", icon: Cpu, href: "/explore?category=ECE & Hardware" },
-    { name: "Product Management", icon: Briefcase, href: "/explore?category=Product Management" },
-    { name: "Marketing", icon: TrendingUp, href: "/explore?category=Marketing" },
-    { name: "Design & UX", icon: Palette, href: "/explore?category=Design" },
-    { name: "Business & Startup", icon: Briefcase, href: "/explore?category=Business" },
-    { name: "Career & Interview", icon: Compass, href: "/explore?category=Career" }
+    { name: "Programming", icon: Code, href: "/explore?subject=Programming" },
+    { name: "AI & Machine Learning", icon: Cpu, href: "/explore?subject=AI/ML" },
+    { name: "Frontend", icon: Monitor, href: "/explore?subject=Frontend" },
+    { name: "Backend", icon: Server, href: "/explore?subject=Backend" },
+    { name: "Data Science", icon: TrendingUp, href: "/explore?subject=Data Science" },
+    { name: "System Design", icon: Network, href: "/explore?subject=System Design" },
+    { name: "Cloud & DevOps", icon: Cloud, href: "/explore?subject=Cloud" },
+    { name: "Mobile Development", icon: Smartphone, href: "/explore?subject=Mobile" },
+    { name: "Cybersecurity", icon: Shield, href: "/explore?subject=Security" },
+    { name: "Quantum Computing", icon: Atom, href: "/explore?subject=Quantum" },
+    { name: "Blockchain & Web3", icon: Coins, href: "/explore?subject=Blockchain" },
+    { name: "Game Development", icon: Gamepad2, href: "/explore?subject=Game Dev" },
+    { name: "ECE & Hardware", icon: Cpu, href: "/explore?subject=ECE & Hardware" },
+    { name: "Product Management", icon: Briefcase, href: "/explore?subject=Product Management" },
+    { name: "Marketing", icon: TrendingUp, href: "/explore?subject=Marketing" },
+    { name: "Design & UX", icon: Palette, href: "/explore?subject=Design" },
+    { name: "Business & Startup", icon: Briefcase, href: "/explore?subject=Business" },
+    { name: "Career & Interview", icon: Compass, href: "/explore?subject=Career" }
   ],
   featured: [
     { title: "Machine Learning from Scratch", slug: "machine-learning-from-scratch" },
@@ -117,23 +117,23 @@ const EXAM_CATEGORIES = [
 
 const RESEARCH_DATA = {
   categories: [
-    { name: "AI Safety & Alignment", href: "/research-decoded?category=safety" },
-    { name: "Large Language Models", href: "/research-decoded?category=llms" },
-    { name: "Quantum Computing", href: "/research-decoded?category=quantum" },
-    { name: "Foundational Algorithms", href: "/research-decoded?category=algorithms" },
-    { name: "Computational Theory", href: "/research-decoded?category=theory" },
-    { name: "Computer Vision", href: "/research-decoded?category=vision" },
-    { name: "Reinforcement Learning", href: "/research-decoded?category=rl" },
-    { name: "AI Agents & Reasoning", href: "/research-decoded?category=agents" },
-    { name: "Scientific Breakthroughs", href: "/research-decoded?category=science" },
-    { name: "Robotics & Embodied AI", href: "/research-decoded?category=robotics" },
-    { name: "Multimodal Models", href: "/research-decoded?category=multimodal" },
-    { name: "Diffusion & Generative", href: "/research-decoded?category=generative" },
-    { name: "Network Science", href: "/research-decoded?category=networks" },
-    { name: "Foundational Papers", href: "/research-decoded?category=foundational" },
-    { name: "Fine-tuning & Efficiency", href: "/research-decoded?category=efficiency" },
-    { name: "Novel Architectures", href: "/research-decoded?category=architectures" },
-    { name: "Biology & Science AI", href: "/research-decoded?category=science-ai" }
+    { name: "AI Safety & Alignment", href: "/research-decoded?subject=safety" },
+    { name: "Large Language Models", href: "/research-decoded?subject=llms" },
+    { name: "Quantum Computing", href: "/research-decoded?subject=quantum" },
+    { name: "Foundational Algorithms", href: "/research-decoded?subject=algorithms" },
+    { name: "Computational Theory", href: "/research-decoded?subject=theory" },
+    { name: "Computer Vision", href: "/research-decoded?subject=vision" },
+    { name: "Reinforcement Learning", href: "/research-decoded?subject=rl" },
+    { name: "AI Agents & Reasoning", href: "/research-decoded?subject=agents" },
+    { name: "Scientific Breakthroughs", href: "/research-decoded?subject=science" },
+    { name: "Robotics & Embodied AI", href: "/research-decoded?subject=robotics" },
+    { name: "Multimodal Models", href: "/research-decoded?subject=multimodal" },
+    { name: "Diffusion & Generative", href: "/research-decoded?subject=generative" },
+    { name: "Network Science", href: "/research-decoded?subject=networks" },
+    { name: "Foundational Papers", href: "/research-decoded?subject=foundational" },
+    { name: "Fine-tuning & Efficiency", href: "/research-decoded?subject=efficiency" },
+    { name: "Novel Architectures", href: "/research-decoded?subject=architectures" },
+    { name: "Biology & Science AI", href: "/research-decoded?subject=science-ai" }
   ],
   featured: [
     { title: "DeepSeek R1", slug: "deepseek-r1-incentivizing-reasoning" },
@@ -151,11 +151,11 @@ const RESEARCH_DATA = {
 
 const ARTICLES_DATA = {
   categories: [
-    { name: "Architectures", href: "/articles?category=Architectures" },
-    { name: "Optimization", href: "/articles?category=Optimization" },
-    { name: "Theory", href: "/articles?category=Theory" },
-    { name: "Science AI", href: "/articles?category=Science AI" },
-    { name: "Profiles", href: "/articles?category=Profiles" }
+    { name: "Architectures", href: "/articles?subject=Architectures" },
+    { name: "Optimization", href: "/articles?subject=Optimization" },
+    { name: "Theory", href: "/articles?subject=Theory" },
+    { name: "Science AI", href: "/articles?subject=Science AI" },
+    { name: "Profiles", href: "/articles?subject=Profiles" }
   ],
   featured: [
     { title: "Transformer Architecture", slug: "transformer" },
@@ -256,6 +256,7 @@ export default function PublicHeader() {
             <DesktopDropdown id="products" label="Products" width="min-w-[200px]">
               <div className="p-1.5 flex flex-col">
                 {[
+                  { label: "Research Lab", href: "/research-lab", isNew: true },
                   { label: "Study Planner", href: "/planner" },
                   { label: "BuildPilot", href: "/buildpilot" },
                   { label: "Interactive Practice", href: "/practice" },
@@ -265,9 +266,12 @@ export default function PublicHeader() {
                   <React.Fragment key={item.href}>
                     <Link 
                       href={item.href} 
-                      className="px-3 py-2 text-[13px] font-bold text-text-heading hover:text-accent hover:bg-sidebar/40 rounded-lg transition-all tracking-tight"
+                      className="px-3 py-2 text-[13px] font-bold text-text-heading hover:text-accent hover:bg-sidebar/40 rounded-lg transition-all tracking-tight flex items-center justify-between"
                     >
-                      {item.label}
+                      <span>{item.label}</span>
+                      {item.isNew && (
+                        <span className="text-[8px] font-black uppercase tracking-widest bg-accent text-white px-1 py-0.5 rounded leading-none">New</span>
+                      )}
                     </Link>
                     {idx < arr.length - 1 && <div className="h-[1px] bg-border/40 mx-2 my-0.5" />}
                   </React.Fragment>
@@ -459,7 +463,7 @@ export default function PublicHeader() {
                   ) : (
                     <div className="flex divide-x divide-border/60 h-full animate-in fade-in slide-in-from-left-2 duration-300">
                         <div className="p-5 w-56 bg-sidebar/10 overflow-y-auto">
-                           <span className="text-[10px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-2.5 opacity-50">Topics</span>
+                           <span className="text-[10px] font-bold text-text-muted uppercase tracking-[0.1em] block mb-2.5 opacity-50">Subjects</span>
                            <div className="grid grid-cols-1 gap-y-0">
                              {ARTICLES_DATA.categories.map(cat => (
                                 <Link key={cat.name} href={cat.href} className="flex items-center gap-2 text-[12.5px] font-medium text-text-muted hover:text-accent transition-colors py-0.5 group/cat">
@@ -521,10 +525,12 @@ export default function PublicHeader() {
             <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.15em] block mb-4 opacity-50">Menu Navigation</span>
             <div className="grid grid-cols-1 gap-3">
               {[
+                { l: "Research Lab", h: "/research-lab", isNew: true },
                 { l: "Study Planner", h: "/planner" },
                 { l: "Job Decoded", h: "/generate?mode=job" },
                 { l: "BuildPilot", h: "/buildpilot" },
                 { l: "Interactive Practice", h: "/practice" },
+                { l: "Roadmap Generator", h: "/generate" },
                 { l: "Learning Hub", h: "/learn" },
                 { l: "Roadmap Explorer", h: "/explore" },
                 { l: "Global Leaderboard", h: "/leaderboard" },
@@ -535,8 +541,13 @@ export default function PublicHeader() {
                 { l: "About Us", h: "/about" },
                 { l: "Careers", h: "/careers" }
               ].map(item => (
-                <Link key={item.h} href={item.h} className="flex items-center justify-between p-4 bg-sidebar/40 rounded-lg border border-border/50">
-                  <span className="text-[15px] font-bold text-text-heading ml-2">{item.l}</span>
+                <Link key={item.h} href={item.h} className="flex items-center justify-between p-4 bg-sidebar/40 rounded-lg border border-border/50 relative">
+                  <div className="flex items-center gap-3">
+                    <span className="text-[15px] font-bold text-text-heading ml-2">{item.l}</span>
+                    {item.isNew && (
+                      <span className="text-[8px] font-black uppercase tracking-widest bg-accent text-white px-1.5 py-0.5 rounded leading-none">New</span>
+                    )}
+                  </div>
                   <ArrowRight className="w-4 h-4 text-text-muted opacity-30" />
                 </Link>
               ))}

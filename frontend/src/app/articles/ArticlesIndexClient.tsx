@@ -22,7 +22,7 @@ export default function ArticlesIndexClient({ articles }: Props) {
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('newest');
-  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [selectedSubject, setSelectedSubject] = useState<string>('All');
 
   const handleSignIn = () => {
     router.push(`/login?next=${encodeURIComponent(window.location.pathname)}`);
@@ -30,9 +30,9 @@ export default function ArticlesIndexClient({ articles }: Props) {
 
   const articleList = useMemo(() => Object.values(articles), [articles]);
   
-  const categories = useMemo(() => {
-    const cats = new Set(articleList.map(a => a.category));
-    return ['All', ...Array.from(cats)].sort();
+  const subjects = useMemo(() => {
+    const subs = new Set(articleList.map(a => a.subject));
+    return ['All', ...Array.from(subs)].sort();
   }, [articleList]);
 
   const filteredArticles = useMemo(() => {
@@ -41,8 +41,8 @@ export default function ArticlesIndexClient({ articles }: Props) {
         const matchesSearch = 
           article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
           article.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesCategory = selectedCategory === 'All' || article.category === selectedCategory;
-        return matchesSearch && matchesCategory;
+        const matchesSubject = selectedSubject === 'All' || article.subject === selectedSubject;
+        return matchesSearch && matchesSubject;
       })
       .sort((a, b) => {
         if (sortBy === 'newest') return new Date(b.date).getTime() - new Date(a.date).getTime();
@@ -50,7 +50,7 @@ export default function ArticlesIndexClient({ articles }: Props) {
         if (sortBy === 'title') return a.title.localeCompare(b.title);
         return 0;
       });
-  }, [articleList, searchQuery, sortBy, selectedCategory]);
+  }, [articleList, searchQuery, sortBy, selectedSubject]);
 
   return (
     <div className="min-h-screen bg-background text-text-primary">
@@ -75,12 +75,12 @@ export default function ArticlesIndexClient({ articles }: Props) {
               <div className="flex items-center gap-2 bg-card border border-border px-3 py-1.5 rounded-lg text-[13px] font-bold text-text-muted inconsolata-ui uppercase tracking-wider">
                 <Filter className="w-3 h-3" />
                 <select 
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
+                  value={selectedSubject}
+                  onChange={(e) => setSelectedSubject(e.target.value)}
                   className="bg-transparent focus:outline-none cursor-pointer"
                 >
-                  {categories.map(cat => (
-                    <option key={cat} value={cat}>{cat}</option>
+                  {subjects.map(sub => (
+                    <option key={sub} value={sub}>{sub}</option>
                   ))}
                 </select>
               </div>

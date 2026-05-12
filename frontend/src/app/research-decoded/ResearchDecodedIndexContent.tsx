@@ -24,10 +24,10 @@ export default function ResearchDecodedIndexContent() {
   const handleSearchParams = React.useCallback((params: URLSearchParams) => {
     setSearchQuery(params.get('q') || "");
     
-    const categoryId = params.get('category');
-    if (categoryId) {
+    const subjectId = params.get('subject');
+    if (subjectId) {
       setTimeout(() => {
-        const element = document.getElementById(categoryId);
+        const element = document.getElementById(subjectId);
         if (element) {
           const offset = 80;
           const bodyRect = document.body.getBoundingClientRect().top;

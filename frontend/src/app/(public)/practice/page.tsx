@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, Suspense } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import { practiceAPI, MCQSessionRead } from '@/lib/api';
 import MCQPractice from '@/components/roadmap/MCQPractice';
 import { BrainCircuit, Target, ArrowRight, ArrowLeft, Sparkles, Command, History, ChevronRight, X } from 'lucide-react';
-import Link from 'next/link';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import Footer from '@/components/Footer';
 import TTSListenButton from '@/components/TTSListenButton';
@@ -39,9 +39,10 @@ const SUGGESTIONS: Record<string, string[]> = {
     "Politics & IR": ["International Relations", "Political Theory", "Comparative Politics", "Public Policy", "Geopolitics", "Diplomacy", "Governance", "Political Economy", "International Security", "Human Rights", "Public Administration", "Electoral Systems", "Political Communication", "Nationalism", "Crisis Management", "International Law (Politics)"]
 };
 
-export default function IndependentPracticePage() {
-    const [subject, setSubject] = useState('');
-    const [topic, setTopic] = useState('');
+function PracticeContent() {
+    const searchParams = useSearchParams();
+    const [subject, setSubject] = useState(searchParams.get('subject') || '');
+    const [topic, setTopic] = useState(searchParams.get('topic') || '');
     const [isStarted, setIsStarted] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [profile, setProfile] = useState<any>(null);
@@ -414,5 +415,13 @@ export default function IndependentPracticePage() {
                 </div>
             )}
         </div>
+    );
+}
+
+export default function IndependentPracticePage() {
+    return (
+        <Suspense fallback={<div className="flex-1 bg-background" />}>
+            <PracticeContent />
+        </Suspense>
     );
 }

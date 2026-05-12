@@ -92,11 +92,17 @@ export default function LeaderboardPage({
       <div className="flex items-center gap-8 shrink-0">
         <div className="hidden md:flex items-center gap-2">
           <span className="inconsolata-ui text-[11px] font-bold text-text-muted uppercase tracking-tighter">{user.top_skill}</span>
-          <span className="text-[10px] font-black text-accent bg-accent-muted px-1.5 py-0.5 rounded">{user.top_skill_score}</span>
+          <span className="text-[10px] font-black text-accent bg-accent-muted px-1.5 py-0.5 rounded">
+            {typeof user.top_skill_score === 'number'
+              ? user.top_skill_score.toFixed(2)
+              : parseFloat(user.top_skill_score || '0').toFixed(2)}
+          </span>
         </div>
         <div className="w-16 text-right">
           <span className="inconsolata-ui text-[14px] font-black text-text-heading tabular-nums">
-            {user.composite_score}
+            {typeof user.composite_score === 'number' 
+              ? user.composite_score.toFixed(2) 
+              : parseFloat(user.composite_score || '0').toFixed(2)}
           </span>
         </div>
       </div>

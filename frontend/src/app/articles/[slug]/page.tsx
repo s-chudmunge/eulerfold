@@ -23,7 +23,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
 
   const keywords = [
     article.title,
-    article.category,
+    article.subject,
     'technical explainer',
     'AI research',
     'engineering breakdown',

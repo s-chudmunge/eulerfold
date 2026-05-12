@@ -181,7 +181,7 @@ export default function CourseHeader({
         <nav className="hidden md:flex items-center gap-2 text-[13px] font-medium text-text-muted">
           <Link 
             href={`/roadmap/${roadmapSlug || roadmapId}`}
-            className="hover:text-text-heading transition-colors truncate max-w-[150px] lg:max-w-[200px]"
+            className="hover:text-text-heading transition-colors truncate max-w-[200px] lg:max-w-[300px]"
           >
             {roadmapTitle}
           </Link>
@@ -190,7 +190,7 @@ export default function CourseHeader({
           <div className="relative" ref={dropdownRef}>
             <button 
               onClick={() => setIsModuleDropdownOpen(!isModuleDropdownOpen)}
-              className="flex items-center gap-1.5 text-text-heading font-semibold hover:bg-callout-bg px-2 py-1 rounded-md transition-colors truncate max-w-[200px]"
+              className="flex items-center gap-1.5 text-text-heading font-semibold hover:bg-callout-bg px-2 py-1 rounded-md transition-colors truncate max-w-[300px] lg:max-w-[450px]"
             >
               <span className="truncate">
                 {modules[currentModuleIndex]?.title?.toLowerCase().startsWith('module')

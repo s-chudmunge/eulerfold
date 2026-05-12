@@ -15,16 +15,39 @@ interface RoadmapGeneratorProps {
 const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated, isLanding = false }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const rawIntent = searchParams.get('subject') || '';
-  
-  const isLongGoal = rawIntent.split(' ').length > 3 || rawIntent.length > 25 || /i want to|learn how to|build a|create a/i.test(rawIntent);
   
   const [formData, setFormData] = useState({
-    subject: isLongGoal ? '' : rawIntent,
-    goal: isLongGoal ? rawIntent : '',
+    subject: '',
+    goal: '',
     prior_experience: '',
     time_value: 4,
   });
+
+  // Initial pre-fill and handling of searchParams updates
+  useEffect(() => {
+    const rawSubject = searchParams.get('subject') || '';
+    const rawGoal = searchParams.get('goal') || '';
+    
+    if (!rawSubject && !rawGoal) return;
+
+    if (rawSubject && rawGoal) {
+      // Explicit subject and goal provided
+      setFormData(prev => ({
+        ...prev,
+        subject: rawSubject,
+        goal: rawGoal,
+      }));
+    } else if (rawSubject) {
+      // Only subject provided, use original logic
+      const isLongGoal = rawSubject.split(' ').length > 3 || rawSubject.length > 25 || /i want to|learn how to|build a|create a/i.test(rawSubject);
+      
+      setFormData(prev => ({
+        ...prev,
+        subject: isLongGoal ? rawSubject.split(' ').slice(0, 3).join(' ') : rawSubject,
+        goal: isLongGoal ? rawSubject : (prev.goal || ''),
+      }));
+    }
+  }, [searchParams]);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
