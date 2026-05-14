@@ -176,8 +176,28 @@ export default function PublicHeader() {
   const [learnTab, setLearnTab] = useState<'roadmaps' | 'exams' | 'research' | 'articles'>('roadmaps');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [theme, setTheme] = useState<'light' | 'dark'>('light');
   const headerRef = useRef<HTMLElement>(null);
   const pathname = usePathname();
+
+  useEffect(() => {
+    // Check initial theme from document class
+    if (typeof window !== 'undefined') {
+      if (document.documentElement.classList.contains('dark')) {
+        setTheme('dark');
+      }
+    }
+  }, []);
+
+  const toggleTheme = (newTheme: 'light' | 'dark') => {
+    setTheme(newTheme);
+    localStorage.setItem('eulerfold-theme', newTheme);
+    if (newTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 10);
@@ -499,6 +519,30 @@ export default function PublicHeader() {
 
         {/* Right: Auth & CTAs */}
         <div className="flex items-center gap-5">
+          {/* Theme Toggle */}
+          <div className="hidden sm:flex bg-sidebar/20 p-1 rounded-lg border border-border/50">
+            <button
+              onClick={() => toggleTheme('light')}
+              className={`px-2 py-0.5 rounded-md text-[9px] font-bold inconsolata-ui transition-all ${
+                theme === 'light' 
+                  ? 'bg-text-heading text-background shadow-sm' 
+                  : 'text-text-muted hover:text-text-heading'
+              }`}
+            >
+              Light
+            </button>
+            <button
+              onClick={() => toggleTheme('dark')}
+              className={`px-2 py-0.5 rounded-md text-[9px] font-bold inconsolata-ui transition-all ${
+                theme === 'dark' 
+                  ? 'bg-text-heading text-background shadow-sm' 
+                  : 'text-text-muted hover:text-text-heading'
+              }`}
+            >
+              Dark
+            </button>
+          </div>
+
           <Suspense fallback={<div className="w-20 h-8 bg-border/20 animate-pulse rounded-full" />}>
             <UserNav />
           </Suspense>
@@ -521,6 +565,33 @@ export default function PublicHeader() {
         style={{ marginTop: isScrolled ? '48px' : '56px' }}
       >
         <div className="px-6 py-10 flex flex-col gap-10 h-full overflow-y-auto">
+          {/* Theme Toggle (Mobile) */}
+          <div className="flex items-center justify-between p-4 bg-sidebar/40 rounded-lg border border-border/50">
+            <span className="text-[13px] font-bold text-text-heading">Appearance</span>
+            <div className="flex bg-background p-1 rounded-lg border border-border">
+              <button
+                onClick={() => toggleTheme('light')}
+                className={`px-4 py-1.5 rounded-md text-[11px] font-bold inconsolata-ui transition-all ${
+                  theme === 'light' 
+                    ? 'bg-text-heading text-background shadow-sm' 
+                    : 'text-text-muted hover:text-text-heading'
+                }`}
+              >
+                Light
+              </button>
+              <button
+                onClick={() => toggleTheme('dark')}
+                className={`px-4 py-1.5 rounded-md text-[11px] font-bold inconsolata-ui transition-all ${
+                  theme === 'dark' 
+                    ? 'bg-text-heading text-background shadow-sm' 
+                    : 'text-text-muted hover:text-text-heading'
+                }`}
+              >
+                Dark
+              </button>
+            </div>
+          </div>
+
           <div className="flex flex-col gap-2">
             <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.15em] block mb-4 opacity-50">Menu Navigation</span>
             <div className="grid grid-cols-1 gap-3">
