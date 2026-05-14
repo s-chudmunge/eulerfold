@@ -40,11 +40,17 @@ export default function GoalGeneratorModal({ isOpen, onClose }: GoalGeneratorMod
           className="p-4 border-b border-[#243333] flex items-center justify-between sticky top-0 z-20"
           style={{ backgroundColor: '#131d1d', opacity: 1 }}
         >
-          <div className="flex items-center gap-3">
-            <Route className="w-4 h-4 text-accent" />
-            <h2 className="inconsolata-ui text-[13px] font-bold text-text-heading uppercase tracking-widest">
-              Create your step by step learning path
-            </h2>
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 pr-4 border-r border-[#243333]">
+              <img src="/apple-touch-icon.png" alt="" className="w-4 h-4 grayscale opacity-60" />
+              <span className="font-bold text-[11px] tracking-tight manrope-body text-text-heading opacity-60">EulerFold</span>
+            </div>
+            <div className="flex items-center gap-3">
+              <Route className="w-4 h-4 text-accent" />
+              <h2 className="inconsolata-ui text-[13px] font-bold text-text-heading uppercase tracking-widest">
+                Create your step by step learning path
+              </h2>
+            </div>
           </div>
           <button 
             onClick={onClose}
