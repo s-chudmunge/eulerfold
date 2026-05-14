@@ -332,7 +332,8 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
               <div className="pt-4">
                 <button
                   onClick={() => setStep(2)}
-                  className="w-full sm:w-fit px-12 py-3 bg-text-heading text-background text-[11px] font-bold uppercase tracking-[0.2em] hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-3 rounded-lg"
+                  disabled={!formData.current_role.trim() || !formData.target_role.trim()}
+                  className="w-full sm:w-fit px-12 py-3 bg-text-heading text-background text-[11px] font-bold uppercase tracking-[0.2em] hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-3 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   Define Goal <ArrowRight className="w-3.5 h-3.5" />
                 </button>
@@ -408,7 +409,8 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
                 </button>
                 <button
                   onClick={() => setStep(3)}
-                  className="flex-1 sm:flex-none px-12 py-3 bg-text-heading text-background text-[11px] font-bold uppercase tracking-[0.2em] hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-3 rounded-lg"
+                  disabled={!formData.subject.trim() || !formData.goal.trim()}
+                  className="flex-1 sm:flex-none px-12 py-3 bg-text-heading text-background text-[11px] font-bold uppercase tracking-[0.2em] hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-3 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed"
                 >
                   Timeline <ArrowRight className="w-3.5 h-3.5" />
                 </button>
