@@ -8,19 +8,14 @@ import ManualRoadmapBuilder from '@/components/manual-build/ManualRoadmapBuilder
 import JobDecodedGenerator from '@/components/job-decoded/JobDecodedGenerator';
 import { RoadmapData } from '@/lib/api';
 import { 
-  Menu,
-  X,
-  LayoutDashboard,
-  Plus,
   Sparkles,
   Settings2,
-  Loader,
   Briefcase
 } from 'lucide-react';
-import Link from 'next/link';
-import AppSidebar from '@/components/AppSidebar';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { supabase } from '@/lib/supabase/client';
+import PublicHeader from '@/components/PublicHeader';
+import Footer from '@/components/Footer';
 
 export default function GeneratePage() {
   const router = useRouter();
@@ -29,7 +24,6 @@ export default function GeneratePage() {
 
   const [roadmapData, setRoadmapData] = useState<RoadmapData | null>(null);
   const [generatedFormData, setGeneratedFormData] = useState<any | null>(null);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [profile, setProfile] = useState<any>(null);
   const [mode, setMode] = useState<'ai' | 'manual' | 'job'>(initialMode);
   const [isRedirecting, setIsRedirecting] = useState(false);
@@ -81,10 +75,9 @@ export default function GeneratePage() {
   };
 
   return (
-    <div 
-      style={{ top: 'var(--announcement-height, 0px)' }}
-      className="fixed inset-0 flex flex-col bg-background manrope-body selection:bg-teal-500/30 overflow-hidden"
-    >
+    <div className="min-h-screen flex flex-col bg-background manrope-body selection:bg-teal-500/30">
+      <PublicHeader />
+
       {isRedirecting && (
         <div className="fixed inset-0 z-[100] bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center animate-in fade-in duration-500">
           <div className="flex flex-col items-center gap-6">
@@ -107,45 +100,9 @@ export default function GeneratePage() {
         </div>
       )}
 
-      {/* Header */}
-      <header className="inconsolata-ui border-b border-border bg-header h-[48px] shrink-0 z-50">
-        <div className="w-full px-4 md:px-6 flex h-full items-center justify-between">
-          <div className="flex items-center gap-2 md:gap-4">
-            <button 
-              onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-              className="p-2 -ml-2 lg:hidden text-text-muted hover:text-text-heading transition-colors"
-            >
-              {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-            </button>
-            <Link className="flex items-center group shrink-0" href="/">
-              <img src="/apple-touch-icon.png" alt="EulerFold" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
-            </Link>
-          </div>
-
-          <div className="flex items-center gap-2 md:gap-4">
-            {profile?.username ? (
-              <Link href="/dashboard" className="text-[10px] md:text-[11px] font-bold text-text-muted hover:text-text-heading transition-colors flex items-center gap-1.5 uppercase tracking-widest">
-                <LayoutDashboard className="w-3.5 h-3.5 hidden sm:block" /> <span className="hidden sm:inline">Dashboard</span>
-                <span className="sm:hidden">Dash</span>
-              </Link>
-            ) : (
-              <Link href="/login" className="text-[10px] md:text-[11px] font-bold text-text-muted hover:text-text-heading transition-colors flex items-center gap-1.5 uppercase tracking-widest">
-                <span className="hidden sm:inline">Sign In</span>
-                <span className="sm:hidden">Login</span>
-              </Link>
-            )}
-          </div>
-        </div>
-      </header>
-
-      <div className="flex flex-1 relative overflow-hidden">
-        <AppSidebar 
-            isOpen={isSidebarOpen}
-            onClose={() => setIsSidebarOpen(false)}
-        />
-
-        <main className="flex-1 min-w-0 h-full overflow-y-auto bg-background scroll-smooth">
-          <div className="max-w-[800px] mx-auto px-6 py-6 md:py-10">
+      <div className="flex-1 flex flex-col relative">
+        <main className="flex-1 min-w-0 bg-background scroll-smooth">
+          <div className="max-w-[800px] mx-auto px-6 py-12 md:py-20">
             
             <div className="mb-6">
               <Breadcrumbs items={[{ label: 'Goal Architect' }]} />
@@ -225,6 +182,7 @@ export default function GeneratePage() {
           </div>
         </main>
       </div>
+      <Footer />
     </div>
   );
 }

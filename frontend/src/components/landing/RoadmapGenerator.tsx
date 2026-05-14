@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import { api, RoadmapData } from '../../lib/api';
-import { Loader, Sparkles, Target, Zap, AlertCircle, Compass, History, Hourglass } from 'lucide-react';
+import { Loader, Route, Target, Zap, AlertCircle, Compass, History, Hourglass, Check, ChevronDown, Search, User, GraduationCap, Briefcase, ArrowRight, LogIn } from 'lucide-react';
 import { supabase } from '../../lib/supabase/client';
 import PaymentModal from '../PaymentModal';
 
@@ -11,6 +12,50 @@ interface RoadmapGeneratorProps {
   onRoadmapGenerated: (data: RoadmapData, formData: any) => void;
   isLanding?: boolean;
 }
+
+const ROLES = [
+  // Software & Systems
+  "Software Engineer", "Frontend Developer", "Backend Developer", "Full Stack Engineer", 
+  "Mobile App Developer", "Embedded Systems Engineer", "Game Developer", "DevOps Engineer", 
+  "Cloud Architect", "Site Reliability Engineer (SRE)", "Systems Programmer", 
+  
+  // AI & Data
+  "AI Engineer", "Machine Learning Researcher", "Data Scientist", "Data Analyst", 
+  "Data Engineer", "NLP Specialist", "Computer Vision Engineer", "AI Product Manager",
+  
+  // Design & Product
+  "UI/UX Designer", "Product Manager", "Product Designer", "User Researcher", "Technical Writer",
+  
+  // Specialized Engineering
+  "Cybersecurity Analyst", "Security Researcher", "Blockchain Developer", "Hardware Engineer",
+  "Robotics Engineer", "Civil Engineer", "Mechanical Engineer", "Electrical Engineer",
+  
+  // Business & Finance
+  "Financial Analyst", "Quantitative Researcher", "Business Analyst", "Marketing Specialist",
+  "Digital Marketer", "Investment Banker", "Venture Capitalist",
+  
+  // Academic & Scientific
+  "Undergraduate Student", "High School Student", "PhD Candidate", "Academic Researcher", 
+  "Medical Student", "Bioinformatics Scientist", "Physicist", "Computational Biologist",
+  
+  // Other
+  "Self-Taught Developer", "Technical Recruiter", "Career Switcher"
+];
+
+const EXPERIENCE_LEVELS = [
+  { id: 'novice', label: 'Novice', desc: 'No prior knowledge' },
+  { id: 'intermediate', label: 'Intermediate', desc: 'Some basic understanding' },
+  { id: 'advanced', label: 'Advanced', desc: 'Working knowledge' },
+  { id: 'expert', label: 'Expert', desc: 'Deep technical mastery' }
+];
+
+const SUGGESTED_SUBJECTS = [
+  "Distributed Systems", "Large Language Models", "Quantum Computing",
+  "System Design", "Organic Chemistry", "Neural Network Architectures", 
+  "Cybersecurity", "React & Next.js", "Algorithms", "Machine Learning",
+  "Macroeconomics", "Cloud Native", "Robotics", "Quantum Mechanics",
+  "Pharmacology", "Digital Marketing", "Game Design", "Biochemistry"
+];
 
 const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated, isLanding = false }) => {
   const router = useRouter();
@@ -20,83 +65,75 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
     subject: '',
     goal: '',
     prior_experience: '',
+    experience_level: 'novice',
+    current_role: '',
+    target_role: '',
     time_value: 4,
   });
 
-  // Initial pre-fill and handling of searchParams updates
-  useEffect(() => {
-    const rawSubject = searchParams.get('subject') || '';
-    const rawGoal = searchParams.get('goal') || '';
-    
-    if (!rawSubject && !rawGoal) return;
-
-    if (rawSubject && rawGoal) {
-      // Explicit subject and goal provided
-      setFormData(prev => ({
-        ...prev,
-        subject: rawSubject,
-        goal: rawGoal,
-      }));
-    } else if (rawSubject) {
-      // Only subject provided, use original logic
-      const isLongGoal = rawSubject.split(' ').length > 3 || rawSubject.length > 25 || /i want to|learn how to|build a|create a/i.test(rawSubject);
-      
-      setFormData(prev => ({
-        ...prev,
-        subject: isLongGoal ? rawSubject.split(' ').slice(0, 3).join(' ') : rawSubject,
-        goal: isLongGoal ? rawSubject : (prev.goal || ''),
-      }));
-    }
-  }, [searchParams]);
+  const [step, setStep] = useState(1);
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [credits, setCredits] = useState<number | null>(null);
   const [profile, setProfile] = useState<any>(null);
+  const [session, setSession] = useState<any>(null);
+  
+  const [roleSearchCurrent, setRoleSearchCurrent] = useState('');
+  const [isRoleDropdownOpenCurrent, setIsRoleDropdownOpenCurrent] = useState(false);
+  
+  const [roleSearchTarget, setRoleSearchTarget] = useState('');
+  const [isRoleDropdownOpenTarget, setIsRoleDropdownOpenTarget] = useState(false);
 
-  const fetchProfileAndCredits = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.user) {
-      const { data } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('supabase_uid', session.user.id)
-        .single();
-      if (data) {
-        setProfile(data);
-        setCredits(data.roadmap_credits);
-      }
-    }
-  };
+  const currentRoleRef = useRef<HTMLDivElement>(null);
+  const targetRoleRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (currentRoleRef.current && !currentRoleRef.current.contains(event.target as Node)) {
+        setIsRoleDropdownOpenCurrent(false);
+      }
+      if (targetRoleRef.current && !targetRoleRef.current.contains(event.target as Node)) {
+        setIsRoleDropdownOpenTarget(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    const fetchProfileAndCredits = async () => {
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      setSession(currentSession);
+      if (currentSession?.user) {
+        const { data } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('supabase_uid', currentSession.user.id)
+          .single();
+        if (data) {
+          setProfile(data);
+          setCredits(data.roadmap_credits);
+        }
+      }
+    };
     fetchProfileAndCredits();
   }, []);
 
   useEffect(() => {
-    const pendingForm = sessionStorage.getItem('pending_roadmap_form');
-    if (pendingForm) {
-      try {
-        const parsed = JSON.parse(pendingForm);
-        setFormData(parsed);
-        sessionStorage.removeItem('pending_roadmap_form');
-      } catch (e) {}
-    }
+    const rawSubject = searchParams.get('subject') || '';
+    const rawGoal = searchParams.get('goal') || '';
     
-    if (searchParams.get('payment_success') === 'true') {
-      const pendingFormAfterPay = sessionStorage.getItem('pending_roadmap_form_after_pay');
-      if (pendingFormAfterPay) {
-        try {
-          const parsed = JSON.parse(pendingFormAfterPay);
-          setFormData(parsed);
-          sessionStorage.removeItem('pending_roadmap_form_after_pay');
-          setTimeout(() => {
-            const btn = document.getElementById('trigger-generate');
-            if (btn) btn.click();
-          }, 500);
-        } catch(e) {}
-      }
+    if (rawSubject || rawGoal) {
+        setFormData(prev => ({
+            ...prev,
+            subject: rawSubject,
+            goal: rawGoal
+        }));
     }
   }, [searchParams]);
 
@@ -123,14 +160,18 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const generateRoadmap = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const generateRoadmap = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!formData.subject || !formData.goal) return;
 
-    const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
       sessionStorage.setItem('pending_roadmap_form', JSON.stringify(formData));
       router.push('/login?message=auth_required_to_generate&next=/generate');
+      return;
+    }
+
+    if (credits !== null && credits < 1) {
+      setIsPaymentModalOpen(true);
       return;
     }
 
@@ -141,7 +182,7 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
       const response = await api.post('/roadmaps/generate', {
         ...formData,
         time_unit: 'weeks',
-        model: 'models/gemini-2.5-flash',
+        model: profile?.is_pro ? 'models/gemini-2.5-pro' : 'models/gemini-2.5-flash',
       });
       onRoadmapGenerated(response.data, { ...formData, time_unit: 'weeks' });
     } catch (err: any) {
@@ -158,207 +199,379 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
     }
   };
 
-  const formContent = (
-    <div className={`w-full ${isLanding ? 'bg-background shadow-2xl rounded-none border border-border p-8 sm:p-12' : 'p-0'} manrope-body`}>
-      <form onSubmit={generateRoadmap} className="space-y-8">
-        <div className="space-y-6">
-          {/* Subject */}
-          <div className="space-y-2">
-            <label htmlFor="subject" className="inconsolata-ui flex items-center text-[10px] font-bold uppercase tracking-widest text-text-muted ml-0.5">
-              Subject or Skill
-            </label>
-            <input
-              type="text"
-              id="subject"
-              name="subject"
-              value={formData.subject}
-              onChange={handleInputChange}
-              placeholder="e.g. Distributed Systems"
-              className="w-full px-4 py-2.5 bg-callout-bg border border-border rounded-none focus:outline-none focus:border-[var(--accent)] transition-all text-[14px] font-bold text-text-heading placeholder:text-text-muted/40 placeholder:font-normal"
-              required
-            />
-          </div>
+  const filteredRolesCurrent = ROLES.filter(r => r.toLowerCase().includes(roleSearchCurrent.toLowerCase()));
+  const filteredRolesTarget = ROLES.filter(r => r.toLowerCase().includes(roleSearchTarget.toLowerCase()));
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {/* Goal */}
-            <div className="space-y-2">
-              <label htmlFor="goal" className="inconsolata-ui flex items-center text-[10px] font-bold uppercase tracking-widest text-text-muted ml-0.5">
-                Objective
-              </label>
-              <textarea
-                id="goal"
-                name="goal"
-                value={formData.goal}
-                onChange={handleInputChange}
-                rows={3}
-                placeholder="What is the end goal?"
-                className="w-full px-4 py-2.5 bg-callout-bg border border-border rounded-none focus:outline-none focus:border-[var(--accent)] transition-all text-[13px] font-medium text-text-heading placeholder:text-text-muted/40 resize-none h-24"
-                required
-              />
+  const renderStep = () => {
+    switch(step) {
+      case 1:
+        return (
+          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="space-y-6">
+               <label className="inconsolata-ui flex items-center text-[11px] font-bold uppercase tracking-[0.2em] text-text-muted">
+                 1. Background & Aspiration
+               </label>
+               
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {/* Current Role */}
+                  <div className="relative" ref={currentRoleRef}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <User className="w-3.5 h-3.5 text-accent" />
+                        <span className="text-[13px] font-bold text-text-heading">Current Role</span>
+                      </div>
+                      <div className="relative">
+                        <input 
+                          type="text"
+                          placeholder="What you do now..."
+                          value={roleSearchCurrent || formData.current_role}
+                          onFocus={() => setIsRoleDropdownOpenCurrent(true)}
+                          onChange={(e) => {
+                            setRoleSearchCurrent(e.target.value);
+                            setFormData(prev => ({ ...prev, current_role: e.target.value }));
+                          }}
+                          className="w-full px-4 py-3 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[14px] font-medium"
+                        />
+                        <ChevronDown className={`absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted transition-transform ${isRoleDropdownOpenCurrent ? 'rotate-180' : ''}`} />
+                        
+                        {isRoleDropdownOpenCurrent && (
+                          <div className="absolute z-20 w-full mt-1 bg-surface border border-border shadow-2xl max-h-48 overflow-y-auto no-scrollbar rounded-xl">
+                            {filteredRolesCurrent.map(r => (
+                              <button
+                                key={r}
+                                onClick={() => {
+                                  setFormData(prev => ({ ...prev, current_role: r }));
+                                  setRoleSearchCurrent(r);
+                                  setIsRoleDropdownOpenCurrent(false);
+                                }}
+                                className="w-full text-left px-4 py-2.5 text-[13px] hover:bg-sidebar transition-colors flex items-center justify-between bg-surface"
+                              >
+                                {r}
+                                {formData.current_role === r && <Check className="w-3.5 h-3.5 text-accent" />}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                  </div>
+
+                  {/* Target Role */}
+                  <div className="relative" ref={targetRoleRef}>
+                      <div className="flex items-center gap-2 mb-2">
+                        <Target className="w-3.5 h-3.5 text-teal-600" />
+                        <span className="text-[13px] font-bold text-text-heading">Target Aspiration</span>
+                      </div>
+                      <div className="relative">
+                        <input 
+                          type="text"
+                          placeholder="What you want to be..."
+                          value={roleSearchTarget || formData.target_role}
+                          onFocus={() => setIsRoleDropdownOpenTarget(true)}
+                          onChange={(e) => {
+                            setRoleSearchTarget(e.target.value);
+                            setFormData(prev => ({ ...prev, target_role: e.target.value }));
+                          }}
+                          className="w-full px-4 py-3 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[14px] font-medium"
+                        />
+                        <ChevronDown className={`absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted transition-transform ${isRoleDropdownOpenTarget ? 'rotate-180' : ''}`} />
+                        
+                        {isRoleDropdownOpenTarget && (
+                          <div className="absolute z-20 w-full mt-1 bg-surface border border-border shadow-2xl max-h-48 overflow-y-auto no-scrollbar rounded-xl">
+                            {filteredRolesTarget.map(r => (
+                              <button
+                                key={r}
+                                onClick={() => {
+                                  setFormData(prev => ({ ...prev, target_role: r }));
+                                  setRoleSearchTarget(r);
+                                  setIsRoleDropdownOpenTarget(false);
+                                }}
+                                className="w-full text-left px-4 py-2.5 text-[13px] hover:bg-sidebar transition-colors flex items-center justify-between bg-surface"
+                              >
+                                {r}
+                                {formData.target_role === r && <Check className="w-3.5 h-3.5 text-accent" />}
+                              </button>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                  </div>
+               </div>
+
+               {/* Experience Level */}
+               <div className="space-y-3 pt-4">
+                  <div className="flex items-center gap-2">
+                    <GraduationCap className="w-3.5 h-3.5 text-accent" />
+                    <span className="text-[13px] font-bold text-text-heading">Current Proficiency (in Subject)</span>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {EXPERIENCE_LEVELS.map(level => (
+                      <button
+                        key={level.id}
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, experience_level: level.id }))}
+                        className={`p-3 border text-left transition-all rounded-lg ${
+                          formData.experience_level === level.id 
+                            ? 'bg-accent/10 border-accent ring-1 ring-accent' 
+                            : 'bg-surface border-border hover:border-accent/40 shadow-sm'
+                        }`}
+                      >
+                        <div className={`text-[11px] font-bold uppercase tracking-wider mb-1 ${formData.experience_level === level.id ? 'text-accent' : 'text-text-muted'}`}>
+                          {level.label}
+                        </div>
+                        <div className="text-[10px] text-text-muted leading-tight">
+                          {level.desc}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+               </div>
             </div>
 
-            {/* Context */}
-            <div className="space-y-2">
-              <label htmlFor="prior_experience" className="inconsolata-ui flex items-center text-[10px] font-bold uppercase tracking-widest text-text-muted ml-0.5">
-                Context (Optional)
-              </label>
-              <textarea
-                id="prior_experience"
-                name="prior_experience"
-                value={formData.prior_experience}
-                onChange={handleInputChange}
-                rows={3}
-                placeholder="Existing knowledge..."
-                className="w-full px-4 py-2.5 bg-callout-bg border border-border rounded-none focus:outline-none focus:border-[var(--accent)] transition-all text-[13px] font-medium text-text-heading placeholder:text-text-muted/40 resize-none h-24"
-              />
+            <div className="pt-4">
+               <button
+                onClick={() => setStep(2)}
+                className="w-full sm:w-fit px-12 py-3 bg-text-heading text-background text-[11px] font-bold uppercase tracking-[0.2em] hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-3 rounded-lg"
+               >
+                 Define Goal <ArrowRight className="w-3.5 h-3.5" />
+               </button>
             </div>
           </div>
+        );
+      case 2:
+        return (
+          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="space-y-6">
+               <label className="inconsolata-ui flex items-center text-[11px] font-bold uppercase tracking-[0.2em] text-text-muted">
+                 2. Domain & Objective
+               </label>
 
-          {/* Target Duration */}
-          <div className="space-y-3">
-            <label className="inconsolata-ui text-[10px] font-bold uppercase tracking-widest text-text-muted ml-0.5">
-              Target Duration
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {(profile?.is_pro ? [2, 3, 4, 6, 8, 10, 12] : [2, 3, 4]).map(w => (
-                <button
-                  type="button"
-                  key={w}
-                  onClick={() => setFormData(prev => ({ ...prev, time_value: w }))}
-                  className={`inconsolata-ui px-4 py-1.5 rounded-none border text-[10px] font-bold uppercase tracking-widest transition-all
-                    ${formData.time_value === w 
-                      ? 'bg-accent text-white border-accent shadow-lg shadow-accent/20' 
-                      : 'bg-background text-text-muted border-border hover:border-accent hover:text-accent'
+               {/* Subject */}
+               <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Zap className="w-3.5 h-3.5 text-accent" />
+                    <span className="text-[13px] font-bold text-text-heading">What subject do you want to master?</span>
+                  </div>
+                  <input
+                    type="text"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleInputChange}
+                    placeholder="e.g. Distributed Systems"
+                    className="w-full px-4 py-3 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[15px] font-bold text-text-heading"
+                  />
+                  
+                  <div className="flex flex-wrap gap-1.5">
+                    {SUGGESTED_SUBJECTS.map(s => (
+                      <button
+                        key={s}
+                        type="button"
+                        onClick={() => setFormData(prev => ({ ...prev, subject: s }))}
+                        className={`px-3 py-1.5 border text-[10px] font-bold uppercase tracking-widest transition-all rounded-md ${
+                          formData.subject === s 
+                            ? 'bg-accent text-white border-accent' 
+                            : 'bg-surface text-text-muted border-border hover:border-accent/40 shadow-sm'
+                        }`}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+               </div>
+
+               {/* Goal */}
+               <div className="space-y-3 pt-2">
+                  <div className="flex items-center gap-2">
+                    <Route className="w-3.5 h-3.5 text-accent" />
+                    <span className="text-[13px] font-bold text-text-heading">Specific End Goal</span>
+                  </div>
+                  <textarea
+                    name="goal"
+                    value={formData.goal}
+                    onChange={handleInputChange}
+                    rows={3}
+                    placeholder="Example: I want to be able to build a scalable real-time chat application using WebSockets and Redis."
+                    className="w-full px-4 py-3 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[14px] font-medium resize-none h-28"
+                  />
+               </div>
+            </div>
+
+            <div className="flex items-center gap-4 pt-4">
+               <button
+                onClick={() => setStep(1)}
+                className="px-8 py-3 bg-background border border-border text-text-muted text-[11px] font-bold uppercase tracking-[0.2em] hover:bg-sidebar transition-all rounded-lg"
+               >
+                 Back
+               </button>
+               <button
+                onClick={() => setStep(3)}
+                className="flex-1 sm:flex-none px-12 py-3 bg-text-heading text-background text-[11px] font-bold uppercase tracking-[0.2em] hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-3 rounded-lg"
+               >
+                 Timeline <ArrowRight className="w-3.5 h-3.5" />
+               </button>
+            </div>
+          </div>
+        );
+      case 3:
+        return (
+          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="space-y-6">
+               <label className="inconsolata-ui flex items-center text-[11px] font-bold uppercase tracking-[0.2em] text-text-muted">
+                 3. Intensity & Context
+               </label>
+
+               {/* Target Duration */}
+               <div className="space-y-4">
+                  <div className="flex items-center gap-2">
+                    <Hourglass className="w-3.5 h-3.5 text-accent" />
+                    <span className="text-[13px] font-bold text-text-heading">Target Duration</span>
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {(profile?.is_pro ? [2, 3, 4, 6, 8, 10, 12] : [2, 3, 4]).map(w => (
+                      <button
+                        type="button"
+                        key={w}
+                        onClick={() => setFormData(prev => ({ ...prev, time_value: w }))}
+                        className={`px-5 py-2 border text-[11px] font-bold uppercase tracking-widest transition-all rounded-md
+                          ${formData.time_value === w 
+                            ? 'bg-accent text-white border-accent shadow-lg shadow-accent/20' 
+                            : 'bg-background text-text-muted border-border hover:border-accent hover:text-accent'
+                          }`}
+                      >
+                        {w} Weeks
+                      </button>
+                    ))}
+                    {!profile?.is_pro && (
+                      <button 
+                        type="button"
+                        onClick={() => setIsPaymentModalOpen(true)}
+                        className="px-4 py-2 text-[10px] font-bold text-accent border border-accent/20 border-dashed hover:bg-accent/5 transition-all rounded-md"
+                      >
+                        Unlock 6-12 Weeks (Pro)
+                      </button>
+                    )}
+                  </div>
+               </div>
+
+               {/* Context */}
+               <div className="space-y-3 pt-2">
+                  <div className="flex items-center gap-2">
+                    <History className="w-3.5 h-3.5 text-accent" />
+                    <span className="text-[13px] font-bold text-text-heading">Detailed Context (Optional)</span>
+                  </div>
+                  <textarea
+                    name="prior_experience"
+                    value={formData.prior_experience}
+                    onChange={handleInputChange}
+                    rows={3}
+                    placeholder="What do you already know? Any specific technologies you prefer or want to avoid?"
+                    className="w-full px-4 py-3 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[14px] font-medium resize-none h-28"
+                  />
+               </div>
+            </div>
+
+            <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
+               <button
+                onClick={() => setStep(2)}
+                className="w-full sm:w-fit px-8 py-3 bg-background border border-border text-text-muted text-[11px] font-bold uppercase tracking-[0.2em] hover:bg-sidebar transition-all rounded-lg"
+               >
+                 Back
+               </button>
+               {!session ? (
+                  <button
+                    onClick={generateRoadmap}
+                    className="w-full sm:flex-1 group relative inline-flex items-center justify-center px-12 py-3 text-[11px] font-bold uppercase tracking-[0.2em] transition-all bg-accent text-white hover:opacity-90 active:scale-95 shadow-xl shadow-accent/20 gap-3 rounded-lg"
+                  >
+                    <LogIn className="w-3.5 h-3.5" /> Authenticate to Architect
+                  </button>
+               ) : (
+                  <button
+                    onClick={generateRoadmap}
+                    disabled={isGenerating || (credits !== null && credits < 1)}
+                    className={`w-full sm:flex-1 group relative inline-flex items-center justify-center px-12 py-3 text-[11px] font-bold uppercase tracking-[0.2em] transition-all disabled:opacity-50 rounded-lg ${
+                      credits !== null && credits < 1
+                      ? 'bg-callout-bg border border-border text-text-muted cursor-not-allowed' 
+                      : 'bg-text-heading text-background hover:opacity-90 active:scale-95 shadow-xl'
                     }`}
-                >
-                  {w} Weeks
-                </button>
-              ))}
-              {!profile?.is_pro && (
-                <button 
-                  type="button"
-                  onClick={() => setIsPaymentModalOpen(true)}
-                  className="inconsolata-ui px-3 py-1.5 text-[9px] font-bold text-accent border border-accent/20 border-dashed hover:bg-accent/5"
-                >
-                  Unlock 6-12 Weeks (Pro)
-                </button>
-              )}
+                  >
+                    <div className={`flex items-center justify-center gap-2.5 transition-transform duration-300 ${isGenerating ? 'translate-y-20' : ''}`}>
+                      <span className={`text-[13px] ${credits !== null && credits < 1 ? 'grayscale opacity-50' : ''}`}>💎</span>
+                      {credits !== null && credits < 1 ? 'Insufficient Credits' : `Architect Roadmap (${credits ?? '...'})`}
+                    </div>
+                    {isGenerating && (
+                      <div className="absolute inset-0 flex items-center justify-center animate-in slide-in-from-bottom-10 duration-300">
+                        <Loader className="w-4 h-4 animate-spin" />
+                      </div>
+                    )}
+                  </button>
+               )}
             </div>
-          </div>
-        </div>
-
-        {/* Generate Actions */}
-        <div className="pt-4 flex flex-col items-center gap-4">
-          <button
-            id="trigger-generate"
-            type="submit"
-            disabled={isGenerating}
-            className={`group relative w-full sm:w-fit inline-flex items-center justify-center overflow-hidden px-10 py-3 rounded-none text-[11px] font-bold uppercase tracking-widest transition-all disabled:opacity-50 ${
-              credits === 0 
-              ? 'bg-callout-bg border border-border text-text-muted cursor-not-allowed' 
-              : 'bg-[var(--text-heading)] text-[var(--bg-main)] hover:opacity-90 active:scale-95'
-            }`}
-          >
-            <div className={`flex items-center justify-center gap-2.5 transition-transform duration-300 ${isGenerating ? 'translate-y-20' : ''}`}>
-              <span className={`text-[13px] ${credits === 0 ? 'grayscale opacity-50' : ''}`}>💎</span>
-              {credits === 0 ? 'Insufficient Credits' : `Generate Roadmap (${credits ?? '...'})`}
-            </div>
-            {isGenerating && (
-              <div className="absolute inset-0 flex items-center justify-center animate-in slide-in-from-bottom-10 duration-300">
-                 <Loader className="w-4 h-4 animate-spin" />
-              </div>
+            {credits !== null && credits < 1 && (
+               <div className="mt-4 text-center">
+                 <Link href="/pricing" className="text-[11px] font-bold text-accent uppercase tracking-widest hover:underline">
+                   Buy more credits →
+                 </Link>
+               </div>
             )}
-          </button>
+          </div>
+        );
+    }
+  };
 
-          {credits === 0 && !isGenerating && (
-            <button 
-              type="button"
-              onClick={() => setIsPaymentModalOpen(true)}
-              className="inconsolata-ui text-[10px] font-bold text-accent hover:underline flex items-center gap-2 uppercase tracking-widest"
-            >
-              <Sparkles className="w-3 h-3" /> Purchase Credits to continue
-            </button>
-          )}
-        </div>
-      </form>
-    </div>
-  );
+  return (
+    <div className="w-full manrope-body">
+      <div className="mb-6 flex items-center gap-4">
+        {[1, 2, 3].map(i => (
+          <div key={i} className="flex items-center gap-2">
+            <div className={`w-8 h-8 flex items-center justify-center text-[11px] font-bold border transition-all rounded-md ${
+              step === i ? 'bg-accent text-white border-accent' : step > i ? 'bg-sidebar text-text-muted border-border' : 'bg-background text-text-muted border-border'
+            }`}>
+              {step > i ? <Check className="w-4 h-4" /> : i}
+            </div>
+            {i < 3 && <div className={`w-8 md:w-16 h-[1px] ${step > i ? 'bg-accent' : 'bg-border'}`} />}
+          </div>
+        ))}
+      </div>
 
-  if (!isLanding) {
-    return (
-      <div>
-        {formContent}
-        <div className={`mt-12 text-center transition-opacity duration-500 ${isGenerating ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'}`}>
-          <p className="inconsolata-ui text-[11px] font-bold text-accent uppercase tracking-widest">
-            {isGenerating ? loadingMessages[currentMessageIndex] : ''}
+      {renderStep()}
+
+      {isGenerating && (
+        <div className="mt-12 text-center animate-in fade-in duration-700">
+          <p className="inconsolata-ui text-[11px] font-bold text-accent uppercase tracking-[0.2em]">
+            {loadingMessages[currentMessageIndex]}
           </p>
           <div className="flex justify-center gap-1.5 mt-4">
              {[0, 1, 2].map(i => (
-               <div key={i} className="w-1 h-1 bg-accent animate-pulse" style={{ animationDelay: `${i * 0.2}s` }}></div>
+               <div key={i} className="w-1.5 h-1.5 bg-accent animate-pulse" style={{ animationDelay: `${i * 0.2}s` }}></div>
              ))}
           </div>
         </div>
-        
-        {error && (
-          <div className="mt-8 p-3 bg-red-500/5 border-l-2 border-red-500 flex items-center gap-3 text-red-500 animate-in slide-in-from-left-1 duration-300">
-            <AlertCircle className="w-4 h-4 shrink-0" />
-            <p className="inconsolata-ui text-[10px] font-bold uppercase tracking-tight">{error}</p>
-          </div>
-        )}
-
-        <PaymentModal 
-          isOpen={isPaymentModalOpen} 
-          onClose={() => setIsPaymentModalOpen(false)} 
-          onSuccess={() => {
-            setIsPaymentModalOpen(false);
-            fetchProfileAndCredits();
-            const btn = document.getElementById('trigger-generate');
-            if (btn) btn.click();
-          }} 
-        />
-      </div>
-    );
-  }
-
-  return (
-    <section id="generate" className="py-20 bg-background manrope-body">
-      <div className="max-w-3xl mx-auto px-6">
-        <div className="text-center mb-12">
-          <div className="inconsolata-ui inline-flex items-center px-3 py-1 rounded-none bg-accent/10 text-accent text-[9px] font-bold uppercase tracking-widest mb-4">
-            Curriculum Engine
-          </div>
-          <h2 className="inconsolata-ui text-[28px] font-bold text-text-heading tracking-tight uppercase">
-            Define your <span className="text-accent">Goal</span>
-          </h2>
+      )}
+      
+      {error && (
+        <div className="mt-8 p-4 bg-red-500/5 border-l-2 border-red-500 flex items-center gap-3 text-red-500 animate-in slide-in-from-left-1 duration-300">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          <p className="inconsolata-ui text-[10px] font-bold uppercase tracking-widest leading-relaxed">{error}</p>
         </div>
+      )}
 
-        {formContent}
-
-        <div className={`mt-12 text-center transition-opacity duration-500 ${isGenerating ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'}`}>
-          <p className="inconsolata-ui text-[11px] font-bold text-text-heading uppercase tracking-widest">
-            {isGenerating ? loadingMessages[currentMessageIndex] : ''}
-          </p>
-        </div>
-
-        {error && (
-          <div className="mt-8 p-3 bg-red-500/5 border-l-2 border-red-500 flex items-center gap-3 text-red-500">
-            <AlertCircle className="w-4 h-4 shrink-0" />
-            <p className="inconsolata-ui text-[10px] font-bold uppercase tracking-tight">{error}</p>
-          </div>
-        )}
-        
-        <PaymentModal 
-          isOpen={isPaymentModalOpen} 
-          onClose={() => setIsPaymentModalOpen(false)} 
-          onSuccess={() => {
-            setIsPaymentModalOpen(false);
-            fetchProfileAndCredits();
-            const btn = document.getElementById('trigger-generate');
-            if (btn) btn.click();
-          }} 
-        />
-      </div>
-    </section>
+      <PaymentModal 
+        isOpen={isPaymentModalOpen} 
+        onClose={() => setIsPaymentModalOpen(false)} 
+        onSuccess={() => {
+          setIsPaymentModalOpen(false);
+          // Simple refresh of profile
+          supabase.auth.getSession().then(({ data: { session } }) => {
+            if (session?.user) {
+              supabase.from('profiles').select('*').eq('supabase_uid', session.user.id).single().then(({ data }) => {
+                if (data) {
+                  setProfile(data);
+                  setCredits(data.roadmap_credits);
+                }
+              });
+            }
+          });
+        }} 
+      />
+    </div>
   );
 };
 

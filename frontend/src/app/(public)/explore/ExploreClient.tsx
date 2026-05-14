@@ -47,6 +47,8 @@ import StarRating from '@/components/roadmap/StarRating';
 import VerifiedBadge from '@/components/VerifiedBadge';
 import { getCategory } from '@/lib/roadmapUtils';
 import ResearchLibrarySidebar from '@/components/research-lab/ResearchLibrarySidebar';
+import CommunityRoadmapBanner from '@/components/landing/CommunityRoadmapBanner';
+import GoalGeneratorModal from '@/components/landing/GoalGeneratorModal';
 
 const CATEGORY_METADATA: Record<string, { icon: any }> = {
     'all': { icon: LayoutDashboard },
@@ -138,6 +140,7 @@ export default function ExploreClient({
     const [reportReason, setReportReason] = useState('');
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
+    const [isRoadmapModalOpen, setIsRoadmapModalOpen] = useState(false);
     
     // Filtering & Sorting State
     const [sortBy, setSortBy] = useState('newest');
@@ -240,9 +243,14 @@ export default function ExploreClient({
             <Suspense fallback={null}>
                 <SearchParamsHandler onParams={handleSearchParams} />
             </Suspense>
-            <div className="max-w-6xl mx-auto px-6 pt-6 pb-12">
-                <div className="flex flex-col lg:flex-row gap-16">
-                    <main className="flex-1 min-w-0">
+            <div className="max-w-[1400px] mx-auto px-6 pt-6 pb-12">
+                <div className="flex flex-col lg:flex-row gap-10 xl:gap-16">
+                    {/* Left Sidebar - Goal Architect */}
+                    <aside className="w-full lg:w-[280px] shrink-0 lg:sticky lg:top-32 self-start order-2 lg:order-1">
+                        <CommunityRoadmapBanner onOpenModal={() => setIsRoadmapModalOpen(true)} />
+                    </aside>
+
+                    <main className="flex-1 min-w-0 order-1 lg:order-2">
                         <header className="mb-6">
                             <div className="flex flex-col sm:flex-row gap-3 mt-4">
                                 <div className="flex-1 relative group">
@@ -408,9 +416,10 @@ export default function ExploreClient({
                     </main>
 
                     {/* Sidebar Links (Right) */}
-                    <div className="lg:w-[260px] shrink-0 pt-4 sticky top-32">
+                    <div className="w-full lg:w-[260px] shrink-0 pt-4 lg:sticky lg:top-32 self-start order-3">
                         <ResearchLibrarySidebar />
-                    </div>                </div>
+                    </div>
+                </div>
             </div>
 
             {/* Error/Success Alerts */}
@@ -452,6 +461,11 @@ export default function ExploreClient({
                     </div>
                 </div>
             )}
+
+            <GoalGeneratorModal 
+                isOpen={isRoadmapModalOpen} 
+                onClose={() => setIsRoadmapModalOpen(false)} 
+            />
         </div>
     );
 }

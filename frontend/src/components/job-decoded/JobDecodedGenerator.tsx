@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { roadmapsAPI, RoadmapRead } from '@/lib/api';
 import { 
   Loader, 
@@ -85,6 +86,11 @@ const JobDecodedGenerator: React.FC<JobDecodedGeneratorProps> = ({ onRoadmapGene
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
       router.push('/login?next=/generate');
+      return;
+    }
+
+    if (credits !== null && credits < 1) {
+      setIsPaymentModalOpen(true);
       return;
     }
 
@@ -222,16 +228,16 @@ const JobDecodedGenerator: React.FC<JobDecodedGeneratorProps> = ({ onRoadmapGene
         <div className="pt-4 flex flex-col items-center gap-4">
           <button
             type="submit"
-            disabled={isGenerating || credits === 0}
+            disabled={isGenerating || (credits !== null && credits < 1)}
             className={`group relative w-full sm:w-fit inline-flex items-center justify-center overflow-hidden px-12 py-3.5 rounded-none text-[11px] font-bold uppercase tracking-widest transition-all ${
-              credits === 0 
+              credits !== null && credits < 1
               ? 'bg-callout-bg border border-border text-text-muted cursor-not-allowed' 
               : 'bg-text-heading text-background hover:opacity-90 active:scale-95'
             }`}
           >
             <div className={`flex items-center justify-center gap-2.5 transition-transform duration-300 ${isGenerating ? 'translate-y-20' : ''}`}>
               <Sparkles className="w-4 h-4 text-accent" />
-              {credits === 0 ? 'Insufficient Credits' : `Decode Job Path (${credits ?? '...'})`}
+              {credits !== null && credits < 1 ? 'Insufficient Credits' : `Decode Job Path (${credits ?? '...'})`}
             </div>
             {isGenerating && (
               <div className="absolute inset-0 flex items-center justify-center animate-in slide-in-from-bottom-10 duration-300">
@@ -239,6 +245,14 @@ const JobDecodedGenerator: React.FC<JobDecodedGeneratorProps> = ({ onRoadmapGene
               </div>
             )}
           </button>
+          
+          {credits !== null && credits < 1 && (
+            <div className="mt-2">
+              <Link href="/pricing" className="text-[10px] font-bold text-accent uppercase tracking-widest hover:underline">
+                Buy more credits →
+              </Link>
+            </div>
+          )}
         </div>
       </form>
 

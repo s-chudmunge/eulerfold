@@ -4,6 +4,7 @@ import os
 import re
 import asyncio
 from google import genai
+from fastapi import HTTPException
 from app.core.config import settings
 
 try:
@@ -43,7 +44,7 @@ def get_gemini_client():
 async def generate_text(prompt: str, model: str = "models/gemini-2.5-flash", response_mime_type: str = None) -> str:
     """Generates text from Gemini using the modern google-genai SDK with native async."""
     # Strip 'models/' prefix if present for the new SDK's model string
-    clean_model = model.replace("models/", "") if model.startswith("models/") else model
+    current_model = model.replace("models/", "") if model.startswith("models/") else model
     
     # Restored original model list
     VALID_MODELS = [
@@ -61,7 +62,7 @@ async def generate_text(prompt: str, model: str = "models/gemini-2.5-flash", res
         "models/gemini-2.0-flash-thinking-exp",
     ]
     
-    is_valid = model in VALID_MODELS or model.startswith("models/gemini") or model.startswith("models/gemma") or clean_model.startswith("gemini-")
+    is_valid = model in VALID_MODELS or model.startswith("models/gemini") or model.startswith("models/gemma") or current_model.startswith("gemini-")
     
     if not is_valid:
         raise ValueError(f"Invalid model '{model}'.")
@@ -81,11 +82,13 @@ async def generate_text(prompt: str, model: str = "models/gemini-2.5-flash", res
         config["response_mime_type"] = response_mime_type
 
     max_retries = 3
+    fallback_used = False
+
     for attempt in range(max_retries):
         try:
             # Use native async generate_content
             response = await client.aio.models.generate_content(
-                model=clean_model,
+                model=current_model,
                 contents=prompt,
                 config=config
             )
@@ -96,22 +99,40 @@ async def generate_text(prompt: str, model: str = "models/gemini-2.5-flash", res
             return response.text
 
         except Exception as e:
-            error_msg = str(e)
+            error_msg = str(e).upper()
             
             # Handle Location Error
-            if "User location is not supported" in error_msg:
-                logger.error(f"Gemini Location Error: {error_msg}. Server region: {os.getenv('RENDER_REGION', 'Unknown')}.")
+            if "USER LOCATION IS NOT SUPPORTED" in error_msg:
+                logger.error(f"Gemini Location Error: {e}. Server region: {os.getenv('RENDER_REGION', 'Unknown')}.")
                 if attempt == max_retries - 1:
                     raise RuntimeError(
                         "Gemini API is not available in your current deployment region. "
                         "Fix: Change Render region to 'Oregon (us-west-2)' or 'Frankfurt (eu-central-1)'."
                     )
             
+            # Handle Rate Limit / Quota Errors
+            if "429" in error_msg or "RESOURCE_EXHAUSTED" in error_msg or "QUOTA" in error_msg:
+                # If we were using Pro, try to fallback to Flash for the remaining attempts
+                # Use lower() to be case-insensitive for the model name check
+                if "pro" in current_model.lower() and not fallback_used:
+                    logger.warning(f"Gemini Pro quota exhausted. Falling back to Gemini 2.5 Flash for attempt {attempt + 1}.")
+                    current_model = "gemini-2.5-flash"
+                    fallback_used = True
+                    # No sleep needed for fallback, just retry immediately
+                    continue
+                
+                if attempt == max_retries - 1:
+                    logger.error(f"Gemini rate limit exceeded after {max_retries} attempts.")
+                    raise HTTPException(
+                        status_code=429, 
+                        detail="The AI engine is currently under heavy load or quota limit. Please try again in a few minutes."
+                    )
+            
             if attempt == max_retries - 1:
-                raise RuntimeError(f"Gemini generation failed after {max_retries} attempts: {error_msg}")
+                raise RuntimeError(f"Gemini generation failed after {max_retries} attempts: {str(e)}")
             
             wait_time = (attempt + 1) * 2
-            logger.warning(f"Gemini attempt {attempt + 1} failed, retrying in {wait_time}s... Error: {error_msg}")
+            logger.warning(f"Gemini attempt {attempt + 1} failed, retrying in {wait_time}s... Error: {str(e)}")
             await asyncio.sleep(wait_time)
 
 def clean_json_string(text: str) -> str:

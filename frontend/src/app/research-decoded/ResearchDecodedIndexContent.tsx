@@ -7,6 +7,7 @@ import { ArrowRight } from 'lucide-react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import { cleanSearchQuery, getSearchKeywords } from '@/lib/search';
+import CommunityRoadmapBanner from '@/components/landing/CommunityRoadmapBanner';
 
 function SearchParamsHandler({ onParams }: { onParams: (params: URLSearchParams) => void }) {
   const searchParams = useSearchParams();
@@ -112,24 +113,9 @@ export default function ResearchDecodedIndexContent() {
           </header>
         )}
 
-        {/* Community Banner */}
-        <div className="mb-12 bg-callout-bg rounded-2xl p-6 md:p-8 border border-border relative overflow-hidden group">
-          <div className="relative z-10 max-w-xl">
-            <div className="flex items-center gap-2 text-accent mb-2">
-              <span className="inconsolata-ui text-[11px] font-bold uppercase tracking-wider">EulerFold Intelligence</span>
-            </div>
-            <h2 className="text-[18px] md:text-[20px] font-bold mb-2 text-text-heading tracking-tight inconsolata-ui">Join the EulerFold community</h2>
-            <p className="manrope-body text-[13px] mb-6 text-text-primary leading-relaxed font-medium">
-              Track progress and collaborate on roadmaps with students worldwide.
-            </p>
-            <button 
-              onClick={user ? () => window.location.href = '/dashboard' : handleSignIn}
-              className="inline-flex items-center gap-2 bg-[var(--text-heading)] text-[var(--bg-main)] rounded-lg px-6 py-2 text-[13px] font-bold hover:opacity-90 transition-all shadow-md hover:shadow-teal-500/20"
-            >
-              {user ? 'Go to Dashboard' : 'Start Your Journey'} <ArrowRight className="w-4 h-4" />
-            </button>
-          </div>
-          <span className="absolute -bottom-10 -right-10 text-[180px] opacity-[0.03] grayscale -rotate-12 pointer-events-none group-hover:scale-110 transition-transform duration-1000">🐢</span>
+        {/* Goal Architect Banner */}
+        <div className="mb-20">
+            <CommunityRoadmapBanner />
         </div>
 
         {/* Grid of Categories */}

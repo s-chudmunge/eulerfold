@@ -219,16 +219,20 @@
         "title": "Scaling Laws (2020)",
         "slug": "scaling-laws-neural-language-models"
       }
-      ]
-      },
-      {
-      "title": "Quantum Computing",
-      "id": "quantum",
-      "expanded": true,
-      "sections": [
+    ]
+  },
+  {
+    "title": "Quantum Computing",
+    "id": "quantum",
+    "expanded": true,
+    "sections": [
       {
         "title": "Simulating Physics with Computers (1982)",
         "slug": "simulating-physics-feynman"
+      },
+      {
+        "title": "Shor: Factoring Algorithm (1994)",
+        "slug": "shor-factoring-algorithm"
       },
       {
         "title": "Shor: Quantum Error Correction (1995)",
@@ -302,8 +306,8 @@
         "title": "Quantum Supremacy (2019)",
         "slug": "quantum-supremacy-sycamore"
       }
-      ]
-      },
+    ]
+  },
   {
     "title": "Computer Vision",
     "id": "vision",
@@ -603,6 +607,110 @@
       {
         "title": "BIOVERSE: Multimodal Bio-Foundation Alignment (2025)",
         "slug": "bioverse-multimodal-biological-foundation-model-alignment"
+      }
+    ]
+  },
+  {
+    "title": "Foundational Cybersecurity",
+    "id": "cybersecurity-foundational",
+    "expanded": true,
+    "sections": [
+      {
+        "title": "Diffie-Hellman: Key Exchange (1976)",
+        "slug": "diffie-hellman-new-directions"
+      },
+      {
+        "title": "RSA: Digital Signatures (1978)",
+        "slug": "rsa-digital-signatures"
+      },
+      {
+        "title": "BB84: Quantum Cryptography (1984)",
+        "slug": "bb84-quantum-cryptography"
+      },
+      {
+        "title": "Reflections on Trusting Trust (1984)",
+        "slug": "reflections-on-trusting-trust"
+      },
+      {
+        "title": "The Morris Worm: Internet Security (1988)",
+        "slug": "morris-worm-internet-security"
+      }
+    ]
+  },
+  {
+    "title": "Advanced Security & Privacy",
+    "id": "security-advanced",
+    "expanded": true,
+    "sections": [
+      {
+        "title": "Zero-Knowledge Proofs (1985)",
+        "slug": "zero-knowledge-proofs-goldwasser"
+      },
+      {
+        "title": "Tor: Onion Routing (1998)",
+        "slug": "tor-onion-routing"
+      },
+      {
+        "title": "Differential Privacy: Calibrating Noise (2006)",
+        "slug": "differential-privacy-dwork"
+      },
+      {
+        "title": "Bitcoin: Decentralized Consensus (2008)",
+        "slug": "bitcoin-decentralized-consensus"
+      },
+      {
+        "title": "FHE: Fully Homomorphic Encryption (2009)",
+        "slug": "homomorphic-encryption-gentry"
+      },
+      {
+        "title": "FHE over Integers (2010)",
+        "slug": "homomorphic-encryption-integers"
+      },
+      {
+        "title": "Stuxnet: Industrial Sabotage (2011)",
+        "slug": "stuxnet-industrial-sabotage"
+      },
+      {
+        "title": "Secure Multi-Party Computation (1982)",
+        "slug": "secure-multi-party-computation"
+      },
+      {
+        "title": "Spectre Attacks (2018)",
+        "slug": "spectre-speculative-execution"
+      }
+    ]
+  },
+  {
+    "title": "Post-Quantum Cryptography",
+    "id": "pqc",
+    "expanded": true,
+    "sections": [
+      {
+        "title": "Kyber: Lattice-Based KEM (2018)",
+        "slug": "kyber-lattice-cryptography"
+      },
+      {
+        "title": "Dilithium: Digital Signatures (2018)",
+        "slug": "dilithium-digital-signatures"
+      }
+    ]
+  },
+  {
+    "title": "AI Security",
+    "id": "ai-security",
+    "expanded": true,
+    "sections": [
+      {
+        "title": "Poisoning Attacks (2012)",
+        "slug": "poisoning-attacks-machine-learning"
+      },
+      {
+        "title": "Adversarial Examples (2014)",
+        "slug": "adversarial-examples-goodfellow"
+      },
+      {
+        "title": "BadNets: Backdoor Attacks (2017)",
+        "slug": "backdoor-attacks-badnets"
       }
     ]
   }

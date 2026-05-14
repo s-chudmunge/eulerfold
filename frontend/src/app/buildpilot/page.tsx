@@ -31,6 +31,8 @@ import { roadmapsAPI, submissionsAPI, sessionsAPI } from '@/lib/api';
 import { supabase } from '@/lib/supabase/client';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import { useRouter } from 'next/navigation';
+import CommunityRoadmapBanner from '@/components/landing/CommunityRoadmapBanner';
+import GoalGeneratorModal from '@/components/landing/GoalGeneratorModal';
 
 export default function BuildPilotPage() {
   const { user, loading: authLoading, onRefreshProfile } = useAuth();
@@ -44,6 +46,7 @@ export default function BuildPilotPage() {
   
   // New Project Modal State
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isRoadmapModalOpen, setIsRoadmapModalOpen] = useState(false);
   const [projectTitle, setProjectTitle] = useState('');
   const [projectGoal, setProjectGoal] = useState('');
   const [projectSkills, setProjectSkills] = useState('');
@@ -183,7 +186,7 @@ export default function BuildPilotPage() {
       />
       <PublicHeader />
       
-      <main className="max-w-7xl mx-auto px-6 py-12">
+      <main className="max-w-[1400px] mx-auto px-6 py-12">
         <Breadcrumbs items={[{ label: 'BuildPilot' }]} />
 
         {/* Header */}
@@ -236,9 +239,14 @@ export default function BuildPilotPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        <div className="flex flex-col lg:flex-row gap-10">
+          {/* Left Sidebar - Goal Architect */}
+          <aside className="w-full lg:w-[280px] shrink-0 lg:sticky lg:top-32 self-start order-2 lg:order-1">
+             <CommunityRoadmapBanner />
+          </aside>
+
           {/* Main Area: Active Projects */}
-          <div className="lg:col-span-2 space-y-10">
+          <div className="flex-1 min-w-0 space-y-10 order-1 lg:order-2">
              <section>
                 <div className="flex items-center justify-between mb-5">
                   <h2 className="inconsolata-ui text-[11px] font-black uppercase tracking-widest text-text-muted flex items-center gap-2">
@@ -351,8 +359,8 @@ export default function BuildPilotPage() {
              </section>
           </div>
 
-          {/* Sidebar: Stats & Info */}
-          <div className="space-y-8">
+          {/* Sidebar: Stats & Info (Right) */}
+          <div className="w-full lg:w-[320px] shrink-0 space-y-8 order-3 lg:sticky lg:top-32 self-start">
              <div className="p-6 bg-sidebar/40 border border-border rounded-xl">
                 <h3 className="inconsolata-ui text-[11px] font-black uppercase tracking-widest text-text-muted mb-6">Stats</h3>
                 <div className="grid grid-cols-1 gap-5">

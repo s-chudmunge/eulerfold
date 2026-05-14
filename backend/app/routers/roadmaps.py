@@ -569,6 +569,8 @@ Begin the JSON output immediately.
 
         return RoadmapRead(**update_res.data[0])
 
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Extension generation failed: {e}")
         raise HTTPException(status_code=500, detail="Failed to generate roadmap extension.")
@@ -794,13 +796,22 @@ async def generate_roadmap(
     is_pro = profile_res.data[0].get("is_pro", False)
     credits = profile_res.data[0].get("roadmap_credits", 0)
     
-    if credits <= 0:
-        raise HTTPException(status_code=402, detail="No roadmap credits left. Please upgrade to Pro.")
+    if credits < 1:
+        if is_pro:
+            raise HTTPException(status_code=402, detail="You have run out of roadmap credits. Please top up to continue.")
+        else:
+            raise HTTPException(status_code=402, detail="No roadmap credits left. Please upgrade to Pro.")
 
     # 1. Generate Roadmap Structure with Gemini
+    context_str = f"The learner is currently a {roadmap_create.current_role or 'student/professional'} but is aspiring to become a {roadmap_create.target_role or 'expert in this field'}."
+    context_str += f" They have {roadmap_create.experience_level or 'some'} experience level in the subject area."
+    if roadmap_create.prior_experience:
+        context_str += f" Additional context on their background: {roadmap_create.prior_experience}"
+
     prompt = f"""
 Generate a professional, high-signal technical learning roadmap for the subject: "{roadmap_create.subject}".
 The learner's specific goal is: "{roadmap_create.goal}".
+{context_str}
 Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
 
 **Rules:**
@@ -908,6 +919,8 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
 
         return RoadmapRead(**response.data[0])
 
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Roadmap generation failed: {e}")
         raise HTTPException(status_code=500, detail=f"Generation error: {str(e)}")
@@ -933,8 +946,11 @@ async def generate_from_jd(
     is_pro = profile_res.data[0].get("is_pro", False)
     credits = profile_res.data[0].get("roadmap_credits", 0)
     
-    if credits <= 0:
-        raise HTTPException(status_code=402, detail="No roadmap credits left. Please upgrade to Pro.")
+    if credits < 1:
+        if is_pro:
+            raise HTTPException(status_code=402, detail="You have run out of roadmap credits. Please top up to continue.")
+        else:
+            raise HTTPException(status_code=402, detail="No roadmap credits left. Please upgrade to Pro.")
 
     # Validate Duration Constraints
     allowed_weeks_pro = [2, 3, 4, 6, 10, 12]
@@ -1070,6 +1086,8 @@ Duration: {payload.time_value} {payload.time_unit}.
 
         return RoadmapRead(**response.data[0])
 
+    except HTTPException:
+        raise
     except Exception as e:
         logger.error(f"Job Decoded generation failed: {e}")
         raise HTTPException(status_code=500, detail=str(e))

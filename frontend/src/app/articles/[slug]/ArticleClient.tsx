@@ -25,6 +25,7 @@ import NextStepsSidebar from '@/components/NextStepsSidebar';
 import { DiscussionSection } from '@/components/discussions/DiscussionSection';
 import { Article, articles } from '../generatedArticles';
 import { Paper, papers } from '../../research-decoded/generatedData';
+import CommunityRoadmapBanner from '@/components/landing/CommunityRoadmapBanner';
 
 const D2Diagram = ({ code, cache }: { code: string, cache?: Record<string, string> }) => {
   const [svg, setSvg] = React.useState<string>(cache?.[code] || '');
@@ -388,10 +389,6 @@ export default function ArticleClient({ article }: Props) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, [headings, activeId]);
 
-  const handleSignIn = () => {
-    router.push(`/login?next=${encodeURIComponent(window.location.pathname)}`);
-  };
-
   const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
   const shareText = `Check out this article on EulerFold: ${article.title}`;
   const encodedUrl = encodeURIComponent(shareUrl);
@@ -559,23 +556,8 @@ export default function ArticleClient({ article }: Props) {
               )}
 
               {/* Community Banner */}
-              <div className="mt-[80px] bg-callout-bg rounded-3xl p-6 md:p-8 border border-border relative overflow-hidden group">
-                <div className="relative z-10 max-w-xl">
-                  <div className="flex items-center gap-2 text-accent mb-3">
-                    <span className="inconsolata-ui text-[11px] md:text-[12px] font-bold uppercase tracking-wider">EulerFold Intelligence</span>
-                  </div>
-                  <h2 className="font-bold mb-3 text-text-heading tracking-tight inconsolata-ui">Join the EulerFold community</h2>
-                  <p className="manrope-body text-[13px] md:text-[14px] mb-6 text-text-primary leading-relaxed font-medium">
-                    Track progress and collaborate on roadmaps with students worldwide.
-                  </p>
-                  <button 
-                    onClick={user ? () => window.location.href = '/dashboard' : handleSignIn}
-                    className="inline-flex items-center gap-2 bg-[var(--text-heading)] text-[var(--bg-main)] rounded-full px-6 py-2.5 text-[14px] font-bold hover:opacity-90 transition-all shadow-lg hover:shadow-teal-500/20"
-                  >
-                    {user ? 'Go to Dashboard' : 'Start Your Journey'} <ArrowRight className="w-4 h-4" />
-                  </button>
-                </div>
-                <span className="absolute -bottom-10 -right-10 text-[180px] opacity-[0.03] grayscale -rotate-12 pointer-events-none group-hover:scale-110 transition-transform duration-1000">🐢</span>
+              <div className="mt-[80px]">
+                <CommunityRoadmapBanner />
               </div>
 
               {/* Social Buttons */}

@@ -127,6 +127,9 @@ class RoadmapCreate(BaseModel):
     email: Optional[str] = None
     model: Optional[str] = None
     prior_experience: Optional[str] = None
+    experience_level: Optional[str] = None
+    current_role: Optional[str] = None
+    target_role: Optional[str] = None
 
 class JobRoadmapCreate(BaseModel):
     job_description: str

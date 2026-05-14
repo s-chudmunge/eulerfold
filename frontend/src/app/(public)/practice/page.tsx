@@ -5,11 +5,14 @@ import { useSearchParams } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import { practiceAPI, MCQSessionRead } from '@/lib/api';
 import MCQPractice from '@/components/roadmap/MCQPractice';
-import { BrainCircuit, Target, ArrowRight, ArrowLeft, Sparkles, Command, History, ChevronRight, X } from 'lucide-react';
+import { BrainCircuit, Target, ArrowRight, ArrowLeft, Sparkles, Command, History, ChevronRight, X, Plus } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import Footer from '@/components/Footer';
 import TTSListenButton from '@/components/TTSListenButton';
 import ResearchLibrarySidebar from '@/components/research-lab/ResearchLibrarySidebar';
+import CommunitySidebarCard from '@/components/roadmap/CommunitySidebarCard';
+import GoalGeneratorModal from '@/components/landing/GoalGeneratorModal';
+import { useRouter } from 'next/navigation';
 
 const SUGGESTIONS: Record<string, string[]> = {
     "Computer Science": ["Distributed Systems", "Algorithms", "Operating Systems", "Networking", "Compilers", "Cryptography", "Database Theory", "Graph Theory", "Parallel Computing", "Computer Graphics", "Formal Languages", "Complexity Theory", "Cloud Computing", "Computer Architecture", "Quantum Computing", "Information Theory", "Distributed Hash Tables", "Formal Verification", "Type Theory", "Computability", "Raft/Paxos Consensus", "HCI", "Randomized Algorithms", "Logic Programming", "Automata Theory"],
@@ -42,6 +45,7 @@ const SUGGESTIONS: Record<string, string[]> = {
 
 function PracticeContent() {
     const searchParams = useSearchParams();
+    const router = useRouter();
     const [subject, setSubject] = useState(searchParams.get('subject') || '');
     const [topic, setTopic] = useState(searchParams.get('topic') || '');
     const [isStarted, setIsStarted] = useState(false);
@@ -51,6 +55,7 @@ function PracticeContent() {
     const [history, setHistory] = useState<MCQSessionRead[]>([]);
     const [loadingHistory, setLoadingHistory] = useState(false);
     const [selectedHistorySession, setSelectedHistorySession] = useState<MCQSessionRead | null>(null);
+    const [isRoadmapModalOpen, setIsRoadmapModalOpen] = useState(false);
 
     const subjects = useMemo(() => Object.keys(SUGGESTIONS), []);
     const topicSuggestions = useMemo(() => {
@@ -97,11 +102,24 @@ function PracticeContent() {
         setIsStarted(true);
     };
 
+    const handleRoadmapGenerated = (data: any) => {
+        if (data.slug) {
+            router.push(`/roadmap/${data.slug}`);
+        }
+    };
+
     return (
         <div className="flex-1 flex flex-col bg-background manrope-body">
             <main className="flex-1 overflow-y-auto">
-                <div className="max-w-6xl mx-auto px-6 py-10 md:py-16">
-                    <div className="flex flex-col lg:flex-row gap-16">
+                <div className="max-w-7xl mx-auto px-6 py-10 md:py-16">
+                    <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+                        {/* Left Sidebar */}
+                        {!isStarted && (
+                            <div className="lg:w-[320px] shrink-0 pt-4 hidden lg:block sticky top-32 h-fit">
+                                <CommunitySidebarCard onOpenRoadmapModal={() => setIsRoadmapModalOpen(true)} />
+                            </div>
+                        )}
+
                         <div className="flex-1 min-w-0">
                             <div className="mb-8">
                                 <Breadcrumbs items={[{ label: 'Practice Lab' }]} />
@@ -115,7 +133,7 @@ function PracticeContent() {
                                         </h1>
                                     </div>
 
-                                    <div className="bg-sidebar/30 border border-border p-5 md:p-6 rounded-none relative overflow-hidden max-w-xl">
+                                    <div className="bg-sidebar/30 border border-border p-5 md:p-6 rounded-2xl relative overflow-hidden max-w-xl shadow-sm">
                                         <div className="absolute top-0 right-0 p-8 opacity-[0.03] pointer-events-none text-emerald-600">
                                             <Command className="w-32 h-32" />
                                         </div>
@@ -129,7 +147,7 @@ function PracticeContent() {
                                                     <input 
                                                         type="text"
                                                         placeholder="Select or type a subject..."
-                                                        className="w-full bg-callout-bg border border-border rounded-none px-4 py-2.5 text-[14px] font-bold text-text-heading manrope-body focus:outline-none focus:border-emerald-500 transition-all placeholder:text-text-muted/30 placeholder:font-normal"
+                                                        className="w-full bg-callout-bg border border-border rounded-xl px-4 py-2.5 text-[14px] font-bold text-text-heading manrope-body focus:outline-none focus:border-emerald-500 transition-all placeholder:text-text-muted/30 placeholder:font-normal"
                                                         value={subject}
                                                         onChange={(e) => setSubject(e.target.value)}
                                                     />
@@ -139,7 +157,7 @@ function PracticeContent() {
                                                         <button
                                                             key={s}
                                                             onClick={() => { setSubject(s); setTopic(''); }}
-                                                            className={`px-3 py-1 text-[10px] font-bold inconsolata-ui border transition-all ${
+                                                            className={`px-3 py-1 text-[10px] font-bold inconsolata-ui border transition-all rounded-full ${
                                                                 subject === s 
                                                                 ? 'bg-emerald-600 border-emerald-600 text-white' 
                                                                 : 'bg-background border-border text-text-muted hover:border-emerald-500/50 hover:text-emerald-600'
@@ -159,7 +177,7 @@ function PracticeContent() {
                                                     <input 
                                                         type="text"
                                                         placeholder="Select or type a topic..."
-                                                        className="w-full bg-callout-bg border border-border rounded-none px-4 py-2.5 text-[14px] font-bold text-text-heading manrope-body focus:outline-none focus:border-emerald-500 transition-all placeholder:text-text-muted/30 placeholder:font-normal"
+                                                        className="w-full bg-callout-bg border border-border rounded-xl px-4 py-2.5 text-[14px] font-bold text-text-heading manrope-body focus:outline-none focus:border-emerald-500 transition-all placeholder:text-text-muted/30 placeholder:font-normal"
                                                         value={topic}
                                                         onChange={(e) => setTopic(e.target.value)}
                                                     />
@@ -170,7 +188,7 @@ function PracticeContent() {
                                                             <button
                                                                 key={t}
                                                                 onClick={() => setTopic(t)}
-                                                                className={`px-3 py-1 text-[10px] font-bold inconsolata-ui border transition-all ${
+                                                                className={`px-3 py-1 text-[10px] font-bold inconsolata-ui border transition-all rounded-full ${
                                                                     topic === t 
                                                                     ? 'bg-emerald-600 border-emerald-600 text-white' 
                                                                     : 'bg-background/50 border-border/50 text-text-muted hover:border-emerald-500/50 hover:text-emerald-600'
@@ -187,7 +205,7 @@ function PracticeContent() {
                                                 <button
                                                     onClick={handleStart}
                                                     disabled={!subject.trim() || !topic.trim()}
-                                                    className="group relative inline-flex items-center justify-center px-10 py-3 bg-text-heading text-background rounded-none text-[11px] font-bold uppercase tracking-widest transition-all disabled:opacity-50 disabled:grayscale hover:opacity-90 active:scale-[0.98]"
+                                                    className="group relative inline-flex items-center justify-center px-10 py-3 bg-text-heading text-background rounded-full text-[11px] font-bold uppercase tracking-widest transition-all disabled:opacity-50 disabled:grayscale hover:opacity-90 active:scale-[0.98] shadow-lg shadow-black/5"
                                                 >
                                                     <div className="flex items-center gap-2.5">
                                                         <span>Begin Assessment</span>
@@ -234,7 +252,7 @@ function PracticeContent() {
                                             </div>
 
                                             {loadingHistory ? (
-                                                <div className="py-20 text-center border border-border border-dashed">
+                                                <div className="py-20 text-center border border-border border-dashed rounded-2xl">
                                                     <div className="animate-spin w-5 h-5 border-2 border-emerald-600 border-t-transparent rounded-full mx-auto mb-4"></div>
                                                     <p className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-widest">Recalling past sessions...</p>
                                                 </div>
@@ -244,7 +262,7 @@ function PracticeContent() {
                                                         <button
                                                             key={session.id}
                                                             onClick={() => setSelectedHistorySession(session)}
-                                                            className="group flex flex-col md:flex-row md:items-center justify-between p-4 bg-sidebar/20 border border-border hover:border-emerald-500/30 transition-all text-left relative overflow-hidden"
+                                                            className="group flex flex-col md:flex-row md:items-center justify-between p-4 bg-sidebar/20 border border-border hover:border-emerald-500/30 transition-all text-left relative overflow-hidden rounded-xl"
                                                         >
                                                             <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:opacity-[0.08] transition-opacity">
                                                                 <ChevronRight className="w-10 h-10" />
@@ -252,7 +270,7 @@ function PracticeContent() {
 
                                                             <div className="flex-1 mb-3 md:mb-0">
                                                                 <div className="flex items-center gap-2 mb-1">
-                                                                    <span className="inconsolata-ui text-[8px] font-bold text-emerald-600 uppercase tracking-widest bg-emerald-500/10 px-1.5 py-0.5 border border-emerald-500/20">
+                                                                    <span className="inconsolata-ui text-[8px] font-bold text-emerald-600 uppercase tracking-widest bg-emerald-500/10 px-1.5 py-0.5 border border-emerald-500/20 rounded-sm">
                                                                         {session.subject}
                                                                     </span>
                                                                     <span className="inconsolata-ui text-[8px] font-bold text-text-muted uppercase tracking-widest">
@@ -292,7 +310,7 @@ function PracticeContent() {
                                                         </button>                                                    ))}
                                                 </div>
                                             ) : (
-                                                <div className="py-16 text-center border border-border border-dashed bg-sidebar/5">
+                                                <div className="py-16 text-center border border-border border-dashed bg-sidebar/5 rounded-2xl">
                                                     <BrainCircuit className="w-8 h-8 text-text-muted/20 mx-auto mb-4" />
                                                     <p className="manrope-body text-[11px] text-text-muted italic opacity-60">No practice records available yet.</p>
                                                     <p className="inconsolata-ui text-[8px] font-bold text-text-muted uppercase tracking-[0.2em] mt-2">Start your first lab session above</p>
@@ -306,7 +324,7 @@ function PracticeContent() {
                                     <div className="mb-10 flex items-center justify-between">
                                         <button 
                                             onClick={() => setIsStarted(false)}
-                                            className="inconsolata-ui text-[10px] font-bold text-text-muted hover:text-emerald-600 flex items-center gap-2 transition-all uppercase tracking-widest bg-callout-bg px-4 py-1.5 border border-border"
+                                            className="inconsolata-ui text-[10px] font-bold text-text-muted hover:text-emerald-600 flex items-center gap-2 transition-all uppercase tracking-widest bg-callout-bg px-4 py-1.5 border border-border rounded-xl"
                                         >
                                             <ArrowLeft className="w-3.5 h-3.5" /> Back to Lab
                                         </button>
@@ -343,20 +361,25 @@ function PracticeContent() {
             </main>
             <Footer />
 
+            <GoalGeneratorModal 
+                isOpen={isRoadmapModalOpen} 
+                onClose={() => setIsRoadmapModalOpen(false)} 
+            />
+
             {selectedHistorySession && (
                 <div className="fixed inset-0 z-[120] bg-background flex flex-col animate-in fade-in duration-300 overflow-y-auto">
                     <div className="max-w-[650px] mx-auto w-full p-4 md:p-8 pb-16 border-x border-border">
                         <div className="flex justify-end mb-4">
                             <button 
                                 onClick={() => setSelectedHistorySession(null)}
-                                className="p-2 border border-border hover:bg-callout-bg rounded-none text-text-muted transition-colors"
+                                className="p-2 border border-border hover:bg-callout-bg rounded-xl text-text-muted transition-colors"
                             >
                                 <X className="w-4 h-4" />
                             </button>
                         </div>
 
                         <div className="text-center mb-10 border-b border-border pb-8">
-                            <div className="w-10 h-10 border border-border flex items-center justify-center mx-auto mb-3 text-lg">🏆</div>
+                            <div className="w-10 h-10 border border-border flex items-center justify-center mx-auto mb-3 text-lg rounded-xl">🏆</div>
                             <h2 className="inconsolata-ui text-xl font-bold text-text-heading mb-1 uppercase tracking-tighter">Assessment Review</h2>
                             <p className="inconsolata-ui text-[9px] text-text-muted uppercase tracking-[0.3em]">&quot;{selectedHistorySession.topic_name}&quot;</p>
                             
@@ -378,10 +401,10 @@ function PracticeContent() {
                             {selectedHistorySession.questions.map((q, i) => {
                                 const isCorrect = selectedHistorySession.user_answers?.[i] === q.correct_answer_index;
                                 return (
-                                    <div key={i} className={`p-5 border rounded-none transition-all ${isCorrect ? 'border-emerald-500/20 bg-emerald-500/5' : 'border-red-500/20 bg-red-500/5'}`}>
+                                    <div key={i} className={`p-5 border transition-all rounded-2xl ${isCorrect ? 'border-emerald-500/20 bg-emerald-500/5' : 'border-red-500/20 bg-red-500/5'}`}>
                                         <div className="flex items-start justify-between gap-4 mb-3">
                                             <div className="flex items-start gap-4">
-                                                <div className={`shrink-0 w-6 h-6 border flex items-center justify-center inconsolata-ui text-[10px] font-bold ${isCorrect ? 'border-emerald-500 text-emerald-500' : 'border-red-500 text-red-500'}`}>
+                                                <div className={`shrink-0 w-6 h-6 border flex items-center justify-center inconsolata-ui text-[10px] font-bold rounded-lg ${isCorrect ? 'border-emerald-500 text-emerald-500' : 'border-red-500 text-red-500'}`}>
                                                     {i + 1}
                                                 </div>
                                                 <h4 className="inconsolata-ui text-[14px] font-bold text-text-heading leading-tight">{q.question}</h4>
@@ -403,7 +426,7 @@ function PracticeContent() {
                                                 <p className="text-[7px] font-bold text-emerald-500 uppercase tracking-widest mb-1">Verified Correct</p>
                                                 <span className="text-text-heading font-bold">{q.options[q.correct_answer_index]}</span>
                                             </div>
-                                            <div className="bg-background border border-border/50 p-3 rounded-none text-[10px] manrope-body text-text-muted leading-relaxed italic">
+                                            <div className="bg-background border border-border/50 p-3 rounded-xl text-[10px] manrope-body text-text-muted leading-relaxed italic">
                                                 <span className="font-bold text-text-heading not-italic uppercase tracking-widest text-[7px] mr-2 block mb-1 underline decoration-accent">System Note:</span> 
                                                 {q.explanation}
                                             </div>
@@ -416,7 +439,7 @@ function PracticeContent() {
                         <div className="mt-12 text-center border-t border-border pt-8">
                             <button 
                                 onClick={() => setSelectedHistorySession(null)}
-                                className="px-16 py-3 bg-text-heading text-background rounded-none inconsolata-ui text-[11px] font-bold uppercase tracking-widest hover:opacity-90 shadow-xl transition-all"
+                                className="px-16 py-3 bg-text-heading text-background rounded-full inconsolata-ui text-[11px] font-bold uppercase tracking-widest hover:opacity-90 shadow-xl transition-all"
                             >
                                 Back to Lab
                             </button>
