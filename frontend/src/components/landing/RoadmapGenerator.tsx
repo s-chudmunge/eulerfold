@@ -138,10 +138,13 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
   }, [searchParams]);
 
   const loadingMessages = [
-    "Analyzing scope...",
-    "Curating resources...",
-    "Structuring goals...",
-    "Optimizing sequence...",
+    "Tinkering with modules...",
+    "Shimmying through data...",
+    "Calibrating curriculum...",
+    "Architecting logic...",
+    "Distilling knowledge...",
+    "Mapping the mountain...",
+    "Refactoring sequence...",
     "Finalizing path...",
   ];
 
@@ -534,14 +537,18 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
       {renderStep()}
 
       {isGenerating && (
-        <div className="mt-12 text-center animate-in fade-in duration-700">
-          <p className="inconsolata-ui text-[11px] font-bold text-accent uppercase tracking-[0.2em]">
+        <div className="mt-12 flex flex-col items-center justify-center animate-in fade-in duration-700">
+          <p className="inconsolata-ui text-[11px] font-bold text-accent uppercase tracking-[0.2em] mb-4">
             {loadingMessages[currentMessageIndex]}
           </p>
-          <div className="flex justify-center gap-1.5 mt-4">
-             {[0, 1, 2].map(i => (
-               <div key={i} className="w-1.5 h-1.5 bg-accent animate-pulse" style={{ animationDelay: `${i * 0.2}s` }}></div>
-             ))}
+          <div className="flex gap-1.5">
+            {[0, 1, 2].map(i => (
+              <div 
+                key={i} 
+                className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" 
+                style={{ animationDelay: `${i * 0.2}s` }} 
+              />
+            ))}
           </div>
         </div>
       )}

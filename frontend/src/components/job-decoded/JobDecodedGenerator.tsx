@@ -57,10 +57,13 @@ const JobDecodedGenerator: React.FC<JobDecodedGeneratorProps> = ({ onRoadmapGene
   }, []);
 
   const loadingMessages = [
-    "Analyzing scope...",
-    "Curating resources...",
-    "Structuring goals...",
-    "Optimizing sequence...",
+    "Tinkering with requirements...",
+    "Shimmying through roles...",
+    "Calibrating career path...",
+    "Architecting bridge...",
+    "Distilling job skills...",
+    "Mapping the mountain...",
+    "Refactoring sequence...",
     "Finalizing path...",
   ];
 

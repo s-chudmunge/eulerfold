@@ -13,6 +13,7 @@ interface GoalGeneratorModalProps {
 
 export default function GoalGeneratorModal({ isOpen, onClose }: GoalGeneratorModalProps) {
   const router = useRouter();
+  const [isRedirecting, setIsRedirecting] = React.useState(false);
 
   if (!isOpen) return null;
 
@@ -23,13 +24,33 @@ export default function GoalGeneratorModal({ isOpen, onClose }: GoalGeneratorMod
     sessionStorage.setItem('roadmap_just_generated', 'true');
     
     if (data.slug) {
+      setIsRedirecting(true);
       router.push(`/roadmap/${data.slug}`);
+    } else {
+      onClose();
     }
-    onClose();
   };
 
   return (
     <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/95 backdrop-blur-3xl animate-in fade-in duration-300">
+      {isRedirecting && (
+        <div className="absolute inset-0 z-50 bg-[#0f1717]/90 backdrop-blur-md flex flex-col items-center justify-center animate-in fade-in duration-500 rounded-xl">
+          <div className="flex flex-col items-center gap-4">
+            <p className="inconsolata-ui text-[12px] font-bold text-accent uppercase tracking-[0.2em]">
+              Finalizing Your Roadmap
+            </p>
+            <div className="flex gap-1.5">
+              {[0, 1, 2].map(i => (
+                <div 
+                  key={i} 
+                  className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" 
+                  style={{ animationDelay: `${i * 0.2}s` }} 
+                />
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
       <div 
         className="w-full max-w-[800px] border border-[#243333] shadow-[0_0_80px_rgba(0,0,0,0.9)] flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-300 overflow-hidden relative rounded-xl"
         style={{ backgroundColor: '#0f1717', opacity: 1 }}

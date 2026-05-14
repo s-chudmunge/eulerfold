@@ -79,20 +79,19 @@ export default function GeneratePage() {
       <PublicHeader />
 
       {isRedirecting && (
-        <div className="fixed inset-0 z-[100] bg-background/80 backdrop-blur-sm flex flex-col items-center justify-center animate-in fade-in duration-500">
+        <div className="fixed inset-0 z-[200] bg-background/95 backdrop-blur-3xl flex flex-col items-center justify-center animate-in fade-in duration-500">
           <div className="flex flex-col items-center gap-6">
-            <div className="relative">
-              <div className="w-16 h-16 border-2 border-accent/20 rounded-full" />
-              <div className="absolute inset-0 w-16 h-16 border-t-2 border-accent rounded-full animate-spin" />
-              <Sparkles className="absolute inset-0 m-auto w-6 h-6 text-accent animate-pulse" />
-            </div>
-            <div className="flex flex-col items-center gap-2">
-              <p className="inconsolata-ui text-[14px] font-bold text-text-heading tracking-widest">
+            <div className="flex flex-col items-center gap-4">
+              <p className="inconsolata-ui text-[14px] font-bold text-text-heading tracking-[0.2em] uppercase">
                 Finalizing Your Roadmap
               </p>
-              <div className="flex gap-1">
+              <div className="flex gap-1.5">
                 {[0, 1, 2].map(i => (
-                  <div key={i} className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
+                  <div 
+                    key={i} 
+                    className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" 
+                    style={{ animationDelay: `${i * 0.2}s` }} 
+                  />
                 ))}
               </div>
             </div>
