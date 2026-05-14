@@ -212,7 +212,7 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="space-y-6">
                <label className="inconsolata-ui flex items-center text-[11px] font-bold uppercase tracking-[0.2em] text-text-muted">
-                 1. Background & Aspiration
+                 1. Background & Goal
                </label>
                
                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -261,9 +261,8 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
                   <div className="relative" ref={targetRoleRef}>
                       <div className="flex items-center gap-2 mb-2">
                         <Target className="w-3.5 h-3.5 text-teal-600" />
-                        <span className="text-[13px] font-bold text-text-heading">Target Aspiration</span>
-                      </div>
-                      <div className="relative">
+                        <span className="text-[13px] font-bold text-text-heading">Target goal</span>
+                        </div>                      <div className="relative">
                         <input 
                           type="text"
                           placeholder="What you want to be..."
@@ -329,14 +328,16 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
                </div>
             </div>
 
-            <div className="pt-4">
-               <button
-                onClick={() => setStep(2)}
-                className="w-full sm:w-fit px-12 py-3 bg-text-heading text-background text-[11px] font-bold uppercase tracking-[0.2em] hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-3 rounded-lg"
-               >
-                 Define Goal <ArrowRight className="w-3.5 h-3.5" />
-               </button>
-            </div>
+            {!isGenerating && (
+              <div className="pt-4">
+                <button
+                  onClick={() => setStep(2)}
+                  className="w-full sm:w-fit px-12 py-3 bg-text-heading text-background text-[11px] font-bold uppercase tracking-[0.2em] hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-3 rounded-lg"
+                >
+                  Define Goal <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
           </div>
         );
       case 2:
@@ -397,20 +398,22 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
                </div>
             </div>
 
-            <div className="flex items-center gap-4 pt-4">
-               <button
-                onClick={() => setStep(1)}
-                className="px-8 py-3 bg-background border border-border text-text-muted text-[11px] font-bold uppercase tracking-[0.2em] hover:bg-sidebar transition-all rounded-lg"
-               >
-                 Back
-               </button>
-               <button
-                onClick={() => setStep(3)}
-                className="flex-1 sm:flex-none px-12 py-3 bg-text-heading text-background text-[11px] font-bold uppercase tracking-[0.2em] hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-3 rounded-lg"
-               >
-                 Timeline <ArrowRight className="w-3.5 h-3.5" />
-               </button>
-            </div>
+            {!isGenerating && (
+              <div className="flex items-center gap-4 pt-4">
+                <button
+                  onClick={() => setStep(1)}
+                  className="px-8 py-3 bg-background border border-border text-text-muted text-[11px] font-bold uppercase tracking-[0.2em] hover:bg-sidebar transition-all rounded-lg"
+                >
+                  Back
+                </button>
+                <button
+                  onClick={() => setStep(3)}
+                  className="flex-1 sm:flex-none px-12 py-3 bg-text-heading text-background text-[11px] font-bold uppercase tracking-[0.2em] hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-3 rounded-lg"
+                >
+                  Timeline <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
           </div>
         );
       case 3:
@@ -471,42 +474,39 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
                </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
-               <button
-                onClick={() => setStep(2)}
-                className="w-full sm:w-fit px-8 py-3 bg-background border border-border text-text-muted text-[11px] font-bold uppercase tracking-[0.2em] hover:bg-sidebar transition-all rounded-lg"
-               >
-                 Back
-               </button>
-               {!session ? (
-                  <button
-                    onClick={generateRoadmap}
-                    className="w-full sm:flex-1 group relative inline-flex items-center justify-center px-12 py-3 text-[11px] font-bold uppercase tracking-[0.2em] transition-all bg-accent text-white hover:opacity-90 active:scale-95 shadow-xl shadow-accent/20 gap-3 rounded-lg"
-                  >
-                    <LogIn className="w-3.5 h-3.5" /> Authenticate to Architect
-                  </button>
-               ) : (
-                  <button
-                    onClick={generateRoadmap}
-                    disabled={isGenerating || (credits !== null && credits < 1)}
-                    className={`w-full sm:flex-1 group relative inline-flex items-center justify-center px-12 py-3 text-[11px] font-bold uppercase tracking-[0.2em] transition-all disabled:opacity-50 rounded-lg ${
-                      credits !== null && credits < 1
-                      ? 'bg-callout-bg border border-border text-text-muted cursor-not-allowed' 
-                      : 'bg-text-heading text-background hover:opacity-90 active:scale-95 shadow-xl'
-                    }`}
-                  >
-                    <div className={`flex items-center justify-center gap-2.5 transition-transform duration-300 ${isGenerating ? 'translate-y-20' : ''}`}>
-                      <span className={`text-[13px] ${credits !== null && credits < 1 ? 'grayscale opacity-50' : ''}`}>💎</span>
-                      {credits !== null && credits < 1 ? 'Insufficient Credits' : `Architect Roadmap (${credits ?? '...'})`}
-                    </div>
-                    {isGenerating && (
-                      <div className="absolute inset-0 flex items-center justify-center animate-in slide-in-from-bottom-10 duration-300">
-                        <Loader className="w-4 h-4 animate-spin" />
+            {!isGenerating && (
+              <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
+                <button
+                  onClick={() => setStep(2)}
+                  className="w-full sm:w-fit px-8 py-3 bg-background border border-border text-text-muted text-[11px] font-bold uppercase tracking-[0.2em] hover:bg-sidebar transition-all rounded-lg"
+                >
+                  Back
+                </button>
+                {!session ? (
+                    <button
+                      onClick={generateRoadmap}
+                      className="w-full sm:flex-1 group relative inline-flex items-center justify-center px-12 py-3 text-[11px] font-bold uppercase tracking-[0.2em] transition-all bg-accent text-white hover:opacity-90 active:scale-95 shadow-xl shadow-accent/20 gap-3 rounded-lg"
+                    >
+                      <LogIn className="w-3.5 h-3.5" /> Authenticate to Architect
+                    </button>
+                ) : (
+                    <button
+                      onClick={generateRoadmap}
+                      disabled={credits !== null && credits < 1}
+                      className={`w-full sm:flex-1 group relative inline-flex items-center justify-center px-12 py-3 text-[11px] font-bold uppercase tracking-[0.2em] transition-all disabled:opacity-50 rounded-lg ${
+                        credits !== null && credits < 1
+                        ? 'bg-callout-bg border border-border text-text-muted cursor-not-allowed' 
+                        : 'bg-text-heading text-background hover:opacity-90 active:scale-95 shadow-xl'
+                      }`}
+                    >
+                      <div className="flex items-center justify-center gap-2.5">
+                        <span className={`text-[13px] ${credits !== null && credits < 1 ? 'grayscale opacity-50' : ''}`}>💎</span>
+                        {credits !== null && credits < 1 ? 'Insufficient Credits' : `Architect Roadmap (${credits ?? '...'})`}
                       </div>
-                    )}
-                  </button>
-               )}
-            </div>
+                    </button>
+                )}
+              </div>
+            )}
             {credits !== null && credits < 1 && (
                <div className="mt-4 text-center">
                  <Link href="/pricing" className="text-[11px] font-bold text-accent uppercase tracking-widest hover:underline">
