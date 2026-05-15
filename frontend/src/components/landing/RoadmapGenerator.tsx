@@ -260,7 +260,7 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
                   {/* Target Role */}
                   <div className="relative" ref={targetRoleRef}>
                       <div className="flex items-center gap-2 mb-2">
-                        <Target className="w-3.5 h-3.5 text-teal-600" />
+                        <Target className="w-3.5 h-3.5 text-accent" />
                         <span className="text-[13px] font-bold text-text-heading">Target goal</span>
                         </div>                      <div className="relative">
                         <input 

@@ -60,9 +60,6 @@ export default function CommunityRoadmapBanner({
             </button>
         )}
         <div className="relative z-10 max-w-xl">
-          <div className="flex items-center gap-2 text-accent mb-3">
-            <span className="inconsolata-ui text-[11px] font-bold uppercase tracking-wider">EulerFold Intelligence</span>
-          </div>
           <h2 className="text-[20px] md:text-[22px] font-bold mb-3 text-text-heading tracking-tight inconsolata-ui">{title}</h2>
           <p className="manrope-body text-[13px] md:text-[14px] mb-6 text-text-primary leading-relaxed font-medium">
             {description}

@@ -32,9 +32,9 @@ export default function GoalGeneratorModal({ isOpen, onClose }: GoalGeneratorMod
   };
 
   return (
-    <div className="fixed inset-0 z-[150] flex items-center justify-center p-4 bg-black/95 backdrop-blur-3xl animate-in fade-in duration-300">
+    <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/40 dark:bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
       {isRedirecting && (
-        <div className="absolute inset-0 z-50 bg-[#0f1717]/90 backdrop-blur-md flex flex-col items-center justify-center animate-in fade-in duration-500 rounded-xl">
+        <div className="absolute inset-0 z-50 bg-background/90 backdrop-blur-md flex flex-col items-center justify-center animate-in fade-in duration-500 rounded-xl">
           <div className="flex flex-col items-center gap-4">
             <p className="inconsolata-ui text-[12px] font-bold text-accent uppercase tracking-[0.2em]">
               Finalizing Your Roadmap
@@ -52,39 +52,18 @@ export default function GoalGeneratorModal({ isOpen, onClose }: GoalGeneratorMod
         </div>
       )}
       <div 
-        className="w-full max-w-[800px] border border-[#243333] shadow-[0_0_80px_rgba(0,0,0,0.9)] flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-300 overflow-hidden relative rounded-xl"
-        style={{ backgroundColor: '#0f1717', opacity: 1 }}
+        className="w-full max-w-[800px] bg-background border border-border shadow-[0_0_80px_rgba(0,0,0,0.15)] dark:shadow-[0_0_80px_rgba(0,0,0,0.6)] flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-300 overflow-hidden relative rounded-xl"
       >
-        
-        {/* Header */}
-        <div 
-          className="p-4 border-b border-[#243333] flex items-center justify-between sticky top-0 z-20"
-          style={{ backgroundColor: '#131d1d', opacity: 1 }}
+        <button 
+          onClick={onClose}
+          className="absolute top-4 right-4 z-[30] p-2 text-text-muted hover:text-text-heading hover:bg-sidebar rounded-full transition-all"
         >
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-2 pr-4 border-r border-[#243333]">
-              <img src="/apple-touch-icon.png" alt="" className="w-4 h-4 grayscale opacity-60" />
-              <span className="font-bold text-[11px] tracking-tight manrope-body text-text-heading opacity-60">EulerFold</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <Route className="w-4 h-4 text-accent" />
-              <h2 className="inconsolata-ui text-[13px] font-bold text-text-heading uppercase tracking-widest">
-                Create your step by step learning path
-              </h2>
-            </div>
-          </div>
-          <button 
-            onClick={onClose}
-            className="p-2 -mr-2 text-text-muted hover:text-text-heading transition-colors"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+          <X className="w-5 h-5" />
+        </button>
 
         {/* Content */}
         <div 
-          className="flex-1 overflow-y-auto p-6 no-scrollbar"
-          style={{ backgroundColor: '#0f1717', opacity: 1 }}
+          className="flex-1 overflow-y-auto p-10 no-scrollbar bg-background"
         >
           <div className="max-w-[600px] mx-auto">
             <RoadmapGenerator onRoadmapGenerated={handleRoadmapGenerated} />

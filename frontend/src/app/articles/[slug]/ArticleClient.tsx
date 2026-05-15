@@ -500,8 +500,16 @@ export default function ArticleClient({ article }: Props) {
               <h1 className="text-text-heading mb-[20px] tracking-tighter">
                 {article.title}
               </h1>
-              <div className="text-[17px] text-text-muted opacity-70 font-medium inconsolata-ui uppercase tracking-widest date">
-                By <span className="text-text-heading font-semibold" rel="author">{article.author}</span> / <time dateTime={new Date(article.date).toISOString()}>{article.date}</time>
+              <div className="flex flex-col gap-1 border-l-2 border-accent/20 pl-4 mb-8 mt-6">
+                <div className="text-[16px] text-text-heading font-semibold leading-tight">
+                  {article.author.split(' — ')[0]}
+                </div>
+                <div className="text-[13px] text-text-muted font-medium inconsolata-ui leading-tight">
+                  {article.author.split(' — ')[1]}
+                </div>
+                <div className="text-[12px] text-text-muted/60 font-medium inconsolata-ui uppercase tracking-wider mt-0.5">
+                  <time dateTime={new Date(article.date).toISOString()}>{article.date}</time>
+                </div>
               </div>
             </header>
 

@@ -2,7 +2,7 @@
 title: "How is AI helping us decode animal communication?"
 slug: "how-is-ai-helping-us-decode-animal-communication"
 shortSlug: "animal-communication"
-author: "Ananya Rao — Data Science Research Editor, MSc Data Analytics"
+author: "Dr. Kavya Nair — Bioinformatics Research Lead, PhD Computational Biology"
 date: "May 5, 2026"
 subject: "Biology"
 heroImage: "https://images.openai.com/static-rsc-4/DTQR0scWO7n9e7JkEP8Bufd5WpgNcW4WuZ7EWVhulQoIASJKaIDGAalLuWBNlzPSJh4pyLSajskC79qm3iH1GShBkkIDEDRCovep9rZ0qHTyBJ4KIlKeI0-amuC8_L25k83uOM7V748D9vE6RsRq98wWW13AfcGc2MWTVmoo0IX-UT8r49Dfxvl4L8ay444S?purpose=fullsize"

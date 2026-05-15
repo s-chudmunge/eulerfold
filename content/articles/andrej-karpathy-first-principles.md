@@ -1,5 +1,5 @@
 ---
-title: "The Teacher of AGI: Andrej Karpathy and the Code of First Principles"
+title: "Andrej Karpathy and the reduction of intelligence to First Principles"
 slug: "andrej-karpathy-first-principles"
 shortSlug: "karpathy"
 author: "Meera Venkatesh — Software Architecture Consultant, BEng Engineering"

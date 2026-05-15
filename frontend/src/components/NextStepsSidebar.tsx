@@ -19,10 +19,10 @@ const NextStepsSidebar: React.FC<NextStepsSidebarProps> = ({ subject, topic, cla
             Next Steps
           </h3>
           
-          {/* Practice Card */}
-          <div className="p-4 bg-sidebar/30 border border-border rounded-md hover:border-accent/40 transition-colors">
-            <h4 className="inconsolata-ui text-[11px] font-bold text-text-heading uppercase tracking-tight mb-2">Practice Lab</h4>
-            <p className="text-[12px] text-text-muted leading-relaxed mb-3 manrope-body font-medium">
+          {/* Practice Item */}
+          <div>
+            <h4 className="inconsolata-ui text-[11px] font-bold text-accent uppercase tracking-[0.1em] mb-2">Practice Lab</h4>
+            <p className="text-[13px] text-text-muted leading-relaxed mb-3 manrope-body font-medium">
               Do you want to practice some questions on <span className="text-text-heading">{subject}</span>?
             </p>
             <Link 
@@ -34,15 +34,17 @@ const NextStepsSidebar: React.FC<NextStepsSidebarProps> = ({ subject, topic, cla
             </Link>
           </div>
 
-          {/* Mastery Card */}
-          <div className="p-4 bg-sidebar/30 border border-border rounded-md hover:border-teal-600/40 transition-colors">
-            <h4 className="inconsolata-ui text-[11px] font-bold text-text-heading uppercase tracking-tight mb-2">Mastery Path</h4>
-            <p className="text-[12px] text-text-muted leading-relaxed mb-3 manrope-body font-medium">
+          <div className="h-px bg-border/40 my-6" />
+
+          {/* Mastery Item */}
+          <div>
+            <h4 className="inconsolata-ui text-[11px] font-bold text-accent uppercase tracking-[0.1em] mb-2">Mastery Path</h4>
+            <p className="text-[13px] text-text-muted leading-relaxed mb-3 manrope-body font-medium">
               Do you want to get a step-by-step path to learn <span className="text-text-heading">{subject}</span> from basics?
             </p>
             <Link 
               href={`/generate?subject=${encodeURIComponent(subject)}&goal=${encodeURIComponent(topic)}`}
-              className="inline-flex items-center gap-1.5 text-[10px] font-bold text-teal-600 uppercase tracking-widest hover:underline"
+              className="inline-flex items-center gap-1.5 text-[10px] font-bold text-accent uppercase tracking-widest hover:underline"
             >
               <span>Build Path</span>
               <ArrowRight className="w-3 h-3" />

@@ -130,9 +130,6 @@ export default function PricingSection() {
                         <div className="flex items-center gap-2 text-text-muted">
                             <span className="text-red-500/60 font-bold text-[8px]">✗</span> Uses Basic AI Model
                         </div>
-                        <div className="flex items-center gap-2 text-text-muted">
-                            <span className="text-red-500/60 font-bold text-[8px]">✗</span> No EulerFold Intelligence
-                        </div>
                     </div>
                 </div>
 
@@ -172,9 +169,6 @@ export default function PricingSection() {
                     <p className="text-[9px] text-text-muted ml-5 font-bold tracking-tight mb-2 italic">
                         (1 Credit = 1 Premium AI Roadmap)
                     </p>
-                    <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> Full EulerFold Intelligence
-                    </div>
                     <div className="flex items-center gap-2 font-bold text-accent">
                         <span className="text-accent">✓</span> Job Decoded (Full Engine)
                     </div>

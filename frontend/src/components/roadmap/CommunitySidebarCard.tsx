@@ -37,12 +37,6 @@ export default function CommunitySidebarCard({ onOpenRoadmapModal }: CommunitySi
                 </div>
 
                 <div className="relative z-10 flex flex-col h-full">
-                    <div className="mb-5">
-                        <span className="inconsolata-ui text-[10px] font-bold text-teal-500 uppercase tracking-[0.3em]">
-                            EULERFOLD INTELLIGENCE
-                        </span>
-                    </div>
-
                     <h2 className="inconsolata-ui text-[22px] font-bold text-white leading-tight mb-4 tracking-tight">
                         Join the EulerFold community
                     </h2>
