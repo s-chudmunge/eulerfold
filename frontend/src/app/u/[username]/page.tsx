@@ -3,13 +3,31 @@ import { Metadata } from 'next';
 import ProfileClient from './ProfileClient';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { supabase } from '@/lib/supabase/client';
+
+export async function generateStaticParams() {
+    try {
+        const { data: profiles } = await supabase
+            .from('profiles')
+            .select('username')
+            .not('username', 'is', null)
+            .limit(100);
+
+        if (!profiles) return [];
+        return profiles.map((p) => ({
+            username: p.username,
+        }));
+    } catch (e) {
+        return [];
+    }
+}
 
 async function getProfile(username: string) {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
     
     try {
         const res = await fetch(`${API_URL}/profile/${username}`, { 
-            next: { revalidate: 300 } // Cache for 5 minutes
+            next: { revalidate: 3600 } // Cache for 1 hour
         });
         
         if (!res.ok) return null;
@@ -61,20 +79,7 @@ export default async function PublicProfilePage({ params }: { params: { username
     const profile = await getProfile(params.username);
 
     if (!profile) {
-        return (
-            <div className="min-h-screen bg-background flex items-center justify-center p-6 transition-colors duration-300">
-                <div className="text-center space-y-6 max-w-sm">
-                    <div className="text-5xl mb-8">🐢</div>
-                    <h1 className="inconsolata-ui text-xl font-bold  tracking-normal text-text-heading">User not found</h1>
-                    <p className="manrope-body text-[14px] text-text-muted font-medium leading-relaxed italic">This username hasn't been claimed yet or is currently set to private mode.</p>
-                    <div className="pt-8">
-                        <Link href="/" className="inconsolata-ui inline-block px-8 py-3 bg-[var(--text-heading)] text-[var(--bg-main)] rounded-full text-[11px] font-bold  tracking-wide hover:opacity-90 transition-all">
-                            Return to Surface
-                        </Link>
-                    </div>
-                </div>
-            </div>
-        );
+        notFound();
     }
 
     return <ProfileClient profile={profile} />;

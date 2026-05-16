@@ -28,9 +28,9 @@ async function getInitialLeaderboard() {
   const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
   
   try {
-    // We use a 5-minute revalidation period to match the Materialized View refresh
+    // We use a 1-hour revalidation period for better ISR performance
     const res = await fetch(`${API_URL}/coins/leaderboard`, { 
-      next: { revalidate: 300 } 
+      next: { revalidate: 3600 } 
     });
 
     if (!res.ok) {

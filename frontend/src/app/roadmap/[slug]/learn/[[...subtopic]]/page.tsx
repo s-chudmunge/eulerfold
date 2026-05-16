@@ -2,7 +2,9 @@ import React from 'react';
 import { Metadata } from 'next';
 import LearnClient from './LearnClient';
 import { supabase } from '@/lib/supabase/client';
-import { redirect } from 'next/navigation';
+import { redirect, notFound } from 'next/navigation';
+
+export const revalidate = 3600;
 
 async function getRoadmapBySlugOrId(identifier: string) {
     try {
@@ -51,6 +53,10 @@ export async function generateMetadata({ params }: { params: { slug: string, sub
 
 export default async function LearnPage({ params }: { params: { slug: string, subtopic?: string[] } }) {
     const roadmap = await getRoadmapBySlugOrId(params.slug);
+
+    if (!roadmap) {
+        notFound();
+    }
 
     // Canonical URL redirection: If accessed by ID but has a slug, redirect to slug
     const isId = /^\d+$/.test(params.slug);

@@ -29,8 +29,8 @@ async function getInitialData() {
   
   try {
     const [roadmapsRes, leaderboardRes] = await Promise.all([
-      fetch(`${API_URL}/explore?limit=100`, { next: { revalidate: 300 } }),
-      fetch(`${API_URL}/coins/leaderboard`, { next: { revalidate: 300 } })
+      fetch(`${API_URL}/explore?limit=100`, { next: { revalidate: 3600 } }),
+      fetch(`${API_URL}/coins/leaderboard`, { next: { revalidate: 3600 } })
     ]);
 
     const roadmaps = roadmapsRes.ok ? await roadmapsRes.json() : [];

@@ -82,14 +82,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .from('roadmaps')
       .select('id, slug, updated_at')
       .eq('is_public', true)
-      .limit(1000); // Limit to top 1000 for sitemap performance
+      .limit(500); // Limit to top 500 for sitemap performance
 
     if (roadmaps) {
       roadmapRoutes = roadmaps.map((r) => ({
         url: `${baseUrl}/roadmap/${r.slug}`,
         lastModified: new Date(r.updated_at || new Date()),
-        changeFrequency: 'daily' as const,
-        priority: 0.9,
+        changeFrequency: 'weekly' as const,
+        priority: 0.8,
       }));
     }
   } catch (e) {
@@ -103,14 +103,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       .from('profiles')
       .select('username, created_at')
       .not('username', 'is', null)
-      .limit(1000);
+      .limit(500);
 
     if (profiles) {
       profileRoutes = profiles.map((p) => ({
         url: `${baseUrl}/u/${p.username}`,
         lastModified: new Date(p.created_at || new Date()),
-        changeFrequency: 'daily' as const,
-        priority: 0.5,
+        changeFrequency: 'monthly' as const,
+        priority: 0.4,
       }));
     }
   } catch (e) {

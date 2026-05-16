@@ -2,6 +2,25 @@ import React from 'react';
 import { Metadata } from 'next';
 import RoadmapClient from './RoadmapClient';
 import PublicRoadmapView from './PublicRoadmapView';
+import { notFound } from 'next/navigation';
+import { supabase } from '@/lib/supabase/client';
+
+export async function generateStaticParams() {
+    try {
+        const { data: roadmaps } = await supabase
+            .from('roadmaps')
+            .select('slug')
+            .eq('is_public', true)
+            .limit(100);
+
+        if (!roadmaps) return [];
+        return roadmaps.map((r) => ({
+            slug: r.slug,
+        }));
+    } catch (e) {
+        return [];
+    }
+}
 
 async function getPublicRoadmapMetadata(slug: string) {
     const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
@@ -9,7 +28,7 @@ async function getPublicRoadmapMetadata(slug: string) {
 
     try {
         // Strictly slug-based fetch for SEO and link consistency
-        const res = await fetch(endpoint, { next: { revalidate: 60 } });
+        const res = await fetch(endpoint, { next: { revalidate: 3600 } });
         if (!res.ok) return null;
         return res.json();
     } catch (e) {
@@ -100,6 +119,10 @@ export default async function RoadmapDetailPage({ params }: { params: { slug: st
     // Only fetch by slug. If a numeric ID is passed, the backend by-slug endpoint 
     // will naturally fail or 404, which is correct for clean SEO.
     const initialRoadmap = await getPublicRoadmapMetadata(params.slug);
+
+    if (!initialRoadmap) {
+        notFound();
+    }
 
     if (initialRoadmap?.is_public) {
         return (
