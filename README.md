@@ -14,10 +14,9 @@ The core idea is to move from "reading" to "doing".
 2. **Career**: Use **Job Decoded** to paste a raw Job Description and get an adaptive roadmap that bridges the gap between your current experience and the role requirements.
 3. **Schedule**: Use the **Study Planner** to generate tasks based on your intensity (Casual, Balanced, or Intense).
 4. **Research**: Explore **Research Decoded** to master technical papers and breakthroughs.
-5. **Build**: Use **BuildPilot** for manual projects and tracking missions outside of generated roadmaps.
 6. **Practice**: You get questions for every topic. You have to answer them to move on.
 7. **Proof**: At the end, you upload your work (images, code, or PDFs). We check if your work actually hits the goals. 
-8. **Profile**: Your progress is tracked on a public page. You can export your **Earned Record** as a verified PDF with a QR code.
+8. **Profile**: Your progress is tracked on a public page. You can export your **Earned Record** as a technical PDF with a QR code.
 
 ## Tech
 
@@ -39,7 +38,7 @@ I tried to keep the plumbing as clean as possible:
 ## Key bits
 
 - **Progress weight**: We don't just track clicks. Your score is 40% Proof of Work, 30% Practice, 15% Topic Completion, and 15% Concept Depth.
-- **Auditor**: If the model thinks your proof is bad, you can dispute it. A second pass checks if the first one was too harsh.
+- **Reviewer**: AI analyzes your proof and provides direct technical feedback. Max 3 lines, no fluff.
 - **Streaks & Coins**: Small things to keep you coming back every day.
 - **Search**: A fast way to find roadmaps or exam papers from others.
 

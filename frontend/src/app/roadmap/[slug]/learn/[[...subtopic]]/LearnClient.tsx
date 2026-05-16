@@ -30,7 +30,8 @@ import {
   Info,
   Terminal,
   Box,
-  Calendar
+  Calendar,
+  Send
 } from 'lucide-react';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
@@ -40,6 +41,7 @@ import MCQPractice from '@/components/roadmap/MCQPractice';
 import SyllabusModal from './SyllabusModal';
 import TaskModal from '@/components/planner/TaskModal';
 import YouTubePlayer from '@/components/roadmap/YouTubePlayer';
+import HomeworkSubmissionModal from '@/components/roadmap/HomeworkSubmissionModal';
 
 export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoadmap }: { id?: string, slug?: string[], initialRoadmap?: RoadmapData | null }) {
     const params = useParams();
@@ -48,6 +50,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
     
     const [roadmap, setRoadmap] = useState<RoadmapData | null>(initialRoadmap || null);
     const [loading, setLoading] = useState(!initialRoadmap);
+    const [isHomeworkModalOpen, setIsHomeworkModalOpen] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [profile, setProfile] = useState<any>(null);
     
@@ -610,16 +613,18 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                     </div>
                                 </button>
 
-                                <Link 
-                                    href={`${roadmap?.model === 'manual-build' ? '/project' : '/roadmap'}/${roadmap?.slug || id}/build/${currentModuleIndex + 1}`}
+                                <button 
+                                    onClick={() => setIsHomeworkModalOpen(true)}
                                     className="w-full flex items-start gap-3 px-3 py-3 rounded-lg text-[13px] text-text-primary hover:text-text-heading hover:bg-callout-bg transition-all group"
                                 >
-                                    <Box className="h-5 w-5 opacity-60 mt-0.5 group-hover:opacity-100" />
+                                    <Send className="h-5 w-5 mt-0.5 opacity-60 group-hover:opacity-100" />
                                     <div className="flex flex-col">
-                                        <span className="font-medium">BuildPilot</span>
-                                        <span className="text-[10px] mt-1 opacity-80 group-hover:opacity-100 transition-opacity">Submit proof of work for audit</span>
+                                        <span className="font-medium">Submit Homework</span>
+                                        <span className="text-[10px] mt-1 opacity-80 group-hover:opacity-100 transition-opacity">Verify your skills</span>
                                     </div>
-                                </Link>                            </div>
+                                </button>
+
+                            </div>
                         </div>
 
                         {/* Module Navigation */}
@@ -869,6 +874,21 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                     }}
                     initialRoadmapId={roadmap.id}
                     initialModuleNumber={currentModuleIndex + 1}
+                />
+            )}
+
+            {roadmap && (
+                <HomeworkSubmissionModal 
+                    isOpen={isHomeworkModalOpen}
+                    onClose={() => setIsHomeworkModalOpen(false)}
+                    roadmapId={roadmap.id}
+                    moduleNumber={currentModuleIndex + 1}
+                    moduleTitle={modules[currentModuleIndex].title}
+                    instructions={modules[currentModuleIndex].proof_of_work_instructions}
+                    onSuccess={(evaluation) => {
+                        // Optional: refresh progress or show celebration
+                        console.log("Homework submitted successfully:", evaluation);
+                    }}
                 />
             )}
         </div>

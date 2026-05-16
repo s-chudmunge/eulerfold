@@ -12,6 +12,7 @@ from .emails.base import send_email, build_html_email
 from .emails.onboarding import send_onboarding_email
 from .emails.welcome import send_welcome_email
 from .emails.pro_activation import send_pro_activation_email
+from .emails.homework_results import send_homework_results_email
 
 logger = logging.getLogger(__name__)
 

@@ -18,9 +18,13 @@ async def get_optional_current_user(request: Request) -> Optional[User]:
     sb = get_supabase_client()
 
     try:
-        # Verify Supabase JWT token with timeout
-        response = await verify_token_with_timeout(token)
-        if not response or not response.user:
+        # Verify Supabase JWT token with timeout + retry
+        try:
+            response = await verify_token_with_timeout(token)
+            if not response or not response.user:
+                return None
+        except Exception as e:
+            logger.error(f"Optional Auth: Token verification failed after retries: {e}")
             return None
 
         supabase_user = response.user

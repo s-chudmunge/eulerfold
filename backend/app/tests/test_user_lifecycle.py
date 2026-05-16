@@ -190,54 +190,7 @@ def test_mark_topic_complete(mock_sankalp):
                                 # Verify system updates
                                 mock_sb.table("module_progress").upsert.assert_called()
                                 assert mock_calc.called
-                            # --- 4. VERIFICATION FLOW TEST (DISPUTE) ---
 
-                            def test_dispute_and_reevaluation(mock_sankalp):
-                                """Verifies that a user can dispute a rejection and it gets upgraded by the auditor."""
-
-                                mock_submission = {
-                                    "id": 1001,
-                                    "roadmap_id": 60,
-                                    "module_number": 1,
-                                    "user_email": SANKALP_USER["email"],
-                                    "evaluation_level": "Beginner",
-                                    "description": "I did the work but you rejected me."
-                                }
-
-                                mock_audit_result = {
-                                    "evaluation": "Upon re-review, this meets the requirements.",
-                                    "evaluation_level": "Developing",
-                                    "follow_up_question": None
-                                }
-
-                                with patch("app.routers.submissions.get_supabase_client") as mock_get_sb:
-                                    mock_sb = MagicMock()
-                                    mock_get_sb.return_value = mock_sb
-
-                                    # 1. Fetch submission
-                                    mock_sb.table("submissions").select().eq().single().execute.return_value.data = mock_submission
-                                    # 2. Mock roadmap fetch for context
-                                    mock_sb.table("roadmaps").select().eq().execute.return_value.data = [{"roadmap_plan": {}}]
-
-                                    with patch("app.routers.submissions.generate_text", new_callable=AsyncMock) as mock_gen:
-                                        mock_gen.return_value = json.dumps(mock_audit_result)
-
-                                        with patch("app.routers.submissions.calculate_user_skill_scores_for_roadmap") as mock_calc:
-                                            app.dependency_overrides[get_current_user] = lambda: mock_sankalp
-                                            try:
-                                                response = client.post(
-                                                    "/submissions/1001/re-evaluate",
-                                                    json={"dispute_context": "I actually provided the source code in the description if you look closely."}
-                                                )
-
-                                                assert response.status_code == 200
-                                                data = response.json()
-                                                assert data["evaluation"]["evaluation_level"] == "Developing"
-
-                                                # Ensure the database was updated
-                                                mock_sb.table("submissions").update.assert_called()
-                                                mock_sb.table("module_progress").upsert.assert_called()
-                                                assert mock_calc.called
 # --- 5. UI/PROFILE DATA TEST ---
 
 def test_public_profile_view(mock_sankalp):

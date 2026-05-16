@@ -6,7 +6,7 @@ import ActivityPill from '@/components/ActivityPill';
 
 const testimonials = [
   {
-    quote: "I was struggling with where to start with LLMs. EulerFold gave me a roadmap in like 5 seconds that actually made sense. The audits are tough but fair.",
+    quote: "I was struggling with where to start with LLMs. EulerFold gave me a roadmap in like 5 seconds that actually made sense. The reviews are tough but fair.",
     author: "Alex M.",
     role: "Software Engineer",
     initials: "AM",
@@ -72,7 +72,7 @@ const testimonials = [
     layout: "standard"
   },
   {
-    quote: "I love the 'Auditor Senate' concept. It's much more motivating to have my work 'evaluated' than just checking a box.",
+    quote: "I love the Review System concept. It's much more motivating to have my work evaluated than just checking a box.",
     author: "Marcus T.",
     role: "Backend Developer",
     initials: "MT",

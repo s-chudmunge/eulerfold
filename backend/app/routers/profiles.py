@@ -153,7 +153,7 @@ async def get_public_profile(username: str):
 
     # 4. Fetch Proof of Work (Verified only) - Include Solid and Developing
     subs_data = []
-    audit_precision = 0.0
+    review_precision = 0.0
     user_email = profile.get("email")
     if user_email:
         # Fetch ALL submissions for this user to calculate precision
@@ -161,7 +161,7 @@ async def get_public_profile(username: str):
         if all_s_res.data:
             total_subs = len(all_s_res.data)
             solid_subs = len([s for s in all_s_res.data if s.get("evaluation_level") == "Solid"])
-            audit_precision = (solid_subs / total_subs) * 100 if total_subs > 0 else 0.0
+            review_precision = (solid_subs / total_subs) * 100 if total_subs > 0 else 0.0
 
         # Fetch verified submissions for the profile (include both skill-linked and standalone builds)
         s_res = sb.table("submissions") \
@@ -271,7 +271,7 @@ async def get_public_profile(username: str):
         is_pro=profile.get("is_pro", False),
         eulercoins=profile.get("eulercoins", 0),
         roadmap_credits=profile.get("roadmap_credits", 0),
-        audit_precision=audit_precision,
+        review_precision=review_precision,
         learning_momentum=learning_momentum,
         total_skills=len(skills),
         total_roadmaps=total_roadmaps_count,

@@ -12,7 +12,7 @@ sys.path.append(os.path.join(os.getcwd(), "backend"))
 os.environ["GEMINI_API_KEY"] = "AIzaSyAQC9-uWz0rVIPWjVcs600B2h_u3cHTMko"
 
 from app.utils.gemini_client import generate_text
-from app.routers.submissions import call_auditor, resolve_senate_verdict
+from app.routers.submissions import evaluate_submission
 from app.routers.practice import _generate_mcq_questions
 
 async def test_roadmap_logic():
@@ -45,32 +45,27 @@ Return ONLY JSON in this format:
     except Exception as e:
         print(f"❌ Roadmap logic error: {e}")
 
-async def test_audit_senate_logic():
-    print("\n[AI TEST 2] Audit Senate (Parallel Personas)...")
+async def test_review_logic():
+    print("\n[AI TEST 2] Homework Review (Single Evaluator)...")
     context = {
         "module_title": "Variables",
         "roadmap_subject": "Python",
         "topics_text": "Assigning variables, types",
         "expected_deliverable": "A script demonstrating variables.",
         "description": "I wrote a script that prints x=10.",
-        "files_summary": "file.py: x = 10; print(x)",
-        "link_context": ""
+        "link": "",
+        "link_content": "x = 10; print(x)"
     }
     
     try:
-        # We test if we can call the auditors in parallel as the router does
-        results = await asyncio.gather(
-            call_auditor("technician", context, []),
-            call_auditor("educator", context, []),
-            call_auditor("relevance_judge", context, [])
-        )
+        result = await evaluate_submission(context)
         
-        votes = [r["level"] for r in results]
-        final_level, agreement, _ = resolve_senate_verdict(votes)
-        print(f"✅ Senate logic confirmed. Verdict: {final_level} (Agreement: {agreement}/3)")
-        print(f"   Votes: {votes}")
+        level = result.get("level")
+        summary = result.get("summary")
+        print(f"✅ Review logic confirmed. Verdict: {level}")
+        print(f"   Summary: {summary}")
     except Exception as e:
-        print(f"❌ Audit Senate logic error: {e}")
+        print(f"❌ Review logic error: {e}")
 
 async def test_mcq_logic():
     print("\n[AI TEST 3] MCQ Question Generation...")
@@ -88,7 +83,7 @@ async def test_mcq_logic():
 async def main():
     print("=== EulerFold Deep AI Integration Tests ===")
     await test_roadmap_logic()
-    await test_audit_senate_logic()
+    await test_review_logic()
     await test_mcq_logic()
     print("\n=== All AI Features Verified for Production ===")
 

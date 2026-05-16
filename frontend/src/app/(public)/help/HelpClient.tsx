@@ -104,7 +104,7 @@ export default function HelpClient() {
     {
       category: 'Integrity',
       question: 'How is my technical score calculated?',
-      answer: 'We use a multi-signal formula: 40% Project Proof (module audits), 30% Recall Score (practice sessions), 15% Topic Coverage (completed units), and 15% Cognitive Depth (technical difficulty).',
+      answer: 'We use a multi-signal formula: 40% Project Proof (homework reviews), 30% Recall Score (practice sessions), 15% Topic Coverage (completed units), and 15% Cognitive Depth (technical difficulty).',
       icon: <BarChart3 className="w-3.5 h-3.5" />
     },
     {
@@ -120,9 +120,9 @@ export default function HelpClient() {
       icon: <Star className="w-3.5 h-3.5" />
     },
     {
-      category: 'Auditing',
-      question: 'What is the Audit Senate?',
-      answer: 'The Audit Senate is a committee of specialized AI agents—The Technician, The Educator, and The Relevance Judge—who independently evaluate your Proof of Work. They verify technical accuracy, depth of understanding, and alignment with industry standards.',
+      category: 'Verification',
+      question: 'What is Submit Homework?',
+      answer: 'Submit Homework is a process where specialized AI agents evaluate your Proof of Work. They verify technical accuracy, depth of understanding, and alignment with industry standards.',
       icon: <Zap className="w-3.5 h-3.5" />
     },
     {

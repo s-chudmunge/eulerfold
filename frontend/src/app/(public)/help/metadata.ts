@@ -2,7 +2,7 @@ import { Metadata } from 'next'
 
 export const metadata: Metadata = {
   title: 'Help Center & FAQ',
-  description: 'Find answers to common questions about EulerFold learning roadmaps, AI credits, technical mastery scoring, and the Audit Senate.',
+  description: 'Find answers to common questions about EulerFold learning roadmaps, AI credits, technical mastery scoring, and homework verification.',
   keywords: [
     'eulerfold help',
     'learning hub support',
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     'coding tutorial support',
     'learning roadmap guide',
     'technical support',
-    'Audit Senate',
+    'Submit Homework',
     'EulerCoins',
     'Roadmap Credits'
   ],

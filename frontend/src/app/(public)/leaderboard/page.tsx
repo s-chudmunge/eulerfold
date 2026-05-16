@@ -4,7 +4,7 @@ import LeaderboardClient from './LeaderboardClient';
 
 export const metadata: Metadata = {
   title: 'Global Rankings',
-  description: 'See the top learners on EulerFold. Track global rankings based on technical skills, learning consistency, and verified audits.',
+  description: 'See the top learners on EulerFold. Track global rankings based on technical skills, learning consistency, and homework reviews.',
   keywords: 'leaderboard, global rankings, technical skills, learning streaks, EulerFold community',
   openGraph: {
     title: 'Global Rankings',

@@ -12,7 +12,7 @@ export default function HelpPage() {
     },
     {
       question: 'How is my technical score calculated?',
-      answer: 'We use an "Honest Progress" formula: 40% Project Proof (module audits), 30% Recall Score (practice sessions), 15% Topic Coverage (completed units), and 15% Cognitive Depth (technical difficulty).',
+      answer: 'We use an "Honest Progress" formula: 40% Project Proof (homework reviews), 30% Recall Score (practice sessions), 15% Topic Coverage (completed units), and 15% Cognitive Depth (technical difficulty).',
     },
     {
       question: 'What do the letter grades (A+, B, F) mean?',
@@ -23,8 +23,8 @@ export default function HelpPage() {
       answer: 'To reach 100%, you typically need to complete multiple roadmaps for the same skill. The system aggregates your proof across units, rewarding you for tackling more "Advanced" (high-depth) material.',
     },
     {
-      question: 'What is the Audit Senate?',
-      answer: 'The Audit Senate is a committee of three specialized AI agents—The Technician, The Educator, and The Relevance Judge—who independently vote on your Proof of Work. They verify technical quality, authentic understanding, and objective alignment to ensure your skills are industry-ready.',
+      question: 'What is Submit Homework?',
+      answer: 'Submit Homework is a process where specialized AI agents evaluate your Proof of Work. They verify technical quality, authentic understanding, and objective alignment to ensure your skills are industry-ready.',
     },
     {
       question: 'Can I reuse skills across different roadmaps?',

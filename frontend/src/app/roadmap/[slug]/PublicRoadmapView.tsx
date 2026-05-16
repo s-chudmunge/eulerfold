@@ -12,6 +12,7 @@ import StarRating from '@/components/roadmap/StarRating';
 import { DiscussionSection } from '@/components/discussions/DiscussionSection';
 import MCQPractice from '@/components/roadmap/MCQPractice';
 import SocialShare from '@/components/SocialShare';
+import HomeworkSubmissionModal from '@/components/roadmap/HomeworkSubmissionModal';
 import { 
     Library, 
     Play, 
@@ -49,7 +50,11 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
     const [extending, setExtending] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [successMsg, setSuccessMsg] = useState<string | null>(null);
+    const [submissions, setSubmissions] = useState<any[]>([]);
     const [selectedPracticeTopic, setSelectedPracticeTopic] = useState<{topic: any, moduleIndex: number} | null>(null);
+    const [isHomeworkModalOpen, setIsHomeworkModalOpen] = useState<boolean>(false);
+    const [showCloneModal, setShowCloneModal] = useState<boolean>(false);
+    const [submittingModule, setSubmittingModule] = useState<{number: number, title: string, instructions?: string} | null>(null);
 
     const router = useRouter();
 
@@ -68,11 +73,23 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
         refreshProfile();
     }, [refreshProfile, isAuthenticated]);
 
+    const fetchSubmissions = React.useCallback(async () => {
+        if (isAuthenticated && roadmap?.id) {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session) {
+                    const res = await submissionsAPI.listSubmissions(roadmap.id, session.access_token);
+                    setSubmissions(res.submissions || []);
+                }
+            } catch (err) {
+                console.error("Failed to fetch submissions:", err);
+            }
+        }
+    }, [isAuthenticated, roadmap?.id]);
+
     useEffect(() => {
-        const fetchSubmissions = async () => {
-            // Placeholder if needed later
-        };
-    }, [isAuthenticated]);
+        fetchSubmissions();
+    }, [fetchSubmissions]);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -264,7 +281,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
             <PublicHeader />
             
             <main className="flex-grow">
-                <div className="max-w-[1000px] mx-auto px-6 py-12 md:px-12 md:py-16">
+                <div className="max-w-[1000px] mx-auto px-6 pt-16 pb-12 md:px-12 md:pt-24 md:pb-16">
                     
                     {/* Public Toolbar */}
                     <div className="flex flex-col md:flex-row md:items-start justify-between gap-6 mb-8 border-b border-border pb-8">
@@ -309,6 +326,13 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                 <span className="text-accent font-bold uppercase tracking-widest text-[11px] font-inter">{roadmap.subject}</span>
                             </div>
 
+                            {/* Roadmap Description */}
+                            {(roadmap.goal || roadmap.description) && (
+                                <p className="manrope-body text-[14px] md:text-[15px] text-text-muted leading-relaxed font-medium max-w-3xl mt-2 italic opacity-90">
+                                    &ldquo;{roadmap.goal || roadmap.description}&rdquo;
+                                </p>
+                            )}
+
                             {/* Social Sharing Component */}
                             <SocialShare 
                                 title={roadmap.title} 
@@ -338,19 +362,6 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                         </div>
                     </div>
 
-                    {/* Roadmap Description */}
-                    {(roadmap.goal || roadmap.description) && (
-                        <div className="mb-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
-                            <div className="flex items-center gap-3 mb-3">
-                                <Target className="w-4 h-4 text-accent" />
-                                <h2 className="manrope-body text-[12px] font-bold uppercase tracking-[0.2em] text-text-heading font-inter">Objective</h2>
-                            </div>
-                            <p className="manrope-body text-[15px] text-text-primary leading-relaxed font-medium bg-accent-muted/30 p-5 rounded-2xl border border-accent/10 italic">
-                                &ldquo;{roadmap.goal || roadmap.description}&rdquo;
-                            </p>
-                        </div>
-                    )}
-
                     {/* Main Roadmap Display */}
                     <div className="mb-20">
                         {/* DEBUG: {JSON.stringify({ isPro, isOwner, completed: roadmap.progress?.completed_topics, total: roadmap.progress?.total_topics, extCount: roadmap.extension_count })} */}
@@ -359,6 +370,8 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                             isOwner={isOwner || roadmap.is_cloned}
                             justGenerated={false}
                             hideHeader={true}
+                            onCloneRequired={() => setShowCloneModal(true)}
+                            externalSubmissions={submissions}
                             onExtend={
                                 isPro && isOwner && (roadmap.progress?.completed_topics || 0) >= (roadmap.progress?.total_topics || 1) && (roadmap.extension_count || 0) < 5
                                 ? () => setShowExtendModal(true)
@@ -366,6 +379,10 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                             }
                             onDeleteExtension={handleDeleteExtension}
                             onPractice={(topic, mIdx) => setSelectedPracticeTopic({ topic, moduleIndex: mIdx })}
+                            onOpenHomework={(mNum, mTitle, mInst) => {
+                                setSubmittingModule({ number: mNum, title: mTitle, instructions: mInst });
+                                setIsHomeworkModalOpen(true);
+                            }}
                         />
                     </div>
 
@@ -555,6 +572,68 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                 onRefreshProfile={refreshProfile}
                                 onClose={() => setSelectedPracticeTopic(null)}
                             />
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Homework Modal */}
+            {roadmap && submittingModule && (
+                <HomeworkSubmissionModal
+                    isOpen={isHomeworkModalOpen}
+                    onClose={() => setIsHomeworkModalOpen(false)}
+                    roadmapId={roadmap.id}
+                    moduleNumber={submittingModule.number}
+                    moduleTitle={submittingModule.title}
+                    instructions={submittingModule.instructions}
+                    onSuccess={(evaluation) => {
+                        setIsHomeworkModalOpen(false);
+                        fetchSubmissions();
+                    }}
+                />
+            )}
+
+            {/* Clone Modal */}
+            {showCloneModal && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-background/80 animate-in fade-in duration-200">
+                    <div className="w-full max-w-md bg-background border border-border shadow-2xl rounded-3xl overflow-hidden animate-in zoom-in-95 duration-200">
+                        <div className="p-8 text-center">
+                            <div className="w-16 h-16 bg-accent/10 text-accent rounded-2xl flex items-center justify-center mx-auto mb-6">
+                                <Copy className="w-8 h-8" />
+                            </div>
+                            <h3 className="inconsolata-ui text-xl font-bold text-text-heading mb-3 tracking-tight">Clone to Dashboard</h3>
+                            <p className="manrope-body text-[14px] text-text-muted mb-8 leading-relaxed font-medium italic px-4">
+                                You need to clone this roadmap to your dashboard to start learning, track your progress, and submit proof of work.
+                            </p>
+                            
+                            <div className="flex flex-col gap-3">
+                                <button
+                                    onClick={() => {
+                                        setShowCloneModal(false);
+                                        handleClone();
+                                    }}
+                                    disabled={saving}
+                                    className="w-full py-4 bg-accent text-white rounded-2xl text-[14px] font-bold inconsolata-ui tracking-wide hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-xl shadow-accent/20 disabled:opacity-50"
+                                >
+                                    {saving ? (
+                                        <>
+                                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                            Cloning...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Copy className="w-4 h-4" />
+                                            Clone Now
+                                        </>
+                                    )}
+                                </button>
+                                <button
+                                    onClick={() => setShowCloneModal(false)}
+                                    className="w-full py-3 text-text-muted hover:text-text-heading text-[12px] font-bold inconsolata-ui tracking-widest uppercase transition-colors"
+                                >
+                                    Maybe Later
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -4,12 +4,10 @@ import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import RoadmapGenerator from '@/components/landing/RoadmapGenerator';
 import RoadmapDisplay from '@/components/landing/RoadmapDisplay';
-import ManualRoadmapBuilder from '@/components/manual-build/ManualRoadmapBuilder';
 import JobDecodedGenerator from '@/components/job-decoded/JobDecodedGenerator';
 import { RoadmapData } from '@/lib/api';
 import { 
   Sparkles,
-  Settings2,
   Briefcase
 } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
@@ -20,18 +18,18 @@ import Footer from '@/components/Footer';
 export default function GeneratePage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialMode = searchParams.get('mode') as 'ai' | 'manual' | 'job' || 'ai';
+  const initialMode = searchParams.get('mode') as 'ai' | 'job' || 'ai';
 
   const [roadmapData, setRoadmapData] = useState<RoadmapData | null>(null);
   const [generatedFormData, setGeneratedFormData] = useState<any | null>(null);
   const [profile, setProfile] = useState<any>(null);
-  const [mode, setMode] = useState<'ai' | 'manual' | 'job'>(initialMode);
+  const [mode, setMode] = useState<'ai' | 'job'>(initialMode);
   const [isRedirecting, setIsRedirecting] = useState(false);
 
   // Sync mode with query param if it changes
   useEffect(() => {
     const m = searchParams.get('mode');
-    if (m === 'job' || m === 'ai' || m === 'manual') {
+    if (m === 'job' || m === 'ai') {
       setMode(m as any);
     }
   }, [searchParams]);
@@ -110,7 +108,7 @@ export default function GeneratePage() {
             {/* Compact Header */}
             <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
               <h1 className="inconsolata-ui text-[22px] font-bold text-text-heading tracking-tight">
-                {roadmapData ? 'Review Generation' : mode === 'ai' ? 'AI Architect' : mode === 'job' ? 'Job Decoded' : 'Manual Build'}
+                {roadmapData ? 'Review Generation' : mode === 'ai' ? 'AI Architect' : 'Job Decoded'}
               </h1>
 
               {!roadmapData && (
@@ -135,16 +133,6 @@ export default function GeneratePage() {
                   >
                     <Briefcase className={`w-3.5 h-3.5 ${mode === 'job' ? 'text-teal-600' : ''}`} /> Job Decoded
                   </button>
-                  <button 
-                    onClick={() => setMode('manual')}
-                    className={`flex items-center gap-2 px-4 py-1.5 rounded-sm text-[11px] font-bold tracking-widest uppercase transition-all shrink-0 ${
-                      mode === 'manual' 
-                        ? 'bg-background text-text-heading shadow-sm' 
-                        : 'text-text-muted hover:text-text-primary'
-                    }`}
-                  >
-                    <Settings2 className={`w-3.5 h-3.5 ${mode === 'manual' ? 'text-blue-500' : ''}`} /> Manual
-                  </button>
                 </div>
               )}
             </div>
@@ -156,9 +144,6 @@ export default function GeneratePage() {
                 )}
                 {mode === 'job' && (
                   <JobDecodedGenerator onRoadmapGenerated={handleRoadmapGenerated} />
-                )}
-                {mode === 'manual' && (
-                  <ManualRoadmapBuilder onSuccess={(data) => handleRoadmapGenerated(data, null)} />
                 )}
               </div>
             ) : (

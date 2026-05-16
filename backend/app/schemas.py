@@ -58,7 +58,7 @@ class UserBase(BaseModel):
     eulercoins: int = 0
     roadmap_credits: float = 1.0
     is_pro: bool = False
-    senate_eval_count: int = 0
+    review_count: int = 0
     last_active_date: Optional[datetime] = None
     skills: List[UserSkill] = []
 
@@ -359,7 +359,7 @@ class PublicProfile(BaseModel):
     is_pro: bool = False
     eulercoins: int = 0
     roadmap_credits: float = 0.0
-    audit_precision: float = 0.0 # % of Solid ratings
+    review_precision: float = 0.0 # % of Solid ratings
     learning_momentum: Dict[str, int] = Field(default={"mastered": 0, "explored": 0})
     total_skills: int
     total_roadmaps: int

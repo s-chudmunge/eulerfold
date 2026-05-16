@@ -10,7 +10,7 @@ import sys
 sys.path.append(os.getcwd())
 
 from app.routers.roadmaps import update_learning_progress
-from app.routers.submissions import create_submission, request_re_evaluation
+from app.routers.submissions import create_submission
 from app.routers.profiles import get_public_profile
 from app.schemas import ProgressUpdate, User
 from app.core.supabase_client import get_supabase_client
@@ -107,35 +107,29 @@ async def interactive_test():
             description = description.ljust(305, ".")
 
         bg_tasks = BackgroundTasks()
-        print(yellow("\n  ⏳ AI Lead Auditor is reviewing your work..."))
+        print(yellow("\n  ⏳ AI Technical Reviewer is analyzing your work..."))
         
-        res_sub = await create_submission(bg_tasks, {
-            "roadmap_id": roadmap_id,
-            "module_number": mod_num,
-            "link": link,
-            "description": description,
-            "files": []
-        }, current_user)
+        # Fixed argument order: submission, background_tasks, current_user
+        from app.routers.submissions import SubmissionCreate
+        sub_obj = SubmissionCreate(
+            roadmap_id=roadmap_id,
+            module_number=mod_num,
+            description=description,
+            link=link or None
+        )
         
-        eval_data = res_sub["evaluation"]
-        level = eval_data["evaluation_level"]
-        sub_id = res_sub["submission"]["id"]
+        res_sub = await create_submission(sub_obj, bg_tasks, current_user)
+        
+        eval_result = res_sub["evaluation"]
+        level = eval_result["level"]
+        summary = eval_result["summary"]
         
         if level == "Beginner":
             print(f"  ❌ {bold('REJECTED')} ({level})")
-            print(f"  💬 Feedback: {eval_data['evaluation']}")
-            
-            do_dispute = input(cyan("\n  Would you like to DISPUTE this result? (y/n): "))
-            if do_dispute.lower() == 'y':
-                context = input("  Enter dispute reasoning for Senior Auditor: ")
-                print(yellow("  ⏳ Senior Auditor is re-evaluating..."))
-                
-                res_dispute = await request_re_evaluation(bg_tasks, sub_id, {"dispute_context": context}, current_user)
-                level = res_dispute["evaluation"]["evaluation_level"]
-                print(green(f"  ✅ New Audit Result: {level}"))
+            print(f"  💬 Feedback: {summary}")
         else:
             print(green(f"  ✅ {bold('PASSED')} ({level})"))
-            print(f"  💬 Feedback: {eval_data['evaluation'][:200]}...")
+            print(f"  💬 Feedback: {summary[:200]}...")
 
         # C. Flush Skills
         print(yellow("\n  📈 Syncing technical identity background tasks..."))
@@ -152,7 +146,7 @@ async def interactive_test():
     profile = await get_public_profile(username)
     print(f"\n👤 PUBLIC PROFILE: @{profile.username}")
     print(f"🗺️ Total Units: {profile.total_roadmaps}")
-    print(f"🏗️ Verification Logs: {len(profile.submissions)}")
+    print(f"🏗️ Review Logs: {len(profile.submissions)}")
     
     if profile.skills:
         print("\n" + bold("🏆 UPDATED TECHNICAL INVENTORY:"))

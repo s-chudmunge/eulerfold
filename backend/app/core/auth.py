@@ -11,17 +11,22 @@ from app.schemas import User
 from app.core.config import settings
 from app.core.supabase_client import get_supabase_client
 
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
+
 logger = logging.getLogger(__name__)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", auto_error=False)
 
+@retry(
+    stop=stop_after_attempt(3),
+    wait=wait_exponential(multiplier=1, min=1, max=4),
+    retry=retry_if_exception_type((Exception)),
+    before_sleep=lambda retry_state: logger.info(f"Retrying auth verification (attempt {retry_state.attempt_number})...")
+)
 async def verify_token_with_timeout(token: str, timeout: float = 10.0):
     """Verify Supabase token with a timeout to avoid hanging on network issues."""
     try:
         supabase = get_supabase_client()
-        # Supabase-py's get_user is now async-friendly in v2+ and we should call it directly
-        # if using the async client, or use wait_for if it's a synchronous call we're wrapping.
-        # Actually, if we're using the standard supabase-py, get_user is sync.
         response = await asyncio.wait_for(
             asyncio.to_thread(supabase.auth.get_user, token),
             timeout=timeout
@@ -29,10 +34,10 @@ async def verify_token_with_timeout(token: str, timeout: float = 10.0):
         return response
     except asyncio.TimeoutError:
         logger.error(f"Auth: Supabase token verification timed out after {timeout}s")
-        return None
+        raise # Raise for tenacity to retry
     except Exception as e:
-        logger.error(f"Auth verification failed: {e}")
-        return None
+        logger.error(f"Auth verification attempt failed: {e}")
+        raise # Raise for tenacity to retry
 
 async def get_current_user(request: Request) -> User:
     credentials_exception = HTTPException(
@@ -49,9 +54,13 @@ async def get_current_user(request: Request) -> User:
     token = auth_header.split(" ")[1]
 
     try:
-        # Verify Supabase JWT token with timeout
-        response = await verify_token_with_timeout(token)
-        if not response or not response.user:
+        # Verify Supabase JWT token with timeout + retry
+        try:
+            response = await verify_token_with_timeout(token)
+            if not response or not response.user:
+                raise credentials_exception
+        except Exception as e:
+            logger.error(f"Auth: Supabase token verification failed after retries: {e}")
             raise credentials_exception
 
         supabase_user = response.user

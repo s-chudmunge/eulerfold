@@ -247,9 +247,9 @@ async def read_users_me(current_user: User = Depends(get_current_user)):
         
         user_data["skills"] = skills
 
-        # Fetch Audit Senate count for this user
-        senate_res = supabase.table("submissions").select("id", count="exact").eq("user_email", email).eq("is_senate_eval", True).execute()
-        user_data["senate_eval_count"] = senate_res.count or 0
+        # Fetch Homework Review count for this user
+        review_res = supabase.table("submissions").select("id", count="exact").eq("user_email", email).eq("is_senate_eval", True).execute()
+        user_data["review_count"] = review_res.count or 0
 
         return user_data
     return current_user

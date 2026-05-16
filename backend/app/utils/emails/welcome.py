@@ -46,7 +46,7 @@ async def send_welcome_email(to: str, display_name: str = None, username: str = 
                 <a href="{base_url}/learn" style="color: #0f766e; text-decoration: underline; font-weight: 600;">Practice</a> and earn badges
             </li>
             <li>
-                <a href="{profile_url}" style="color: #0f766e; text-decoration: underline; font-weight: 600;">Showcase your work</a> and get audited by our AI
+                <a href="{profile_url}" style="color: #0f766e; text-decoration: underline; font-weight: 600;">Showcase your work</a> and get reviewed by our AI
             </li>
         </ul>
         

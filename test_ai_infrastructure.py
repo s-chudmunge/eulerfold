@@ -61,7 +61,7 @@ def main():
     print("\n" + "="*50)
     print("AUTH-PROTECTED AI TESTS")
     print("="*50)
-    print("To test Roadmap Generation and the Audit Senate, you need a Bearer token.")
+    print("To test Roadmap Generation and the Homework Review, you need a Bearer token.")
     print("1. Open EulerFold in your browser.")
     print("2. Open DevTools (F12) -> Network tab.")
     print("3. Refresh and find a request to /api/roadmaps.")
@@ -82,9 +82,9 @@ def main():
                           "description": "Validating the viral-ready infrastructure."
                       }, headers=headers)
 
-        # Test 6: Audit Senate (Uses Parallel AI Gathering)
+        # Test 6: Homework Review (Uses Single AI Evaluation)
         # Note: Requires a roadmap_id. Adjust as needed.
-        print("\n[INFO] Skipping Audit Senate test (requires valid roadmap_id).")
+        print("\n[INFO] Skipping Homework Review test (requires valid roadmap_id).")
     
     # 5. Rate Limiter Test
     test_rate_limiter()

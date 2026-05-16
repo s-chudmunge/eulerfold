@@ -121,19 +121,21 @@ export default function AnnouncementBar() {
                 <motion.div
                   animate={{ 
                     scale: [1, 1.2, 1],
+                    rotate: [0, 20, 0]
                   }}
                   transition={{ 
-                    duration: 0.5, 
+                    duration: 2, 
                     repeat: Infinity, 
                   }}
+                  className="text-lg"
                 >
-                  <Zap className="w-4 h-4 fill-current" />
+                  ☀️
                 </motion.div>
                 <span className="text-white">
                     {discountStatus.hasDiscount ? (
-                        <>MOTHER&apos;S DAY SALE: 50% OFF — <span className="font-black text-orange-300 font-mono">{formatTime(discountStatus.remainingSeconds)}</span> LEFT</>
+                        <>END OF SUMMER SALE: 25% OFF — <span className="font-black text-orange-300 font-mono">{formatTime(discountStatus.remainingSeconds)}</span> LEFT</>
                     ) : (
-                        <>MOTHER&apos;S DAY SALE STARTING IN — <span className="font-black text-orange-300 font-mono">{formatTime(discountStatus.remainingSeconds)}</span></>
+                        <>END OF SUMMER SALE STARTING IN — <span className="font-black text-orange-300 font-mono">{formatTime(discountStatus.remainingSeconds)}</span></>
                     )}
                 </span>
               </div>

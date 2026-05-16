@@ -52,16 +52,16 @@ Read it fully before making any changes. Rules here are not suggestions.
 - In `planner.py`, ALWAYS define `/tasks/range` BEFORE `/tasks/{task_id}` to avoid UUID validation errors.
 - Reversing these orders causes 422 errors because FastAPI matches the static string as a param.
 
-### The Audit Senate (Submissions)
+### Simple Homework System (Submissions)
 
-- Proof of Work is evaluated by a **3-Auditor Senate** (Technician, Educator, Relevance Judge).
+- Proof of Work is evaluated by a **Technical Reviewer** (Single AI pass).
+- Evaluations must be concise (2-4 lines), direct, and analytical—no fluffy encouragement.
 - A **10-minute cooldown** is enforced after a "Beginner" (failed) evaluation for a specific module.
-- Users have a **one-time dispute/re-evaluation limit** per submission.
-- Deviation from the topic is acceptable if the "Relevance Judge" determines the learner demonstrated mastery of the broader Roadmap Subject.
+- Successful evaluations (Solid/Developing) automatically trigger skill score updates.
+- Deviation from the topic is acceptable if the AI determines the learner demonstrated mastery of the broader Roadmap Subject.
 
-### BuildPilot & Research Decoded
+### Research Decoded
 
-- **BuildPilot** (Manual Builds) uses `model="manual-build"` in the database.
 - **Research Decoded** content is stored in `content/research-decoded/` and requires specific metadata for the UI.
 - Exportable PDFs are generated via `reportlab` in `profiles.py` and must include the teal/mint branding.
 

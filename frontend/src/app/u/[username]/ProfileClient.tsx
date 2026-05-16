@@ -53,7 +53,7 @@ export default function ProfileClient({ profile }: Props) {
     const [activeTab, setActiveTab] = useState<TabType>('overview');
     const [uploading, setUploading] = useState(false);
     const [currentAvatarUrl, setCurrentAvatarUrl] = useState(profile.avatar_url);
-    const [selectedAudit, setSelectedAudit] = useState<any>(null);
+    const [selectedReview, setSelectedReview] = useState<any>(null);
     const [activityMap, setActivityMap] = useState<Record<string, number> | undefined>(undefined);
 
     // Section collapse states
@@ -466,7 +466,7 @@ export default function ProfileClient({ profile }: Props) {
                                                     )}
                                                 </div>
                                                 <button 
-                                                    onClick={() => setSelectedAudit(sub)}
+                                                    onClick={() => setSelectedReview(sub)}
                                                     className="text-[10px] font-bold text-text-muted hover:text-accent transition-colors uppercase tracking-widest inconsolata-ui flex items-center gap-1.5"
                                                 >
                                                     View Full Log <ChevronRight className="w-3.5 h-3.5" />
@@ -476,7 +476,7 @@ export default function ProfileClient({ profile }: Props) {
                                     ))
                                 ) : (
                                     <div className="py-20 text-center border border-dashed border-border rounded-none bg-sidebar/5">
-                                        <p className="text-[13px] text-text-muted italic opacity-60">Awaiting verification logs.</p>
+                                        <p className="text-[13px] text-text-muted italic opacity-60">Awaiting review logs.</p>
                                     </div>
                                 )}
                             </div>
@@ -529,19 +529,19 @@ export default function ProfileClient({ profile }: Props) {
                 </div>
             </div>
 
-            {/* Audit Details Modal */}
-            {selectedAudit && (
-                <AuditModal 
-                    sub={selectedAudit} 
-                    onClose={() => setSelectedAudit(null)} 
+            {/* Review Details Modal */}
+            {selectedReview && (
+                <ReviewModal 
+                    sub={selectedReview} 
+                    onClose={() => setSelectedReview(null)} 
                 />
             )}
         </div>
     );
 }
 
-/* Audit Details Modal component inspired by ProjectClient */
-function AuditModal({ sub, onClose }: { sub: any; onClose: () => void }) {
+/* Review Details Modal component */
+function ReviewModal({ sub, onClose }: { sub: any; onClose: () => void }) {
     return (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 animate-in fade-in duration-200">
             <div className="w-full max-w-2xl max-h-[85vh] bg-background border border-border shadow-2xl rounded-none flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
@@ -549,7 +549,7 @@ function AuditModal({ sub, onClose }: { sub: any; onClose: () => void }) {
                 <div className="px-8 py-6 border-b border-border flex justify-between items-start bg-background shrink-0">
                     <div className="space-y-1">
                         <div className="flex items-center gap-3">
-                            <h3 className="inconsolata-ui text-xl font-bold text-text-heading tracking-tight">Audit Verification Record</h3>
+                            <h3 className="inconsolata-ui text-xl font-bold text-text-heading tracking-tight">Homework Review Record</h3>
                             <div className={`px-2.5 py-1 rounded-none text-[10px] font-black uppercase tracking-widest inconsolata-ui border ${
                                 sub.evaluation_level === 'Solid' || sub.evaluation_level === 'Expert' ? 'bg-emerald-500/5 border-emerald-500/10 text-emerald-600' :
                                 sub.evaluation_level === 'Developing' ? 'bg-amber-500/5 border-amber-500/10 text-amber-600' :
@@ -559,7 +559,7 @@ function AuditModal({ sub, onClose }: { sub: any; onClose: () => void }) {
                             </div>
                         </div>
                         <p className="text-[12px] font-bold text-text-muted inconsolata-ui uppercase tracking-wider opacity-60">
-                            Submitted on {new Date(sub.submitted_at).toLocaleString()}
+                            Logged on {new Date(sub.submitted_at).toLocaleString()}
                         </p>
                     </div>
                     <button onClick={onClose} className="text-text-muted hover:text-text-heading p-1 transition-colors">
@@ -571,7 +571,7 @@ function AuditModal({ sub, onClose }: { sub: any; onClose: () => void }) {
                 <div className="p-8 overflow-y-auto">
                     <div className="space-y-8 pb-4">
                         <section className="space-y-3">
-                            <h4 className="inconsolata-ui text-[11px] font-black uppercase tracking-widest text-text-muted">Builder Notes</h4>
+                            <h4 className="inconsolata-ui text-[11px] font-black uppercase tracking-widest text-text-muted">Submission Overview</h4>
                             <div className="p-5 bg-sidebar/30 border border-border rounded-none">
                                 <p className="text-[15px] text-text-heading leading-relaxed italic">
                                     &ldquo;{sub.description}&rdquo;
@@ -580,41 +580,34 @@ function AuditModal({ sub, onClose }: { sub: any; onClose: () => void }) {
                         </section>
 
                         <section className="space-y-4">
-                            <h4 className="inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] text-text-muted">Senate Deliberation</h4>
+                            <h4 className="inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] text-text-muted">Technical Analysis</h4>
                             <div className="grid grid-cols-1 gap-4">
                                 {[
-                                    { role: 'Technician', vote: sub.senate_votes?.[0], reasoning: sub.senate_reasoning?.technician, icon: Code2 },
-                                    { role: 'Educator', vote: sub.senate_votes?.[1], reasoning: sub.senate_reasoning?.educator, icon: Target },
-                                    { role: 'Relevance Judge', vote: sub.senate_votes?.[2], reasoning: sub.senate_reasoning?.relevance_judge, icon: ShieldCheck }
+                                    { label: 'Technical Depth', reasoning: sub.senate_reasoning?.technical || sub.senate_reasoning?.technician, icon: Code2 },
+                                    { label: 'Understanding', reasoning: sub.senate_reasoning?.understanding || sub.senate_reasoning?.educator, icon: Target },
+                                    { label: 'Relevance', reasoning: sub.senate_reasoning?.relevance || sub.senate_reasoning?.relevance_judge, icon: ShieldCheck }
                                 ].map((item) => (
-                                   <div key={item.role} className="p-6 bg-header border border-border rounded-none space-y-4">
-                                       <div className="flex items-center justify-between">
-                                           <div className="flex items-center gap-3">
-                                               <item.icon className="w-4 h-4 text-accent/50" />
-                                               <p className="text-[11px] font-black uppercase tracking-widest text-text-muted inconsolata-ui">{item.role}</p>
-                                               {item.reasoning && (
-                                                   <TTSListenButton text={`${item.role} evaluation: ${item.reasoning}`} label={item.role} />
-                                               )}
-                                           </div>
-                                           <p className={`text-[11px] font-black uppercase tracking-widest inconsolata-ui ${
-                                               item.vote === 'Solid' || item.vote === 'Expert' ? 'text-emerald-600' :
-                                               item.vote === 'Developing' ? 'text-amber-600' :
-                                               'text-text-muted'
-                                           }`}>{item.vote || 'Pending'}</p>
+                                   <div key={item.label} className="p-6 bg-header border border-border rounded-none space-y-3">
+                                       <div className="flex items-center gap-3">
+                                           <item.icon className="w-4 h-4 text-accent/50" />
+                                           <p className="text-[11px] font-black uppercase tracking-widest text-text-muted inconsolata-ui">{item.label}</p>
+                                           {item.reasoning && (
+                                               <TTSListenButton text={`${item.label} analysis: ${item.reasoning}`} label={item.label} />
+                                           )}
                                        </div>
                                        <p className="text-[14px] text-text-heading leading-relaxed font-medium">
-                                           {item.reasoning || 'No detailed reasoning provided.'}
+                                           {item.reasoning || 'Not explicitly detailed.'}
                                        </p>
                                    </div>
                                 ))}
                                 </div>
-                                {sub.senate_summary && (
+                                {(sub.senate_summary || sub.evaluation) && (
                                 <div className="p-5 bg-accent/5 border border-accent/10 rounded-none flex items-center justify-between gap-4">
                                    <p className="text-[14px] text-accent font-bold leading-relaxed">
-                                       Verdict: {sub.senate_summary}
+                                       Verdict: {sub.senate_summary || sub.evaluation}
                                    </p>
                                    <TTSListenButton 
-                                       text={`Final Verdict: ${sub.senate_summary}`} 
+                                       text={`Final Verdict: ${sub.senate_summary || sub.evaluation}`} 
                                        variant="full" 
                                        label="Listen to Verdict" 
                                    />
@@ -634,7 +627,7 @@ function AuditModal({ sub, onClose }: { sub: any; onClose: () => void }) {
                                 >
                                     <div className="flex items-center gap-3">
                                         <Github className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
-                                        <span className="text-[13px] font-bold text-text-heading">Source Code Repository</span>
+                                        <span className="text-[13px] font-bold text-text-heading">View Resource</span>
                                     </div>
                                     <ArrowUpRight className="w-4 h-4 text-text-muted" />
                                 </a>
@@ -646,6 +639,7 @@ function AuditModal({ sub, onClose }: { sub: any; onClose: () => void }) {
         </div>
     );
 }
+
 
 function SkillCard({ skill }: { skill: any }) {
     const [isExpanded, setIsExpanded] = useState(false);

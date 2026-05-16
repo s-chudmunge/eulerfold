@@ -32,7 +32,7 @@ export default function PricingClient() {
     };
 
     return (
-        <>
+        <div className="pricing-container">
             {/* Discount Alert */}
             {discountStatus.hasDiscount && (
                 <div className="mb-8 p-6 bg-orange-600 dark:bg-orange-700 border-b-4 border-orange-900/20 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl relative overflow-hidden group">
@@ -46,9 +46,9 @@ export default function PricingClient() {
                         <div>
                             <div className="flex items-center gap-2 mb-1">
                                 <span className="px-2 py-0.5 bg-orange-900/20 rounded text-[10px] font-black text-white uppercase tracking-tighter">Live Now</span>
-                                <h3 className="inconsolata-ui text-[16px] font-black text-white uppercase tracking-tight leading-none">Mother&apos;S Day Flash Sale</h3>
+                                <h3 className="inconsolata-ui text-[16px] font-black text-white uppercase tracking-tight leading-none">End of Summer Flash Sale</h3>
                             </div>
-                            <p className="manrope-body text-[12px] text-orange-50/90 font-medium">50% discount applied. Build your roadmaps at half the cost.</p>
+                            <p className="manrope-body text-[12px] text-orange-50/90 font-medium">25% discount applied. ☀️ Grab your credits before the season ends.</p>
                         </div>
                     </div>
                     <div className="flex flex-col items-end gap-1 relative z-10">
@@ -63,25 +63,31 @@ export default function PricingClient() {
 
             {/* Upcoming Discount Hint */}
             {discountStatus.isToday && !discountStatus.hasDiscount && discountStatus.remainingSeconds > 0 && (
-                <div className="mb-8 p-6 bg-[var(--callout-bg)] border border-[var(--callout-border)] border-l-4 border-l-teal-600 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm relative overflow-hidden">
-                    <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-full bg-teal-600/10 flex items-center justify-center shrink-0">
-                            <Info className="w-6 h-6 text-teal-700" />
+                <div className="mb-10 p-6 bg-sidebar border border-border border-l-4 border-l-teal-600 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xl relative overflow-hidden group">
+                    {/* Subtle summer glow background */}
+                    <div className="absolute top-0 right-0 -mt-10 -mr-10 w-40 h-40 bg-teal-500/5 rounded-full blur-3xl group-hover:bg-teal-500/10 transition-colors duration-700" />
+                    
+                    <div className="flex items-center gap-5 relative z-10">
+                        <div className="w-14 h-14 rounded-full bg-teal-600/10 flex items-center justify-center shrink-0 shadow-inner border border-teal-600/20">
+                            <Zap className="w-7 h-7 text-teal-600" />
                         </div>
                         <div>
-                            <div className="flex items-center gap-2 mb-1">
-                                <span className="px-2 py-0.5 bg-teal-600/10 border border-teal-600/20 rounded text-[10px] font-bold text-teal-700 uppercase tracking-widest">Upcoming Event</span>
-                                <h3 className="inconsolata-ui text-[16px] font-black text-text-heading uppercase tracking-tight leading-none">Mother&apos;S Day Sale</h3>
+                            <div className="flex items-center gap-3 mb-1.5">
+                                <span className="px-2 py-0.5 bg-teal-600/10 border border-teal-600/20 rounded text-[9px] font-black text-teal-600 uppercase tracking-widest">Coming Soon</span>
+                                <h3 className="inconsolata-ui text-[18px] font-black text-text-heading uppercase tracking-tight leading-none">End of Summer Sale ☀️</h3>
                             </div>
-                            <p className="manrope-body text-[12px] text-text-muted font-medium">Get 50% off all credits starting very soon. Don't miss out!</p>
+                            <p className="manrope-body text-[13px] text-text-muted font-medium max-w-[320px]">Get <span className="text-teal-600 font-bold">25% off</span> all credits. Prepare for your next technical challenge.</p>
                         </div>
                     </div>
-                    <div className="flex flex-col items-center sm:items-end gap-1">
-                        <div className="flex items-center gap-2 px-4 py-2 bg-[var(--text-heading)] text-[var(--bg-main)] rounded shadow-md inconsolata-ui text-[14px] font-black">
-                            <Clock className="w-4 h-4 text-teal-400" />
-                            <span className="font-mono">{renderTimer(discountStatus.remainingSeconds)}</span>
+
+                    <div className="flex flex-col items-center md:items-end gap-2 relative z-10">
+                        <div className="flex items-center gap-2 px-5 py-2.5 bg-background border border-border rounded shadow-lg">
+                            <Clock className="w-4 h-4 text-teal-500 animate-pulse" />
+                            <span className="font-mono text-[18px] font-bold text-text-heading tracking-tighter">
+                                {renderTimer(discountStatus.remainingSeconds)}
+                            </span>
                         </div>
-                        <span className="text-[9px] text-text-muted uppercase tracking-[0.2em] font-bold">Starts in</span>
+                        <span className="text-[10px] text-text-muted uppercase tracking-[0.25em] font-bold">Starts In</span>
                     </div>
                 </div>
             )}
@@ -122,118 +128,133 @@ export default function PricingClient() {
             </div>
 
             {/* Pricing Tiers Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Starter Tier */}
-                <div className="flex flex-col p-6 border border-border rounded-none bg-background">
-                    <div className="mb-6">
-                        <span className="inconsolata-ui text-[9px] font-bold text-text-muted uppercase tracking-widest mb-3 inline-block">Always Free</span>
-                        <div className="flex items-baseline justify-between mb-1">
-                            <span className="inconsolata-ui text-2xl font-bold text-text-heading">Starter</span>
-                            <span className="inconsolata-ui text-xl font-bold text-text-muted">Free</span>
+                <div className="flex flex-col p-8 border border-border rounded-none bg-background relative group">
+                    <div className="mb-8">
+                        <div className="flex items-center justify-between mb-4">
+                            <span className="inconsolata-ui text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">Tier 01</span>
+                            <span className="inconsolata-ui text-[11px] font-bold text-text-muted uppercase">Free</span>
                         </div>
-                        <p className="manrope-body text-[12px] text-text-muted">Standard features for everyone.</p>
+                        <h2 className="inconsolata-ui text-[24px] font-bold text-text-heading tracking-tight mb-2">Basic</h2>
+                        <p className="manrope-body text-[13px] text-text-muted leading-relaxed">
+                            Essential tools for self-directed technical learning.
+                        </p>
                     </div>
 
-                    <div className="space-y-2 mb-8 flex-1 text-[11px] text-text-primary">
-                        <div className="flex items-center gap-2.5">
-                            <span className="text-accent">✓</span> Learn from all lessons
-                        </div>
-                        <div className="flex items-center gap-2.5">
-                            <span className="text-accent">✓</span> Copy any roadmap
-                        </div>
-                        <div className="flex items-center gap-2.5">
-                            <span className="text-accent">✓</span> Your own skill profile
-                        </div>
-                        <div className="flex items-center gap-2.5">
-                            <span className="text-accent">✓</span> 5 Initial roadmaps
-                        </div>
-                        <div className="flex items-center gap-2.5">
-                            <span className="text-accent">✓</span> Job Decoded (Up to 4w)
-                        </div>
-                        <div className="flex items-center gap-2.5">
-                            <span className="text-accent">✓</span> 2 Full Audit Senate evals
-                        </div>
-                        <div className="pt-2 mt-2 border-t border-border/40 opacity-50">
-                            <div className="flex items-center gap-2.5 text-text-muted">
-                                <span className="text-red-500/60">✗</span> Uses Basic AI Model
+                    <div className="space-y-4 mb-10 flex-1">
+                        <div className="space-y-3">
+                            <div className="flex items-start gap-3 text-[12px] text-text-primary">
+                                <span className="text-teal-600 mt-0.5">✓</span>
+                                <span>Complete curriculum & lesson library access</span>
                             </div>
-                            <div className="flex items-center gap-2.5 text-text-muted">
-                                <span className="text-red-500/60">✗</span> No Custom Extensions
+                            <div className="flex items-start gap-3 text-[12px] text-text-primary">
+                                <span className="text-teal-600 mt-0.5">✓</span>
+                                <span>Public Roadmap index & cloning</span>
                             </div>
-                            <div className="flex items-center gap-2.5 text-text-muted">
-                                <span className="text-red-500/60">✗</span> No Practice Mode
+                            <div className="flex items-start gap-3 text-[12px] text-text-primary">
+                                <span className="text-teal-600 mt-0.5">✓</span>
+                                <span>Skill profile & progress tracking</span>
+                            </div>
+                            <div className="flex items-start gap-3 text-[12px] text-text-primary">
+                                <span className="text-teal-600 mt-0.5">✓</span>
+                                <span>5 AI Roadmap generations</span>
+                            </div>
+                            <div className="flex items-start gap-3 text-[12px] text-text-primary">
+                                <span className="text-teal-600 mt-0.5">✓</span>
+                                <span>4-Week career goal projections</span>
+                            </div>
+                        </div>
+
+                        <div className="pt-6 border-t border-border/50 space-y-3 opacity-40">
+                            <div className="flex items-start gap-3 text-[11px] text-text-muted">
+                                <span className="text-text-muted/50 mt-0.5">×</span>
+                                <span>No Dynamic course extensions</span>
+                            </div>
+                            <div className="flex items-start gap-3 text-[11px] text-text-muted">
+                                <span className="text-text-muted/50 mt-0.5">×</span>
+                                <span>No Priority AI reasoning models</span>
                             </div>
                         </div>
                     </div>
 
                     <Link 
                         href="/learn" 
-                        className="w-full py-2 border border-border text-text-heading rounded-none text-center inconsolata-ui text-[10px] font-bold uppercase tracking-widest hover:bg-callout-bg transition-all"
+                        className="w-full py-3 border border-border text-text-heading rounded-none text-center inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] hover:bg-sidebar transition-all"
                     >
                         Start Learning
                     </Link>
                 </div>
 
                 {/* Pro Tier */}
-                <div className="flex flex-col p-6 border border-[var(--accent)] rounded-none bg-accent-muted/5 relative overflow-hidden">
+                <div className="flex flex-col p-8 border-2 border-teal-600/30 rounded-none bg-teal-900/[0.02] relative overflow-hidden group">
                     {discountStatus.hasDiscount && (
-                        <div className="absolute top-0 right-0 bg-orange-500 text-white px-8 py-1 rotate-45 translate-x-[25px] translate-y-[10px] text-[10px] font-black uppercase tracking-tighter">
-                            -50% OFF
+                        <div className="absolute top-0 right-0 bg-orange-600 text-white px-10 py-1.5 rotate-45 translate-x-[32px] translate-y-[12px] text-[10px] font-black uppercase tracking-widest shadow-lg z-20">
+                            {Math.round((1 - DISCOUNTED_PRICE/NORMAL_PRICE) * 100)}% OFF
                         </div>
                     )}
                     
-                    <div className="mb-6">
-                        <span className="inconsolata-ui text-[9px] font-bold text-accent uppercase tracking-widest mb-3 inline-block">One-time payment</span>
-                        <div className="flex items-baseline justify-between mb-1">
-                            <span className="inconsolata-ui text-2xl font-bold text-text-heading">Pro</span>
+                    {/* Background glow */}
+                    <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-teal-600/5 rounded-full blur-3xl -z-10" />
+                    
+                    <div className="mb-8 relative z-10">
+                        <div className="flex items-center justify-between mb-4">
+                            <span className="inconsolata-ui text-[10px] font-black text-teal-600 uppercase tracking-[0.2em]">Tier 02</span>
                             <div className="flex items-center gap-2">
-                                {discountStatus.hasDiscount && (
+                                {(discountStatus.hasDiscount || (discountStatus.isToday && discountStatus.remainingSeconds > 0)) && (
                                     <span className="inconsolata-ui text-sm text-text-muted line-through opacity-50">₹{NORMAL_PRICE}</span>
                                 )}
-                                <span className="inconsolata-ui text-xl font-bold text-accent">₹{currentPrice}</span>
+                                <span className="inconsolata-ui text-2xl font-black text-text-heading">₹{currentPrice}</span>
                             </div>
                         </div>
-                        <p className="manrope-body text-[12px] text-text-muted">Advanced study paths.</p>
+                        <h2 className="inconsolata-ui text-[24px] font-bold text-text-heading tracking-tight mb-2">Pro</h2>
+                        <p className="manrope-body text-[13px] text-text-muted leading-relaxed">
+                            The full engine for technical depth and industry readiness.
+                        </p>
                     </div>
 
-                    <div className="space-y-2 mb-8 flex-1 text-[11px] text-text-primary font-medium">
-                        <div className="flex items-center gap-2.5">
-                            <span className="text-accent">✓</span> 20 Premium Credits
-                        </div>
-                        <p className="text-[10px] text-text-muted ml-6 font-bold tracking-tight mb-3 italic">
-                            (1 Credit = 1 Premium AI Roadmap)
-                        </p>
-                        <div className="flex items-center gap-2.5 font-bold text-accent">
-                            <span className="text-accent">✓</span> Job Decoded (Full Engine)
-                        </div>
-                        <div className="flex items-center gap-2.5">
-                            <span className="text-accent">✓</span> Customized Roadmap Extensions
-                        </div>
-                        <div className="flex items-center gap-2.5">
-                            <span className="text-accent">✓</span> Premium Practice Mode
-                        </div>
-                        <div className="flex items-center gap-2.5">
-                            <span className="text-accent">✓</span> Audit Senate (0.1 Credits/eval)
-                        </div>
-                        <div className="flex items-center gap-2.5">
-                            <span className="text-accent">✓</span> Up to 12 Week Durations
+                    <div className="space-y-4 mb-10 flex-1 relative z-10">
+                        <div className="space-y-3">
+                            <div className="flex items-start gap-3 text-[12px] text-text-primary font-bold">
+                                <span className="text-teal-600 mt-0.5">✓</span>
+                                <span>20 Premium Credits (1 per Roadmap)</span>
+                            </div>
+                            <div className="flex items-start gap-3 text-[12px] text-text-primary">
+                                <span className="text-teal-600 mt-0.5">✓</span>
+                                <span>Full Job Market Intelligence engine</span>
+                            </div>
+                            <div className="flex items-start gap-3 text-[12px] text-text-primary">
+                                <span className="text-teal-600 mt-0.5">✓</span>
+                                <span>Dynamic Depth Extensions (Infinite)</span>
+                            </div>
+                            <div className="flex items-start gap-3 text-[12px] text-text-primary">
+                                <span className="text-teal-600 mt-0.5">✓</span>
+                                <span>AI Homework Reviews (Full Access)</span>
+                            </div>
+                            <div className="flex items-start gap-3 text-[12px] text-text-primary">
+                                <span className="text-teal-600 mt-0.5">✓</span>
+                                <span>12-Week Strategic Goal Mapping</span>
+                            </div>
+                            <div className="flex items-start gap-3 text-[12px] text-teal-700 font-black italic">
+                                <span className="mt-0.5">✓</span>
+                                <span>Priority access to reasoning models</span>
+                            </div>
                         </div>
                     </div>
 
                     {isLoggedIn ? (
                         <button
                             onClick={() => setIsPaymentModalOpen(true)}
-                            className={`w-full py-2 ${discountStatus.hasDiscount ? 'bg-orange-600' : 'bg-[#111] dark:bg-[#14b8a6]'} !text-white rounded-none text-center inconsolata-ui text-[10px] font-bold uppercase tracking-widest hover:opacity-90 transition-all shadow-md`}
+                            className={`w-full py-3 ${discountStatus.hasDiscount ? 'bg-orange-600 hover:bg-orange-700' : 'bg-teal-700 hover:bg-teal-800'} text-white rounded-none text-center inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] transition-all shadow-xl active:scale-[0.98] relative z-10`}
                         >
-                            Buy Credits (₹{currentPrice})
+                            Activate Pro (₹{currentPrice})
                         </button>
-
                     ) : (
                         <Link 
                             href="/login?next=/pricing"
-                            className={`w-full py-2 ${discountStatus.hasDiscount ? 'bg-orange-600' : 'bg-[#111] dark:bg-[#14b8a6]'} !text-white rounded-none text-center inconsolata-ui text-[10px] font-bold uppercase tracking-widest hover:opacity-90 transition-all shadow-md`}
+                            className={`w-full py-3 ${discountStatus.hasDiscount ? 'bg-orange-600 hover:bg-orange-700' : 'bg-teal-700 hover:bg-teal-800'} text-white rounded-none text-center inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] transition-all shadow-xl relative z-10`}
                         >
-                            Login to Buy Credits
+                            Login to Upgrade
                         </Link>
                     )}
                 </div>
@@ -247,6 +268,6 @@ export default function PricingClient() {
                     window.location.reload();
                 }} 
             />
-        </>
+        </div>
     );
 }

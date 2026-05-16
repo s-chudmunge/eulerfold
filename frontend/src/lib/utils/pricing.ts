@@ -4,7 +4,7 @@
  */
 
 export const NORMAL_PRICE = 299;
-export const DISCOUNTED_PRICE = 149; // 50% off from 299
+export const DISCOUNTED_PRICE = 224; // 25% off from 299 (approx)
 
 export interface DiscountStatus {
     isToday: boolean;
@@ -19,27 +19,28 @@ export function getDiscountStatus(): DiscountStatus {
     // Current time in UTC
     const now = new Date();
     
-    // Target dates in IST: May 10th and May 11th, 2026
-    // All day (00:00 to 23:59:59 IST)
+    // End of Summer Flash Sale: May 18th to June 18th, 2026
     // IST is UTC+5:30
     
-    const startTimeIST = new Date('2026-05-10T00:00:00+05:30');
-    const endTimeIST = new Date('2026-05-12T00:00:00+05:30'); // End at start of May 12th
+    const startTimeIST = new Date('2026-05-18T00:00:00+05:30');
+    const endTimeIST = new Date('2026-06-19T00:00:00+05:30'); // End at start of June 19th
     
-    const isToday = now.getFullYear() === 2026 && now.getMonth() === 4 && (now.getDate() === 10 || now.getDate() === 11);
     const isWithinTime = now >= startTimeIST && now < endTimeIST;
     const hasDiscount = isWithinTime;
+    
+    // Check if it's "today" (May 17th) to show upcoming notice
+    const isToday = now.getFullYear() === 2026 && now.getMonth() === 4 && now.getDate() === 17;
     
     let remainingSeconds = 0;
     if (isWithinTime) {
         remainingSeconds = Math.max(0, Math.floor((endTimeIST.getTime() - now.getTime()) / 1000));
-    } else if (now < startTimeIST && (now.getFullYear() === 2026 && now.getMonth() === 4 && now.getDate() === 9)) {
-        // If it's May 9, show countdown to May 10th
+    } else if (now < startTimeIST && isToday) {
+        // Show countdown to start if it's May 17
         remainingSeconds = Math.max(0, Math.floor((startTimeIST.getTime() - now.getTime()) / 1000));
     }
     
     return {
-        isToday: isToday || (now.getFullYear() === 2026 && now.getMonth() === 4 && now.getDate() === 9),
+        isToday: isToday || isWithinTime,
         isWithinTime,
         hasDiscount,
         remainingSeconds,

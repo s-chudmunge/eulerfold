@@ -157,7 +157,7 @@ ROADMAP_COMMENTS = {
         "Clean, logical, and well-paced. Perfect for a busy schedule.",
         "The community feedback on the submissions has been very encouraging.",
         "Exactly the guide I needed to switch careers. Thank you EulerFold team!",
-        "The 'audit' system for progress is a great motivator. No skipping the hard parts.",
+        "The 'review' system for progress is a great motivator. No skipping the hard parts.",
         "I appreciate the 'Why this matters' section at the start of each module."
     ]
 }

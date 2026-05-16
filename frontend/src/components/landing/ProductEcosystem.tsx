@@ -33,14 +33,7 @@ const products = [
     color: "text-accent",
     bgColor: "bg-accent/10"
   },
-  {
-    title: "BuildPilot",
-    description: "A workspace to build and track your projects. Verify your skills by doing actual work.",
-    icon: Terminal,
-    href: "/buildpilot",
-    color: "text-purple-600",
-    bgColor: "bg-purple-500/10"
-  },
+
   {
     title: "Practice",
     description: "Test your knowledge with AI-generated assessments and practice problems across 20+ domains.",

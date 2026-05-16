@@ -18,23 +18,29 @@ interface RoadmapDisplayProps {
   justGenerated?: boolean;
   isOwner?: boolean;
   onClone?: () => void;
+  onCloneRequired?: () => void;
   onExtend?: () => void;
   onDeleteExtension?: () => void;
   onPractice?: (topic: any, moduleIndex: number) => void;
+  onOpenHomework?: (moduleNumber: number, moduleTitle: string, instructions: string) => void;
   hideHeader?: boolean;
-}
+  externalSubmissions?: any[];
+  }
 
-const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({ 
+  const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({ 
   roadmapData, 
   initialFormData, 
-  justGenerated,
-  isOwner = true,
+  justGenerated, 
+  isOwner, 
   onClone,
+  onCloneRequired,
   onExtend,
   onDeleteExtension,
   onPractice,
-  hideHeader = false
-}) => {
+  onOpenHomework,
+  hideHeader,
+  externalSubmissions
+  }) => {
   const currentModule = (roadmapData as any).current_module || 1;
   const [expandedModules, setExpandedModules] = useState<number[]>([currentModule - 1]);
   const [isSaving, setIsSaving] = useState(false);
@@ -42,6 +48,18 @@ const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({
   const [user, setUser] = useState<any>(null);
   const [completedTopics, setCompletedTopics] = useState<Set<string>>(new Set());
   const [submissionsByModule, setSubmissionsByModule] = useState<Record<number, any[]>>({});
+
+  useEffect(() => {
+    if (externalSubmissions) {
+        const grouped: Record<number, any[]> = {};
+        for (const s of externalSubmissions) {
+            const mod = Number(s.module_number || 0);
+            if (!grouped[mod]) grouped[mod] = [];
+            grouped[mod].push(s);
+        }
+        setSubmissionsByModule(grouped);
+    }
+  }, [externalSubmissions]);
 
   useEffect(() => {
     let isMounted = true;
@@ -244,9 +262,17 @@ const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({
                 className={`transition-colors duration-300 relative group/module ${isCurrent ? 'bg-accent/[0.03]' : 'bg-background hover:bg-callout-bg/50'}`}
               >
                 {/* Module Header */}
-                <button
+                <div
                   onClick={() => toggleModule(index)}
-                  className="w-full px-6 py-6 flex items-center justify-between text-left focus:outline-none"
+                  className="w-full px-6 py-6 flex items-center justify-between text-left cursor-pointer"
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      toggleModule(index);
+                    }
+                  }}
                 >
                   <div className="flex items-center gap-4 md:gap-6 min-w-0">
                     <div className={`inconsolata-ui w-9 h-9 rounded-lg flex items-center justify-center text-[14px] font-bold shrink-0 transition-all border ${
@@ -258,7 +284,7 @@ const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({
                     </div>
                     <div className="min-w-0">
                       <h3 className="inconsolata-ui text-[18px] font-bold text-text-heading truncate pr-4  ">{module.title}</h3>
-                      <p className="text-[13px] text-text-muted line-clamp-2 leading-relaxed mt-1 font-medium italic pr-8">{module.outcome}</p>
+                      <p className="text-[13px] text-text-muted line-clamp-5 leading-relaxed mt-1 font-medium italic pr-8">{module.outcome}</p>
                       
                       <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-4">
                         {videoCount > 0 && (
@@ -299,26 +325,43 @@ const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({
                     </div>
                   </div>
                   <div className="flex items-center gap-2 md:gap-4 shrink-0">
-                    {isOwner && (
-                      <div className="flex items-center gap-2">
+                    {(isOwner || roadmapData.is_public) && (
+                    <div className="flex flex-col gap-1.5 min-w-[90px]">
                         <Link 
                           href={`/roadmap/${roadmapData.cloned_id || roadmapData.slug || roadmapData.id}/learn?module=${index + 1}&topic=1`}
-                          onClick={(e) => e.stopPropagation()}
-                          className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-blue-600 text-white rounded-xl text-[10px] font-bold tracking-widest uppercase hover:bg-blue-700 transition-all active:scale-95 shadow-lg shadow-blue-600/20"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            if (!isOwner && user && onCloneRequired) {
+                              e.preventDefault();
+                              onCloneRequired();
+                            }
+                          }}
+                          className="flex items-center justify-center gap-2 px-5 py-1.5 bg-blue-600/90 text-white rounded-lg text-[9px] font-bold tracking-widest uppercase hover:bg-blue-600 transition-all active:scale-95"
                         >
-                          <Play className="w-3.5 h-3.5 fill-current" />
-                          <span className="hidden xs:inline">Learn</span>
+                          <Play className="w-3 h-3 fill-current" />
+                          <span>Learn</span>
                         </Link>
 
                         {!submissionsByModule[index+1]?.length && (
-                          <Link 
-                            href={`/roadmap/${roadmapData.slug || roadmapData.id}/build/${index + 1}`}
-                            onClick={(e) => e.stopPropagation()}
-                            className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-emerald-600 text-white rounded-xl text-[10px] font-bold tracking-widest uppercase hover:bg-emerald-700 transition-all active:scale-95 shadow-lg shadow-emerald-600/20"
+                          <button 
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                if (!isOwner && user && onCloneRequired) {
+                                    onCloneRequired();
+                                    return;
+                                }
+                                if (onOpenHomework) {
+                                    onOpenHomework(index + 1, module.title, module.proof_of_work_instructions);
+                                } else {
+                                    // Fallback for cases where modal isn't available
+                                    window.location.href = `/roadmap/${roadmapData.slug || roadmapData.id}/build/${index + 1}`;
+                                }
+                            }}
+                            className="flex items-center justify-center gap-2 px-5 py-1.5 bg-emerald-600/90 text-white rounded-lg text-[9px] font-bold tracking-widest uppercase hover:bg-emerald-600 transition-all active:scale-95"
                           >
-                            <Hammer className="w-3.5 h-3.5" />
-                            <span className="hidden xs:inline">Build</span>
-                          </Link>
+                            <Hammer className="w-3 h-3" />
+                            <span>Homework</span>
+                          </button>
                         )}
                       </div>
                     )}
@@ -341,7 +384,7 @@ const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({
                     )}
                     {isExpanded ? <ChevronUp className="h-5 w-5 text-text-muted" /> : <ChevronDown className="h-5 w-5 text-text-muted" />}
                   </div>
-                </button>
+                </div>
 
                 {isExpanded && (
                   <div className="px-5 py-4 pl-20 animate-in fade-in slide-in-from-top-2 duration-300">

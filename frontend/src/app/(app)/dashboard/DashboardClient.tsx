@@ -17,7 +17,7 @@ import Check from 'lucide-react/dist/esm/icons/check';
 import Share2 from 'lucide-react/dist/esm/icons/share-2';
 import Trophy from 'lucide-react/dist/esm/icons/trophy';
 import Search from 'lucide-react/dist/esm/icons/search';
-import ShieldCheck from 'lucide-react/dist/esm/icons/shield-check';
+import FileText from 'lucide-react/dist/esm/icons/file-text';
 import Zap from 'lucide-react/dist/esm/icons/zap';
 import Award from 'lucide-react/dist/esm/icons/award';
 import Settings from 'lucide-react/dist/esm/icons/settings';
@@ -258,9 +258,9 @@ export default function DashboardPage() {
                             <span className="inconsolata-ui text-[10px] font-bold">{profile?.roadmap_credits || 0}</span>
                         </div>
                         {!profile?.is_pro && (
-                            <div className="flex items-center gap-1 text-text-muted px-2 py-1 rounded bg-callout-bg border border-border">
-                                <ShieldCheck className="w-3 h-3 text-teal-700 opacity-60" />
-                                <span className="inconsolata-ui text-[10px] font-bold">{profile?.senate_eval_count || 0}/2</span>
+                            <div className="flex items-center gap-1 text-text-muted px-2 py-1 rounded bg-callout-bg border border-border" title="Free Homework Reviews">
+                                <FileText className="w-3 h-3 text-teal-700 opacity-60" />
+                                <span className="inconsolata-ui text-[10px] font-bold">{profile?.review_count || 0}/2</span>
                             </div>
                         )}
                         {profile?.username && (
@@ -334,13 +334,13 @@ export default function DashboardPage() {
                             </div>
                             
                             <div className="border-t border-border divide-y divide-[var(--border)]">
-                                {roadmaps.filter(r => r.model !== 'manual-build').length > 0 ? (
-                                    roadmaps.filter(r => r.model !== 'manual-build').map((r) => (
+                                {roadmaps.length > 0 ? (
+                                    roadmaps.map((r) => (
                                         <div key={r.id} className={`group flex flex-col md:flex-row md:items-center gap-4 py-2 hover:bg-sidebar/50 dark:hover:bg-background/[0.01] transition-colors ${r.status === 'archived' || r.status === 'quit' ? 'opacity-60' : ''}`}>
                                             {/* Title & Info */}
                                             <div className="flex-1 min-w-0">
                                                 <div className="flex items-center gap-3">
-                                                    <Link href={`/roadmap/${r.slug || r.id}`} className="hover:opacity-70 transition-opacity min-w-0">
+                                                    <Link href={r.model === 'manual-build' ? `/project/${r.slug || r.id}` : `/roadmap/${r.slug || r.id}`} className="hover:opacity-70 transition-opacity min-w-0">
                                                         <h3 className="inconsolata-ui text-[13px] font-bold text-text-heading truncate tracking-normal">
                                                             {r.title}
                                                         </h3>
@@ -377,14 +377,14 @@ export default function DashboardPage() {
                                             {/* Actions */}
                                             <div className="flex items-center gap-1.5 shrink-0">
                                                 <Link
-                                                    href={`/roadmap/${r.slug || r.id}/learn`}
+                                                    href={r.model === 'manual-build' ? `/project/${r.slug || r.id}/build/1` : `/roadmap/${r.slug || r.id}/learn`}
                                                     className={`px-3 py-1 rounded-md text-[10px] font-bold tracking-wide transition-all ${
                                                         r.status === 'archived' || r.status === 'quit' 
                                                         ? 'bg-callout-bg border border-border text-text-muted hover:text-text-heading' 
                                                         : 'bg-[var(--text-heading)] text-[var(--bg-main)] hover:opacity-90'
                                                     }`}
                                                 >
-                                                    {(r.progress?.percent || 0) > 0 ? 'Resume' : 'Start'}
+                                                    {r.model === 'manual-build' ? 'Workspace' : ((r.progress?.percent || 0) > 0 ? 'Resume' : 'Start')}
                                                 </Link>
                                                 
                                                 {r.status === 'active' && (
@@ -407,7 +407,7 @@ export default function DashboardPage() {
                                                 )}
 
                                                 <Link
-                                                    href={`/roadmap/${r.slug || r.id}`}
+                                                    href={r.model === 'manual-build' ? `/project/${r.slug || r.id}` : `/roadmap/${r.slug || r.id}`}
                                                     className="px-2.5 py-1 border border-border text-text-muted hover:text-text-heading hover:bg-callout-bg rounded-md text-[10px] font-bold tracking-wide transition-all"
                                                 >
                                                     View
@@ -425,76 +425,6 @@ export default function DashboardPage() {
                                 ) : (
                                     <div className="py-12 text-center bg-callout-bg/30 border border-dashed border-callout-border rounded-xl">
                                         <p className="manrope-body text-[0.8rem] text-text-muted italic">No active roadmaps.</p>
-                                    </div>
-                                )}
-                            </div>
-                        </section>
-
-                        <section className="mb-12">
-                            <div className="flex items-center gap-4 mb-6">
-                                <h2 className="inconsolata-ui text-[0.7rem] font-[var(--font-weight-bold)] text-text-muted  tracking-wide">Independent Projects</h2>
-                                <div className="h-[1px] flex-1 bg-[var(--border)]"></div>
-                            </div>
-                            
-                            <div className="border-t border-border divide-y divide-[var(--border)]">
-                                {roadmaps.filter(r => r.model === 'manual-build').length > 0 ? (
-                                    roadmaps.filter(r => r.model === 'manual-build').map((r) => (
-                                        <div key={r.id} className={`group flex flex-col md:flex-row md:items-center gap-4 py-2 hover:bg-sidebar/50 dark:hover:bg-background/[0.01] transition-colors ${r.status === 'archived' || r.status === 'quit' ? 'opacity-60' : ''}`}>
-                                            {/* Title & Info */}
-                                            <div className="flex-1 min-w-0">
-                                                <div className="flex items-center gap-3">
-                                                    <Link href={`/project/${r.slug || r.id}`} className="hover:opacity-70 transition-opacity min-w-0">
-                                                        <h3 className="inconsolata-ui text-[13px] font-bold text-text-heading truncate tracking-normal">
-                                                            {r.title}
-                                                        </h3>
-                                                    </Link>
-                                                    {r.is_public && (
-                                                        <div className="flex items-center px-1.5 py-0.5 rounded bg-blue-500/5 border border-blue-500/20">
-                                                            <span className="inconsolata-ui text-[8px] font-black text-blue-500 uppercase tracking-tighter">Public</span>
-                                                        </div>
-                                                    )}
-                                                    {r.status && r.status !== 'active' && (
-                                                        <div className={`flex items-center px-1.5 py-0.5 rounded border ${
-                                                            r.status === 'completed' ? 'bg-teal-500/5 border-teal-500/20 text-teal-600' :
-                                                            r.status === 'archived' ? 'bg-zinc-500/5 border-zinc-500/20 text-zinc-500' :
-                                                            r.status === 'quit' ? 'bg-red-500/5 border-red-500/20 text-red-500' :
-                                                            'bg-amber-500/5 border-amber-500/20 text-amber-600'
-                                                        }`}>
-                                                            <span className="inconsolata-ui text-[8px] font-black uppercase tracking-tighter">{r.status.replace('_', ' ')}</span>
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                            </div>
-
-                                            {/* Actions */}
-                                            <div className="flex items-center gap-1.5 shrink-0">
-                                                <Link
-                                                    href={`/project/${r.slug || r.id}/build/1`}
-                                                    className="px-3 py-1 rounded-md text-[10px] font-bold tracking-wide transition-all bg-teal-700 text-white hover:bg-teal-800"
-                                                >
-                                                    Workspace
-                                                </Link>
-                                                
-                                                <Link
-                                                    href={`/project/${r.slug || r.id}`}
-                                                    className="px-2.5 py-1 border border-border text-text-muted hover:text-text-heading hover:bg-callout-bg rounded-md text-[10px] font-bold tracking-wide transition-all"
-                                                >
-                                                    View Project
-                                                </Link>
-                                                <button 
-                                                    onClick={() => setDeleteConfirm(r.id)}
-                                                    className="text-text-muted hover:text-red-500 transition-colors p-1 rounded-md hover:bg-red-500/5"
-                                                    title="Delete Project"
-                                                >
-                                                    <Trash2 className="w-3.5 h-3.5" />
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ))
-                                ) : (
-                                    <div className="py-12 text-center bg-callout-bg/30 border border-dashed border-callout-border rounded-xl">
-                                        <p className="manrope-body text-[0.8rem] text-text-muted italic">No active projects. Start one from BuildPilot.</p>
                                     </div>
                                 )}
                             </div>

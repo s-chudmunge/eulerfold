@@ -271,6 +271,17 @@ async def calculate_user_skill_score(user_id: str, canonical_skill_id: str):
 
 async def calculate_user_skill_scores_for_roadmap(roadmap_id: int, user_id: str):
     sb = get_supabase_client()
+    
+    # 1. Check if skills have been extracted for this roadmap OR if any skills actually exist for it
+    r_res = sb.table("roadmaps").select("skills_extracted").eq("id", roadmap_id).single().execute()
+    us_check = sb.table("user_skills").select("id").eq("user_id", user_id).filter("contributing_roadmap_ids", "cs", f"{{{roadmap_id}}}").limit(1).execute()
+    
+    # If not extracted OR if extraction flag is set but no skills are linked (recovery case)
+    if (r_res.data and not r_res.data.get("skills_extracted")) or (not us_check.data):
+        # Trigger extraction if not already done or if no skills linked
+        await extract_skills_from_roadmap(roadmap_id, user_id)
+    
+    # 2. Recalculate scores for all skills this roadmap contributes to
     us_res = sb.table("user_skills").select("canonical_skill_id").eq("user_id", user_id).filter("contributing_roadmap_ids", "cs", f"{{{roadmap_id}}}").execute()
     for us in us_res.data:
         await calculate_user_skill_score(user_id, us["canonical_skill_id"])

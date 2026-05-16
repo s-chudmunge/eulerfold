@@ -1,0 +1,296 @@
+"use client";
+
+import React, { useState } from 'react';
+import { X, Link as LinkIcon, Send, Sparkles, CheckCircle2, AlertCircle, HelpCircle, ChevronRight, Info } from 'lucide-react';
+import { submissionsAPI } from '@/lib/api';
+import { supabase } from '@/lib/supabase/client';
+
+interface Props {
+    isOpen: boolean;
+    onClose: () => void;
+    roadmapId: number;
+    moduleNumber: number;
+    moduleTitle: string;
+    instructions?: string | any;
+    onSuccess?: (evaluation: any) => void;
+}
+
+export default function HomeworkSubmissionModal({ isOpen, onClose, roadmapId, moduleNumber, moduleTitle, instructions, onSuccess }: Props) {
+    const [link, setLink] = useState('');
+    const [description, setDescription] = useState('');
+    const [submitting, setSubmitting] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [result, setResult] = useState<any>(null);
+    const [showInstructions, setShowInstructions] = useState(true);
+
+    React.useEffect(() => {
+        if (isOpen) {
+            setLink('');
+            setDescription('');
+            setSubmitting(false);
+            setError(null);
+            setResult(null);
+        }
+    }, [isOpen, moduleNumber]);
+
+    if (!isOpen) return null;
+
+    const renderInstructions = () => {
+        if (!instructions) return null;
+        
+        if (typeof instructions === 'string') {
+            return (
+                <div className="bg-accent/5 p-4 rounded-xl border border-accent/10">
+                    <p className="manrope-body text-[13px] text-text-primary leading-relaxed">{instructions}</p>
+                </div>
+            );
+        }
+
+        // Handle structured object from backend with collapsible sections
+        return (
+            <div className="space-y-3">
+                {instructions.what_to_build && (
+                    <details open className="group bg-accent/5 rounded-xl border border-accent/10 overflow-hidden">
+                        <summary className="flex items-center justify-between p-3 cursor-pointer hover:bg-accent/10 transition-colors list-none">
+                            <span className="text-[10px] font-black text-accent uppercase tracking-widest">Objective</span>
+                            <ChevronRight className="w-3 h-3 text-accent transition-transform group-open:rotate-90" />
+                        </summary>
+                        <div className="p-3 pt-0">
+                            <p className="manrope-body text-[13px] text-text-primary leading-relaxed">{instructions.what_to_build}</p>
+                        </div>
+                    </details>
+                )}
+                {instructions.what_counts_as_evidence && (
+                    <details className="group bg-callout-bg rounded-xl border border-border overflow-hidden">
+                        <summary className="flex items-center justify-between p-3 cursor-pointer hover:bg-callout-bg/80 transition-colors list-none">
+                            <span className="text-[10px] font-black text-text-muted uppercase tracking-widest">Evidence</span>
+                            <ChevronRight className="w-3 h-3 text-text-muted transition-transform group-open:rotate-90" />
+                        </summary>
+                        <div className="p-3 pt-0">
+                            <p className="manrope-body text-[13px] text-text-primary leading-relaxed italic">{instructions.what_counts_as_evidence}</p>
+                        </div>
+                    </details>
+                )}
+                {instructions.eval_criteria && Array.isArray(instructions.eval_criteria) && (
+                    <details className="group bg-callout-bg rounded-xl border border-border overflow-hidden">
+                        <summary className="flex items-center justify-between p-3 cursor-pointer hover:bg-callout-bg/80 transition-colors list-none">
+                            <span className="text-[10px] font-black text-text-muted uppercase tracking-widest">Criteria</span>
+                            <ChevronRight className="w-3 h-3 text-text-muted transition-transform group-open:rotate-90" />
+                        </summary>
+                        <div className="p-3 pt-0">
+                            <ul className="list-disc list-inside space-y-1">
+                                {instructions.eval_criteria.map((c: string, i: number) => (
+                                    <li key={i} className="manrope-body text-[12px] text-text-muted">{c}</li>
+                                ))}
+                            </ul>
+                        </div>
+                    </details>
+                )}
+            </div>
+        );
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!description.trim()) {
+            setError("Please provide a description of your work.");
+            return;
+        }
+
+        setSubmitting(true);
+        setError(null);
+
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) throw new Error("Authentication required");
+
+            const payload = {
+                roadmap_id: roadmapId,
+                module_number: moduleNumber,
+                description,
+                link: link || null
+            };
+
+            const data = await submissionsAPI.createSubmission(payload, session.access_token);
+            setResult(data.evaluation);
+            if (onSuccess) onSuccess(data.evaluation);
+        } catch (err: any) {
+            console.error("Submission failed:", err);
+            setError(err.response?.data?.detail || err.message || "Failed to submit homework.");
+        } finally {
+            setSubmitting(false);
+        }
+    };
+
+    if (result) {
+        return (
+            <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-background/80 animate-in fade-in duration-200">
+                <div className="relative w-full max-w-lg bg-background border border-border shadow-2xl rounded-3xl overflow-hidden animate-in zoom-in-95 duration-200">
+                    <button 
+                        onClick={onClose}
+                        className="absolute top-4 right-4 p-2 hover:bg-callout-bg rounded-full text-text-muted transition-colors z-10"
+                    >
+                        <X className="w-5 h-5" />
+                    </button>
+                    <div className="p-8 text-center">
+                        <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 ${
+                            result.level === 'Solid' ? 'bg-emerald-500/10 text-emerald-500' : 
+                            result.level === 'Developing' ? 'bg-blue-500/10 text-blue-500' : 'bg-red-500/10 text-red-500'
+                        }`}>
+                            <CheckCircle2 className="w-8 h-8" />
+                        </div>
+                        <h3 className="inconsolata-ui text-xl font-bold text-text-heading mb-2 tracking-tight">Homework Evaluated</h3>
+                        <p className="inconsolata-ui text-[11px] font-bold text-accent uppercase tracking-widest mb-6">Status: {result.level}</p>
+                        
+                        <div className="bg-callout-bg border border-border p-6 rounded-2xl mb-8 text-left">
+                            <p className="manrope-body text-[14px] text-text-primary leading-relaxed italic">
+                                &ldquo;{result.summary}&rdquo;
+                            </p>
+                        </div>
+
+                        <button 
+                            onClick={onClose}
+                            className="w-full py-4 bg-text-heading text-background rounded-2xl text-[14px] font-bold inconsolata-ui tracking-wide hover:opacity-90 transition-all"
+                        >
+                            Back to Roadmap
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    return (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-background/80 animate-in fade-in duration-200">
+            <div className={`relative bg-background border border-border shadow-2xl rounded-3xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col md:flex-row transition-all duration-300 max-h-[90vh] ${showInstructions && instructions ? 'max-w-4xl' : 'max-w-lg'}`}>
+                
+                {/* Global Close Button */}
+                <button 
+                    onClick={onClose}
+                    className="absolute top-4 right-4 p-2 hover:bg-callout-bg rounded-full text-text-muted transition-colors z-[210]"
+                >
+                    <X className="w-5 h-5" />
+                </button>
+
+                {/* Main Form Area */}
+                <div className="flex-1 p-8 border-r border-border/50 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                    <div className="flex justify-between items-start mb-8">
+                        <div>
+                            <div className="flex items-center gap-2">
+                                <h3 className="inconsolata-ui text-xl font-bold text-text-heading tracking-tight">Submit Homework</h3>
+                                {instructions && (
+                                    <button 
+                                        onClick={() => setShowInstructions(!showInstructions)}
+                                        className={`flex items-center gap-2 px-2.5 py-1.5 rounded-xl transition-all ${
+                                            showInstructions 
+                                            ? 'bg-accent/10 text-accent' 
+                                            : 'bg-accent text-white shadow-lg shadow-accent/20 hover:scale-105 active:scale-95'
+                                        }`}
+                                        title={showInstructions ? "Hide Instructions" : "Show Instructions"}
+                                    >
+                                        <HelpCircle className={`w-4 h-4 ${!showInstructions ? 'animate-pulse' : ''}`} />
+                                        {!showInstructions && (
+                                            <span className="text-[9px] font-black uppercase tracking-[0.2em] animate-in fade-in slide-in-from-left-2 duration-500">
+                                                See instructions
+                                            </span>
+                                        )}
+                                    </button>
+                                )}
+                            </div>
+                            <p className="manrope-body text-[12px] text-text-muted mt-1">{moduleTitle}</p>
+                        </div>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        <div className="space-y-2">
+                            <label className="inconsolata-ui text-[11px] font-bold text-text-muted uppercase tracking-widest ml-1">
+                                Proof Link (Optional)
+                            </label>
+                            <div className="relative group">
+                                <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted group-focus-within:text-accent transition-colors" />
+                                <input 
+                                    type="url"
+                                    placeholder="GitHub repo, PDF link, or Project URL"
+                                    className="w-full bg-callout-bg border border-border rounded-2xl pl-11 pr-4 py-4 text-[14px] manrope-body focus:ring-2 focus:ring-accent/20 focus:border-accent outline-none transition-all"
+                                    value={link}
+                                    onChange={(e) => setLink(e.target.value)}
+                                />
+                            </div>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="inconsolata-ui text-[11px] font-bold text-text-muted uppercase tracking-widest ml-1">
+                                Describe your work
+                            </label>
+                            <textarea 
+                                placeholder="Explain what you built or learned. Be specific."
+                                className="w-full h-32 bg-callout-bg border border-border rounded-2xl p-4 text-[14px] manrope-body focus:ring-2 focus:ring-accent/20 focus:border-accent outline-none transition-all resize-none"
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                required
+                            />
+                        </div>
+
+                        {error && (
+                            <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3 text-red-600 animate-in fade-in duration-300">
+                                <AlertCircle className="w-4 h-4 shrink-0" />
+                                <p className="text-[12px] font-semibold">{error}</p>
+                            </div>
+                        )}
+
+                        <div className="pt-2">
+                            <button
+                                type="submit"
+                                disabled={submitting}
+                                className="w-full py-4 bg-teal-700 text-white rounded-2xl text-[14px] font-bold inconsolata-ui tracking-wide hover:bg-teal-800 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                            >
+                                {submitting ? (
+                                    <div className="flex items-center gap-3">
+                                        <div className="flex gap-1.5">
+                                            {[0, 1, 2].map(i => (
+                                                <div 
+                                                    key={i} 
+                                                    className="w-1.5 h-1.5 bg-white/90 rounded-full animate-bounce" 
+                                                    style={{ animationDelay: `${i * 0.2}s` }} 
+                                                />
+                                            ))}
+                                        </div>
+                                        <span className="opacity-90">Analyzing...</span>
+                                    </div>
+                                ) : (
+                                    <>
+                                        Send for Review
+                                        <Send className="w-4 h-4" />
+                                    </>
+                                )}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                {/* Instructions Sidebar */}
+                {instructions && showInstructions && (
+                    <div className="w-full md:w-[320px] bg-callout-bg/30 p-8 flex flex-col animate-in slide-in-from-right-4 duration-300 border-t md:border-t-0 border-border/50">
+                        <div className="flex justify-between items-center mb-6">
+                            <div className="flex items-center gap-2">
+                                <Info className="w-4 h-4 text-accent" />
+                                <h4 className="inconsolata-ui text-[11px] font-black text-text-heading uppercase tracking-widest">Requested Task</h4>
+                            </div>
+                        </div>
+                        
+                        <div className="flex-1 overflow-y-auto pr-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] space-y-4">
+                            {renderInstructions()}
+                        </div>
+
+                        <div className="mt-8 pt-6 border-t border-border/50">
+                            <div className="flex items-center gap-2 text-text-muted opacity-60">
+                                <Sparkles className="w-3.5 h-3.5" />
+                                <p className="text-[9px] font-black uppercase tracking-[0.2em]">AI Technical Auditor</p>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </div>
+    );
+}

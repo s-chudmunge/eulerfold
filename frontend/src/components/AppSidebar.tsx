@@ -202,9 +202,7 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                                 <Link href="/planner" aria-current={isActive('/planner') ? 'page' : undefined} className={navLinkClass('/planner')} onClick={onClose}>
                                     <Calendar className="w-3.5 h-3.5 stroke-[1.5px]" /> Study Planner
                                 </Link>
-                                <Link href="/buildpilot" aria-current={isActive('/buildpilot') ? 'page' : undefined} className={navLinkClass('/buildpilot')} onClick={onClose}>
-                                    <Hammer className="w-3.5 h-3.5 stroke-[1.5px]" /> BuildPilot
-                                </Link>
+
                                 <Link href="/practice" aria-current={isActive('/practice') ? 'page' : undefined} className={navLinkClass('/practice')} onClick={onClose}>
                                     <Target className="w-3.5 h-3.5 stroke-[1.5px]" /> Practice
                                 </Link>

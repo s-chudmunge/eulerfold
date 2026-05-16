@@ -36,6 +36,7 @@ import AppSidebar from '@/components/AppSidebar';
 import ShareMenu from '@/components/ShareMenu';
 import TTSListenButton from '@/components/TTSListenButton';
 import MCQPractice from '@/components/roadmap/MCQPractice';
+import HomeworkSubmissionModal from '@/components/roadmap/HomeworkSubmissionModal';
 import { Inconsolata, Manrope } from 'next/font/google';
 
 const inconsolata = Inconsolata({
@@ -80,6 +81,9 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
     const [extensionGoal, setExtensionGoal] = useState<string>('');
     const [extending, setExtending] = useState<boolean>(false);
     const [selectedPracticeTopic, setSelectedPracticeTopic] = useState<{topic: any, moduleIndex: number} | null>(null);
+    const [isHomeworkModalOpen, setIsHomeworkModalOpen] = useState<boolean>(false);
+    const [showCloneModal, setShowCloneModal] = useState<boolean>(false);
+    const [submittingModule, setSubmittingModule] = useState<{number: number, title: string, instructions?: string} | null>(null);
     const router = useRouter();
 
     const refreshProfile = React.useCallback(async () => {
@@ -97,20 +101,21 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
         refreshProfile();
     }, [refreshProfile, isAuthenticated]);
 
-    useEffect(() => {
-        const fetchSubmissions = async () => {
-            if (isAuthenticated && roadmap?.id) {
-                try {
-                    const { data: { session } } = await supabase.auth.getSession();
-                    if (session) {
-                        const res = await submissionsAPI.listSubmissions(roadmap.id, session.access_token);
-                        setSubmissions(res.submissions || []);
-                    }
-                } catch (err) {
-                    console.error("Failed to fetch submissions:", err);
+    const fetchSubmissions = async () => {
+        if (isAuthenticated && roadmap?.id) {
+            try {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (session) {
+                    const res = await submissionsAPI.listSubmissions(roadmap.id, session.access_token);
+                    setSubmissions(res.submissions || []);
                 }
+            } catch (err) {
+                console.error("Failed to fetch submissions:", err);
             }
-        };
+        }
+    };
+
+    useEffect(() => {
         fetchSubmissions();
     }, [isAuthenticated, roadmap?.id]);
 
@@ -236,6 +241,29 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
 
     const handleSignIn = () => {
         router.push(`/login?next=${encodeURIComponent(window.location.pathname)}`);
+    };
+
+    const handleClone = async () => {
+        if (!isAuthenticated) {
+            handleSignIn();
+            return;
+        }
+        setSaving(true);
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (session) {
+                const res = await exploreAPI.cloneRoadmap(roadmap.id, session.access_token);
+                setSuccessMsg("Roadmap cloned to dashboard!");
+                // Short delay to show success message before redirect
+                setTimeout(() => {
+                    router.push(`/roadmap/${res.new_slug}/learn`);
+                }, 1500);
+            }
+        } catch (err: any) {
+            setError(err.message || "Failed to clone roadmap.");
+        } finally {
+            setSaving(false);
+        }
     };
 
     const handleExtend = async () => {
@@ -414,24 +442,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                 </button>
                             ) : (
                                 <button 
-                                    onClick={async () => {
-                                        setSaving(true);
-                                        try {
-                                            const { data: { session } } = await supabase.auth.getSession();
-                                            if (session) {
-                                                const res = await exploreAPI.cloneRoadmap(roadmap.id, session.access_token);
-                                                setSuccessMsg("Roadmap cloned to dashboard!");
-                                                // Short delay to show success message before redirect
-                                                setTimeout(() => {
-                                                    router.push(`/roadmap/${res.new_slug}/learn`);
-                                                }, 1500);
-                                            }
-                                        } catch (err: any) {
-                                            setError(err.message);
-                                        } finally {
-                                            setSaving(false);
-                                        }
-                                    }}
+                                    onClick={handleClone}
                                     disabled={saving}
                                     className="whitespace-nowrap rounded-lg bg-[var(--text-heading)] px-4 md:px-5 py-1.5 text-[var(--bg-main)] text-[10px] md:text-[12px] font-bold hover:opacity-90 transition-opacity flex items-center gap-2 disabled:opacity-50"
                                 >
@@ -522,27 +533,16 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                             <div className="flex flex-col">
                                                 {!roadmap.is_cloned && (
                                                     <button 
-                                                        onClick={async () => {
-                                                            setSaving(true);
-                                                            try {
-                                                                const { data: { session } } = await supabase.auth.getSession();
-                                                                if (session) {
-                                                                    const res = await exploreAPI.cloneRoadmap(roadmap.id, session.access_token);
-                                                                    window.location.href = `/roadmap/${res.new_slug}`;
-                                                                } else {
-                                                                    handleSignIn();
-                                                                }
-                                                            } catch (err: any) {
-                                                                setError(err.message);
-                                                            } finally {
-                                                                setSaving(false);
-                                                            }
+                                                        onClick={() => {
+                                                            handleClone();
+                                                            setShowActions(false);
                                                         }}
-                                                        className="w-full px-4 py-3 text-left hover:bg-callout-bg flex items-center gap-3 transition-colors"
+                                                        disabled={saving}
+                                                        className="w-full px-4 py-3 text-left hover:bg-callout-bg flex items-center gap-3 transition-colors disabled:opacity-50"
                                                     >
                                                         <Copy className="w-4 h-4" />
                                                         <span className="inconsolata-ui text-[12px] font-bold text-text-heading  tracking-wide">
-                                                            Clone Roadmap
+                                                            {saving ? 'Cloning...' : 'Clone Roadmap'}
                                                         </span>
                                                     </button>
                                                 )}
@@ -600,7 +600,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                 >
                                     <div className="flex items-center gap-2">
                                         <Scale className="w-3.5 h-3.5" />
-                                        <span className="inconsolata-ui text-[10px] font-bold  tracking-wide">Audit Logs</span>
+                                        <span className="inconsolata-ui text-[10px] font-bold  tracking-wide">Submit Homework</span>
                                     </div>
                                     <span className={`inconsolata-ui text-[10px] font-bold px-1.5 py-0.5 rounded ${showLogs ? 'bg-background/20' : 'bg-[var(--border)]'}`}>
                                         {submissions.length}
@@ -618,7 +618,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                 <div className="flex items-center justify-between mb-8 pb-4 border-b border-border">
                                     <div className="flex items-center gap-3">
                                         <Scale className="w-5 h-5 text-accent" />
-                                        <h2 className="inconsolata-ui text-lg font-bold text-text-heading  tracking-tight">Private Audit History</h2>
+                                        <h2 className="inconsolata-ui text-lg font-bold text-text-heading  tracking-tight">Review History</h2>
                                     </div>
                                     <button 
                                         onClick={() => setShowLogs(false)}
@@ -658,7 +658,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                                         <p className="text-[15px] font-bold text-text-heading leading-relaxed">
                                                             &ldquo;{sub.senate_summary}&rdquo;
                                                         </p>
-                                                        <TTSListenButton text={`Senate Summary: ${sub.senate_summary}`} label="Verdict" />
+                                                        <TTSListenButton text={`Review Summary: ${sub.senate_summary}`} label="Summary" />
                                                     </div>
                                                 ) : (
                                                     <p className="text-[14px] text-text-primary leading-relaxed italic">
@@ -670,22 +670,24 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                             {sub.is_senate_eval && sub.senate_reasoning && (
                                                 <div className="mt-4 space-y-3 pt-6 border-t border-border">
                                                     {[
-                                                        { id: 'technician', label: 'Technical Depth', data: sub.senate_reasoning.technician, vote: sub.senate_votes?.[0] },
-                                                        { id: 'educator', label: 'Learning Proof', data: sub.senate_reasoning.educator, vote: sub.senate_votes?.[1] },
-                                                        { id: 'relevance_judge', label: 'Alignment', data: sub.senate_reasoning.relevance_judge, vote: sub.senate_votes?.[2] }
-                                                    ].map((auditor) => (
-                                                        <div key={auditor.id} className="flex flex-col md:flex-row gap-2 md:gap-6 p-4 rounded-none bg-callout-bg border border-border group/item hover:border-[var(--accent)] transition-all">
+                                                        { id: 'technical', label: 'Technical Depth', data: sub.senate_reasoning.technical, vote: sub.senate_votes?.[0] },
+                                                        { id: 'understanding', label: 'Learning Proof', data: sub.senate_reasoning.understanding, vote: sub.senate_votes?.[1] },
+                                                        { id: 'relevance', label: 'Alignment', data: sub.senate_reasoning.relevance, vote: sub.senate_votes?.[2] }
+                                                    ].map((item) => (
+                                                        <div key={item.id} className="flex flex-col md:flex-row gap-2 md:gap-6 p-4 rounded-none bg-callout-bg border border-border group/item hover:border-[var(--accent)] transition-all">
                                                             <div className="w-full md:w-32 shrink-0">
                                                                 <div className="flex items-center justify-between md:flex-col md:items-start mb-1">
-                                                                    <p className="inconsolata-ui text-[9px] font-bold text-text-muted  tracking-wider">{auditor.label}</p>
-                                                                    <TTSListenButton text={`${auditor.label}: ${auditor.data}`} label={auditor.label} />
+                                                                    <p className="inconsolata-ui text-[9px] font-bold text-text-muted  tracking-wider">{item.label}</p>
+                                                                    <TTSListenButton text={`${item.label}: ${item.data}`} label={item.label} />
                                                                 </div>
-                                                                <span className={`inconsolata-ui text-[9px] font-bold  px-2 py-0.5 rounded border ${
-                                                                    auditor.vote === 'Solid' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' :
-                                                                    auditor.vote === 'Developing' ? 'bg-blue-500/10 text-blue-600 border-blue-500/20' : 'bg-red-500/10 text-red-600 border-red-500/20'
-                                                                }`}>{auditor.vote}</span>
+                                                                {item.vote && (
+                                                                    <span className={`inconsolata-ui text-[9px] font-bold  px-2 py-0.5 rounded border ${
+                                                                        item.vote === 'Solid' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' :
+                                                                        item.vote === 'Developing' ? 'bg-blue-500/10 text-blue-600 border-blue-500/20' : 'bg-red-500/10 text-red-600 border-red-500/20'
+                                                                    }`}>{item.vote}</span>
+                                                                )}
                                                             </div>
-                                                            <p className="text-[12px] text-text-primary leading-relaxed italic opacity-90">&ldquo;{auditor.data}&rdquo;</p>
+                                                            <p className="text-[12px] text-text-primary leading-relaxed italic opacity-90">&ldquo;{item.data}&rdquo;</p>
                                                         </div>
                                                     ))}
                                                 </div>
@@ -754,6 +756,8 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                     }}
                                     justGenerated={false}
                                     isOwner={isOwner || roadmap.is_cloned}
+                                    onCloneRequired={() => setShowCloneModal(true)}
+                                    externalSubmissions={submissions}
                                     onExtend={
                                         isPro && isOwner && (roadmap.progress?.completed_topics || 0) >= (roadmap.progress?.total_topics || 1) && (roadmap.extension_count || 0) < 5
                                         ? () => setShowExtendModal(true)
@@ -761,6 +765,10 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                     }
                                     onDeleteExtension={handleDeleteExtension}
                                     onPractice={(topic, mIdx) => setSelectedPracticeTopic({ topic, moduleIndex: mIdx })}
+                                    onOpenHomework={(mNum, mTitle, mInst) => {
+                                        setSubmittingModule({ number: mNum, title: mTitle, instructions: mInst });
+                                        setIsHomeworkModalOpen(true);
+                                    }}
                                 />
                             </div>
 
@@ -830,7 +838,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                                 href={resource.link || resource.url} 
                                                 target="_blank" 
                                                 rel="noreferrer"
-                                                className="manrope-body text-[13px] text-text-primary hover:text-accent transition-colors leading-relaxed line-clamp-2"
+                                                className="manrope-body text-[13px] text-text-primary hover:text-accent transition-colors leading-relaxed line-clamp-3"
                                             >
                                                 {resource.title || resource.name || resource.url}
                                                 <span className="ml-2 text-[10px] text-text-muted font-normal italic opacity-0 group-hover:opacity-100 transition-opacity">
@@ -1061,6 +1069,68 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                 onRefreshProfile={refreshProfile}
                                 onClose={() => setSelectedPracticeTopic(null)}
                             />
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Homework Modal */}
+            {roadmap && submittingModule && (
+                <HomeworkSubmissionModal
+                    isOpen={isHomeworkModalOpen}
+                    onClose={() => setIsHomeworkModalOpen(false)}
+                    roadmapId={roadmap.id}
+                    moduleNumber={submittingModule.number}
+                    moduleTitle={submittingModule.title}
+                    instructions={submittingModule.instructions}
+                    onSuccess={(evaluation) => {
+                        setIsHomeworkModalOpen(false);
+                        fetchSubmissions();
+                    }}
+                />
+            )}
+
+            {/* Clone Modal */}
+            {showCloneModal && (
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-background/80 animate-in fade-in duration-200">
+                    <div className="w-full max-w-md bg-background border border-border shadow-2xl rounded-3xl overflow-hidden animate-in zoom-in-95 duration-200">
+                        <div className="p-8 text-center">
+                            <div className="w-16 h-16 bg-accent/10 text-accent rounded-2xl flex items-center justify-center mx-auto mb-6">
+                                <Copy className="w-8 h-8" />
+                            </div>
+                            <h3 className="inconsolata-ui text-xl font-bold text-text-heading mb-3 tracking-tight">Clone to Dashboard</h3>
+                            <p className="manrope-body text-[14px] text-text-muted mb-8 leading-relaxed font-medium italic px-4">
+                                You need to clone this roadmap to your dashboard to start learning, track your progress, and submit proof of work.
+                            </p>
+                            
+                            <div className="flex flex-col gap-3">
+                                <button
+                                    onClick={() => {
+                                        setShowCloneModal(false);
+                                        handleClone();
+                                    }}
+                                    disabled={saving}
+                                    className="w-full py-4 bg-accent text-white rounded-2xl text-[14px] font-bold inconsolata-ui tracking-wide hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-xl shadow-accent/20 disabled:opacity-50"
+                                >
+                                    {saving ? (
+                                        <>
+                                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                            Cloning...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Copy className="w-4 h-4" />
+                                            Clone Now
+                                        </>
+                                    )}
+                                </button>
+                                <button
+                                    onClick={() => setShowCloneModal(false)}
+                                    className="w-full py-3 text-text-muted hover:text-text-heading text-[12px] font-bold inconsolata-ui tracking-widest uppercase transition-colors"
+                                >
+                                    Maybe Later
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -153,6 +153,7 @@ export interface User {
     current_streak: number;
     eulercoins: number;
     roadmap_credits: number;
+    review_count: number;
     last_active_date?: string;
     supabase_uid?: string;
     created_at?: string;
@@ -743,7 +744,7 @@ export interface PublicProfile {
     avatar_url?: string;
     supabase_uid?: string;
     eulercoins: number;
-    audit_precision: number;
+    review_precision: number;
     learning_momentum: {
         mastered: number;
         explored: number;

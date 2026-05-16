@@ -146,7 +146,7 @@ export default function RoadmapIndexClient({ initialRoadmaps }: { initialRoadmap
                                             </div>
                                         </div>
                                         {roadmap.goal && (
-                                            <p className="manrope-body text-[14px] text-text-muted mt-2 line-clamp-1 font-medium italic opacity-80 leading-relaxed">
+                                            <p className="manrope-body text-[14px] text-text-muted mt-2 line-clamp-2 font-medium italic opacity-80 leading-relaxed">
                                                 &ldquo;{roadmap.goal}&rdquo;
                                             </p>
                                         )}

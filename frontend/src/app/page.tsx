@@ -13,7 +13,6 @@ import TestimonialSection from '@/components/landing/TestimonialSection';
 import PricingSection from '@/components/landing/PricingSection';
 import ProductEcosystem from '@/components/landing/ProductEcosystem';
 import RoadmapDiscovery from '@/components/landing/RoadmapDiscovery';
-import AuditEcosystemCarousel from '@/components/landing/AuditEcosystemCarousel';
 import LatestArticlesCarousel from '@/components/landing/LatestArticlesCarousel';
 import EulerLogoCanvas from '@/components/EulerLogoCanvas';
 import { ExploreRoadmap } from '@/lib/api';
@@ -52,14 +51,14 @@ async function getFeaturedRoadmaps(): Promise<ExploreRoadmap[]> {
 
 export const metadata: Metadata = {
   title: 'EulerFold - Build and track your learning paths',
-  description: 'Create structured learning roadmaps, track your progress, and verify your technical skills.',
+  description: 'Create structured learning roadmaps, track your progress, and analyze your technical skills.',
   keywords: 'learning roadmaps, skill tracking, AI learning paths, technical mastery, structured learning, EulerFold',
   alternates: {
     canonical: 'https://www.eulerfold.com',
   },
   openGraph: {
     title: 'EulerFold - Build and track your learning paths',
-    description: 'Create structured learning roadmaps, track your progress, and verify your technical skills.',
+    description: 'Create structured learning roadmaps, track your progress, and analyze your technical skills.',
     url: 'https://www.eulerfold.com',
     siteName: 'EulerFold',
     type: 'website',
@@ -67,7 +66,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'EulerFold - Build and track your learning paths',
-    description: 'Create structured learning roadmaps, track your progress, and verify your technical skills.',
+    description: 'Create structured learning roadmaps, track your progress, and analyze your technical skills.',
     creator: '@eulerfold',
   },
 };
@@ -81,8 +80,8 @@ export default async function LandingPage() {
       answer: "We use technical data and trusted resources to build paths that match real industry standards and expectations."
     },
     {
-      question: "How does the Audit Senate evaluate my work?",
-      answer: "Your work is reviewed for correctness, clarity, and relevance by three specialized AI models to ensure you have actually mastered the topic."
+      question: "How do you evaluate my work?",
+      answer: "When you submit homework, your work is reviewed for correctness, clarity, and relevance by specialized AI models to ensure you have actually mastered the topic."
     },
     {
       question: "Can I customize my roadmap after it's generated?",
@@ -90,15 +89,15 @@ export default async function LandingPage() {
     },
     {
       question: "What are EulerCoins and how do I earn them?",
-      answer: "EulerCoins are rewards for progress. You earn them by keeping up your learning streaks and passing audits."
+      answer: "EulerCoins are rewards for progress. You earn them by keeping up your learning streaks and finishing modules."
     },
     {
       question: "Is my progress actually saved?",
-      answer: "Yes. Every module you finish and every audit you pass is recorded on your public profile and skill inventory."
+      answer: "Yes. Every module you finish and every piece of homework you submit is recorded on your public profile and skill inventory."
     },
     {
       question: "What makes EulerFold better than a video course?",
-      answer: "Videos are passive. EulerFold requires you to practice and prove what you've learned through audits and recall sessions."
+      answer: "Videos are passive. EulerFold requires you to practice and prove what you've learned through homework reviews and recall sessions."
     },
     {
       question: "Can I build roadmaps for free?",
@@ -232,16 +231,6 @@ export default async function LandingPage() {
         {/* Final CTA Section */}
         <section className="py-20 md:py-32 px-4 md:px-6 relative overflow-hidden">
           <div className="lg:max-w-[60%] mx-auto relative rounded-[32px] md:rounded-[40px] overflow-hidden border border-border bg-sidebar/50 min-h-[400px] md:min-h-[450px] flex items-center justify-center shadow-xl">
-            {/* Background Illustration */}
-            <div className="absolute inset-0 z-0">
-              <img 
-                src="https://images.openai.com/static-rsc-4/lrrHRX8b_7fH_WXxgfdLY-oquyW3GmjNkbvH9-i7E6gmTnvWJ_ERRMdaL1gJ-rKTQgWarKVrwYKs97SnFa69EqP94Q1EFyT9BQVlaScU7STnO3YYuPzq-Ma4gJzfP7vjVsHE94Href9ozBnDstzpsQz258bQHQ7myQpRzAEOwxV1jskDj9TtJ6HxIDo_i5z5?purpose=fullsize" 
-                alt="" 
-                className="w-full h-full object-cover opacity-80 dark:opacity-50 transition-opacity duration-500"
-              />
-              <div className="absolute inset-0 bg-gradient-to-b from-background/80 via-background/40 to-background/80" />
-            </div>
-
             <div className="max-w-3xl mx-auto text-center relative z-10 px-6 py-12 md:py-0">
               <h2 className="font-inter text-2xl md:text-4xl font-bold text-text-heading mb-4 tracking-tight">
                 Build your first roadmap.

@@ -124,7 +124,7 @@ export default function PricingSection() {
                         <span className="text-accent">✓</span> Job Decoded (Up to 4w)
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> 2 Full Audit Senate evals
+                        <span className="text-accent">✓</span> 2 Homework Reviews
                     </div>
                     <div className="pt-1.5 mt-1.5 border-t border-border/40 opacity-50">
                         <div className="flex items-center gap-2 text-text-muted">
@@ -176,10 +176,10 @@ export default function PricingSection() {
                         <span className="text-accent">✓</span> Customized Extensions
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> Premium Practice Mode
+                        <span className="text-accent">✓</span> 2 Homework Submissions
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> Audit Senate (0.1 Credits/eval)
+                        <span className="text-accent">✓</span> Submit Homework (0.1 Credits)
                     </div>
                     <div className="flex items-center gap-2">
                         <span className="text-accent">✓</span> Up to 12 Week Durations

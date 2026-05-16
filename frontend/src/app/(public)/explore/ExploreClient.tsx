@@ -36,7 +36,11 @@ import {
   Coins,
   Network,
   Atom,
-  Loader2
+  Loader2,
+  Sparkles,
+  MessageSquare,
+  Globe,
+  Zap
 } from 'lucide-react';
 import { exploreAPI, ExploreRoadmap, coinsAPI, LeaderboardEntry } from '@/lib/api';
 import { useInfiniteQuery, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -53,6 +57,7 @@ import GoalGeneratorModal from '@/components/landing/GoalGeneratorModal';
 const CATEGORY_METADATA: Record<string, { icon: any }> = {
     'all': { icon: LayoutDashboard },
     'Programming': { icon: Code },
+    'TypeScript': { icon: Binary },
     'Rust': { icon: Terminal },
     'Go': { icon: Terminal },
     'Python': { icon: Binary },
@@ -62,31 +67,46 @@ const CATEGORY_METADATA: Record<string, { icon: any }> = {
     'React': { icon: Layers },
     'Vue/Angular': { icon: Layers },
     'Backend': { icon: Server },
+    'Node.js': { icon: Server },
     'SQL & Database': { icon: Database },
     'Terminal & CLI': { icon: Terminal },
     'AI/ML': { icon: Cpu },
+    'Computer Vision': { icon: Monitor },
+    'LLMs & Generative AI': { icon: Sparkles },
+    'NLP': { icon: MessageSquare },
+    'Deep Learning': { icon: Network },
     'Data Science': { icon: BarChart3 },
     'Data Engineering': { icon: Database },
     'System Design': { icon: Network },
     'Cloud': { icon: Cloud },
+    'AWS/Azure/GCP': { icon: Cloud },
     'DevOps': { icon: Infinity },
+    'Docker & K8s': { icon: Layers },
     'SRE': { icon: Shield },
     'Security': { icon: Shield },
+    'Cybersecurity': { icon: Shield },
     'Mobile': { icon: Smartphone },
     'iOS/Android': { icon: Smartphone },
     'Flutter': { icon: Smartphone },
     'Blockchain': { icon: Coins },
+    'Web3': { icon: Globe },
     'Quantum': { icon: Infinity },
     'Science': { icon: Atom },
+    'Physics': { icon: Atom },
+    'Mathematics': { icon: Binary },
     'Game Dev': { icon: Gamepad2 },
+    'Unity/Unreal': { icon: Gamepad2 },
     'ECE & Hardware': { icon: Cpu },
     'Embedded': { icon: Binary },
+    'IoT': { icon: Network },
     'Robotics': { icon: Cpu },
     'AR/VR': { icon: Monitor },
     'Design': { icon: Palette },
+    'UI/UX': { icon: Palette },
     'Product Management': { icon: Briefcase },
     'Marketing': { icon: TrendingUp },
     'Business': { icon: Briefcase },
+    'Finance': { icon: Coins },
     'JEE': { icon: GraduationCap },
     'NEET': { icon: GraduationCap },
     'UPSC': { icon: GraduationCap },
@@ -98,6 +118,7 @@ const CATEGORY_METADATA: Record<string, { icon: any }> = {
     'SAT': { icon: GraduationCap },
     'Exam Prep': { icon: GraduationCap },
     'Career': { icon: Compass },
+    'Productivity': { icon: Zap },
     'Open Source': { icon: GitBranch },
     'Other': { icon: Layers },
 };
@@ -245,24 +266,33 @@ export default function ExploreClient({
             </Suspense>
             <div className="max-w-[1400px] mx-auto px-6 pt-6 pb-12">
                 <div className="flex flex-col lg:flex-row gap-10 xl:gap-16">
-                    {/* Left Sidebar - Goal Architect */}
-                    <aside className="w-full lg:w-[280px] shrink-0 lg:sticky lg:top-32 self-start order-2 lg:order-1">
-                        <CommunityRoadmapBanner onOpenModal={() => setIsRoadmapModalOpen(true)} />
-                    </aside>
+                    
+                    <main className="flex-1 min-w-0">
+                        <header className="mb-8">
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                                <div>
+                                    <h1 className="inconsolata-ui text-3xl font-black text-text-heading tracking-tight mb-2">Explore Roadmaps</h1>
+                                    <p className="manrope-body text-[14px] text-text-muted font-medium">Discover and clone high-signal learning paths from the community.</p>
+                                </div>
+                                <button 
+                                    onClick={() => setIsRoadmapModalOpen(true)}
+                                    className="bg-accent text-white px-6 py-2.5 rounded-xl text-[12px] font-bold tracking-wide transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-accent/20"
+                                >
+                                    Create New Roadmap
+                                </button>
+                            </div>
 
-                    <main className="flex-1 min-w-0 order-1 lg:order-2">
-                        <header className="mb-6">
-                            <div className="flex flex-col sm:flex-row gap-3 mt-4">
+                            <div className="flex flex-col sm:flex-row gap-3">
                                 <div className="flex-1 relative group">
                                     <div className="absolute inset-y-0 left-3 flex items-center pointer-events-none">
-                                        <Search className="w-3.5 h-3.5 text-text-muted group-focus-within:text-accent transition-colors" />
+                                        <Search className="w-4 h-4 text-text-muted group-focus-within:text-accent transition-colors" />
                                     </div>
                                     <input 
                                         type="text" 
-                                        placeholder="Find a goal..."
+                                        placeholder="Search by subject, goal, or technology..."
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="w-full bg-callout-bg border border-border rounded-full py-1.5 pl-9 pr-4 manrope-body text-[12px] focus:outline-none focus:border-[var(--accent)] transition-all shadow-sm focus:bg-white dark:focus:bg-white/[0.05]"
+                                        className="w-full bg-sidebar/50 border border-border rounded-2xl py-3 pl-10 pr-4 manrope-body text-[14px] focus:outline-none focus:border-[var(--accent)] transition-all focus:bg-background shadow-sm"
                                     />
                                 </div>
                                 <div className="flex items-center gap-2 shrink-0">
@@ -270,111 +300,113 @@ export default function ExploreClient({
                                         <select 
                                             value={sortBy}
                                             onChange={(e) => setSortBy(e.target.value)}
-                                            className="appearance-none bg-transparent border border-border rounded-lg pl-8 pr-7 py-1.5 text-[11px] font-bold focus:outline-none focus:border-[var(--text-heading)] transition-all manrope-body cursor-pointer min-w-[120px]"
+                                            className="appearance-none bg-sidebar/50 border border-border rounded-2xl pl-10 pr-8 py-3 text-[12px] font-bold focus:outline-none focus:border-[var(--text-heading)] transition-all manrope-body cursor-pointer min-w-[160px]"
                                         >
-                                            <option value="alphabetical">Alphabetical (A-Z)</option>
                                             <option value="newest">Newest First</option>
-                                            <option value="highest_rated">Highest Rated</option>
                                             <option value="most_cloned">Most Popular</option>
+                                            <option value="highest_rated">Highest Rated</option>
+                                            <option value="alphabetical">Alphabetical</option>
                                         </select>
-                                        <Filter className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400 pointer-events-none" />
-                                        <ChevronDown className="absolute right-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-gray-400 pointer-events-none" />
+                                        <Filter className="absolute left-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" />
+                                        <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted pointer-events-none" />
                                     </div>
                                 </div>
                             </div>
                         </header>
 
-                        {/* Leaderboard Strip - Compact */}
+                        {/* Leaderboard Strip - Compact & Refined */}
                         {leaderboard.length > 0 && (
-                            <div className="mb-8 flex items-center gap-4 py-2 px-4 bg-sidebar dark:bg-white/[0.01] border border-border rounded-lg overflow-x-auto whitespace-nowrap scrollbar-hide">
-                                <div className="flex items-center gap-2 text-[10px] font-bold tracking-wide text-text-muted shrink-0 inconsolata-ui">
-                                    <Trophy className="h-3 w-3 text-amber-500" />
-                                    <span>Top Contributors</span>
+                            <div className="mb-8 flex items-center gap-4 py-2 px-5 bg-teal-500/[0.03] border border-teal-500/10 rounded-2xl overflow-x-auto whitespace-nowrap scrollbar-hide">
+                                <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-teal-700 shrink-0 inconsolata-ui">
+                                    <Trophy className="h-3 w-3" />
+                                    <span>Top Builders</span>
                                 </div>
-                                <div className="h-3 w-px bg-[var(--border)] shrink-0"></div>
-                                <div className="flex items-center gap-6">
+                                <div className="h-4 w-px bg-teal-500/20 shrink-0"></div>
+                                <div className="flex items-center gap-8">
                                     {leaderboard.map((entry, i) => (
-                                        <div key={i} className="flex items-center gap-2">
-                                            <span className="text-[12px] font-bold text-text-heading">@{entry.username}</span>
-                                            <span className="inconsolata-ui text-[10px] font-black text-teal-700 dark:text-teal-400">{entry.eulercoins}</span>
+                                        <div key={i} className="flex items-center gap-2 group cursor-pointer" onClick={() => router.push(`/u/${entry.username}`)}>
+                                            <span className="text-[12px] font-bold text-text-heading group-hover:text-accent transition-colors">@{entry.username}</span>
+                                            <span className="inconsolata-ui text-[10px] font-black text-teal-600/60">{entry.eulercoins}</span>
                                         </div>
                                     ))}
                                 </div>
                             </div>
                         )}
 
-                        {/* Filter Bar - Compact */}
-                        <div className="mb-6 flex flex-wrap gap-1.5">
-                            {Object.keys(CATEGORY_METADATA).map((cat) => (
-                                <button
-                                    key={cat}
-                                    onClick={() => setFilter(cat)}
-                                    className={`flex items-center gap-1.5 px-3 py-1 rounded-md text-[11px] font-bold tracking-normal transition-all border
-                                        ${filter === cat 
-                                        ? 'bg-teal-700 text-white border-teal-700' 
-                                        : 'bg-transparent text-gray-500 border-border hover:border-[var(--text-muted)]'
-                                    }`}
-                                >
-                                    <CategoryIcon category={cat} className="w-3 h-3 stroke-[2px]" />
-                                    {cat === 'all' ? 'All' : cat}
-                                </button>
-                            ))}
+                        {/* Filter Bar - Horizontal Scroll with Fade */}
+                        <div className="mb-8 relative group">
+                            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide mask-fade-right">
+                                {Object.keys(CATEGORY_METADATA).map((cat) => (
+                                    <button
+                                        key={cat}
+                                        onClick={() => setFilter(cat)}
+                                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[12px] font-bold tracking-tight transition-all border whitespace-nowrap
+                                            ${filter === cat 
+                                            ? 'bg-text-heading text-background border-text-heading shadow-md shadow-black/5 scale-[1.02]' 
+                                            : 'bg-sidebar/30 text-text-muted border-border hover:border-text-muted hover:bg-sidebar/50'
+                                        }`}
+                                    >
+                                        <CategoryIcon category={cat} className={`w-3.5 h-3.5 ${filter === cat ? 'opacity-100' : 'opacity-50'}`} />
+                                        {cat === 'all' ? 'All Paths' : cat}
+                                    </button>
+                                ))}
+                            </div>
                         </div>
 
-                        {/* Professional Table View - Tightened heights */}
-                        <div className="bg-background border border-border rounded-lg overflow-hidden">
+                        {/* Professional Table View - Modernized */}
+                        <div className="bg-background border border-border rounded-2xl overflow-hidden shadow-sm">
                             <table className="w-full text-left border-collapse table-fixed">
                                 <thead>
-                                    <tr className="border-b border-border bg-sidebar/50 dark:bg-white/[0.01]">
-                                        <th scope="col" className="w-[60%] px-4 py-2.5 text-[10px] font-bold tracking-wide text-gray-400 inconsolata-ui">Roadmap</th>
-                                        <th scope="col" className="hidden md:table-cell w-[20%] px-4 py-2.5 text-[10px] font-bold tracking-wide text-gray-400 inconsolata-ui">Duration</th>
-                                        <th scope="col" className="w-[20%] px-4 py-2.5 text-[10px] font-bold tracking-wide text-gray-400 inconsolata-ui text-right">Activity</th>
+                                    <tr className="border-b border-border bg-sidebar/20">
+                                        <th scope="col" className="w-[65%] px-6 py-4 text-[11px] font-black uppercase tracking-widest text-text-muted inconsolata-ui opacity-60">Learning Roadmap</th>
+                                        <th scope="col" className="hidden md:table-cell w-[18%] px-6 py-4 text-[11px] font-black uppercase tracking-widest text-text-muted inconsolata-ui opacity-60">Duration</th>
+                                        <th scope="col" className="w-[17%] px-6 py-4 text-[11px] font-black uppercase tracking-widest text-text-muted inconsolata-ui opacity-60 text-right">Reach</th>
                                     </tr>
                                 </thead>
-                                <tbody className={`divide-y divide-gray-100 dark:divide-white/[0.03] transition-opacity ${roadmapsLoading ? 'opacity-50' : 'opacity-100'}`}>
+                                <tbody className={`divide-y divide-border/50 transition-opacity ${roadmapsLoading ? 'opacity-50' : 'opacity-100'}`}>
                                     {filteredRoadmaps.map((r) => {
                                         const cat = getCategory(r.subject || '');
                                         return (
-                                            <tr key={r.id} className="group hover:bg-sidebar/50 dark:hover:bg-background/[0.01] transition-all">
-                                                <td className="px-4 py-3">
-                                                    <Link href={`/roadmap/${r.slug}`} className="flex flex-col min-w-0 group/title">
-                                                        <div className="flex items-center gap-3">
-                                                            <div className="flex items-center justify-center w-6 h-6 rounded bg-sidebar dark:bg-white/[0.02] border border-border dark:border-white/[0.05] text-gray-400 shrink-0">
-                                                                <CategoryIcon category={cat} className="w-3.5 h-3.5 stroke-[1.5px]" />
-                                                            </div>
-                                                            <div className="flex items-center gap-3 min-w-0">
-                                                                <span className="text-[14px] font-bold text-text-heading truncate group-hover/title:underline">
+                                            <tr key={r.id} className="group hover:bg-sidebar/30 transition-all cursor-pointer" onClick={() => router.push(`/roadmap/${r.slug}`)}>
+                                                <td className="px-6 py-5">
+                                                    <div className="flex items-start gap-4">
+                                                        <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-sidebar border border-border text-text-muted shrink-0 group-hover:scale-110 transition-transform group-hover:border-accent/30 group-hover:text-accent">
+                                                            <CategoryIcon category={cat} className="w-5 h-5 stroke-[1.5px]" />
+                                                        </div>
+                                                        <div className="flex flex-col min-w-0">
+                                                            <div className="flex items-center gap-3 mb-1">
+                                                                <span className="text-[15px] font-bold text-text-heading truncate group-hover:text-accent transition-colors">
                                                                     {r.title}
                                                                 </span>
-                                                                {r.username === 'eulerfold' && <VerifiedBadge size={18} className="shrink-0" />}
+                                                                {r.username === 'eulerfold' && <VerifiedBadge size={16} className="shrink-0" />}
+                                                            </div>
+                                                            <div className="flex items-center gap-3">
+                                                                <span className="text-[10px] font-black uppercase tracking-wider text-teal-700/60 inconsolata-ui">{cat}</span>
+                                                                <span className="text-[10px] font-medium text-text-muted/50">•</span>
+                                                                <span className="text-[12px] font-medium text-text-muted">by @{r.username || r.author}</span>
                                                                 {r.average_rating > 0 && (
-                                                                    <StarRating 
-                                                                        rating={r.average_rating} 
-                                                                        minimal={true}
-                                                                    />
+                                                                    <div className="flex items-center gap-2 pl-2 border-l border-border">
+                                                                        <StarRating rating={r.average_rating} minimal={true} />
+                                                                    </div>
                                                                 )}
                                                             </div>
                                                         </div>
-                                                        <div className="flex items-center justify-between pl-9 mt-0.5">
-                                                            <span className="text-[9px] font-bold text-gray-400 tracking-normal">{cat}</span>
-                                                            <span className="text-[10px] font-medium text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity duration-200">by @{r.username || r.author}</span>
-                                                        </div>
-                                                    </Link>
+                                                    </div>
                                                 </td>
-                                                <td className="hidden md:table-cell px-4 py-3">
-                                                    <span className="inconsolata-ui text-[12px] font-bold text-gray-500">
+                                                <td className="hidden md:table-cell px-6 py-5">
+                                                    <span className="inconsolata-ui text-[13px] font-bold text-text-muted">
                                                         {r.time_value} {r.time_unit}
                                                     </span>
                                                 </td>
-                                                <td className="px-4 py-3 text-right">
-                                                    <div className="group-hover:hidden flex items-center justify-end gap-2 text-[12px] font-bold text-gray-400 inconsolata-ui">
-                                                        <Copy className="h-3 w-3 opacity-50" />
-                                                        {r.clone_count}
-                                                    </div>
-                                                    <div className="hidden group-hover:flex items-center justify-end gap-2">
+                                                <td className="px-6 py-5 text-right">
+                                                    <div className="flex items-center justify-end gap-3">
+                                                        <div className="flex flex-col items-end">
+                                                            <span className="text-[13px] font-black text-text-heading inconsolata-ui">{r.clone_count}</span>
+                                                            <span className="text-[9px] font-black uppercase tracking-tighter text-text-muted opacity-50">Clones</span>
+                                                        </div>
                                                         <button 
-                                                            onClick={(e) => handleReport(e, r.id)}
-                                                            className="p-1 text-gray-400 hover:text-red-500 transition-colors"
+                                                            onClick={(e) => { e.stopPropagation(); handleReport(e, r.id); }}
+                                                            className="p-2 text-text-muted hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all opacity-0 group-hover:opacity-100"
                                                         >
                                                             <Flag className="h-3.5 w-3.5" />
                                                         </button>
@@ -415,8 +447,9 @@ export default function ExploreClient({
                         )}
                     </main>
 
-                    {/* Sidebar Links (Right) */}
-                    <div className="w-full lg:w-[260px] shrink-0 pt-4 lg:sticky lg:top-32 self-start order-3">
+                    {/* Right Sidebar - Dynamic Info */}
+                    <div className="w-full lg:w-[320px] shrink-0 pt-4 lg:sticky lg:top-32 self-start space-y-8">
+                        <CommunityRoadmapBanner onOpenModal={() => setIsRoadmapModalOpen(true)} />
                         <ResearchLibrarySidebar />
                     </div>
                 </div>

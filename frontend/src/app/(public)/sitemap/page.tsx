@@ -19,7 +19,7 @@ export default function SitemapPage() {
         { name: "Home", href: "/" },
         { name: "Dashboard", href: "/dashboard" },
         { name: "Study Planner", href: "/planner" },
-        { name: "BuildPilot", href: "/buildpilot" },
+
         { name: "Roadmap Generator", href: "/generate" },
         { name: "Explore Roadmaps", href: "/explore" },
         { name: "Roadmap Index", href: "/roadmap" },

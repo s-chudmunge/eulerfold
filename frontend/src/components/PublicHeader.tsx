@@ -278,7 +278,6 @@ export default function PublicHeader() {
                 {[
                   { label: "Research Lab", href: "/research-lab", isNew: true },
                   { label: "Study Planner", href: "/planner" },
-                  { label: "BuildPilot", href: "/buildpilot" },
                   { label: "Practice", href: "/practice" },
                   { label: "Job Decoded", href: "/generate?mode=job" },
                   { label: "Roadmap Generator", href: "/generate" }
@@ -599,9 +598,7 @@ export default function PublicHeader() {
                 { l: "Research Lab", h: "/research-lab", isNew: true },
                 { l: "Study Planner", h: "/planner" },
                 { l: "Job Decoded", h: "/generate?mode=job" },
-                { l: "BuildPilot", h: "/buildpilot" },
-                { l: "Practice", h: "/practice" },
-                { l: "Roadmap Generator", h: "/generate" },
+                { l: "Practice", h: "/practice" },                { l: "Roadmap Generator", h: "/generate" },
                 { l: "Learning Hub", h: "/learn" },
                 { l: "Roadmap Explorer", h: "/explore" },
                 { l: "Global Leaderboard", h: "/leaderboard" },

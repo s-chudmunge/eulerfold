@@ -28,19 +28,19 @@ def get_current_price(coupon_code: Optional[str] = None):
     """
     Returns (price_in_paise, has_discount)
     Normal price: ₹299 (29900 paise)
-    Special discount: 50% off on May 10-11, 2026 (Mother's Day Sale), all day IST.
+    Special discount: 25% off on May 18 - June 18, 2026 (End of Summer Sale), all day IST.
     Coupon code: #SANKALP21 gives 50% discount.
     """
     # IST is UTC+5:30
     ist_offset = timedelta(hours=5, minutes=30)
     now_ist = datetime.now(timezone.utc) + ist_offset
 
-    # Target dates: May 10th and May 11th, 2026
-    is_sale_period = (
-        now_ist.year == 2026 and
-        now_ist.month == 5 and
-        (now_ist.day == 10 or now_ist.day == 11)
-    )    
+    # End of Summer Sale: May 18th to June 18th, 2026
+    # Note: Using month 5 (May) and 6 (June)
+    start_date = datetime(2026, 5, 18, 0, 0, 0)
+    end_date = datetime(2026, 6, 19, 0, 0, 0) # End at start of June 19th
+    
+    is_sale_period = start_date <= now_ist.replace(tzinfo=None) < end_date
 
     # Coupon Logic
     VALID_COUPONS = {
@@ -52,9 +52,10 @@ def get_current_price(coupon_code: Optional[str] = None):
         coupon_discount = VALID_COUPONS[coupon_code.upper()]
 
     if is_sale_period or coupon_discount > 0:
-        discount = 0.5 # Default sale discount
+        discount = 0.25 # Default sale discount (End of Summer)
         if coupon_discount > 0:
-            discount = coupon_discount
+            # Coupons take precedence if they are higher
+            discount = max(discount, coupon_discount)
             
         # ₹299 * (1 - discount)
         final_price_rs = 299 * (1 - discount)

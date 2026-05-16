@@ -19,11 +19,11 @@ export default function ScoringPage() {
             <main className="flex-1 w-full max-w-[900px] mx-auto px-6 py-16 md:py-24">
                 <section className="mb-24">
                     <h1 className="manrope-body text-4xl md:text-5xl font-black text-text-heading tracking-tight mb-8">
-                        Scoring & Verification
+                        Scoring & Analysis
                     </h1>
                     <div className="space-y-6 manrope-body text-[16px] text-text-primary leading-relaxed font-medium max-w-2xl">
                         <p>
-                            EulerFold operates on the principle of <strong>Honest Progress</strong>. Unlike traditional platforms that reward simple completion, we measure mastery through a multi-signal verification engine.
+                            EulerFold operates on the principle of <strong>Honest Progress</strong>. Unlike traditional platforms that reward simple completion, we measure mastery through a multi-signal analysis engine.
                         </p>
                         <p className="opacity-80">
                             Your technical identity is a dynamic calculation of effort, quality, and retention. The system is intentionally rigorous, ensuring that a high confidence score represents industry-ready proficiency.
@@ -44,7 +44,7 @@ export default function ScoringPage() {
                                 <h3 className="manrope-body text-[18px] font-bold text-text-heading uppercase tracking-tight">01. Project Proof (40%)</h3>
                             </div>
                             <p className="manrope-body text-[15px] text-text-muted leading-relaxed font-medium">
-                                The primary evidence of your skill. Every module ends with a "Proof of Work" challenge evaluated by the <strong>Audit Senate</strong>—a committee of three specialized AI agents (Technician, Educator, and Relevance Judge).
+                                The primary evidence of your skill. Every module ends with a "Proof of Work" challenge analyzed by specialized AI agents to check your technical quality and depth.
                             </p>
                         </div>
 
@@ -93,9 +93,9 @@ export default function ScoringPage() {
                             </p>
                         </div>
                         <div className="space-y-4">
-                            <h3 className="manrope-body text-[16px] font-bold text-text-heading">Persistent Verification</h3>
+                            <h3 className="manrope-body text-[16px] font-bold text-text-heading">Persistent Analysis</h3>
                             <p className="manrope-body text-[15px] text-text-muted leading-relaxed font-medium">
-                                Deleting a roadmap removes its specific data, but core skill records remain on your profile. The system recalculates scores based on remaining verified units.
+                                Deleting a roadmap removes its specific data, but core skill records remain on your profile. The system recalculates scores based on remaining reviewed units.
                             </p>
                         </div>
                     </div>
@@ -136,7 +136,7 @@ export default function ScoringPage() {
                             <div className="space-y-1">
                                 <h4 className="manrope-body text-[16px] font-bold text-text-heading">Foundational (&lt;40%)</h4>
                                 <p className="manrope-body text-[14px] text-text-muted font-medium">
-                                    Initial exposure. Technical identity is in its early stages with limited verified evidence currently available.
+                                    Initial exposure. Technical identity is in its early stages with limited reviewed evidence currently available.
                                 </p>
                             </div>
                         </div>

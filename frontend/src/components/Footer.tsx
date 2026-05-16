@@ -21,7 +21,7 @@ export default function Footer() {
             <Link href="/explore" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Explore</Link>
             <Link href="/roadmap" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Roadmap Index</Link>
             <Link href="/generate" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Generate</Link>
-            <Link href="/buildpilot" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">BuildPilot</Link>
+
             <Link href="/planner" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Study Planner</Link>
             <Link href="/learn" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Learn</Link>
             <Link href="/pricing" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Pricing</Link>
