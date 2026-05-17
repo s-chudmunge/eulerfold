@@ -194,6 +194,7 @@ class ExploreRoadmap(BaseModel):
     id: int
     title: str
     slug: str
+    description: Optional[str] = None
     username: Optional[str] = None
     subject: Optional[str] = None
     goal: Optional[str]

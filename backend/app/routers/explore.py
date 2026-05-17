@@ -52,7 +52,7 @@ async def explore_roadmaps(
     for attempt in range(max_retries + 1):
         try:
             query = sb.table("roadmaps") \
-                .select("id, title, slug, subject, goal, time_value, time_unit, clone_count, average_rating, rating_count, show_author, email, roadmap_plan, created_at") \
+                .select("id, title, slug, description, subject, goal, time_value, time_unit, clone_count, average_rating, rating_count, show_author, email, roadmap_plan, created_at") \
                 .eq("is_public", True) \
                 .lt("report_count", 3)
             
