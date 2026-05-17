@@ -55,9 +55,9 @@ export default function PricingSection() {
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="px-2 py-0.5 bg-orange-900/20 rounded text-[10px] font-black text-white uppercase tracking-tighter">Live Now</span>
-                  <h3 className="inconsolata-ui text-[16px] font-black text-white uppercase tracking-tight leading-none">Mother&apos;S Day Flash Sale</h3>
+                  <h3 className="inconsolata-ui text-[16px] font-black text-white uppercase tracking-tight leading-none">End of Summer Flash Sale</h3>
                 </div>
-                <p className="manrope-body text-[12px] text-orange-50/90 font-medium">50% discount applied. Build your roadmaps at half the cost.</p>
+                <p className="manrope-body text-[12px] text-orange-50/90 font-medium">Limited time discount applied. ☀️ Grab your credits before the season ends.</p>
               </div>
             </div>
             <div className="flex flex-col items-end gap-1 relative z-10">
@@ -80,9 +80,9 @@ export default function PricingSection() {
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="px-2 py-0.5 bg-teal-600/10 border border-teal-600/20 rounded text-[10px] font-bold text-teal-700 uppercase tracking-widest">Upcoming Event</span>
-                  <h3 className="inconsolata-ui text-[16px] font-black text-text-heading uppercase tracking-tight leading-none">Mother&apos;S Day Sale</h3>
+                  <h3 className="inconsolata-ui text-[16px] font-black text-text-heading uppercase tracking-tight leading-none">End of Summer Sale</h3>
                 </div>
-                <p className="manrope-body text-[12px] text-text-muted font-medium">Get 50% off all credits starting very soon. Don't miss out!</p>
+                <p className="manrope-body text-[12px] text-text-muted font-medium">Get a limited time discount on all credits starting very soon. Don&apos;t miss out!</p>
               </div>
             </div>
             <div className="flex flex-col items-center sm:items-end gap-1">
@@ -101,34 +101,31 @@ export default function PricingSection() {
                 <div className="mb-5">
                     <span className="inconsolata-ui text-[9px] font-bold text-text-muted uppercase tracking-widest mb-2 inline-block">Always Free</span>
                     <div className="flex items-baseline justify-between mb-1">
-                        <span className="inconsolata-ui text-xl font-bold text-text-heading">Starter</span>
+                        <span className="inconsolata-ui text-xl font-bold text-text-heading">Basic</span>
                         <span className="inconsolata-ui text-lg font-bold text-text-muted">Free</span>
                     </div>
-                    <p className="manrope-body text-[11px] text-text-muted">Standard features for everyone.</p>
+                    <p className="manrope-body text-[11px] text-text-muted">Essential tools for self-directed technical learning.</p>
                 </div>
 
                 <div className="space-y-1.5 mb-6 flex-1 text-[10px] text-text-primary font-medium">
                     <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> Learn from all lessons
+                        <span className="text-accent">✓</span> Curriculum & lesson library access
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> Copy any roadmap
+                        <span className="text-accent">✓</span> Public Roadmap index & cloning
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> Your own skill profile
+                        <span className="text-accent">✓</span> Skill profile & progress tracking
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> 5 Free roadmaps
+                        <span className="text-accent">✓</span> 5 AI Roadmap generations
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> Job Decoded (Up to 4w)
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> 2 Homework Reviews
+                        <span className="text-accent">✓</span> 4-Week career goal projections
                     </div>
                     <div className="pt-1.5 mt-1.5 border-t border-border/40 opacity-50">
                         <div className="flex items-center gap-2 text-text-muted">
-                            <span className="text-red-500/60 font-bold text-[8px]">✗</span> Uses Basic AI Model
+                            <span className="text-red-500/60 font-bold text-[8px]">✗</span> No Priority AI reasoning models
                         </div>
                     </div>
                 </div>
@@ -145,7 +142,7 @@ export default function PricingSection() {
             <div className="flex flex-col p-5 border border-[var(--accent)] rounded-none bg-accent-muted/5 relative shadow-md hover:shadow-lg transition-shadow overflow-hidden">
                 {discountStatus.hasDiscount && (
                     <div className="absolute top-0 right-0 bg-orange-500 text-white px-8 py-1 rotate-45 translate-x-[25px] translate-y-[10px] text-[8px] font-black uppercase tracking-tighter z-10">
-                        -50% OFF
+                        -{Math.round((1 - DISCOUNTED_PRICE/NORMAL_PRICE) * 100)}% OFF
                     </div>
                 )}
                 <div className="mb-5">
@@ -159,30 +156,27 @@ export default function PricingSection() {
                             <span className="inconsolata-ui text-lg font-bold text-accent">₹{currentPrice}</span>
                         </div>
                     </div>
-                    <p className="manrope-body text-[11px] text-text-muted">Advanced study paths.</p>
+                    <p className="manrope-body text-[11px] text-text-muted">Full engine for technical depth & industry readiness.</p>
                 </div>
 
                 <div className="space-y-1.5 mb-6 flex-1 text-[10px] text-text-primary font-medium">
-                    <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> 20 Premium Credits
-                    </div>
-                    <p className="text-[9px] text-text-muted ml-5 font-bold tracking-tight mb-2 italic">
-                        (1 Credit = 1 Premium AI Roadmap)
-                    </p>
                     <div className="flex items-center gap-2 font-bold text-accent">
-                        <span className="text-accent">✓</span> Job Decoded (Full Engine)
+                        <span className="text-accent">✓</span> 20 Premium Credits (1 per Roadmap)
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> Customized Extensions
+                        <span className="text-accent">✓</span> Full Job Market Intelligence engine
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> 2 Homework Submissions
+                        <span className="text-accent">✓</span> Dynamic Depth Extensions (Infinite)
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> Submit Homework (0.1 Credits)
+                        <span className="text-accent">✓</span> AI Homework Reviews (Full Access)
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> Up to 12 Week Durations
+                        <span className="text-accent">✓</span> 12-Week Strategic Goal Mapping
+                    </div>
+                    <div className="flex items-center gap-2 font-bold text-teal-600 dark:text-teal-400">
+                        <span className="">✓</span> Priority access to reasoning models
                     </div>
                 </div>
 
