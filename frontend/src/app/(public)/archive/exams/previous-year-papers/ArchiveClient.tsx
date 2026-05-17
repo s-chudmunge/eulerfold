@@ -272,7 +272,7 @@ function ArchiveContent() {
         <Breadcrumbs items={[{ label: 'Archive' }]} />
 
         {showBanner && (
-          <div className="mb-12 bg-callout-bg rounded-3xl p-6 md:p-8 border border-border relative overflow-hidden group">
+          <div className="bg-transparent rounded-3xl p-6 md:p-8 border border-border/60 relative overflow-hidden group mb-10">
             <button 
               onClick={() => setShowBanner(false)}
               className="absolute top-4 right-4 z-20 p-2 text-text-muted hover:text-text-primary hover:bg-[var(--border)] rounded-full transition-all"

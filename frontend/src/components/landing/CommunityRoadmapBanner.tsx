@@ -50,7 +50,7 @@ export default function CommunityRoadmapBanner({
 
   return (
     <>
-      <div className="bg-callout-bg rounded-3xl p-6 md:p-8 border border-border relative overflow-hidden group">
+      <div className="bg-transparent rounded-3xl p-6 md:p-8 border border-border/60 relative overflow-hidden group">
         {showClose && (
             <button
                 onClick={() => setIsVisible(false)}

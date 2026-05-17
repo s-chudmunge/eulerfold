@@ -449,7 +449,7 @@ export default function ExploreClient({
                     </main>
 
                     {/* Right Sidebar - Dynamic Info */}
-                    <div className="w-full lg:w-[320px] shrink-0 pt-4 lg:sticky lg:top-32 self-start space-y-8">
+                    <div className="w-full lg:w-[320px] shrink-0 pt-4 self-start space-y-8">
                         <CommunityRoadmapBanner onOpenModal={() => setIsRoadmapModalOpen(true)} />
                         <ResearchLibrarySidebar />
                     </div>

@@ -529,7 +529,7 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
 
         <div className="max-w-[720px] w-full">
           {/* Community Banner */}
-        <div className="mb-10 bg-callout-bg rounded-2xl p-6 md:p-8 border border-callout-border relative overflow-hidden group">
+        <div className="mb-10 bg-transparent rounded-2xl p-6 md:p-8 border border-border/60 relative overflow-hidden group">
           <div className="relative z-10">
             <h2 className="font-bold mb-2 text-text-heading tracking-tight text-lg">Join the EulerFold community</h2>
             <p className="text-text-primary mb-6 max-w-md font-medium text-[14px] leading-relaxed">Track progress and collaborate on roadmaps with students worldwide.</p>
