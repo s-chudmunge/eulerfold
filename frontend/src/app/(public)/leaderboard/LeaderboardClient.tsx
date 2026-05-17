@@ -8,6 +8,7 @@ import { coinsAPI, LeaderboardEntry } from '@/lib/api';
 import Link from 'next/link';
 import { useAuth } from '@/components/AuthProvider';
 import CommunityRoadmapBanner from '@/components/landing/CommunityRoadmapBanner';
+import { SideBanner, QUOTES } from '@/components/layout/SideBanners';
 
 const CATEGORIES = [
   'All', 
@@ -39,7 +40,18 @@ export default function LeaderboardPage({
   const [loading, setLoading] = useState(initialTopUsers.length === 0);
   const [category, setCategory] = useState('All');
   const [visibleCount, setVisibleCount] = useState(100);
+  const [quoteIndex, setQuoteIndex] = useState(0);
   const { user: authUser } = useAuth();
+
+  useEffect(() => {
+    // Randomize on mount
+    setQuoteIndex(Math.floor(Math.random() * QUOTES.length));
+
+    const timer = setInterval(() => {
+      setQuoteIndex((prev) => (prev + 1) % QUOTES.length);
+    }, 60000);
+    return () => clearInterval(timer);
+  }, []);
 
   useEffect(() => {
     async function loadData() {
@@ -240,8 +252,16 @@ export default function LeaderboardPage({
         </main>
 
         {/* Sidebar */}
-        <aside className="w-full lg:w-[320px] shrink-0">
+        <aside className="w-full lg:w-[320px] shrink-0 flex flex-col gap-10">
            <CommunityRoadmapBanner />
+           
+           <SideBanner 
+              isStatic
+              buttonText="Research"
+              href="/research-decoded"
+              currentQuote={QUOTES[quoteIndex]}
+              quoteIndex={quoteIndex}
+            />
         </aside>
       </div>
     </div>

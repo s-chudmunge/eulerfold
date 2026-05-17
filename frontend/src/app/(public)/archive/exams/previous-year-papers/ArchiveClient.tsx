@@ -12,6 +12,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import SocialShare from '@/components/SocialShare';
 import { DiscussionSection } from '@/components/discussions/DiscussionSection';
 import Footer from '@/components/Footer';
+import BrandedSideBanners from '@/components/layout/SideBanners';
 
 const EXAM_FULL_NAMES: Record<string, string> = {
   "AIME": "American Invitational Mathematics Examination",
@@ -266,7 +267,8 @@ function ArchiveContent() {
       <Suspense fallback={null}>
         <SearchParamsHandler onParams={handleSearchParams} />
       </Suspense>
-      <main className="max-w-[1000px] mx-auto px-6 py-8 md:px-12 md:py-12">
+      <main className="max-w-[1000px] mx-auto px-6 py-8 md:px-12 md:py-12 relative">
+        <BrandedSideBanners />
         <Breadcrumbs items={[{ label: 'Archive' }]} />
 
         {showBanner && (

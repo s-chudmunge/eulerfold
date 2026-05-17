@@ -6,19 +6,32 @@ import Link from 'next/link';
 import PaymentModal from '@/components/PaymentModal';
 import { useAuth } from '@/components/AuthProvider';
 import { getDiscountStatus, formatTime, NORMAL_PRICE, DISCOUNTED_PRICE } from '@/lib/utils/pricing';
+import { SideBanner, QUOTES } from '@/components/layout/SideBanners';
 
 export default function PricingClient() {
     const { user, loading } = useAuth();
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
     const [discountStatus, setDiscountStatus] = useState(getDiscountStatus());
     const [hasMounted, setHasMounted] = useState(false);
+    const [quoteIndex, setQuoteIndex] = useState(0);
 
     useEffect(() => {
         setHasMounted(true);
+        // Randomize on mount
+        setQuoteIndex(Math.floor(Math.random() * QUOTES.length));
+
         const timer = setInterval(() => {
             setDiscountStatus(getDiscountStatus());
         }, 1000);
-        return () => clearInterval(timer);
+
+        const quoteTimer = setInterval(() => {
+            setQuoteIndex((prev) => (prev + 1) % QUOTES.length);
+        }, 60000);
+
+        return () => {
+            clearInterval(timer);
+            clearInterval(quoteTimer);
+        };
     }, []);
 
     const userCredits = user?.roadmap_credits ?? null;
@@ -32,7 +45,16 @@ export default function PricingClient() {
     };
 
     return (
-        <div className="pricing-container">
+        <div className="pricing-container relative">
+            {/* Floating Side Banners - Single side for Pricing */}
+            <SideBanner 
+                align="left"
+                buttonText="Research"
+                href="/research-decoded"
+                currentQuote={QUOTES[quoteIndex]}
+                quoteIndex={quoteIndex}
+            />
+
             {/* Discount Alert */}
             {discountStatus.hasDiscount && (
                 <div className="mb-8 p-6 bg-orange-600 dark:bg-orange-700 border-b-4 border-orange-900/20 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl relative overflow-hidden group">

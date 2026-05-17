@@ -11,6 +11,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import SocialShare from '@/components/SocialShare';
 import { DiscussionSection } from '@/components/discussions/DiscussionSection';
 import Footer from '@/components/Footer';
+import BrandedSideBanners from '@/components/layout/SideBanners';
 
 const EXAM_FULL_NAMES: Record<string, string> = {
   "AIME": "American Invitational Mathematics Examination",
@@ -190,7 +191,8 @@ export default function ExamClient({ exam }: Props) {
 
   return (
     <div className="bg-background">
-      <main className="max-w-[1000px] mx-auto px-6 pt-8 pb-12">
+      <main className="max-w-[1000px] mx-auto px-6 pt-8 pb-12 relative">
+        <BrandedSideBanners />
         <Breadcrumbs 
           items={[
             { label: 'Archive', href: '/archive/exams/previous-year-papers' },

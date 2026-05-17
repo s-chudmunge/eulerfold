@@ -9,6 +9,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import SocialShare from '@/components/SocialShare';
 import { DiscussionSection } from '@/components/discussions/DiscussionSection';
 import Footer from '@/components/Footer';
+import BrandedSideBanners from '@/components/layout/SideBanners';
 
 const EXAM_LOGOS: Record<string, string> = {
   "IMO": "/assets/logos/IMO.png",
@@ -102,7 +103,8 @@ export default function PaperClient({ exam, paper }: Props) {
 
   return (
     <div className="bg-background text-text-primary">
-      <main className="max-w-[1000px] mx-auto px-6 pt-8 pb-24">
+      <main className="max-w-[1000px] mx-auto px-6 pt-8 pb-24 relative">
+        <BrandedSideBanners />
         <Breadcrumbs 
           items={[
             { label: 'Archive', href: '/archive/exams/previous-year-papers' },

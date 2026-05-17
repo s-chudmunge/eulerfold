@@ -104,6 +104,7 @@ body {
   font-size: 1rem; /* 17px on desktop */
   line-height: 1.7;
   font-weight: var(--font-weight-normal);
+  overflow-x: hidden;
 }
 
 /* Global utility classes used across app pages */
@@ -369,6 +370,10 @@ body {
     #115e59 85%, 
     #042f2e 100%
   );
+  background-size: 200% 200%;
+  animation: 
+    prism-flow 20s ease infinite,
+    iridescent 30s linear infinite;
   overflow: hidden;
 }
 
@@ -380,6 +385,7 @@ body {
     #115e59 85%, 
     #042f2e 100%
   );
+  background-size: 200% 200%;
 }
 
 /* Light Mode: Prism Pearl - Sophisticated iridescent white */
@@ -392,6 +398,39 @@ body {
     #fef2f2 80%, 
     #fff7ed 100%
   );
+  background-size: 200% 200%;
+  animation: 
+    prism-flow 25s ease infinite,
+    iridescent-light 40s linear infinite;
+}
+
+@keyframes prism-flow {
+  0% { background-position: 0% 0%; }
+  50% { background-position: 100% 100%; }
+  100% { background-position: 0% 0%; }
+}
+
+@keyframes iridescent {
+  0% { filter: hue-rotate(0deg) brightness(1); }
+  50% { filter: hue-rotate(15deg) brightness(1.1); }
+  100% { filter: hue-rotate(0deg) brightness(1); }
+}
+
+@keyframes iridescent-light {
+  0% { filter: hue-rotate(0deg) saturate(1); }
+  50% { filter: hue-rotate(10deg) saturate(1.2); }
+  100% { filter: hue-rotate(0deg) saturate(1); }
+}
+
+@keyframes stripe-flow {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 400px; }
+}
+
+@keyframes sheen-flow {
+  0% { transform: translateX(-150%) skewX(-25deg); }
+  20% { transform: translateX(150%) skewX(-25deg); }
+  100% { transform: translateX(150%) skewX(-25deg); }
 }
 
 .prism-striped-gradient::after {
@@ -408,7 +447,9 @@ body {
     rgba(0, 0, 0, 0.06) 9px,
     rgba(0, 0, 0, 0.08) 10px
   );
+  animation: stripe-flow 40s linear infinite;
   pointer-events: none;
+  z-index: 2;
 }
 
 .dark .prism-striped-gradient::after {
@@ -424,7 +465,36 @@ body {
   );
 }
 
+/* Moving Sheen Layer */
 .prism-striped-gradient::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 255, 255, 0.03) 50%,
+    transparent 100%
+  );
+  transform: skewX(-25deg);
+  animation: sheen-flow 8s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 1;
+}
+
+:root:not(.dark) .prism-striped-gradient::before {
+  background: linear-gradient(
+    to right,
+    transparent 0%,
+    rgba(255, 255, 255, 0.4) 50%,
+    transparent 100%
+  );
+}
+
+.prism-striped-gradient-noise {
   content: "";
   position: absolute;
   inset: 0;
@@ -432,4 +502,5 @@ body {
   opacity: 0.2;
   mix-blend-mode: overlay;
   pointer-events: none;
+  z-index: 3;
 }

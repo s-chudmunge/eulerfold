@@ -6,7 +6,7 @@ export interface Article {
   shortSlug?: string;
   author: string;
   date: string;
-  category: string;
+  subject: string;
   heroImage: string;
   excerpt: string;
   technicalInsight?: string;

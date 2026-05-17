@@ -445,3 +445,13 @@ class ManualBuildRequest(BaseModel):
     goal: str
     skills: Optional[str] = ""
 
+# --- Content Interaction Schemas ---
+
+class LikeRead(BaseModel):
+    count: int
+    user_liked: bool
+
+class LikeToggle(BaseModel):
+    context_type: str
+    context_id: str
+

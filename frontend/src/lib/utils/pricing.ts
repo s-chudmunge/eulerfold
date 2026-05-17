@@ -28,14 +28,15 @@ export function getDiscountStatus(): DiscountStatus {
     const isWithinTime = now >= startTimeIST && now < endTimeIST;
     const hasDiscount = isWithinTime;
     
-    // Check if it's "today" (May 17th) to show upcoming notice
-    const isToday = now.getFullYear() === 2026 && now.getMonth() === 4 && now.getDate() === 17;
+    // Check if it's "today" (May 17th or earlier) to show upcoming notice
+    // Set to show notice if within 7 days of start for better visibility
+    const isToday = now < startTimeIST && (startTimeIST.getTime() - now.getTime()) < (7 * 86400 * 1000);
     
     let remainingSeconds = 0;
     if (isWithinTime) {
         remainingSeconds = Math.max(0, Math.floor((endTimeIST.getTime() - now.getTime()) / 1000));
     } else if (now < startTimeIST && isToday) {
-        // Show countdown to start if it's May 17
+        // Show countdown to start if we're in the notice period
         remainingSeconds = Math.max(0, Math.floor((startTimeIST.getTime() - now.getTime()) / 1000));
     }
     
@@ -50,8 +51,16 @@ export function getDiscountStatus(): DiscountStatus {
 }
 
 export function formatTime(seconds: number): string {
-    const h = Math.floor(seconds / 3600);
+    const days = Math.floor(seconds / 86400);
+    const h = Math.floor((seconds % 86400) / 3600);
     const m = Math.floor((seconds % 3600) / 60);
     const s = seconds % 60;
-    return `${h.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    
+    if (seconds >= 172800) { // More than 48 hours
+        return `${days} Day${days > 1 ? 's' : ''}, ${h} Hour${h !== 1 ? 's' : ''}`;
+    }
+    
+    // For less than 48h, use HH:MM:SS
+    const totalHours = Math.floor(seconds / 3600);
+    return `${totalHours.toString().padStart(2, '0')}:${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
 }

@@ -15,13 +15,14 @@ import RecommendedRoadmaps from '@/components/RecommendedRoadmaps';
 import FloatingTTS from '@/components/FloatingTTS';
 import NextStepsSidebar from '@/components/NextStepsSidebar';
 import { motion, AnimatePresence } from 'framer-motion';
+import { SideBanner, QUOTES } from '@/components/layout/SideBanners';
 
 interface Article {
   title: string;
   slug: string;
   author: string;
   date: string;
-  category: string;
+  subject: string;
   heroImage: string;
   excerpt: string;
   technicalInsight?: string;
@@ -354,10 +355,18 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [scale, setScale] = useState(1);
   const [activeId, setActiveId] = useState<string>('');
+  const [quoteIndex, setQuoteIndex] = React.useState(0);
   const [recommendations, setRecommendations] = React.useState<{
     articles: Article[],
     papers: Paper[]
   }>({ articles: [], papers: [] });
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setQuoteIndex((prev) => (prev + 1) % QUOTES.length);
+    }, 60000);
+    return () => clearInterval(interval);
+  }, []);
 
   const headings = React.useMemo(() => {
     return paper.sections.map(section => ({
@@ -733,10 +742,21 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
       </div>
 
       {/* Action Sidebar (Right) */}
-      <NextStepsSidebar 
-        subject="Research" 
-        topic={paper.title} 
-      />
+      <div className="hidden lg:flex flex-col gap-12 w-[240px] shrink-0">
+        <NextStepsSidebar 
+          subject="Research" 
+          topic={paper.title} 
+          className="w-full"
+        />
+
+        <SideBanner 
+          isStatic
+          buttonText="Articles"
+          href="/articles"
+          currentQuote={QUOTES[quoteIndex]}
+          quoteIndex={quoteIndex}
+        />
+      </div>
     </div>
 
     {/* Image Lightbox */}
