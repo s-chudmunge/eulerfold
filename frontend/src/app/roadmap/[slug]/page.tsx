@@ -29,6 +29,11 @@ async function getPublicRoadmapMetadata(slug: string) {
     try {
         // Strictly slug-based fetch for SEO and link consistency
         const res = await fetch(endpoint, { next: { revalidate: 3600 } });
+        
+        if (res.status === 403) {
+            return { isPrivate: true };
+        }
+        
         if (!res.ok) return null;
         return res.json();
     } catch (e) {
@@ -43,6 +48,17 @@ export async function generateMetadata({ params }: { params: { slug: string } })
         return {
             title: 'Learning Roadmap',
             description: 'This roadmap does not exist or has been removed.',
+            robots: {
+                index: false,
+                follow: false,
+            }
+        };
+    }
+
+    if ((roadmap as any).isPrivate) {
+        return {
+            title: 'Learning Roadmap | EulerFold',
+            description: 'This is a private learning roadmap. Login to EulerFold to view your personal progress and resources.',
             robots: {
                 index: false,
                 follow: false,
@@ -122,6 +138,16 @@ export default async function RoadmapDetailPage({ params }: { params: { slug: st
 
     if (!initialRoadmap) {
         notFound();
+    }
+
+    // Handle private roadmap case where server-side fetch failed with 403
+    if ((initialRoadmap as any).isPrivate) {
+        return (
+            <RoadmapClient 
+                slug={params.slug} 
+                initialRoadmap={null} 
+            />
+        );
     }
 
     if (initialRoadmap?.is_public) {
