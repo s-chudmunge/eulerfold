@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import { exploreAPI, authAPI, roadmapsAPI } from '@/lib/api';
 import PublicHeader from '@/components/PublicHeader';
+import BrandedSideBanners from '@/components/layout/SideBanners';
 import Footer from '@/components/Footer';
 import RoadmapDisplay from '@/components/landing/RoadmapDisplay';
 import StarRating from '@/components/roadmap/StarRating';
@@ -281,7 +282,8 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
             <PublicHeader />
             
             <main className="flex-grow">
-                <div className="max-w-[1000px] mx-auto px-6 pt-16 pb-12 md:px-12 md:pt-24 md:pb-16">
+                <div className="max-w-[1000px] mx-auto px-6 pt-16 pb-12 md:px-12 md:pt-24 md:pb-16 relative">
+                    <BrandedSideBanners />
                     
                     {/* Public Header Area - Minimalist Design */}
                     <div className="relative mb-10 pb-8 border-b border-border/60 group/header">

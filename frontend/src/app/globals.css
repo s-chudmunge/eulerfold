@@ -358,3 +358,78 @@ body {
   mask-image: linear-gradient(to right, black 85%, transparent 100%);
 }
 
+
+/* EulerFold Prism Striped Gradient - Refined "Midnight Obsidian" Palette */
+.prism-striped-gradient {
+  position: relative;
+  background: linear-gradient(135deg, 
+    #020617 0%, 
+    #0f172a 30%, 
+    #0f766e 70%, 
+    #115e59 85%, 
+    #042f2e 100%
+  );
+  overflow: hidden;
+}
+
+.dark .prism-striped-gradient {
+  background: linear-gradient(135deg, 
+    #020617 0%, 
+    #0f172a 30%, 
+    #0f766e 70%, 
+    #115e59 85%, 
+    #042f2e 100%
+  );
+}
+
+/* Light Mode: Prism Pearl - Sophisticated iridescent white */
+:root:not(.dark) .prism-striped-gradient {
+  background: linear-gradient(135deg, 
+    #ffffff 0%, 
+    #f0f9ff 20%, 
+    #e0e7ff 40%, 
+    #fae8ff 60%, 
+    #fef2f2 80%, 
+    #fff7ed 100%
+  );
+}
+
+.prism-striped-gradient::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.15) 0px,
+    rgba(255, 255, 255, 0.05) 1px,
+    transparent 2px,
+    transparent 7px,
+    rgba(0, 0, 0, 0.03) 8px,
+    rgba(0, 0, 0, 0.06) 9px,
+    rgba(0, 0, 0, 0.08) 10px
+  );
+  pointer-events: none;
+}
+
+.dark .prism-striped-gradient::after {
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.08) 0px,
+    rgba(255, 255, 255, 0.03) 1px,
+    transparent 2px,
+    transparent 7px,
+    rgba(0, 0, 0, 0.1) 8px,
+    rgba(0, 0, 0, 0.2) 9px,
+    rgba(0, 0, 0, 0.25) 10px
+  );
+}
+
+.prism-striped-gradient::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.2;
+  mix-blend-mode: overlay;
+  pointer-events: none;
+}

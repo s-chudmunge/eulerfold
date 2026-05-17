@@ -37,6 +37,7 @@ import ShareMenu from '@/components/ShareMenu';
 import TTSListenButton from '@/components/TTSListenButton';
 import MCQPractice from '@/components/roadmap/MCQPractice';
 import HomeworkSubmissionModal from '@/components/roadmap/HomeworkSubmissionModal';
+import Celebration from '@/components/Celebration';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Inconsolata, Manrope } from 'next/font/google';
 
@@ -1147,55 +1148,11 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                 </div>
             )}
             {/* Celebration Animation */}
-            <AnimatePresence>
-                {showCelebration && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-[300] pointer-events-none overflow-hidden"
-                    >
-                        {/* Confetti Particles */}
-                        {[...Array(40)].map((_, i) => (
-                            <motion.div
-                                key={i}
-                                className="absolute w-2 h-2 rounded-sm"
-                                style={{
-                                    backgroundColor: ['#0F766E', '#14B8A6', '#F59E0B', '#10B981', '#3B82F6'][i % 5],
-                                    left: `${Math.random() * 100}%`,
-                                    top: `-5%`,
-                                }}
-                                animate={{
-                                    top: '105%',
-                                    left: `${(Math.random() * 100) + (Math.random() - 0.5) * 40}%`,
-                                    rotate: 360 * 2,
-                                }}
-                                transition={{
-                                    duration: 2 + Math.random() * 2,
-                                    ease: "easeOut",
-                                    delay: Math.random() * 0.5,
-                                }}
-                            />
-                        ))}
-                        
-                        {/* Success Message Card */}
-                        <div className="absolute inset-0 flex items-center justify-center">
-                            <motion.div
-                                initial={{ scale: 0.8, opacity: 0, y: 20 }}
-                                animate={{ scale: 1, opacity: 1, y: 0 }}
-                                exit={{ scale: 0.8, opacity: 0, y: -20 }}
-                                className="bg-background/90 backdrop-blur-xl border border-teal-500/20 px-10 py-8 rounded-[40px] shadow-2xl text-center pointer-events-auto"
-                            >
-                                <div className="w-20 h-20 bg-teal-500/10 text-teal-600 rounded-3xl flex items-center justify-center mx-auto mb-6">
-                                    <ShieldCheck className="w-10 h-10" />
-                                </div>
-                                <h3 className="inconsolata-ui text-2xl font-bold text-text-heading mb-2 tracking-tight">Roadmap is Public!</h3>
-                                <p className="manrope-body text-[14px] text-text-muted font-medium italic">Shared with the EulerFold community.</p>
-                            </motion.div>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+            <Celebration 
+                show={showCelebration} 
+                title="Roadmap is Public!" 
+                subtitle="Shared with the EulerFold community."
+            />
         </div>
     );
 }

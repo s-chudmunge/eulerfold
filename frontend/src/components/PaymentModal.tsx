@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { X, Loader, CheckCircle2, Tag, Trash2 } from 'lucide-react';
+import { X, Loader, CheckCircle2, Tag, Trash2, CreditCard } from 'lucide-react';
 import Link from 'next/link';
 import { api } from '../lib/api';
 import { supabase } from '../lib/supabase/client';
 import { getDiscountStatus, NORMAL_PRICE, DISCOUNTED_PRICE } from '@/lib/utils/pricing';
+import Celebration from './Celebration';
 
 interface PaymentModalProps {
   isOpen: boolean;
@@ -19,6 +20,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
   const [appliedCoupon, setAppliedCoupon] = useState<{code: string, discount: number, newPrice: number} | null>(null);
   const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
   const [couponError, setCouponError] = useState<string | null>(null);
+  const [showCelebration, setShowCelebration] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -110,7 +112,11 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
                 razorpay_signature: response.razorpay_signature,
                 coupon_code: appliedCoupon?.code || null
               });
-              onSuccess();
+              setShowCelebration(true);
+              setTimeout(() => {
+                setShowCelebration(false);
+                onSuccess();
+              }, 4000);
             } catch (err) {
               setError('Verification failed.');
             }
@@ -227,6 +233,13 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
           </p>
         </div>
       </div>
+      
+      <Celebration 
+        show={showCelebration} 
+        title="Payment Successful!" 
+        subtitle="Credits have been added to your account."
+        icon={<CreditCard className="w-10 h-10" />}
+      />
     </div>
   );
 }
