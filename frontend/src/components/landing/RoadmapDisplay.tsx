@@ -264,7 +264,7 @@ interface RoadmapDisplayProps {
                 {/* Module Header */}
                 <div
                   onClick={() => toggleModule(index)}
-                  className="w-full px-6 py-6 flex items-center justify-between text-left cursor-pointer"
+                  className="w-full px-4 md:px-6 py-5 md:py-6 flex items-center justify-between text-left cursor-pointer"
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {
@@ -274,8 +274,8 @@ interface RoadmapDisplayProps {
                     }
                   }}
                 >
-                  <div className="flex items-center gap-4 md:gap-6 min-w-0">
-                    <div className={`inconsolata-ui w-9 h-9 rounded-lg flex items-center justify-center text-[14px] font-bold shrink-0 transition-all border ${
+                  <div className="flex items-center gap-3 md:gap-6 min-w-0">
+                    <div className={`inconsolata-ui w-8 h-8 md:w-9 md:h-9 rounded-lg flex items-center justify-center text-[12px] md:text-[14px] font-bold shrink-0 transition-all border ${
                       isCurrent 
                         ? 'bg-background border-border text-text-heading shadow-sm' 
                         : 'bg-callout-bg border-border text-text-muted'
@@ -286,16 +286,16 @@ interface RoadmapDisplayProps {
                       <h3 className="inconsolata-ui text-[18px] font-bold text-text-heading truncate pr-4  ">{module.title}</h3>
                       <p className="text-[13px] text-text-muted line-clamp-5 leading-relaxed mt-1 font-medium italic pr-8">{module.outcome}</p>
                       
-                      <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mt-4">
+                      <div className="flex flex-wrap items-center gap-x-3 md:gap-x-6 gap-y-2 mt-4">
                         {videoCount > 0 && (
                           <div className="flex items-center gap-2">
                             <div className="bg-blue-500/10 p-1.5 rounded-full border border-blue-500/5">
                               <MonitorPlay className="w-3.5 h-3.5 text-blue-600" />
                             </div>
-                            <span className="manrope-body text-[13px] font-semibold text-text-primary">
+                            <span className="manrope-body text-[12px] md:text-[13px] font-semibold text-text-primary">
                               {videoCount} {videoCount === 1 ? 'video' : 'videos'}
                               {totalDuration > 0 && <span className="mx-1.5 opacity-30">•</span>}
-                              {totalDuration > 0 && `${totalDuration} minutes`}
+                              {totalDuration > 0 && `${totalDuration}m`}
                             </span>
                           </div>
                         )}
@@ -304,7 +304,7 @@ interface RoadmapDisplayProps {
                             <div className="bg-indigo-500/10 p-1.5 rounded-full border border-indigo-500/5">
                               <BookText className="w-3.5 h-3.5 text-indigo-600" />
                             </div>
-                            <span className="manrope-body text-[13px] font-semibold text-text-primary">{resourceCount} {resourceCount === 1 ? 'reading' : 'readings'}</span>
+                            <span className="manrope-body text-[12px] md:text-[13px] font-semibold text-text-primary">{resourceCount} {resourceCount === 1 ? 'reading' : 'readings'}</span>
                           </div>
                         )}
                         {topicCount > 0 && (
@@ -312,21 +312,21 @@ interface RoadmapDisplayProps {
                             <div className="bg-slate-500/10 p-1.5 rounded-full border border-slate-500/5">
                               <Hash className="w-3.5 h-3.5 text-slate-600" />
                             </div>
-                            <span className="manrope-body text-[13px] font-semibold text-text-primary">{topicCount} {topicCount === 1 ? 'topic' : 'topics'}</span>
+                            <span className="manrope-body text-[12px] md:text-[13px] font-semibold text-text-primary">{topicCount} {topicCount === 1 ? 'topic' : 'topics'}</span>
                           </div>
                         )}
                         <div className="flex items-center gap-2">
                           <div className="bg-emerald-500/10 p-1.5 rounded-full border border-emerald-500/5">
                             <Scroll className="w-3.5 h-3.5 text-emerald-600" />
                           </div>
-                          <span className="manrope-body text-[13px] font-semibold text-text-primary">1 task</span>
+                          <span className="manrope-body text-[12px] md:text-[13px] font-semibold text-text-primary">1 task</span>
                         </div>
                       </div>
                     </div>
                   </div>
                   <div className="flex items-center gap-2 md:gap-4 shrink-0">
                     {(isOwner || roadmapData.is_public) && (
-                    <div className="flex flex-col gap-1.5 min-w-[90px]">
+                    <div className="flex flex-col gap-1.5 min-w-[70px] md:min-w-[90px]">
                         <Link 
                           href={`/roadmap/${roadmapData.cloned_id || roadmapData.slug || roadmapData.id}/learn?module=${index + 1}&topic=1`}
                           onClick={(e) => {
@@ -336,9 +336,9 @@ interface RoadmapDisplayProps {
                               onCloneRequired();
                             }
                           }}
-                          className="flex items-center justify-center gap-2 px-5 py-1.5 bg-blue-600/90 text-white rounded-lg text-[9px] font-bold tracking-widest uppercase hover:bg-blue-600 transition-all active:scale-95"
+                          className="flex items-center justify-center gap-1.5 px-3 md:px-5 py-1.5 bg-blue-600/90 text-white rounded-lg text-[8px] md:text-[9px] font-bold tracking-widest uppercase hover:bg-blue-600 transition-all active:scale-95"
                         >
-                          <Play className="w-3 h-3 fill-current" />
+                          <Play className="w-2.5 h-2.5 md:w-3 md:h-3 fill-current" />
                           <span>Learn</span>
                         </Link>
 
@@ -357,10 +357,10 @@ interface RoadmapDisplayProps {
                                     window.location.href = `/roadmap/${roadmapData.slug || roadmapData.id}/build/${index + 1}`;
                                 }
                             }}
-                            className="flex items-center justify-center gap-2 px-5 py-1.5 bg-emerald-600/90 text-white rounded-lg text-[9px] font-bold tracking-widest uppercase hover:bg-emerald-600 transition-all active:scale-95"
+                            className="flex items-center justify-center gap-1.5 px-3 md:px-5 py-1.5 bg-emerald-600/90 text-white rounded-lg text-[8px] md:text-[9px] font-bold tracking-widest uppercase hover:bg-emerald-600 transition-all active:scale-95"
                           >
-                            <Hammer className="w-3 h-3" />
-                            <span>Homework</span>
+                            <Hammer className="w-2.5 h-2.5 md:w-3 md:h-3" />
+                            <span>Build</span>
                           </button>
                         )}
                       </div>
@@ -387,7 +387,7 @@ interface RoadmapDisplayProps {
                 </div>
 
                 {isExpanded && (
-                  <div className="px-5 py-4 pl-20 animate-in fade-in slide-in-from-top-2 duration-300">
+                  <div className="px-5 py-4 pl-6 md:pl-20 animate-in fade-in slide-in-from-top-2 duration-300">
                     <div className="space-y-4">
                       <div>
                         <h4 className="inconsolata-ui text-[10px] font-bold text-text-muted  tracking-wide mb-2">Topics</h4>

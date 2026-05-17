@@ -9,6 +9,7 @@ import Link from 'next/link';
 import { useAuth } from '@/components/AuthProvider';
 import CommunityRoadmapBanner from '@/components/landing/CommunityRoadmapBanner';
 import { SideBanner, QUOTES } from '@/components/layout/SideBanners';
+import Footer from '@/components/Footer';
 
 const CATEGORIES = [
   'All', 
@@ -88,31 +89,31 @@ export default function LeaderboardPage({
   const UserRow = ({ user }: { user: LeaderboardEntry }) => (
     <Link 
       href={`/u/${user.username}`}
-      className={`flex items-center justify-between px-4 py-2 hover:bg-callout-bg transition-colors group h-[48px] ${user.is_me ? 'bg-accent-muted' : ''}`}
+      className={`flex items-center justify-between px-3 md:px-4 py-2 hover:bg-callout-bg transition-colors group h-[52px] md:h-[48px] ${user.is_me ? 'bg-accent-muted' : ''}`}
     >
-      <div className="flex items-center gap-4 min-w-0 flex-1">
-        <span className="inconsolata-ui text-[13px] font-bold text-accent w-10 shrink-0">
+      <div className="flex items-center gap-3 md:gap-4 min-w-0 flex-1">
+        <span className="inconsolata-ui text-[12px] md:text-[13px] font-bold text-accent w-8 md:w-10 shrink-0">
           #{user.rank.toString().padStart(2, '0')}
         </span>
         <div className="flex flex-col min-w-0">
-          <span className="manrope-body text-[14px] font-bold text-text-heading truncate group-hover:text-accent transition-colors">
+          <span className="manrope-body text-[13px] md:text-[14px] font-bold text-text-heading truncate group-hover:text-accent transition-colors leading-tight">
             {user.author}
           </span>
-          <span className="inconsolata-ui text-[10px] font-medium text-text-muted">@{user.username}</span>
+          <span className="inconsolata-ui text-[9px] md:text-[10px] font-medium text-text-muted truncate">@{user.username}</span>
         </div>
       </div>
 
-      <div className="flex items-center gap-8 shrink-0">
-        <div className="hidden md:flex items-center gap-2">
-          <span className="inconsolata-ui text-[11px] font-bold text-text-muted uppercase tracking-tighter">{user.top_skill}</span>
-          <span className="text-[10px] font-black text-accent bg-accent-muted px-1.5 py-0.5 rounded">
+      <div className="flex items-center gap-4 md:gap-8 shrink-0">
+        <div className="hidden sm:flex items-center gap-2">
+          <span className="inconsolata-ui text-[10px] md:text-[11px] font-bold text-text-muted uppercase tracking-tighter truncate max-w-[60px] md:max-w-none">{user.top_skill}</span>
+          <span className="text-[9px] md:text-[10px] font-black text-accent bg-accent-muted px-1.5 py-0.5 rounded">
             {typeof user.top_skill_score === 'number'
-              ? user.top_skill_score.toFixed(2)
-              : parseFloat(user.top_skill_score || '0').toFixed(2)}
+              ? user.top_skill_score.toFixed(1)
+              : parseFloat(user.top_skill_score || '0').toFixed(1)}
           </span>
         </div>
-        <div className="w-16 text-right">
-          <span className="inconsolata-ui text-[14px] font-black text-text-heading tabular-nums">
+        <div className="w-14 md:w-16 text-right">
+          <span className="inconsolata-ui text-[13px] md:text-[14px] font-black text-text-heading tabular-nums">
             {typeof user.composite_score === 'number' 
               ? user.composite_score.toFixed(2) 
               : parseFloat(user.composite_score || '0').toFixed(2)}
@@ -126,13 +127,18 @@ export default function LeaderboardPage({
     <div className="bg-background text-text-primary">
       <div className="max-w-[1200px] mx-auto px-6 py-8 md:px-10 md:py-12 flex flex-col lg:flex-row gap-10">
         <main className="flex-1 min-w-0">
+          <div className="mb-8">
+            <h1 className="inconsolata-ui text-3xl font-black text-text-heading tracking-tight mb-2">Global Rankings</h1>
+            <p className="manrope-body text-[14px] text-text-muted font-medium">See how you stack up against the best learners in the community.</p>
+          </div>
+
           {/* Category Filters */}
-          <div className="flex flex-wrap gap-2 mb-10">
+          <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-8 scrollbar-hide">
             {CATEGORIES.map((cat) => (
               <button
                 key={cat}
                 onClick={() => setCategory(cat)}
-                className={`inconsolata-ui px-4 py-1.5 rounded-xl text-[12px] font-bold transition-all border
+                className={`inconsolata-ui px-4 py-1.5 rounded-xl text-[12px] font-bold transition-all border whitespace-nowrap
                   ${category === cat 
                     ? 'bg-accent text-white border-accent shadow-sm' 
                     : 'bg-sidebar text-text-muted border-border hover:border-accent/30 hover:text-text-heading'
@@ -264,6 +270,7 @@ export default function LeaderboardPage({
             />
         </aside>
       </div>
+      <Footer />
     </div>
   );
 }

@@ -440,7 +440,7 @@ export default function ArticleClient({ article }: Props) {
     }
   };
 
-  const authorName = article.author.split(' — ')[0];
+  const [authorName, authorRole] = article.author.split(' — ');
   const authorImage = AUTHOR_IMAGES[authorName] || `https://ui-avatars.com/api/?name=${encodeURIComponent(authorName)}&background=0F766E&color=fff&bold=true`;
 
   const headings = React.useMemo(() => {
@@ -633,10 +633,13 @@ export default function ArticleClient({ article }: Props) {
                     <div className="text-[13px] font-bold text-text-heading uppercase tracking-[0.15em] manrope-body">
                       {authorName}
                     </div>
-                    <div className="flex items-center gap-1.5 text-[11px] text-text-muted font-bold uppercase tracking-wider opacity-60 inconsolata-ui">
+                    {authorRole && (
+                      <div className="text-[11px] font-medium text-text-muted italic manrope-body -mt-0.5">
+                        {authorRole}
+                      </div>
+                    )}
+                    <div className="flex items-center gap-1.5 text-[11px] text-text-muted font-bold uppercase tracking-wider opacity-60 inconsolata-ui mt-1">
                       <time dateTime={new Date(article.date).toISOString()}>{article.date}</time>
-                      <span>·</span>
-                      <span>PAID</span>
                     </div>
                   </div>
                 </div>

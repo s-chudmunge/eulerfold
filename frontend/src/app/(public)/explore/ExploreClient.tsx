@@ -53,6 +53,7 @@ import { getCategory } from '@/lib/roadmapUtils';
 import ResearchLibrarySidebar from '@/components/research-lab/ResearchLibrarySidebar';
 import CommunityRoadmapBanner from '@/components/landing/CommunityRoadmapBanner';
 import GoalGeneratorModal from '@/components/landing/GoalGeneratorModal';
+import Footer from '@/components/Footer';
 
 const CATEGORY_METADATA: Record<string, { icon: any }> = {
     'all': { icon: LayoutDashboard },
@@ -355,12 +356,12 @@ export default function ExploreClient({
 
                         {/* Professional Table View - Modernized */}
                         <div className="bg-background border border-border rounded-2xl overflow-hidden shadow-sm">
-                            <table className="w-full text-left border-collapse table-fixed">
+                            <table className="w-full text-left border-collapse table-fixed md:table-auto">
                                 <thead>
                                     <tr className="border-b border-border bg-sidebar/20">
-                                        <th scope="col" className="w-[65%] px-6 py-4 text-[11px] font-black uppercase tracking-widest text-text-muted inconsolata-ui opacity-60">Learning Roadmap</th>
+                                        <th scope="col" className="px-4 md:px-6 py-4 text-[11px] font-black uppercase tracking-widest text-text-muted inconsolata-ui opacity-60">Learning Roadmap</th>
                                         <th scope="col" className="hidden md:table-cell w-[18%] px-6 py-4 text-[11px] font-black uppercase tracking-widest text-text-muted inconsolata-ui opacity-60">Duration</th>
-                                        <th scope="col" className="w-[17%] px-6 py-4 text-[11px] font-black uppercase tracking-widest text-text-muted inconsolata-ui opacity-60 text-right">Reach</th>
+                                        <th scope="col" className="w-[80px] md:w-[17%] px-4 md:px-6 py-4 text-[11px] font-black uppercase tracking-widest text-text-muted inconsolata-ui opacity-60 text-right">Reach</th>
                                     </tr>
                                 </thead>
                                 <tbody className={`divide-y divide-border/50 transition-opacity ${roadmapsLoading ? 'opacity-50' : 'opacity-100'}`}>
@@ -368,24 +369,24 @@ export default function ExploreClient({
                                         const cat = getCategory(r.subject || '');
                                         return (
                                             <tr key={r.id} className="group hover:bg-sidebar/30 transition-all cursor-pointer" onClick={() => router.push(`/roadmap/${r.slug}`)}>
-                                                <td className="px-6 py-5">
-                                                    <div className="flex items-start gap-4">
-                                                        <div className="flex items-center justify-center w-10 h-10 rounded-xl bg-sidebar border border-border text-text-muted shrink-0 group-hover:scale-110 transition-transform group-hover:border-accent/30 group-hover:text-accent">
-                                                            <CategoryIcon category={cat} className="w-5 h-5 stroke-[1.5px]" />
+                                                <td className="px-4 md:px-6 py-5">
+                                                    <div className="flex items-start gap-3 md:gap-4">
+                                                        <div className="flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-xl bg-sidebar border border-border text-text-muted shrink-0 group-hover:scale-110 transition-transform group-hover:border-accent/30 group-hover:text-accent">
+                                                            <CategoryIcon category={cat} className="w-4 h-4 md:w-5 md:h-5 stroke-[1.5px]" />
                                                         </div>
                                                         <div className="flex flex-col min-w-0">
-                                                            <div className="flex items-center gap-3 mb-1">
-                                                                <span className="text-[15px] font-bold text-text-heading truncate group-hover:text-accent transition-colors">
+                                                            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-1">
+                                                                <span className="text-[14px] md:text-[15px] font-bold text-text-heading group-hover:text-accent transition-colors leading-tight">
                                                                     {r.title}
                                                                 </span>
-                                                                {r.username === 'eulerfold' && <VerifiedBadge size={16} className="shrink-0" />}
+                                                                {r.username === 'eulerfold' && <VerifiedBadge size={14} className="shrink-0" />}
                                                             </div>
-                                                            <div className="flex items-center gap-3">
-                                                                <span className="text-[10px] font-black uppercase tracking-wider text-teal-700/60 inconsolata-ui">{cat}</span>
-                                                                <span className="text-[10px] font-medium text-text-muted/50">•</span>
-                                                                <span className="text-[12px] font-medium text-text-muted">by @{r.username || r.author}</span>
+                                                            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
+                                                                <span className="text-[10px] font-black uppercase tracking-wider text-teal-700/60 inconsolata-ui whitespace-nowrap">{cat}</span>
+                                                                <span className="hidden sm:inline text-[10px] font-medium text-text-muted/50">•</span>
+                                                                <span className="text-[11px] md:text-[12px] font-medium text-text-muted truncate max-w-[120px] md:max-w-none">by @{r.username || r.author}</span>
                                                                 {r.average_rating > 0 && (
-                                                                    <div className="flex items-center gap-2 pl-2 border-l border-border">
+                                                                    <div className="flex items-center gap-2 pl-0 sm:pl-2 border-l-0 sm:border-l border-border">
                                                                         <StarRating rating={r.average_rating} minimal={true} />
                                                                     </div>
                                                                 )}
@@ -398,17 +399,17 @@ export default function ExploreClient({
                                                         {r.time_value} {r.time_unit}
                                                     </span>
                                                 </td>
-                                                <td className="px-6 py-5 text-right">
-                                                    <div className="flex items-center justify-end gap-3">
+                                                <td className="px-4 md:px-6 py-5 text-right">
+                                                    <div className="flex items-center justify-end gap-2 md:gap-3">
                                                         <div className="flex flex-col items-end">
-                                                            <span className="text-[13px] font-black text-text-heading inconsolata-ui">{r.clone_count}</span>
-                                                            <span className="text-[9px] font-black uppercase tracking-tighter text-text-muted opacity-50">Clones</span>
+                                                            <span className="text-[12px] md:text-[13px] font-black text-text-heading inconsolata-ui">{r.clone_count}</span>
+                                                            <span className="text-[8px] md:text-[9px] font-black uppercase tracking-tighter text-text-muted opacity-50">Clones</span>
                                                         </div>
                                                         <button 
                                                             onClick={(e) => { e.stopPropagation(); handleReport(e, r.id); }}
-                                                            className="p-2 text-text-muted hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all opacity-0 group-hover:opacity-100"
+                                                            className="p-1.5 md:p-2 text-text-muted hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all opacity-0 md:group-hover:opacity-100"
                                                         >
-                                                            <Flag className="h-3.5 w-3.5" />
+                                                            <Flag className="h-3 w-3 md:h-3.5 md:w-3.5" />
                                                         </button>
                                                     </div>
                                                 </td>
@@ -499,6 +500,7 @@ export default function ExploreClient({
                 isOpen={isRoadmapModalOpen} 
                 onClose={() => setIsRoadmapModalOpen(false)} 
             />
+            <Footer />
         </div>
     );
 }
