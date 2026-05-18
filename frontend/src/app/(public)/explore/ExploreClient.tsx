@@ -50,7 +50,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import StarRating from '@/components/roadmap/StarRating';
 import VerifiedBadge from '@/components/VerifiedBadge';
 import { getCategory } from '@/lib/roadmapUtils';
-import ResearchLibrarySidebar from '@/components/research-lab/ResearchLibrarySidebar';
+import { SideBanner, QUOTES } from '@/components/layout/SideBanners';
 import CommunityRoadmapBanner from '@/components/landing/CommunityRoadmapBanner';
 import GoalGeneratorModal from '@/components/landing/GoalGeneratorModal';
 import Footer from '@/components/Footer';
@@ -167,6 +167,17 @@ export default function ExploreClient({
     // Filtering & Sorting State
     const [sortBy, setSortBy] = useState('newest');
     const [filter, setFilter] = useState('all');
+    const [quoteIndex, setQuoteIndex] = useState(0);
+
+    useEffect(() => {
+        // Randomize on mount
+        setQuoteIndex(Math.floor(Math.random() * QUOTES.length));
+
+        const timer = setInterval(() => {
+            setQuoteIndex((prev) => (prev + 1) % QUOTES.length);
+        }, 60000);
+        return () => clearInterval(timer);
+    }, []);
 
     const handleSearchParams = React.useCallback((params: URLSearchParams) => {
         const search = params.get('search') || params.get('q');
@@ -273,7 +284,7 @@ export default function ExploreClient({
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
                                 <div>
                                     <h1 className="inconsolata-ui text-3xl font-black text-text-heading tracking-tight mb-2">Explore Roadmaps</h1>
-                                    <p className="manrope-body text-[14px] text-text-muted font-medium">Discover and clone high-signal learning paths from the community.</p>
+                                    <p className="manrope-body text-[14px] text-text-muted font-medium">Discover and clone learning paths from the community.</p>
                                 </div>
                                 <button 
                                     onClick={() => setIsRoadmapModalOpen(true)}
@@ -451,7 +462,14 @@ export default function ExploreClient({
                     {/* Right Sidebar - Dynamic Info */}
                     <div className="w-full lg:w-[320px] shrink-0 pt-4 self-start space-y-8">
                         <CommunityRoadmapBanner onOpenModal={() => setIsRoadmapModalOpen(true)} />
-                        <ResearchLibrarySidebar />
+                        
+                        <SideBanner 
+                            isStatic
+                            buttonText="Research"
+                            href="/research-decoded"
+                            currentQuote={QUOTES[quoteIndex]}
+                            quoteIndex={quoteIndex}
+                        />
                     </div>
                 </div>
             </div>
