@@ -596,8 +596,8 @@ export default function ArticleClient({ article }: Props) {
             </div>
           </aside>
 
-          {/* Content Area (Max 700px) */}
-          <main className="w-full max-w-[700px]">
+          {/* Content Area (Max 900px) */}
+          <main className="w-full max-w-[900px]">
             <article>
               <header className="mb-[24px]">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
@@ -630,15 +630,15 @@ export default function ArticleClient({ article }: Props) {
                     />
                   </div>
                   <div className="flex flex-col">
-                    <div className="text-[13px] font-bold text-text-heading uppercase tracking-[0.15em] manrope-body">
+                    <div className="text-[15px] font-bold text-text-heading manrope-body">
                       {authorName}
                     </div>
                     {authorRole && (
-                      <div className="text-[11px] font-medium text-text-muted italic manrope-body -mt-0.5">
+                      <div className="text-[12px] font-medium text-text-muted italic manrope-body">
                         {authorRole}
                       </div>
                     )}
-                    <div className="flex items-center gap-1.5 text-[11px] text-text-muted font-bold uppercase tracking-wider opacity-60 inconsolata-ui mt-1">
+                    <div className="flex items-center gap-1.5 text-[11px] text-text-muted font-bold opacity-60 inconsolata-ui mt-0.5">
                       <time dateTime={new Date(article.date).toISOString()}>{article.date}</time>
                     </div>
                   </div>

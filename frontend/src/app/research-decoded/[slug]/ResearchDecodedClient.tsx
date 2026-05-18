@@ -527,7 +527,7 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
           </div>
         </aside>
 
-        <div className="max-w-[720px] w-full">
+        <div className="max-w-[900px] w-full">
           {/* Community Banner */}
         <div className="mb-10 bg-transparent rounded-2xl p-6 md:p-8 border border-border/60 relative overflow-hidden group">
           <div className="relative z-10">
@@ -549,12 +549,12 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
             { label: 'Research Decoded', href: '/research-decoded' },
             { label: paper.authors }
           ]} />
-          <div className="flex items-center gap-2 text-accent mb-6 font-bold uppercase tracking-widest flex-wrap">
-            <Link href="/research-decoded" className="bg-accent-muted px-2 py-0.5 rounded hover:bg-accent/10 transition-colors">
+          <div className="flex items-center gap-2 text-accent mb-6 font-bold flex-wrap">
+            <Link href="/research-decoded" className="bg-accent-muted px-2 py-0.5 rounded hover:bg-accent/10 transition-colors text-[11px] uppercase tracking-widest">
               Research Decoded
             </Link>
             <span className="text-[var(--border)]">/</span>
-            <span className="font-medium">{paper.authors}</span>
+            <span className="font-medium text-[13px] text-text-muted">{paper.authors}</span>
           </div>
 
           <SocialShare 
@@ -584,7 +584,7 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
 
         {/* Hero Image */}
         {paper.heroImage && (
-          <div className="mb-12 p-4 md:p-6 bg-image-bg border border-border rounded-2xl shadow-xl max-w-[700px] mx-auto overflow-hidden">
+          <div className="mb-12 p-4 md:p-6 bg-image-bg border border-border rounded-2xl shadow-xl max-w-[900px] mx-auto overflow-hidden">
             <motion.img 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -614,7 +614,7 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
             </h2>
 
             {section.diagram && (
-              <div className="my-12 p-4 md:p-6 bg-image-bg border border-border rounded-2xl max-w-[700px] mx-auto shadow-sm overflow-hidden">
+              <div className="my-12 p-4 md:p-6 bg-image-bg border border-border rounded-2xl max-w-[900px] mx-auto shadow-sm overflow-hidden">
                 <motion.img 
                   initial={{ opacity: 0, scale: 0.95 }}
                   whileInView={{ opacity: 1, scale: 1 }}
