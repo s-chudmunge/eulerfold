@@ -134,14 +134,14 @@ export default function PricingClient() {
                     {isLoggedIn ? (
                         <button 
                             onClick={() => setIsPaymentModalOpen(true)}
-                            className="px-3 py-1 bg-[var(--text-heading)] text-[var(--bg-main)] rounded-none text-[10px] font-bold uppercase tracking-widest hover:opacity-90 transition-all active:scale-95 whitespace-nowrap"
+                            className="px-3 py-1 bg-[var(--text-heading)] text-[var(--bg-main)] rounded-lg text-[10px] font-bold uppercase tracking-widest hover:opacity-90 transition-all active:scale-95 whitespace-nowrap"
                         >
                             Top Up
                         </button>
                     ) : (
                         <Link 
                             href="/login?next=/pricing"
-                            className="px-3 py-1 bg-[var(--text-heading)] text-[var(--bg-main)] rounded-none text-[10px] font-bold uppercase tracking-widest hover:opacity-90 transition-all active:scale-95 whitespace-nowrap"
+                            className="px-3 py-1 bg-[var(--text-heading)] text-[var(--bg-main)] rounded-lg text-[10px] font-bold uppercase tracking-widest hover:opacity-90 transition-all active:scale-95 whitespace-nowrap"
                         >
                             Login to Purchase
                         </Link>
@@ -152,15 +152,15 @@ export default function PricingClient() {
             {/* Pricing Tiers Grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 {/* Starter Tier */}
-                <div className="flex flex-col p-8 border border-border rounded-none bg-background relative group">
+                <div className="flex flex-col p-8 border border-border rounded-lg bg-background relative group">
                     <div className="mb-8">
                         <div className="flex items-center justify-between mb-4">
-                            <span className="inconsolata-ui text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">Tier 01</span>
+                            <span className="inconsolata-ui text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">Free for everyone</span>
                             <span className="inconsolata-ui text-[11px] font-bold text-text-muted uppercase">Free</span>
                         </div>
                         <h2 className="inconsolata-ui text-[24px] font-bold text-text-heading tracking-tight mb-2">Basic</h2>
                         <p className="manrope-body text-[13px] text-text-muted leading-relaxed">
-                            Essential tools for self-directed technical learning.
+                            Essential tools for learning.
                         </p>
                     </div>
 
@@ -168,48 +168,44 @@ export default function PricingClient() {
                         <div className="space-y-3">
                             <div className="flex items-start gap-3 text-[12px] text-text-primary">
                                 <span className="text-teal-600 mt-0.5">✓</span>
-                                <span>Complete curriculum & lesson library access</span>
+                                <span>Learn with AI</span>
                             </div>
                             <div className="flex items-start gap-3 text-[12px] text-text-primary">
                                 <span className="text-teal-600 mt-0.5">✓</span>
-                                <span>Public Roadmap index & cloning</span>
+                                <span>Access all public roadmaps</span>
                             </div>
                             <div className="flex items-start gap-3 text-[12px] text-text-primary">
                                 <span className="text-teal-600 mt-0.5">✓</span>
-                                <span>Skill profile & progress tracking</span>
+                                <span>Track your skills and progress</span>
                             </div>
                             <div className="flex items-start gap-3 text-[12px] text-text-primary">
                                 <span className="text-teal-600 mt-0.5">✓</span>
-                                <span>5 AI Roadmap generations</span>
+                                <span>5 AI roadmap generations</span>
                             </div>
                             <div className="flex items-start gap-3 text-[12px] text-text-primary">
                                 <span className="text-teal-600 mt-0.5">✓</span>
-                                <span>4-Week career goal projections</span>
+                                <span>4-week goal projections</span>
                             </div>
                         </div>
 
                         <div className="pt-6 border-t border-border/50 space-y-3 opacity-40">
                             <div className="flex items-start gap-3 text-[11px] text-text-muted">
                                 <span className="text-text-muted/50 mt-0.5">×</span>
-                                <span>No Dynamic course extensions</span>
-                            </div>
-                            <div className="flex items-start gap-3 text-[11px] text-text-muted">
-                                <span className="text-text-muted/50 mt-0.5">×</span>
-                                <span>No Priority AI reasoning models</span>
+                                <span>No Priority AI models</span>
                             </div>
                         </div>
                     </div>
 
                     <Link 
                         href="/learn" 
-                        className="w-full py-3 border border-border text-text-heading rounded-none text-center inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] hover:bg-sidebar transition-all"
+                        className="w-full py-3 border border-border text-text-heading rounded-lg text-center inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] hover:bg-sidebar transition-all"
                     >
                         Start Learning
                     </Link>
                 </div>
 
                 {/* Pro Tier */}
-                <div className="flex flex-col p-8 border-2 border-teal-600/30 rounded-none bg-teal-900/[0.02] relative overflow-hidden group">
+                <div className="flex flex-col p-8 border-2 border-teal-600/30 rounded-lg bg-teal-900/[0.02] relative overflow-hidden group">
                     {discountStatus.hasDiscount && (
                         <div className="absolute top-0 right-0 bg-orange-600 text-white px-10 py-1.5 rotate-45 translate-x-[32px] translate-y-[12px] text-[10px] font-black uppercase tracking-widest shadow-lg z-20">
                             {Math.round((1 - DISCOUNTED_PRICE/NORMAL_PRICE) * 100)}% OFF
@@ -221,7 +217,7 @@ export default function PricingClient() {
                     
                     <div className="mb-8 relative z-10">
                         <div className="flex items-center justify-between mb-4">
-                            <span className="inconsolata-ui text-[10px] font-black text-teal-600 uppercase tracking-[0.2em]">Tier 02</span>
+                            <span className="inconsolata-ui text-[10px] font-black text-teal-600 uppercase tracking-[0.2em]">One-time payment</span>
                             <div className="flex items-center gap-2">
                                 {(discountStatus.hasDiscount || (discountStatus.isToday && discountStatus.remainingSeconds > 0)) && (
                                     <span className="inconsolata-ui text-sm text-text-muted line-through opacity-50">₹{NORMAL_PRICE}</span>
@@ -231,35 +227,36 @@ export default function PricingClient() {
                         </div>
                         <h2 className="inconsolata-ui text-[24px] font-bold text-text-heading tracking-tight mb-2">Pro</h2>
                         <p className="manrope-body text-[13px] text-text-muted leading-relaxed">
-                            The full engine for technical depth and industry readiness.
+                            For deep technical mastery.
                         </p>
                     </div>
 
                     <div className="space-y-4 mb-10 flex-1 relative z-10">
+                        <div className="mb-4 font-bold text-text-heading text-[11px] uppercase tracking-widest">Everything in Basic, plus:</div>
                         <div className="space-y-3">
                             <div className="flex items-start gap-3 text-[12px] text-text-primary font-bold">
                                 <span className="text-teal-600 mt-0.5">✓</span>
-                                <span>20 Premium Credits (1 per Roadmap)</span>
+                                <span>20 Roadmap credits</span>
                             </div>
                             <div className="flex items-start gap-3 text-[12px] text-text-primary">
                                 <span className="text-teal-600 mt-0.5">✓</span>
-                                <span>Full Job Market Intelligence engine</span>
+                                <span>Unlimited depth extensions</span>
                             </div>
                             <div className="flex items-start gap-3 text-[12px] text-text-primary">
                                 <span className="text-teal-600 mt-0.5">✓</span>
-                                <span>Dynamic Depth Extensions (Infinite)</span>
+                                <span>AI homework reviews</span>
                             </div>
                             <div className="flex items-start gap-3 text-[12px] text-text-primary">
                                 <span className="text-teal-600 mt-0.5">✓</span>
-                                <span>AI Homework Reviews (Full Access)</span>
+                                <span>Job market insights</span>
                             </div>
                             <div className="flex items-start gap-3 text-[12px] text-text-primary">
                                 <span className="text-teal-600 mt-0.5">✓</span>
-                                <span>12-Week Strategic Goal Mapping</span>
+                                <span>12-week strategic mapping</span>
                             </div>
                             <div className="flex items-start gap-3 text-[12px] text-teal-700 font-black italic">
                                 <span className="mt-0.5">✓</span>
-                                <span>Priority access to reasoning models</span>
+                                <span>Priority AI reasoning models</span>
                             </div>
                         </div>
                     </div>
@@ -267,14 +264,14 @@ export default function PricingClient() {
                     {isLoggedIn ? (
                         <button
                             onClick={() => setIsPaymentModalOpen(true)}
-                            className={`w-full py-3 ${discountStatus.hasDiscount ? 'bg-orange-600 hover:bg-orange-700' : 'bg-teal-700 hover:bg-teal-800'} text-white rounded-none text-center inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] transition-all shadow-xl active:scale-[0.98] relative z-10`}
+                            className={`w-full py-3 ${discountStatus.hasDiscount ? 'bg-orange-600 hover:bg-orange-700' : 'bg-teal-700 hover:bg-teal-800'} text-white rounded-lg text-center inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] transition-all shadow-xl active:scale-[0.98] relative z-10`}
                         >
                             Activate Pro (₹{currentPrice})
                         </button>
                     ) : (
                         <Link 
                             href="/login?next=/pricing"
-                            className={`w-full py-3 ${discountStatus.hasDiscount ? 'bg-orange-600 hover:bg-orange-700' : 'bg-teal-700 hover:bg-teal-800'} text-white rounded-none text-center inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] transition-all shadow-xl relative z-10`}
+                            className={`w-full py-3 ${discountStatus.hasDiscount ? 'bg-orange-600 hover:bg-orange-700' : 'bg-teal-700 hover:bg-teal-800'} text-white rounded-lg text-center inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] transition-all shadow-xl relative z-10`}
                         >
                             Login to Upgrade
                         </Link>

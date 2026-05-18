@@ -97,49 +97,49 @@ export default function PricingSection() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 text-left">
             {/* Starter Tier */}
-            <div className="flex flex-col p-5 border border-border rounded-none bg-background shadow-sm hover:shadow-md transition-shadow">
+            <div className="flex flex-col p-5 border border-border rounded-lg bg-background shadow-sm hover:shadow-md transition-shadow">
                 <div className="mb-5">
-                    <span className="inconsolata-ui text-[9px] font-bold text-text-muted uppercase tracking-widest mb-2 inline-block">Always Free</span>
+                    <span className="inconsolata-ui text-[9px] font-bold text-text-muted uppercase tracking-widest mb-2 inline-block">Free for everyone</span>
                     <div className="flex items-baseline justify-between mb-1">
                         <span className="inconsolata-ui text-xl font-bold text-text-heading">Basic</span>
                         <span className="inconsolata-ui text-lg font-bold text-text-muted">Free</span>
                     </div>
-                    <p className="manrope-body text-[11px] text-text-muted">Essential tools for self-directed technical learning.</p>
+                    <p className="manrope-body text-[11px] text-text-muted">Essential tools for learning.</p>
                 </div>
 
                 <div className="space-y-1.5 mb-6 flex-1 text-[10px] text-text-primary font-medium">
                     <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> Curriculum & lesson library access
+                        <span className="text-accent">✓</span> Learn with AI
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> Public Roadmap index & cloning
+                        <span className="text-accent">✓</span> Access all public roadmaps
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> Skill profile & progress tracking
+                        <span className="text-accent">✓</span> Track your skills and progress
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> 5 AI Roadmap generations
+                        <span className="text-accent">✓</span> 5 AI roadmap generations
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> 4-Week career goal projections
+                        <span className="text-accent">✓</span> 4-week goal projections
                     </div>
                     <div className="pt-1.5 mt-1.5 border-t border-border/40 opacity-50">
                         <div className="flex items-center gap-2 text-text-muted">
-                            <span className="text-red-500/60 font-bold text-[8px]">✗</span> No Priority AI reasoning models
+                            <span className="text-red-500/60 font-bold text-[8px]">✗</span> No Priority AI models
                         </div>
                     </div>
                 </div>
 
                 <Link 
                     href="/learn" 
-                    className="w-full py-2 border border-border text-text-heading rounded-none text-center inconsolata-ui text-[9px] font-bold uppercase tracking-widest hover:bg-callout-bg transition-all"
+                    className="w-full py-2 border border-border text-text-heading rounded-lg text-center inconsolata-ui text-[9px] font-bold uppercase tracking-widest hover:bg-callout-bg transition-all"
                 >
                     Start Learning
                 </Link>
             </div>
 
             {/* Pro Tier */}
-            <div className="flex flex-col p-5 border border-[var(--accent)] rounded-none bg-accent-muted/5 relative shadow-md hover:shadow-lg transition-shadow overflow-hidden">
+            <div className="flex flex-col p-5 border border-[var(--accent)] rounded-lg bg-accent-muted/5 relative shadow-md hover:shadow-lg transition-shadow overflow-hidden">
                 {discountStatus.hasDiscount && (
                     <div className="absolute top-0 right-0 bg-orange-500 text-white px-8 py-1 rotate-45 translate-x-[25px] translate-y-[10px] text-[8px] font-black uppercase tracking-tighter z-10">
                         -{Math.round((1 - DISCOUNTED_PRICE/NORMAL_PRICE) * 100)}% OFF
@@ -156,33 +156,34 @@ export default function PricingSection() {
                             <span className="inconsolata-ui text-lg font-bold text-accent">₹{currentPrice}</span>
                         </div>
                     </div>
-                    <p className="manrope-body text-[11px] text-text-muted">Full engine for technical depth & industry readiness.</p>
+                    <p className="manrope-body text-[11px] text-text-muted">For deep technical mastery.</p>
                 </div>
 
                 <div className="space-y-1.5 mb-6 flex-1 text-[10px] text-text-primary font-medium">
+                    <div className="mb-2 font-bold text-text-heading text-[9px] uppercase tracking-wider">Everything in Basic, plus:</div>
                     <div className="flex items-center gap-2 font-bold text-accent">
-                        <span className="text-accent">✓</span> 20 Premium Credits (1 per Roadmap)
+                        <span className="text-accent">✓</span> 20 Roadmap credits
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> Full Job Market Intelligence engine
+                        <span className="text-accent">✓</span> Unlimited depth extensions
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> Dynamic Depth Extensions (Infinite)
+                        <span className="text-accent">✓</span> AI homework reviews
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> AI Homework Reviews (Full Access)
+                        <span className="text-accent">✓</span> Job market insights
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> 12-Week Strategic Goal Mapping
+                        <span className="text-accent">✓</span> 12-week strategic mapping
                     </div>
                     <div className="flex items-center gap-2 font-bold text-teal-600 dark:text-teal-400">
-                        <span className="">✓</span> Priority access to reasoning models
+                        <span className="">✓</span> Priority AI reasoning models
                     </div>
                 </div>
 
                 <Link 
                     href="/pricing"
-                    className={`w-full py-2 ${discountStatus.hasDiscount ? 'bg-orange-600' : 'bg-[#111] dark:bg-[#14b8a6]'} !text-white rounded-none text-center inconsolata-ui text-[10px] font-bold uppercase tracking-widest hover:opacity-90 transition-all shadow-md`}
+                    className={`w-full py-2 ${discountStatus.hasDiscount ? 'bg-orange-600' : 'bg-[#111] dark:bg-[#14b8a6]'} !text-white rounded-lg text-center inconsolata-ui text-[10px] font-bold uppercase tracking-widest hover:opacity-90 transition-all shadow-md`}
                 >
                     Buy Credits (₹{currentPrice})
                 </Link>

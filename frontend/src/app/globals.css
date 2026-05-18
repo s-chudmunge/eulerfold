@@ -115,6 +115,23 @@ body {
   font-size: 1rem;
 }
 
+.appropriate-sans {
+  font-family: var(--font-inter), 'Inter', system-ui, -apple-system, sans-serif;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+
+/* Ensure global scaling for elements inside the practice lab/appropriate-sans container */
+.appropriate-sans h1 { font-size: 1.6rem; font-weight: 700; }
+.appropriate-sans h2 { font-size: 1.25rem; font-weight: 600; }
+.appropriate-sans h3 { font-size: 1.05rem; font-weight: 600; }
+.appropriate-sans p { font-size: 0.95rem; }
+.appropriate-sans label { font-size: 0.8rem; font-weight: 600; letter-spacing: 0.01em; }
+.appropriate-sans button { font-size: 0.85rem; }
+.appropriate-sans input { font-size: 0.95rem; }
+
 :root {
   --font-serif-stack: Charter, 'Bitstream Charter', 'Sitka Text', Cambria, serif;
   --serif-base-size: 1.05rem;
@@ -200,7 +217,7 @@ body {
 }
 
 .inconsolata-ui { 
-  font-family: var(--font-mono), monospace; 
+  font-family: var(--font-sans), sans-serif; 
   letter-spacing: -0.01em; 
   line-height: 1.5;
 }
@@ -357,6 +374,11 @@ body {
 
 .mask-fade-right {
   mask-image: linear-gradient(to right, black 85%, transparent 100%);
+}
+
+.mask-fade-vertical {
+  -webkit-mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, black 15%, black 85%, transparent);
 }
 
 

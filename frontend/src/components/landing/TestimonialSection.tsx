@@ -161,11 +161,7 @@ export default function TestimonialSection() {
         </div>
       </div>
 
-      <div className="lg:max-w-[80%] mx-auto relative h-[600px] overflow-hidden">
-        {/* Gradient overlays to fade out top and bottom */}
-        <div className="absolute top-0 left-0 right-0 h-32 bg-gradient-to-b from-background to-transparent z-10 pointer-events-none" />
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-10 pointer-events-none" />
-
+      <div className="lg:max-w-[80%] mx-auto relative h-[600px] overflow-hidden mask-fade-vertical">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 h-full">
           {/* Column 1 */}
           <div className="relative h-full overflow-hidden">
@@ -225,7 +221,7 @@ export default function TestimonialSection() {
 
 function TestimonialCard({ testimonial: t }: { testimonial: any }) {
   return (
-    <div className="break-inside-avoid bg-white dark:bg-sidebar/40 p-6 rounded-2xl border border-border shadow-sm hover:shadow-md transition-all duration-300 flex flex-col gap-4 group">
+    <div className="break-inside-avoid bg-sidebar border border-border p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col gap-4 group">
       {t.layout === "author-top" && (
         <div className="flex items-center gap-3 mb-2">
           <div className={`size-10 shrink-0 flex items-center justify-center rounded-full text-xs font-bold ${t.color}`}>
@@ -242,7 +238,7 @@ function TestimonialCard({ testimonial: t }: { testimonial: any }) {
         <QuoteIcon className="text-accent/20 mb-1" />
       )}
 
-      <p className="text-sm leading-relaxed text-text-primary manrope-body font-medium">
+      <p className="text-sm leading-relaxed text-text-primary dark:text-text-primary manrope-body font-medium">
         {t.quote}
       </p>
 
