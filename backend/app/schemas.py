@@ -134,7 +134,7 @@ class RoadmapCreate(BaseModel):
 class JobRoadmapCreate(BaseModel):
     job_description: str
     current_experience: str
-    generation_type: Literal["incremental", "full"] = "incremental"
+    generation_type: str = "full"
     time_value: int
     time_unit: str = "weeks"
     model: Optional[str] = None

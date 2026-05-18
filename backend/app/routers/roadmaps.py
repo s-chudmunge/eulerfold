@@ -734,19 +734,22 @@ async def generate_roadmap(
         context_str += f" Additional context on their background: {roadmap_create.prior_experience}"
 
     prompt = f"""
-Generate a professional, high-signal technical learning roadmap for the subject: "{roadmap_create.subject}".
+You are a technical lead.
+Generate a rigorous technical learning roadmap for the subject: "{roadmap_create.subject}".
 The learner's specific goal is: "{roadmap_create.goal}".
 {context_str}
 Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
 
 **Rules:**
-1. Focus on depth and verifiable skills.
-2. Break it down into logical modules.
-3. For each module, include a "proof_of_work_instructions" object that details what the user must build or solve to prove mastery.
-4. **Output JSON ONLY** matching this schema:
+1. **Technical Rigor:** Focus on depth and verifiable technical skills. Avoid introductory fluff.
+2. **Logical Progression:** Structure the path into modules that build upon each other logically.
+3. **Specific Topics:** Each module must have 3-5 specific topics. Use industry-standard technical terms.
+4. **Practical Outcomes:** For each module, include a "proof_of_work_instructions" object that details a realistic technical task the user must solve to demonstrate mastery.
+5. **Applied Mastery:** Ensure each module leads to a specific competency string starting with "By the end of this module you will be able to...".
+6. **Output JSON ONLY** matching this schema:
    {{
      "title": "string",
-     "description": "string",
+     "description": "Concise technical overview of the learning path (max 2 sentences).",
      "modules": [
        {{
          "title": "string",
@@ -770,9 +773,7 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
        }}
      ]
    }}
-5. **Crucial:** In the "resources" array, provide ONLY high-quality documentation, articles, or books (non-YouTube links).
-6. For each module, ensure a concrete "outcome" string starting with "By the end of this module you will be able to...".
-7. Be specific. If learning React, include topics like "Hooks", "Concurrent Mode", etc.
+7. **Quality Resources:** In the "resources" array, provide ONLY high-quality documentation, articles, or books (non-YouTube links).
 8. **Workspace Selection:** 
    - Set "workspace_type" to "code" for implementation, algorithms, or scripting tasks.
    - Set "workspace_type" to "design" for system architecture, distributed systems, infrastructure, or UI/UX.
@@ -887,24 +888,16 @@ async def generate_from_jd(
              # If not in the list, we cap it or pick the nearest? Let's be strict for now.
              raise HTTPException(status_code=400, detail=f"Invalid duration. Pro users can select: {allowed_weeks_pro} weeks.")
 
-    generation_strategy = ""
-    if payload.generation_type == "incremental":
-        generation_strategy = f"""
-**INCREMENTAL MODE (Bridge Strategy):**
-The user wants a manageable start. Focus the first {payload.time_value} weeks on 'Bridging the Gap'.
-Identify the most critical missing skills between their current experience and the JD. 
-Do NOT try to cover the entire JD. Cover the foundations and 'Day 1' requirements first.
-"""
-    else:
-        generation_strategy = f"""
-**FULL MODE (Comprehensive Strategy):**
-Generate a complete path to mastery for this specific role over {payload.time_value} weeks.
-Structure it logically from current level to high-level JD requirements.
+    generation_strategy = f"""
+**STRATEGY:**
+Generate a comprehensive technical learning path for this role over {payload.time_value} weeks.
+Analyze the user's current experience against the Job Description and identify precise technical gaps.
+The roadmap must bridge these gaps with rigorous modules that lead to demonstrable mastery.
 """
 
     prompt = f"""
-You are an expert hiring manager and technical lead.
-Your task is to "Decode" a Job Description into a high-signal learning roadmap.
+You are a technical lead.
+Your task is to convert a Job Description into a rigorous learning roadmap.
 
 **JOB DESCRIPTION:**
 {payload.job_description}
@@ -917,20 +910,20 @@ Duration: {payload.time_value} {payload.time_unit}.
 {generation_strategy}
 
 **RULES:**
-1. **Staircase Learning:** Structure the path to avoid burnout. Start with foundational or 'Bridge' topics if there's a gap.
-2. **Professional Perspective:** Prioritize skills and competencies that actually get someone hired for this specific JD.
-3. **Density & Searchability:** Ensure each module has 3-5 distinct topics. The `title` of each `topic` must be a specific, searchable term related to the field (e.g., 'Financial Modeling' or 'Structural Engineering' instead of 'Basic Concepts').
-4. **Proof of Work:** Design module tasks that mirror actual work performed by someone in this role.
-5. **Beyond the JD:** In later modules, include 'Standout' topics or advanced competencies that make the candidate elite.
+1. **Logical Progression:** Structure modules from foundational technical gaps to advanced implementation.
+2. **Technical Rigor:** Prioritize hard skills, tools, and theoretical knowledge required for the role.
+3. **Specific Topics:** Each module must have 3-5 specific topics. Avoid generic titles like "Introduction to X". Use industry-standard technical terms (e.g., "Memory-Mapped I/O" or "Asynchronous Event Loops").
+4. **Practical Outcomes:** The `proof_of_work_instructions` must describe a realistic technical task or project that demonstrates competency in that module's specific skills.
+5. **Applied Knowledge:** Ensure the user learns not just what a tool is, but how to apply it to solve role-specific problems.
 6. **Conciseness:** Roadmap description must be max 2 sentences. Each module 'outcome' must be max 1 sentence.
 7. **Output JSON ONLY** matching this schema:
    {{
      "title": "string", (e.g., Senior Analyst @ Goldman Sachs or Lead Designer @ Nike)
-     "description": "Concise, high-signal analysis of the JD and the chosen strategy (max 2 sentences).",
+     "description": "Concise analysis of the chosen learning strategy (max 2 sentences).",
      "modules": [
        {{
          "title": "string",
-         "outcome": "One punchy, impactful sentence on mastery achieved.",
+         "outcome": "One punchy sentence on the specific technical competency achieved.",
          "timeline": "string",
          "workspace_type": "code|research|design",
          "proof_of_work_instructions": {{

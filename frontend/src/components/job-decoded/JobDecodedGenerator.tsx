@@ -9,11 +9,8 @@ import {
   Sparkles, 
   SearchCode, 
   Cpu, 
-  Route, 
   AlertCircle, 
-  Mountain,
-  ChevronRight,
-  Info
+  Mountain
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase/client';
 import PaymentModal from '../PaymentModal';
@@ -27,7 +24,7 @@ const JobDecodedGenerator: React.FC<JobDecodedGeneratorProps> = ({ onRoadmapGene
   const [formData, setFormData] = useState({
     job_description: '',
     current_experience: '',
-    generation_type: 'incremental' as 'incremental' | 'full',
+    generation_type: 'full' as 'incremental' | 'full',
     time_value: 4,
   });
   const [isGenerating, setIsGenerating] = useState(false);
@@ -124,40 +121,10 @@ const JobDecodedGenerator: React.FC<JobDecodedGeneratorProps> = ({ onRoadmapGene
     <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
       <form onSubmit={handleSubmit} className="space-y-8">
         
-        {/* Mode Selection */}
-        <div className="flex bg-sidebar border border-border p-1 rounded-md w-full">
-          <button 
-            type="button"
-            onClick={() => setFormData(prev => ({ ...prev, generation_type: 'incremental' }))}
-            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-sm text-[10px] font-bold tracking-widest uppercase transition-all ${
-              formData.generation_type === 'incremental' 
-                ? 'bg-background text-text-heading shadow-sm' 
-                : 'text-text-muted hover:text-text-primary'
-            }`}
-          >
-            <Route className={`w-3.5 h-3.5 ${formData.generation_type === 'incremental' ? 'text-accent' : ''}`} />
-            Incremental (Adaptive)
-          </button>
-          <button 
-            type="button"
-            onClick={() => setFormData(prev => ({ ...prev, generation_type: 'full' }))}
-            className={`flex-1 flex items-center justify-center gap-2 py-2 rounded-sm text-[10px] font-bold tracking-widest uppercase transition-all ${
-              formData.generation_type === 'full' 
-                ? 'bg-background text-text-heading shadow-sm' 
-                : 'text-text-muted hover:text-text-primary'
-            }`}
-          >
-            <Mountain className={`w-3.5 h-3.5 ${formData.generation_type === 'full' ? 'text-blue-500' : ''}`} />
-            Full Mastery
-          </button>
-        </div>
-
         <div className="bg-callout-bg border-l-2 border-accent/30 p-4 flex gap-3">
-          <Info className="w-4 h-4 text-accent shrink-0 mt-0.5" />
+          <Mountain className="w-4 h-4 text-accent shrink-0 mt-0.5" />
           <p className="text-[12px] text-text-primary leading-relaxed">
-            {formData.generation_type === 'incremental' 
-              ? "Focuses on bridging the immediate gaps between your current level and the role. Perfect for avoiding overwhelm." 
-              : "Generates the complete path to meet every requirement in the JD. Best if you want to see the full long-term mountain."}
+            Generates a complete career bridge to meet every requirement in the job description based on your current background.
           </p>
         </div>
 
