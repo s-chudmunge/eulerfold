@@ -17,9 +17,13 @@ import PaymentModal from '../PaymentModal';
 
 interface JobDecodedGeneratorProps {
   onRoadmapGenerated: (data: RoadmapRead, formData: any) => void;
+  onLoadingChange?: (loading: boolean) => void;
 }
 
-const JobDecodedGenerator: React.FC<JobDecodedGeneratorProps> = ({ onRoadmapGenerated }) => {
+const JobDecodedGenerator: React.FC<JobDecodedGeneratorProps> = ({ 
+  onRoadmapGenerated,
+  onLoadingChange
+}) => {
   const router = useRouter();
   const [formData, setFormData] = useState({
     job_description: '',
@@ -71,8 +75,9 @@ const JobDecodedGenerator: React.FC<JobDecodedGeneratorProps> = ({ onRoadmapGene
         setCurrentMessageIndex((prevIndex) => (prevIndex + 1) % loadingMessages.length);
       }, 2500);
     }
+    onLoadingChange?.(isGenerating);
     return () => clearInterval(interval);
-  }, [isGenerating]);
+  }, [isGenerating, onLoadingChange]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -119,7 +124,7 @@ const JobDecodedGenerator: React.FC<JobDecodedGeneratorProps> = ({ onRoadmapGene
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-      <form onSubmit={handleSubmit} className="space-y-8">
+      <div className="space-y-8">
         
         <div className="bg-callout-bg border-l-2 border-accent/30 p-4 flex gap-3">
           <Mountain className="w-4 h-4 text-accent shrink-0 mt-0.5" />
@@ -195,49 +200,55 @@ const JobDecodedGenerator: React.FC<JobDecodedGeneratorProps> = ({ onRoadmapGene
         </div>
 
         {/* Action */}
-        <div className="pt-4 flex flex-col items-center gap-4">
-          <button
-            type="submit"
-            disabled={isGenerating || (credits !== null && credits < 1)}
-            className={`group relative w-full sm:w-fit inline-flex items-center justify-center overflow-hidden px-12 py-3.5 rounded-none text-[11px] font-bold uppercase tracking-widest transition-all ${
-              credits !== null && credits < 1
-              ? 'bg-callout-bg border border-border text-text-muted cursor-not-allowed' 
-              : 'bg-text-heading text-background hover:opacity-90 active:scale-95'
-            }`}
-          >
-            <div className={`flex items-center justify-center gap-2.5 transition-transform duration-300 ${isGenerating ? 'translate-y-20' : ''}`}>
-              <Sparkles className="w-4 h-4 text-accent" />
-              {credits !== null && credits < 1 ? 'Insufficient Credits' : `Decode Job Path (${credits ?? '...'})`}
-            </div>
-            {isGenerating && (
-              <div className="absolute inset-0 flex items-center justify-center animate-in slide-in-from-bottom-10 duration-300">
-                 <Loader className="w-4 h-4 animate-spin" />
+        {!isGenerating && (
+          <div className="pt-4 flex flex-col items-center gap-4">
+            <button
+              onClick={handleSubmit}
+              disabled={isGenerating}
+              className={`group relative w-full sm:w-fit inline-flex items-center justify-center overflow-hidden px-10 py-3 rounded-none text-[11px] font-bold uppercase tracking-widest transition-all ${
+                credits !== null && credits < 1
+                ? 'bg-sidebar border border-border text-text-muted hover:border-accent/40' 
+                : 'bg-text-heading text-background hover:opacity-90 active:scale-95 shadow-xl'
+              }`}
+            >
+              <div className="flex items-center justify-center gap-2.5">
+                <Sparkles className={`w-4 h-4 ${credits !== null && credits < 1 ? 'text-text-muted' : 'text-accent'}`} />
+                {credits !== null && credits < 1 ? 'Get More Credits' : `Decode Path (${credits ?? '...'})`}
+              </div>
+            </button>
+            
+            {credits !== null && credits < 1 && (
+              <div className="mt-2">
+                <Link href="/pricing" className="text-[10px] font-bold text-accent uppercase tracking-widest hover:underline">
+                  Buy more credits →
+                </Link>
               </div>
             )}
-          </button>
-          
-          {credits !== null && credits < 1 && (
-            <div className="mt-2">
-              <Link href="/pricing" className="text-[10px] font-bold text-accent uppercase tracking-widest hover:underline">
-                Buy more credits →
-              </Link>
-            </div>
-          )}
-        </div>
-      </form>
-
-      <div className={`mt-12 text-center transition-opacity duration-500 ${isGenerating ? 'opacity-100' : 'opacity-0 h-0 overflow-hidden'}`}>
-        <p className="inconsolata-ui text-[11px] font-bold text-accent uppercase tracking-widest">
-          {isGenerating ? loadingMessages[currentMessageIndex] : ''}
-        </p>
-        <div className="flex justify-center gap-1.5 mt-4">
-           {[0, 1, 2].map(i => (
-             <div key={i} className="w-1 h-1 bg-accent animate-pulse" style={{ animationDelay: `${i * 0.2}s` }}></div>
-           ))}
-        </div>
+          </div>
+        )}
       </div>
+
+      {isGenerating && (
+        <div className="py-20 text-center transition-opacity duration-500 opacity-100">
+          <p className="inconsolata-ui text-[11px] font-bold text-accent uppercase tracking-widest">
+            {loadingMessages[currentMessageIndex]}
+          </p>
+          <div className="flex justify-center gap-1.5 mt-4">
+             {[0, 1, 2].map(i => (
+               <div key={i} className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" style={{ animationDelay: `${i * 0.2}s` }}></div>
+             ))}
+          </div>
+        </div>
+      )}
         
-      {error && (
+      {error && !isGenerating && (
+        <div className="mt-8 p-3 bg-red-500/5 border-l-2 border-red-500 flex items-center gap-3 text-red-500 animate-in slide-in-from-left-1 duration-300">
+          <AlertCircle className="w-4 h-4 shrink-0" />
+          <p className="inconsolata-ui text-[10px] font-bold uppercase tracking-tight">{error}</p>
+        </div>
+      )}
+        
+      {error && !isGenerating && (
         <div className="mt-8 p-3 bg-red-500/5 border-l-2 border-red-500 flex items-center gap-3 text-red-500 animate-in slide-in-from-left-1 duration-300">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <p className="inconsolata-ui text-[10px] font-bold uppercase tracking-tight">{error}</p>

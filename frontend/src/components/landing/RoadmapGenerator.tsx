@@ -11,6 +11,7 @@ import PaymentModal from '../PaymentModal';
 interface RoadmapGeneratorProps {
   onRoadmapGenerated: (data: RoadmapData, formData: any) => void;
   isLanding?: boolean;
+  onLoadingChange?: (loading: boolean) => void;
 }
 
 const ROLES = [
@@ -57,7 +58,11 @@ const SUGGESTED_SUBJECTS = [
   "Pharmacology", "Digital Marketing", "Game Design", "Biochemistry"
 ];
 
-const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated, isLanding = false }) => {
+const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ 
+  onRoadmapGenerated, 
+  isLanding = false,
+  onLoadingChange
+}) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   
@@ -155,8 +160,9 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
         setCurrentMessageIndex((prevIndex) => (prevIndex + 1) % loadingMessages.length);
       }, 2500);
     }
+    onLoadingChange?.(isGenerating);
     return () => clearInterval(interval);
-  }, [isGenerating]);
+  }, [isGenerating, onLoadingChange]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -197,7 +203,6 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
       } else {
         setError(err.message || "Generation error.");
       }
-    } finally {
       setIsGenerating(false);
     }
   };
@@ -212,15 +217,15 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="space-y-6">
                <label className="inconsolata-ui flex items-center text-[11px] font-bold uppercase tracking-[0.2em] text-text-muted">
-                 1. Background & Goal
+                 1. Identity & Objective
                </label>
-               
+
                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                   {/* Current Role */}
                   <div className="relative" ref={currentRoleRef}>
                       <div className="flex items-center gap-2 mb-2">
                         <User className="w-3.5 h-3.5 text-accent" />
-                        <span className="text-[13px] font-bold text-text-heading">Current Role</span>
+                        <span className="text-[13px] font-bold text-text-heading">Current Role <span className="text-text-muted font-normal text-[11px] ml-1">(Optional)</span></span>
                       </div>
                       <div className="relative">
                         <input 
@@ -235,7 +240,7 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
                           className="w-full px-4 py-3 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[14px] font-medium"
                         />
                         <ChevronDown className={`absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted transition-transform ${isRoleDropdownOpenCurrent ? 'rotate-180' : ''}`} />
-                        
+
                         {isRoleDropdownOpenCurrent && (
                           <div className="absolute z-20 w-full mt-1 bg-surface border border-border shadow-2xl max-h-48 overflow-y-auto no-scrollbar rounded-xl">
                             {filteredRolesCurrent.map(r => (
@@ -261,8 +266,9 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
                   <div className="relative" ref={targetRoleRef}>
                       <div className="flex items-center gap-2 mb-2">
                         <Target className="w-3.5 h-3.5 text-accent" />
-                        <span className="text-[13px] font-bold text-text-heading">Target goal</span>
-                        </div>                      <div className="relative">
+                        <span className="text-[13px] font-bold text-text-heading">Target Goal <span className="text-text-muted font-normal text-[11px] ml-1">(Optional)</span></span>
+                      </div>
+                      <div className="relative">
                         <input 
                           type="text"
                           placeholder="What you want to be..."
@@ -275,7 +281,7 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
                           className="w-full px-4 py-3 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[14px] font-medium"
                         />
                         <ChevronDown className={`absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted transition-transform ${isRoleDropdownOpenTarget ? 'rotate-180' : ''}`} />
-                        
+
                         {isRoleDropdownOpenTarget && (
                           <div className="absolute z-20 w-full mt-1 bg-surface border border-border shadow-2xl max-h-48 overflow-y-auto no-scrollbar rounded-xl">
                             {filteredRolesTarget.map(r => (
@@ -302,7 +308,7 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
                <div className="space-y-3 pt-4">
                   <div className="flex items-center gap-2">
                     <GraduationCap className="w-3.5 h-3.5 text-accent" />
-                    <span className="text-[13px] font-bold text-text-heading">Current Proficiency (in Subject)</span>
+                    <span className="text-[13px] font-bold text-text-heading">Current Proficiency <span className="text-text-muted font-normal text-[11px] ml-1">(Optional)</span></span>
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     {EXPERIENCE_LEVELS.map(level => (
@@ -326,28 +332,8 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
                     ))}
                   </div>
                </div>
-            </div>
 
-            {!isGenerating && (
-              <div className="pt-4">
-                <button
-                  onClick={() => setStep(2)}
-                  disabled={!formData.current_role.trim() || !formData.target_role.trim()}
-                  className="w-full sm:w-fit px-12 py-3 bg-text-heading text-background text-[11px] font-bold uppercase tracking-[0.2em] hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-3 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed"
-                >
-                  Define Goal <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            )}
-          </div>
-        );
-      case 2:
-        return (
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="space-y-6">
-               <label className="inconsolata-ui flex items-center text-[11px] font-bold uppercase tracking-[0.2em] text-text-muted">
-                 2. Domain & Objective
-               </label>
+               <div className="h-[1px] bg-border my-8" />
 
                {/* Subject */}
                <div className="space-y-4">
@@ -363,7 +349,7 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
                     placeholder="e.g. Distributed Systems"
                     className="w-full px-4 py-3 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[15px] font-bold text-text-heading"
                   />
-                  
+
                   <div className="flex flex-wrap gap-1.5">
                     {SUGGESTED_SUBJECTS.map(s => (
                       <button
@@ -400,30 +386,24 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
             </div>
 
             {!isGenerating && (
-              <div className="flex items-center gap-4 pt-4">
+              <div className="pt-4">
                 <button
-                  onClick={() => setStep(1)}
-                  className="px-8 py-3 bg-background border border-border text-text-muted text-[11px] font-bold uppercase tracking-[0.2em] hover:bg-sidebar transition-all rounded-lg"
-                >
-                  Back
-                </button>
-                <button
-                  onClick={() => setStep(3)}
+                  onClick={() => setStep(2)}
                   disabled={!formData.subject.trim() || !formData.goal.trim()}
-                  className="flex-1 sm:flex-none px-12 py-3 bg-text-heading text-background text-[11px] font-bold uppercase tracking-[0.2em] hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-3 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-full sm:w-fit px-8 py-3 bg-text-heading text-background text-[11px] font-bold uppercase tracking-[0.2em] hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-3 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed"
                 >
-                  Timeline <ArrowRight className="w-3.5 h-3.5" />
+                  Set Timeline <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             )}
           </div>
         );
-      case 3:
+      case 2:
         return (
           <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="space-y-6">
                <label className="inconsolata-ui flex items-center text-[11px] font-bold uppercase tracking-[0.2em] text-text-muted">
-                 3. Intensity & Context
+                 2. Intensity & Context
                </label>
 
                {/* Target Duration */}
@@ -479,7 +459,7 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
             {!isGenerating && (
               <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
                 <button
-                  onClick={() => setStep(2)}
+                  onClick={() => setStep(1)}
                   className="w-full sm:w-fit px-8 py-3 bg-background border border-border text-text-muted text-[11px] font-bold uppercase tracking-[0.2em] hover:bg-sidebar transition-all rounded-lg"
                 >
                   Back
@@ -487,23 +467,23 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
                 {!session ? (
                     <button
                       onClick={generateRoadmap}
-                      className="w-full sm:flex-1 group relative inline-flex items-center justify-center px-12 py-3 text-[11px] font-bold uppercase tracking-[0.2em] transition-all bg-accent text-white hover:opacity-90 active:scale-95 shadow-xl shadow-accent/20 gap-3 rounded-lg"
+                      className="w-full sm:w-fit group relative inline-flex items-center justify-center px-10 py-3 text-[11px] font-bold uppercase tracking-[0.2em] transition-all bg-accent text-white hover:opacity-90 active:scale-95 shadow-xl shadow-accent/20 gap-3 rounded-lg"
                     >
-                      <LogIn className="w-3.5 h-3.5" /> Authenticate to Architect
+                      <LogIn className="w-3.5 h-3.5" /> Authenticate
                     </button>
                 ) : (
                     <button
                       onClick={generateRoadmap}
-                      disabled={credits !== null && credits < 1}
-                      className={`w-full sm:flex-1 group relative inline-flex items-center justify-center px-12 py-3 text-[11px] font-bold uppercase tracking-[0.2em] transition-all disabled:opacity-50 rounded-lg ${
+                      disabled={isGenerating}
+                      className={`w-full sm:w-fit group relative inline-flex items-center justify-center px-10 py-3 text-[11px] font-bold uppercase tracking-[0.2em] transition-all rounded-lg ${
                         credits !== null && credits < 1
-                        ? 'bg-callout-bg border border-border text-text-muted cursor-not-allowed' 
+                        ? 'bg-sidebar border border-border text-text-muted hover:border-accent/40' 
                         : 'bg-text-heading text-background hover:opacity-90 active:scale-95 shadow-xl'
                       }`}
                     >
                       <div className="flex items-center justify-center gap-2.5">
                         <span className={`text-[13px] ${credits !== null && credits < 1 ? 'grayscale opacity-50' : ''}`}>💎</span>
-                        {credits !== null && credits < 1 ? 'Insufficient Credits' : `Architect Roadmap (${credits ?? '...'})`}
+                        {credits !== null && credits < 1 ? 'Get More Credits' : `Architect (${credits ?? '...'})`}
                       </div>
                     </button>
                 )}
@@ -518,20 +498,22 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
             )}
           </div>
         );
+      default:
+        return null;
     }
   };
 
   return (
     <div className="w-full manrope-body">
       <div className="mb-6 flex items-center gap-4">
-        {[1, 2, 3].map(i => (
+        {[1, 2].map(i => (
           <div key={i} className="flex items-center gap-2">
             <div className={`w-8 h-8 flex items-center justify-center text-[11px] font-bold border transition-all rounded-md ${
               step === i ? 'bg-accent text-white border-accent' : step > i ? 'bg-sidebar text-text-muted border-border' : 'bg-background text-text-muted border-border'
             }`}>
               {step > i ? <Check className="w-4 h-4" /> : i}
             </div>
-            {i < 3 && <div className={`w-8 md:w-16 h-[1px] ${step > i ? 'bg-accent' : 'bg-border'}`} />}
+            {i < 2 && <div className={`w-8 md:w-16 h-[1px] ${step > i ? 'bg-accent' : 'bg-border'}`} />}
           </div>
         ))}
       </div>
@@ -554,15 +536,13 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ onRoadmapGenerated,
           </div>
         </div>
       )}
-      
-      {error && (
+
+      {error && !isGenerating && (
         <div className="mt-8 p-4 bg-red-500/5 border-l-2 border-red-500 flex items-center gap-3 text-red-500 animate-in slide-in-from-left-1 duration-300">
           <AlertCircle className="w-4 h-4 shrink-0" />
           <p className="inconsolata-ui text-[10px] font-bold uppercase tracking-widest leading-relaxed">{error}</p>
         </div>
-      )}
-
-      <PaymentModal 
+      )}      <PaymentModal 
         isOpen={isPaymentModalOpen} 
         onClose={() => setIsPaymentModalOpen(false)} 
         onSuccess={() => {

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import { ExternalLink, ArrowLeft, ArrowRight, X } from 'lucide-react';
+import { ExternalLink, ArrowLeft, ArrowRight, ArrowUp, X } from 'lucide-react';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
@@ -16,6 +16,7 @@ import FloatingTTS from '@/components/FloatingTTS';
 import NextStepsSidebar from '@/components/NextStepsSidebar';
 import { motion, AnimatePresence } from 'framer-motion';
 import { SideBanner, QUOTES } from '@/components/layout/SideBanners';
+import ResearchNavigationSidebar from '@/components/research-lab/ResearchNavigationSidebar';
 
 interface Article {
   title: string;
@@ -355,11 +356,25 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [scale, setScale] = useState(1);
   const [activeId, setActiveId] = useState<string>('');
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const [quoteIndex, setQuoteIndex] = React.useState(0);
   const [recommendations, setRecommendations] = React.useState<{
     articles: Article[],
     papers: Paper[]
   }>({ articles: [], papers: [] });
+
+  React.useEffect(() => {
+    const handleScrollTopVisibility = () => {
+      if (window.scrollY > 400) {
+        setShowScrollTop(true);
+      } else {
+        setShowScrollTop(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScrollTopVisibility);
+    return () => window.removeEventListener('scroll', handleScrollTopVisibility);
+  }, []);
 
   React.useEffect(() => {
     const interval = setInterval(() => {
@@ -501,48 +516,50 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
   return (
     <div className="bg-background min-h-screen pb-24 text-text-primary serif-page-scope">
       <FloatingTTS content={fullContent} />
+      <ResearchNavigationSidebar currentSlug={slug} />
       {/* Design matches strictly the refined example/topic-page */}
       <div className="max-w-[1400px] mx-auto flex flex-col lg:flex-row justify-center xl:justify-start xl:pl-[120px] gap-12 lg:gap-20 px-6 py-8 md:px-12 md:py-16">
         
         {/* Table of Contents (Left Sidebar) */}
         <aside className="hidden xl:block w-[220px] shrink-0">
-          <div className="sticky top-[40px]">
-            <h3 className="inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] text-text-muted mb-6 opacity-60">Structure</h3>
-            <nav className="flex flex-col gap-4">
-              {headings.map((heading) => (
-                <a 
-                  key={heading.id} 
-                  href={`#${heading.id}`}
-                  onClick={() => setActiveId(heading.id)}
-                  className={`text-[13px] font-medium leading-tight transition-all hover:text-accent ${
-                    activeId === heading.id 
-                      ? "text-accent border-l-2 border-accent pl-3 -ml-[2px]" 
-                      : "text-text-muted pl-3 border-l-2 border-transparent hover:border-accent/20"
-                  }`}
+          <div className="sticky top-[40px] flex flex-col gap-10">
+            <div>
+              <h3 className="inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] text-text-muted mb-6 opacity-60">Structure</h3>
+              <nav className="flex flex-col gap-4">
+                {headings.map((heading) => (
+                  <a 
+                    key={heading.id} 
+                    href={`#${heading.id}`}
+                    onClick={() => setActiveId(heading.id)}
+                    className={`text-[13px] font-medium leading-tight transition-all hover:text-accent ${
+                      activeId === heading.id 
+                        ? "text-accent border-l-2 border-accent pl-3 -ml-[2px]" 
+                        : "text-text-muted pl-3 border-l-2 border-transparent hover:border-accent/20"
+                    }`}
+                  >
+                    {heading.title}
+                  </a>
+                ))}
+              </nav>
+            </div>
+
+            {/* Community Banner in Sidebar - Ultra Compact */}
+            <div className="pt-6 border-t border-border/40 relative group">
+              <div className="relative z-10">
+                <h2 className="font-bold mb-1.5 text-text-heading tracking-wider text-[11px] uppercase">Community</h2>
+                <p className="text-text-muted mb-3 font-medium text-[10px] leading-relaxed">Track progress and collaborate on roadmaps with students worldwide.</p>
+                <button 
+                  onClick={user ? () => window.location.href = '/dashboard' : handleSignIn}
+                  className="w-full bg-text-heading rounded px-3 py-1.5 font-bold text-[9px] text-background hover:opacity-90 transition-all shadow-sm uppercase tracking-widest"
                 >
-                  {heading.title}
-                </a>
-              ))}
-            </nav>
+                  {user ? 'Dashboard' : 'Sign In Free'}
+                </button>
+              </div>
+            </div>
           </div>
         </aside>
 
         <div className="max-w-[900px] w-full">
-          {/* Community Banner */}
-        <div className="mb-10 bg-transparent rounded-2xl p-6 md:p-8 border border-border/60 relative overflow-hidden group">
-          <div className="relative z-10">
-            <h2 className="font-bold mb-2 text-text-heading tracking-tight text-lg">Join the EulerFold community</h2>
-            <p className="text-text-primary mb-6 max-w-md font-medium text-[14px] leading-relaxed">Track progress and collaborate on roadmaps with students worldwide.</p>
-            <button 
-              onClick={user ? () => window.location.href = '/dashboard' : handleSignIn}
-              className="inline-block bg-[var(--text-heading)] rounded-lg px-6 py-2 font-bold text-[13px] text-[var(--bg-main)] hover:opacity-90 shadow-md transition-all"
-            >
-              {user ? 'Go to Dashboard' : 'Sign In Free'}
-            </button>
-          </div>
-          <span className="absolute -bottom-6 -right-6 text-[80px] md:text-[110px] opacity-[0.03] grayscale -rotate-45 pointer-events-none group-hover:scale-110 transition-transform duration-700">🐢</span>
-        </div>
-
         {/* Paper Header */}
         <header className="mb-12">
           <Breadcrumbs items={[
@@ -710,29 +727,6 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
           <RecommendedRoadmaps query={paper.title} className="mt-10" />
         </div>
 
-        {/* Navigation */}
-        <footer className="mt-16 flex flex-col md:flex-row items-stretch md:items-center pb-16 font-medium border-t border-border pt-12 gap-8 md:gap-0">
-          {paper.prev ? (
-            <Link href={`/research-decoded/${paper.prev}`} className="flex items-center text-text-muted hover:text-text-heading transition-all group">
-              <span className="mr-3 text-xl md:text-2xl group-hover:-translate-x-1 transition-transform">←</span>
-              <div className="flex flex-col">
-                <span className="text-[10px] text-text-muted uppercase tracking-widest opacity-60">Previous Paper</span>
-                <span className="font-bold truncate max-w-[200px] md:max-w-[250px]">{papers[paper.prev as keyof typeof papers].title}</span>
-              </div>
-            </Link>
-          ) : <div />}
-
-          {paper.next ? (
-            <Link href={`/research-decoded/${paper.next}`} className="md:ml-auto flex items-center text-right text-text-muted hover:text-text-heading transition-all group justify-end">
-              <div className="flex flex-col items-end">
-                <span className="text-[10px] text-text-muted uppercase tracking-widest opacity-60">Next Paper</span>
-                <span className="font-bold truncate max-w-[200px] md:max-w-[250px]">{papers[paper.next as keyof typeof papers].title}</span>
-              </div>
-              <span className="ml-3 text-xl md:text-2xl group-hover:translate-x-1 transition-transform">→</span>
-            </Link>
-          ) : <div />}
-        </footer>
-
         {/* AI Disclosure */}
         <div className="mt-12 text-center border-t border-border/20 pt-8">
           <p className="text-text-muted opacity-50 italic max-w-lg mx-auto leading-relaxed">
@@ -848,6 +842,55 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
           </div>
         )}
       </AnimatePresence>
+
+      {/* Sticky Navigation Bar */}
+      <div className="fixed bottom-0 left-0 right-0 z-[100] bg-accent text-white shadow-[0_-2px_10px_rgba(0,0,0,0.15)] h-7 md:h-8 flex items-stretch">
+        <div className="flex-1 flex items-center">
+          {paper.prev ? (
+            <Link 
+              href={`/research-decoded/${paper.prev}`}
+              className="flex items-center gap-1.5 px-3 md:px-4 h-full w-full hover:bg-white/10 transition-colors group min-w-0"
+            >
+              <ArrowLeft className="w-3 h-3 md:w-3.5 md:h-3.5 shrink-0 group-hover:-translate-x-1 transition-transform" />
+              <span className="text-[10px] md:text-[11px] font-bold truncate tracking-tight">
+                <span className="opacity-70 font-medium mr-1 hidden sm:inline text-[9px] uppercase">Prev:</span>
+                {papers[paper.prev as keyof typeof papers].title}
+              </span>
+            </Link>
+          ) : <div className="flex-1 h-full" />}
+        </div>
+
+        {/* Floating Scroll to Top Button */}
+        <AnimatePresence>
+          {showScrollTop && (
+            <motion.button 
+              initial={{ opacity: 0, y: 10, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.9 }}
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="absolute left-1/2 -top-10 -translate-x-1/2 z-[110] bg-accent/90 backdrop-blur-sm border border-white/20 p-1.5 rounded-full hover:bg-accent transition-all hover:scale-110 shadow-lg group flex items-center justify-center"
+              title="Scroll to Top"
+            >
+              <ArrowUp className="w-3 h-3 md:w-3.5 md:h-3.5 group-hover:-translate-y-0.5 transition-transform" />
+            </motion.button>
+          )}
+        </AnimatePresence>
+
+        <div className="flex-1 flex items-center justify-end">
+          {paper.next ? (
+            <Link 
+              href={`/research-decoded/${paper.next}`}
+              className="flex items-center justify-end gap-1.5 px-3 md:px-4 h-full w-full hover:bg-white/10 transition-colors group text-right min-w-0"
+            >
+              <span className="text-[10px] md:text-[11px] font-bold truncate tracking-tight">
+                <span className="opacity-70 font-medium mr-1 hidden sm:inline text-[9px] uppercase">Next:</span>
+                {papers[paper.next as keyof typeof papers].title}
+              </span>
+              <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5 shrink-0 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          ) : <div className="flex-1 h-full" />}
+        </div>
+      </div>
     </div>
   );
 }

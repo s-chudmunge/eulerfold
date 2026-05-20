@@ -73,7 +73,7 @@ export default function FloatingTTS({ content: manualContent }: { content?: stri
   if (!isAllowedPath) return null;
 
   return (
-    <div className="fixed z-[9999] bottom-6 right-6 flex flex-col items-end gap-2">
+    <div className="fixed z-[9999] bottom-14 right-6 flex flex-col items-end gap-2">
       <AnimatePresence mode="wait">
         {!isExpanded ? (
           <motion.button

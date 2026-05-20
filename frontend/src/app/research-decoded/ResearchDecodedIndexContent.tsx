@@ -3,11 +3,12 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { navigation, papers } from './generatedData';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Search, Microscope } from 'lucide-react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import { cleanSearchQuery, getSearchKeywords } from '@/lib/search';
 import CommunityRoadmapBanner from '@/components/landing/CommunityRoadmapBanner';
+import Breadcrumbs from '@/components/Breadcrumbs';
 
 function SearchParamsHandler({ onParams }: { onParams: (params: URLSearchParams) => void }) {
   const searchParams = useSearchParams();
@@ -47,6 +48,13 @@ export default function ResearchDecodedIndexContent() {
 
   const handleSignIn = () => {
     router.push(`/login?next=${encodeURIComponent(window.location.pathname)}`);
+  };
+
+  const updateSearchQuery = (val: string) => {
+    const params = new URLSearchParams(window.location.search);
+    if (val) params.set('q', val);
+    else params.delete('q');
+    router.replace(`${window.location.pathname}?${params.toString()}`);
   };
 
   const filteredNavigation = navigation.map(category => {
@@ -93,29 +101,50 @@ export default function ResearchDecodedIndexContent() {
       </Suspense>
       <div className="max-w-[1000px] mx-auto px-6 py-6 md:px-10 md:py-10">
         
-        {/* Header Section simplified as subheader is now in the Shell */}
-        {!searchQuery && (
-          <header className="mb-10">
-            <div className="inconsolata-ui flex items-center gap-2 text-accent mb-3 text-[12px] md:text-[13px] font-bold uppercase tracking-widest flex-wrap">
-              <span className="bg-accent-muted px-2 py-0.5 rounded">Decoded</span>
-              <span className="text-[var(--border)]">/</span>
-              <span className="text-[var(--text-label)] font-medium">Curated Science</span>
-            </div>
-            
-            <h1 className="inconsolata-ui text-[26px] md:text-[38px] font-bold text-text-heading mb-4 leading-[1.1] tracking-tighter">
-              Research Decoded
-            </h1>
-            
-            <p className="manrope-body text-[14px] md:text-[15px] text-text-primary max-w-2xl leading-relaxed">
-              The foundational breakthroughs of modern AI, decoded for the curious. 
-              From Mendel&apos;s laws to Gemini&apos;s native multimodality, explore the specific technical shifts that changed the trajectory of human reasoning.
-            </p>
-          </header>
-        )}
+        {/* Breadcrumbs */}
+        <div className="mb-8">
+          <Breadcrumbs items={[{ label: 'Research Decoded' }]} />
+        </div>
 
-        {/* Goal Architect Banner */}
-        <div className="mb-20">
-            <CommunityRoadmapBanner />
+        {/* Search & Subject Bar - Reduced Width */}
+        <div className="sticky top-0 z-30 bg-background/80 backdrop-blur-md py-4 mb-12 border-b border-border/40">
+          <div className="max-w-[600px] mx-auto">
+            <div className="text-center mb-4">
+              <h2 className="inconsolata-ui text-[14px] font-bold text-text-heading tracking-tight">What would you like to research?</h2>
+            </div>
+            <div className="relative mb-4">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted" />
+              <input 
+                type="text"
+                placeholder="Search library..."
+                value={searchQuery}
+                onChange={(e) => updateSearchQuery(e.target.value)}
+                className="w-full bg-surface border border-border rounded-lg py-2 pl-10 pr-4 text-[13px] font-medium focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all shadow-sm"
+              />
+            </div>
+
+            <div className="flex flex-wrap items-center gap-1.5 justify-center">
+              {navigation.map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => {
+                     const element = document.getElementById(category.id);
+                     if (element) {
+                       const offset = 220; // Increased offset for the taller header
+                       const bodyRect = document.body.getBoundingClientRect().top;
+                       const elementRect = element.getBoundingClientRect().top;
+                       const elementPosition = elementRect - bodyRect;
+                       const offsetPosition = elementPosition - offset;
+                       window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+                     }
+                  }}
+                  className="whitespace-nowrap px-3 py-1 rounded-full bg-surface border border-border text-[9px] font-bold uppercase tracking-wider inconsolata-ui hover:bg-accent hover:text-white hover:border-accent transition-all"
+                >
+                  {category.title}
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
 
         {/* Grid of Categories */}
@@ -142,30 +171,21 @@ export default function ResearchDecodedIndexContent() {
                       className="group block"
                     >
                       <article className="h-full flex flex-col">
-                        <div className="relative mb-5 h-[160px] w-full overflow-hidden rounded-xl bg-image-bg border border-border shadow-sm transition-all group-hover:border-accent/30">
-                          {paper?.heroImage ? (
+                        {paper?.heroImage && (
+                          <div className="relative mb-5 h-[160px] w-full overflow-hidden rounded-xl bg-image-bg border border-border shadow-sm transition-all group-hover:border-accent/30">
                             <img 
                               src={paper.heroImage} 
                               alt={section.title}
                               className="w-full h-full object-contain p-4 transition-all duration-500 group-hover:scale-105 dark:opacity-80"
                               onError={(e) => {
-                                e.currentTarget.style.display = 'none';
-                                const parent = e.currentTarget.parentElement;
-                                if (parent) {
-                                  const placeholder = document.createElement('div');
-                                  placeholder.className = 'w-full h-full flex items-center justify-center p-6 text-center bg-image-bg inconsolata-ui text-[0.8rem] font-bold text-text-muted uppercase tracking-tight';
-                                  placeholder.innerText = section.title;
-                                  parent.appendChild(placeholder);
-                                }
+                                // If image fails, hide the entire container
+                                const parent = e.currentTarget.closest('.relative');
+                                if (parent) (parent as HTMLElement).style.display = 'none';
                               }}
                             />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center p-6 text-center bg-image-bg inconsolata-ui text-[0.8rem] font-bold text-text-muted uppercase tracking-tight">
-                              {section.title}
-                            </div>
-                          )}
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                        </div>
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                          </div>
+                        )}
                         
                         <div className="inconsolata-ui text-text-muted mb-1.5 text-[11px] font-bold uppercase tracking-widest opacity-80 group-hover:opacity-100 transition-opacity">
                           {paper?.authors || 'Research Team'}

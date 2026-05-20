@@ -26,6 +26,7 @@ export default function GeneratePage() {
   const [profile, setProfile] = useState<any>(null);
   const [mode, setMode] = useState<'ai' | 'job'>(initialMode);
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [quoteIndex, setQuoteIndex] = useState(0);
 
   useEffect(() => {
@@ -117,44 +118,52 @@ export default function GeneratePage() {
                 </div>
 
                 {/* Compact Header */}
-                <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                  <h1 className="inconsolata-ui text-[22px] font-bold text-text-heading tracking-tight">
-                    {roadmapData ? 'Review Generation' : mode === 'ai' ? 'AI Architect' : 'Job Decoded'}
-                  </h1>
+                {!isLoading && (
+                  <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <h1 className="inconsolata-ui text-[22px] font-bold text-text-heading tracking-tight">
+                      {roadmapData ? 'Review Generation' : mode === 'ai' ? 'AI Architect' : 'Job Decoded'}
+                    </h1>
 
-                  {!roadmapData && (
-                    <div className="flex bg-sidebar border border-border p-1 rounded-md shrink-0 self-start md:self-auto overflow-x-auto no-scrollbar">
-                      <button 
-                        onClick={() => setMode('ai')}
-                        className={`flex items-center gap-2 px-4 py-1.5 rounded-sm text-[11px] font-bold tracking-widest uppercase transition-all shrink-0 ${
-                          mode === 'ai' 
-                            ? 'bg-background text-text-heading shadow-sm' 
-                            : 'text-text-muted hover:text-text-primary'
-                        }`}
-                      >
-                        <Sparkles className={`w-3.5 h-3.5 ${mode === 'ai' ? 'text-accent' : ''}`} /> AI Gen
-                      </button>
-                      <button 
-                        onClick={() => setMode('job')}
-                        className={`flex items-center gap-2 px-4 py-1.5 rounded-sm text-[11px] font-bold tracking-widest uppercase transition-all shrink-0 ${
-                          mode === 'job' 
-                            ? 'bg-background text-text-heading shadow-sm' 
-                            : 'text-text-muted hover:text-text-primary'
-                        }`}
-                      >
-                        <Briefcase className={`w-3.5 h-3.5 ${mode === 'job' ? 'text-teal-600' : ''}`} /> Job Decoded
-                      </button>
-                    </div>
-                  )}
-                </div>
+                    {!roadmapData && (
+                      <div className="flex bg-sidebar border border-border p-1 rounded-md shrink-0 self-start md:self-auto overflow-x-auto no-scrollbar">
+                        <button 
+                          onClick={() => setMode('ai')}
+                          className={`flex items-center gap-2 px-4 py-1.5 rounded-sm text-[11px] font-bold tracking-widest uppercase transition-all shrink-0 ${
+                            mode === 'ai' 
+                              ? 'bg-background text-text-heading shadow-sm' 
+                              : 'text-text-muted hover:text-text-primary'
+                          }`}
+                        >
+                          <Sparkles className={`w-3.5 h-3.5 ${mode === 'ai' ? 'text-accent' : ''}`} /> AI Gen
+                        </button>
+                        <button 
+                          onClick={() => setMode('job')}
+                          className={`flex items-center gap-2 px-4 py-1.5 rounded-sm text-[11px] font-bold tracking-widest uppercase transition-all shrink-0 ${
+                            mode === 'job' 
+                              ? 'bg-background text-text-heading shadow-sm' 
+                              : 'text-text-muted hover:text-text-primary'
+                          }`}
+                        >
+                          <Briefcase className={`w-3.5 h-3.5 ${mode === 'job' ? 'text-teal-600' : ''}`} /> Job Decoded
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                )}
                 
                 {!roadmapData ? (
                   <div key={mode} className="animate-in fade-in slide-in-from-bottom-2 duration-500">
                     {mode === 'ai' && (
-                      <RoadmapGenerator onRoadmapGenerated={handleRoadmapGenerated} />
+                      <RoadmapGenerator 
+                        onRoadmapGenerated={handleRoadmapGenerated} 
+                        onLoadingChange={setIsLoading}
+                      />
                     )}
                     {mode === 'job' && (
-                      <JobDecodedGenerator onRoadmapGenerated={handleRoadmapGenerated} />
+                      <JobDecodedGenerator 
+                        onRoadmapGenerated={handleRoadmapGenerated} 
+                        onLoadingChange={setIsLoading}
+                      />
                     )}
                   </div>
                 ) : (

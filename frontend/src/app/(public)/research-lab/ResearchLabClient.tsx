@@ -369,11 +369,6 @@ export default function ResearchLabClient() {
                             )}
                         </div>
                     </div>
-
-                    {/* Sidebar Links (Right) */}
-                    <div className="lg:w-[260px] shrink-0 lg:-mt-52 relative z-30 sticky top-32">
-                        <ResearchLibrarySidebar />
-                    </div>
                 </div>
             </main>
             <Footer />
