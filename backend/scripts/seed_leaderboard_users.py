@@ -18,23 +18,17 @@ if not SUPABASE_URL or not SUPABASE_KEY:
 sb: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 
 FIRST_NAMES = [
-    "Alex", "Jordan", "Taylor", "Morgan", "Casey", "Riley", "Jamie", "Quinn", "Avery", "Parker",
-    "Sam", "Charlie", "Robin", "Dakota", "Skyler", "Peyton", "Emerson", "Finley", "Sage", "River",
-    "Liam", "Noah", "Oliver", "Elijah", "James", "William", "Benjamin", "Lucas", "Henry", "Theodore",
-    "Emma", "Olivia", "Ava", "Sophia", "Isabella", "Mia", "Charlotte", "Amelia", "Harper", "Evelyn",
     "Aarav", "Arjun", "Vivaan", "Aditya", "Vihaan", "Pranav", "Aryan", "Reyansh", "Sai", "Ishaan",
     "Ananya", "Diya", "Ira", "Myra", "Saanvi", "Aadhya", "Pari", "Anvi", "Navya", "Zoya",
-    "Yuki", "Haruto", "Sota", "Yuma", "Itsuki", "Riku", "Kaito", "Asahi", "Akira", "Ren",
-    "Mei", "Aoi", "Yui", "Hina", "Himari", "Ichika", "Sara", "Rio", "Noa", "An"
+    "Advait", "Kabir", "Rohan", "Yuvraj", "Yash", "Hrithik", "Adi", "Karthik", "Abhishek", "Rahul",
+    "Tanvi", "Neha", "Isha", "Yesha", "Sneha", "Riya", "Pooja", "Kiara", "Siddharth", "Ishita",
+    "Aman", "Rishabh", "Tanya", "Kavya", "Sarthak", "Mehak", "Dev", "Aradhya"
 ]
 
 LAST_NAMES = [
-    "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez",
-    "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Martin",
-    "Lee", "Perez", "Thompson", "White", "Harris", "Sanchez", "Clark", "Ramirez", "Lewis", "Robinson",
-    "Walker", "Young", "Allen", "King", "Wright", "Scott", "Torres", "Nguyen", "Hill", "Flores",
     "Sharma", "Verma", "Gupta", "Malhotra", "Kapoor", "Singh", "Reddy", "Patel", "Iyer", "Nair",
-    "Tanaka", "Sato", "Suzuki", "Takahashi", "Watanabe", "Ito", "Yamamoto", "Nakamura", "Kobayashi", "Kato"
+    "Mehta", "Deshmukh", "Shah", "Tanwar", "Chowdhury", "Jain", "Bose", "Chatterjee", "Kulkarni", "Patil",
+    "Aggarwal", "Bansal", "Goel", "Khanna", "Mishra", "Pandey", "Srivastava", "Yadav", "Tiwari", "Dubey"
 ]
 
 def generate_username(first, last):

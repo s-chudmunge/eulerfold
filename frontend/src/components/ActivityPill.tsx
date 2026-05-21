@@ -19,26 +19,26 @@ import {
 } from 'lucide-react';
 
 const NAMES = [
-  'noa_kobayashi_4669', 'navya_kapoor_7774', 'itsuki_suzuki_8195', 'lucas_gonzalez_7415', 'ishaan_iyer_9204', 
-  'ichika_suzuki_1364', 'alejandro_hernandez_5603', 'william_white_6596', 'samuel_sanchez_5978', 'iker_perez_292', 
-  'ren_ito_5858', 'santiago_martinez_9603', 'jordan_martin_520', 'nicolas_sanchez_9798', 'sebastian_rodriguez_6213', 
-  'navya_singh_7016', 'emerson_wilson_9280', 'asahi_yamamoto_1509', 'an_sato_2839', 'noa_yamamoto_7143', 
+  'aarav_sharma_4669', 'navya_kapoor_7774', 'arjun_mehta_8195', 'lucas_gonzalez_7415', 'ishaan_iyer_9204', 
+  'ananya_verma_1364', 'alejandro_hernandez_5603', 'william_white_6596', 'samuel_sanchez_5978', 'iker_perez_292', 
+  'advait_nair_5858', 'santiago_martinez_9603', 'jordan_martin_520', 'nicolas_sanchez_9798', 'sebastian_rodriguez_6213', 
+  'navya_singh_7016', 'emerson_wilson_9280', 'vihaan_reddy_1509', 'sai_krishna_2839', 'dhruv_agarwal_7143', 
   'pranav_kapoor_5106', 'vihaan_sharma_5582', 'sofia_sanchez_4008', 'theodore_thomas_1223', 'sebastian_martinez_1409', 
-  'harper_jackson_6888', 'ananya_gupta_6193', 'casey_taylor_3538', 'kaito_kobayashi_8928', 'james_jackson_9702', 
-  'ananya_reddy_3915', 'luciana_ramirez_4850', 'pranav_gupta_5479', 'vihaan_verma_7412', 'ichika_sato_9936', 
+  'harper_jackson_6888', 'ananya_gupta_6193', 'casey_taylor_3538', 'kabir_malhotra_8928', 'james_jackson_9702', 
+  'ananya_reddy_3915', 'luciana_ramirez_4850', 'pranav_gupta_5479', 'vihaan_verma_7412', 'isha_khanna_9936', 
   'valentina_ramirez_3062', 'pranav_nair_9011', 'isabella_wilson_9432', 'charlie_allen_8445', 'river_allen_9665', 
-  'ira_singh_8629', 'aryan_sharma_6493', 'akira_yamamoto_6763', 'aarav_singh_8640', 'sebastian_flores_9251', 
-  'itsuki_tanaka_1142', 'matias_martinez_7655', 'kaito_tanaka_5699', 'pari_malhotra_3696', 'emerson_lewis_651', 
+  'ira_singh_8629', 'aryan_sharma_6493', 'adi_chowdhury_6763', 'aarav_singh_8640', 'sebastian_flores_9251', 
+  'ishaan_jain_1142', 'matias_martinez_7655', 'karthik_menon_5699', 'pari_malhotra_3696', 'emerson_lewis_651', 
   'valentina_martinez_199', 'ira_sharma_2323', 'camila_ramirez_1675', 'aadhya_reddy_5866', 'navya_reddy_1499', 
-  'mateo_sanchez_7143', 'harper_king_2563', 'yui_tanaka_4599', 'harper_wright_3397', 'lucas_ramirez_6529', 
-  'ichika_tanaka_7064', 'riley_walker_318', 'anvi_malhotra_4913', 'aadhya_gupta_6537', 'victoria_garcia_1879', 
-  'elijah_wright_7165', 'pranav_kapoor_3445', 'yuki_nakamura_7445', 'samuel_flores_9255', 'victoria_gonzalez_572', 
-  'navya_nair_9689', 'alejandro_torres_9456', 'diego_martinez_2612', 'james_martin_522', 'yuki_yamamoto_6360', 
-  'evelyn_davis_9731', 'valeria_gonzalez_1433', 'yuma_yamamoto_4717', 'skyler_jones_3324', 'vihaan_kapoor_2425', 
-  'haruto_nakamura_4564', 'victoria_torres_7371', 'river_johnson_2261', 'hina_kato_7131', 'matias_ramirez_4597', 
+  'mateo_sanchez_7143', 'harper_king_2563', 'yesha_patel_4599', 'harper_wright_3397', 'lucas_ramirez_6529', 
+  'diya_sharma_7064', 'riley_walker_318', 'anvi_malhotra_4913', 'aadhya_gupta_6537', 'victoria_garcia_1879', 
+  'elijah_wright_7165', 'pranav_kapoor_3445', 'rohan_deshmukh_7445', 'samuel_flores_9255', 'victoria_gonzalez_572', 
+  'navya_nair_9689', 'alejandro_torres_9456', 'diego_martinez_2612', 'james_martin_522', 'yuvraj_singh_6360', 
+  'evelyn_davis_9731', 'valeria_gonzalez_1433', 'yash_vardhan_4717', 'skyler_jones_3324', 'vihaan_kapoor_2425', 
+  'hrithik_raj_4564', 'victoria_torres_7371', 'river_johnson_2261', 'tanvi_shah_7131', 'matias_ramirez_4597', 
   'jamie_white_3257', 'ananya_verma_759', 'samuel_sanchez_7815', 'ira_reddy_1737', 'charlie_clark_7221', 
-  'mariana_sanchez_5470', 'noa_tanaka_5308', 'riley_lewis_3433', 'asahi_nakamura_9482', 'ishaan_gupta_4309', 
-  'mateo_flores_7966', 'hina_kato_5598', 'peyton_wright_3908', 'pranav_reddy_6074', 'matias_gonzalez_7308'
+  'mariana_sanchez_5470', 'neha_tanwar_5308', 'riley_lewis_3433', 'aravind_nair_9482', 'ishaan_gupta_4309', 
+  'mateo_flores_7966', 'kiara_advani_5598', 'peyton_wright_3908', 'pranav_reddy_6074', 'matias_gonzalez_7308'
 ];
 
 const ROADMAPS = [
