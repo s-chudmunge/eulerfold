@@ -42,18 +42,18 @@ export default function SyllabusModal({
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
       <div 
-        className="bg-background border border-border rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+        className="bg-sidebar border border-border rounded-xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-          <h2 className="text-[16px] font-bold text-text-heading">Roadmap Syllabus</h2>
-          <button onClick={onClose} className="p-1 hover:bg-callout-bg rounded-lg text-text-muted transition-colors">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-sidebar/50">
+          <h2 className="text-[14px] font-bold text-text-heading tracking-tight">Roadmap Syllabus</h2>
+          <button onClick={onClose} className="p-1.5 hover:bg-callout-bg rounded-lg text-text-muted transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        <div className="flex-1 overflow-y-auto p-6 no-scrollbar">
+        <div className="flex-1 overflow-y-auto p-8 no-scrollbar">
           {/* Roadmap Info */}
           <div className="mb-8">
             <h3 className="text-xl font-bold text-text-heading mb-4 tracking-tight">
@@ -63,10 +63,10 @@ export default function SyllabusModal({
             <div className="flex items-center gap-6">
               <div className="flex-1">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="text-[12px] font-bold text-text-muted uppercase tracking-wider">Roadmap Progress</span>
+                  <span className="text-[11px] font-bold text-text-muted uppercase tracking-widest">Roadmap Progress</span>
                   <span className="text-[12px] font-bold text-text-heading">{progressPercent}%</span>
                 </div>
-                <div className="h-2 w-full bg-border rounded-full overflow-hidden">
+                <div className="h-1.5 w-full bg-border/50 rounded-full overflow-hidden">
                   <div 
                     className="h-full bg-accent transition-all duration-500 rounded-full"
                     style={{ width: `${progressPercent}%` }}
@@ -84,7 +84,7 @@ export default function SyllabusModal({
               const isFullyCompleted = moduleCompletedCount === (module.topics?.length || 0);
 
               return (
-                <div key={mIdx} className="border border-border rounded-xl overflow-hidden bg-sidebar/30">
+                <div key={mIdx} className="border border-border rounded-xl overflow-hidden bg-background/30">
                   <button 
                     onClick={() => toggleModule(mIdx)}
                     className="w-full flex items-center justify-between px-5 py-4 hover:bg-callout-bg transition-colors"
@@ -103,7 +103,7 @@ export default function SyllabusModal({
                   </button>
 
                   {isExpanded && (
-                    <div className="px-2 pb-2 bg-background/50 border-t border-border/50">
+                    <div className="px-2 pb-2 bg-sidebar/30 border-t border-border/50">
                       <div className="space-y-1 pt-2">
                         {module.topics?.map((topic: any, tIdx: number) => {
                           const isCompleted = completedTopics.has(`${mIdx + 1}-${tIdx}`);

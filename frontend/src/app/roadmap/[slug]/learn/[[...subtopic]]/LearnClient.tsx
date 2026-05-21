@@ -461,7 +461,15 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
     if (loading) {
         return (
             <div className="fixed inset-0 flex flex-col items-center justify-center bg-background dark:bg-[#0f0f0f]">
-                <div className="h-6 w-6 border-2 border-border border-t-[var(--accent)] rounded-full animate-spin mb-4"></div>
+                <div className="flex justify-center gap-1.5 mb-6">
+                    {[0, 1, 2].map(i => (
+                        <div 
+                            key={i} 
+                            className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full animate-bounce" 
+                            style={{ animationDelay: `${i * 0.2}s` }}
+                        ></div>
+                    ))}
+                </div>
                 <p className="text-[11px] font-bold text-text-muted tracking-widest">Establishing learning session</p>
             </div>
         );

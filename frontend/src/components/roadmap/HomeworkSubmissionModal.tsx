@@ -125,35 +125,37 @@ export default function HomeworkSubmissionModal({ isOpen, onClose, roadmapId, mo
     if (result) {
         return (
             <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-background/80 animate-in fade-in duration-200">
-                <div className="relative w-full max-w-lg bg-background border border-border shadow-2xl rounded-3xl overflow-hidden animate-in zoom-in-95 duration-200">
+                <div className="relative w-full max-w-[400px] bg-sidebar border border-border shadow-2xl rounded-xl overflow-hidden animate-in zoom-in-95 duration-200">
                     <button 
                         onClick={onClose}
                         className="absolute top-4 right-4 p-2 hover:bg-callout-bg rounded-full text-text-muted transition-colors z-10"
                     >
-                        <X className="w-5 h-5" />
+                        <X className="w-4 h-4" />
                     </button>
                     <div className="p-8 text-center">
-                        <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-6 ${
+                        <div className={`w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-6 ${
                             result.level === 'Solid' ? 'bg-emerald-500/10 text-emerald-500' : 
                             result.level === 'Developing' ? 'bg-blue-500/10 text-blue-500' : 'bg-red-500/10 text-red-500'
                         }`}>
-                            <CheckCircle2 className="w-8 h-8" />
+                            <CheckCircle2 className="w-6 h-6" />
                         </div>
-                        <h3 className="inconsolata-ui text-xl font-bold text-text-heading mb-2 tracking-tight">Homework Evaluated</h3>
-                        <p className="inconsolata-ui text-[11px] font-bold text-accent uppercase tracking-widest mb-6">Status: {result.level}</p>
+                        <h3 className="text-[18px] font-bold text-text-heading mb-1 tracking-tight">Homework Evaluated</h3>
+                        <p className="text-[11px] font-bold text-accent uppercase tracking-widest mb-6">Status: {result.level}</p>
                         
-                        <div className="bg-callout-bg border border-border p-6 rounded-2xl mb-8 text-left">
-                            <p className="manrope-body text-[14px] text-text-primary leading-relaxed italic">
+                        <div className="bg-background/50 border border-border p-5 rounded-lg mb-8 text-left">
+                            <p className="manrope-body text-[13px] text-text-primary leading-relaxed italic">
                                 &ldquo;{result.summary}&rdquo;
                             </p>
                         </div>
 
-                        <button 
-                            onClick={onClose}
-                            className="w-full py-4 bg-text-heading text-background rounded-2xl text-[14px] font-bold inconsolata-ui tracking-wide hover:opacity-90 transition-all"
-                        >
-                            Back to Roadmap
-                        </button>
+                        <div className="flex flex-col gap-2">
+                            <button 
+                                onClick={onClose}
+                                className="w-full py-3 bg-text-heading text-background rounded-lg text-[13px] font-bold tracking-wide hover:opacity-90 transition-all active:scale-[0.98]"
+                            >
+                                Back to Roadmap
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -162,33 +164,33 @@ export default function HomeworkSubmissionModal({ isOpen, onClose, roadmapId, mo
 
     return (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-background/80 animate-in fade-in duration-200">
-            <div className={`relative bg-background border border-border shadow-2xl rounded-3xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col md:flex-row transition-all duration-300 max-h-[90vh] ${showInstructions && instructions ? 'max-w-4xl' : 'max-w-lg'}`}>
+            <div className={`relative bg-sidebar border border-border shadow-2xl rounded-xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col md:flex-row transition-all duration-300 max-h-[90vh] ${showInstructions && instructions ? 'max-w-4xl' : 'max-w-lg'}`}>
                 
                 {/* Global Close Button */}
                 <button 
                     onClick={onClose}
                     className="absolute top-4 right-4 p-2 hover:bg-callout-bg rounded-full text-text-muted transition-colors z-[210]"
                 >
-                    <X className="w-5 h-5" />
+                    <X className="w-4 h-4" />
                 </button>
 
                 {/* Main Form Area */}
-                <div className="flex-1 p-8 border-r border-border/50 overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+                <div className="flex-1 p-8 border-r border-border/50 overflow-y-auto no-scrollbar">
                     <div className="flex justify-between items-start mb-8">
                         <div>
                             <div className="flex items-center gap-2">
-                                <h3 className="inconsolata-ui text-xl font-bold text-text-heading tracking-tight">Submit Homework</h3>
+                                <h3 className="text-[18px] font-bold text-text-heading tracking-tight">Submit Homework</h3>
                                 {instructions && (
                                     <button 
                                         onClick={() => setShowInstructions(!showInstructions)}
-                                        className={`flex items-center gap-2 px-2.5 py-1.5 rounded-xl transition-all ${
+                                        className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg transition-all ${
                                             showInstructions 
                                             ? 'bg-accent/10 text-accent' 
                                             : 'bg-accent text-white shadow-lg shadow-accent/20 hover:scale-105 active:scale-95'
                                         }`}
                                         title={showInstructions ? "Hide Instructions" : "Show Instructions"}
                                     >
-                                        <HelpCircle className={`w-4 h-4 ${!showInstructions ? 'animate-pulse' : ''}`} />
+                                        <HelpCircle className={`w-3.5 h-3.5 ${!showInstructions ? 'animate-pulse' : ''}`} />
                                         {!showInstructions && (
                                             <span className="text-[9px] font-black uppercase tracking-[0.2em] animate-in fade-in slide-in-from-left-2 duration-500">
                                                 See instructions
@@ -203,7 +205,7 @@ export default function HomeworkSubmissionModal({ isOpen, onClose, roadmapId, mo
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="space-y-2">
-                            <label className="inconsolata-ui text-[11px] font-bold text-text-muted uppercase tracking-widest ml-1">
+                            <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest ml-1">
                                 Proof Link (Optional)
                             </label>
                             <div className="relative group">
@@ -211,7 +213,7 @@ export default function HomeworkSubmissionModal({ isOpen, onClose, roadmapId, mo
                                 <input 
                                     type="url"
                                     placeholder="GitHub repo, PDF link, or Project URL"
-                                    className="w-full bg-callout-bg border border-border rounded-2xl pl-11 pr-4 py-4 text-[14px] manrope-body focus:ring-2 focus:ring-accent/20 focus:border-accent outline-none transition-all"
+                                    className="w-full bg-background/50 border border-border rounded-lg pl-11 pr-4 py-3.5 text-[13px] manrope-body focus:border-accent outline-none transition-all"
                                     value={link}
                                     onChange={(e) => setLink(e.target.value)}
                                 />
@@ -219,12 +221,12 @@ export default function HomeworkSubmissionModal({ isOpen, onClose, roadmapId, mo
                         </div>
 
                         <div className="space-y-2">
-                            <label className="inconsolata-ui text-[11px] font-bold text-text-muted uppercase tracking-widest ml-1">
+                            <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest ml-1">
                                 Describe your work
                             </label>
                             <textarea 
                                 placeholder="Explain what you built or learned. Be specific."
-                                className="w-full h-32 bg-callout-bg border border-border rounded-2xl p-4 text-[14px] manrope-body focus:ring-2 focus:ring-accent/20 focus:border-accent outline-none transition-all resize-none"
+                                className="w-full h-32 bg-background/50 border border-border rounded-lg p-4 text-[13px] manrope-body focus:border-accent outline-none transition-all resize-none"
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 required
@@ -232,7 +234,7 @@ export default function HomeworkSubmissionModal({ isOpen, onClose, roadmapId, mo
                         </div>
 
                         {error && (
-                            <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl flex items-center gap-3 text-red-600 animate-in fade-in duration-300">
+                            <div className="p-4 bg-red-500/5 border border-red-500/20 rounded-lg flex items-center gap-3 text-red-600 animate-in fade-in duration-300">
                                 <AlertCircle className="w-4 h-4 shrink-0" />
                                 <p className="text-[12px] font-semibold">{error}</p>
                             </div>
@@ -242,7 +244,7 @@ export default function HomeworkSubmissionModal({ isOpen, onClose, roadmapId, mo
                             <button
                                 type="submit"
                                 disabled={submitting}
-                                className="w-full py-4 bg-teal-700 text-white rounded-2xl text-[14px] font-bold inconsolata-ui tracking-wide hover:bg-teal-800 transition-all flex items-center justify-center gap-3 disabled:opacity-50"
+                                className="w-full py-3.5 bg-teal-700 text-white rounded-lg text-[13px] font-bold tracking-wide hover:bg-teal-800 transition-all flex items-center justify-center gap-3 disabled:opacity-50 active:scale-[0.98]"
                             >
                                 {submitting ? (
                                     <div className="flex items-center gap-3">
@@ -270,15 +272,15 @@ export default function HomeworkSubmissionModal({ isOpen, onClose, roadmapId, mo
 
                 {/* Instructions Sidebar */}
                 {instructions && showInstructions && (
-                    <div className="w-full md:w-[320px] bg-callout-bg/30 p-8 flex flex-col animate-in slide-in-from-right-4 duration-300 border-t md:border-t-0 border-border/50">
+                    <div className="w-full md:w-[320px] bg-background/20 p-8 flex flex-col animate-in slide-in-from-right-4 duration-300 border-t md:border-t-0 border-border/50">
                         <div className="flex justify-between items-center mb-6">
                             <div className="flex items-center gap-2">
-                                <Info className="w-4 h-4 text-accent" />
-                                <h4 className="inconsolata-ui text-[11px] font-black text-text-heading uppercase tracking-widest">Requested Task</h4>
+                                <Info className="w-3.5 h-3.5 text-accent" />
+                                <h4 className="text-[10px] font-black text-text-heading uppercase tracking-widest">Requested Task</h4>
                             </div>
                         </div>
                         
-                        <div className="flex-1 overflow-y-auto pr-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none] space-y-4">
+                        <div className="flex-1 overflow-y-auto pr-2 no-scrollbar space-y-4">
                             {renderInstructions()}
                         </div>
 

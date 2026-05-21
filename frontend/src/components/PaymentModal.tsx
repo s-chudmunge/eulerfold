@@ -143,12 +143,12 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 animate-in fade-in duration-100">
-      <div className="bg-background border border-border rounded-none w-full max-w-[340px] shadow-2xl relative p-0">
-        <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-callout-bg">
-          <h2 className="inconsolata-ui text-[12px] font-bold text-text-heading uppercase tracking-widest">
+      <div className="bg-sidebar border border-border rounded-xl w-full max-w-[340px] shadow-2xl relative p-0 overflow-hidden">
+        <div className="flex items-center justify-between px-5 py-4 border-b border-border bg-sidebar/50">
+          <h2 className="text-[14px] font-bold text-text-heading tracking-tight">
             Complete Purchase
           </h2>
-          <button onClick={onClose} className="text-text-muted hover:text-text-heading">
+          <button onClick={onClose} className="text-text-muted hover:text-text-heading transition-colors">
             <X className="w-4 h-4" />
           </button>
         </div>
@@ -156,13 +156,13 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
             <div className="flex flex-col">
-              <span className="inconsolata-ui text-[11px] font-bold uppercase text-text-muted tracking-wider">Add 20 Credits</span>
+              <span className="text-[10px] font-bold uppercase text-text-muted tracking-widest">Add 20 Credits</span>
             </div>
             <div className="flex flex-col items-end">
                 {(discountStatus.hasDiscount || appliedCoupon) && (
-                    <span className="inconsolata-ui text-[10px] text-text-muted line-through opacity-50">₹{NORMAL_PRICE}</span>
+                    <span className="text-[10px] text-text-muted line-through opacity-50">₹{NORMAL_PRICE}</span>
                 )}
-                <span className="inconsolata-ui text-[20px] font-black text-accent">₹{currentPrice}</span>
+                <span className="text-[20px] font-black text-accent">₹{currentPrice}</span>
             </div>
           </div>
 
@@ -172,33 +172,33 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
                 <>
                     <div className="flex gap-2">
                         <div className="relative flex-1">
-                            <Tag className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted opacity-40" />
+                            <Tag className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted opacity-40" />
                             <input 
                                 type="text"
                                 value={couponCode}
                                 onChange={(e) => setCouponCode(e.target.value)}
                                 placeholder="COUPON CODE"
-                                className="w-full pl-8 pr-3 py-2 bg-sidebar/50 border border-border text-[10px] font-bold inconsolata-ui uppercase tracking-widest focus:outline-none focus:border-accent transition-all"
+                                className="w-full pl-9 pr-3 py-2 bg-background/50 border border-border text-[10px] font-bold uppercase tracking-widest focus:outline-none focus:border-accent transition-all rounded-lg"
                                 onKeyDown={(e) => e.key === 'Enter' && handleApplyCoupon()}
                             />
                         </div>
                         <button 
                             onClick={handleApplyCoupon}
                             disabled={isValidatingCoupon || !couponCode.trim()}
-                            className="px-3 py-2 bg-sidebar border border-border text-[9px] font-black uppercase tracking-widest hover:bg-background transition-all disabled:opacity-50"
+                            className="px-4 py-2 bg-sidebar border border-border text-[10px] font-bold uppercase tracking-widest hover:bg-background transition-all disabled:opacity-50 rounded-lg"
                         >
                             {isValidatingCoupon ? <Loader className="w-3 h-3 animate-spin" /> : 'Apply'}
                         </button>
                     </div>
                     {couponError && (
-                        <p className="text-[9px] font-bold text-red-500 uppercase tracking-tighter inconsolata-ui ml-1">{couponError}</p>
+                        <p className="text-[9px] font-bold text-red-500 uppercase tracking-tighter ml-1">{couponError}</p>
                     )}
                 </>
             ) : (
-                <div className="flex items-center justify-between p-2 bg-accent/5 border border-accent/20 rounded-none">
+                <div className="flex items-center justify-between p-2.5 bg-accent/5 border border-accent/20 rounded-lg">
                     <div className="flex items-center gap-2">
                         <CheckCircle2 className="w-3.5 h-3.5 text-accent" />
-                        <span className="text-[10px] font-black text-accent uppercase tracking-widest inconsolata-ui">
+                        <span className="text-[10px] font-bold text-accent uppercase tracking-widest">
                             {appliedCoupon.code} (-{appliedCoupon.discount * 100}%)
                         </span>
                     </div>
@@ -210,7 +210,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
           </div>
 
           {error && (
-            <div className="p-2 mb-4 bg-red-500/5 border-l-2 border-red-500 text-red-500 text-[10px] font-bold inconsolata-ui uppercase tracking-tighter flex flex-col gap-1">
+            <div className="p-3 mb-4 bg-red-500/5 border border-red-500/20 text-red-500 text-[10px] font-bold uppercase tracking-tighter flex flex-col gap-1 rounded-lg">
               <span>{error}</span>
               {error === 'Please login first.' && (
                 <Link href="/login" className="underline hover:text-red-600 transition-colors">
@@ -223,12 +223,12 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
           <button
             onClick={handleCheckout}
             disabled={loading}
-            className={`w-full py-3 ${ (discountStatus.hasDiscount || appliedCoupon) ? 'bg-orange-600' : 'bg-[#111] dark:bg-[#14b8a6]'} !text-white rounded-none font-bold text-[11px] uppercase tracking-widest flex items-center justify-center hover:opacity-90 disabled:opacity-50 transition-opacity shadow-lg`}
+            className={`w-full py-3 ${ (discountStatus.hasDiscount || appliedCoupon) ? 'bg-orange-600' : 'bg-text-heading text-background'} !text-white rounded-lg font-bold text-[12px] uppercase tracking-widest flex items-center justify-center hover:opacity-90 disabled:opacity-50 transition-all shadow-lg active:scale-[0.98]`}
           >
             {loading ? <Loader className="w-4 h-4 animate-spin" /> : 'Purchase Now'}
           </button>
           
-          <p className="inconsolata-ui text-[8px] text-text-muted mt-4 text-center uppercase tracking-widest opacity-40">
+          <p className="text-[8px] text-text-muted mt-4 text-center uppercase tracking-widest opacity-40">
             Powered by Razorpay
           </p>
         </div>

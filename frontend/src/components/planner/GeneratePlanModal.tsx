@@ -69,12 +69,12 @@ export default function GeneratePlanModal({ onClose, onRefresh }: Props) {
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/40 animate-in fade-in duration-200 manrope-body">
-      <div className="bg-background w-full max-w-[500px] border-[0.5px] border-border rounded-none shadow-2xl flex flex-col">
+      <div className="bg-sidebar w-full max-w-[500px] border border-border rounded-xl shadow-2xl flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-sidebar/50">
           <div className="flex items-center gap-2">
             <Wand2 className="w-4 h-4 text-accent" />
-            <h3 className="inconsolata-ui text-[11px] font-bold uppercase tracking-[0.2em] text-text-muted">
+            <h3 className="text-[14px] font-bold text-text-heading tracking-tight">
               AI Study Plan Generator
             </h3>
           </div>
@@ -93,13 +93,13 @@ export default function GeneratePlanModal({ onClose, onRefresh }: Props) {
 
           {/* Roadmap Selection */}
           <div>
-            <label className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-3">Select Roadmaps to Include</label>
+            <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-3 ml-1">Select Roadmaps to Include</label>
             <div className="grid grid-cols-1 gap-2">
               {roadmaps.map(r => (
                 <button
                   key={r.id}
                   onClick={() => toggleRoadmap(r.id)}
-                  className={`flex items-center justify-between px-4 py-3 border transition-all text-left ${selectedRoadmapIds.includes(r.id) ? 'bg-accent/5 border-accent text-accent' : 'bg-sidebar/10 border-border text-text-muted hover:border-accent/40'}`}
+                  className={`flex items-center justify-between px-4 py-3 border transition-all text-left rounded-lg ${selectedRoadmapIds.includes(r.id) ? 'bg-accent/5 border-accent text-accent' : 'bg-background/50 border-border text-text-muted hover:border-accent/40'}`}
                 >
                   <span className="text-[13px] font-bold truncate pr-4">{r.title}</span>
                   {selectedRoadmapIds.includes(r.id) && <CheckCircle2 className="w-4 h-4 shrink-0" />}
@@ -111,28 +111,28 @@ export default function GeneratePlanModal({ onClose, onRefresh }: Props) {
           {/* Dates */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2">Start Date</label>
+              <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2 ml-1">Start Date</label>
               <input 
                 type="date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="w-full bg-sidebar/20 border border-border px-3 py-2.5 text-[12px] font-bold text-text-primary outline-none focus:border-accent transition-all"
+                className="w-full bg-background/50 border border-border px-3 py-2.5 text-[12px] font-bold text-text-primary outline-none focus:border-accent transition-all rounded-lg"
               />
             </div>
             <div>
-              <label className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2">Target Finish</label>
+              <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2 ml-1">Target Finish</label>
               <input 
                 type="date"
                 value={targetDate}
                 onChange={(e) => setTargetDate(e.target.value)}
-                className="w-full bg-sidebar/20 border border-border px-3 py-2.5 text-[12px] font-bold text-text-primary outline-none focus:border-accent transition-all"
+                className="w-full bg-background/50 border border-border px-3 py-2.5 text-[12px] font-bold text-text-primary outline-none focus:border-accent transition-all rounded-lg"
               />
             </div>
           </div>
 
           {/* Intensity */}
           <div>
-            <label className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-3">Learning Intensity</label>
+            <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-3 ml-1">Learning Intensity</label>
             <div className="grid grid-cols-3 gap-3">
               {[
                 { id: 'casual', label: 'Casual', desc: '1 mod/wk' },
@@ -142,7 +142,7 @@ export default function GeneratePlanModal({ onClose, onRefresh }: Props) {
                 <button
                   key={opt.id}
                   onClick={() => setIntensity(opt.id as any)}
-                  className={`flex flex-col items-center justify-center p-3 border transition-all ${intensity === opt.id ? 'bg-accent text-white border-accent' : 'bg-sidebar/10 border-border text-text-muted hover:border-accent/40'}`}
+                  className={`flex flex-col items-center justify-center p-3 border transition-all rounded-lg ${intensity === opt.id ? 'bg-accent text-white border-accent' : 'bg-background/50 border-border text-text-muted hover:border-accent/40'}`}
                 >
                   <span className="text-[11px] font-black uppercase tracking-widest">{opt.label}</span>
                   <span className={`text-[9px] font-bold mt-0.5 ${intensity === opt.id ? 'text-white/80' : 'opacity-40'}`}>{opt.desc}</span>
@@ -152,7 +152,7 @@ export default function GeneratePlanModal({ onClose, onRefresh }: Props) {
           </div>
 
           {error && (
-            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded flex items-center gap-2 text-red-600">
+            <div className="p-3 bg-red-500/5 border border-red-500/20 rounded-lg flex items-center gap-2 text-red-600">
               <AlertCircle className="w-4 h-4" />
               <span className="text-[11px] font-bold">{error}</span>
             </div>
@@ -160,14 +160,14 @@ export default function GeneratePlanModal({ onClose, onRefresh }: Props) {
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-border flex items-center justify-end gap-3">
+        <div className="px-6 py-5 border-t border-border flex items-center justify-end gap-3 bg-sidebar/50">
           <button onClick={onClose} className="px-6 py-2.5 text-[11px] font-bold uppercase tracking-widest text-text-muted hover:text-text-heading transition-all">
             Cancel
           </button>
           <button 
             onClick={handleGenerate}
             disabled={loading || selectedRoadmapIds.length === 0}
-            className="flex items-center gap-2 px-8 py-2.5 bg-accent text-white rounded-none text-[11px] font-bold uppercase tracking-widest hover:opacity-90 disabled:opacity-50 transition-all shadow-lg shadow-accent/20"
+            className="flex items-center gap-2 px-8 py-2.5 bg-text-heading text-background rounded-lg text-[12px] font-bold uppercase tracking-widest hover:opacity-90 disabled:opacity-50 transition-all shadow-lg active:scale-[0.98]"
           >
             {loading ? 'Generating...' : (
               <>

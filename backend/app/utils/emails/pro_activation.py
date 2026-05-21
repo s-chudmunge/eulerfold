@@ -30,16 +30,16 @@ async def send_pro_activation_email(to: str, display_name: str = None) -> dict:
 
         <ul style="font-size: 15px; line-height: 1.6; padding-left: 20px; margin: 0 0 32px 0; color: #334155;">
             <li style="margin-bottom: 8px;">
-                <strong>5 Premium Credits:</strong> Use them to generate high-fidelity roadmaps for any subject.
+                <strong>20 Roadmap Credits:</strong> Use these to create detailed roadmaps for any subject you want to learn.
             </li>
             <li style="margin-bottom: 8px;">
-                <strong>Advanced AI Reasoning:</strong> All your roadmaps now use our most capable models for deeper insights and better structure.
+                <strong>Better AI Models:</strong> Your roadmaps will now use more capable AI for better structure and depth.
             </li>
             <li style="margin-bottom: 8px;">
-                <strong>Comprehensive Curriculum:</strong> Expect more detailed module breakdowns and highly relevant learning resources.
+                <strong>Detailed Content:</strong> Get thorough module breakdowns and better resources for your study.
             </li>
             <li style="margin-bottom: 8px;">
-                <strong>Priority Access:</strong> Be the first to try out new features and experimental learning tools.
+                <strong>New Features:</strong> Get early access to new tools as we release them.
             </li>
         </ul>
         

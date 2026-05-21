@@ -139,18 +139,18 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/40 animate-in fade-in duration-200 manrope-body">
-      <div className="bg-background w-full max-w-[450px] border-[0.5px] border-border rounded-none shadow-2xl flex flex-col">
+      <div className="bg-sidebar w-full max-w-[450px] border border-border rounded-xl shadow-2xl flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-sidebar/50">
           <div className="flex items-center gap-3">
-            <h3 className="inconsolata-ui text-[11px] font-bold uppercase tracking-[0.2em] text-text-muted">
+            <h3 className="text-[14px] font-bold text-text-heading tracking-tight">
               {task ? 'Edit Task' : 'New Study Task'}
             </h3>
             {taskLink && (
               <Link 
                 href={taskLink}
                 target={taskLink.startsWith('http') ? "_blank" : "_self"}
-                className="flex items-center gap-2 px-3 py-1.5 bg-accent text-white rounded text-[10px] font-bold uppercase tracking-widest hover:brightness-110 transition-all shadow-sm hover:shadow-md"
+                className="flex items-center gap-2 px-3 py-1.5 bg-accent text-white rounded-lg text-[10px] font-bold uppercase tracking-widest hover:brightness-110 transition-all shadow-sm hover:shadow-md"
               >
                 Open Content
                 <Play className="w-3 h-3 fill-current" />
@@ -165,24 +165,24 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
         <div className="p-6 space-y-6">
           {/* Title */}
           <div>
-            <label className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2">Task Title</label>
+            <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2 ml-1">Task Title</label>
             <input 
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g., Study Neural Networks"
-              className="w-full bg-sidebar/20 border border-border px-4 py-2.5 text-[14px] font-bold text-text-heading outline-none focus:border-accent transition-all"
+              className="w-full bg-background/50 border border-border px-4 py-2.5 text-[13px] font-bold text-text-heading outline-none focus:border-accent transition-all rounded-lg"
             />
           </div>
 
           {/* Type & Date */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2">Type</label>
+              <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2 ml-1">Type</label>
               <select 
                 value={type}
                 onChange={(e) => setType(e.target.value)}
                 disabled={!!task}
-                className="w-full bg-sidebar/20 border border-border px-3 py-2.5 text-[12px] font-bold text-text-primary outline-none focus:border-accent transition-all"
+                className="w-full bg-background/50 border border-border px-3 py-2.5 text-[12px] font-bold text-text-primary outline-none focus:border-accent transition-all rounded-lg"
               >
                 <option value="custom">Custom</option>
                 <option value="module">Module</option>
@@ -194,13 +194,13 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
               </select>
             </div>
             <div>
-              <label className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2">Date</label>
+              <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2 ml-1">Date</label>
               <div className="relative">
                 <input 
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="w-full bg-sidebar/20 border border-border px-3 py-2.5 text-[12px] font-bold text-text-primary outline-none focus:border-accent transition-all"
+                  className="w-full bg-background/50 border border-border px-3 py-2.5 text-[12px] font-bold text-text-primary outline-none focus:border-accent transition-all rounded-lg"
                 />
               </div>
             </div>
@@ -209,7 +209,7 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
           {/* Roadmap Selection (only for non-custom/non-video if new) */}
           {!task && (type === 'module' || type === 'practice' || type === 'pow') && (
             <div className="animate-in slide-in-from-top-2 duration-300">
-              <label className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2">Associate Roadmap</label>
+              <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2 ml-1">Associate Roadmap</label>
               <select 
                 value={roadmapId}
                 onChange={(e) => {
@@ -217,7 +217,7 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
                   setRoadmapId(rId);
                   setModuleNumber(undefined); // Reset module when roadmap changes
                 }}
-                className="w-full bg-sidebar/20 border border-border px-3 py-2.5 text-[12px] font-bold text-text-primary outline-none focus:border-accent transition-all mb-4"
+                className="w-full bg-background/50 border border-border px-3 py-2.5 text-[12px] font-bold text-text-primary outline-none focus:border-accent transition-all mb-4 rounded-lg"
               >
                 <option value="">Select a roadmap...</option>
                 {roadmaps.map(r => (
@@ -227,7 +227,7 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
 
               {roadmapId && (
                 <div>
-                  <label className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2">Select Module</label>
+                  <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2 ml-1">Select Module</label>
                   <select 
                     value={moduleNumber}
                     onChange={(e) => {
@@ -243,7 +243,7 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
                         setTitle(`${prefix}: ${module.title}`);
                       }
                     }}
-                    className="w-full bg-sidebar/20 border border-border px-3 py-2.5 text-[12px] font-bold text-text-primary outline-none focus:border-accent transition-all"
+                    className="w-full bg-background/50 border border-border px-3 py-2.5 text-[12px] font-bold text-text-primary outline-none focus:border-accent transition-all rounded-lg"
                   >
                     <option value="">Select a module...</option>
                     {(roadmaps.find(r => r.id === roadmapId)?.roadmap_plan?.modules || []).map((mod: any, i: number) => (
@@ -260,14 +260,14 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
           {/* Video URL */}
           {type === 'video' && (
             <div className="animate-in slide-in-from-top-2 duration-300">
-              <label className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2">Video URL</label>
+              <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2 ml-1">Video URL</label>
               <div className="relative">
                 <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted" />
                 <input 
                   value={videoUrl}
                   onChange={(e) => setVideoUrl(e.target.value)}
                   placeholder="https://youtube.com/..."
-                  className="w-full bg-sidebar/20 border border-border pl-9 pr-4 py-2.5 text-[12px] font-medium text-text-primary outline-none focus:border-accent transition-all"
+                  className="w-full bg-background/50 border border-border pl-9 pr-4 py-2.5 text-[12px] font-medium text-text-primary outline-none focus:border-accent transition-all rounded-lg"
                 />
               </div>
             </div>
@@ -276,7 +276,7 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
           {/* Research Decoded Selection */}
           {type === 'research' && (
             <div className="animate-in slide-in-from-top-2 duration-300">
-              <label className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2">Select Paper</label>
+              <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2 ml-1">Select Paper</label>
               <select 
                 value={contentSlug}
                 onChange={(e) => {
@@ -286,7 +286,7 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
                     setTitle(`Research: ${papers[slug].title}`);
                   }
                 }}
-                className="w-full bg-sidebar/20 border border-border px-3 py-2.5 text-[12px] font-bold text-text-primary outline-none focus:border-accent transition-all"
+                className="w-full bg-background/50 border border-border px-3 py-2.5 text-[12px] font-bold text-text-primary outline-none focus:border-accent transition-all rounded-lg"
               >
                 <option value="">Select a paper...</option>
                 {Object.entries(papers).map(([slug, paper]) => (
@@ -299,7 +299,7 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
           {/* Article Selection */}
           {type === 'article' && (
             <div className="animate-in slide-in-from-top-2 duration-300">
-              <label className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2">Select Article</label>
+              <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2 ml-1">Select Article</label>
               <select 
                 value={contentSlug}
                 onChange={(e) => {
@@ -309,7 +309,7 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
                     setTitle(`Article: ${articles[slug].title}`);
                   }
                 }}
-                className="w-full bg-sidebar/20 border border-border px-3 py-2.5 text-[12px] font-bold text-text-primary outline-none focus:border-accent transition-all"
+                className="w-full bg-background/50 border border-border px-3 py-2.5 text-[12px] font-bold text-text-primary outline-none focus:border-accent transition-all rounded-lg"
               >
                 <option value="">Select an article...</option>
                 {Object.entries(articles).map(([slug, article]) => (
@@ -321,7 +321,7 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
 
           {/* Completion Toggle */}
           {task && (
-            <div className="flex items-center gap-3 p-4 bg-sidebar/10 border border-border rounded-lg">
+            <div className="flex items-center gap-3 p-4 bg-sidebar/50 border border-border rounded-lg">
               <input 
                 type="checkbox"
                 checked={isCompleted}
@@ -334,12 +334,12 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-4 border-t border-border flex items-center justify-between">
+        <div className="px-6 py-5 border-t border-border flex items-center justify-between bg-sidebar/50">
           {task ? (
             <button 
               onClick={handleDelete}
               disabled={loading}
-              className="p-2.5 text-red-500 hover:bg-red-50 rounded-lg transition-all"
+              className="p-2.5 text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
             >
               <Trash2 className="w-4 h-4" />
             </button>
@@ -352,7 +352,7 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
             <button 
               onClick={handleSave}
               disabled={loading || !title}
-              className="px-8 py-2.5 bg-text-heading text-background rounded-none text-[11px] font-bold uppercase tracking-widest hover:opacity-90 disabled:opacity-50 transition-all"
+              className="px-8 py-2.5 bg-text-heading text-background rounded-lg text-[12px] font-bold uppercase tracking-widest hover:opacity-90 disabled:opacity-50 transition-all shadow-lg active:scale-[0.98]"
             >
               {loading ? 'Saving...' : 'Save Task'}
             </button>
