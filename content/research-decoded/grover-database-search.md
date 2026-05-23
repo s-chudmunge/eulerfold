@@ -1,5 +1,5 @@
 ---
-title: "Grover: Database Search"
+title: "Searching a Needle in a Quantum Haystack"
 authors: "Lov Grover (1996)"
 citation: "Grover, L. K. (1996). A fast quantum mechanical algorithm for database search. In Proceedings of the twenty-eighth annual ACM symposium on Theory of computing (pp. 212-219)."
 link: "https://doi.org/10.1145/237814.237866"

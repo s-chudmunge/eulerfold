@@ -1,5 +1,5 @@
 ---
-title: "Kitaev: Toric Code"
+title: "Storing Quantum Data in Geometric Shapes"
 authors: "Alexei Kitaev (1997)"
 citation: "Kitaev, A. Y. (2003). Fault-tolerant quantum computation by anyons. Annals of Physics, 303(1), 2-30."
 link: "https://arxiv.org/abs/quant-ph/9707021"

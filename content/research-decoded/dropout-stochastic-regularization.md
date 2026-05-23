@@ -1,5 +1,5 @@
 ---
-title: "Dropout: Stochastic Regularization"
+title: "The Simple Trick That Made Deep Learning Scale"
 authors: "Geoffrey Hinton et al. (2012)"
 citation: "Srivastava, N., Hinton, G., Krizhevsky, A., Sutskever, I., & Salakhutdinov, R. (2014). Dropout: a simple way to prevent neural networks from overfitting. Journal of Machine Learning Research (JMLR), 15(1), 1929-1958."
 link: "https://jmlr.org/papers/v15/srivastava14a.html"

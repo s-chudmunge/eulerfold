@@ -1,5 +1,5 @@
 ---
-title: "DeepSeek-V2: Latent Attention"
+title: "Efficient Attention for Massive Models"
 authors: "DeepSeek-AI (2024)"
 citation: "DeepSeek-AI. (2024). DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model. arXiv preprint arXiv:2405.04434."
 link: "https://arxiv.org/abs/2405.04434"

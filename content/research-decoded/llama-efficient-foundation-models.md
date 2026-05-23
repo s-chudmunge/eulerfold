@@ -1,5 +1,5 @@
 ---
-title: "LLaMA: Efficient Foundation Models"
+title: "The Explosion of Open-Source AI"
 authors: "Touvron et al. (2023)"
 citation: "Touvron, H., Lavril, T., Izacard, G., Martinet, X., et al. (2023). LLaMA: Open and efficient foundation language models. arXiv preprint arXiv:2302.13971."
 link: "https://arxiv.org/abs/2302.13971"

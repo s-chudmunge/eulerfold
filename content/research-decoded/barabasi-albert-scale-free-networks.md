@@ -1,5 +1,5 @@
 ---
-title: "Barabási & Albert: Scale-Free Networks"
+title: "Why the Internet is a Scale-Free World"
 authors: "Albert-László Barabási & Réka Albert (1999)"
 citation: "Barabási, A. L., & Albert, R. (1999). Emergence of scaling in random networks. Science, 286(5439), 509-512."
 link: "https://doi.org/10.1126/science.286.5439.509"

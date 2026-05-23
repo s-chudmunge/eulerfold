@@ -1,5 +1,5 @@
 ---
-title: "Batch Normalization: Accelerating Training"
+title: "How Batch Norm Unlocked Deep Networks"
 authors: "Sergey Ioffe & Christian Szegedy (2015)"
 citation: "Ioffe, S., & Szegedy, C. (2015). Batch normalization: Accelerating deep network training by reducing internal covariate shift. In International conference on machine learning (pp. 448-456). PMLR."
 link: "https://proceedings.mlr.press/v37/ioffe15.html"

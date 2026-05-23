@@ -1,5 +1,5 @@
 ---
-title: "Breaking the Sorting Barrier for SSSP"
+title: "Breaking the Speed Limit for Graph Algorithms"
 authors: "Duan et al. (2025)"
 citation: "Duan, R., et al. (2025). Breaking the sorting barrier for directed SSSP. arXiv preprint arXiv:2504.17033."
 link: "https://arxiv.org/abs/2504.17033"

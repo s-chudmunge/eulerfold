@@ -1,5 +1,5 @@
 ---
-title: "Karp's 21 NP-Complete Problems"
+title: "Mapping the World’s Hardest Problems"
 authors: "Richard Karp (1972)"
 citation: "Karp, R. M. (1972). Reducibility among combinatorial problems. In Complexity of Computer Computations (pp. 85-103). Springer, Boston, MA."
 link: "https://doi.org/10.1007/978-1-4684-2001-2_9"

@@ -1,5 +1,5 @@
 ---
-title: "AlphaFold 3: Unified Biology"
+title: "Mapping Every Molecule in the Human Body"
 authors: "Josh Abramson et al. (Google DeepMind, 2024)"
 citation: "Abramson, J., et al. (2024). Accurate structure prediction of biomolecular interactions with AlphaFold 3. Nature, 630(8016), 493-500."
 link: "https://www.nature.com/articles/s41586-024-07487-w"

@@ -1,5 +1,5 @@
 ---
-title: "DDPM: Diffusion Models"
+title: "How AI Creates Art from Pure Chaos"
 authors: "Ho et al. (UC Berkeley, 2020)"
 citation: "Ho, J., Jain, A., & Abbeel, P. (2020). Denoising diffusion probabilistic models. Advances in neural information processing systems, 33, 6840-6851."
 link: "https://arxiv.org/abs/2006.11239"

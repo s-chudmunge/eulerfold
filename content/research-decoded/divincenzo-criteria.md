@@ -1,5 +1,5 @@
 ---
-title: "The DiVincenzo Criteria"
+title: "What Do We Actually Need to Build a Quantum Computer?"
 authors: "David P. DiVincenzo (2000)"
 citation: "DiVincenzo, D. P. (2000). The physical implementation of quantum computation. Fortschritte der Physik: Progress of Physics, 48(9-11), 771-783."
 link: "https://doi.org/10.1002/1521-3978(200009)48:9/11%3C771::AID-PROP771%3E3.0.CO;2-E"

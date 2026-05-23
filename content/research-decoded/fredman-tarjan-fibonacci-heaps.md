@@ -1,5 +1,5 @@
 ---
-title: "Fibonacci Heaps: Amortized Efficiency"
+title: "Reinventing the Priority Queue"
 authors: "Michael Fredman & Robert Tarjan (1987)"
 citation: "Fredman, M. L., & Tarjan, R. E. (1987). Fibonacci heaps and their uses in improved network optimization algorithms. Journal of the ACM (JACM), 34(3), 596-615."
 link: "https://doi.org/10.1145/28869.28874"

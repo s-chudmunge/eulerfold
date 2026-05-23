@@ -1,5 +1,5 @@
 ---
-title: "Reingold's Theorem: Log-Space Connectivity"
+title: "Navigating a Maze with Almost No Memory"
 authors: "Omer Reingold (2005)"
 citation: "Reingold, O. (2008). Undirected connectivity in log-space. Journal of the ACM (JACM), 55(4), 1-24."
 link: "https://doi.org/10.1145/1391289.1391291"

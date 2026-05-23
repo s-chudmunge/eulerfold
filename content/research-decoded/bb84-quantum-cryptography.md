@@ -1,5 +1,5 @@
 ---
-title: "BB84: Quantum Cryptography"
+title: "Using Quantum Physics for Unbreakable Privacy"
 authors: "Charles Bennett & Gilles Brassard (1984)"
 citation: "Bennett, C. H., & Brassard, G. (1984). Quantum cryptography: Public key distribution and coin tossing. In Proceedings of IEEE International Conference on Computers, Systems and Signal Processing (pp. 175-179)."
 link: "https://researchgate.net/publication/220492644_Quantum_cryptography_Public_key_distribution_and_coin_tossing"

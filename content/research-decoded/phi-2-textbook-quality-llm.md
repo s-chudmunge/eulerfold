@@ -1,5 +1,5 @@
 ---
-title: "Phi-2: Textbook-Quality"
+title: "Better Data Beats More Data"
 authors: "Li et al. (2023)"
 citation: "Li, Y., Bubeck, S., Eldan, R., Del Giorno, A., Gunasekar, S., & Lee, Y. T. (2023). Textbooks Are All You Need II: phi-1.5 Technical Report. arXiv:2309.05463."
 link: "https://arxiv.org/abs/2309.05463"

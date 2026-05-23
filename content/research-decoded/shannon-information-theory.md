@@ -1,5 +1,5 @@
 ---
-title: "Shannon: Information Theory"
+title: "The Mathematical Code That Invented the Digital Age"
 authors: "Claude Shannon (1948)"
 citation: "Shannon, C. E. (1948). A mathematical theory of communication. The Bell System Technical Journal, 27(3), 379-423."
 link: "https://archive.org/details/bstj27-3-379"

@@ -1,5 +1,5 @@
 ---
-title: "Floyd-Warshall: All-Pairs Shortest Path"
+title: "A Global Map for Every Possible Route"
 authors: "Robert Floyd (1962)"
 citation: "Floyd, R. W. (1962). Algorithm 97: Shortest path. Communications of the ACM, 5(6), 345."
 link: "https://doi.org/10.1145/367766.368168"

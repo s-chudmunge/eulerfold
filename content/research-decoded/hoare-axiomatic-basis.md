@@ -1,5 +1,5 @@
 ---
-title: "Hoare Logic: Axiomatic Basis"
+title: "The Search for Bug-Free Code"
 authors: "C. A. R. Hoare (1969)"
 citation: "Hoare, C. A. (1969). An axiomatic basis for computer programming. Communications of the ACM, 12(10), 576-580."
 link: "https://www.cs.cmu.edu/~crary/819-f09/Hoare69.pdf"

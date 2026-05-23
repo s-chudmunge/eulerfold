@@ -1,5 +1,5 @@
 ---
-title: "Mendel: Laws of Inheritance"
+title: "Gregor Mendel and the Secret Code of Life"
 authors: "Gregor Mendel (1866)"
 citation: "Mendel, G. (1866). Versuche \u00fcber Pflanzen-Hybriden. Verhandlungen des naturforschenden Vereines in Br\u00fcnn, 4, 3-47."
 link: "http://www.mendelweb.org/Mendel.html"

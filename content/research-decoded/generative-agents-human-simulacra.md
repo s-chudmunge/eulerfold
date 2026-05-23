@@ -1,5 +1,5 @@
 ---
-title: "Generative Agents"
+title: "Simulating a Town Full of AI Personalities"
 authors: "Park et al. (2023)"
 citation: "Park, J. S., O'Brien, J. C., Cai, C. J., Morris, M. R., Liang, P., & Bernstein, M. S. (2023). Generative agents: Interactive simulacra of human behavior. arXiv preprint arXiv:2304.03442."
 link: "https://arxiv.org/abs/2304.03442"

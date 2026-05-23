@@ -1,5 +1,5 @@
 ---
-title: "Cuckoo Hashing: Worst-Case O(1)"
+title: "The Magic of Cuckoo Hashing"
 authors: "Rasmus Pagh & Flemming Rodler (2004)"
 citation: "Pagh, R., & Rodler, F. F. (2004). Cuckoo hashing. Journal of Algorithms, 51(2), 122-144."
 link: "https://doi.org/10.1016/j.jalgor.2003.12.002"

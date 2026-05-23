@@ -1,5 +1,5 @@
 ---
-title: "FHE: Fully Homomorphic Encryption over the Integers"
+title: "Securing the Cloud with Encrypted Computation"
 authors: "Marten van Dijk, Craig Gentry, Shai Halevi, & Vinod Vaikuntanathan (2010)"
 citation: "van Dijk, M., Gentry, C., Halevi, S., & Vaikuntanathan, V. (2010). Fully homomorphic encryption over the integers. In Annual International Conference on the Theory and Applications of Cryptographic Techniques (pp. 24-43). Springer."
 link: "https://eprint.iacr.org/2009/616.pdf"

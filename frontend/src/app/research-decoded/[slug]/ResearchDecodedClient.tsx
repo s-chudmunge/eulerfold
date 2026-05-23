@@ -364,16 +364,19 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
   }>({ articles: [], papers: [] });
 
   React.useEffect(() => {
+    const container = document.querySelector('main');
+    if (!container) return;
+
     const handleScrollTopVisibility = () => {
-      if (window.scrollY > 400) {
+      if (container.scrollTop > 400) {
         setShowScrollTop(true);
       } else {
         setShowScrollTop(false);
       }
     };
 
-    window.addEventListener('scroll', handleScrollTopVisibility);
-    return () => window.removeEventListener('scroll', handleScrollTopVisibility);
+    container.addEventListener('scroll', handleScrollTopVisibility);
+    return () => container.removeEventListener('scroll', handleScrollTopVisibility);
   }, []);
 
   React.useEffect(() => {
@@ -452,13 +455,16 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
   }, [paper, slug, papers]);
 
   React.useEffect(() => {
+    const container = document.querySelector('main');
+    if (!container) return;
+
     const handleScroll = () => {
-      const scrollPosition = window.scrollY + 200;
+      const scrollPosition = container.scrollTop + 200;
 
       let currentActiveId = '';
       
       // If we're at the very top, highlight the first section
-      if (window.scrollY < 100 && headings.length > 0) {
+      if (container.scrollTop < 100 && headings.length > 0) {
         currentActiveId = headings[0].id;
       } else {
         for (let i = 0; i < headings.length; i++) {
@@ -466,7 +472,8 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
           if (!element) continue;
           
           const rect = element.getBoundingClientRect();
-          const top = rect.top + window.scrollY;
+          const containerRect = container.getBoundingClientRect();
+          const top = container.scrollTop + (rect.top - containerRect.top);
           
           if (scrollPosition >= top) {
             currentActiveId = headings[i].id;
@@ -481,10 +488,10 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
       }
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    container.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
 
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
   }, [headings, activeId]);
 
   const handleSignIn = () => {
@@ -780,7 +787,12 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
             initial={{ opacity: 0, y: 10, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.9 }}
-            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            onClick={() => {
+              const container = document.querySelector('main');
+              if (container) {
+                container.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }}
             className="fixed bottom-8 right-8 z-[110] bg-accent text-white p-3 rounded-full hover:bg-accent/90 transition-all hover:scale-110 shadow-2xl flex items-center justify-center border border-white/20"
             title="Scroll to Top"
           >

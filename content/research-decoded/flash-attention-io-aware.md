@@ -1,5 +1,5 @@
 ---
-title: "FlashAttention: IO-Awareness"
+title: "The Hardware Trick That Sped Up Transformers"
 authors: "Dao et al. (2022)"
 citation: "Dao, T., Fu, D. Y., Ermon, S., Rudra, A., & R\u00e9, C. (2022). FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness. arXiv:2205.14135."
 link: "https://arxiv.org/abs/2205.14135"

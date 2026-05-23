@@ -1,5 +1,5 @@
 ---
-title: "LSH: Locality-Sensitive Hashing"
+title: "Finding Needles in High-Dimensional Haystacks"
 authors: "Piotr Indyk & Rajeev Motwani (1998)"
 citation: "Indyk, P., & Motwani, R. (1998). Approximate nearest neighbors: towards removing the curse of dimensionality. In Proceedings of the thirtieth annual ACM symposium on Theory of computing (pp. 604-613)."
 link: "https://graphics.stanford.edu/courses/cs468-06-fall/Papers/06%20indyk%20motwani%20-%20stoc98.pdf"

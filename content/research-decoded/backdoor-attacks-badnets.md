@@ -1,5 +1,5 @@
 ---
-title: "BadNets: Backdoor Attacks"
+title: "Hidden Backdoors in the AI Supply Chain"
 authors: "Tianyu Gu, Brendan Dolan-Gavitt, & Siddharth Garg (2017)"
 citation: "Gu, T., Dolan-Gavitt, B., & Garg, S. (2017). Badnets: Identifying vulnerabilities in the machine learning model supply chain. arXiv preprint arXiv:1708.06733."
 link: "https://arxiv.org/abs/1708.06733"

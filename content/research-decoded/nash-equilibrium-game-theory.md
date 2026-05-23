@@ -1,5 +1,5 @@
 ---
-title: "Nash: Equilibrium Points"
+title: "The Game Theory Behind Every Conflict and Cooperation"
 authors: "John Nash (1950)"
 citation: "Nash, J. (1950). Equilibrium points in n-person games. Proceedings of the National Academy of Sciences, 36(1), 48-49."
 link: "https://doi.org/10.1073/pnas.36.1.48"

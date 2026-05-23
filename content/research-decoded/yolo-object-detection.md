@@ -1,5 +1,5 @@
 ---
-title: "YOLO: You Only Look Once"
+title: "Teaching Computers to See in Real-Time"
 authors: "Joseph Redmon et al. (University of Washington, 2015)"
 citation: "Redmon, J., Divvala, S., Girshick, R., & Farhadi, A. (2016). You only look once: Unified, real-time object detection. In Proceedings of the IEEE conference on computer vision and pattern recognition (pp. 779-788)."
 link: "https://arxiv.org/abs/1506.02640"

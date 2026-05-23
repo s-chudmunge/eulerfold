@@ -1,5 +1,5 @@
 ---
-title: "Scaling Laws for Neural Language Models"
+title: "The Predictable Intelligence of Scaling"
 authors: "Kaplan et al. (OpenAI, 2020)"
 citation: "Kaplan, J., McCandlish, S., Henighan, T., Brown, T. B., Chess, B., Child, R., ... & Amodei, D. (2020). Scaling laws for neural language models. arXiv preprint arXiv:2001.08361."
 link: "https://arxiv.org/abs/2001.08361"

@@ -1,5 +1,5 @@
 ---
-title: "KMP: Fast Pattern Matching"
+title: "The Secret to Blazing Fast String Searches"
 authors: "Knuth, Morris, Pratt (1977)"
 citation: "Knuth, D. E., Morris, Jr, J. H., & Pratt, V. R. (1977). Fast pattern matching in strings. SIAM journal on computing, 6(2), 323-350."
 link: "https://doi.org/10.1137/0206024"

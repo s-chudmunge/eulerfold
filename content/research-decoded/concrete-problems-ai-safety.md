@@ -1,5 +1,5 @@
 ---
-title: "Concrete Problems in AI Safety"
+title: "Solving the Hard Problems of AI Safety"
 authors: "Amodei et al. (2016)"
 citation: "Amodei, D., Olah, C., Steinhardt, J., Christiano, P., Schulman, J., & Man\u00e9, D. (2016). Concrete problems in AI safety. arXiv preprint arXiv:1606.06565."
 link: "https://arxiv.org/abs/1606.06565"

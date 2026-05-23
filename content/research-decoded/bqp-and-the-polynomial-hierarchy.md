@@ -1,5 +1,5 @@
 ---
-title: "BQP and the Polynomial Hierarchy"
+title: "Where Quantum Power Ends and Reality Begins"
 authors: "Scott Aaronson (2009)"
 citation: "Aaronson, S. (2010). BQP and the Polynomial Hierarchy. In Proceedings of the forty-second ACM symposium on Theory of computing (pp. 141-150)."
 link: "https://arxiv.org/abs/0910.4698"

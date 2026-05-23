@@ -1,5 +1,5 @@
 ---
-title: "GraphCast: Global Weather AI"
+title: "Predicting Global Weather with Graph AI"
 authors: "Remi Lam et al. (Google DeepMind, 2023)"
 citation: "Lam, R., Sanchez-Gonzalez, A., Willson, C., et al. (2023). Learning skillful medium-range global weather forecasting. Science, 382(6677), ado3910."
 link: "https://doi.org/10.1126/science.ado3910"

@@ -1,5 +1,5 @@
 ---
-title: "Smoothed Analysis: Beyond Worst-Case"
+title: "Why Real Algorithms Beat Their Worst-Case Scenarios"
 authors: "Daniel Spielman & Shang-Hua Teng (2001)"
 citation: "Spielman, D. A., & Teng, S. H. (2004). Smoothed analysis of algorithms: Why the simplex algorithm usually takes polynomial time. Journal of the ACM (JACM), 51(3), 385-463."
 link: "https://doi.org/10.1145/990308.990310"

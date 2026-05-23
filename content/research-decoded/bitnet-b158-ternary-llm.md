@@ -1,5 +1,5 @@
 ---
-title: "BitNet b1.58: Ternary LLM"
+title: "Computing with Just 1 Bit"
 authors: "Shuming Ma et al. (Microsoft Research, 2024)"
 citation: "Ma, S., et al. (2024). The Era of 1-bit LLMs: All Large Language Models are in 1.58 Bits. arXiv preprint arXiv:2402.17764."
 link: "https://arxiv.org/abs/2402.17764"

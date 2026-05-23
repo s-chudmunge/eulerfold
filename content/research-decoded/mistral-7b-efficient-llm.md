@@ -1,5 +1,5 @@
 ---
-title: "Mistral 7B: Efficient LLM"
+title: "Why Smaller AI Models are Winning"
 authors: "Jiang et al. (2023)"
 citation: "Jiang, A. Q., Sablayrolles, A., Mensch, A., Bamford, C., et al. (2023). Mistral 7B. arXiv:2310.06825."
 link: "https://arxiv.org/abs/2310.06825"

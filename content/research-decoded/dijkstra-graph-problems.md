@@ -1,5 +1,5 @@
 ---
-title: "Dijkstra's Algorithm: Graph Search"
+title: "Dijkstra’s Logic: Navigating the Shortest Path"
 authors: "Edsger Dijkstra (1959)"
 citation: "Dijkstra, E. W. (1959). A note on two problems in connexion with graphs. Numerische mathematik, 1(1), 269-271."
 link: "https://ir.cwi.nl/pub/9256/9256D.pdf"

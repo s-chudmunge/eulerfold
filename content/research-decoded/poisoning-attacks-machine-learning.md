@@ -1,5 +1,5 @@
 ---
-title: "Poisoning Attacks: Dataset Integrity"
+title: "When AI is Trained on Tainted Data"
 authors: "Battista Biggio, Blaine Nelson, & Pavel Laskov (2012)"
 citation: "Biggio, B., Nelson, B., & Laskov, P. (2012). Poisoning attacks against support vector machines. In Proceedings of the 29th International Conference on Machine Learning (ICML)."
 link: "https://arxiv.org/abs/1206.6389"

@@ -1,5 +1,5 @@
 ---
-title: "Mixtral 8x7B: SMoE"
+title: "Mixtral and the Power of Sparse Experts"
 authors: "Jiang et al. (2024)"
 citation: "Jiang, A. Q., Sablayrolles, A., Roux, A., Mensch, A., Savary, B., Bamford, C., ... & Lacroix, T. (2024). Mixtral of experts. arXiv preprint arXiv:2401.04088."
 link: "https://arxiv.org/abs/2401.04088"

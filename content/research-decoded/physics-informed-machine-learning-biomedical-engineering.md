@@ -1,5 +1,5 @@
 ---
-title: "Physics-Informed Machine Learning in Biomedical Engineering"
+title: "Physics-Informed AI for Medical Discovery"
 authors: " Accepted in Annual Review of Biomedical Engineering, 2025"
 citation: "arXiv:2510.05433"
 link: "https://arxiv.org/abs/2510.05433"

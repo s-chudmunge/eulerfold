@@ -1,5 +1,5 @@
 ---
-title: "Karger: Global Min-Cuts"
+title: "Solving Graphs with the Power of Randomness"
 authors: "David Karger (1993)"
 citation: "Karger, D. R. (1993). Global min-cuts in RNC, and other ramifications of a simple min-cut algorithm. In Proceedings of the fourth annual ACM-SIAM Symposium on Discrete algorithms (pp. 21-30)."
 link: "https://doi.org/10.1145/313559.313605"

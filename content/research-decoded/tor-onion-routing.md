@@ -1,5 +1,5 @@
 ---
-title: "Tor: Onion Routing"
+title: "Tor: The Hunt for True Online Anonymity"
 authors: "Michael Reed, Paul Syverson, & David Goldschlag (1998)"
 citation: "Reed, M. G., Syverson, P. F., & Goldschlag, D. M. (1998). Anonymous connections and onion routing. IEEE Journal on Selected Areas in Communications, 16(4), 482-494."
 link: "https://www.onion-router.net/Publications/JSAC-1998.pdf"

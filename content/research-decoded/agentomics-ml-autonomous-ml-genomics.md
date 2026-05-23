@@ -1,5 +1,5 @@
 ---
-title: "Agentomics-ML: Autonomous ML for Genomics"
+title: "Agentomics: Autonomous AI for Biology"
 authors: "2025 Preprint"
 citation: "arXiv:2506.05542"
 link: "https://arxiv.org/abs/2506.05542"

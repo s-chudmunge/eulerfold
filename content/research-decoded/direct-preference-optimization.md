@@ -1,5 +1,5 @@
 ---
-title: "DPO: Direct Preference Optimization"
+title: "Training AI Without the Headache of RLHF"
 authors: "Rafael Rafailov et al. (Stanford University, 2023)"
 citation: "Rafailov, R., Sharma, A., Mitchell, E., Ermon, S., Manning, C. D., & Finn, C. (2023). Direct preference optimization: Your language model is secretly a reward model. arXiv preprint arXiv:2305.18290."
 link: "https://arxiv.org/abs/2305.18290"

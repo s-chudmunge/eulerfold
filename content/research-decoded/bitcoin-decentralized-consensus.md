@@ -1,5 +1,5 @@
 ---
-title: "Bitcoin: A Peer-to-Peer Electronic Cash System"
+title: "How Bitcoin Invented Digital Scarcity"
 authors: "Satoshi Nakamoto (2008)"
 citation: "Nakamoto, S. (2008). Bitcoin: A peer-to-peer electronic cash system. Decentralized Business Review."
 link: "https://bitcoin.org/bitcoin.pdf"

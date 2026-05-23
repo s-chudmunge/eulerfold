@@ -1,5 +1,5 @@
 ---
-title: "Chain of Thought Prompting: Eliciting Reasoning"
+title: "The Secret to Unlocking AI Reasoning"
 authors: "Jason Wei et al. (Google Research, 2022)"
 citation: "Wei, J., Wang, X., Schuurmans, D., Bosma, M., Ichter, B., Xia, F., ... & Zhou, D. (2022). Chain-of-thought prompting elicits reasoning in large language models. Advances in Neural Information Processing Systems, 35, 24824-24837."
 link: "https://arxiv.org/abs/2201.11903"

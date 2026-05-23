@@ -1,5 +1,5 @@
 ---
-title: "Differential Privacy: Calibrating Noise"
+title: "Protecting Individual Data in a World of Big Data"
 authors: "Cynthia Dwork et al. (Microsoft Research, 2006)"
 citation: "Dwork, C., McSherry, F., Nissim, K., & Smith, A. (2006). Calibrating noise to sensitivity in private data analysis. In Theory of Cryptography Conference (pp. 265-284). Springer."
 link: "https://doi.org/10.1007/11681878_14"

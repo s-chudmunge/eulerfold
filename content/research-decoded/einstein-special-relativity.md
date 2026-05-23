@@ -1,5 +1,5 @@
 ---
-title: "Einstein: Special Relativity"
+title: "E=mc²: How Einstein Rewrote Time and Space"
 authors: "Albert Einstein (1905)"
 citation: "Einstein, A. (1905). Zur Elektrodynamik bewegter K\u00f6rper. Annalen der physik, 4, 891-921."
 link: "https://www.fourmilab.ch/etexts/einstein/specrel/www/"

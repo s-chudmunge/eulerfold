@@ -1,5 +1,5 @@
 ---
-title: "Tree of Thoughts"
+title: "A Smarter Way for AI to Solve Hard Problems"
 authors: "Yao et al. (2023)"
 citation: "Yao, S., Yu, D., Zhao, J., Shafran, I., McManus, T. L., Narasimhan, K., & Cao, Y. (2023). Tree of thoughts: Deliberate problem solving with large language models. arXiv preprint arXiv:2305.10601."
 link: "https://arxiv.org/abs/2305.10601"

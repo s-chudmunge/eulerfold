@@ -1,5 +1,5 @@
 ---
-title: "PageRank: Citation Ranking"
+title: "The Math That Sorted the Entire Web"
 authors: "Larry Page & Sergey Brin (1998)"
 citation: "Page, L., Brin, S., Motwani, R., & Winograd, T. (1998). The PageRank citation ranking: Bringing order to the web. Stanford InfoLab."
 link: "http://infolab.stanford.edu/~backrub/google.html"

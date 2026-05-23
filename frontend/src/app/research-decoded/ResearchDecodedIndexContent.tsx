@@ -3,12 +3,13 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import Link from 'next/link';
 import { navigation, papers } from './generatedData';
-import { ArrowRight, Search, Microscope } from 'lucide-react';
+import { ArrowRight, Search, Microscope, ArrowUp } from 'lucide-react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import { cleanSearchQuery, getSearchKeywords } from '@/lib/search';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import ResearchNavigationSidebar from '@/components/research-lab/ResearchNavigationSidebar';
+import { motion, AnimatePresence } from 'framer-motion';
 
 function SearchParamsHandler({ onParams }: { onParams: (params: URLSearchParams) => void }) {
   const searchParams = useSearchParams();
@@ -21,29 +22,23 @@ function SearchParamsHandler({ onParams }: { onParams: (params: URLSearchParams)
 export default function ResearchDecodedIndexContent() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const [showScrollTop, setShowScrollTop] = useState(false);
   const { user } = useAuth();
 
   const handleSearchParams = React.useCallback((params: URLSearchParams) => {
     setSearchQuery(params.get('q') || "");
-    
-    const subjectId = params.get('subject');
-    if (subjectId) {
-      setTimeout(() => {
-        const element = document.getElementById(subjectId);
-        if (element) {
-          const offset = 80;
-          const bodyRect = document.body.getBoundingClientRect().top;
-          const elementRect = element.getBoundingClientRect().top;
-          const elementPosition = elementRect - bodyRect;
-          const offsetPosition = elementPosition - offset;
+  }, []);
 
-          window.scrollTo({
-            top: offsetPosition,
-            behavior: 'smooth'
-          });
-        }
-      }, 100);
-    }
+  React.useEffect(() => {
+    const container = document.querySelector('main');
+    if (!container) return;
+
+    const handleScroll = () => {
+      setShowScrollTop(container.scrollTop > 400);
+    };
+
+    container.addEventListener('scroll', handleScroll);
+    return () => container.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleSignIn = () => {
@@ -54,7 +49,26 @@ export default function ResearchDecodedIndexContent() {
     const params = new URLSearchParams(window.location.search);
     if (val) params.set('q', val);
     else params.delete('q');
-    router.replace(`${window.location.pathname}?${params.toString()}`);
+    router.replace(`${window.location.pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const updateCategory = (id: string) => {
+    const params = new URLSearchParams(window.location.search);
+    params.set('category', id);
+    router.replace(`${window.location.pathname}?${params.toString()}`, { scroll: false });
+    
+    // Immediate scroll for better UX
+    const element = document.getElementById(id);
+    const container = document.querySelector('main');
+    if (element && container) {
+      const containerRect = container.getBoundingClientRect();
+      const elementRect = element.getBoundingClientRect();
+      const relativeTop = elementRect.top - containerRect.top;
+      container.scrollTo({
+        top: container.scrollTop + relativeTop - 20,
+        behavior: 'smooth'
+      });
+    }
   };
 
   const filteredNavigation = navigation.map(category => {
@@ -95,7 +109,7 @@ export default function ResearchDecodedIndexContent() {
   }).filter(category => category.sections.length > 0);
 
   return (
-    <div className="bg-background min-h-screen pb-24 overflow-y-auto text-text-primary">
+    <div className="bg-background min-h-screen pb-24 text-text-primary">
       <Suspense fallback={null}>
         <SearchParamsHandler onParams={handleSearchParams} />
       </Suspense>
@@ -108,7 +122,7 @@ export default function ResearchDecodedIndexContent() {
         </div>
 
         {/* Search & Subject Bar - Reduced Width */}
-        <div className="sticky top-0 z-30 bg-background/80 backdrop-blur-md py-4 mb-12 border-b border-border/40">
+        <div className="mb-12">
           <div className="max-w-[600px] mx-auto">
             <div className="text-center mb-4">
               <h2 className="inconsolata-ui text-[14px] font-bold text-text-heading tracking-tight">What would you like to research?</h2>
@@ -128,17 +142,7 @@ export default function ResearchDecodedIndexContent() {
               {navigation.map((category) => (
                 <button
                   key={category.id}
-                  onClick={() => {
-                     const element = document.getElementById(category.id);
-                     if (element) {
-                       const offset = 220; // Increased offset for the taller header
-                       const bodyRect = document.body.getBoundingClientRect().top;
-                       const elementRect = element.getBoundingClientRect().top;
-                       const elementPosition = elementRect - bodyRect;
-                       const offsetPosition = elementPosition - offset;
-                       window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
-                     }
-                  }}
+                  onClick={() => updateCategory(category.id)}
                   className="whitespace-nowrap px-3 py-1 rounded-full bg-surface border border-border text-[9px] font-bold uppercase tracking-wider inconsolata-ui hover:bg-accent hover:text-white hover:border-accent transition-all"
                 >
                   {category.title}
@@ -229,6 +233,27 @@ export default function ResearchDecodedIndexContent() {
           )}
         </div>
       </div>
+
+      {/* Floating Scroll to Top Button */}
+      <AnimatePresence>
+        {showScrollTop && (
+          <motion.button 
+            initial={{ opacity: 0, y: 10, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.9 }}
+            onClick={() => {
+              const container = document.querySelector('main');
+              if (container) {
+                container.scrollTo({ top: 0, behavior: 'smooth' });
+              }
+            }}
+            className="fixed bottom-10 right-10 z-[200] bg-accent text-white p-3.5 rounded-full hover:bg-accent/90 transition-all hover:scale-110 shadow-2xl flex items-center justify-center border border-white/20"
+            title="Scroll to Top"
+          >
+            <ArrowUp className="w-5 h-5" />
+          </motion.button>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

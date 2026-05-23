@@ -5,15 +5,15 @@
     "expanded": true,
     "sections": [
       {
-        "title": "Concrete Problems in AI Safety (2016)",
+        "title": "Solving the Hard Problems of AI Safety",
         "slug": "concrete-problems-ai-safety"
       },
       {
-        "title": "Constitutional AI (2022)",
+        "title": "Training AI with a Digital Constitution",
         "slug": "constitutional-ai-rlaif"
       },
       {
-        "title": "Superalignment (2023)",
+        "title": "How to Control an Intelligence Greater Than Ours",
         "slug": "superalignment-weak-to-strong"
       }
     ]
@@ -24,27 +24,27 @@
     "expanded": true,
     "sections": [
       {
-        "title": "Mendel: Inheritance (1866)",
+        "title": "Gregor Mendel and the Secret Code of Life",
         "slug": "mendel-laws-of-inheritance"
       },
       {
-        "title": "Einstein: Relativity (1905)",
+        "title": "E=mc²: How Einstein Rewrote Time and Space",
         "slug": "einstein-special-relativity"
       },
       {
-        "title": "Shannon: Information Theory (1948)",
+        "title": "The Mathematical Code That Invented the Digital Age",
         "slug": "shannon-information-theory"
       },
       {
-        "title": "Turing: The Turing Test (1950)",
+        "title": "Alan Turing’s Quest for Thinking Machines",
         "slug": "turing-computing-machinery"
       },
       {
-        "title": "Nash: Equilibrium (1950)",
+        "title": "The Game Theory Behind Every Conflict and Cooperation",
         "slug": "nash-equilibrium-game-theory"
       },
       {
-        "title": "Watson & Crick: DNA (1953)",
+        "title": "Discovery of the Double Helix: Mapping the Human Blueprint",
         "slug": "watson-crick-dna-helix"
       }
     ]
@@ -55,55 +55,55 @@
     "expanded": true,
     "sections": [
       {
-        "title": "Bellman-Ford: Routing & Optimality (1958)",
+        "title": "How the Internet Finds the Fastest Path",
         "slug": "bellman-routing-problem"
       },
       {
-        "title": "Dijkstra's Algorithm: Graph Search (1959)",
+        "title": "Dijkstra’s Logic: Navigating the Shortest Path",
         "slug": "dijkstra-graph-problems"
       },
       {
-        "title": "Floyd-Warshall: All-Pairs Shortest Path (1962)",
+        "title": "A Global Map for Every Possible Route",
         "slug": "floyd-shortest-path"
       },
       {
-        "title": "Hoare Logic: Axiomatic Basis (1969)",
+        "title": "The Search for Bug-Free Code",
         "slug": "hoare-axiomatic-basis"
       },
       {
-        "title": "Tarjan's DFS: Linear Graph Algorithms (1972)",
+        "title": "The Art of Exploring Complex Networks",
         "slug": "tarjan-dfs-linear-algorithms"
       },
       {
-        "title": "Aho-Corasick: Multi-Pattern Matching (1975)",
+        "title": "Searching for Thousands of Patterns at Once",
         "slug": "aho-corasick-string-matching"
       },
       {
-        "title": "KMP: Fast Pattern Matching (1977)",
+        "title": "The Secret to Blazing Fast String Searches",
         "slug": "knuth-morris-pratt-string-matching"
       },
       {
-        "title": "Boyer-Moore: Sub-linear String Search (1977)",
+        "title": "Why Most String Searches Are Faster Than You Think",
         "slug": "boyer-moore-string-searching"
       },
       {
-        "title": "Fibonacci Heaps: Amortized Efficiency (1987)",
+        "title": "Reinventing the Priority Queue",
         "slug": "fredman-tarjan-fibonacci-heaps"
       },
       {
-        "title": "LSH: Locality-Sensitive Hashing (1998)",
+        "title": "Finding Needles in High-Dimensional Haystacks",
         "slug": "indyk-motwani-lsh"
       },
       {
-        "title": "Cuckoo Hashing: Worst-Case O(1) (2004)",
+        "title": "The Magic of Cuckoo Hashing",
         "slug": "pagh-rodler-cuckoo-hashing"
       },
       {
-        "title": "PCP Theorem by Gap Amplification (2007)",
+        "title": "Can You Trust a Proof Without Reading It All?",
         "slug": "dinur-pcp-gap-amplification"
       },
       {
-        "title": "Breaking the Sorting Barrier for SSSP (2025)",
+        "title": "Breaking the Speed Limit for Graph Algorithms",
         "slug": "duan-sssp-sorting-barrier"
       }
     ]
@@ -114,55 +114,55 @@
     "expanded": true,
     "sections": [
       {
-        "title": "Rabin-Scott: Finite Automata (1959)",
+        "title": "The Surprising Power of Machines with No Memory",
         "slug": "rabin-scott-finite-automata"
       },
       {
-        "title": "Cook's Theorem: NP-Completeness (1971)",
+        "title": "The Moment NP-Completeness Changed Everything",
         "slug": "cook-complexity-theorem-proving"
       },
       {
-        "title": "Karp's 21 NP-Complete Problems (1972)",
+        "title": "Mapping the World’s Hardest Problems",
         "slug": "karp-combinatorial-problems"
       },
       {
-        "title": "Baker-Gill-Solovay: Relativization (1975)",
+        "title": "Why We Still Can’t Solve P vs NP",
         "slug": "baker-gill-solovay-relativization"
       },
       {
-        "title": "Miller-Rabin: Probabilistic Primality (1980)",
+        "title": "How to Find a Giant Prime in Seconds",
         "slug": "rabin-miller-primality-test"
       },
       {
-        "title": "Karger's Min-Cut: Randomized Contraction (1993)",
+        "title": "Solving Graphs with the Power of Randomness",
         "slug": "karger-min-cut-algorithm"
       },
       {
-        "title": "Natural Proofs: Complexity Barriers (1994)",
+        "title": "Why Deep Mathematical Barriers Still Exist",
         "slug": "razborov-rudich-natural-proofs"
       },
       {
-        "title": "The PCP Theorem: Hardness of Approximation (1998)",
+        "title": "The Limits of Perfection in Algorithms",
         "slug": "arora-pcp-theorem"
       },
       {
-        "title": "Smoothed Analysis: Beyond Worst-Case (2001)",
+        "title": "Why Real Algorithms Beat Their Worst-Case Scenarios",
         "slug": "spielman-teng-smoothed-analysis"
       },
       {
-        "title": "AKS: PRIMES is in P (2004)",
+        "title": "The 2,000-Year Search for a Primes Test",
         "slug": "aks-primality-in-p"
       },
       {
-        "title": "Reingold's Theorem: Log-Space Connectivity (2005)",
+        "title": "Navigating a Maze with Almost No Memory",
         "slug": "reingold-log-space-connectivity"
       },
       {
-        "title": "ACC Circuit Lower Bounds (2011)",
+        "title": "The First Crack in the ACC Barrier",
         "slug": "williams-acc-circuit-lower-bounds"
       },
       {
-        "title": "Fine-Grained Complexity & SETH (2014)",
+        "title": "The Hidden Hardness Inside 'Easy' Problems",
         "slug": "abboud-williams-fine-grained-complexity"
       }
     ]
@@ -173,15 +173,15 @@
     "expanded": true,
     "sections": [
       {
-        "title": "PageRank (1998)",
+        "title": "The Math That Sorted the Entire Web",
         "slug": "pagerank-citation-ranking"
       },
       {
-        "title": "Watts & Strogatz (1998)",
+        "title": "The Science of Six Degrees of Separation",
         "slug": "watts-strogatz-small-world-networks"
       },
       {
-        "title": "Barabási & Albert (1999)",
+        "title": "Why the Internet is a Scale-Free World",
         "slug": "barabasi-albert-scale-free-networks"
       }
     ]
@@ -192,31 +192,31 @@
     "expanded": true,
     "sections": [
       {
-        "title": "Dropout (2012)",
+        "title": "The Simple Trick That Made Deep Learning Scale",
         "slug": "dropout-stochastic-regularization"
       },
       {
-        "title": "Word2Vec (2013)",
+        "title": "Teaching Computers the Meaning of Words",
         "slug": "word2vec-distributed-representations"
       },
       {
-        "title": "Batch Normalization (2015)",
+        "title": "How Batch Norm Unlocked Deep Networks",
         "slug": "batch-normalization-accelerating-training"
       },
       {
-        "title": "Adam Optimizer (2014)",
+        "title": "The Optimizer Behind Every Modern AI",
         "slug": "adam-stochastic-optimization"
       },
       {
-        "title": "ResNet (2015)",
+        "title": "Why We Can Finally Train 100-Layer Networks",
         "slug": "resnet-deep-residual-learning"
       },
       {
-        "title": "Attention Is All You Need (2017)",
+        "title": "The Transformer: The Paper That Changed Everything",
         "slug": "attention-is-all-you-need"
       },
       {
-        "title": "Scaling Laws (2020)",
+        "title": "The Predictable Intelligence of Scaling",
         "slug": "scaling-laws-neural-language-models"
       }
     ]
@@ -227,83 +227,83 @@
     "expanded": true,
     "sections": [
       {
-        "title": "Simulating Physics with Computers (1982)",
+        "title": "Richard Feynman’s Vision for Quantum Computers",
         "slug": "simulating-physics-feynman"
       },
       {
-        "title": "Shor: Factoring Algorithm (1994)",
+        "title": "How a Quantum Computer Could Break the Internet",
         "slug": "shor-factoring-algorithm"
       },
       {
-        "title": "Shor: Quantum Error Correction (1995)",
+        "title": "Saving Quantum Data from Total Chaos",
         "slug": "shor-quantum-error-correction"
       },
       {
-        "title": "Cirac & Zoller: Ion Trap (1995)",
+        "title": "The First Blueprint for a Real Quantum Computer",
         "slug": "cirac-zoller-ion-trap"
       },
       {
-        "title": "Grover: Database Search (1996)",
+        "title": "Searching a Needle in a Quantum Haystack",
         "slug": "grover-database-search"
       },
       {
-        "title": "Calderbank & Shor: CSS Codes (1996)",
+        "title": "The Foundation of Unbreakable Quantum Code",
         "slug": "calderbank-shor-css-codes"
       },
       {
-        "title": "Kitaev: Toric Code (1997)",
+        "title": "Storing Quantum Data in Geometric Shapes",
         "slug": "kitaev-toric-code"
       },
       {
-        "title": "DiVincenzo: Criteria (2000)",
+        "title": "What Do We Actually Need to Build a Quantum Computer?",
         "slug": "divincenzo-criteria"
       },
       {
-        "title": "Adiabatic Quantum Computation (2000)",
+        "title": "Solving Hard Problems Through Quantum Evolution",
         "slug": "adiabatic-quantum-computation"
       },
       {
-        "title": "Surface Code: Topological Memory (2002)",
+        "title": "The Path to a Million-Qubit Machine",
         "slug": "surface-code-topological-memory"
       },
       {
-        "title": "Quantum Walk: Exponential Speedup (2003)",
+        "title": "Escaping the Maze with Quantum Walks",
         "slug": "quantum-walk-exponential-speedup"
       },
       {
-        "title": "Threshold Theorem: Concatenated Codes (2005)",
+        "title": "The Math That Makes Quantum Computing Possible",
         "slug": "threshold-theorem-concatenated-codes"
       },
       {
-        "title": "Superconducting Qubits — Transmon (2007)",
+        "title": "How IBM and Google Build Their Qubits",
         "slug": "superconducting-qubits-transmon"
       },
       {
-        "title": "HHL: Linear Systems Algorithm (2008)",
+        "title": "Solving Massive Equations with Quantum Logic",
         "slug": "hhl-algorithm"
       },
       {
-        "title": "BQP and the Polynomial Hierarchy (2009)",
+        "title": "Where Quantum Power Ends and Reality Begins",
         "slug": "bqp-and-the-polynomial-hierarchy"
       },
       {
-        "title": "VQE: Variational Eigensolver (2013)",
+        "title": "Simulating Molecules on Today’s Quantum Hardware",
         "slug": "vqe-variational-quantum-eigensolver"
       },
       {
-        "title": "QAOA: Optimization Algorithm (2014)",
+        "title": "Finding the Best Solution in a Quantum World",
         "slug": "qaoa-quantum-approximate-optimization"
       },
       {
-        "title": "Quantum Machine Learning Survey (2017)",
+        "title": "Can Quantum Computers Learn Faster?",
         "slug": "quantum-machine-learning-survey"
       },
       {
-        "title": "The NISQ Era (2018)",
+        "title": "Quantum Computing in the Age of Noise",
         "slug": "nisq-era-and-beyond"
       },
       {
-        "title": "Quantum Supremacy (2019)",
+        "title": "The Day a Quantum Computer Beat the World",
         "slug": "quantum-supremacy-sycamore"
       }
     ]
@@ -314,31 +314,31 @@
     "expanded": true,
     "sections": [
       {
-        "title": "AlexNet (2012)",
+        "title": "The Weekend That Modern AI Was Born",
         "slug": "alexnet-imagenet-classification"
       },
       {
-        "title": "GAN: Adversarial Nets (2014)",
+        "title": "AI vs AI: The Invention of GANs",
         "slug": "generative-adversarial-nets"
       },
       {
-        "title": "YOLO: Object Detection (2015)",
+        "title": "Teaching Computers to See in Real-Time",
         "slug": "yolo-object-detection"
       },
       {
-        "title": "ViT: Vision Transformer (2020)",
+        "title": "Why Transformers Are Replacing Traditional Vision",
         "slug": "vit-vision-transformer"
       },
       {
-        "title": "CLIP: Contrastive Vision (2021)",
+        "title": "The AI That Understands Images Like a Human",
         "slug": "clip-contrastive-vision"
       },
       {
-        "title": "Segment Anything — SAM (2023)",
+        "title": "The Foundation Model for Every Pixel",
         "slug": "segment-anything-model"
       },
       {
-        "title": "Depth Anything (2024)",
+        "title": "Unlocking 3D Vision from 2D Photos",
         "slug": "depth-anything-monocular-foundation"
       }
     ]
@@ -349,15 +349,15 @@
     "expanded": true,
     "sections": [
       {
-        "title": "DQN: Atari Deep RL (2013)",
+        "title": "How AI Learned to Play Games Like a Human",
         "slug": "dqn-atari-reinforcement-learning"
       },
       {
-        "title": "PPO: Policy Optimization (2017)",
+        "title": "The Math Behind Stable AI Learning",
         "slug": "ppo-proximal-policy-optimization"
       },
       {
-        "title": "RLHF: Helpful Assistant (2022)",
+        "title": "Teaching AI to Listen to Humans",
         "slug": "rlhf-helpful-harmless-assistant"
       }
     ]
@@ -368,15 +368,15 @@
     "expanded": true,
     "sections": [
       {
-        "title": "Dexterous Manipulation (2018)",
+        "title": "Teaching Robots the Sensitivity of a Human Hand",
         "slug": "dexterous-manipulation-reinforcement-learning"
       },
       {
-        "title": "ACT: Action Chunking (2023)",
+        "title": "Robotic Control with Transformer Logic",
         "slug": "act-action-chunking-transformer"
       },
       {
-        "title": "RT-2: VLA Models (2023)",
+        "title": "Robots That Understand the World through Vision",
         "slug": "rt-2-vision-language-action"
       }
     ]
@@ -387,35 +387,35 @@
     "expanded": true,
     "sections": [
       {
-        "title": "ReAct: Reason + Act (2022)",
+        "title": "Teaching AI to Think Before It Acts",
         "slug": "react-reasoning-and-acting"
       },
       {
-        "title": "Chain of Thought (2022)",
+        "title": "The Secret to Unlocking AI Reasoning",
         "slug": "chain-of-thought-prompting"
       },
       {
-        "title": "Toolformer: Tool Use (2023)",
+        "title": "AI That Knows How to Use Its Own Tools",
         "slug": "toolformer-self-supervised-tools"
       },
       {
-        "title": "Self-Refine: Iterative (2023)",
+        "title": "How AI Can Correct Its Own Mistakes",
         "slug": "self-refine-iterative-refinement"
       },
       {
-        "title": "Generative Agents (2023)",
+        "title": "Simulating a Town Full of AI Personalities",
         "slug": "generative-agents-human-simulacra"
       },
       {
-        "title": "Tree of Thoughts (2023)",
+        "title": "A Smarter Way for AI to Solve Hard Problems",
         "slug": "tree-of-thoughts-deliberate-search"
       },
       {
-        "title": "s1: Simple Test-Time Scaling (2025)",
+        "title": "Giving AI More Time to Think",
         "slug": "s1-test-time-scaling"
       },
       {
-        "title": "DeepSeek R1: Reasoning (2025)",
+        "title": "The New Era of Open-Source Reasoning AI",
         "slug": "deepseek-r1-incentivizing-reasoning"
       }
     ]
@@ -426,27 +426,27 @@
     "expanded": true,
     "sections": [
       {
-        "title": "Flamingo (2022)",
+        "title": "A Vision AI That Learns from Just a Few Examples",
         "slug": "flamingo-visual-language-few-shot"
       },
       {
-        "title": "ImageBind (2023)",
+        "title": "Teaching AI to Connect Sight, Sound, and Touch",
         "slug": "imagebind-multimodal-embedding"
       },
       {
-        "title": "Gemini (2023)",
+        "title": "Gemini: The First Truly Multimodal Foundation",
         "slug": "gemini-native-multimodal-models"
       },
       {
-        "title": "Gemini 1.5 Pro: Multimodal MoE (2024)",
+        "title": "How Gemini Handles Millions of Data Points",
         "slug": "gemini-1-5-pro-multimodal-moe"
       },
       {
-        "title": "GPT-4 (2023)",
+        "title": "Inside the Most Powerful Model Ever Built",
         "slug": "gpt-4-technical-report"
       },
       {
-        "title": "LLaVA (2023)",
+        "title": "Building an Open-Source Vision Assistant",
         "slug": "llava-visual-instruction-tuning"
       }
     ]
@@ -457,15 +457,15 @@
     "expanded": true,
     "sections": [
       {
-        "title": "DDPM: Diffusion Models (2020)",
+        "title": "How AI Creates Art from Pure Chaos",
         "slug": "ddpm-diffusion-models"
       },
       {
-        "title": "Stable Diffusion (2021)",
+        "title": "The Math Behind High-Speed AI Art",
         "slug": "stable-diffusion-latent-space"
       },
       {
-        "title": "DALL-E 2: Hierarchical (2022)",
+        "title": "DALL-E 2 and the Future of Imagination",
         "slug": "dalle-2-hierarchical-generation"
       }
     ]
@@ -476,59 +476,59 @@
     "expanded": true,
     "sections": [
       {
-        "title": "BERT: Bidirectional Context (2018)",
+        "title": "The Paper That Taught AI the Context of Words",
         "slug": "bert-bidirectional-transformers"
       },
       {
-        "title": "Transformer XL (2019)",
+        "title": "Transformers with an Infinite Memory Span",
         "slug": "transformer-xl-extra-long-context"
       },
       {
-        "title": "GPT-3: Few-Shot Learners (2020)",
+        "title": "The Moment Language Models Became Superhuman",
         "slug": "gpt-3-few-shot-learners"
       },
       {
-        "title": "LoRA: Low-Rank Adaptation (2021)",
+        "title": "Fine-Tuning Huge AI Models on a Laptop",
         "slug": "lora-low-rank-adaptation"
       },
       {
-        "title": "InstructGPT: Model Alignment (2022)",
+        "title": "Aligning AI with What Humans Actually Want",
         "slug": "instruct-gpt-alignment"
       },
       {
-        "title": "FlashAttention: IO-Aware (2022)",
+        "title": "The Hardware Trick That Sped Up Transformers",
         "slug": "flash-attention-io-aware"
       },
       {
-        "title": "LLaMA: Foundation Models (2023)",
+        "title": "The Explosion of Open-Source AI",
         "slug": "llama-efficient-foundation-models"
       },
       {
-        "title": "Mistral 7B: Efficient (2023)",
+        "title": "Why Smaller AI Models are Winning",
         "slug": "mistral-7b-efficient-llm"
       },
       {
-        "title": "Phi-2: Textbook-Quality (2023)",
+        "title": "Better Data Beats More Data",
         "slug": "phi-2-textbook-quality-llm"
       },
       {
-        "title": "QLoRA: Efficient (2023)",
+        "title": "The QLoRA Breakthrough: AI for Everyone",
         "slug": "qlora-efficient-finetuning"
       },
       {
-        "title": "Mixtral 8x7B: SMoE (2024)",
+        "title": "Mixtral and the Power of Sparse Experts",
         "slug": "mixtral-moe-sparse-experts"
       },
       {
-        "title": "Gemma 2: High-Signal Open Models (2024)",
+        "title": "Gemma 2: High Performance in a Small Package",
         "slug": "gemma-2-high-signal-llm"
       },
       {
-        "title": "Llama 3 405B: Dense Scaling (2024)",
+        "title": "Llama 3 and the Future of Dense Scaling",
         "slug": "llama-3-herd-of-models"
       },
       {
-        "title": "DeepSeek-V2: Latent Attention (2024)",
+        "title": "Efficient Attention for Massive Models",
         "slug": "deepseek-v2-latent-attention"
       }
     ]
@@ -539,19 +539,19 @@
     "expanded": true,
     "sections": [
       {
-        "title": "DPO: Direct Preference Optimization (2023)",
+        "title": "Training AI Without the Headache of RLHF",
         "slug": "direct-preference-optimization"
       },
       {
-        "title": "DoRA: Weight-Decomposed LoRA (2024)",
+        "title": "Refining How AI Learns New Tasks",
         "slug": "dora-weight-decomposed-lora"
       },
       {
-        "title": "BitNet b1.58: 1-Bit LLMs (2024)",
+        "title": "Computing with Just 1 Bit",
         "slug": "bitnet-b158-ternary-llm"
       },
       {
-        "title": "Scaling LLM Test-Time Compute (2024)",
+        "title": "Scaling AI Thought Beyond Training",
         "slug": "scaling-test-time-compute"
       }
     ]
@@ -562,11 +562,11 @@
     "expanded": true,
     "sections": [
       {
-        "title": "Mamba: Selective State Spaces (2023)",
+        "title": "The New Architecture Challenging Transformers",
         "slug": "mamba-linear-time-ssm"
       },
       {
-        "title": "KAN: Kolmogorov-Arnold Networks (2024)",
+        "title": "The First Real Alternative to Traditional Neural Nets",
         "slug": "kan-kolmogorov-arnold-networks"
       }
     ]
@@ -577,35 +577,35 @@
     "expanded": true,
     "sections": [
       {
-        "title": "AlphaFold 2 (2021)",
+        "title": "Solving Biology’s 50-Year-Old Protein Puzzle",
         "slug": "alphafold-2-structure-prediction"
       },
       {
-        "title": "AlphaFold 3: Unified Biomolecular Prediction (2024)",
+        "title": "Mapping Every Molecule in the Human Body",
         "slug": "alphafold-3-unified-biology"
       },
       {
-        "title": "Evo — DNA Language Model (2024)",
+        "title": "Evo: Decoding the Code of Life with AI",
         "slug": "evo-dna-language-model"
       },
       {
-        "title": "GraphCast — Weather AI (2023)",
+        "title": "Predicting Global Weather with Graph AI",
         "slug": "graphcast-weather-ai"
       },
       {
-        "title": "CRISPR-GPT: AI-Assisted Genome Editing (2024)",
+        "title": "AI-Assisted Precision Medicine",
         "slug": "crispr-gpt-ai-assisted-genome-editing"
       },
       {
-        "title": "Physics-Informed ML in Biomedical Engineering (2025)",
+        "title": "Physics-Informed AI for Medical Discovery",
         "slug": "physics-informed-machine-learning-biomedical-engineering"
       },
       {
-        "title": "Agentomics-ML: Autonomous ML for Genomics (2025)",
+        "title": "Agentomics: Autonomous AI for Biology",
         "slug": "agentomics-ml-autonomous-ml-genomics"
       },
       {
-        "title": "BIOVERSE: Multimodal Bio-Foundation Alignment (2025)",
+        "title": "The Universal Foundation for Biological Data",
         "slug": "bioverse-multimodal-biological-foundation-model-alignment"
       }
     ]
@@ -616,23 +616,23 @@
     "expanded": true,
     "sections": [
       {
-        "title": "Diffie-Hellman: Key Exchange (1976)",
+        "title": "The Birth of Private Communication on the Web",
         "slug": "diffie-hellman-new-directions"
       },
       {
-        "title": "RSA: Digital Signatures (1978)",
+        "title": "The Math That Secures Every Online Transaction",
         "slug": "rsa-digital-signatures"
       },
       {
-        "title": "BB84: Quantum Cryptography (1984)",
+        "title": "Using Quantum Physics for Unbreakable Privacy",
         "slug": "bb84-quantum-cryptography"
       },
       {
-        "title": "Reflections on Trusting Trust (1984)",
+        "title": "The Invisible Threat: Why No Code is Safe",
         "slug": "reflections-on-trusting-trust"
       },
       {
-        "title": "The Morris Worm: Internet Security (1988)",
+        "title": "The Day the Internet Almost Died",
         "slug": "morris-worm-internet-security"
       }
     ]
@@ -643,39 +643,39 @@
     "expanded": true,
     "sections": [
       {
-        "title": "Zero-Knowledge Proofs (1985)",
+        "title": "How to Prove a Secret Without Telling It",
         "slug": "zero-knowledge-proofs-goldwasser"
       },
       {
-        "title": "Tor: Onion Routing (1998)",
+        "title": "Tor: The Hunt for True Online Anonymity",
         "slug": "tor-onion-routing"
       },
       {
-        "title": "Differential Privacy: Calibrating Noise (2006)",
+        "title": "Protecting Individual Data in a World of Big Data",
         "slug": "differential-privacy-dwork"
       },
       {
-        "title": "Bitcoin: Decentralized Consensus (2008)",
+        "title": "How Bitcoin Invented Digital Scarcity",
         "slug": "bitcoin-decentralized-consensus"
       },
       {
-        "title": "FHE: Fully Homomorphic Encryption (2009)",
+        "title": "Computing on Data You Can't Even See",
         "slug": "homomorphic-encryption-gentry"
       },
       {
-        "title": "FHE over Integers (2010)",
+        "title": "Securing the Cloud with Encrypted Computation",
         "slug": "homomorphic-encryption-integers"
       },
       {
-        "title": "Stuxnet: Industrial Sabotage (2011)",
+        "title": "Stuxnet: The Day Software Became a Weapon",
         "slug": "stuxnet-industrial-sabotage"
       },
       {
-        "title": "Secure Multi-Party Computation (1982)",
+        "title": "Solving the Millionaire's Problem with MPC",
         "slug": "secure-multi-party-computation"
       },
       {
-        "title": "Spectre Attacks (2018)",
+        "title": "The Hardware Flaw That Put Every CPU at Risk",
         "slug": "spectre-speculative-execution"
       }
     ]
@@ -686,11 +686,11 @@
     "expanded": true,
     "sections": [
       {
-        "title": "Kyber: Lattice-Based KEM (2018)",
+        "title": "Securing the Future Against Quantum Hackers",
         "slug": "kyber-lattice-cryptography"
       },
       {
-        "title": "Dilithium: Digital Signatures (2018)",
+        "title": "The Next Generation of Digital Signatures",
         "slug": "dilithium-digital-signatures"
       }
     ]
@@ -701,15 +701,15 @@
     "expanded": true,
     "sections": [
       {
-        "title": "Poisoning Attacks (2012)",
+        "title": "When AI is Trained on Tainted Data",
         "slug": "poisoning-attacks-machine-learning"
       },
       {
-        "title": "Adversarial Examples (2014)",
+        "title": "Adversarial Noise: The AI’s Optical Illusion",
         "slug": "adversarial-examples-goodfellow"
       },
       {
-        "title": "BadNets: Backdoor Attacks (2017)",
+        "title": "Hidden Backdoors in the AI Supply Chain",
         "slug": "backdoor-attacks-badnets"
       }
     ]

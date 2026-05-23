@@ -1,5 +1,5 @@
 ---
-title: "Natural Proofs: Complexity Barriers"
+title: "Why Deep Mathematical Barriers Still Exist"
 authors: "Razborov & Rudich (1994)"
 citation: "Razborov, A. A., & Rudich, S. (1997). Natural proofs. Journal of Computer and System Sciences, 55(1), 24-35."
 link: "https://doi.org/10.1006/jcss.1997.1494"

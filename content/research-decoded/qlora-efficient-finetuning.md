@@ -1,5 +1,5 @@
 ---
-title: "QLoRA: Efficient Fine-tuning"
+title: "The QLoRA Breakthrough: AI for Everyone"
 authors: "Dettmers et al. (2023)"
 citation: "Dettmers, T., Pagnoni, A., Holtzman, A., & Zettlemoyer, L. (2023). QLoRA: Efficient Finetuning of Quantized LLMs. arXiv:2305.14314."
 link: "https://arxiv.org/abs/2305.14314"

@@ -1,5 +1,5 @@
 ---
-title: "Llama 3: The Herd of Models"
+title: "Llama 3 and the Future of Dense Scaling"
 authors: "Dubey et al. (Meta, 2024)"
 citation: "Dubey, A., et al. (2024). The Llama 3 Herd of Models. arXiv preprint arXiv:2407.21783."
 link: "https://arxiv.org/abs/2407.21783"

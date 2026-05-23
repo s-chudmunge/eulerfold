@@ -1,5 +1,5 @@
 ---
-title: "Williams: ACC Circuit Lower Bounds"
+title: "The First Crack in the ACC Barrier"
 authors: "Ryan Williams (2011)"
 citation: "Williams, R. (2014). Nonuniform ACC circuit lower bounds. Journal of the ACM (JACM), 61(1), 1-32."
 link: "https://doi.org/10.1145/2630030.2630053"

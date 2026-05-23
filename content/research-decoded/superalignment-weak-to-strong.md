@@ -1,5 +1,5 @@
 ---
-title: "Superalignment: Weak-to-Strong"
+title: "How to Control an Intelligence Greater Than Ours"
 authors: "Burns et al. (OpenAI, 2023)"
 citation: "Burns, C., Izmailov, P., Kirchner, J. H., Bowyer, B., ... & Leike, J. (2023). Weak-to-strong generalization: Eliciting strong capabilities with weak supervision. arXiv preprint arXiv:2312.09390."
 link: "https://arxiv.org/abs/2312.09390"

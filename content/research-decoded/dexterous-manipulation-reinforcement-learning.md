@@ -1,5 +1,5 @@
 ---
-title: "Dexterous Manipulation"
+title: "Teaching Robots the Sensitivity of a Human Hand"
 authors: "OpenAI et al. (2018)"
 citation: "Andrychowicz, M., Baker, B., Chociej, M., Jozefowicz, R., McGrew, B., Pachocki, J., ... & Zaremba, W. (2020). Learning dexterous in-hand manipulation. The International Journal of Robotics Research, 39(1), 3-20."
 link: "https://arxiv.org/abs/1808.00177"

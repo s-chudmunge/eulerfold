@@ -1,5 +1,5 @@
 ---
-title: "AKS: PRIMES is in P"
+title: "The 2,000-Year Search for a Primes Test"
 authors: "Agrawal, Kayal, Saxena (2002)"
 citation: "Agrawal, M., Kayal, N., & Saxena, N. (2004). PRIMES is in P. Annals of Mathematics, 160(2), 781-793."
 link: "https://doi.org/10.4007/annals.2004.160.781"

@@ -1,5 +1,5 @@
 ---
-title: "Quantum Supremacy with Sycamore"
+title: "The Day a Quantum Computer Beat the World"
 authors: "Frank Arute et al. (Google Research, 2019)"
 citation: "Arute, F., et al. (2019). Quantum supremacy using a programmable superconducting processor. Nature, 574(7779), 505-510."
 link: "https://arxiv.org/abs/1910.11333"

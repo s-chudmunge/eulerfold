@@ -1,5 +1,5 @@
 ---
-title: "GAN: Generative Adversarial Nets"
+title: "AI vs AI: The Invention of GANs"
 authors: "Goodfellow et al. (2014)"
 citation: "Goodfellow, I., Pouget-Abadie, J., Mirza, M., Xu, B., Warde-Farley, D., Ozair, S., ... & Bengio, Y. (2014). Generative adversarial nets. Advances in neural information processing systems, 27."
 link: "https://arxiv.org/abs/1406.2661"

@@ -1,5 +1,5 @@
 ---
-title: "Flamingo: Visual Language Few-Shot"
+title: "A Vision AI That Learns from Just a Few Examples"
 authors: "Alayrac et al. (2022)"
 citation: "Alayrac, J. B., Donahue, J., Luc, P., Miech, A., Barr, I., Hasson, Y., ... & Zisserman, A. (2022). Flamingo: a visual language model for few-shot learning. Advances in Neural Information Processing Systems, 35, 23716-27744."
 link: "https://arxiv.org/abs/2204.14198"

@@ -1,5 +1,5 @@
 ---
-title: "LoRA: Low-Rank Adaptation"
+title: "Fine-Tuning Huge AI Models on a Laptop"
 authors: "Hu et al. (2021)"
 citation: "Hu, E. J., Shen, Y., Wallis, P., Allen-Zhu, Z., Li, Y., Wang, S., ... & Chen, W. (2021). Lora: Low-rank adaptation of large language models. arXiv preprint arXiv:2106.09685."
 link: "https://arxiv.org/abs/2106.09685"

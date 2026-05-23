@@ -1,5 +1,5 @@
 ---
-title: "Shor: Quantum Error Correction"
+title: "Saving Quantum Data from Total Chaos"
 authors: "Peter Shor (1995)"
 citation: "Shor, P. W. (1995). Scheme for reducing decoherence in quantum computer memory. Physical Review A, 52(4), R2493-R2496."
 link: "https://doi.org/10.1103/PhysRevA.52.R2493"

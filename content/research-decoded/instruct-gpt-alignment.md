@@ -1,5 +1,5 @@
 ---
-title: "InstructGPT: The Architecture of Alignment"
+title: "Aligning AI with What Humans Actually Want"
 authors: "Long Ouyang et al. (OpenAI, 2022)"
 citation: "Ouyang, L., et al. (2022). Training language models to follow instructions with human feedback. Advances in Neural Information Processing Systems, 35, 27730-27744."
 link: "https://arxiv.org/abs/2203.02155"

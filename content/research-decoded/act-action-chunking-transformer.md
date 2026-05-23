@@ -1,5 +1,5 @@
 ---
-title: "ACT: Action Chunking Transformer"
+title: "Robotic Control with Transformer Logic"
 authors: "Zhao et al. (2023)"
 citation: "Zhao, T. Z., Kumar, V., Levine, S., & Finn, C. (2023). Learning fine-grained bimanual manipulation with low-cost hardware. arXiv preprint arXiv:2304.13705."
 link: "https://arxiv.org/abs/2304.13705"

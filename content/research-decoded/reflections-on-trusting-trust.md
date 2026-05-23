@@ -1,5 +1,5 @@
 ---
-title: "Reflections on Trusting Trust"
+title: "The Invisible Threat: Why No Code is Safe"
 authors: "Ken Thompson (1984)"
 citation: "Thompson, K. (1984). Reflections on trusting trust. Communications of the ACM, 27(8), 761-763."
 link: "https://www.cs.cmu.edu/~rdriley/487/papers/Thompson_1984_ReflectionsonTrustingTrust.pdf"

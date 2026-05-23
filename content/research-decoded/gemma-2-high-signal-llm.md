@@ -1,5 +1,5 @@
 ---
-title: "Gemma 2: High-Signal Open Models"
+title: "Gemma 2: High Performance in a Small Package"
 authors: "Gemma Team, Google (2024)"
 citation: "Gemma Team, Google. (2024). Gemma 2: Improving Open Models via Predictive Distillation. arXiv preprint arXiv:2408.00118."
 link: "https://ar5iv.org/abs/2408.00118"

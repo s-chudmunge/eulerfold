@@ -1,5 +1,5 @@
 ---
-title: "Shor: Polynomial-Time Factoring"
+title: "How a Quantum Computer Could Break the Internet"
 authors: "Peter Shor (1994)"
 citation: "Shor, P. W. (1994). Algorithms for quantum computation: discrete logarithms and factoring. In Proceedings 35th Annual Symposium on Foundations of Computer Science (pp. 124-134). IEEE."
 link: "https://doi.org/10.1109/SFCS.1994.365700"

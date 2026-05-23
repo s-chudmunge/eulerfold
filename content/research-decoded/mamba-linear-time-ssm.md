@@ -1,5 +1,5 @@
 ---
-title: "Mamba: Selective State Spaces"
+title: "The New Architecture Challenging Transformers"
 authors: "Albert Gu & Tri Dao (2023)"
 citation: "Gu, A., & Dao, T. (2023). Mamba: Linear-time sequence modeling with selective state spaces. arXiv preprint arXiv:2312.00752."
 link: "https://arxiv.org/abs/2312.00752"

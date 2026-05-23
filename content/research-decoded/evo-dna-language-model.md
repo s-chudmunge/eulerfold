@@ -1,5 +1,5 @@
 ---
-title: "Evo: DNA Language Model"
+title: "Evo: Decoding the Code of Life with AI"
 authors: "Eric Nguyen et al. (Arc Institute, 2024)"
 citation: "Nguyen, E., Poli, M., Durrant, M. G., et al. (2024). Sequence modeling and design from molecular to genome scale with Evo. Science, 386(6723), ado9336."
 link: "https://doi.org/10.1126/science.ado9336"

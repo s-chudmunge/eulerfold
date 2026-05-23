@@ -1,5 +1,5 @@
 ---
-title: "PPO: Proximal Policy Optimization"
+title: "The Math Behind Stable AI Learning"
 authors: "John Schulman et al. (OpenAI, 2017)"
 citation: "Schulman, J., Wolski, F., Dhariwal, P., Radford, A., & Klimov, O. (2017). Proximal policy optimization algorithms. arXiv preprint arXiv:1707.06347."
 link: "https://arxiv.org/abs/1707.06347"

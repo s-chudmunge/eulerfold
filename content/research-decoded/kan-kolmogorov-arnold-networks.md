@@ -1,5 +1,5 @@
 ---
-title: "KAN: Kolmogorov-Arnold Networks"
+title: "The First Real Alternative to Traditional Neural Nets"
 authors: "Ziming Liu et al. (MIT, 2024)"
 citation: "Liu, Z., Wang, Y., Vaidya, S., ... & Tegmark, M. (2024). KAN: Kolmogorov-Arnold Networks. arXiv preprint arXiv:2404.19756."
 link: "https://arxiv.org/abs/2404.19756"

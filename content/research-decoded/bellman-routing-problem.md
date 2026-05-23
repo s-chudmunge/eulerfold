@@ -1,5 +1,5 @@
 ---
-title: "Bellman-Ford: Routing & Optimality"
+title: "How the Internet Finds the Fastest Path"
 authors: "Richard Bellman (1958)"
 citation: "Bellman, R. (1958). On a routing problem. Quarterly of applied mathematics, 16(1), 87-90."
 link: "https://doi.org/10.1090/qam/102435"

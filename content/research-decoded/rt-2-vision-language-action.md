@@ -1,5 +1,5 @@
 ---
-title: "RT-2: VLA Models"
+title: "Robots That Understand the World through Vision"
 authors: "Brohan et al. (2023)"
 citation: "Brohan, A., Brown, N., Carbajal, J., Chebotar, Y., et al. (2023). RT-2: Vision-language-action models transfer web knowledge to robotic control. arXiv preprint arXiv:2307.15818."
 link: "https://arxiv.org/abs/2307.15818"

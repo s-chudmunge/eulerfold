@@ -1,5 +1,5 @@
 ---
-title: "Segment Anything \u2014 SAM"
+title: "The Foundation Model for Every Pixel"
 authors: "Alexander Kirillov et al. (Meta AI, 2023)"
 citation: "Kirillov, A., Mintun, E., Ravi, N., Mao, H., Rolland, C., Gustafson, L., ... & Girshick, R. (2023). Segment anything. arXiv preprint arXiv:2304.02643."
 link: "https://arxiv.org/abs/2304.02643"

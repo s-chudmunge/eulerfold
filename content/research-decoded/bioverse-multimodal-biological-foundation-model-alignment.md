@@ -1,5 +1,5 @@
 ---
-title: "BIOVERSE: Multimodal Alignment"
+title: "The Universal Foundation for Biological Data"
 authors: "IBM Research Team (2025)"
 citation: "arXiv:2510.01428"
 link: "https://arxiv.org/abs/2510.01428"

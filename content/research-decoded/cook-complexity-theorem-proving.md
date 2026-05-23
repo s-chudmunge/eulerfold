@@ -1,5 +1,5 @@
 ---
-title: "Cook's Theorem: NP-Completeness"
+title: "The Moment NP-Completeness Changed Everything"
 authors: "Stephen Cook (1971)"
 citation: "Cook, S. A. (1971). The complexity of theorem-proving procedures. In Proceedings of the third annual ACM symposium on Theory of computing (pp. 151-158)."
 link: "https://doi.org/10.1145/800157.805047"

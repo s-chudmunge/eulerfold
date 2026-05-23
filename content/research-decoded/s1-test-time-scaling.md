@@ -1,5 +1,5 @@
 ---
-title: "s1: Simple Test-Time Scaling and the Efficiency of Thought"
+title: "Giving AI More Time to Think"
 authors: "Muennighoff, et al."
 citation: "arXiv:2501.19393 (2025)"
 link: "https://arxiv.org/abs/2501.19393"

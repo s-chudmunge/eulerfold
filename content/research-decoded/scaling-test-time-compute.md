@@ -1,5 +1,5 @@
 ---
-title: "Scaling LLM Test-Time Compute"
+title: "Scaling AI Thought Beyond Training"
 authors: "Charlie Snell et al. (Google DeepMind, 2024)"
 citation: "Snell, C., et al. (2024). Scaling LLM Test-Time Compute Optimally. arXiv preprint arXiv:2408.03314."
 link: "https://arxiv.org/abs/2408.03314"

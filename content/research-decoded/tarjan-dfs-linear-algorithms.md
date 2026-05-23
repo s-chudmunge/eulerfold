@@ -1,5 +1,5 @@
 ---
-title: "Tarjan's DFS: Linear Graph Algorithms"
+title: "The Art of Exploring Complex Networks"
 authors: "Robert Tarjan (1972)"
 citation: "Tarjan, R. (1972). Depth-first search and linear graph algorithms. SIAM journal on computing, 1(2), 146-160."
 link: "https://doi.org/10.1137/0201010"

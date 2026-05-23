@@ -1,5 +1,5 @@
 ---
-title: "Secure Multi-Party Computation: Yao's Protocol"
+title: "Solving the Millionaire's Problem with MPC"
 authors: "Andrew Chi-Chih Yao (1982)"
 citation: "Yao, A. C. (1982). Protocols for secure computations. In 23rd Annual Symposium on Foundations of Computer Science (SFOCS) (pp. 160-164). IEEE."
 link: "https://www.cs.wisc.edu/~shuchi/courses/710-S05/yao82.pdf"

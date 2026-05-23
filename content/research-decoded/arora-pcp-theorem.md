@@ -1,5 +1,5 @@
 ---
-title: "The PCP Theorem: Hardness of Approximation"
+title: "The Limits of Perfection in Algorithms"
 authors: "Arora, Lund, Motwani, Sudan, Szegedy (1998)"
 citation: "Arora, S., Lund, C., Motwani, R., Sudan, M., & Szegedy, M. (1998). Proof verification and the hardness of approximation problems. Journal of the ACM (JACM), 45(3), 501-555."
 link: "https://doi.org/10.1145/278298.278306"

@@ -1,5 +1,5 @@
 ---
-title: "Adam: Stochastic Optimization"
+title: "The Optimizer Behind Every Modern AI"
 authors: "Diederik Kingma & Jimmy Ba (2014)"
 citation: "Kingma, D. P., & Ba, J. (2014). Adam: A method for stochastic optimization. arXiv preprint arXiv:1412.6980."
 link: "https://arxiv.org/abs/1412.6980"

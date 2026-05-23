@@ -1,5 +1,5 @@
 ---
-title: "CRISPR-GPT: AI-Assisted Genome Editing"
+title: "AI-Assisted Precision Medicine"
 authors: "Cong Wang et al. (2024)"
 citation: "Wang, C., et al. (2024). CRISPR-GPT: An LLM-based agent for automated design and reasoning in genome editing. arXiv preprint arXiv:2404.18021."
 link: "https://arxiv.org/abs/2404.18021"

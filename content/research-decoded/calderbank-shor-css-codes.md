@@ -1,5 +1,5 @@
 ---
-title: "Calderbank & Shor: CSS Codes"
+title: "The Foundation of Unbreakable Quantum Code"
 authors: "A. R. Calderbank & Peter Shor (1996)"
 citation: "Calderbank, A. R., & Shor, P. W. (1996). Good quantum error-correcting codes exist. Physical Review A, 54(2), 1098-1105."
 link: "https://doi.org/10.1103/PhysRevA.54.1098"

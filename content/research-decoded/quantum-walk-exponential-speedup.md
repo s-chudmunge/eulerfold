@@ -1,5 +1,5 @@
 ---
-title: "The Quantum Walk Algorithm"
+title: "Escaping the Maze with Quantum Walks"
 authors: "Andrew Childs et al. (2002)"
 citation: "Childs, A. M., Cleve, R., Deotto, E., Farhi, E., Gutmann, S., & Spielman, D. A. (2003). Exponential algorithmic speedup by quantum walk. In Proceedings of the thirty-fifth annual ACM symposium on Theory of computing (pp. 59-68)."
 link: "https://arxiv.org/abs/quant-ph/0209131"

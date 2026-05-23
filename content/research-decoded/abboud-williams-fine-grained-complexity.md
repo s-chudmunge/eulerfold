@@ -1,5 +1,5 @@
 ---
-title: "Fine-Grained Complexity & SETH"
+title: "The Hidden Hardness Inside 'Easy' Problems"
 authors: "Amir Abboud & Virginia Vassilevska Williams (2014)"
 citation: "Abboud, A., & Williams, V. V. (2014). Popular conjectures imply strong lower bounds for dynamic problems. In 2014 IEEE 55th Annual Symposium on Foundations of Computer Science (pp. 434-443). IEEE."
 link: "https://doi.org/10.1109/FOCS.2014.53"

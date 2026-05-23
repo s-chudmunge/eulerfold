@@ -1,5 +1,5 @@
 ---
-title: "Stuxnet: Industrial Sabotage"
+title: "Stuxnet: The Day Software Became a Weapon"
 authors: "Nicolas Falliere et al. (Symantec, 2011)"
 citation: "Falliere, N., Murchu, L. O., & Chien, E. (2011). W32.Stuxnet dossier. Symantec Corp, Security Response, 1.1, 1-69."
 link: "https://www.wired.com/images_blogs/threatlevel/2011/02/Symantec-Stuxnet-Update-Feb-2011.pdf"

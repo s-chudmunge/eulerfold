@@ -1,5 +1,5 @@
 ---
-title: "DQN: Playing Atari with Deep RL"
+title: "How AI Learned to Play Games Like a Human"
 authors: "Mnih et al. (2013)"
 citation: "Mnih, V., Kavukcuoglu, K., Silver, D., Graves, A., Antonoglou, I., Wierstra, D., & Riedmiller, M. (2013). Playing atari with deep reinforcement learning. arXiv preprint arXiv:1312.5602."
 link: "https://arxiv.org/abs/1312.5602"

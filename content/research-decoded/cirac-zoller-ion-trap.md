@@ -1,5 +1,5 @@
 ---
-title: "Cirac & Zoller: Ion Trap"
+title: "The First Blueprint for a Real Quantum Computer"
 authors: "J. Ignacio Cirac & Peter Zoller (1995)"
 citation: "Cirac, J. I., & Zoller, P. (1995). Quantum computations with cold trapped ions. Physical Review Letters, 74(20), 4091-4094."
 link: "https://doi.org/10.1103/PhysRevLett.74.4091"

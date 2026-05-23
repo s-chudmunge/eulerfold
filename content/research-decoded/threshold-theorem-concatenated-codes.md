@@ -1,5 +1,5 @@
 ---
-title: "The Quantum Threshold Theorem"
+title: "The Math That Makes Quantum Computing Possible"
 authors: "Panos Aliferis et al. (2005)"
 citation: "Aliferis, P., Gottesman, D., & Preskill, J. (2006). Quantum accuracy threshold for concatenated distance-3 codes. Quantum Information & Computation, 6(2), 97-165."
 link: "https://doi.org/10.26421/QIC6.2-1"

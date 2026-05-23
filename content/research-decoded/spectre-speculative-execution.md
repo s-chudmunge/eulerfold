@@ -1,5 +1,5 @@
 ---
-title: "Spectre: Exploiting Speculative Execution"
+title: "The Hardware Flaw That Put Every CPU at Risk"
 authors: "Paul Kocher et al. (2018)"
 citation: "Kocher, P., et al. (2019). Spectre attacks: Exploiting speculative execution. In 2019 IEEE Symposium on Security and Privacy (SP) (pp. 1-19)."
 link: "https://arxiv.org/abs/1801.01203"

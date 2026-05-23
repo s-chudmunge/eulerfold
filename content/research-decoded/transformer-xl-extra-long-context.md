@@ -1,5 +1,5 @@
 ---
-title: "Transformer-XL: Extra Long Context"
+title: "Transformers with an Infinite Memory Span"
 authors: "Dai et al. (2019)"
 citation: "Dai, Z., Yang, Z., Yang, Y., Carbonell, J., Le, Q. V., & Salakhutdinov, R. (2019). Transformer-xl: Attentive language models beyond a fixed-length context. arXiv preprint arXiv:1901.02860."
 link: "https://arxiv.org/abs/1901.02860"

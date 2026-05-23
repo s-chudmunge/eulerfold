@@ -1,5 +1,5 @@
 ---
-title: "Gemini: Native Multimodal Models"
+title: "Gemini: The First Truly Multimodal Foundation"
 authors: "Gemini Team, Google (2023)"
 citation: "Team, G., et al. (2023). Gemini: A family of highly capable multimodal models. arXiv preprint arXiv:2312.11805."
 link: "https://arxiv.org/abs/2312.11805"

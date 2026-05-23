@@ -1,5 +1,5 @@
 ---
-title: "Constitutional AI"
+title: "Training AI with a Digital Constitution"
 authors: "Bai et al. (2022)"
 citation: "Bai, Y., Kadavath, S., Kundu, S., Askell, A., Kernion, J., ... & Kaplan, J. (2022). Constitutional AI: Harmlessness from AI Feedback. arXiv preprint arXiv:2212.08073."
 link: "https://arxiv.org/abs/2212.08073"

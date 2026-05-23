@@ -1,5 +1,5 @@
 ---
-title: "DoRA: Weight-Decomposed Low-Rank Adaptation"
+title: "Refining How AI Learns New Tasks"
 authors: "Shih-Yang Liu et al. (2024)"
 citation: "Liu, S. Y., Yen, C. Y., Nag, N., ... & Cheng, K. T. (2024). DoRA: Weight-Decomposed Low-Rank Adaptation. arXiv preprint arXiv:2402.09353."
 link: "https://arxiv.org/abs/2402.09353"

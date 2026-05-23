@@ -1,5 +1,5 @@
 ---
-title: "RSA: Public-Key Cryptosystems"
+title: "The Math That Secures Every Online Transaction"
 authors: "Ronald Rivest, Adi Shamir, & Leonard Adleman (1978)"
 citation: "Rivest, R. L., Shamir, A., & Adleman, L. (1978). A method for obtaining digital signatures and public-key cryptosystems. Communications of the ACM, 21(2), 120-126."
 link: "https://people.csail.mit.edu/rivest/Rsapaper.pdf"

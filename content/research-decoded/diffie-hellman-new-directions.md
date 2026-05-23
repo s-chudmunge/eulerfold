@@ -1,5 +1,5 @@
 ---
-title: "Diffie-Hellman: Key Exchange"
+title: "The Birth of Private Communication on the Web"
 authors: "Whitfield Diffie & Martin Hellman (1976)"
 citation: "Diffie, W., & Hellman, M. (1976). New directions in cryptography. IEEE Transactions on Information Theory, 22(6), 644-654."
 link: "https://ee.stanford.edu/~hellman/publications/24.pdf"

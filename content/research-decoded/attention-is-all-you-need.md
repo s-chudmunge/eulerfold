@@ -1,5 +1,5 @@
 ---
-title: "Attention Is All You Need: The Genesis of the Transformer"
+title: "The Transformer: The Paper That Changed Everything"
 authors: "Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Lukasz Kaiser, Illia Polosukhin"
 citation: "arXiv:1706.03762 (2017)"
 link: "https://arxiv.org/abs/1706.03762"

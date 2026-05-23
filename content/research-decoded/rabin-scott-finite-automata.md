@@ -1,5 +1,5 @@
 ---
-title: "Rabin-Scott: Finite Automata"
+title: "The Surprising Power of Machines with No Memory"
 authors: "Michael Rabin & Dana Scott (1959)"
 citation: "Rabin, M. O., & Scott, D. (1959). Finite automata and their decision problems. IBM journal of research and development, 3(2), 114-125."
 link: "https://doi.org/10.1147/rd.32.0114"

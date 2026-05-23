@@ -1,5 +1,5 @@
 ---
-title: "Surface Code: Topological Memory"
+title: "The Path to a Million-Qubit Machine"
 authors: "Eric Dennis et al. (Caltech/Microsoft, 2002)"
 citation: "Dennis, E., Kitaev, A., Landahl, A., & Preskill, J. (2002). Topological quantum memory. Journal of Mathematical Physics, 43(9), 4452-4505."
 link: "https://arxiv.org/abs/quant-ph/0110143"

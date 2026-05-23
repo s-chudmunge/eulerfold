@@ -1,5 +1,5 @@
 ---
-title: "Watson & Crick: DNA Double Helix"
+title: "Discovery of the Double Helix: Mapping the Human Blueprint"
 authors: "Watson & Crick (1953)"
 citation: "Watson, J. D., & Crick, F. H. (1953). Molecular structure of nucleic acids: a structure for deoxyribose nucleic acid. nature, 171(4356), 737-738."
 link: "https://profiles.nlm.nih.gov/spotlight/sc/catalog/nlm:nlmuid-101584582X381-doc"

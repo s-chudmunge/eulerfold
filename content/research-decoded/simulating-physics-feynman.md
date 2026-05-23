@@ -1,5 +1,5 @@
 ---
-title: "Simulating Physics with Computers"
+title: "Richard Feynman’s Vision for Quantum Computers"
 authors: "Richard Feynman (1982)"
 citation: "Feynman, R. P. (1982). Simulating physics with computers. International Journal of Theoretical Physics, 21(6/7), 467-488."
 link: "https://doi.org/10.1007/BF01886518"

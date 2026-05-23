@@ -1,5 +1,5 @@
 ---
-title: "Turing: The Turing Test"
+title: "Alan Turing’s Quest for Thinking Machines"
 authors: "Alan Turing (1950)"
 citation: "Turing, A. M. (1950). Computing machinery and intelligence. Mind, 59(236), 433-460."
 link: "https://doi.org/10.1093/mind/LIX.236.433"

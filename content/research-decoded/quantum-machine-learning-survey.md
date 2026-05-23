@@ -1,5 +1,5 @@
 ---
-title: "Quantum Machine Learning"
+title: "Can Quantum Computers Learn Faster?"
 authors: "Jacob Biamonte et al. (2017)"
 citation: "Biamonte, J., Wittek, P., Nicola, P., Rebentrost, P., Wiebe, N., & Lloyd, S. (2017). Quantum machine learning. Nature, 549(7671), 195-202."
 link: "https://doi.org/10.1038/nature23474"

@@ -1,5 +1,5 @@
 ---
-title: "Watts & Strogatz: Small-World Networks"
+title: "The Science of Six Degrees of Separation"
 authors: "Duncan Watts & Steven Strogatz (1998)"
 citation: "Watts, D. J., & Strogatz, S. H. (1998). Collective dynamics of \u2018small-world\u2019 networks. Nature, 393(6684), 440-442."
 link: "https://doi.org/10.1038/30918"

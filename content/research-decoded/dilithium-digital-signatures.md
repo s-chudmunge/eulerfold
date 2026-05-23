@@ -1,5 +1,5 @@
 ---
-title: "Dilithium: Digital Signatures"
+title: "The Next Generation of Digital Signatures"
 authors: "Léo Ducas et al. (2018)"
 citation: "Ducas, L., et al. (2018). CRYSTALS-Dilithium: A lattice-based digital signature scheme. IACR Transactions on Cryptographic Hardware and Embedded Systems, 238-268."
 link: "https://pq-crystals.org/dilithium/data/dilithium-specification.pdf"

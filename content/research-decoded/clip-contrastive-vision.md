@@ -1,5 +1,5 @@
 ---
-title: "CLIP: Contrastive Vision"
+title: "The AI That Understands Images Like a Human"
 authors: "Alec Radford et al. (OpenAI, 2021)"
 citation: "Radford, A., Kim, J. W., Hallacy, C., Ramesh, A., Goh, G., Agarwal, S., ... & Sutskever, I. (2021). Learning transferable visual models from natural language supervision. In International conference on machine learning (pp. 8748-8763). PMLR."
 link: "https://arxiv.org/abs/2103.00020"

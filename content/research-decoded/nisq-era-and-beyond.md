@@ -1,5 +1,5 @@
 ---
-title: "Quantum Computing in the NISQ Era"
+title: "Quantum Computing in the Age of Noise"
 authors: "John Preskill (2018)"
 citation: "Preskill, J. (2018). Quantum Computing in the NISQ era and beyond. Quantum, 2, 79."
 link: "https://arxiv.org/abs/1801.00862"

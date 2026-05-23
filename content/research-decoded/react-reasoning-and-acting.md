@@ -1,5 +1,5 @@
 ---
-title: "ReAct: Reason + Act"
+title: "Teaching AI to Think Before It Acts"
 authors: "Yao et al. (2022)"
 citation: "Yao, S., Zhao, J., Yu, D., Du, N., Shafran, I., Narasimhan, K., & Cao, Y. (2022). ReAct: Synergizing reasoning and acting in language models. arXiv preprint arXiv:2210.03629."
 link: "https://arxiv.org/abs/2210.03629"

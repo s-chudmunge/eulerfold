@@ -1,5 +1,5 @@
 ---
-title: "GPT-3: Language Models are Few-Shot Learners"
+title: "The Moment Language Models Became Superhuman"
 authors: "Tom B. Brown, et al. (OpenAI)"
 citation: "Brown, T. B., et al. (2020). Language models are few-shot learners. arXiv preprint arXiv:2005.14165."
 link: "https://arxiv.org/abs/2005.14165"

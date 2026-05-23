@@ -1,5 +1,5 @@
 ---
-title: "Toolformer: Self-Supervised Tool Use"
+title: "AI That Knows How to Use Its Own Tools"
 authors: "Schick et al. (2023)"
 citation: "Schick, T., Dwivedi-Yu, J., Dess\u00ec, R., Raileanu, R., Lomeli, M., Zettlemoyer, L., ... & Scialom, T. (2023). Toolformer: Language models can teach themselves to use tools. arXiv preprint arXiv:2302.04761."
 link: "https://arxiv.org/abs/2302.04761"

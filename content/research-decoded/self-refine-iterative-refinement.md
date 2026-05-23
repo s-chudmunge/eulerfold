@@ -1,5 +1,5 @@
 ---
-title: "Self-Refine: Iterative Refinement"
+title: "How AI Can Correct Its Own Mistakes"
 authors: "Madaan et al. (2023)"
 citation: "Madaan, A., Tandon, N., Gupta, P., Hallinan, S., Gao, L., Wiegreffe, S., ... & Clark, P. (2023). Self-refine: Iterative refinement with self-feedback. arXiv preprint arXiv:2303.17651."
 link: "https://arxiv.org/abs/2303.17651"

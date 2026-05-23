@@ -1,5 +1,5 @@
 ---
-title: "ResNet: Deep Residual Learning"
+title: "Why We Can Finally Train 100-Layer Networks"
 authors: "He, Zhang, Ren, Sun (Microsoft Research, 2015)"
 citation: "He, K., Zhang, X., Ren, S., & Sun, J. (2016). Deep residual learning for image recognition. In Proceedings of the IEEE conference on computer vision and pattern recognition (pp. 770-778)."
 link: "https://arxiv.org/abs/1512.03385"

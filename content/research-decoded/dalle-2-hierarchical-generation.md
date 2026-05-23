@@ -1,5 +1,5 @@
 ---
-title: "DALL-E 2: Hierarchical Generation"
+title: "DALL-E 2 and the Future of Imagination"
 authors: "Ramesh et al. (2022)"
 citation: "Ramesh, A., Dhariwal, P., Nichol, A., Chu, C., & Chen, M. (2022). Hierarchical text-conditional image generation with CLIP latents. arXiv preprint arXiv:2204.06125."
 link: "https://arxiv.org/abs/2204.06125"

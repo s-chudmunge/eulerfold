@@ -1,5 +1,5 @@
 ---
-title: "Explaining and Harnessing Adversarial Examples"
+title: "Adversarial Noise: The AI’s Optical Illusion"
 authors: "Ian Goodfellow, Jonathon Shlens, and Christian Szegedy (2014)"
 citation: "Goodfellow, I. J., Shlens, J., & Szegedy, C. (2015). Explaining and harnessing adversarial examples. arXiv preprint arXiv:1412.6572."
 link: "https://arxiv.org/abs/1412.6572"

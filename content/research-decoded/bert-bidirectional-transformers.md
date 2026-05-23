@@ -1,5 +1,5 @@
 ---
-title: "BERT: Deep Bidirectionality"
+title: "The Paper That Taught AI the Context of Words"
 authors: "Jacob Devlin et al. (Google AI, 2018)"
 citation: "Devlin, J., Chang, M. W., Lee, K., & Toutanova, K. (2018). Bert: Pre-training of deep bidirectional transformers for language understanding. arXiv preprint arXiv:1810.04805."
 link: "https://arxiv.org/abs/1810.04805"

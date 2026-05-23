@@ -1,5 +1,5 @@
 ---
-title: "FHE: Fully Homomorphic Encryption"
+title: "Computing on Data You Can't Even See"
 authors: "Craig Gentry (2009)"
 citation: "Gentry, C. (2009). A fully homomorphic encryption scheme (Doctoral dissertation, Stanford University)."
 link: "https://crypto.stanford.edu/craig/craig-thesis.pdf"
