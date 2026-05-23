@@ -236,7 +236,7 @@ export default function PricingClient() {
                         <div className="space-y-3">
                             <div className="flex items-start gap-3 text-[12px] text-text-primary font-bold">
                                 <span className="text-teal-600 mt-0.5">✓</span>
-                                <span>20 Roadmap credits</span>
+                                <span>50 Roadmap credits</span>
                             </div>
                             <div className="flex items-start gap-3 text-[12px] text-text-primary">
                                 <span className="text-teal-600 mt-0.5">✓</span>

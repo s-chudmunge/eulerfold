@@ -196,7 +196,7 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                             <nav className="space-y-0.5" aria-label="Products navigation">
                                 <Link href="/research-lab" aria-current={isActive('/research-lab') ? 'page' : undefined} className={navLinkClass('/research-lab')} onClick={onClose}>
                                     <Microscope className="w-3.5 h-3.5 stroke-[1.5px]" /> 
-                                    <span className="flex-1">Research Lab</span>
+                                    <span className="flex-1">Decode</span>
                                     <span className="text-[8px] font-black uppercase tracking-widest bg-accent text-white px-1 py-0.5 rounded leading-none shrink-0">New</span>
                                 </Link>
                                 <Link href="/planner" aria-current={isActive('/planner') ? 'page' : undefined} className={navLinkClass('/planner')} onClick={onClose}>

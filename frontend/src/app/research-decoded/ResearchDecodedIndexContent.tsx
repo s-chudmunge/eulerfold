@@ -7,8 +7,8 @@ import { ArrowRight, Search, Microscope } from 'lucide-react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import { cleanSearchQuery, getSearchKeywords } from '@/lib/search';
-import CommunityRoadmapBanner from '@/components/landing/CommunityRoadmapBanner';
 import Breadcrumbs from '@/components/Breadcrumbs';
+import ResearchNavigationSidebar from '@/components/research-lab/ResearchNavigationSidebar';
 
 function SearchParamsHandler({ onParams }: { onParams: (params: URLSearchParams) => void }) {
   const searchParams = useSearchParams();
@@ -101,9 +101,10 @@ export default function ResearchDecodedIndexContent() {
       </Suspense>
       <div className="max-w-[1000px] mx-auto px-6 py-6 md:px-10 md:py-10">
         
-        {/* Breadcrumbs */}
-        <div className="mb-8">
+        {/* Breadcrumbs & Library */}
+        <div className="mb-8 flex items-center justify-between">
           <Breadcrumbs items={[{ label: 'Research Decoded' }]} />
+          <ResearchNavigationSidebar isInline />
         </div>
 
         {/* Search & Subject Bar - Reduced Width */}

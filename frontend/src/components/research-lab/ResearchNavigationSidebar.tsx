@@ -8,9 +8,11 @@ import { navigation } from '@/app/research-decoded/generatedData';
 
 interface Props {
   currentSlug?: string;
+  isInline?: boolean;
+  hideTrigger?: boolean;
 }
 
-export default function ResearchNavigationSidebar({ currentSlug }: Props) {
+export default function ResearchNavigationSidebar({ currentSlug, isInline = false, hideTrigger = false }: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const [expandedCategories, setExpandedCategories] = useState<Record<string, boolean>>({});
 
@@ -24,14 +26,16 @@ export default function ResearchNavigationSidebar({ currentSlug }: Props) {
   return (
     <>
       {/* Menu Trigger Button */}
-      <button 
-        onClick={() => setIsOpen(true)}
-        className="fixed top-24 left-6 z-[90] p-2 bg-background border border-border shadow-sm rounded-md hover:bg-accent/5 transition-colors group flex items-center gap-2"
-        title="Open Library Navigation"
-      >
-        <Menu className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
-        <span className="text-[11px] font-bold uppercase tracking-widest text-text-muted group-hover:text-accent hidden md:inline">Library</span>
-      </button>
+      {!hideTrigger && (
+        <button 
+          onClick={() => setIsOpen(true)}
+          className={`${isInline ? 'mb-4' : 'fixed top-24 left-6 z-[90]'} p-1 bg-background border border-border shadow-sm rounded-md hover:bg-accent/5 transition-colors group flex items-center gap-1`}
+          title="Open Library Navigation"
+        >
+          <Menu className="w-3.5 h-3.5 text-text-muted group-hover:text-accent transition-colors" />
+          <span className="text-[9px] font-bold uppercase tracking-widest text-text-muted group-hover:text-accent hidden md:inline">Library</span>
+        </button>
+      )}
 
       <AnimatePresence>
         {isOpen && (

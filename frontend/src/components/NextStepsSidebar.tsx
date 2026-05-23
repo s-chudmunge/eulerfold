@@ -38,7 +38,7 @@ const NextStepsSidebar: React.FC<NextStepsSidebarProps> = ({ subject, topic, cla
 
           {/* Mastery Item */}
           <div>
-            <h4 className="inconsolata-ui text-[11px] font-bold text-accent uppercase tracking-[0.1em] mb-2">Mastery Path</h4>
+            <h4 className="inconsolata-ui text-[11px] font-bold text-accent uppercase tracking-[0.1em] mb-2">Build Your Roadmap</h4>
             <p className="text-[13px] text-text-muted leading-relaxed mb-3 manrope-body font-medium">
               Do you want to get a step-by-step path to learn <span className="text-text-heading">{subject}</span> from basics?
             </p>
@@ -46,7 +46,7 @@ const NextStepsSidebar: React.FC<NextStepsSidebarProps> = ({ subject, topic, cla
               href={`/generate?subject=${encodeURIComponent(subject)}&goal=${encodeURIComponent(topic)}`}
               className="inline-flex items-center gap-1.5 text-[10px] font-bold text-accent uppercase tracking-widest hover:underline"
             >
-              <span>Build Path</span>
+              <span>Build Roadmap</span>
               <ArrowRight className="w-3 h-3" />
             </Link>
           </div>

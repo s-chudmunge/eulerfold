@@ -344,7 +344,7 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
             <main className="max-w-3xl mx-auto px-6 py-10 text-left flex-grow w-full relative">
                 <div className="flex items-center justify-between mb-6">
                     <Breadcrumbs items={[
-                        { label: 'Research Lab', href: '/research-lab' }, 
+                        { label: 'Decode', href: '/research-lab' }, 
                         { label: analysis?.paper_title || 'Technical Report' }
                     ]} />
                     <Link href="/research-lab" className="text-[10px] font-black text-text-muted uppercase tracking-[0.2em] hover:text-accent transition-colors flex items-center gap-1">

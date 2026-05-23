@@ -4,10 +4,9 @@ import Link from 'next/link';
 import { Plus, GraduationCap, ArrowRight, BookOpen, Target, Zap } from 'lucide-react';
 import PublicHeader from '@/components/PublicHeader';
 import Footer from '@/components/Footer';
-import { LoginRequiredMessage, AlreadySignedInMessage, FAQAccordion, LandingOnboardingTrigger, GoogleTrustBadge, TrustedSourcesTicker } from './HomeClientComponents';
+import { LoginRequiredMessage, AlreadySignedInMessage, FAQAccordion, LandingOnboardingTrigger } from './HomeClientComponents';
 
-import HeroBackground from '@/components/HeroBackground';
-import AnimatedEfficient from '@/components/landing/AnimatedEfficient';
+import HeroSection from '@/components/landing/HeroSection';
 import SocialFeed from '@/components/SocialFeed';
 import TestimonialSection from '@/components/landing/TestimonialSection';
 import PricingSection from '@/components/landing/PricingSection';
@@ -148,46 +147,7 @@ export default async function LandingPage() {
       <PublicHeader />
       
       <main className="flex-grow">
-        {/* Hero Section */}
-        <section className="relative pt-24 pb-32 md:pt-32 md:pb-48 px-6 min-h-[90vh] md:min-h-[95vh] flex items-center overflow-hidden">
-          <HeroBackground />
-          <div className="max-w-7xl mx-auto w-full relative z-10">
-            <div className="max-w-3xl">
-              <h1 className="font-inter text-3xl sm:text-4xl md:text-5xl font-semibold text-text-heading mb-6 leading-[1.15] md:leading-[1.1] tracking-tight">
-                Infrastructure for <AnimatedEfficient />,<br className="hidden md:block" /> structured learning
-              </h1>
-              <p className="text-text-muted text-base md:text-lg manrope-body font-medium mb-10 leading-relaxed max-w-2xl">
-                EulerFold builds personalized learning paths to help you bridge the gap between information and mastery.
-              </p>
-
-              <div className="flex flex-col sm:flex-row items-center gap-4 mb-8">
-                <Link 
-                  href="/generate"
-                  className="w-full sm:w-auto inline-flex items-center justify-center bg-accent text-white px-7 py-3.5 rounded-2xl text-[14px] font-bold transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-accent/30 active:scale-[0.98] gap-3"
-                >
-                  <Plus className="w-4 h-4" /> Start Your Learning
-                </Link>
-                <Link 
-                  href="/explore"
-                  className="w-full sm:w-auto inline-flex items-center justify-center bg-sidebar/80 backdrop-blur-sm border border-border text-text-primary px-7 py-3.5 rounded-2xl text-[14px] font-bold transition-all hover:scale-[1.02] hover:bg-sidebar active:scale-[0.98] gap-3"
-                >
-                  <BookOpen className="w-4 h-4" /> Browse Public Roadmaps
-                </Link>
-              </div>
-
-              <div className="flex items-center gap-2 mb-10">
-                <span className="manrope-body text-[13px] text-text-muted">Already a member?</span>
-                <Link href="/login" className="manrope-body text-[13px] font-bold text-accent hover:underline">
-                  Sign in to your account
-                </Link>
-              </div>
-
-              <GoogleTrustBadge />
-
-              <TrustedSourcesTicker />
-            </div>
-          </div>
-        </section>
+        <HeroSection />
 
         <RoadmapDiscovery initialRoadmaps={featuredRoadmaps} />
 

@@ -221,40 +221,31 @@ export default function ResearchLabClient() {
             {/* Hero Section */}
             <div className="relative pt-12 pb-24 overflow-hidden border-b border-border/30">
                 <div className="max-w-6xl mx-auto px-6 relative z-10 text-center lg:text-left">
-                    <Breadcrumbs items={[{ label: 'Research Lab' }]} />
-                    
-                    <motion.div 
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.6 }}
-                        className="mt-12"
-                    >
-                        <h1 className="inconsolata-ui text-base md:text-2xl font-black text-text-heading tracking-tight uppercase mb-6 leading-[0.95]">
-                            Research <span className="text-accent">Lab</span>
-                        </h1>
-                        
-                        <p className="manrope-body text-[14px] md:text-base text-text-muted max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-                            Convert academic papers into technical breakdowns. 
-                            Understand the math and logic behind new research.
-                        </p>
-                    </motion.div>
+                    <Breadcrumbs items={[{ label: 'Decode' }]} />
                 </div>
             </div>
 
             <main className="max-w-6xl mx-auto px-6 py-16 flex-grow w-full">
-                <div className="flex flex-col lg:flex-row gap-20">
-                    {/* Main Interaction Area (Left) */}
-                    <div className="flex-1 min-w-0">
+                <div className="max-w-2xl mx-auto">
+                    {/* Main Interaction Area */}
+                    <div className="min-w-0">
+                        <div className="text-center mb-8 -mt-16 relative z-20">
+                            <h2 className="inconsolata-ui text-[11px] font-bold text-accent uppercase tracking-[0.3em] mb-3">Instruction</h2>
+                            <p className="manrope-body text-[14px] text-text-muted max-w-sm mx-auto leading-relaxed opacity-80">
+                                Paste a research paper URL to get a technical breakdown and logic map.
+                            </p>
+                        </div>
+
                         {/* Centered & Simple Main Card */}
                         <motion.div 
                             initial={{ opacity: 0, scale: 0.98 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.5, delay: 0.2 }}
-                            className="bg-header border border-border rounded-xl shadow-2xl overflow-hidden mb-16 -mt-32 relative z-20 backdrop-blur-sm"
+                            className="bg-header border border-border rounded-xl shadow-2xl overflow-hidden mb-16 relative z-20 backdrop-blur-sm"
                         >
-                            <div className="p-6 md:p-8">
-                                <form onSubmit={handleStartAnalysis} className="space-y-6">
-                                    <div className="space-y-3 text-left">
+                            <div className="p-5 md:p-6">
+                                <form onSubmit={handleStartAnalysis} className="space-y-5">
+                                    <div className="space-y-2 text-left">
                                         <label className="inconsolata-ui text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1 flex items-center gap-2">
                                             <BrainCircuit className="w-3.5 h-3.5 text-accent" /> Paper URL (ArXiv or PDF)
                                         </label>

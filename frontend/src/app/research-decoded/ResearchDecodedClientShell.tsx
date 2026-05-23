@@ -77,7 +77,7 @@ export default function ResearchDecodedClientShell({
       </div>
 
       <div className="flex flex-1 relative overflow-hidden">
-        <ResearchNavigationSidebar currentSlug={pathname?.split('/').pop()} />
+        <ResearchNavigationSidebar hideTrigger currentSlug={pathname?.split('/').pop()} />
 
         <main ref={scrollContainerRef} className="flex-1 min-w-0 h-full overflow-y-auto no-scrollbar bg-background transition-all duration-300">
           {children}

@@ -1,47 +1,37 @@
 ---
-title: "HHL Algorithm"
-authors: "Harrow et al. (2008)"
-citation: "Harrow, A. W., Hassidim, A., & Lloyd, S. (2009). Quantum algorithm for linear systems of equations. Physical review letters, 103(15), 150502."
-link: "https://arxiv.org/abs/0811.3171"
+title: "HHL: Linear Systems Algorithm"
+authors: "Aram Harrow, Avinatan Hassidim, & Seth Lloyd (2008)"
+citation: "Harrow, A. W., Hassidim, A., & Lloyd, S. (2009). Quantum algorithm for linear systems of equations. Physical Review Letters, 103(15), 150502."
+link: "https://doi.org/10.1103/PhysRevLett.103.150502"
 slug: "hhl-algorithm"
-heroImage: "https://learn.qiskit.org/content/v2/introduction/images/hhl/hhl_circuit.png"
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/6/6b/HHL_algorithm.svg"
 ---
 
-# HHL Algorithm
+In 2008, Aram Harrow, Avinatan Hassidim, and Seth Lloyd introduced a quantum algorithm for solving large-scale systems of linear equations $A\vec{x} = \vec{b}$ with an exponential speedup in dimensionality compared to classical methods. Prior to this research, even the most efficient classical algorithms for sparse matrices required time scaling at least linearly with the dimension $N$. The researchers demonstrated that by representing the vector $\vec{b}$ as a quantum state and utilizing the properties of spectral decomposition, the solution state $|x\rangle = A^{-1}|b\rangle$ can be prepared in $O(\operatorname{poly}(\log N))$ time. This work established linear algebra as a foundational primitive for quantum advantage, effectively digitalizing the solution of high-dimensional continuous systems.
 
-The Harrow-Hassidim-Lloyd (HHL) algorithm addresses the fundamental computational bottleneck of solving large-scale linear systems of equations, $A\vec{x} = \vec{b}$. In classical computing, even for sparse matrices, the time complexity scales at least linearly with the dimension $N$, as merely representing the solution vector requires $O(N)$ operations. 
+## Eigenvalue Extraction via Phase Estimation {#eigenvalue-inversion}
 
-HHL was proposed to bypass this limitation in scenarios where the full solution vector is not required, but rather an approximation of a summary statistic or expectation value. By representing the problem in a quantum Hilbert space, the algorithm achieves a complexity that scales logarithmically with $N$, offering an exponential speedup for high-dimensional, well-conditioned sparse systems.
+The primary technical contribution of the HHL algorithm is the use of Quantum Phase Estimation (QPE) to resolve the spectral properties of the matrix $A$. The process begins by preparing a quantum register in the state $|b\rangle = \sum_j \beta_j |u_j\rangle$, where $|u_j\rangle$ represent the eigenvectors of $A$. By applying the unitary evolution $e^{iAt}$ and performing QPE, the algorithm entangles the register with an auxiliary clock register containing the corresponding eigenvalues $\lambda_j$, resulting in the state $\sum_j \beta_j |u_j\rangle |\lambda_j\rangle$. This methodological choice proved that the internal logic of a quantum system can be aligned with the eigenbasis of a linear operator, allowing for the simultaneous manipulation of all spectral components in a single coherent process.
 
-## Eigenvalue Inversion via Phase Estimation {#eigenvalue-inversion}
+## Controlled Rotations and Non-Linear Amplitudes {#controlled-rotation}
 
-### Quantum Phase Estimation {#qpe-step}
+The exact mathematical inversion of the matrix occurs through a controlled rotation applied to an ancillary qubit. Conditioned on the value in the eigenvalue register $|\lambda_j\rangle$, the algorithm executes a rotation such that the ancilla's state becomes $\sqrt{1 - (C/\lambda_j)^2}|0\rangle + (C/\lambda_j)|1\rangle$, where $C$ is a normalization constant. This step encodes the reciprocal of the eigenvalue directly into the probability amplitude of the ancillary state. Upon measuring the ancilla and successfully post-selecting for the $|1\rangle$ outcome, the system collapses into a state proportional to $\sum_j \beta_j \lambda_j^{-1} |u_j\rangle$. This finding revealed that the "division" operation required for matrix inversion can be physically implemented as a controlled rotation in a high-dimensional Hilbert space.
 
-The mechanism of HHL relies on the spectral decomposition of the Hermitian matrix $A$ through the interaction of three primary quantum subroutines. First, the input vector $\vec{b}$ is prepared as a quantum state $|b\rangle = \sum \beta_j |u_j\rangle$, where $|u_j\rangle$ are the eigenvectors of $A$. 
+## Sparsity and Condition Number Constraints {#complexity}
 
-Quantum Phase Estimation (QPE) is then employed, utilizing Hamiltonian simulation ($e^{iAt}$) to extract the eigenvalues $\lambda_j$ of $A$ into an auxiliary register, resulting in the entangled state $\sum \beta_j |u_j\rangle |\lambda_j\rangle$. This step effectively labels each component of the input state with its corresponding eigenvalue, allowing the model to perform operations in the eigenbasis of the operator.
+The technical significance of the HHL speedup is conditioned on specific properties of the matrix $A$, specifically its sparsity and condition number $\kappa$. The algorithm’s complexity scales as $O(s^2 \kappa^2 \log N / \epsilon)$, where $s$ is the number of non-zero elements per row and $\epsilon$ is the desired precision. While the logarithmic scaling with $N$ provides an exponential advantage, the polynomial scaling with $\kappa$ implies that the speedup is only preserved for well-conditioned matrices. This realization moved the field toward a more granular evaluation of quantum advantage, proving that the practical utility of a quantum algorithm is determined by the numerical stability of the problem instance as much as the dimensionality of the data.
 
-### Controlled Rotations and Post-Selection {#controlled-rotation}
+## Impact on Machine Learning and Numerical Analysis {#matrix-primitive}
 
-The core algebraic inversion occurs through a controlled rotation of an ancillary qubit. Conditioned on the eigenvalue register $|\lambda_j\rangle$, the algorithm applies a rotation to the ancilla such that its state becomes $\sqrt{1 - (C/\lambda_j)^2}|0\rangle + (C/\lambda_j)|1\rangle$, where $C$ is a normalization constant. This rotation, specifically an $\arcsin(C/\lambda_j)$ operation, is the exact moment the inverse of $A$ enters the quantum state. 
+The success of the HHL algorithm established the theoretical foundation for the field of quantum machine learning. Because many optimization and inference tasks can be reduced to the solution of linear systems, the HHL primitive enabled the development of quantum versions of support vector machines, Gaussian processes, and principal component analysis. Furthermore, the algorithm provides a method for the numerical solution of differential equations by mapping the discretization grid to a quantum register. This application proved that the scalability of scientific computing depends on the adoption of architectures that treat linear transformations as fundamental physical transitions rather than iterative numerical steps.
 
-This step encodes the reciprocal of the eigenvalue into the probability amplitude of the $|1\rangle$ state. Upon measuring the ancilla and successfully post-selecting for the $|1\rangle$ outcome, the system collapses into a state proportional to $\sum \beta_j \lambda_j^{-1} |u_j\rangle$, which is the quantum representation of the solution $|x\rangle = A^{-1}|b\rangle$. The QPE process is subsequently reversed to uncompute the eigenvalue register, leaving the solution state ready for further quantum operations.
+## Linear Algebra as a BQP-Complete Task {#significance}
 
-## Matrix Inversion as a Quantum Primitive {#matrix-primitive}
-
-### From Logic to Algebra {#logic-to-algebra}
-
-The abstraction introduced by HHL enabled a global shift in quantum information research by demonstrating that quantum speedups are not restricted to number-theoretic problems like factoring or unstructured search. It established matrix inversion—a cornerstone of modern scientific computing—as a BQP-complete task, effectively proving that any quantum computation can be mapped onto a linear systems problem. 
-
-However, a critical nuance in this advantage is the scaling with the condition number $\kappa$ and sparsity $s$ of the matrix. The algorithm's complexity scales as $poly(\kappa, s)$, meaning the exponential speedup over classical methods is only preserved for systems that are well-conditioned and sparse.
-
-### Broader Implications {#implications}
-
-This realization transformed the field, moving the focus toward quantum Basic Linear Algebra Subprograms (BLAS) and providing the theoretical foundation for quantum machine learning and the numerical solution of differential equations. 
-
-By treating the state space of qubits as a high-dimensional vector space for linear algebra, HHL redefined the scope of quantum advantage from discrete logic to continuous functional analysis. The sensitivity of the algorithm to the condition number remains the primary constraint on its practical application, as it dictates the precision required for the eigenvalue inversion.
+The achievement of Harrow, Hassidim, and Lloyd demonstrated that matrix inversion is an inherently "quantum" task that captures the full power of the BQP (Bounded-error Quantum Polynomial time) complexity class. The decision to model computation as a set of linear transformations revealed that the bottleneck in classical analysis was the explicit representation of the solution vector. This principle remains the central theme in current research into quantum algorithms for fluid dynamics, structural engineering, and the simulation of physical systems. It leaves open the question of how to efficiently load classical data into quantum states (the "data loading problem") and how to extract meaningful summary statistics from the solution without collapsing the state through measurement.
 
 ## Resources
 
-- [Quantum algorithm for linear systems of equations](https://arxiv.org/abs/0811.3171) {type: article, provider: arXiv}
-- [Quantum Linear Systems Algorithm: A Review](https://arxiv.org/abs/2108.09004) {type: article, provider: arXiv}
+- [Quantum Algorithm for Linear Systems (Official DOI)](https://doi.org/10.1103/PhysRevLett.103.150502) {type: docs, provider: APS}
+- [HHL Original Paper (MIT Archive)](https://dspace.mit.edu/bitstream/handle/1721.1/51753/Harrow-2009-Quantum%20Algorithm%20for.pdf) {type: docs, provider: MIT}
+- [Linear Systems Overview (arXiv Survey)](https://arxiv.org/abs/2108.09004) {type: article, provider: arXiv}
+- [HHL on Qiskit (IBM)](https://docs.quantum.ibm.com/api/qiskit/qiskit.algorithms.HHL) {type: docs, provider: IBM}

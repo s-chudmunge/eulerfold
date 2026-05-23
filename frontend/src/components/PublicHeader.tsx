@@ -276,7 +276,7 @@ export default function PublicHeader() {
             <DesktopDropdown id="products" label="Products" width="min-w-[200px]">
               <div className="p-1.5 flex flex-col">
                 {[
-                  { label: "Research Lab", href: "/research-lab", isNew: true },
+                  { label: "Decode", href: "/research-lab", isNew: true },
                   { label: "Study Planner", href: "/planner" },
                   { label: "Practice", href: "/practice" },
                   { label: "Job Decoded", href: "/generate?mode=job" },
@@ -595,7 +595,7 @@ export default function PublicHeader() {
             <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.15em] block mb-4 opacity-50">Menu Navigation</span>
             <div className="grid grid-cols-1 gap-3">
               {[
-                { l: "Research Lab", h: "/research-lab", isNew: true },
+                { l: "Decode", h: "/research-lab", isNew: true },
                 { l: "Study Planner", h: "/planner" },
                 { l: "Job Decoded", h: "/generate?mode=job" },
                 { l: "Practice", h: "/practice" },                { l: "Roadmap Generator", h: "/generate" },

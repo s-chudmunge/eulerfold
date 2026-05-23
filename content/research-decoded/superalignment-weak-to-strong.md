@@ -2,14 +2,12 @@
 title: "Superalignment: Weak-to-Strong"
 authors: "Burns et al. (OpenAI, 2023)"
 citation: "Burns, C., Izmailov, P., Kirchner, J. H., Bowyer, B., ... & Leike, J. (2023). Weak-to-strong generalization: Eliciting strong capabilities with weak supervision. arXiv preprint arXiv:2312.09390."
-link: "https://ar5iv.org/abs/2312.09390"
+link: "https://arxiv.org/abs/2312.09390"
 slug: "superalignment-weak-to-strong"
-heroImage: "https://ar5iv.org/html/2312.09390/assets/x1.png"
+heroImage: "https://ar5iv.labs.arxiv.org/html/2312.09390/assets/x1.png"
 ---
 
-# Superalignment: Weak-to-Strong
-
-The 2023 'Weak-to-Strong Generalization' paper from OpenAI’s Superalignment team addressed the core challenge of aligning systems that are more intelligent than humans. For years, alignment research relied on the assumption that a human (the supervisor) can recognize 'good' behavior from a model (the student). However, as AI capabilities begin to exceed human expertise in specialized domains, this assumption breaks down. The researchers proposed a framework to test whether a 'weak' supervisor can effectively train a 'strong' model to perform tasks beyond the supervisor's own understanding. It was a shift from viewing alignment as a process of imitation to viewing it as a process of steerage.
+The 2023 paper on weak-to-strong generalization from OpenAI’s Superalignment team investigated the feasibility of using humans to align artificial intelligence systems that exceed human intelligence. Historically, alignment has relied on the assumption that a supervisor can accurately recognize and reward correct behavior in a student model. As AI capabilities surpass human expertise in specialized domains, this supervisor-student relationship becomes strained. The researchers introduced a framework to determine if a less capable model can effectively guide a more capable one to perform tasks that the supervisor itself cannot master.
 
 ## The Weak-to-Strong Framework {#weak-to-strong-framework}
 
@@ -17,17 +15,18 @@ The 2023 'Weak-to-Strong Generalization' paper from OpenAI’s Superalignment te
 
 _Comparison of naive fine-tuning versus weak-to-strong generalization across different model scales._
 
-The researchers established a formal experimental setup where a smaller, 'weak' model (such as GPT-2) generates labels for a much 'stronger' model (such as GPT-4). The objective was to see if the strong model would simply mimic the weak model's mistakes—the 'naive' baseline—or if it could generalize from the weak labels to find the true underlying logic of the task. This approach revealed that a strong model can often surpass its teacher if the learning objective is designed to favor consistency over pure imitation. It proved that intelligence can be steered from below, suggesting that we do not need to be smarter than a system to guide it toward a correct outcome.
+The experimental setup involved a smaller model generating labels for a significantly larger and more capable model. The study aimed to identify whether the stronger model would merely replicate the supervisor's errors or if it could generalize from the weak feedback to uncover the true underlying logic of the task. Results indicated that a strong model can often outperform its teacher if the learning objective encourages internal consistency rather than pure imitation. This finding demonstrated that intelligence can be steered from a position of relative weakness, suggesting that alignment does not require the supervisor to be more intelligent than the system being governed.
 
 ## Auxiliary Loss and Internal Priors {#auxiliary-loss-steering}
 
-To prevent the strong model from collapsing into the errors of its weak supervisor, the researchers introduced an auxiliary loss function that encourages the student to trust its own internal latent representations. When the weak labels provided by the supervisor conflict with the strong model's internal confidence, this loss function penalizes the model less for deviating from the 'wrong' instruction. This finding revealed that a large model possesses an internal, latent understanding of a task that is often more accurate than the explicit labels it is given. By prioritizing the model's internal coherence over its teacher's noisy guidance, the researchers achieved significant performance gains over the naive baseline. It suggested that alignment is not about teaching a model new facts, but about eliciting the knowledge it already has in a way that is consistent with the supervisor's intent.
+To mitigate the risk of the strong model inheriting the biases and mistakes of the weak supervisor, the researchers implemented an auxiliary loss function. This function encourages the student model to rely on its own latent representations and internal confidence levels. When the supervisor's labels conflict with the student's internal model of the task, the loss function reduces the penalty for deviating from the provided instruction. This mechanism revealed that larger models possess an internal understanding of tasks that is frequently more accurate than the explicit guidance they receive during fine-tuning. By prioritizing internal coherence, the model can filter out the noise in the supervision signal and move toward a more accurate representation of the target goal.
 
 ## The Generalization Gap {#superalignment-gap}
 
-Despite the success of the framework, the experiments identified a persistent 'generalization gap' where the strong model trained by a weak supervisor still underperforms compared to one trained by a strong supervisor. This reveals a fundamental limit in our current ability to scale alignment: as the gap between the supervisor and the student grows, the 'noisy pointers' provided by the teacher become increasingly difficult for the student to interpret. This finding proved that aligning 'superintelligent' systems is an active engineering challenge rather than a guaranteed byproduct of scale. It raises the question of whether we can develop even more sophisticated auxiliary objectives that bridge this gap, or if we will eventually reach a threshold where machines must align themselves through recursive, automated supervision.
+Despite the positive results, the study identified a persistent generalization gap where models trained by a weak supervisor underperform relative to those trained by a strong supervisor. This gap highlights a fundamental challenge in scaling alignment: as the disparity between the supervisor and the student increases, the feedback provided by the teacher becomes progressively more difficult for the student to resolve accurately. The existence of this gap proves that aligning superintelligent systems is not an automatic outcome of scaling but requires specific technical innovations in auxiliary objectives and architectural design. It leaves open the question of whether this gap can be bridged through iterative refinement or if new paradigms of recursive supervision will be required.
 
 ## Resources
 
 - [Weak-to-Strong Generalization (arXiv)](https://arxiv.org/abs/2312.09390) {type: article, provider: arXiv}
-- [OpenAI Superalignment Blog](https://openai.com/research/weak-to-strong-generalization) {type: article, provider: OpenAI}
+- [OpenAI Superalignment Blog](https://openai.com/index/weak-to-strong-generalization/) {type: article, provider: OpenAI}
+- [GitHub: Weak-to-Strong](https://github.com/openai/weak-to-strong) {type: code, provider: GitHub}

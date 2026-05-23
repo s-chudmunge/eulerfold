@@ -50,14 +50,6 @@ const EXPERIENCE_LEVELS = [
   { id: 'expert', label: 'Expert', desc: 'Deep technical mastery' }
 ];
 
-const SUGGESTED_SUBJECTS = [
-  "Distributed Systems", "Large Language Models", "Quantum Computing",
-  "System Design", "Organic Chemistry", "Neural Network Architectures", 
-  "Cybersecurity", "React & Next.js", "Algorithms", "Machine Learning",
-  "Macroeconomics", "Cloud Native", "Robotics", "Quantum Mechanics",
-  "Pharmacology", "Digital Marketing", "Game Design", "Biochemistry"
-];
-
 const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ 
   onRoadmapGenerated, 
   isLanding = false,
@@ -349,23 +341,6 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
                     placeholder="e.g. Distributed Systems"
                     className="w-full px-4 py-3 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[15px] font-bold text-text-heading"
                   />
-
-                  <div className="flex flex-wrap gap-1.5">
-                    {SUGGESTED_SUBJECTS.map(s => (
-                      <button
-                        key={s}
-                        type="button"
-                        onClick={() => setFormData(prev => ({ ...prev, subject: s }))}
-                        className={`px-3 py-1.5 border text-[10px] font-bold uppercase tracking-widest transition-all rounded-md ${
-                          formData.subject === s 
-                            ? 'bg-accent text-white border-accent' 
-                            : 'bg-surface text-text-muted border-border hover:border-accent/40 shadow-sm'
-                        }`}
-                      >
-                        {s}
-                      </button>
-                    ))}
-                  </div>
                </div>
 
                {/* Goal */}

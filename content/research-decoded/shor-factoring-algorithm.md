@@ -1,37 +1,37 @@
 ---
 title: "Shor: Polynomial-Time Factoring"
-authors: "Peter W. Shor (1994)"
-citation: "Shor, P. W. (1994). Algorithms for quantum computation: discrete logarithms and factoring. Proceedings 35th Annual Symposium on Foundations of Computer Science, 124-134."
-link: "https://arxiv.org/abs/quant-ph/9508027"
+authors: "Peter Shor (1994)"
+citation: "Shor, P. W. (1994). Algorithms for quantum computation: discrete logarithms and factoring. In Proceedings 35th Annual Symposium on Foundations of Computer Science (pp. 124-134). IEEE."
+link: "https://doi.org/10.1109/SFCS.1994.365700"
 slug: "shor-factoring-algorithm"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/c/cf/Shor_algorithm_circ_v1.svg"
+heroImage: "https://upload.wikimedia.org/wikipedia/commons/b/b8/Shor%27s_algorithm.svg"
 ---
 
-# Algorithms for Quantum Computation: Discrete Logarithms and Factoring
+In 1994, Peter Shor demonstrated that a quantum computer can resolve the integer factorization and discrete logarithm problems in polynomial time, establishing a theoretical challenge to the foundations of modern public-key cryptography. Prior to this research, these mathematical tasks were assumed to be intractable for any physical machine, providing the security basis for protocols such as RSA and Diffie-Hellman. The researcher proved that by utilizing the properties of quantum superposition and interference, a machine can identify the periodic structure of specific mathematical functions with exponential efficiency compared to the best-known classical algorithms.
 
-In 1994, Peter Shor published a paper that sent shockwaves through the fields of computer science and cryptography by demonstrating that two of the most important problems in modern encryption—integer factorization and discrete logarithms—can be solved in polynomial time on a quantum computer. This discovery ended the assumption that the security of systems like RSA and Diffie-Hellman was guaranteed by the laws of mathematics. Instead, it showed that their security was contingent on the limitations of classical hardware. Shor’s algorithm provided the first killer app for quantum computing, transforming the field from a theoretical exploration of physics into a strategic imperative for global security.
+## Period Finding and the Reduction of Factoring {#periodic-factoring}
 
-## The Periodic Nature of Factoring {#periodic-factoring}
+The core technical insight of the paper is the reduction of the integer factorization problem to the task of period finding. For an integer $N$, Shor utilized results from number theory to prove that finding the prime factors of $N$ is equivalent to identifying the period $r$ of the modular exponentiation function $f(x) = a^x \pmod N$, where $a$ is a random integer coprime to $N$. While finding this period on a classical computer requires an exponential number of evaluations, Shor demonstrated that a quantum system can represent all possible values of $x$ simultaneously, allowing for the extraction of periodic information through global wave interference rather than individual sampling.
 
-Shor’s fundamental insight was that the problem of factoring an integer $N$ can be reduced to the problem of finding the period of a specific mathematical function. Using number theory, he showed that if one can find the period $r$ of the function $f(x) = a^x \mod N$, where $a$ is a randomly chosen number, then the factors of $N$ can be derived with high probability. On a classical computer, finding this period is as difficult as factoring itself, as it requires checking an exponential number of values. Shor’s genius was in recognizing that a quantum computer can find this period efficiently by using the principle of quantum interference.
+## The Quantum Fourier Transform (QFT) Mechanism {#quantum-fourier}
 
-## Quantum Fourier Transform (QFT) {#quantum-fourier}
+The algorithmic engine of the framework is the Quantum Fourier Transform (QFT), a linear transformation on quantum bits that shifts a representation from the computational basis to the frequency domain. After preparing a quantum register in a massive superposition and performing modular exponentiation, the algorithm applies the QFT to the state. This process causes the amplitudes of incorrect period estimates to destructively interfere while the amplitude of the true period interferes constructively. This methodological choice established that the unique power of quantum computing is the ability to compute global structural properties of a function without the requirement to evaluate its individual points.
 
-The core mechanism of Shor’s algorithm is the Quantum Fourier Transform (QFT). Unlike a classical Fourier transform, which acts on a vector of data, the QFT acts on the state of a quantum register. By putting the register into a massive superposition of all possible values and then applying the QFT, the algorithm causes the incorrect answers to destructively interfere with one another while the correct answer—the period of the function—interferes constructively. This allows the quantum computer to extract the periodic information from the superposition in a single operation. This process demonstrates the unique power of quantum mechanics: the ability to process global properties of a mathematical function without evaluating every individual point.
+## Quantum Modular Exponentiation and Gate Complexity {#modular-exponentiation}
 
-## The Threat to Public-Key Cryptography {#cryptography-threat}
+A critical engineering detail of the algorithm is the implementation of modular exponentiation using reversible quantum gates. Because quantum operations must be unitary, standard classical shortcuts for exponentiation cannot be directly applied. Shor proved that modular exponentiation can be executed using a polynomial number of Toffoli and Fredkin gates, ensuring that the total complexity of the algorithm remains $O((\log N)^3)$. This finding confirmed that the quantum speedup is a robust property of the circuit model of computation, providing a definitive roadmap for the development of hardware capable of breaking large-scale cryptographic keys.
 
-The implications of Shor’s algorithm are profound for cybersecurity. Because almost all modern secure communication relies on the hardness of factoring (RSA) or discrete logarithms (Diffie-Hellman, ECC), a sufficiently powerful quantum computer would be able to decrypt past and present communications. This has led to the concept of Store Now, Decrypt Later (SNDL), where adversaries capture encrypted data today in the hope of decrypting it once quantum hardware matures. Shor’s work effectively set a deadline for the current era of cryptography, forcing the international community to begin a multi-decade transition to quantum-resistant algorithms.
+## Impact on Public-Key Cryptographic Standards {#cryptography-threat}
 
-## Modular Exponentiation on Quantum Hardware {#modular-exponentiation}
+The practical significance of Shor’s algorithm is its invalidation of the long-term security assumptions of the global digital infrastructure. Since RSA and Elliptic Curve Cryptography (ECC) rely on the perceived hardness of the problems Shor resolved, a sufficiently large quantum computer would enable the decryption of any communication secured by these methods. This realization initiated the field of post-quantum cryptography (PQC), shifting the engineering focus toward mathematical structures—such as high-dimensional lattices—that do not exhibit the periodic properties exploitable by the QFT. This work effectively established a theoretical deadline for the current era of encryption, requiring the systematic replacement of foundational security protocols.
 
-Beyond the QFT, a significant portion of Shor’s algorithm involves quantum modular exponentiation. This is the process of implementing modular arithmetic using reversible quantum gates. Because quantum operations must be unitary and reversible, standard classical shortcuts for exponentiation cannot be used directly. Shor had to prove that modular exponentiation could be computed using a polynomial number of gates, ensuring the entire algorithm remained efficient. This engineering detail confirmed that the speedup was not just theoretical but could, in principle, be realized on physical hardware if the challenges of decoherence were overcome.
+## Physics as an Algorithmic Constraint {#significance}
 
-## The Birth of Post-Quantum Cryptography {#post-quantum-birth}
-
-The legacy of Shor’s algorithm is the creation of the field of post-quantum cryptography (PQC). Knowing that the current foundations are compromised, researchers have turned to other mathematical problems that do not exhibit the periodic structure that Shor’s algorithm exploits. These include lattice-based problems, where the shortest vector in a high-dimensional grid is hard to find, and code-based problems. Shor’s work redefined the relationship between physics and computation, proving that the security of a secret depends not just on the complexity of the math, but on the physical nature of the machine used to attack it. It leaves us with the open question: are there other quantum-vulnerable problems waiting to be discovered?
+The achievement of Peter Shor demonstrated that the complexity of a mathematical problem is determined by the physical laws governing the machine used to solve it. The decision to exploit quantum mechanical interference revealed that the boundaries of computational feasibility are not fixed but are instead a function of our ability to manipulate the fundamental properties of matter. This principle remains the central driver for the development of error-corrected quantum hardware. It leaves open the question of whether there exist other classes of non-periodic problems that are similarly vulnerable to quantum acceleration, or if the exponential speedup is uniquely tied to the identification of hidden symmetries in group theory.
 
 ## Resources
 
-- [Shor's Original Paper (arXiv)](https://arxiv.org/abs/quant-ph/9508027) {type: article, provider: arXiv}
-- [Quantum Factoring (Video)](https://www.youtube.com/watch?v=lvTqbM5Dq4Q) {type: video, provider: Veritasium}
+- [Algorithms for Quantum Computation (Official MIT PDF)](https://math.mit.edu/~shor/papers/QC-algorithms.pdf) {type: docs, provider: MIT}
+- [Shor's Algorithm (Wikipedia)](https://en.wikipedia.org/wiki/Shor%27s_algorithm) {type: article, provider: Wikipedia}
+- [The Algorithm that Breaks the Internet (Video)](https://www.youtube.com/watch?v=lvTqbM5Dq4Q) {type: video, provider: Veritasium}
+- [Shor's Algorithm on Qiskit (IBM)](https://docs.quantum.ibm.com/api/qiskit/qiskit.algorithms.Shor) {type: docs, provider: IBM}

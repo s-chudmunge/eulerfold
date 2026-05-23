@@ -35,10 +35,9 @@ def get_current_price(coupon_code: Optional[str] = None):
     ist_offset = timedelta(hours=5, minutes=30)
     now_ist = datetime.now(timezone.utc) + ist_offset
 
-    # End of Summer Sale: May 18th to June 18th, 2026
-    # Note: Using month 5 (May) and 6 (June)
+    # End of Summer Sale: May 18th to June 30th, 2026
     start_date = datetime(2026, 5, 18, 0, 0, 0)
-    end_date = datetime(2026, 6, 19, 0, 0, 0) # End at start of June 19th
+    end_date = datetime(2026, 7, 1, 0, 0, 0) # End at start of July 1st (all day June 30th)
     
     is_sale_period = start_date <= now_ist.replace(tzinfo=None) < end_date
 
@@ -128,7 +127,7 @@ async def process_payment_success(email: str, payment_id: str, order_id: str = N
     profile_data = res.data[0]
     current_credits = profile_data.get("roadmap_credits") or 0
     display_name = profile_data.get("display_name")
-    new_credits = current_credits + 20
+    new_credits = current_credits + 50
     
     if amount is None:
         amount, _ = get_current_price()
@@ -152,7 +151,7 @@ async def process_payment_success(email: str, payment_id: str, order_id: str = N
             "status": "captured"
         }).execute()
         
-        logger.info(f"Successfully processed payment {payment_id}. Added 20 credits to {email}.")
+        logger.info(f"Successfully processed payment {payment_id}. Added 50 credits to {email}.")
         
         # 4. Send Pro Activation Email
         asyncio.create_task(send_pro_activation_email(email, display_name))

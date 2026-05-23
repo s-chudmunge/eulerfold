@@ -567,10 +567,10 @@ export default function ArticleClient({ article }: Props) {
       <PublicHeader />
 
       {/* Site Content (BibGuru Layout) */}
-      <div className="max-w-[1400px] mx-auto px-6 relative">
-        
+      <div className="max-w-[1500px] mx-auto px-6 relative">
+
         <div className="flex flex-col lg:flex-row justify-center xl:justify-start xl:pl-[120px] gap-[40px] lg:gap-[60px] mt-[30px] md:mt-[60px] pb-[80px]">
-          
+
           {/* Table of Contents (Left Sidebar) */}
           <aside className="hidden xl:block w-[220px] shrink-0">
             <div className="sticky top-[100px] flex flex-col gap-12">
@@ -596,9 +596,8 @@ export default function ArticleClient({ article }: Props) {
             </div>
           </aside>
 
-          {/* Content Area (Max 900px) */}
-          <main className="w-full max-w-[900px]">
-            <article>
+          {/* Content Area (Max 1000px) */}
+          <main className="w-full max-w-[1000px]">            <article>
               <header className="mb-[24px]">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
                   <Breadcrumbs items={[

@@ -514,18 +514,19 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
   }, [paper]);
 
   return (
-    <div className="bg-background min-h-screen pb-24 text-text-primary serif-page-scope">
-      <FloatingTTS content={fullContent} />
-      <ResearchNavigationSidebar currentSlug={slug} />
-      {/* Design matches strictly the refined example/topic-page */}
-      <div className="max-w-[1400px] mx-auto flex flex-col lg:flex-row justify-center xl:justify-start xl:pl-[120px] gap-12 lg:gap-20 px-6 py-8 md:px-12 md:py-16">
-        
-        {/* Table of Contents (Left Sidebar) */}
-        <aside className="hidden xl:block w-[220px] shrink-0">
-          <div className="sticky top-[40px] flex flex-col gap-10">
-            <div>
-              <h3 className="inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] text-text-muted mb-6 opacity-60">Structure</h3>
-              <nav className="flex flex-col gap-4">
+    <>
+      <div className="bg-background min-h-screen pb-24 text-text-primary serif-page-scope">
+        <FloatingTTS content={fullContent} />
+
+        {/* Design matches strictly the refined example/topic-page */}
+        <div className="max-w-[1500px] mx-auto flex flex-col lg:flex-row justify-center xl:justify-start xl:pl-[120px] gap-12 lg:gap-20 px-6 py-8 md:px-12 md:py-16">
+
+          {/* Table of Contents (Left Sidebar) */}
+          <aside className="hidden xl:block w-[220px] shrink-0">
+            <div className="sticky top-[40px] flex flex-col gap-10">
+              <div>
+                <ResearchNavigationSidebar currentSlug={slug} isInline />
+                <h3 className="inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] text-text-muted mb-6 opacity-60">Structure</h3>              <nav className="flex flex-col gap-4">
                 {headings.map((heading) => (
                   <a 
                     key={heading.id} 
@@ -543,43 +544,17 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
               </nav>
             </div>
 
-            {/* Community Banner in Sidebar - Ultra Compact */}
-            <div className="pt-6 border-t border-border/40 relative group">
-              <div className="relative z-10">
-                <h2 className="font-bold mb-1.5 text-text-heading tracking-wider text-[11px] uppercase">Community</h2>
-                <p className="text-text-muted mb-3 font-medium text-[10px] leading-relaxed">Track progress and collaborate on roadmaps with students worldwide.</p>
-                <button 
-                  onClick={user ? () => window.location.href = '/dashboard' : handleSignIn}
-                  className="w-full bg-text-heading rounded px-3 py-1.5 font-bold text-[9px] text-background hover:opacity-90 transition-all shadow-sm uppercase tracking-widest"
-                >
-                  {user ? 'Dashboard' : 'Sign In Free'}
-                </button>
-              </div>
-            </div>
           </div>
         </aside>
 
-        <div className="max-w-[900px] w-full">
+        <div className="max-w-[1000px] w-full">
         {/* Paper Header */}
         <header className="mb-12">
           <Breadcrumbs items={[
             { label: 'Research Decoded', href: '/research-decoded' },
             { label: paper.authors }
           ]} />
-          <div className="flex items-center gap-2 text-accent mb-6 font-bold flex-wrap">
-            <Link href="/research-decoded" className="bg-accent-muted px-2 py-0.5 rounded hover:bg-accent/10 transition-colors text-[11px] uppercase tracking-widest">
-              Research Decoded
-            </Link>
-            <span className="text-[var(--border)]">/</span>
-            <span className="font-medium text-[13px] text-text-muted">{paper.authors}</span>
-          </div>
 
-          <SocialShare 
-            title={paper.title} 
-            text={`Decoding ${paper.title} on EulerFold:`} 
-            className="mb-8" 
-          />
-          
           <h1 className="font-bold text-text-heading mb-10 leading-[1.15] tracking-tight group flex items-center md:-ml-12">
             <span className="text-accent opacity-0 group-hover:opacity-100 w-12 text-3xl transition-opacity hidden md:inline">#</span>
             {paper.title}
@@ -597,18 +572,21 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
               Read Original Paper <ExternalLink className="w-3.5 h-3.5" />
             </Link>
           </div>
+
+          <SocialShare 
+            title={paper.title} 
+            text={`Decoding ${paper.title} on EulerFold:`} 
+            className="mb-8 mt-2" 
+          />
         </header>
 
         {/* Hero Image */}
         {paper.heroImage && (
-          <div className="mb-12 p-4 md:p-6 bg-image-bg border border-border rounded-2xl shadow-xl max-w-[900px] mx-auto overflow-hidden">
-            <motion.img 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
+          <div className="mb-12 overflow-hidden rounded-lg border border-border">
+            <img 
               src={paper.heroImage} 
               alt={`${paper.title} - Research Breakthrough Illustration`} 
-              className="w-full rounded-xl transition-all cursor-zoom-in block" 
+              className="w-full h-auto cursor-zoom-in block" 
               onClick={() => setSelectedImage(paper.heroImage)}
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
@@ -631,23 +609,21 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
             </h2>
 
             {section.diagram && (
-              <div className="my-12 p-4 md:p-6 bg-image-bg border border-border rounded-2xl max-w-[900px] mx-auto shadow-sm overflow-hidden">
-                <motion.img 
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5 }}
+              <div className="my-10 overflow-hidden rounded-lg border border-border">
+                <img 
                   src={section.diagram.url} 
                   alt={`${section.title} Diagram - ${section.diagram.caption}`} 
-                  className="mx-auto rounded-xl max-h-[300px] md:max-h-[400px] cursor-zoom-in block" 
+                  className="mx-auto max-h-[500px] cursor-zoom-in block" 
                   onClick={() => setSelectedImage(section.diagram.url)}
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';
                   }}
                 />
-                <p className="text-text-muted mt-5 text-center italic font-medium">
-                  {section.diagram.caption}
-                </p>
+                <div className="bg-sidebar/50 py-3 px-4 border-t border-border">
+                  <p className="text-text-muted text-center text-[13px] italic font-medium">
+                    {section.diagram.caption}
+                  </p>
+                </div>
               </div>
             )}
 
@@ -733,6 +709,49 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
             The author of this article utilized generative AI (Google Gemini 3.1 Pro) to assist in part of the drafting and editing process.
           </p>
         </div>
+
+        {/* Improved Integrated Navigation */}
+        <div className="mt-20 pt-10 border-t border-border">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="flex flex-col">
+              {paper.prev ? (
+                <Link 
+                  href={`/research-decoded/${paper.prev}`}
+                  className="group flex flex-col p-6 rounded-2xl border border-border bg-sidebar hover:border-accent/40 hover:bg-accent/5 transition-all h-full"
+                >
+                  <span className="flex items-center gap-2 text-[11px] font-bold text-text-muted uppercase tracking-[0.2em] mb-3 group-hover:text-accent transition-colors inconsolata-ui">
+                    <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" /> Previous Decoding
+                  </span>
+                  <span className="text-[17px] font-bold text-text-heading leading-tight manrope-body">
+                    {papers[paper.prev as keyof typeof papers].title}
+                  </span>
+                  <span className="mt-2 text-[13px] text-text-muted italic opacity-70 group-hover:opacity-100 transition-opacity">
+                    {papers[paper.prev as keyof typeof papers].authors}
+                  </span>
+                </Link>
+              ) : <div />}
+            </div>
+
+            <div className="flex flex-col">
+              {paper.next ? (
+                <Link 
+                  href={`/research-decoded/${paper.next}`}
+                  className="group flex flex-col p-6 rounded-2xl border border-border bg-sidebar hover:border-accent/40 hover:bg-accent/5 transition-all h-full text-right items-end"
+                >
+                  <span className="flex items-center gap-2 text-[11px] font-bold text-text-muted uppercase tracking-[0.2em] mb-3 group-hover:text-accent transition-colors inconsolata-ui">
+                    Next Decoding <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                  <span className="text-[17px] font-bold text-text-heading leading-tight manrope-body">
+                    {papers[paper.next as keyof typeof papers].title}
+                  </span>
+                  <span className="mt-2 text-[13px] text-text-muted italic opacity-70 group-hover:opacity-100 transition-opacity">
+                    {papers[paper.next as keyof typeof papers].authors}
+                  </span>
+                </Link>
+              ) : <div />}
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Action Sidebar (Right) */}
@@ -752,8 +771,25 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
         />
       </div>
     </div>
+  </div>
 
-    {/* Image Lightbox */}
+  {/* Floating Scroll to Top Button */}
+      <AnimatePresence>
+        {showScrollTop && (
+          <motion.button 
+            initial={{ opacity: 0, y: 10, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.9 }}
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="fixed bottom-8 right-8 z-[110] bg-accent text-white p-3 rounded-full hover:bg-accent/90 transition-all hover:scale-110 shadow-2xl flex items-center justify-center border border-white/20"
+            title="Scroll to Top"
+          >
+            <ArrowUp className="w-5 h-5" />
+          </motion.button>
+        )}
+      </AnimatePresence>
+
+      {/* Image Lightbox */}
       <AnimatePresence>
         {selectedImage && (
           <div 
@@ -842,55 +878,6 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
           </div>
         )}
       </AnimatePresence>
-
-      {/* Sticky Navigation Bar */}
-      <div className="fixed bottom-0 left-0 right-0 z-[100] bg-accent text-white shadow-[0_-2px_10px_rgba(0,0,0,0.15)] h-7 md:h-8 flex items-stretch">
-        <div className="flex-1 flex items-center">
-          {paper.prev ? (
-            <Link 
-              href={`/research-decoded/${paper.prev}`}
-              className="flex items-center gap-1.5 px-3 md:px-4 h-full w-full hover:bg-white/10 transition-colors group min-w-0"
-            >
-              <ArrowLeft className="w-3 h-3 md:w-3.5 md:h-3.5 shrink-0 group-hover:-translate-x-1 transition-transform" />
-              <span className="text-[10px] md:text-[11px] font-bold truncate tracking-tight">
-                <span className="opacity-70 font-medium mr-1 hidden sm:inline text-[9px] uppercase">Prev:</span>
-                {papers[paper.prev as keyof typeof papers].title}
-              </span>
-            </Link>
-          ) : <div className="flex-1 h-full" />}
-        </div>
-
-        {/* Floating Scroll to Top Button */}
-        <AnimatePresence>
-          {showScrollTop && (
-            <motion.button 
-              initial={{ opacity: 0, y: 10, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 10, scale: 0.9 }}
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-              className="absolute left-1/2 -top-10 -translate-x-1/2 z-[110] bg-accent/90 backdrop-blur-sm border border-white/20 p-1.5 rounded-full hover:bg-accent transition-all hover:scale-110 shadow-lg group flex items-center justify-center"
-              title="Scroll to Top"
-            >
-              <ArrowUp className="w-3 h-3 md:w-3.5 md:h-3.5 group-hover:-translate-y-0.5 transition-transform" />
-            </motion.button>
-          )}
-        </AnimatePresence>
-
-        <div className="flex-1 flex items-center justify-end">
-          {paper.next ? (
-            <Link 
-              href={`/research-decoded/${paper.next}`}
-              className="flex items-center justify-end gap-1.5 px-3 md:px-4 h-full w-full hover:bg-white/10 transition-colors group text-right min-w-0"
-            >
-              <span className="text-[10px] md:text-[11px] font-bold truncate tracking-tight">
-                <span className="opacity-70 font-medium mr-1 hidden sm:inline text-[9px] uppercase">Next:</span>
-                {papers[paper.next as keyof typeof papers].title}
-              </span>
-              <ArrowRight className="w-3 h-3 md:w-3.5 md:h-3.5 shrink-0 group-hover:translate-x-1 transition-transform" />
-            </Link>
-          ) : <div className="flex-1 h-full" />}
-        </div>
-      </div>
-    </div>
+    </>
   );
 }

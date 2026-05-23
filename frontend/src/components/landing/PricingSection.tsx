@@ -162,7 +162,7 @@ export default function PricingSection() {
                 <div className="space-y-1.5 mb-6 flex-1 text-[10px] text-text-primary font-medium">
                     <div className="mb-2 font-bold text-text-heading text-[9px] uppercase tracking-wider">Everything in Basic, plus:</div>
                     <div className="flex items-center gap-2 font-bold text-accent">
-                        <span className="text-accent">✓</span> 20 Roadmap credits
+                        <span className="text-accent">✓</span> 50 Roadmap credits
                     </div>
                     <div className="flex items-center gap-2">
                         <span className="text-accent">✓</span> Unlimited depth extensions

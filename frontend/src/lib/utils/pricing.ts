@@ -23,7 +23,7 @@ export function getDiscountStatus(): DiscountStatus {
     // IST is UTC+5:30
     
     const startTimeIST = new Date('2026-05-18T00:00:00+05:30');
-    const endTimeIST = new Date('2026-06-19T00:00:00+05:30'); // End at start of June 19th
+    const endTimeIST = new Date('2026-07-01T00:00:00+05:30'); // End at start of July 1st (all day June 30th)
     
     const isWithinTime = now >= startTimeIST && now < endTimeIST;
     const hasDiscount = isWithinTime;
