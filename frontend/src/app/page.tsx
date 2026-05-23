@@ -75,32 +75,59 @@ export default async function LandingPage() {
   const featuredRoadmaps = await getFeaturedRoadmaps();
   const faqItems = [
     {
-      question: "How accurate are the AI roadmaps?",
-      answer: "We use technical data and trusted resources to build paths that match real industry standards and expectations."
+      question: "How do I get started with a learning path?",
+      answer: (
+        <span>
+          Browse our <Link href="/explore" className="text-accent hover:underline font-bold">Explore page</Link> to find a roadmap that fits your goals, or generate a custom one based on your specific requirements.
+        </span>
+      ),
+      schemaAnswer: "Browse our Explore page to find a roadmap that fits your goals, or generate a custom one based on your specific requirements."
     },
     {
-      question: "How do you evaluate my work?",
-      answer: "When you submit homework, your work is reviewed for correctness, clarity, and relevance by specialized AI models to ensure you have actually mastered the topic."
+      question: "What is Research Decoded?",
+      answer: (
+        <span>
+          It's our collection of deep-dive technical articles where we break down complex papers and concepts into first principles. Check out the <Link href="/research-decoded" className="text-accent hover:underline font-bold">latest research here</Link>.
+        </span>
+      ),
+      schemaAnswer: "It's our collection of deep-dive technical articles where we break down complex papers and concepts into first principles."
     },
     {
-      question: "Can I customize my roadmap after it's generated?",
-      answer: "Yes. You can add, remove, or reorder topics at any time to fit your own goals."
+      question: "Where can I find curated study materials?",
+      answer: (
+        <span>
+          The <Link href="/archive" className="text-accent hover:underline font-bold">Archive</Link> contains a massive directory of verified resources, past papers, and technical documents for various academic and technical fields.
+        </span>
+      ),
+      schemaAnswer: "The Archive contains a massive directory of verified resources, past papers, and technical documents for various academic and technical fields."
     },
     {
-      question: "What are EulerCoins and how do I earn them?",
-      answer: "EulerCoins are rewards for progress. You earn them by keeping up your learning streaks and finishing modules."
+      question: "How are my technical skills tracked?",
+      answer: (
+        <span>
+          Your <Link href="/dashboard" className="text-accent hover:underline font-bold">Technical Inventory</Link> updates automatically as you complete modules and submit Proof of Work. We track your progress across different roadmaps into a unified skill profile.
+        </span>
+      ),
+      schemaAnswer: "Your Technical Inventory updates automatically as you complete modules and submit Proof of Work. We track your progress across different roadmaps into a unified skill profile."
     },
     {
-      question: "Is my progress actually saved?",
-      answer: "Yes. Every module you finish and every piece of homework you submit is recorded on your public profile and skill inventory."
+      question: "What is 'Proof of Work' and 'Submit Homework'?",
+      answer: "To ensure actual mastery, you must submit technical proof for modules. These are reviewed by specialized AI models to verify your understanding before you earn skill points.",
+      schemaAnswer: "To ensure actual mastery, you must submit technical proof for modules. These are reviewed by specialized AI models to verify your understanding before you earn skill points."
     },
     {
       question: "What makes EulerFold better than a video course?",
-      answer: "Videos are passive. EulerFold requires you to practice and prove what you've learned through homework reviews and recall sessions."
+      answer: "Videos are passive. EulerFold requires you to practice and prove what you've learned through technical reviews and recall sessions, ensuring the knowledge actually sticks.",
+      schemaAnswer: "Videos are passive. EulerFold requires you to practice and prove what you've learned through technical reviews and recall sessions, ensuring the knowledge actually sticks."
     },
     {
-      question: "Can I build roadmaps for free?",
-      answer: "New users get 5 free credits to generate roadmaps. You can earn more through the community or buy them if you need more."
+      question: "Need more help or have feedback?",
+      answer: (
+        <span>
+          Visit our <Link href="/help" className="text-accent hover:underline font-bold">Help Center</Link> for detailed guides on platform features, or reach out to us if you encounter any issues.
+        </span>
+      ),
+      schemaAnswer: "Visit our Help Center for detailed guides on platform features, or reach out to us if you encounter any issues."
     }
   ];
 
@@ -124,7 +151,7 @@ export default async function LandingPage() {
       "name": item.question,
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": item.answer
+        "text": item.schemaAnswer
       }
     }))
   };

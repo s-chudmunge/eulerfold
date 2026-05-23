@@ -174,7 +174,7 @@ export function LandingOnboardingTrigger() {
   );
 }
 
-export function FAQAccordion({ items }: { items: { question: string, answer: string }[] }) {
+export function FAQAccordion({ items }: { items: { question: string, answer: React.ReactNode }[] }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (

@@ -156,7 +156,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
             <div className="flex flex-col">
-              <span className="text-[10px] font-bold uppercase text-text-muted tracking-widest">Add 20 Credits</span>
+              <span className="text-[10px] font-bold uppercase text-text-muted tracking-widest">Add 50 credits</span>
             </div>
             <div className="flex flex-col items-end">
                 {(discountStatus.hasDiscount || appliedCoupon) && (
