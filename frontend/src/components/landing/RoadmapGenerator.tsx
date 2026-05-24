@@ -206,18 +206,18 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
     switch(step) {
       case 1:
         return (
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="space-y-6">
-               <label className="inconsolata-ui flex items-center text-[11px] font-bold uppercase tracking-[0.2em] text-text-muted">
+          <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="space-y-3">
+               <label className="inconsolata-ui flex items-center text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted">
                  1. Identity & Objective
                </label>
 
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {/* Current Role */}
                   <div className="relative" ref={currentRoleRef}>
-                      <div className="flex items-center gap-2 mb-2">
-                        <User className="w-3.5 h-3.5 text-accent" />
-                        <span className="text-[13px] font-bold text-text-heading">Current Role <span className="text-text-muted font-normal text-[11px] ml-1">(Optional)</span></span>
+                      <div className="flex items-center gap-1.5 mb-1.5">
+                        <User className="w-3 h-3 text-accent" />
+                        <span className="text-[12px] font-bold text-text-heading">Current Role <span className="text-text-muted font-normal text-[10px] ml-1">(Optional)</span></span>
                       </div>
                       <div className="relative">
                         <input 
@@ -229,12 +229,12 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
                             setRoleSearchCurrent(e.target.value);
                             setFormData(prev => ({ ...prev, current_role: e.target.value }));
                           }}
-                          className="w-full px-4 py-3 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[14px] font-medium"
+                          className="w-full px-3 py-2 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[13px] font-medium"
                         />
-                        <ChevronDown className={`absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted transition-transform ${isRoleDropdownOpenCurrent ? 'rotate-180' : ''}`} />
+                        <ChevronDown className={`absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted transition-transform ${isRoleDropdownOpenCurrent ? 'rotate-180' : ''}`} />
 
                         {isRoleDropdownOpenCurrent && (
-                          <div className="absolute z-20 w-full mt-1 bg-surface border border-border shadow-2xl max-h-48 overflow-y-auto no-scrollbar rounded-xl">
+                          <div className="absolute z-20 w-full mt-1 bg-surface border border-border shadow-2xl max-h-40 overflow-y-auto no-scrollbar rounded-xl">
                             {filteredRolesCurrent.map(r => (
                               <button
                                 key={r}
@@ -243,10 +243,10 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
                                   setRoleSearchCurrent(r);
                                   setIsRoleDropdownOpenCurrent(false);
                                 }}
-                                className="w-full text-left px-4 py-2.5 text-[13px] hover:bg-sidebar transition-colors flex items-center justify-between bg-surface"
+                                className="w-full text-left px-3 py-2 text-[12px] hover:bg-sidebar transition-colors flex items-center justify-between bg-surface"
                               >
                                 {r}
-                                {formData.current_role === r && <Check className="w-3.5 h-3.5 text-accent" />}
+                                {formData.current_role === r && <Check className="w-3 h-3 text-accent" />}
                               </button>
                             ))}
                           </div>
@@ -256,9 +256,9 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
 
                   {/* Target Role */}
                   <div className="relative" ref={targetRoleRef}>
-                      <div className="flex items-center gap-2 mb-2">
-                        <Target className="w-3.5 h-3.5 text-accent" />
-                        <span className="text-[13px] font-bold text-text-heading">Target Goal <span className="text-text-muted font-normal text-[11px] ml-1">(Optional)</span></span>
+                      <div className="flex items-center gap-1.5 mb-1.5">
+                        <Target className="w-3 h-3 text-accent" />
+                        <span className="text-[12px] font-bold text-text-heading">Target Goal <span className="text-text-muted font-normal text-[10px] ml-1">(Optional)</span></span>
                       </div>
                       <div className="relative">
                         <input 
@@ -270,12 +270,12 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
                             setRoleSearchTarget(e.target.value);
                             setFormData(prev => ({ ...prev, target_role: e.target.value }));
                           }}
-                          className="w-full px-4 py-3 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[14px] font-medium"
+                          className="w-full px-3 py-2 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[13px] font-medium"
                         />
-                        <ChevronDown className={`absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted transition-transform ${isRoleDropdownOpenTarget ? 'rotate-180' : ''}`} />
+                        <ChevronDown className={`absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted transition-transform ${isRoleDropdownOpenTarget ? 'rotate-180' : ''}`} />
 
                         {isRoleDropdownOpenTarget && (
-                          <div className="absolute z-20 w-full mt-1 bg-surface border border-border shadow-2xl max-h-48 overflow-y-auto no-scrollbar rounded-xl">
+                          <div className="absolute z-20 w-full mt-1 bg-surface border border-border shadow-2xl max-h-40 overflow-y-auto no-scrollbar rounded-xl">
                             {filteredRolesTarget.map(r => (
                               <button
                                 key={r}
@@ -284,10 +284,10 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
                                   setRoleSearchTarget(r);
                                   setIsRoleDropdownOpenTarget(false);
                                 }}
-                                className="w-full text-left px-4 py-2.5 text-[13px] hover:bg-sidebar transition-colors flex items-center justify-between bg-surface"
+                                className="w-full text-left px-3 py-2 text-[12px] hover:bg-sidebar transition-colors flex items-center justify-between bg-surface"
                               >
                                 {r}
-                                {formData.target_role === r && <Check className="w-3.5 h-3.5 text-accent" />}
+                                {formData.target_role === r && <Check className="w-3 h-3 text-accent" />}
                               </button>
                             ))}
                           </div>
@@ -297,10 +297,10 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
                </div>
 
                {/* Experience Level */}
-               <div className="space-y-3 pt-4">
-                  <div className="flex items-center gap-2">
-                    <GraduationCap className="w-3.5 h-3.5 text-accent" />
-                    <span className="text-[13px] font-bold text-text-heading">Current Proficiency <span className="text-text-muted font-normal text-[11px] ml-1">(Optional)</span></span>
+               <div className="space-y-2 pt-1">
+                  <div className="flex items-center gap-1.5">
+                    <GraduationCap className="w-3 h-3 text-accent" />
+                    <span className="text-[12px] font-bold text-text-heading">Current Proficiency <span className="text-text-muted font-normal text-[10px] ml-1">(Optional)</span></span>
                   </div>
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                     {EXPERIENCE_LEVELS.map(level => (
@@ -308,16 +308,16 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
                         key={level.id}
                         type="button"
                         onClick={() => setFormData(prev => ({ ...prev, experience_level: level.id }))}
-                        className={`p-3 border text-left transition-all rounded-lg ${
+                        className={`p-2 border text-left transition-all rounded-lg ${
                           formData.experience_level === level.id 
                             ? 'bg-accent/10 border-accent ring-1 ring-accent' 
                             : 'bg-surface border-border hover:border-accent/40 shadow-sm'
                         }`}
                       >
-                        <div className={`text-[11px] font-bold uppercase tracking-wider mb-1 ${formData.experience_level === level.id ? 'text-accent' : 'text-text-muted'}`}>
+                        <div className={`text-[10px] font-bold uppercase tracking-wider mb-0.5 ${formData.experience_level === level.id ? 'text-accent' : 'text-text-muted'}`}>
                           {level.label}
                         </div>
-                        <div className="text-[10px] text-text-muted leading-tight">
+                        <div className="text-[9px] text-text-muted leading-tight">
                           {level.desc}
                         </div>
                       </button>
@@ -325,13 +325,13 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
                   </div>
                </div>
 
-               <div className="h-[1px] bg-border my-8" />
+               <div className="h-[1px] bg-border my-4" />
 
                {/* Subject */}
-               <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <Zap className="w-3.5 h-3.5 text-accent" />
-                    <span className="text-[13px] font-bold text-text-heading">What subject do you want to master?</span>
+               <div className="space-y-2">
+                  <div className="flex items-center gap-1.5">
+                    <Zap className="w-3 h-3 text-accent" />
+                    <span className="text-[12px] font-bold text-text-heading">What subject do you want to master?</span>
                   </div>
                   <input
                     type="text"
@@ -339,35 +339,35 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
                     value={formData.subject}
                     onChange={handleInputChange}
                     placeholder="e.g. Distributed Systems"
-                    className="w-full px-4 py-3 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[15px] font-bold text-text-heading"
+                    className="w-full px-3 py-2 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[14px] font-bold text-text-heading"
                   />
                </div>
 
                {/* Goal */}
-               <div className="space-y-3 pt-2">
-                  <div className="flex items-center gap-2">
-                    <Route className="w-3.5 h-3.5 text-accent" />
-                    <span className="text-[13px] font-bold text-text-heading">Specific End Goal</span>
+               <div className="space-y-2 pt-1">
+                  <div className="flex items-center gap-1.5">
+                    <Route className="w-3 h-3 text-accent" />
+                    <span className="text-[12px] font-bold text-text-heading">Specific End Goal</span>
                   </div>
                   <textarea
                     name="goal"
                     value={formData.goal}
                     onChange={handleInputChange}
-                    rows={3}
+                    rows={2}
                     placeholder="Example: I want to be able to build a scalable real-time chat application using WebSockets and Redis."
-                    className="w-full px-4 py-3 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[14px] font-medium resize-none h-28"
+                    className="w-full px-3 py-2 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[13px] font-medium resize-none h-16"
                   />
                </div>
             </div>
 
             {!isGenerating && (
-              <div className="pt-4">
+              <div className="pt-1">
                 <button
                   onClick={() => setStep(2)}
                   disabled={!formData.subject.trim() || !formData.goal.trim()}
-                  className="w-full sm:w-fit px-8 py-3 bg-text-heading text-background text-[11px] font-bold uppercase tracking-[0.2em] hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-3 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-full sm:w-fit px-6 py-2.5 bg-text-heading text-background text-[10px] font-bold uppercase tracking-[0.2em] hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-2 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed"
                 >
-                  Set Timeline <ArrowRight className="w-3.5 h-3.5" />
+                  Set Timeline <ArrowRight className="w-3 h-3" />
                 </button>
               </div>
             )}
@@ -375,25 +375,25 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
         );
       case 2:
         return (
-          <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="space-y-6">
-               <label className="inconsolata-ui flex items-center text-[11px] font-bold uppercase tracking-[0.2em] text-text-muted">
+          <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="space-y-3">
+               <label className="inconsolata-ui flex items-center text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted">
                  2. Intensity & Context
                </label>
 
                {/* Target Duration */}
-               <div className="space-y-4">
-                  <div className="flex items-center gap-2">
-                    <Hourglass className="w-3.5 h-3.5 text-accent" />
-                    <span className="text-[13px] font-bold text-text-heading">Target Duration</span>
+               <div className="space-y-2">
+                  <div className="flex items-center gap-1.5">
+                    <Hourglass className="w-3 h-3 text-accent" />
+                    <span className="text-[12px] font-bold text-text-heading">Target Duration</span>
                   </div>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-1.5">
                     {(profile?.is_pro ? [2, 3, 4, 6, 8, 10, 12] : [2, 3, 4]).map(w => (
                       <button
                         type="button"
                         key={w}
                         onClick={() => setFormData(prev => ({ ...prev, time_value: w }))}
-                        className={`px-5 py-2 border text-[11px] font-bold uppercase tracking-widest transition-all rounded-md
+                        className={`px-4 py-1.5 border text-[10px] font-bold uppercase tracking-widest transition-all rounded-md
                           ${formData.time_value === w 
                             ? 'bg-accent text-white border-accent shadow-lg shadow-accent/20' 
                             : 'bg-background text-text-muted border-border hover:border-accent hover:text-accent'
@@ -406,7 +406,7 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
                       <button 
                         type="button"
                         onClick={() => setIsPaymentModalOpen(true)}
-                        className="px-4 py-2 text-[10px] font-bold text-accent border border-accent/20 border-dashed hover:bg-accent/5 transition-all rounded-md"
+                        className="px-3 py-1.5 text-[9px] font-bold text-accent border border-accent/20 border-dashed hover:bg-accent/5 transition-all rounded-md"
                       >
                         Unlock 6-12 Weeks (Pro)
                       </button>
@@ -415,49 +415,49 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
                </div>
 
                {/* Context */}
-               <div className="space-y-3 pt-2">
-                  <div className="flex items-center gap-2">
-                    <History className="w-3.5 h-3.5 text-accent" />
-                    <span className="text-[13px] font-bold text-text-heading">Detailed Context (Optional)</span>
+               <div className="space-y-2 pt-1">
+                  <div className="flex items-center gap-1.5">
+                    <History className="w-3 h-3 text-accent" />
+                    <span className="text-[12px] font-bold text-text-heading">Detailed Context (Optional)</span>
                   </div>
                   <textarea
                     name="prior_experience"
                     value={formData.prior_experience}
                     onChange={handleInputChange}
-                    rows={3}
+                    rows={2}
                     placeholder="What do you already know? Any specific technologies you prefer or want to avoid?"
-                    className="w-full px-4 py-3 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[14px] font-medium resize-none h-28"
+                    className="w-full px-3 py-2 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[13px] font-medium resize-none h-16"
                   />
                </div>
             </div>
 
             {!isGenerating && (
-              <div className="flex flex-col sm:flex-row items-center gap-4 pt-4">
+              <div className="flex flex-col sm:flex-row items-center gap-3 pt-1">
                 <button
                   onClick={() => setStep(1)}
-                  className="w-full sm:w-fit px-8 py-3 bg-background border border-border text-text-muted text-[11px] font-bold uppercase tracking-[0.2em] hover:bg-sidebar transition-all rounded-lg"
+                  className="w-full sm:w-fit px-6 py-2.5 bg-background border border-border text-text-muted text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-sidebar transition-all rounded-lg"
                 >
                   Back
                 </button>
                 {!session ? (
                     <button
                       onClick={generateRoadmap}
-                      className="w-full sm:w-fit group relative inline-flex items-center justify-center px-10 py-3 text-[11px] font-bold uppercase tracking-[0.2em] transition-all bg-accent text-white hover:opacity-90 active:scale-95 shadow-xl shadow-accent/20 gap-3 rounded-lg"
+                      className="w-full sm:w-fit group relative inline-flex items-center justify-center px-8 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] transition-all bg-accent text-white hover:opacity-90 active:scale-95 shadow-xl shadow-accent/20 gap-2 rounded-lg"
                     >
-                      <LogIn className="w-3.5 h-3.5" /> Authenticate
+                      <LogIn className="w-3 h-3" /> Authenticate
                     </button>
                 ) : (
                     <button
                       onClick={generateRoadmap}
                       disabled={isGenerating}
-                      className={`w-full sm:w-fit group relative inline-flex items-center justify-center px-10 py-3 text-[11px] font-bold uppercase tracking-[0.2em] transition-all rounded-lg ${
+                      className={`w-full sm:w-fit group relative inline-flex items-center justify-center px-8 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] transition-all rounded-lg ${
                         credits !== null && credits < 1
                         ? 'bg-sidebar border border-border text-text-muted hover:border-accent/40' 
                         : 'bg-text-heading text-background hover:opacity-90 active:scale-95 shadow-xl'
                       }`}
                     >
-                      <div className="flex items-center justify-center gap-2.5">
-                        <span className={`text-[13px] ${credits !== null && credits < 1 ? 'grayscale opacity-50' : ''}`}>💎</span>
+                      <div className="flex items-center justify-center gap-2">
+                        <span className={`text-[12px] ${credits !== null && credits < 1 ? 'grayscale opacity-50' : ''}`}>💎</span>
                         {credits !== null && credits < 1 ? 'Get More Credits' : `Architect (${credits ?? '...'})`}
                       </div>
                     </button>
@@ -480,7 +480,7 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
 
   return (
     <div className="w-full manrope-body">
-      <div className="mb-6 flex items-center gap-4">
+      <div className="mb-4 flex items-center gap-4">
         {[1, 2].map(i => (
           <div key={i} className="flex items-center gap-2">
             <div className={`w-8 h-8 flex items-center justify-center text-[11px] font-bold border transition-all rounded-md ${

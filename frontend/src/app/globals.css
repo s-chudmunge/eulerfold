@@ -212,7 +212,7 @@ body {
 /* Prose scope handling */
 .serif-page-scope .prose-eulerfold {
   font-family: var(--font-serif-stack);
-  max-width: 680px;
+  max-width: 900px;
   margin-left: auto;
   margin-right: auto;
 }

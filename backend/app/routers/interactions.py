@@ -28,10 +28,10 @@ async def get_likes(
     if current_user:
         # Get profile ID
         profile_res = supabase.table("profiles").select("id").eq("supabase_uid", current_user.supabase_uid).maybe_single().execute()
-        if profile_res.data:
+        if profile_res and profile_res.data:
             profile_id = profile_res.data["id"]
             like_check = supabase.table("content_likes").select("id").eq("context_type", context_type).eq("context_id", context_id).eq("user_id", profile_id).maybe_single().execute()
-            if like_check.data:
+            if like_check and like_check.data:
                 user_liked = True
                 
     return LikeRead(count=count, user_liked=user_liked)
@@ -54,7 +54,7 @@ async def toggle_like(
     
     # 1. Get profile ID
     profile_res = supabase.table("profiles").select("id").eq("supabase_uid", current_user.supabase_uid).maybe_single().execute()
-    if not profile_res.data:
+    if not profile_res or not profile_res.data:
         raise HTTPException(status_code=404, detail="User profile not found")
         
     profile_id = profile_res.data["id"]
@@ -62,7 +62,7 @@ async def toggle_like(
     # 2. Check if exists
     like_check = supabase.table("content_likes").select("id").eq("context_type", payload.context_type).eq("context_id", payload.context_id).eq("user_id", profile_id).maybe_single().execute()
     
-    if like_check.data:
+    if like_check and like_check.data:
         # Remove like
         supabase.table("content_likes").delete().eq("id", like_check.data["id"]).execute()
     else:

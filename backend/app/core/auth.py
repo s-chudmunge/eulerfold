@@ -52,6 +52,12 @@ async def get_current_user(request: Request) -> User:
         raise credentials_exception
 
     token = auth_header.split(" ")[1]
+    
+    # Quick check for malformed tokens to avoid log spam and useless retries
+    if not token or token in ("null", "undefined") or token.count(".") != 2:
+        # We don't log the full token for security, but we log the issue
+        logger.warning(f"Auth: Malformed token received (length={len(token) if token else 0}, segments={token.count('.') + 1 if token else 0})")
+        raise credentials_exception
 
     try:
         # Verify Supabase JWT token with timeout + retry

@@ -26,13 +26,12 @@ import Footer from '@/components/Footer';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import RecommendedRoadmaps from '@/components/RecommendedRoadmaps';
 import FloatingTTS from '@/components/FloatingTTS';
-import NextStepsSidebar from '@/components/NextStepsSidebar';
 import { DiscussionSection } from '@/components/discussions/DiscussionSection';
 import { Article, articles } from '../generatedArticles';
 import { Paper, papers } from '../../research-decoded/generatedData';
+import { api } from '@/lib/api';
 import CommunityRoadmapBanner from '@/components/landing/CommunityRoadmapBanner';
 import SocialShare from '@/components/SocialShare';
-import { SideBanner, QUOTES } from '@/components/layout/SideBanners';
 
 const D2Diagram = ({ code, cache }: { code: string, cache?: Record<string, string> }) => {
   const [svg, setSvg] = React.useState<string>(cache?.[code] || '');
@@ -357,15 +356,6 @@ export default function ArticleClient({ article }: Props) {
     articles: Article[],
     papers: Paper[]
   }>({ articles: [], papers: [] });
-  const [activeId, setActiveId] = React.useState<string>('');
-  const [quoteIndex, setQuoteIndex] = React.useState(0);
-
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      setQuoteIndex((prev) => (prev + 1) % QUOTES.length);
-    }, 60000);
-    return () => clearInterval(interval);
-  }, []);
 
   const contextType = 'article';
   const contextId = article.slug;
@@ -380,16 +370,9 @@ export default function ArticleClient({ article }: Props) {
   React.useEffect(() => {
     const fetchLikes = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/interactions/likes/${contextType}/${contextId}`, {
-          headers: user ? {
-            'Authorization': `Bearer ${localStorage.getItem('eulerfold-auth-token')}`
-          } : {}
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setLikeCount(data.count);
-          setIsLiked(data.user_liked);
-        }
+        const response = await api.get(`/interactions/likes/${contextType}/${contextId}`);
+        setLikeCount(response.data.count);
+        setIsLiked(response.data.user_liked);
       } catch (err) {
         console.error('Failed to fetch likes:', err);
       } finally {
@@ -413,25 +396,13 @@ export default function ArticleClient({ article }: Props) {
     setLikeCount(prev => isLiked ? prev - 1 : prev + 1);
 
     try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/interactions/likes/toggle`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('eulerfold-auth-token')}`
-        },
-        body: JSON.stringify({
-          context_type: contextType,
-          context_id: contextId
-        })
+      const response = await api.post('/interactions/likes/toggle', {
+        context_type: contextType,
+        context_id: contextId
       });
 
-      if (!response.ok) {
-        throw new Error('Failed to toggle like');
-      }
-
-      const data = await response.json();
-      setLikeCount(data.count);
-      setIsLiked(data.user_liked);
+      setLikeCount(response.data.count);
+      setIsLiked(response.data.user_liked);
     } catch (err) {
       console.error('Like toggle failed:', err);
       // Revert on error
@@ -442,55 +413,6 @@ export default function ArticleClient({ article }: Props) {
 
   const [authorName, authorRole] = article.author.split(' — ');
   const authorImage = AUTHOR_IMAGES[authorName] || `https://ui-avatars.com/api/?name=${encodeURIComponent(authorName)}&background=0F766E&color=fff&bold=true`;
-
-  const headings = React.useMemo(() => {
-    // Match both ## and ### headers
-    const rawHeadings = article.content.split('\n').filter(line => /^##+ /.test(line));
-    return rawHeadings.map(line => {
-      const match = line.match(/^(##+) (.*)$/);
-      const level = match ? match[1].length : 2;
-      const title = match ? match[2].trim() : line.replace(/^##+ /, '').trim();
-      return { title, id: slugify(title), level };
-    });
-  }, [article.content]);
-
-  React.useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY + 200;
-
-      let currentActiveId = '';
-      
-      // If we're at the very top, highlight the first section
-      if (window.scrollY < 100 && headings.length > 0) {
-        currentActiveId = headings[0].id;
-      } else {
-        // Iterate through headings to find the current active one
-        for (let i = 0; i < headings.length; i++) {
-          const element = document.getElementById(headings[i].id);
-          if (!element) continue;
-          
-          const rect = element.getBoundingClientRect();
-          const top = rect.top + window.scrollY;
-          
-          if (scrollPosition >= top) {
-            currentActiveId = headings[i].id;
-          } else {
-            break;
-          }
-        }
-      }
-      
-      if (currentActiveId && currentActiveId !== activeId) {
-        setActiveId(currentActiveId);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    // Trigger once on mount
-    handleScroll();
-
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [headings, activeId]);
 
   const shareUrl = typeof window !== 'undefined' ? window.location.href : '';
   const shareText = `Check out this article on EulerFold: ${article.title}`;
@@ -569,58 +491,34 @@ export default function ArticleClient({ article }: Props) {
       {/* Site Content (BibGuru Layout) */}
       <div className="max-w-[1500px] mx-auto px-6 relative">
 
-        <div className="flex flex-col lg:flex-row justify-center xl:justify-start xl:pl-[120px] gap-[40px] lg:gap-[60px] mt-[30px] md:mt-[60px] pb-[80px]">
+        <div className="flex flex-col items-center mt-[30px] md:mt-[60px] pb-[80px]">
 
-          {/* Table of Contents (Left Sidebar) */}
-          <aside className="hidden xl:block w-[220px] shrink-0">
-            <div className="sticky top-[100px] flex flex-col gap-12">
-              <div>
-                <h3 className="inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] text-text-muted mb-6 opacity-60">Contents</h3>
-                <nav className="flex flex-col gap-4">
-                  {headings.map((heading) => (
-                    <a 
-                      key={heading.id} 
-                      href={`#${heading.id}`}
-                      onClick={() => setActiveId(heading.id)}
-                      className={`text-[13px] font-medium leading-tight transition-all hover:text-accent ${
-                        activeId === heading.id 
-                          ? "text-accent border-l-2 border-accent pl-3 -ml-[2px]" 
-                          : "text-text-muted pl-3 border-l-2 border-transparent hover:border-accent/20"
-                      } ${heading.level === 3 ? "ml-4" : ""}`}
-                    >
-                      {heading.title}
-                    </a>
-                  ))}
-                </nav>
-              </div>
-            </div>
-          </aside>
-
-          {/* Content Area (Max 1000px) */}
-          <main className="w-full max-w-[1000px]">            <article>
-              <header className="mb-[24px]">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+          {/* Content Area (Max 900px) */}
+          <main className="w-full max-w-[900px]">
+            <article>
+              <header className="mb-12 text-center flex flex-col items-center">
+                <div className="flex flex-col items-center gap-4 mb-6">
                   <Breadcrumbs items={[
                     { label: 'Articles', href: '/articles' },
                     { label: article.subject }
                   ]} />
                 </div>
 
-                <div className="mb-0.5">
-                  <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-text-muted opacity-60 inconsolata-ui">
+                <div className="mb-2">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-accent opacity-80 inconsolata-ui px-3 py-1 bg-accent/5 rounded-full border border-accent/10">
                     {article.subject}
                   </span>
                 </div>
                 
-                <h1 className="text-[32px] md:text-[44px] font-bold text-text-heading mb-1.5 leading-[1.1] tracking-tight font-serif-stack">
+                <h1 className="text-[36px] md:text-[48px] lg:text-[56px] font-bold text-text-heading mb-6 leading-[1.1] tracking-tight font-serif-stack max-w-4xl">
                   {article.title}
                 </h1>
                 
-                <p className="text-[18px] md:text-[20px] text-text-muted mb-5 leading-relaxed font-serif-stack opacity-80 italic">
+                <p className="text-[18px] md:text-[22px] text-text-muted mb-10 leading-relaxed font-serif-stack opacity-80 italic max-w-2xl">
                   {article.excerpt}
                 </p>
 
-                <div className="flex items-center gap-4 mb-6">
+                <div className="flex items-center gap-3 mb-10 self-start">
                   <div className="w-10 h-10 rounded-full overflow-hidden border border-border bg-sidebar shrink-0 shadow-sm">
                     <img 
                       src={authorImage} 
@@ -628,39 +526,39 @@ export default function ArticleClient({ article }: Props) {
                       className="w-full h-full object-cover"
                     />
                   </div>
-                  <div className="flex flex-col">
-                    <div className="text-[15px] font-bold text-text-heading manrope-body">
+                  <div className="flex flex-col items-start text-left">
+                    <div className="text-[14px] font-bold text-text-heading manrope-body leading-tight">
                       {authorName}
                     </div>
                     {authorRole && (
-                      <div className="text-[12px] font-medium text-text-muted italic manrope-body">
+                      <div className="text-[12px] font-medium text-text-muted italic manrope-body leading-tight">
                         {authorRole}
                       </div>
                     )}
-                    <div className="flex items-center gap-1.5 text-[11px] text-text-muted font-bold opacity-60 inconsolata-ui mt-0.5">
+                    <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold opacity-60 inconsolata-ui mt-0.5">
                       <time dateTime={new Date(article.date).toISOString()}>{article.date}</time>
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between py-4 border-t border-b border-border/40">
+                <div className="flex items-center justify-between w-full py-4 border-t border-b border-border/40 mb-12">
                   <div className="flex items-center gap-8 text-text-muted">
                     <button 
                       onClick={toggleLike}
                       className={`flex items-center gap-2 transition-all hover:scale-110 ${isLiked ? 'text-red-500' : 'hover:text-accent'}`}
                     >
-                      <Heart className={`w-[19px] h-[19px] ${isLiked ? 'fill-current' : ''}`} />
-                      <span className="text-[14px] font-bold manrope-body">{likeCount}</span>
+                      <Heart className={`w-[20px] h-[20px] ${isLiked ? 'fill-current' : ''}`} />
+                      <span className="text-[15px] font-bold manrope-body">{likeCount}</span>
                     </button>
                     <button 
                       onClick={scrollToComments}
                       className="hover:text-accent transition-all hover:scale-110"
                     >
-                      <MessageCircle className="w-[19px] h-[19px]" />
+                      <MessageCircle className="w-[20px] h-[20px]" />
                     </button>
                   </div>
                   <div className="flex items-center gap-3">
-                    <SocialShare title={article.title} className="scale-90" />
+                    <SocialShare title={article.title} className="scale-100" />
                   </div>
                 </div>
               </header>
@@ -834,23 +732,6 @@ export default function ArticleClient({ article }: Props) {
               </div>
             </article>
           </main>
-
-          {/* Action Sidebar (Right) */}
-          <div className="hidden lg:flex flex-col gap-12 w-[240px] shrink-0">
-            <NextStepsSidebar 
-              subject={article.subject} 
-              topic={article.title} 
-              className="w-full"
-            />
-
-            <SideBanner 
-              isStatic
-              buttonText="Research"
-              href="/research-decoded"
-              currentQuote={QUOTES[quoteIndex]}
-              quoteIndex={quoteIndex}
-            />
-          </div>
         </div>
       </div>
 

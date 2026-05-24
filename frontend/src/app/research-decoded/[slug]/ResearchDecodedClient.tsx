@@ -13,10 +13,8 @@ import SocialShare from '@/components/SocialShare';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import RecommendedRoadmaps from '@/components/RecommendedRoadmaps';
 import FloatingTTS from '@/components/FloatingTTS';
-import NextStepsSidebar from '@/components/NextStepsSidebar';
+import CommunityRoadmapBanner from '@/components/landing/CommunityRoadmapBanner';
 import { motion, AnimatePresence } from 'framer-motion';
-import { SideBanner, QUOTES } from '@/components/layout/SideBanners';
-import ResearchNavigationSidebar from '@/components/research-lab/ResearchNavigationSidebar';
 
 interface Article {
   title: string;
@@ -355,9 +353,7 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
   const router = useRouter();
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [scale, setScale] = useState(1);
-  const [activeId, setActiveId] = useState<string>('');
   const [showScrollTop, setShowScrollTop] = useState(false);
-  const [quoteIndex, setQuoteIndex] = React.useState(0);
   const [recommendations, setRecommendations] = React.useState<{
     articles: Article[],
     papers: Paper[]
@@ -378,20 +374,6 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
     container.addEventListener('scroll', handleScrollTopVisibility);
     return () => container.removeEventListener('scroll', handleScrollTopVisibility);
   }, []);
-
-  React.useEffect(() => {
-    const interval = setInterval(() => {
-      setQuoteIndex((prev) => (prev + 1) % QUOTES.length);
-    }, 60000);
-    return () => clearInterval(interval);
-  }, []);
-
-  const headings = React.useMemo(() => {
-    return paper.sections.map(section => ({
-      title: section.title,
-      id: section.id
-    }));
-  }, [paper.sections]);
 
   React.useEffect(() => {
     // Advanced recommendation logic for Research Decoded
@@ -454,46 +436,6 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
     });
   }, [paper, slug, papers]);
 
-  React.useEffect(() => {
-    const container = document.querySelector('main');
-    if (!container) return;
-
-    const handleScroll = () => {
-      const scrollPosition = container.scrollTop + 200;
-
-      let currentActiveId = '';
-      
-      // If we're at the very top, highlight the first section
-      if (container.scrollTop < 100 && headings.length > 0) {
-        currentActiveId = headings[0].id;
-      } else {
-        for (let i = 0; i < headings.length; i++) {
-          const element = document.getElementById(headings[i].id);
-          if (!element) continue;
-          
-          const rect = element.getBoundingClientRect();
-          const containerRect = container.getBoundingClientRect();
-          const top = container.scrollTop + (rect.top - containerRect.top);
-          
-          if (scrollPosition >= top) {
-            currentActiveId = headings[i].id;
-          } else {
-            break;
-          }
-        }
-      }
-      
-      if (currentActiveId && currentActiveId !== activeId) {
-        setActiveId(currentActiveId);
-      }
-    };
-
-    container.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll();
-
-    return () => container.removeEventListener('scroll', handleScroll);
-  }, [headings, activeId]);
-
   const handleSignIn = () => {
     router.push(`/login?next=${encodeURIComponent(window.location.pathname)}`);
   };
@@ -526,74 +468,52 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
         <FloatingTTS content={fullContent} />
 
         {/* Design matches strictly the refined example/topic-page */}
-        <div className="max-w-[1500px] mx-auto flex flex-col lg:flex-row justify-center xl:justify-start xl:pl-[120px] gap-12 lg:gap-20 px-6 py-8 md:px-12 md:py-16">
-
-          {/* Table of Contents (Left Sidebar) */}
-          <aside className="hidden xl:block w-[220px] shrink-0">
-            <div className="sticky top-[40px] flex flex-col gap-10">
-              <div>
-                <ResearchNavigationSidebar currentSlug={slug} isInline />
-                <h3 className="inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] text-text-muted mb-6 opacity-60">Structure</h3>              <nav className="flex flex-col gap-4">
-                {headings.map((heading) => (
-                  <a 
-                    key={heading.id} 
-                    href={`#${heading.id}`}
-                    onClick={() => setActiveId(heading.id)}
-                    className={`text-[13px] font-medium leading-tight transition-all hover:text-accent ${
-                      activeId === heading.id 
-                        ? "text-accent border-l-2 border-accent pl-3 -ml-[2px]" 
-                        : "text-text-muted pl-3 border-l-2 border-transparent hover:border-accent/20"
-                    }`}
-                  >
-                    {heading.title}
-                  </a>
-                ))}
-              </nav>
-            </div>
-
-          </div>
-        </aside>
-
-        <div className="max-w-[1000px] w-full">
+        <div className="max-w-[1500px] mx-auto flex flex-col items-center px-6 py-8 md:px-12 md:py-16">
+          <div className="max-w-[900px] w-full">
         {/* Paper Header */}
-        <header className="mb-12">
-          <Breadcrumbs items={[
-            { label: 'Research Decoded', href: '/research-decoded' },
-            { label: paper.authors }
-          ]} />
+        <header className="mb-20 text-center flex flex-col items-center">
+          <div className="mb-6 flex justify-center w-full">
+            <Breadcrumbs items={[
+              { label: 'Research Decoded', href: '/research-decoded' },
+              { label: paper.authors }
+            ]} />
+          </div>
 
-          <h1 className="font-bold text-text-heading mb-10 leading-[1.15] tracking-tight group flex items-center md:-ml-12">
-            <span className="text-accent opacity-0 group-hover:opacity-100 w-12 text-3xl transition-opacity hidden md:inline">#</span>
+          <h1 className="font-bold text-text-heading mb-8 leading-[1.15] tracking-tight text-4xl md:text-5xl lg:text-6xl max-w-4xl mx-auto">
             {paper.title}
           </h1>
 
-          <div className="p-5 md:p-6 bg-callout-bg border-l-2 border-[var(--accent)] rounded-r-xl mb-12">
-            <p className="text-text-primary italic m-0 leading-relaxed font-medium">
+          <div className="max-w-2xl mx-auto mb-10">
+            <p className="text-text-primary italic leading-relaxed font-medium text-lg md:text-xl opacity-80">
               {paper.citation}
             </p>
-            <Link 
-              href={paper.link} 
-              target="_blank" 
-              className="text-accent font-bold hover:underline mt-3 inline-flex items-center gap-1"
-            >
-              Read Original Paper <ExternalLink className="w-3.5 h-3.5" />
-            </Link>
+            <div className="mt-8 flex justify-center gap-4">
+              <Link 
+                href={paper.link} 
+                target="_blank" 
+                className="bg-accent text-white px-6 py-2.5 rounded-full font-bold text-sm hover:opacity-90 transition-all flex items-center gap-2 shadow-md hover:shadow-lg"
+              >
+                Read Original Paper <ExternalLink className="w-4 h-4" />
+              </Link>
+            </div>
           </div>
 
-          <SocialShare 
-            title={paper.title} 
-            text={`Decoding ${paper.title} on EulerFold:`} 
-            className="mb-8 mt-2" 
-          />
+          <div className="flex justify-center w-full">
+            <SocialShare 
+              title={paper.title} 
+              text={`Decoding ${paper.title} on EulerFold:`} 
+              className="mt-4" 
+            />
+          </div>
         </header>
 
         {/* Hero Image */}
         {paper.heroImage && (
-          <div className="mb-12 overflow-hidden rounded-lg border border-border">
+          <div className="mb-16 overflow-hidden rounded-2xl border border-border shadow-md">
             <img 
               src={paper.heroImage} 
               alt={`${paper.title} - Research Breakthrough Illustration`} 
-              className="w-full h-auto cursor-zoom-in block" 
+              className="w-full h-auto cursor-zoom-in block hover:scale-[1.02] transition-transform duration-500" 
               onClick={() => setSelectedImage(paper.heroImage)}
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
@@ -603,31 +523,31 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
         )}
 
         {/* Paper Intro */}
-        <div className="serif-page-scope mb-8 text-text-primary prose-eulerfold max-w-none">
+        <div className="serif-page-scope mb-12 text-text-primary prose-eulerfold max-w-none">
           <MarkdownWithLinks content={paper.intro} />
         </div>
 
         {/* Sections */}
         {paper.sections.map((section) => (
-          <section key={section.id} className="mt-16 md:mt-24">
-            <h2 id={section.id} className="text-text-heading mb-6 group flex items-center md:-ml-12 scroll-mt-24">
-              <span className="text-accent opacity-0 group-hover:opacity-100 w-12 text-2xl transition-opacity hidden md:inline">#</span>
+          <section key={section.id} className="mt-20 md:mt-28">
+            <h2 id={section.id} className="text-text-heading mb-8 group relative scroll-mt-24">
+              <span className="text-accent opacity-0 group-hover:opacity-100 absolute -left-10 top-0 text-2xl transition-opacity hidden md:inline">#</span>
               {section.title}
             </h2>
 
             {section.diagram && (
-              <div className="my-10 overflow-hidden rounded-lg border border-border">
+              <div className="my-12 overflow-hidden rounded-2xl border border-border shadow-sm bg-white dark:bg-sidebar/20">
                 <img 
                   src={section.diagram.url} 
                   alt={`${section.title} Diagram - ${section.diagram.caption}`} 
-                  className="mx-auto max-h-[500px] cursor-zoom-in block" 
+                  className="mx-auto max-h-[600px] cursor-zoom-in block p-4 md:p-8" 
                   onClick={() => setSelectedImage(section.diagram.url)}
                   onError={(e) => {
                     e.currentTarget.style.display = 'none';
                   }}
                 />
-                <div className="bg-sidebar/50 py-3 px-4 border-t border-border">
-                  <p className="text-text-muted text-center text-[13px] italic font-medium">
+                <div className="bg-sidebar/30 py-4 px-6 border-t border-border">
+                  <p className="text-text-muted text-center text-[14px] italic font-medium leading-relaxed">
                     {section.diagram.caption}
                   </p>
                 </div>
@@ -640,10 +560,15 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
           </section>
         ))}
 
+        {/* Community Banner */}
+        <div className="mt-20">
+          <CommunityRoadmapBanner />
+        </div>
+
         {/* Resources Section */}
-        <div className="mt-24 pt-16 border-t border-border">
-          <h2 className="text-text-heading mb-10 group flex items-center md:-ml-12">
-            <span className="text-accent opacity-0 group-hover:opacity-100 w-12 text-2xl transition-opacity hidden md:inline">#</span>
+        <div className="mt-32 pt-20 border-t border-border/60">
+          <h2 className="text-text-heading mb-12 group relative">
+            <span className="text-accent opacity-0 group-hover:opacity-100 absolute -left-10 top-0 text-2xl transition-opacity hidden md:inline">#</span>
             Dive Deeper
           </h2>
           <ul className="space-y-8 list-none p-0 mb-12">
@@ -759,23 +684,6 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
             </div>
           </div>
         </div>
-      </div>
-
-      {/* Action Sidebar (Right) */}
-      <div className="hidden lg:flex flex-col gap-12 w-[240px] shrink-0">
-        <NextStepsSidebar 
-          subject="Research" 
-          topic={paper.title} 
-          className="w-full"
-        />
-
-        <SideBanner 
-          isStatic
-          buttonText="Articles"
-          href="/articles"
-          currentQuote={QUOTES[quoteIndex]}
-          quoteIndex={quoteIndex}
-        />
       </div>
     </div>
   </div>

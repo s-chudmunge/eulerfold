@@ -63,7 +63,7 @@ export default function GoalGeneratorModal({ isOpen, onClose }: GoalGeneratorMod
 
         {/* Content */}
         <div 
-          className="flex-1 overflow-y-auto p-10 no-scrollbar"
+          className="flex-1 overflow-y-auto p-6 md:p-8 no-scrollbar"
         >
           <div className="max-w-[600px] mx-auto">
             <RoadmapGenerator onRoadmapGenerated={handleRoadmapGenerated} />

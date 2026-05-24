@@ -78,7 +78,7 @@ async def get_user_discussions(
     
     # 1. Get profile ID
     profile_res = supabase.table("profiles").select("id, display_name, avatar_url").eq("username", username).maybe_single().execute()
-    if not profile_res.data:
+    if not profile_res or not profile_res.data:
         raise HTTPException(status_code=404, detail="User profile not found")
     
     profile = profile_res.data

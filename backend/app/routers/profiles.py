@@ -32,7 +32,7 @@ async def get_current_user_profile(current_user: User = Depends(get_current_user
     
     # 1. Fetch Profile by email (current_user has email)
     p_res = sb.table("profiles").select("*").eq("email", current_user.email).maybe_single().execute()
-    if not p_res.data:
+    if not p_res or not p_res.data:
         raise HTTPException(status_code=404, detail="Profile not found")
     
     # Use the existing logic by calling get_public_profile with the username
