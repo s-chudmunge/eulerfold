@@ -493,18 +493,15 @@ export default function ArticleClient({ article }: Props) {
 
         <div className="flex flex-col items-center mt-[30px] md:mt-[60px] pb-[80px]">
 
-          {/* Content Area (Max 900px) */}
-          <main className="w-full max-w-[900px]">
+          {/* Header and Image Area (Max 4xl) */}
+          <main className="w-full max-w-4xl">
             <article>
               <header className="mb-12 text-center flex flex-col items-center">
-                <div className="flex flex-col items-center gap-4 mb-6">
-                  <Breadcrumbs items={[
-                    { label: 'Articles', href: '/articles' },
-                    { label: article.subject }
-                  ]} />
-                </div>
-
-                <div className="mb-2">
+                <div className="mb-4 flex items-center gap-3">
+                  <time dateTime={new Date(article.date).toISOString()} className="text-[11px] font-bold uppercase tracking-[0.15em] text-text-muted opacity-60 inconsolata-ui">
+                    {article.date}
+                  </time>
+                  <div className="w-[3px] h-[3px] rounded-full bg-text-muted opacity-20" />
                   <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-accent opacity-80 inconsolata-ui px-3 py-1 bg-accent/5 rounded-full border border-accent/10">
                     {article.subject}
                   </span>
@@ -518,47 +515,46 @@ export default function ArticleClient({ article }: Props) {
                   {article.excerpt}
                 </p>
 
-                <div className="flex items-center gap-3 mb-10 self-start">
-                  <div className="w-10 h-10 rounded-full overflow-hidden border border-border bg-sidebar shrink-0 shadow-sm">
-                    <img 
-                      src={authorImage} 
-                      alt={authorName}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="flex flex-col items-start text-left">
-                    <div className="text-[14px] font-bold text-text-heading manrope-body leading-tight">
-                      {authorName}
+                <div className="max-w-xl mx-auto w-full">
+                  <div className="flex items-center gap-3 mb-4 self-start">
+                    <div className="w-8 h-8 rounded-full overflow-hidden border border-border bg-sidebar shrink-0 shadow-sm">
+                      <img 
+                        src={authorImage} 
+                        alt={authorName}
+                        className="w-full h-full object-cover"
+                      />
                     </div>
-                    {authorRole && (
-                      <div className="text-[12px] font-medium text-text-muted italic manrope-body leading-tight">
-                        {authorRole}
+                    <div className="flex flex-col items-start text-left">
+                      <div className="text-[13px] font-bold text-text-heading manrope-body leading-tight">
+                        {authorName}
                       </div>
-                    )}
-                    <div className="flex items-center gap-1.5 text-[10px] text-text-muted font-bold opacity-60 inconsolata-ui mt-0.5">
-                      <time dateTime={new Date(article.date).toISOString()}>{article.date}</time>
+                      {authorRole && (
+                        <div className="text-[11px] font-medium text-text-muted italic manrope-body leading-tight mt-0.5">
+                          {authorRole}
+                        </div>
+                      )}
                     </div>
                   </div>
-                </div>
 
-                <div className="flex items-center justify-between w-full py-4 border-t border-b border-border/40 mb-12">
-                  <div className="flex items-center gap-8 text-text-muted">
-                    <button 
-                      onClick={toggleLike}
-                      className={`flex items-center gap-2 transition-all hover:scale-110 ${isLiked ? 'text-red-500' : 'hover:text-accent'}`}
-                    >
-                      <Heart className={`w-[20px] h-[20px] ${isLiked ? 'fill-current' : ''}`} />
-                      <span className="text-[15px] font-bold manrope-body">{likeCount}</span>
-                    </button>
-                    <button 
-                      onClick={scrollToComments}
-                      className="hover:text-accent transition-all hover:scale-110"
-                    >
-                      <MessageCircle className="w-[20px] h-[20px]" />
-                    </button>
-                  </div>
-                  <div className="flex items-center gap-3">
-                    <SocialShare title={article.title} className="scale-100" />
+                  <div className="flex items-center justify-between w-full py-2 border-t border-b border-border/40 mb-8">
+                    <div className="flex items-center gap-5 text-text-muted">
+                      <button 
+                        onClick={toggleLike}
+                        className={`flex items-center gap-2 transition-all hover:scale-110 ${isLiked ? 'text-red-500' : 'hover:text-accent'}`}
+                      >
+                        <Heart className={`w-[16px] h-[16px] ${isLiked ? 'fill-current' : ''}`} />
+                        <span className="text-[13px] font-bold manrope-body">{likeCount}</span>
+                      </button>
+                      <button 
+                        onClick={scrollToComments}
+                        className="hover:text-accent transition-all hover:scale-110"
+                      >
+                        <MessageCircle className="w-[16px] h-[16px]" />
+                      </button>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <SocialShare title={article.title} className="scale-75 origin-right" />
+                    </div>
                   </div>
                 </div>
               </header>
@@ -577,155 +573,163 @@ export default function ArticleClient({ article }: Props) {
                   </figure>
                 )}
 
-                <div className="prose prose-eulerfold max-w-none text-text-primary">
-                  <MarkdownWithLinks content={article.content} currentSlug={article.slug} cache={article.d2Cache} />
-                </div>
+                <div className="max-w-[720px] mx-auto">
+                  <div className="prose prose-eulerfold max-w-none text-text-primary">
+                    <MarkdownWithLinks content={article.content} currentSlug={article.slug} cache={article.d2Cache} />
+                  </div>
 
-                {/* Box Component (Technical Insight) */}
-                {article.technicalInsight && (
-                  <div className="my-16 pl-8 border-l-4 border-accent">
-                    <div className="text-[11px] font-bold text-accent uppercase tracking-[0.2em] mb-2 inconsolata-ui">Insight</div>
-                    <p className="text-[20px] md:text-[22px] text-text-heading font-medium leading-relaxed tracking-tight italic">
-                      {article.technicalInsight}
+                  {/* Box Component (Technical Insight) */}
+                  {article.technicalInsight && (
+                    <div className="my-16 pl-8 border-l-4 border-accent">
+                      <div className="text-[11px] font-bold text-accent uppercase tracking-[0.2em] mb-2 inconsolata-ui">Insight</div>
+                      <p className="text-[20px] md:text-[22px] text-text-heading font-medium leading-relaxed tracking-tight italic">
+                        {article.technicalInsight}
+                      </p>
+                    </div>
+                  )}
+
+                  {/* FAQ Section */}
+                  {article.faq && article.faq.length > 0 && (
+                    <div className="mt-[80px]">
+                      <h2 className="mb-[32px] text-text-heading tracking-tighter">
+                        Frequently Asked Questions
+                      </h2>
+                      <div className="space-y-4">
+                        {article.faq.map((item, idx) => (
+                          <details key={idx} className="group border border-border rounded-2xl bg-card overflow-hidden transition-all duration-300 hover:border-accent/30">
+                            <summary className="p-[24px] font-bold leading-[1.3] cursor-pointer list-none flex justify-between items-center group-open:bg-accent/5 transition-colors tracking-tight text-text-heading">
+                              <span className="max-w-[90%]">{item.q}</span>
+                              <span className="text-accent text-[24px] font-light transition-transform duration-300 group-open:rotate-45">+</span>
+                            </summary>
+                            <div className="px-[24px] pb-[24px] pt-2 text-text-primary font-normal opacity-90">
+                              {item.a}
+                            </div>
+                          </details>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Community Banner */}
+                  <div className="mt-[80px]">
+                    <CommunityRoadmapBanner />
+                  </div>
+
+                  {/* Social Buttons */}
+                  <div className="flex flex-wrap gap-4 mt-[60px] border-t border-border pt-[40px]">
+                    <a 
+                      href={`https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 bg-[#000000] text-white px-[16px] py-[8px] rounded-xl text-[14px] font-bold hover:bg-[#1a1a1a] shadow-[inset_0_-3px_0_rgba(255,255,255,0.1)] transition-colors"
+                    >
+                      <FaXTwitter className="w-4 h-4 fill-white" /> Post
+                    </a>
+                    <a 
+                      href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 bg-[#3a579a] text-white px-[16px] py-[8px] rounded-xl text-[14px] font-bold hover:bg-[#344f8b] shadow-[inset_0_-3px_0_rgba(0,0,0,0.2)] transition-colors"
+                    >
+                      <Facebook className="w-4 h-4 fill-white" /> Share
+                    </a>
+                    <a 
+                      href={`https://api.whatsapp.com/send?text=${encodedText}%20${encodedUrl}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-2 bg-[#25D366] text-white px-[16px] py-[8px] rounded-xl text-[14px] font-bold hover:bg-[#20bd5c] shadow-[inset_0_-3px_0_rgba(0,0,0,0.2)] transition-colors"
+                    >
+                      <FaWhatsapp className="w-4 h-4 fill-white" /> WhatsApp
+                    </a>
+                  </div>
+
+                  {/* Discussion Section */}
+                  <div id="comments" className="mt-16">
+                    <DiscussionSection contextId={article.slug} contextType="article" />
+                  </div>
+
+                  {/* Recommended Readings */}
+                  <div className="mt-20 pt-12 border-t border-border">
+                    <h2 className="text-[22px] font-bold text-text-heading mb-8 tracking-tight font-inter">
+                      Recommended Readings
+                    </h2>
+                    
+                    <div className="space-y-10">
+                      {/* Glossary Articles */}
+                      {recommendations.articles.length > 0 && (
+                        <div>
+                          <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.2em] inconsolata-ui mb-4 block opacity-60">From the Glossary</span>
+                          <div className="flex flex-col gap-4">
+                            {recommendations.articles.map((item) => (
+                              <Link key={item.slug} href={`/articles/${item.slug}`} className="group flex items-start justify-between py-2 border-b border-border/40 hover:border-accent/40 transition-colors">
+                                <span className="text-[17px] md:text-[19px] font-semibold text-text-heading group-hover:text-accent transition-colors leading-snug">
+                                  {item.title}
+                                </span>
+                                <ArrowRight className="w-4 h-4 text-accent opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all shrink-0 mt-1" />
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Research Papers */}
+                      {recommendations.papers.length > 0 && (
+                        <div>
+                          <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.2em] inconsolata-ui mb-4 block opacity-60">Research Decoded</span>
+                          <div className="flex flex-col gap-4">
+                            {recommendations.papers.map((paper) => (
+                              <Link key={paper.slug} href={`/research-decoded/${paper.slug}`} className="group flex items-start justify-between py-2 border-b border-border/40 hover:border-accent/40 transition-colors">
+                                <div className="flex flex-col gap-1">
+                                  <span className="text-[17px] md:text-[19px] font-semibold text-text-heading group-hover:text-accent transition-colors leading-snug">
+                                    {paper.title}
+                                  </span>
+                                  <span className="text-[13px] text-text-muted font-medium italic opacity-70">{paper.authors}</span>
+                                </div>
+                                <ArrowRight className="w-4 h-4 text-accent opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all shrink-0 mt-1" />
+                              </Link>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    <RecommendedRoadmaps query={article.title} className="mt-10" />
+                  </div>
+
+                  {/* Breadcrumbs & AI Disclosure */}
+                  <div className="mt-16 text-center border-t border-border pt-10">
+                    <div className="flex justify-center mb-6">
+                      <Breadcrumbs items={[
+                        { label: 'Articles', href: '/articles' },
+                        { label: article.subject }
+                      ]} />
+                    </div>
+                    <p className="text-[13px] text-text-muted manrope-body italic max-w-lg mx-auto leading-relaxed font-medium opacity-60">
+                      The author of this article utilized generative AI (Google Gemini 3.1 Pro) to assist in part of the drafting and editing process.
                     </p>
                   </div>
-                )}
 
-                {/* FAQ Section */}
-                {article.faq && article.faq.length > 0 && (
-                  <div className="mt-[80px]">
-                    <h2 className="mb-[32px] text-text-heading tracking-tighter">
-                      Frequently Asked Questions
-                    </h2>
-                    <div className="space-y-4">
-                      {article.faq.map((item, idx) => (
-                        <details key={idx} className="group border border-border rounded-2xl bg-card overflow-hidden transition-all duration-300 hover:border-accent/30">
-                          <summary className="p-[24px] font-bold leading-[1.3] cursor-pointer list-none flex justify-between items-center group-open:bg-accent/5 transition-colors tracking-tight text-text-heading">
-                            <span className="max-w-[90%]">{item.q}</span>
-                            <span className="text-accent text-[24px] font-light transition-transform duration-300 group-open:rotate-45">+</span>
-                          </summary>
-                          <div className="px-[24px] pb-[24px] pt-2 text-text-primary font-normal opacity-90">
-                            {item.a}
-                          </div>
-                        </details>
-                      ))}
-                    </div>
-                  </div>
-                )}
-
-                {/* Community Banner */}
-                <div className="mt-[80px]">
-                  <CommunityRoadmapBanner />
-                </div>
-
-                {/* Social Buttons */}
-                <div className="flex flex-wrap gap-4 mt-[60px] border-t border-border pt-[40px]">
-                  <a 
-                    href={`https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 bg-[#000000] text-white px-[16px] py-[8px] rounded-xl text-[14px] font-bold hover:bg-[#1a1a1a] shadow-[inset_0_-3px_0_rgba(255,255,255,0.1)] transition-colors"
-                  >
-                    <FaXTwitter className="w-4 h-4 fill-white" /> Post
-                  </a>
-                  <a 
-                    href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 bg-[#3a579a] text-white px-[16px] py-[8px] rounded-xl text-[14px] font-bold hover:bg-[#344f8b] shadow-[inset_0_-3px_0_rgba(0,0,0,0.2)] transition-colors"
-                  >
-                    <Facebook className="w-4 h-4 fill-white" /> Share
-                  </a>
-                  <a 
-                    href={`https://api.whatsapp.com/send?text=${encodedText}%20${encodedUrl}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-2 bg-[#25D366] text-white px-[16px] py-[8px] rounded-xl text-[14px] font-bold hover:bg-[#20bd5c] shadow-[inset_0_-3px_0_rgba(0,0,0,0.2)] transition-colors"
-                  >
-                    <FaWhatsapp className="w-4 h-4 fill-white" /> WhatsApp
-                  </a>
-                </div>
-
-                {/* Discussion Section */}
-                <div id="comments" className="mt-16">
-                  <DiscussionSection contextId={article.slug} contextType="article" />
-                </div>
-
-                {/* Recommended Readings */}
-                <div className="mt-20 pt-12 border-t border-border">
-                  <h2 className="text-[22px] font-bold text-text-heading mb-8 tracking-tight font-inter">
-                    Recommended Readings
-                  </h2>
-                  
-                  <div className="space-y-10">
-                    {/* Glossary Articles */}
-                    {recommendations.articles.length > 0 && (
-                      <div>
-                        <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.2em] inconsolata-ui mb-4 block opacity-60">From the Glossary</span>
-                        <div className="flex flex-col gap-4">
-                          {recommendations.articles.map((item) => (
-                            <Link key={item.slug} href={`/articles/${item.slug}`} className="group flex items-start justify-between py-2 border-b border-border/40 hover:border-accent/40 transition-colors">
-                              <span className="text-[17px] md:text-[19px] font-semibold text-text-heading group-hover:text-accent transition-colors leading-snug">
-                                {item.title}
-                              </span>
-                              <ArrowRight className="w-4 h-4 text-accent opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all shrink-0 mt-1" />
-                            </Link>
-                          ))}
-                        </div>
+                  {/* Simplified About Card at Bottom */}
+                  <div className="mt-16 pt-10 border-t border-border flex flex-col items-center">
+                    <p className="text-[16px] text-text-primary manrope-body font-medium mb-6 text-center">
+                      Technical explainers on AI, research, and modern engineering.
+                    </p>
+                    <div className="flex items-center gap-4">
+                      <span className="text-[13px] font-bold text-text-muted inconsolata-ui uppercase tracking-widest">Follow us</span>
+                      <div className="flex gap-2">
+                        <a href="https://x.com/eulerfold" target="_blank" rel="noopener noreferrer" className="w-[32px] h-[32px] bg-[#000000] rounded flex items-center justify-center hover:opacity-80 transition-opacity">
+                          <FaXTwitter className="w-4 h-4 text-white" />
+                        </a>
+                        <a href="https://www.instagram.com/eulerfold" target="_blank" rel="noopener noreferrer" className="w-[32px] h-[32px] bg-[#E1306C] rounded flex items-center justify-center hover:opacity-80 transition-opacity">
+                          <Instagram className="w-4 h-4 text-white" />
+                        </a>
+                        <a href="https://www.youtube.com/@eulerfold" target="_blank" rel="noopener noreferrer" className="w-[32px] h-[32px] bg-[#FF0000] rounded flex items-center justify-center hover:opacity-80 transition-opacity">
+                          <Youtube className="w-4 h-4 text-white" />
+                        </a>
+                        <a href="mailto:eulerfold@gmail.com" className="w-[32px] h-[32px] bg-[#0F766E] rounded flex items-center justify-center hover:opacity-80 transition-opacity">
+                          <Rss className="w-4 h-4 text-white" />
+                        </a>
                       </div>
-                    )}
-
-                    {/* Research Papers */}
-                    {recommendations.papers.length > 0 && (
-                      <div>
-                        <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.2em] inconsolata-ui mb-4 block opacity-60">Research Decoded</span>
-                        <div className="flex flex-col gap-4">
-                          {recommendations.papers.map((paper) => (
-                            <Link key={paper.slug} href={`/research-decoded/${paper.slug}`} className="group flex items-start justify-between py-2 border-b border-border/40 hover:border-accent/40 transition-colors">
-                              <div className="flex flex-col gap-1">
-                                <span className="text-[17px] md:text-[19px] font-semibold text-text-heading group-hover:text-accent transition-colors leading-snug">
-                                  {paper.title}
-                                </span>
-                                <span className="text-[13px] text-text-muted font-medium italic opacity-70">{paper.authors}</span>
-                              </div>
-                              <ArrowRight className="w-4 h-4 text-accent opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all shrink-0 mt-1" />
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  <RecommendedRoadmaps query={article.title} className="mt-10" />
-                </div>
-
-                {/* AI Disclosure */}
-                <div className="mt-16 text-center border-t border-border pt-10">
-                  <p className="text-[13px] text-text-muted manrope-body italic max-w-lg mx-auto leading-relaxed font-medium">
-                    The author of this article utilized generative AI (Google Gemini 3.1 Pro) to assist in part of the drafting and editing process.
-                  </p>
-                </div>
-
-                {/* Simplified About Card at Bottom */}
-                <div className="mt-16 pt-10 border-t border-border flex flex-col items-center">
-                  <p className="text-[16px] text-text-primary manrope-body font-medium mb-6 text-center">
-                    Technical explainers on AI, research, and modern engineering.
-                  </p>
-                  <div className="flex items-center gap-4">
-                    <span className="text-[13px] font-bold text-text-muted inconsolata-ui uppercase tracking-widest">Follow us</span>
-                    <div className="flex gap-2">
-                      <a href="https://x.com/eulerfold" target="_blank" rel="noopener noreferrer" className="w-[32px] h-[32px] bg-[#000000] rounded flex items-center justify-center hover:opacity-80 transition-opacity">
-                        <FaXTwitter className="w-4 h-4 text-white" />
-                      </a>
-                      <a href="https://www.instagram.com/eulerfold" target="_blank" rel="noopener noreferrer" className="w-[32px] h-[32px] bg-[#E1306C] rounded flex items-center justify-center hover:opacity-80 transition-opacity">
-                        <Instagram className="w-4 h-4 text-white" />
-                      </a>
-                      <a href="https://www.youtube.com/@eulerfold" target="_blank" rel="noopener noreferrer" className="w-[32px] h-[32px] bg-[#FF0000] rounded flex items-center justify-center hover:opacity-80 transition-opacity">
-                        <Youtube className="w-4 h-4 text-white" />
-                      </a>
-                      <a href="mailto:eulerfold@gmail.com" className="w-[32px] h-[32px] bg-[#0F766E] rounded flex items-center justify-center hover:opacity-80 transition-opacity">
-                        <Rss className="w-4 h-4 text-white" />
-                      </a>
                     </div>
                   </div>
                 </div>

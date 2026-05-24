@@ -469,16 +469,9 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
 
         {/* Design matches strictly the refined example/topic-page */}
         <div className="max-w-[1500px] mx-auto flex flex-col items-center px-6 py-8 md:px-12 md:py-16">
-          <div className="max-w-[900px] w-full">
+          <div className="max-w-4xl w-full">
         {/* Paper Header */}
         <header className="mb-20 text-center flex flex-col items-center">
-          <div className="mb-6 flex justify-center w-full">
-            <Breadcrumbs items={[
-              { label: 'Research Decoded', href: '/research-decoded' },
-              { label: paper.authors }
-            ]} />
-          </div>
-
           <h1 className="font-bold text-text-heading mb-8 leading-[1.15] tracking-tight text-4xl md:text-5xl lg:text-6xl max-w-4xl mx-auto">
             {paper.title}
           </h1>
@@ -522,165 +515,173 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
           </div>
         )}
 
-        {/* Paper Intro */}
-        <div className="serif-page-scope mb-12 text-text-primary prose-eulerfold max-w-none">
-          <MarkdownWithLinks content={paper.intro} />
-        </div>
-
-        {/* Sections */}
-        {paper.sections.map((section) => (
-          <section key={section.id} className="mt-20 md:mt-28">
-            <h2 id={section.id} className="text-text-heading mb-8 group relative scroll-mt-24">
-              <span className="text-accent opacity-0 group-hover:opacity-100 absolute -left-10 top-0 text-2xl transition-opacity hidden md:inline">#</span>
-              {section.title}
-            </h2>
-
-            {section.diagram && (
-              <div className="my-12 overflow-hidden rounded-2xl border border-border shadow-sm bg-white dark:bg-sidebar/20">
-                <img 
-                  src={section.diagram.url} 
-                  alt={`${section.title} Diagram - ${section.diagram.caption}`} 
-                  className="mx-auto max-h-[600px] cursor-zoom-in block p-4 md:p-8" 
-                  onClick={() => setSelectedImage(section.diagram.url)}
-                  onError={(e) => {
-                    e.currentTarget.style.display = 'none';
-                  }}
-                />
-                <div className="bg-sidebar/30 py-4 px-6 border-t border-border">
-                  <p className="text-text-muted text-center text-[14px] italic font-medium leading-relaxed">
-                    {section.diagram.caption}
-                  </p>
-                </div>
-              </div>
-            )}
-
-            <div className="text-text-primary prose-eulerfold max-w-none">
-              <MarkdownWithLinks content={section.content} />
-            </div>
-          </section>
-        ))}
-
-        {/* Community Banner */}
-        <div className="mt-20">
-          <CommunityRoadmapBanner />
-        </div>
-
-        {/* Resources Section */}
-        <div className="mt-32 pt-20 border-t border-border/60">
-          <h2 className="text-text-heading mb-12 group relative">
-            <span className="text-accent opacity-0 group-hover:opacity-100 absolute -left-10 top-0 text-2xl transition-opacity hidden md:inline">#</span>
-            Dive Deeper
-          </h2>
-          <ul className="space-y-8 list-none p-0 mb-12">
-            {paper.resources.map((res, idx) => (
-              <li key={idx} className="border-b border-border pb-10 last:border-0 group">
-                <p className="font-bold text-text-heading m-0 mb-2 group-hover:text-accent transition-colors">{res.title}</p>
-                <p className="text-text-muted m-0 font-medium">{res.provider} • {res.type}</p>
-                <Link href={res.url} target="_blank" className="text-accent hover:underline mt-5 inline-flex items-center gap-2 font-bold">
-                  Explore Resource <ExternalLink className="w-4 h-4" />
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-
-        {/* Discussion Section */}
-        <DiscussionSection contextId={slug} contextType="research-decoded" />
-
-        {/* Recommended Readings */}
-        <div className="mt-20 pt-12 border-t border-border">
-          <h2 className="text-[22px] font-bold text-text-heading mb-8 tracking-tight font-inter">
-            Recommended Readings
-          </h2>
-          
-          <div className="space-y-10">
-            {/* Glossary Articles */}
-            {recommendations.articles.length > 0 && (
-              <div>
-                <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.2em] inconsolata-ui mb-4 block opacity-60">From the Glossary</span>
-                <div className="flex flex-col gap-4">
-                  {recommendations.articles.map((item) => (
-                    <Link key={item.slug} href={`/articles/${item.slug}`} className="group flex items-start justify-between py-2 border-b border-border/40 hover:border-accent/40 transition-colors">
-                      <span className="text-[17px] md:text-[19px] font-semibold text-text-heading group-hover:text-accent transition-colors leading-snug">
-                        {item.title}
-                      </span>
-                      <ArrowRight className="w-4 h-4 text-accent opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all shrink-0 mt-1" />
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Research Papers */}
-            {recommendations.papers.length > 0 && (
-              <div>
-                <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.2em] inconsolata-ui mb-4 block opacity-60">Research Decoded</span>
-                <div className="flex flex-col gap-4">
-                  {recommendations.papers.map((p) => (
-                    <Link key={p.slug} href={`/research-decoded/${p.slug}`} className="group flex items-start justify-between py-2 border-b border-border/40 hover:border-accent/40 transition-colors">
-                      <div className="flex flex-col gap-1">
-                        <span className="text-[17px] md:text-[19px] font-semibold text-text-heading group-hover:text-accent transition-colors leading-snug">
-                          {p.title}
-                        </span>
-                        <span className="text-[13px] text-text-muted font-medium italic opacity-70">{p.authors}</span>
-                      </div>
-                      <ArrowRight className="w-4 h-4 text-accent opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all shrink-0 mt-1" />
-                    </Link>
-                  ))}
-                </div>
-              </div>
-            )}
+        <div className="max-w-[720px] mx-auto">
+          {/* Paper Intro */}
+          <div className="serif-page-scope mb-12 text-text-primary prose-eulerfold max-w-none">
+            <MarkdownWithLinks content={paper.intro} />
           </div>
 
-          <RecommendedRoadmaps query={paper.title} className="mt-10" />
-        </div>
+          {/* Sections */}
+          {paper.sections.map((section) => (
+            <section key={section.id} className="mt-20 md:mt-28">
+              <h2 id={section.id} className="text-text-heading mb-8 group relative scroll-mt-24">
+                <span className="text-accent opacity-0 group-hover:opacity-100 absolute -left-10 top-0 text-2xl transition-opacity hidden md:inline">#</span>
+                {section.title}
+              </h2>
 
-        {/* AI Disclosure */}
-        <div className="mt-12 text-center border-t border-border/20 pt-8">
-          <p className="text-text-muted opacity-50 italic max-w-lg mx-auto leading-relaxed">
-            The author of this article utilized generative AI (Google Gemini 3.1 Pro) to assist in part of the drafting and editing process.
-          </p>
-        </div>
+              {section.diagram && (
+                <div className="my-12 overflow-hidden rounded-2xl border border-border shadow-sm bg-white dark:bg-sidebar/20">
+                  <img 
+                    src={section.diagram.url} 
+                    alt={`${section.title} Diagram - ${section.diagram.caption}`} 
+                    className="mx-auto max-h-[600px] cursor-zoom-in block p-4 md:p-8" 
+                    onClick={() => setSelectedImage(section.diagram.url)}
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                  <div className="bg-sidebar/30 py-4 px-6 border-t border-border">
+                    <p className="text-text-muted text-center text-[14px] italic font-medium leading-relaxed">
+                      {section.diagram.caption}
+                    </p>
+                  </div>
+                </div>
+              )}
 
-        {/* Improved Integrated Navigation */}
-        <div className="mt-20 pt-10 border-t border-border">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="flex flex-col">
-              {paper.prev ? (
-                <Link 
-                  href={`/research-decoded/${paper.prev}`}
-                  className="group flex flex-col p-6 rounded-2xl border border-border bg-sidebar hover:border-accent/40 hover:bg-accent/5 transition-all h-full"
-                >
-                  <span className="flex items-center gap-2 text-[11px] font-bold text-text-muted uppercase tracking-[0.2em] mb-3 group-hover:text-accent transition-colors inconsolata-ui">
-                    <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" /> Previous Decoding
-                  </span>
-                  <span className="text-[17px] font-bold text-text-heading leading-tight manrope-body">
-                    {papers[paper.prev as keyof typeof papers].title}
-                  </span>
-                  <span className="mt-2 text-[13px] text-text-muted italic opacity-70 group-hover:opacity-100 transition-opacity">
-                    {papers[paper.prev as keyof typeof papers].authors}
-                  </span>
-                </Link>
-              ) : <div />}
+              <div className="text-text-primary prose-eulerfold max-w-none">
+                <MarkdownWithLinks content={section.content} />
+              </div>
+            </section>
+          ))}
+
+          {/* Community Banner */}
+          <div className="mt-20">
+            <CommunityRoadmapBanner />
+          </div>
+
+          {/* Resources Section */}
+          <div className="mt-32 pt-20 border-t border-border/60">
+            <h2 className="text-text-heading mb-12 group relative">
+              <span className="text-accent opacity-0 group-hover:opacity-100 absolute -left-10 top-0 text-2xl transition-opacity hidden md:inline">#</span>
+              Dive Deeper
+            </h2>
+            <ul className="space-y-8 list-none p-0 mb-12">
+              {paper.resources.map((res, idx) => (
+                <li key={idx} className="border-b border-border pb-10 last:border-0 group">
+                  <p className="font-bold text-text-heading m-0 mb-2 group-hover:text-accent transition-colors">{res.title}</p>
+                  <p className="text-text-muted m-0 font-medium">{res.provider} • {res.type}</p>
+                  <Link href={res.url} target="_blank" className="text-accent hover:underline mt-5 inline-flex items-center gap-2 font-bold">
+                    Explore Resource <ExternalLink className="w-4 h-4" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Discussion Section */}
+          <DiscussionSection contextId={slug} contextType="research-decoded" />
+
+          {/* Recommended Readings */}
+          <div className="mt-20 pt-12 border-t border-border">
+            <h2 className="text-[22px] font-bold text-text-heading mb-8 tracking-tight font-inter">
+              Recommended Readings
+            </h2>
+            
+            <div className="space-y-10">
+              {/* Glossary Articles */}
+              {recommendations.articles.length > 0 && (
+                <div>
+                  <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.2em] inconsolata-ui mb-4 block opacity-60">From the Glossary</span>
+                  <div className="flex flex-col gap-4">
+                    {recommendations.articles.map((item) => (
+                      <Link key={item.slug} href={`/articles/${item.slug}`} className="group flex items-start justify-between py-2 border-b border-border/40 hover:border-accent/40 transition-colors">
+                        <span className="text-[17px] md:text-[19px] font-semibold text-text-heading group-hover:text-accent transition-colors leading-snug">
+                          {item.title}
+                        </span>
+                        <ArrowRight className="w-4 h-4 text-accent opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all shrink-0 mt-1" />
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Research Papers */}
+              {recommendations.papers.length > 0 && (
+                <div>
+                  <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.2em] inconsolata-ui mb-4 block opacity-60">Research Decoded</span>
+                  <div className="flex flex-col gap-4">
+                    {recommendations.papers.map((p) => (
+                      <Link key={p.slug} href={`/research-decoded/${p.slug}`} className="group flex items-start justify-between py-2 border-b border-border/40 hover:border-accent/40 transition-colors">
+                        <div className="flex flex-col gap-1">
+                          <span className="text-[17px] md:text-[19px] font-semibold text-text-heading group-hover:text-accent transition-colors leading-snug">
+                            {p.title}
+                          </span>
+                          <span className="text-[13px] text-text-muted font-medium italic opacity-70">{p.authors}</span>
+                        </div>
+                        <ArrowRight className="w-4 h-4 text-accent opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all shrink-0 mt-1" />
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
-            <div className="flex flex-col">
-              {paper.next ? (
-                <Link 
-                  href={`/research-decoded/${paper.next}`}
-                  className="group flex flex-col p-6 rounded-2xl border border-border bg-sidebar hover:border-accent/40 hover:bg-accent/5 transition-all h-full text-right items-end"
-                >
-                  <span className="flex items-center gap-2 text-[11px] font-bold text-text-muted uppercase tracking-[0.2em] mb-3 group-hover:text-accent transition-colors inconsolata-ui">
-                    Next Decoding <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
-                  </span>
-                  <span className="text-[17px] font-bold text-text-heading leading-tight manrope-body">
-                    {papers[paper.next as keyof typeof papers].title}
-                  </span>
-                  <span className="mt-2 text-[13px] text-text-muted italic opacity-70 group-hover:opacity-100 transition-opacity">
-                    {papers[paper.next as keyof typeof papers].authors}
-                  </span>
-                </Link>
-              ) : <div />}
+            <RecommendedRoadmaps query={paper.title} className="mt-10" />
+          </div>
+
+          {/* Breadcrumbs & AI Disclosure */}
+          <div className="mt-20 pt-10 border-t border-border/40 text-center">
+            <div className="flex justify-center mb-6">
+              <Breadcrumbs items={[
+                { label: 'Research Decoded', href: '/research-decoded' },
+                { label: paper.authors }
+              ]} />
+            </div>
+            <p className="text-text-muted opacity-50 italic max-w-lg mx-auto leading-relaxed text-sm">
+              The author of this article utilized generative AI (Google Gemini 3.1 Pro) to assist in part of the drafting and editing process.
+            </p>
+          </div>
+
+          {/* Improved Integrated Navigation */}
+          <div className="mt-20 pt-10 border-t border-border">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
+              <div className="flex flex-col">
+                {paper.prev ? (
+                  <Link 
+                    href={`/research-decoded/${paper.prev}`}
+                    className="group flex flex-col transition-all h-full"
+                  >
+                    <span className="flex items-center gap-2 text-[11px] font-bold text-text-muted uppercase tracking-[0.2em] mb-3 group-hover:text-accent transition-colors inconsolata-ui">
+                      <ArrowLeft className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" /> Previous Decoding
+                    </span>
+                    <span className="text-[17px] font-bold text-text-heading leading-tight manrope-body group-hover:text-accent transition-colors">
+                      {papers[paper.prev as keyof typeof papers].title}
+                    </span>
+                    <span className="mt-2 text-[13px] text-text-muted italic opacity-70 group-hover:opacity-100 transition-opacity">
+                      {papers[paper.prev as keyof typeof papers].authors}
+                    </span>
+                  </Link>
+                ) : <div />}
+              </div>
+
+              <div className="flex flex-col">
+                {paper.next ? (
+                  <Link 
+                    href={`/research-decoded/${paper.next}`}
+                    className="group flex flex-col transition-all h-full text-right items-end"
+                  >
+                    <span className="flex items-center gap-2 text-[11px] font-bold text-text-muted uppercase tracking-[0.2em] mb-3 group-hover:text-accent transition-colors inconsolata-ui">
+                      Next Decoding <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                    <span className="text-[17px] font-bold text-text-heading leading-tight manrope-body group-hover:text-accent transition-colors">
+                      {papers[paper.next as keyof typeof papers].title}
+                    </span>
+                    <span className="mt-2 text-[13px] text-text-muted italic opacity-70 group-hover:opacity-100 transition-opacity">
+                      {papers[paper.next as keyof typeof papers].authors}
+                    </span>
+                  </Link>
+                ) : <div />}
+              </div>
             </div>
           </div>
         </div>

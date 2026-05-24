@@ -417,6 +417,38 @@
       {
         "title": "The New Era of Open-Source Reasoning AI",
         "slug": "deepseek-r1-incentivizing-reasoning"
+      },
+      {
+        "title": "Agentless: Simple Design for Complex Software Engineering",
+        "slug": "agentless-demystifying-software-engineering-agents"
+      },
+      {
+        "title": "OS-Atlas: A Foundation for Computer Use",
+        "slug": "os-atlas-foundation-action-model"
+      },
+      {
+        "title": "AppAgent: Autonomous Exploration and Persistent UI Knowledge",
+        "slug": "appagent-autonomous-smartphone-exploration"
+      },
+      {
+        "title": "WebVoyager: The Era of End-to-End Online Web Agency",
+        "slug": "webvoyager-end-to-end-web-agent"
+      },
+      {
+        "title": "Ferret-UI: Grounded Mobile UI Understanding",
+        "slug": "ferret-ui-mobile-grounding-mllm"
+      },
+      {
+        "title": "Magentic-One: Multi-Agent Orchestration via Nested Ledgers",
+        "slug": "magentic-one-multi-agent-orchestration"
+      },
+      {
+        "title": "AutoCodeRover: AST-Aware Program Improvement",
+        "slug": "autocoderover-ast-software-engineering-agent"
+      },
+      {
+        "title": "SCoRe: Multi-Turn RL for Intrinsic Self-Correction",
+        "slug": "score-multi-turn-self-correction-rl"
       }
     ]
   },
@@ -553,6 +585,10 @@
       {
         "title": "Scaling AI Thought Beyond Training",
         "slug": "scaling-test-time-compute"
+      },
+      {
+        "title": "The Scaling Shift: Searching for Agency",
+        "slug": "scaling-agentic-test-time-compute"
       }
     ]
   },
@@ -711,7 +747,11 @@
       {
         "title": "Hidden Backdoors in the AI Supply Chain",
         "slug": "backdoor-attacks-badnets"
+      },
+      {
+        "title": "Levels of Autonomy: A Governance Framework",
+        "slug": "levels-of-autonomy-ai-agent-governance"
       }
-    ]
-  }
-]
+      ]
+      }
+      ]

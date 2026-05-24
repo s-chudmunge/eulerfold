@@ -1,42 +1,51 @@
-# Research Decoded Workflow
+# Research Decoded: Technical Mandate
 
-This document outlines the systematic process for researching, writing, and integrating new foundational papers into the "Research Decoded" section of EulerFold.
+This document is the authoritative execution guide for adding content to the "Research Decoded" section. The objective is to provide high-fidelity technical utility for researchers, not high-level summaries for laypeople.
 
-## Phase 1: Research & Discovery
+## 1. Discovery & Verification (The Source)
 
-1.  **Identify the Source**: Start with an arXiv ID (e.g., `1706.03762`) or an ar5iv link (`https://ar5iv.labs.arxiv.org/html/1706.03762`).
-2.  **Fetch Diagrams**: Run the automated image retrieval script:
-    ```bash
-    python3 backend/scripts/fetch_ar5iv_images.py <arxiv_id>
+1.  **ArXiv Anchoring**: Every entry must start with a verified ArXiv ID.
+2.  **Primary Reading**: Use `web_fetch` on the `ar5iv.labs.arxiv.org/html/<id>` version. Never rely on summaries or abstracts alone.
+3.  **Visual Extraction**: Run `python3 backend/scripts/fetch_ar5iv_images.py <id>`. 
+    *   Identify the **Hero Image**: Usually `x1.png` or the primary architecture overview.
+    *   Verify the URL: Ensure it follows the `arxiv.org/html/<id>v<version>/x1.png` format for persistence.
+4.  **Resource Verification**: Use `web_fetch` to confirm that GitHub repos, Project Pages, and Documentation links are live and relevant to the specific paper.
+
+## 2. Content Drafting (The Decoding)
+
+*   **Mandatory Asymmetry**: Break all visual patterns. Use varying paragraph lengths (3 lines vs. 30 lines) and an inconsistent number of sections per paper. Avoid the "two-paragraph-per-header" trap.
+*   **Implementation Depth**: Include the "clinical" details:
+    *   Exact mathematical formulas (e.g., Ochiai scoring, KL-divergence constraints).
+    *   Specific Python libraries or frameworks used (e.g., `astunparse`, `Playwright`, `InternVL-2`).
+    *   Hyperparameters and sampling logic (e.g., "sampled at $n=21$ with $T=0.7$").
+    *   Data Contamination stats (e.g., "4.3% leakage in SWE-bench").
+*   **Continuous Prose**: No bullet points, bolding, or lists. Let the technical logic drive the flow.
+*   **Diagram Integration**: Embed diagrams in-line using the `![Caption](URL)` format. Every paper must have at least the Hero diagram and one internal mechanism diagram.
+*   **Open Endings**: Conclude with a technical observation or a lingering architectural question. Never summarize.
+
+## 3. Integration & Sync (The Build)
+
+1.  **File Creation**: Create `<slug>.md` in `content/research-decoded/`.
+2.  **Frontmatter**:
+    ```yaml
+    ---
+    title: "Exact Technical Title"
+    authors: "Lead Author et al. (Year)"
+    citation: "Full ArXiv Citation String"
+    link: "https://arxiv.org/abs/<id>"
+    slug: "canonical-slug"
+    heroImage: "https://arxiv.org/html/<id>v<version>/x1.png"
+    ---
     ```
-    This script identifies `figure` and `figcaption` tags, converting relative paths to absolute ar5iv asset URLs.
-3.  **Deep Read**: Use the `web_fetch` tool on the ar5iv link. Focus your attention on:
-    *   **The Problem Space**: What specific constraint or limitation was the status quo facing?
-    *   **The Mechanism ("The How")**: What is the exact architectural or algorithmic adjustment? Move beyond high-level summaries to understand the mathematical or structural logic.
-    *   **The Abstraction**: What new capability or insight does this mechanism enable?
+3.  **Navigation**: Add slug to `content/research-decoded/navigation.json`.
+4.  **Compiling**: Run the sync script from the root:
+    ```bash
+    node scripts/compile-research.mjs
+    ```
+5.  **Local Check**: Verify the page at `http://localhost:3000/research-decoded/<slug>`.
 
-## Phase 2: Content Drafting
+## Anti-Patterns (Immediate Rejection)
 
-All content must adhere to the **Sankalp Writing Style**:
-
-*   **Continuous Prose**: No bullet points, lists, or bold text for emphasis. Use paragraphs that flow naturally.
-*   **Technical Depth**: Do not truncate the explanation for the sake of brevity. Communicate all the main ideas of the paper, ensuring the "how" is explained in clinical detail. The goal is a deep understanding, not a surface-level summary. The number of sections and the total length must be dictated by the paper's technical density, not a predetermined limit.
-*   **Granular Sectioning**: Use as many sections as necessary to decode the mathematical, architectural, and empirical nuances. If a paper introduces three distinct mechanisms, each deserves its own deep-dive section.
-*   **Specific to Abstract**: Start with a concrete observation (e.g., "The memory cost of a KV cache increases linearly with sequence length...") and reason outward to the bigger implication.
-*   **Intellectual Honesty**: Avoid hype, superlatives, and repetitive formulaic phrases (e.g., "the technical shift," "the core shift"). Let the logic of the argument provide the transitions.
-*   **Open Endings**: End sections with an open observation about the future or a lingering question. Never summarize the preceding paragraphs.
-
-## Phase 3: Integration
-
-1.  **Independent Content**: Create a new `.md` file in `content/research-decoded/`.
-    *   Include YAML frontmatter for `title`, `authors`, `citation`, `link`, `heroImage`, and `slug`.
-    *   Use `## Section Title {#custom-id}` for headings.
-    *   Include a `## Resources` section at the end with the format:
-        `- [Title](URL) {type: article, provider: Provider}`
-2.  **Navigation**: Add the new paper's slug to the appropriate category in `content/research-decoded/navigation.json`.
-3. **Automated Compilation**: Sync the new content to the frontend by running the compilation script from the root directory:
-   ```bash
-   node scripts/compile-research.mjs
-   ```
-   This script parses the markdown files and navigation settings to generate `frontend/src/app/research-decoded/generatedData.ts`.
-4. **Verification**: Confirm the build compiles and the new page renders with correct metadata and functioning images.
+*   **Fluff**: Using words like "groundbreaking," "revolutionary," or "provocative." Use "O(1) search" or "22.6% resolution rate" instead.
+*   **Homogeneity**: Making all papers look identical in the sidebar or on the page. Complexity should dictate length.
+*   **Broken Assets**: Missing images or dead GitHub links. Verify every asset in every turn.
