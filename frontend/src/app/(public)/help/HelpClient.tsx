@@ -122,7 +122,7 @@ export default function HelpClient() {
     {
       category: 'Verification',
       question: 'What is Submit Homework?',
-      answer: 'Submit Homework is a process where specialized AI agents evaluate your Proof of Work. They verify technical accuracy, depth of understanding, and alignment with industry standards.',
+      answer: 'Submit Homework is a process where specialized AI agents evaluate your homework submissions. They verify technical accuracy, depth of understanding, and alignment with industry standards.',
       icon: <Zap className="w-3.5 h-3.5" />
     },
     {

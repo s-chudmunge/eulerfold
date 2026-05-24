@@ -44,7 +44,7 @@ export default function ScoringPage() {
                                 <h3 className="manrope-body text-[18px] font-bold text-text-heading uppercase tracking-tight">01. Project Proof (40%)</h3>
                             </div>
                             <p className="manrope-body text-[15px] text-text-muted leading-relaxed font-medium">
-                                The primary evidence of your skill. Every module ends with a "Proof of Work" challenge analyzed by specialized AI agents to check your technical quality and depth.
+                                The primary evidence of your skill. Every module ends with a homework challenge analyzed by specialized AI agents to check your technical quality and depth.
                             </p>
                         </div>
 

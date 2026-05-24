@@ -105,13 +105,13 @@ export default async function LandingPage() {
       question: "How are my technical skills tracked?",
       answer: (
         <span>
-          Your <Link href="/dashboard" className="text-accent hover:underline font-bold">Technical Inventory</Link> updates automatically as you complete modules and submit Proof of Work. We track your progress across different roadmaps into a unified skill profile.
+          Your <Link href="/dashboard" className="text-accent hover:underline font-bold">Technical Inventory</Link> updates automatically as you complete modules and submit homework. We track your progress across different roadmaps into a unified skill profile.
         </span>
       ),
-      schemaAnswer: "Your Technical Inventory updates automatically as you complete modules and submit Proof of Work. We track your progress across different roadmaps into a unified skill profile."
+      schemaAnswer: "Your Technical Inventory updates automatically as you complete modules and submit homework. We track your progress across different roadmaps into a unified skill profile."
     },
     {
-      question: "What is 'Proof of Work' and 'Submit Homework'?",
+      question: "What is 'Homework'?",
       answer: "To ensure actual mastery, you must submit technical proof for modules. These are reviewed by specialized AI models to verify your understanding before you earn skill points.",
       schemaAnswer: "To ensure actual mastery, you must submit technical proof for modules. These are reviewed by specialized AI models to verify your understanding before you earn skill points."
     },

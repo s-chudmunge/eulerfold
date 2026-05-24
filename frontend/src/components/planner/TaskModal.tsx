@@ -22,7 +22,7 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
   const [roadmaps, setRoadmaps] = useState<RoadmapMe[]>([]);
   
   // Form State
-  const [title, setTitle] = useState(task?.title || '');
+  const [title, setTitle] = useState(task?.title?.replace("Proof of Work", "Homework") || '');
   const [type, setType] = useState<any>(task?.task_type || (initialRoadmapId ? 'module' : 'custom'));
   const [date, setDate] = useState(task ? task.scheduled_date : (initialDate ? format(initialDate, 'yyyy-MM-dd') : format(new Date(), 'yyyy-MM-dd')));
   const [roadmapId, setRoadmapId] = useState<number | undefined>(task?.roadmap_id || initialRoadmapId);
@@ -124,9 +124,6 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
       const slug = task.metadata?.roadmap_slug || roadmap?.slug;
       
       if (slug) {
-        if (task.task_type === 'module' || task.task_type === 'pow') {
-          return `/project/${slug}/build/${task.module_number || 1}`;
-        }
         return `/roadmap/${slug}`;
       }
     }
@@ -139,68 +136,75 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/40 animate-in fade-in duration-200 manrope-body">
-      <div className="bg-sidebar w-full max-w-[450px] border border-border rounded-xl shadow-2xl flex flex-col overflow-hidden">
+      <div className="bg-sidebar w-full max-w-[420px] border border-border rounded-xl shadow-2xl flex flex-col overflow-hidden">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-sidebar/50">
-          <div className="flex items-center gap-3">
-            <h3 className="text-[14px] font-bold text-text-heading tracking-tight">
+        <div className="flex items-center justify-between px-5 py-3 border-b border-border bg-sidebar/50">
+          <div className="flex items-center gap-2.5">
+            <h3 className="text-[13px] font-bold text-text-heading tracking-tight">
               {task ? 'Edit Task' : 'New Study Task'}
             </h3>
             {taskLink && (
               <Link 
                 href={taskLink}
                 target={taskLink.startsWith('http') ? "_blank" : "_self"}
-                className="flex items-center gap-2 px-3 py-1.5 bg-accent text-white rounded-lg text-[10px] font-bold uppercase tracking-widest hover:brightness-110 transition-all shadow-sm hover:shadow-md"
+                onClick={(e) => {
+                  if (taskLink.includes('/roadmap/') && (task.task_type === 'practice' || task.task_type === 'pow')) {
+                    if (!confirm("This feature has moved to the Roadmap page. Redirect there now?")) {
+                      e.preventDefault();
+                    }
+                  }
+                }}
+                className="flex items-center gap-1.5 px-2.5 py-1.5 bg-accent text-white rounded-lg text-[9px] font-bold uppercase tracking-widest hover:brightness-110 transition-all shadow-sm hover:shadow-md"
               >
-                Open Content
-                <Play className="w-3 h-3 fill-current" />
+                Open Roadmap
+                <Play className="w-2.5 h-2.5 fill-current" />
               </Link>
             )}
           </div>
           <button onClick={onClose} className="text-text-muted hover:text-text-heading transition-colors">
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4" />
           </button>
         </div>
 
-        <div className="p-6 space-y-6">
+        <div className="p-5 space-y-5">
           {/* Title */}
           <div>
-            <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2 ml-1">Task Title</label>
+            <label className="text-[9px] font-bold text-text-muted uppercase tracking-widest block mb-1.5 ml-1">Task Title</label>
             <input 
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g., Study Neural Networks"
-              className="w-full bg-background/50 border border-border px-4 py-2.5 text-[13px] font-bold text-text-heading outline-none focus:border-accent transition-all rounded-lg"
+              className="w-full bg-background/50 border border-border px-3.5 py-2 text-[12.5px] font-bold text-text-heading outline-none focus:border-accent transition-all rounded-lg"
             />
           </div>
 
           {/* Type & Date */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2 ml-1">Type</label>
+              <label className="text-[9px] font-bold text-text-muted uppercase tracking-widest block mb-1.5 ml-1">Type</label>
               <select 
                 value={type}
                 onChange={(e) => setType(e.target.value)}
                 disabled={!!task}
-                className="w-full bg-background/50 border border-border px-3 py-2.5 text-[12px] font-bold text-text-primary outline-none focus:border-accent transition-all rounded-lg"
+                className="w-full bg-background/50 border border-border px-2.5 py-2 text-[11px] font-bold text-text-primary outline-none focus:border-accent transition-all rounded-lg"
               >
                 <option value="custom">Custom</option>
                 <option value="module">Module</option>
                 <option value="practice">Practice</option>
-                <option value="pow">Proof of Work</option>
+                <option value="pow">Homework</option>
                 <option value="video">Video</option>
                 <option value="research">Research Decoded</option>
                 <option value="article">Article</option>
               </select>
             </div>
             <div>
-              <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2 ml-1">Date</label>
+              <label className="text-[9px] font-bold text-text-muted uppercase tracking-widest block mb-1.5 ml-1">Date</label>
               <div className="relative">
                 <input 
                   type="date"
                   value={date}
                   onChange={(e) => setDate(e.target.value)}
-                  className="w-full bg-background/50 border border-border px-3 py-2.5 text-[12px] font-bold text-text-primary outline-none focus:border-accent transition-all rounded-lg"
+                  className="w-full bg-background/50 border border-border px-2.5 py-2 text-[11px] font-bold text-text-primary outline-none focus:border-accent transition-all rounded-lg"
                 />
               </div>
             </div>
@@ -208,26 +212,28 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
 
           {/* Roadmap Selection (only for non-custom/non-video if new) */}
           {!task && (type === 'module' || type === 'practice' || type === 'pow') && (
-            <div className="animate-in slide-in-from-top-2 duration-300">
-              <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2 ml-1">Associate Roadmap</label>
-              <select 
-                value={roadmapId}
-                onChange={(e) => {
-                  const rId = Number(e.target.value);
-                  setRoadmapId(rId);
-                  setModuleNumber(undefined); // Reset module when roadmap changes
-                }}
-                className="w-full bg-background/50 border border-border px-3 py-2.5 text-[12px] font-bold text-text-primary outline-none focus:border-accent transition-all mb-4 rounded-lg"
-              >
-                <option value="">Select a roadmap...</option>
-                {roadmaps.map(r => (
-                  <option key={r.id} value={r.id}>{r.title}</option>
-                ))}
-              </select>
+            <div className="animate-in slide-in-from-top-1 duration-300 space-y-4">
+              <div>
+                <label className="text-[9px] font-bold text-text-muted uppercase tracking-widest block mb-1.5 ml-1">Associate Roadmap</label>
+                <select 
+                  value={roadmapId}
+                  onChange={(e) => {
+                    const rId = Number(e.target.value);
+                    setRoadmapId(rId);
+                    setModuleNumber(undefined); // Reset module when roadmap changes
+                  }}
+                  className="w-full bg-background/50 border border-border px-2.5 py-2 text-[11px] font-bold text-text-primary outline-none focus:border-accent transition-all rounded-lg"
+                >
+                  <option value="">Select a roadmap...</option>
+                  {roadmaps.map(r => (
+                    <option key={r.id} value={r.id}>{r.title}</option>
+                  ))}
+                </select>
+              </div>
 
               {roadmapId && (
                 <div>
-                  <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2 ml-1">Select Module</label>
+                  <label className="text-[9px] font-bold text-text-muted uppercase tracking-widest block mb-1.5 ml-1">Select Module</label>
                   <select 
                     value={moduleNumber}
                     onChange={(e) => {
@@ -239,11 +245,11 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
                       const modules = selectedRoadmap?.roadmap_plan?.modules || [];
                       const module = modules[mNum - 1];
                       if (module) {
-                        const prefix = type === 'module' ? 'Study' : type === 'practice' ? 'Practice' : 'PoW';
+                        const prefix = type === 'module' ? 'Study' : type === 'practice' ? 'Practice' : 'Homework';
                         setTitle(`${prefix}: ${module.title}`);
                       }
                     }}
-                    className="w-full bg-background/50 border border-border px-3 py-2.5 text-[12px] font-bold text-text-primary outline-none focus:border-accent transition-all rounded-lg"
+                    className="w-full bg-background/50 border border-border px-2.5 py-2 text-[11px] font-bold text-text-primary outline-none focus:border-accent transition-all rounded-lg"
                   >
                     <option value="">Select a module...</option>
                     {(roadmaps.find(r => r.id === roadmapId)?.roadmap_plan?.modules || []).map((mod: any, i: number) => (
@@ -259,15 +265,15 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
 
           {/* Video URL */}
           {type === 'video' && (
-            <div className="animate-in slide-in-from-top-2 duration-300">
-              <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2 ml-1">Video URL</label>
+            <div className="animate-in slide-in-from-top-1 duration-300">
+              <label className="text-[9px] font-bold text-text-muted uppercase tracking-widest block mb-1.5 ml-1">Video URL</label>
               <div className="relative">
-                <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted" />
+                <LinkIcon className="absolute left-3 top-1/2 -translate-y-1/2 w-3 h-3 text-text-muted" />
                 <input 
                   value={videoUrl}
                   onChange={(e) => setVideoUrl(e.target.value)}
                   placeholder="https://youtube.com/..."
-                  className="w-full bg-background/50 border border-border pl-9 pr-4 py-2.5 text-[12px] font-medium text-text-primary outline-none focus:border-accent transition-all rounded-lg"
+                  className="w-full bg-background/50 border border-border pl-8.5 pr-3 py-2 text-[11px] font-medium text-text-primary outline-none focus:border-accent transition-all rounded-lg"
                 />
               </div>
             </div>
@@ -275,8 +281,8 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
 
           {/* Research Decoded Selection */}
           {type === 'research' && (
-            <div className="animate-in slide-in-from-top-2 duration-300">
-              <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2 ml-1">Select Paper</label>
+            <div className="animate-in slide-in-from-top-1 duration-300">
+              <label className="text-[9px] font-bold text-text-muted uppercase tracking-widest block mb-1.5 ml-1">Select Paper</label>
               <select 
                 value={contentSlug}
                 onChange={(e) => {
@@ -286,7 +292,7 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
                     setTitle(`Research: ${papers[slug].title}`);
                   }
                 }}
-                className="w-full bg-background/50 border border-border px-3 py-2.5 text-[12px] font-bold text-text-primary outline-none focus:border-accent transition-all rounded-lg"
+                className="w-full bg-background/50 border border-border px-2.5 py-2 text-[11px] font-bold text-text-primary outline-none focus:border-accent transition-all rounded-lg"
               >
                 <option value="">Select a paper...</option>
                 {Object.entries(papers).map(([slug, paper]) => (
@@ -298,8 +304,8 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
 
           {/* Article Selection */}
           {type === 'article' && (
-            <div className="animate-in slide-in-from-top-2 duration-300">
-              <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2 ml-1">Select Article</label>
+            <div className="animate-in slide-in-from-top-1 duration-300">
+              <label className="text-[9px] font-bold text-text-muted uppercase tracking-widest block mb-1.5 ml-1">Select Article</label>
               <select 
                 value={contentSlug}
                 onChange={(e) => {
@@ -309,7 +315,7 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
                     setTitle(`Article: ${articles[slug].title}`);
                   }
                 }}
-                className="w-full bg-background/50 border border-border px-3 py-2.5 text-[12px] font-bold text-text-primary outline-none focus:border-accent transition-all rounded-lg"
+                className="w-full bg-background/50 border border-border px-2.5 py-2 text-[11px] font-bold text-text-primary outline-none focus:border-accent transition-all rounded-lg"
               >
                 <option value="">Select an article...</option>
                 {Object.entries(articles).map(([slug, article]) => (
@@ -321,38 +327,38 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
 
           {/* Completion Toggle */}
           {task && (
-            <div className="flex items-center gap-3 p-4 bg-sidebar/50 border border-border rounded-lg">
+            <div className="flex items-center gap-2.5 p-3 bg-sidebar/50 border border-border rounded-lg">
               <input 
                 type="checkbox"
                 checked={isCompleted}
                 onChange={(e) => setIsCompleted(e.target.checked)}
-                className="w-4 h-4 accent-accent"
+                className="w-3.5 h-3.5 accent-accent"
               />
-              <span className="text-[12px] font-bold text-text-heading">Mark as completed</span>
+              <span className="text-[11px] font-bold text-text-heading">Mark as completed</span>
             </div>
           )}
         </div>
 
         {/* Footer */}
-        <div className="px-6 py-5 border-t border-border flex items-center justify-between bg-sidebar/50">
+        <div className="px-5 py-4 border-t border-border flex items-center justify-between bg-sidebar/50">
           {task ? (
             <button 
               onClick={handleDelete}
               disabled={loading}
-              className="p-2.5 text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
+              className="p-2 text-red-500 hover:bg-red-500/10 rounded-lg transition-all"
             >
-              <Trash2 className="w-4 h-4" />
+              <Trash2 className="w-3.5 h-3.5" />
             </button>
           ) : <div />}
           
-          <div className="flex gap-3">
-            <button onClick={onClose} className="px-6 py-2.5 text-[11px] font-bold uppercase tracking-widest text-text-muted hover:text-text-heading transition-all">
+          <div className="flex gap-2.5">
+            <button onClick={onClose} className="px-5 py-2 text-[10px] font-bold uppercase tracking-widest text-text-muted hover:text-text-heading transition-all">
               Cancel
             </button>
             <button 
               onClick={handleSave}
               disabled={loading || !title}
-              className="px-8 py-2.5 bg-text-heading text-background rounded-lg text-[12px] font-bold uppercase tracking-widest hover:opacity-90 disabled:opacity-50 transition-all shadow-lg active:scale-[0.98]"
+              className="px-6 py-2.5 bg-text-heading text-background rounded-lg text-[11px] font-bold uppercase tracking-widest hover:opacity-90 disabled:opacity-50 transition-all shadow-lg active:scale-[0.98]"
             >
               {loading ? 'Saving...' : 'Save Task'}
             </button>

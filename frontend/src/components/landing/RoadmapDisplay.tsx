@@ -319,7 +319,7 @@ interface RoadmapDisplayProps {
                           <div className="bg-emerald-500/10 p-1.5 rounded-full border border-emerald-500/5">
                             <Scroll className="w-3.5 h-3.5 text-emerald-600" />
                           </div>
-                          <span className="manrope-body text-[12px] md:text-[13px] font-semibold text-text-primary">1 task</span>
+                          <span className="manrope-body text-[12px] md:text-[13px] font-semibold text-text-primary">1 homework</span>
                         </div>
                       </div>
                     </div>
@@ -359,9 +359,8 @@ interface RoadmapDisplayProps {
                             }}
                             className="flex items-center justify-center gap-1.5 px-3 md:px-5 py-1.5 bg-emerald-600/90 text-white rounded-lg text-[8px] md:text-[9px] font-bold tracking-widest uppercase hover:bg-emerald-600 transition-all active:scale-95"
                           >
-                            <Hammer className="w-2.5 h-2.5 md:w-3 md:h-3" />
-                            <span>Build</span>
-                          </button>
+                            <Scroll className="w-2.5 h-2.5 md:w-3 md:h-3" />
+                            <span>Homework</span>                          </button>
                         )}
                       </div>
                     )}

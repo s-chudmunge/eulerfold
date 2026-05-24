@@ -11,7 +11,7 @@ def calculate_confidence_score_formula(
     """
     Calculates 0-100 confidence score for a skill.
     Weights (aligned with UI):
-    - 40% Proof of Work (POW)
+    - 40% Homework
     - 30% Practice Score
     - 15% Topic Completion
     - 15% Concept Depth

@@ -38,7 +38,7 @@ export default function SkillRadar({ skill }: SkillRadarProps) {
 
     const data = [
         { subject: 'Confidence', A: skill.confidence_score, fullMark: 100 },
-        { subject: 'PoW', A: (skill.pow_score || 0) * 100, fullMark: 100 },
+        { subject: 'Homework', A: (skill.pow_score || 0) * 100, fullMark: 100 },
         { subject: 'Practice', A: (skill.practice_score || 0) * 100, fullMark: 100 },
         { subject: 'Progress', A: (skill.topic_completion || 0) * 100, fullMark: 100 },
         { subject: 'Depth', A: (skill.depth_score || 0) * 100, fullMark: 100 },

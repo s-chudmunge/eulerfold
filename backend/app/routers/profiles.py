@@ -470,7 +470,7 @@ async def export_profile_pdf(username: str):
     # --- STATS ROW ---
     stats_data = [
         [Paragraph(f"{len(skills)}", stat_val_style), Paragraph(f"{total_roadmaps_count}", stat_val_style), Paragraph(f"{int(total_hours)}h", stat_val_style), Paragraph(f"{p_stats.total}", stat_val_style), Paragraph(f"{len(submissions)}", stat_val_style)],
-        [Paragraph("Proven Skills", stat_label_style), Paragraph("Roadmaps", stat_label_style), Paragraph("Learning Time", stat_label_style), Paragraph("Practice Reps", stat_label_style), Paragraph("Proof of Work", stat_label_style)]
+        [Paragraph("Proven Skills", stat_label_style), Paragraph("Roadmaps", stat_label_style), Paragraph("Learning Time", stat_label_style), Paragraph("Practice Reps", stat_label_style), Paragraph("Homework", stat_label_style)]
     ]
     stats_table = Table(stats_data, colWidths=[1.38*inch]*5)
     stats_table.setStyle(TableStyle([

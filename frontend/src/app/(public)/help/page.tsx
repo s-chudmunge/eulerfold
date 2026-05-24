@@ -24,7 +24,7 @@ export default function HelpPage() {
     },
     {
       question: 'What is Submit Homework?',
-      answer: 'Submit Homework is a process where specialized AI agents evaluate your Proof of Work. They verify technical quality, authentic understanding, and objective alignment to ensure your skills are industry-ready.',
+      answer: 'Submit Homework is a process where specialized AI agents evaluate your homework submissions. They verify technical quality, authentic understanding, and objective alignment to ensure your skills are industry-ready.',
     },
     {
       question: 'Can I reuse skills across different roadmaps?',

@@ -52,20 +52,20 @@ export default function GoalGeneratorModal({ isOpen, onClose }: GoalGeneratorMod
         </div>
       )}
       <div 
-        className="w-full max-w-[800px] bg-sidebar border border-border shadow-[0_0_80px_rgba(0,0,0,0.15)] dark:shadow-[0_0_80px_rgba(0,0,0,0.6)] flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-300 overflow-hidden relative rounded-xl"
+        className="w-full max-w-[700px] bg-sidebar border border-border shadow-[0_0_80px_rgba(0,0,0,0.15)] dark:shadow-[0_0_80px_rgba(0,0,0,0.6)] flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-300 overflow-hidden relative rounded-xl"
       >
         <button 
           onClick={onClose}
-          className="absolute top-6 right-6 z-[30] p-2 text-text-muted hover:text-text-heading hover:bg-background rounded-full transition-all"
+          className="absolute top-5 right-5 z-[30] p-2 text-text-muted hover:text-text-heading hover:bg-background rounded-full transition-all"
         >
-          <X className="w-5 h-5" />
+          <X className="w-4 h-4" />
         </button>
 
         {/* Content */}
         <div 
-          className="flex-1 overflow-y-auto p-6 md:p-8 no-scrollbar"
+          className="flex-1 overflow-y-auto p-5 md:p-6 no-scrollbar"
         >
-          <div className="max-w-[600px] mx-auto">
+          <div className="max-w-[550px] mx-auto">
             <RoadmapGenerator onRoadmapGenerated={handleRoadmapGenerated} />
           </div>
         </div>

@@ -43,7 +43,7 @@ export default function TechnicalSignature({ skills }: TechnicalSignatureProps) 
     const avgConfidence = (skills.reduce((acc, s) => acc + (s.confidence_score || 0), 0) / count);
 
     const data = [
-        { subject: 'Proof', A: avgPOW, fullMark: 100 },
+        { subject: 'Homework', A: avgPOW, fullMark: 100 },
         { subject: 'Recall', A: avgRecall, fullMark: 100 },
         { subject: 'Coverage', A: avgCoverage, fullMark: 100 },
         { subject: 'Depth', A: avgDepth, fullMark: 100 },

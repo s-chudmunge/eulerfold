@@ -11,6 +11,7 @@ import {
   Settings,
   MoreVertical,
   CheckCircle2,
+  Check,
   Clock,
   BookOpen,
   Target,
@@ -70,6 +71,19 @@ export default function PlannerClient() {
     }
   };
 
+  const toggleTaskCompletion = async (task: any, e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    try {
+      await plannerAPI.updateTask(task.id, {
+        is_completed: !task.is_completed
+      });
+      fetchTasks();
+    } catch (err) {
+      console.error("Failed to toggle completion", err);
+    }
+  };
+
   const nextMonth = () => setCurrentDate(addMonths(currentDate, 1));
   const prevMonth = () => setCurrentDate(subMonths(currentDate, 1));
 
@@ -107,29 +121,26 @@ export default function PlannerClient() {
 
   const getTaskLink = (task: any) => {
     if (!task.roadmap_id) return null;
-    const roadmap = tasks.find(t => t.roadmap_id === task.roadmap_id)?.metadata?.roadmap_slug || task.metadata?.roadmap_slug;
+    const roadmap = tasks.find(t => t.roadmap_id === task.roadmap_id);
+    const slug = task.metadata?.roadmap_slug || roadmap?.metadata?.roadmap_slug;
     
-    if (task.task_type === 'module' || task.task_type === 'pow') {
-      const slug = task.metadata?.roadmap_slug;
-      if (slug) return `/project/${slug}/build/${task.module_number || 1}`;
-    }
-    
-    if (task.metadata?.roadmap_slug) {
-      return `/project/${task.metadata.roadmap_slug}`;
+    if (slug) {
+      return `/roadmap/${slug}`;
     }
     return null;
   };
 
   const getTaskColor = (type: string, completed: boolean) => {
-    if (completed) return 'bg-sidebar/50 text-text-muted border-border';
+    const base = "bg-sidebar/40 border-border/40";
+    if (completed) return `${base} text-text-muted opacity-50`;
     switch (type) {
-      case 'module': return 'bg-teal-500/10 text-teal-700 border-teal-500/20';
-      case 'practice': return 'bg-amber-500/10 text-amber-700 border-amber-500/20';
-      case 'pow': return 'bg-rose-500/10 text-rose-700 border-rose-500/20';
-      case 'video': return 'bg-blue-500/10 text-blue-700 border-blue-500/20';
-      case 'research': return 'bg-indigo-500/10 text-indigo-700 border-indigo-500/20';
-      case 'article': return 'bg-sky-500/10 text-sky-700 border-sky-500/20';
-      default: return 'bg-sidebar text-text-primary border-border';
+      case 'module': return `${base} text-emerald-400`;
+      case 'practice': return `${base} text-orange-400`;
+      case 'pow': return `${base} text-violet-400`;
+      case 'video': return `${base} text-cyan-400`;
+      case 'research': return `${base} text-indigo-400`;
+      case 'article': return `${base} text-fuchsia-400`;
+      default: return `${base} text-text-primary`;
     }
   };
 
@@ -150,48 +161,45 @@ export default function PlannerClient() {
               <img src="/apple-touch-icon.png" alt="" className="w-5 h-5" />
               <span className="text-[14px] font-bold text-text-muted tracking-tight hidden sm:block">Euler<span className="text-teal-700/80">Fold</span></span>
             </Link>
-
-            <div className="h-4 w-[1px] bg-border hidden md:block" />
-
-            <div className="flex items-center gap-2">
-              <CalendarIcon className="w-4 h-4 text-accent opacity-60" />
-              <h1 className="text-[11px] font-bold uppercase tracking-[0.2em] text-text-heading">Study Planner</h1>
-            </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <button 
-              onClick={() => setCurrentDate(new Date())}
-              className="px-3 py-1.5 mr-2 text-[10px] font-bold uppercase tracking-widest text-text-muted hover:text-text-heading border border-border rounded-md hover:bg-sidebar/50 transition-all"
+              onClick={() => {
+                const today = new Date();
+                setCurrentDate(today);
+                setExpandedDate(today);
+              }}
+              className="px-4 py-2 mr-2 text-[11px] font-bold uppercase tracking-widest text-text-heading border border-border rounded-md hover:bg-sidebar/50 transition-all shadow-sm active:scale-95"
             >
               Today
             </button>
-            <div className="flex items-center bg-sidebar/50 border border-border p-0.5 rounded-lg mr-4">
-              <button onClick={prevMonth} className="p-1.5 hover:bg-background rounded-md text-text-muted transition-all">
-                <ChevronLeft className="w-4 h-4" />
+            <div className="flex items-center bg-sidebar border border-border p-1 rounded-lg mr-4 shadow-sm">
+              <button onClick={prevMonth} className="p-2 hover:bg-background rounded-md text-text-heading transition-all">
+                <ChevronLeft className="w-5 h-5" />
               </button>
-              <span className="px-4 text-[11px] font-black uppercase tracking-widest text-text-heading min-w-[140px] text-center">
+              <span className="px-6 text-[13px] font-black uppercase tracking-widest text-text-heading min-w-[180px] text-center">
                 {format(currentDate, 'MMMM yyyy')}
               </span>
-              <button onClick={nextMonth} className="p-1.5 hover:bg-background rounded-md text-text-muted transition-all">
-                <ChevronRight className="w-4 h-4" />
+              <button onClick={nextMonth} className="p-2 hover:bg-background rounded-md text-text-heading transition-all">
+                <ChevronRight className="w-5 h-5" />
               </button>
             </div>
 
             <button 
               onClick={() => setIsGenerateModalOpen(true)}
-              className="flex items-center gap-2 px-4 py-1.5 bg-accent/10 text-accent border border-accent/20 rounded-md text-[10px] font-bold uppercase tracking-widest hover:bg-accent/20 transition-all"
+              className="flex items-center gap-2 px-5 py-2 bg-accent text-white rounded-md text-[11px] font-bold uppercase tracking-widest hover:opacity-90 transition-all shadow-md"
             >
-              <Wand2 className="w-3.5 h-3.5" />
+              <Wand2 className="w-4 h-4" />
               <span className="hidden md:inline">Generate Plan</span>
             </button>
 
             {tasks.length > 0 && (
               <button 
                 onClick={handleClearMonth}
-                className="flex items-center gap-2 px-4 py-1.5 text-red-500/70 hover:text-red-500 border border-transparent hover:border-red-500/20 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all"
+                className="flex items-center gap-2 px-5 py-2 text-red-500 hover:bg-red-500/10 border border-red-500/20 rounded-md text-[11px] font-bold uppercase tracking-widest transition-all"
               >
-                <Trash2 className="w-3.5 h-3.5" />
+                <Trash2 className="w-4 h-4" />
                 <span className="hidden md:inline">Clear Month</span>
               </button>
             )}
@@ -202,9 +210,9 @@ export default function PlannerClient() {
                 setSelectedDate(new Date());
                 setIsTaskModalOpen(true);
               }}
-              className="flex items-center gap-2 px-4 py-1.5 bg-text-heading text-background rounded-md text-[10px] font-bold uppercase tracking-widest hover:opacity-90 transition-all"
+              className="flex items-center gap-2 px-5 py-2 bg-text-heading text-background rounded-md text-[11px] font-bold uppercase tracking-widest hover:opacity-90 transition-all shadow-md"
             >
-              <Plus className="w-3.5 h-3.5" />
+              <Plus className="w-4 h-4" />
               <span className="hidden md:inline">Add Task</span>
             </button>
           </div>
@@ -219,9 +227,9 @@ export default function PlannerClient() {
 
         <main className="flex-1 min-w-0 h-full flex flex-col bg-background overflow-hidden">
           {/* Calendar Grid Header */}
-          <div className="grid grid-cols-7 border-b border-border bg-sidebar/20">
+          <div className="grid grid-cols-7 border-b border-border bg-sidebar/30">
             {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map((day) => (
-              <div key={day} className="py-2 text-center text-[10px] font-black uppercase tracking-[0.2em] text-text-muted border-r border-border last:border-r-0">
+              <div key={day} className="py-3 text-center text-[11px] font-black uppercase tracking-[0.2em] text-text-heading border-r border-border last:border-r-0">
                 {day}
               </div>
             ))}
@@ -244,34 +252,39 @@ export default function PlannerClient() {
               const isToday = isSameDay(day, new Date());
 
               // Calculate intensity based on activityCount (matches ActivityHeatmap logic)
-              let intensityClass = 'bg-background';
+              let intensityBarClass = '';
               if (isCurrentMonth) {
-                if (activityCount > 0) intensityClass = 'bg-teal-700/[0.03]';
-                if (activityCount > 2) intensityClass = 'bg-teal-700/[0.08]';
-                if (activityCount > 5) intensityClass = 'bg-teal-700/[0.15]';
-                if (activityCount > 10) intensityClass = 'bg-teal-700/[0.25]';
+                if (activityCount > 0) intensityBarClass = 'bg-accent/30';
+                if (activityCount > 2) intensityBarClass = 'bg-accent/50';
+                if (activityCount > 5) intensityBarClass = 'bg-accent/80';
+                if (activityCount > 10) intensityBarClass = 'bg-accent';
               }
 
               return (
                 <div 
                   key={idx} 
                   onClick={() => setExpandedDate(day)}
-                  className={`min-h-[120px] p-2 border-r border-b border-border transition-colors group relative cursor-pointer hover:bg-sidebar/5 ${!isCurrentMonth ? 'bg-sidebar/5 opacity-30' : intensityClass}`}
+                  className={`min-h-[140px] p-3 border-r border-b border-border transition-colors group relative cursor-pointer hover:bg-sidebar/10 ${!isCurrentMonth ? 'bg-sidebar/5 opacity-30' : 'bg-background'}`}
                 >
-                  <div className="flex justify-between items-start mb-2">
-                    <div className="flex items-center gap-2">
+                  {/* Activity Intensity Bar */}
+                  {intensityBarClass && (
+                    <div className={`absolute top-0 left-0 right-0 h-[3px] ${intensityBarClass} transition-colors`} />
+                  )}
+
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex items-center gap-3">
                       <span 
-                        className={`inconsolata-ui text-[11px] font-bold transition-transform ${isToday ? 'w-6 h-6 flex items-center justify-center bg-accent text-white rounded-full' : 'text-text-muted'}`}
+                        className={`inconsolata-ui text-[14px] font-bold transition-transform ${isToday ? 'w-8 h-8 flex items-center justify-center bg-accent text-white rounded-full' : 'text-text-heading'}`}
                       >
                         {format(day, 'd')}
                       </span>
                       {activityCount > 0 && (
                         <div className="flex flex-col">
-                          <span className="text-[9px] font-black text-accent uppercase tracking-tighter">
+                          <span className="text-[11px] font-black text-accent uppercase tracking-tighter">
                             {activityCount} {activityCount === 1 ? 'action' : 'actions'}
                           </span>
                           {totalSeconds > 0 && (
-                            <span className="text-[8px] font-bold text-text-muted/60 uppercase tracking-tighter">
+                            <span className="text-[10px] font-bold text-text-heading uppercase tracking-tighter">
                               {hours > 0 ? `${hours}h ` : ''}{minutes}m
                             </span>
                           )}
@@ -285,14 +298,14 @@ export default function PlannerClient() {
                         setSelectedTask(null);
                         setIsTaskModalOpen(true);
                       }}
-                      className="opacity-0 group-hover:opacity-100 p-1 hover:bg-sidebar rounded text-text-muted transition-all"
+                      className="opacity-0 group-hover:opacity-100 p-1.5 bg-sidebar hover:bg-background border border-border rounded text-text-heading transition-all shadow-sm"
                     >
-                      <Plus className="w-3 h-3" />
+                      <Plus className="w-4 h-4" />
                     </button>
                   </div>
 
                     <div 
-                    className="space-y-1 overflow-y-auto max-h-[calc(100%-28px)] no-scrollbar"
+                    className="space-y-1.5 overflow-y-auto max-h-[calc(100%-40px)] no-scrollbar"
                     onClick={(e) => e.stopPropagation()}
                   >
                     {dayTasks.map((task) => {
@@ -304,24 +317,46 @@ export default function PlannerClient() {
                           key={task.id}
                           href={link || '#'}
                           onClick={(e: any) => {
+                            if (link && (task.task_type === 'practice' || task.task_type === 'pow')) {
+                              if (!confirm("This feature has moved to the Roadmap page. Redirect there now?")) {
+                                e.preventDefault();
+                                return;
+                              }
+                            }
                             if (!link) {
                               e.stopPropagation();
                               setSelectedTask(task);
                               setIsTaskModalOpen(true);
                             }
                           }}
-                          className={`w-full text-left p-1.5 rounded border text-[10px] font-bold flex flex-col gap-1 transition-all hover:brightness-95 active:scale-[0.98] ${getTaskColor(task.task_type, task.is_completed)}`}
+                          className={`w-full text-left p-2 rounded-md border text-[12px] font-bold flex flex-col gap-1.5 transition-all hover:brightness-110 active:scale-[0.98] relative group/task shadow-sm ${getTaskColor(task.task_type, task.is_completed)}`}
                         >
-                          <div className="flex items-center gap-1.5 w-full">
+                          <div className="flex items-start gap-1.5 w-full pr-1">
                             {getTaskIcon(task.task_type)}
-                            <span className="truncate flex-1">{task.title}</span>
+                            <span className="line-clamp-2 flex-1 leading-[1.2] whitespace-normal text-[11px]">{task.title?.replace("Proof of Work", "Homework")}</span>
                           </div>
-                          {link && (
-                            <div className="flex items-center justify-between mt-0.5 opacity-50 text-[8px] uppercase tracking-tighter">
-                               <span>Jump to workspace</span>
-                               <ArrowUpRight className="w-2.5 h-2.5" />
-                            </div>
-                          )}
+
+                          <div className="flex items-center justify-between mt-1 pt-1.5 border-t border-white/10">
+                            <button 
+                              onClick={(e) => toggleTaskCompletion(task, e)}
+                              className="flex items-center gap-2 group/check"
+                            >
+                              <div className={`w-3.5 h-3.5 rounded-[3px] border transition-all flex items-center justify-center ${
+                                task.is_completed 
+                                ? "bg-emerald-500 border-emerald-500 text-white shadow-[0_0_8px_rgba(16,185,129,0.4)]" 
+                                : "border-white/30 group-hover/check:border-white/60"
+                              }`}>
+                                {task.is_completed && <Check className="w-2.5 h-2.5 stroke-[4px]" />}
+                              </div>
+                              <span className={`text-[10px] uppercase tracking-widest font-black transition-colors ${task.is_completed ? "text-emerald-400" : "text-white/60 group-hover/check:text-white"}`}>
+                                {task.is_completed ? "Done" : "Complete"}
+                              </span>
+                            </button>
+
+                            {link && (
+                               <ArrowUpRight className="w-3.5 h-3.5 opacity-40 group-hover/task:opacity-100 transition-opacity" />
+                            )}
+                          </div>
                         </TaskWrapper>
                       );
                     })}

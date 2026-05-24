@@ -62,7 +62,7 @@ export default function TOSModal({ isOpen, onAccept, onDecline }: TOSModalProps)
                             1. Platform Usage
                         </h3>
                         <p>
-                            EulerFold is a tool designed to help you build and verify skill roadmaps. By using our services, you agree that your progress, roadmap titles, and "Proof of Work" submissions may be visible to other users if set to public. You are responsible for maintaining the confidentiality of your account.
+                            EulerFold is a tool designed to help you build and verify skill roadmaps. By using our services, you agree that your progress, roadmap titles, and "homework" submissions may be visible to other users if set to public. You are responsible for maintaining the confidentiality of your account.
                         </p>
                     </section>
 

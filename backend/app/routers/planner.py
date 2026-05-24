@@ -145,7 +145,7 @@ async def generate_study_plan(
                 "roadmap_id": roadmap["id"],
                 "module_number": module_num,
                 "task_type": "pow",
-                "title": f"Proof of Work: {mod.get('title')}",
+                "title": f"Homework: {mod.get('title')}",
                 "scheduled_date": pow_date.isoformat(),
                 "metadata": {
                     "roadmap_title": roadmap["title"],

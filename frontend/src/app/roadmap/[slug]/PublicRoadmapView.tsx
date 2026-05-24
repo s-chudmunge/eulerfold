@@ -631,7 +631,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                             </div>
                             <h3 className="inconsolata-ui text-xl font-bold text-text-heading mb-3 tracking-tight">Clone to Dashboard</h3>
                             <p className="manrope-body text-[14px] text-text-muted mb-8 leading-relaxed font-medium italic px-4">
-                                You need to clone this roadmap to your dashboard to start learning, track your progress, and submit proof of work.
+                                You need to clone this roadmap to your dashboard to start learning, track your progress, and submit homework.
                             </p>
                             
                             <div className="flex flex-col gap-3">
