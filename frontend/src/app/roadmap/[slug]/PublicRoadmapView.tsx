@@ -126,9 +126,13 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
         checkAuth();
     }, [isAuthenticated, roadmap?.id, slug]);
 
+    const handleSignIn = () => {
+        router.push(`/login?next=${encodeURIComponent(window.location.pathname)}`);
+    };
+
     const handleRate = async (value: number) => {
         if (!isAuthenticated) {
-            router.push(`/login?next=${encodeURIComponent(window.location.pathname)}`);
+            handleSignIn();
             return;
         }
 
@@ -184,7 +188,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
 
     const handleClone = async () => {
         if (!isAuthenticated) {
-            router.push(`/login?next=${encodeURIComponent(window.location.pathname)}`);
+            handleSignIn();
             return;
         }
         setSaving(true);
@@ -341,12 +345,6 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                     )}
                                     
                                     <div className="mt-3 flex flex-wrap gap-2">
-                                        {roadmap.goal && roadmap.goal !== roadmap.description && (
-                                            <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-accent/5 border border-accent/10 rounded text-accent uppercase tracking-wider text-[10px] font-bold">
-                                                <Target className="w-3 h-3" />
-                                                {roadmap.goal}
-                                            </div>
-                                        )}
                                         {/* Dynamic label if Job Decoded */}
                                         {roadmap.subject?.includes("JD:") && (
                                             <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-blue-500/5 border border-blue-500/10 rounded text-blue-600 uppercase tracking-wider text-[10px] font-bold">
@@ -399,6 +397,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                             justGenerated={false}
                             hideHeader={true}
                             onCloneRequired={() => setShowCloneModal(true)}
+                            onSignInRequired={handleSignIn}
                             externalSubmissions={submissions}
                             onExtend={
                                 isPro && isOwner && (roadmap.progress?.completed_topics || 0) >= (roadmap.progress?.total_topics || 1) && (roadmap.extension_count || 0) < 5

@@ -769,6 +769,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                     justGenerated={false}
                                     isOwner={isOwner || roadmap.is_cloned}
                                     onCloneRequired={() => setShowCloneModal(true)}
+                                    onSignInRequired={handleSignIn}
                                     externalSubmissions={submissions}
                                     onExtend={
                                         isPro && isOwner && (roadmap.progress?.completed_topics || 0) >= (roadmap.progress?.total_topics || 1) && (roadmap.extension_count || 0) < 5

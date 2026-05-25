@@ -180,6 +180,7 @@ export default function GeneratePage() {
                       roadmapData={roadmapData} 
                       initialFormData={generatedFormData} 
                       justGenerated={true}
+                      onSignInRequired={() => router.push(`/login?next=${encodeURIComponent(window.location.pathname)}`)}
                     />
                   </div>
                 )}

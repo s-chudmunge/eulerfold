@@ -19,6 +19,7 @@ interface RoadmapDisplayProps {
   isOwner?: boolean;
   onClone?: () => void;
   onCloneRequired?: () => void;
+  onSignInRequired?: () => void;
   onExtend?: () => void;
   onDeleteExtension?: () => void;
   onPractice?: (topic: any, moduleIndex: number) => void;
@@ -34,6 +35,7 @@ interface RoadmapDisplayProps {
   isOwner, 
   onClone,
   onCloneRequired,
+  onSignInRequired,
   onExtend,
   onDeleteExtension,
   onPractice,
@@ -331,6 +333,11 @@ interface RoadmapDisplayProps {
                           href={`/roadmap/${roadmapData.cloned_id || roadmapData.slug || roadmapData.id}/learn?module=${index + 1}&topic=1`}
                           onClick={(e) => {
                             e.stopPropagation();
+                            if (!user && onSignInRequired) {
+                              e.preventDefault();
+                              onSignInRequired();
+                              return;
+                            }
                             if (!isOwner && user && onCloneRequired) {
                               e.preventDefault();
                               onCloneRequired();
@@ -346,6 +353,10 @@ interface RoadmapDisplayProps {
                           <button 
                             onClick={(e) => {
                                 e.stopPropagation();
+                                if (!user && onSignInRequired) {
+                                  onSignInRequired();
+                                  return;
+                                }
                                 if (!isOwner && user && onCloneRequired) {
                                     onCloneRequired();
                                     return;
