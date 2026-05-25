@@ -185,7 +185,7 @@ export default async function LandingPage() {
         <PricingSection />
 
         {/* FAQ Section */}
-        <section className="py-20 md:py-32 px-6 bg-background border-t border-border/30">
+        <section className="py-12 md:py-32 px-6 bg-background border-t border-border/30">
           <div className="max-w-4xl mx-auto">
             <h2 className="text-[11px] font-bold text-accent tracking-[0.2em] uppercase mb-12 md:mb-16 manrope-body text-center">FAQ(Frequently Asked Questions)</h2>
             
@@ -196,7 +196,7 @@ export default async function LandingPage() {
         </section>
 
         {/* Articles & Readings Section */}
-        <section className="py-20 md:py-32 px-6 bg-background border-t border-border/30">
+        <section className="py-12 md:py-32 px-6 bg-background border-t border-border/30">
           <div className="max-w-7xl mx-auto">
             <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
               <div className="max-w-2xl">
@@ -216,7 +216,7 @@ export default async function LandingPage() {
         <SocialFeed />
 
         {/* Final CTA Section */}
-        <section className="py-20 md:py-32 px-4 md:px-6 relative overflow-hidden">
+        <section className="py-12 md:py-32 px-4 md:px-6 relative overflow-hidden">
           <div className="lg:max-w-[60%] mx-auto relative rounded-[32px] md:rounded-[40px] overflow-hidden border border-border bg-sidebar/50 min-h-[400px] md:min-h-[450px] flex items-center justify-center shadow-xl">
             <div className="max-w-3xl mx-auto text-center relative z-10 px-6 py-12 md:py-0">
               <h2 className="font-inter text-2xl md:text-4xl font-bold text-text-heading mb-4 tracking-tight">

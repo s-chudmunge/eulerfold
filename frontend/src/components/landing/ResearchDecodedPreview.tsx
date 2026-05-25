@@ -48,7 +48,7 @@ export default function ResearchDecodedPreview() {
           <div className="inline-flex items-center px-4 py-1.5 rounded-xl text-[11px] font-bold bg-background border border-border text-text-muted uppercase tracking-[0.2em] mb-4 inconsolata-ui">
             FROM THE LAB
           </div>
-          <h2 className="text-[32px] md:text-[42px] font-bold text-text-heading tracking-tight transition-colors uppercase inconsolata-ui">
+          <h2 className="text-3xl md:text-[42px] font-bold text-text-heading tracking-tight transition-colors uppercase inconsolata-ui">
             RESEARCH <span className="text-accent">DECODED.</span>
           </h2>
           <p className="mt-4 text-[15px] md:text-[16px] text-text-muted transition-colors manrope-body">

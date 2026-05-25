@@ -32,7 +32,6 @@ import { Paper, papers } from '../../research-decoded/generatedData';
 import { api } from '@/lib/api';
 import CommunityRoadmapBanner from '@/components/landing/CommunityRoadmapBanner';
 import SocialShare from '@/components/SocialShare';
-
 const D2Diagram = ({ code, cache }: { code: string, cache?: Record<string, string> }) => {
   const [svg, setSvg] = React.useState<string>(cache?.[code] || '');
   const [loading, setLoading] = React.useState(!cache?.[code]);
@@ -55,8 +54,7 @@ const D2Diagram = ({ code, cache }: { code: string, cache?: Record<string, strin
         'Content-Type': 'text/plain',
       },
       body: code,
-    })
-      .then(res => {
+    })      .then(res => {
         if (!res.ok) throw new Error('Failed to fetch SVG');
         return res.text();
       })
@@ -300,12 +298,12 @@ const MarkdownWithLinks = ({ content, currentSlug, cache }: { content: string, c
         h2: ({node, children, ...props}) => {
           const content = React.Children.toArray(children).join('');
           const id = slugify(content);
-          return <h2 id={id} className="text-[28px] md:text-[32px] font-bold leading-[1.2] mt-[60px] mb-[24px] text-accent font-inter tracking-tighter scroll-mt-24" {...props}>{children}</h2>;
+          return <h2 id={id} className="text-[28px] md:text-[32px] leading-[1.2] mt-[60px] mb-[24px] text-accent font-inter tracking-tighter scroll-mt-24" {...props}>{children}</h2>;
         },
         h3: ({node, children, ...props}) => {
           const content = React.Children.toArray(children).join('');
           const id = slugify(content);
-          return <h3 id={id} className="text-[22px] md:text-[24px] font-bold leading-[1.2] mt-[40px] mb-[16px] text-accent font-inter tracking-tighter scroll-mt-24" {...props}>{children}</h3>;
+          return <h3 id={id} className="text-[22px] md:text-[24px] leading-[1.2] mt-[40px] mb-[16px] text-accent font-inter tracking-tighter scroll-mt-24" {...props}>{children}</h3>;
         },
         p: ({ children }) => {
           return <p className="mb-[24px]">{processChildren(children)}</p>;
@@ -507,7 +505,7 @@ export default function ArticleClient({ article }: Props) {
                   </span>
                 </div>
                 
-                <h1 className="text-[36px] md:text-[48px] lg:text-[56px] font-bold text-text-heading mb-6 leading-[1.1] tracking-tight font-serif-stack max-w-4xl">
+                <h1 className="text-[36px] md:text-[48px] lg:text-[56px] text-text-heading mb-6 leading-[1.1] tracking-tight font-serif-stack max-w-4xl">
                   {article.title}
                 </h1>
                 

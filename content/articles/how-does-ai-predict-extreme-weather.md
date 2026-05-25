@@ -39,44 +39,7 @@ One of the biggest challenges in global weather is the scale. You need to see th
 
 It maps the Earth onto a graph where nodes represent atmospheric data. These nodes are connected in a hierarchy, from low-resolution (coarse) to high-resolution (fine).
 
-```d2
-direction: down
 
-Observations: "Input State (ERA5)" {
-  shape: cylinder
-  T0: "Current (t)"
-  T_Minus: "Past (t-6h)"
-}
-
-Engine: "GraphCast Architecture" {
-  style: {
-    stroke: "#0f766e"
-    stroke-width: 2
-  }
-  Encoder: "Grid-to-Mesh Mapping"
-  Processor: "Multi-Res GNN (Message Passing)" {
-    shape: diamond
-    style: {fill: "#e8f2f1"}
-  }
-  Decoder: "Mesh-to-Grid Mapping"
-  Encoder -> Processor -> Decoder
-}
-
-Forecast: "Autoregressive Rollout" {
-  T_Plus: "Next Step (t+6h)" {shape: rectangle}
-  Horizon: "10-Day Chain" {
-    shape: parallelogram
-    style: {fill: "#fee2e2"}
-  }
-  T_Plus -> Horizon
-}
-
-Observations -> Engine.Encoder: "Global Snapshot"
-Engine.Decoder -> Forecast.T_Plus: "Single Prediction"
-Forecast.T_Plus -> Observations.T0: "Recursive Feedback" {
-  style: {stroke-dash: 3}
-}
-```
 
 ## Why It Matters: Extreme Events {#extreme}
 
@@ -98,7 +61,7 @@ As climate change makes weather more volatile, our historical records (the data 
 By identifying which areas will be most prone to "flash droughts" or "unprecedented floods," AI is helping governments build more resilient infrastructure. We are moving from a world where we "react" to the weather to one where we are digitally prepared for it.
 
 ## The Hybrid Future {#future}
-...
+
 While AI models are currently "beating" physics models, the future is likely a hybrid. AI is great at predicting the *most likely* outcome, but physics models are still better at ensuring the results don't violate fundamental laws (like the conservation of energy). 
 
-Meteorologists are now using AI to "post-process" traditional models, cleaning up their errors and providing hyper-local forecasts for specific cities or farms. We are moving from a world where we "calculate" the weather to one where we "simulate" it with intelligence.
+Meteorologists are now using AI to "post-process" traditional models, cleaning up their errors and providing hyper-local forecasts for specific cities or farms. We are moving from a world where we "calculate" the weather to one where we are digitally prepared for it.

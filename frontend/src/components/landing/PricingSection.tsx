@@ -27,7 +27,7 @@ export default function PricingSection() {
   };
 
   return (
-    <section className="py-24 px-6 bg-background border-t border-border/30">
+    <section className="py-12 md:py-24 px-6 bg-background border-t border-border/30">
       <div className="lg:max-w-[60%] mx-auto text-center mb-16">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}

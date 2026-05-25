@@ -480,7 +480,7 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
 
   return (
     <div className="w-full manrope-body">
-      <div className="mb-4 flex items-center gap-4">
+      <div className="mb-4 flex items-center justify-center md:justify-start gap-4">
         {[1, 2].map(i => (
           <div key={i} className="flex items-center gap-2">
             <div className={`w-8 h-8 flex items-center justify-center text-[11px] font-bold border transition-all rounded-md ${

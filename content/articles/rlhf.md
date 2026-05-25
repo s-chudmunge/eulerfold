@@ -21,53 +21,7 @@ synonyms:
 
 When a Large Language Model is first trained, it is a master of mimicry but a poor conversationalist. It can predict the next word on a page with incredible accuracy, but it doesn't know how to be helpful, polite, or safe. **RLHF (Reinforcement Learning from Human Feedback)** is the final "polishing" stage that turns a raw autocomplete engine into a useful assistant like ChatGPT or Gemini.
 
-```d2
-direction: down
 
-Models: "Policy Components" {
-  Base_Model: "Reference Policy (Initial LLM)" {
-    shape: cylinder
-    style: {stroke-dash: 3}
-  }
-
-  Active_Model: "Current Policy (Agent)" {
-    shape: cylinder
-    style: {
-      stroke: "#0f766e"
-      stroke-width: 2
-    }
-  }
-}
-
-Judgement: "Evaluation Logic" {
-  Reward_Model: "Reward Model (R)" {
-    shape: diamond
-    style: {fill: "#e8f2f1"}
-  }
-  
-  KL_Constraint: "KL-Divergence Penalty" {
-    shape: hexagon
-  }
-}
-
-Optimization: "PPO Update Cycle" {
-  style: {
-    stroke: "#0f766e"
-    stroke-width: 2
-  }
-  PPO: "PPO Optimizer" {shape: diamond}
-  Update: "Policy Gradient"
-  PPO -> Update
-}
-
-Models.Active_Model -> Judgement.Reward_Model: "Sample"
-Models.Active_Model -> Judgement.KL_Constraint: "Active Dist"
-Models.Base_Model -> Judgement.KL_Constraint: "Ref Dist"
-
-Judgement.Reward_Model -> Optimization.PPO: "Reward"
-Judgement.KL_Constraint -> Optimization.PPO: "Penalty"
-Optimization.Update -> Models.Active_Model: "Feedback"
-```
 
 ## The Three Stages of Alignment {#the-stages}
 

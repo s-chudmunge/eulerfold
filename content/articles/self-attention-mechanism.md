@@ -23,47 +23,7 @@ synonyms:
 
 Self-attention is the core engine of the Transformer architecture. It provides a mechanism for a model to "look" at other tokens in an input sequence to better understand a specific token's context. If a model is processing the word "bank," self-attention determines whether it refers to a river edge or a financial institution by weighing its relationship with surrounding words like "water" or "money."
 
-```d2
-direction: down
 
-Inputs: "Token Embeddings" {
-  x: "x_i, x_j, ..." {shape: cylinder}
-}
-
-Projections: "Linear Transformations" {
-  style: {
-    stroke: "#0f766e"
-    stroke-width: 2
-  }
-  Q: "Query (Q)"
-  K: "Key (K)"
-  V: "Value (V)"
-}
-
-Mechanism: "Attention Core" {
-  Score: "Dot Product (Q · K^T)" {shape: diamond}
-  Scale: "Scale & Softmax" {
-    style: {fill: "#e8f2f1"}
-    tooltip: "Normalizing scores to sum to 1.0"
-  }
-  Agg: "Weighted Sum (Σ α * V)" {
-    shape: parallelogram
-    style: {fill: "#fee2e2"}
-  }
-  
-  Score -> Scale -> Agg
-}
-
-Inputs.x -> Projections.Q
-Inputs.x -> Projections.K
-Inputs.x -> Projections.V
-
-Projections.Q -> Mechanism.Score
-Projections.K -> Mechanism.Score
-Projections.V -> Mechanism.Agg: "Contextual Information"
-
-Mechanism.Agg -> Output: "Attention-Weighted Representation"
-```
 
 ## The QKV Abstraction {#qkv-abstraction}
 

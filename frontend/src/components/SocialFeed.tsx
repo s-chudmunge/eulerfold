@@ -76,7 +76,7 @@ export default function SocialFeed() {
   }, []);
 
   return (
-    <section className="py-20 px-6 bg-background relative overflow-hidden border-t border-border/30">
+    <section className="py-12 md:py-20 px-6 bg-background relative overflow-hidden border-t border-border/30">
       <div className="lg:max-w-[60%] mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
           <div className="max-w-md">

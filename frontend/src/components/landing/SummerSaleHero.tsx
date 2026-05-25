@@ -201,8 +201,8 @@ export default function SummerSaleHero() {
         <div className="flex flex-col items-center lg:items-start text-center lg:text-left order-2 lg:order-none">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }} className="mb-6 sm:mb-8">
           <h1 className="relative flex flex-col items-center lg:items-start">
-            <span className="block text-[60px] sm:text-[100px] md:text-[120px] leading-[0.85] font-black text-white drop-shadow-[4px_4px_0px_rgba(15,118,110,0.4)] uppercase italic tracking-tighter">SUMMER</span>
-            <span className="block text-[80px] sm:text-[130px] md:text-[150px] leading-[0.7] font-normal text-teal-300 drop-shadow-[4px_4px_0px_rgba(0,0,0,0.2)] -mt-4 italic tracking-tight" style={{ fontFamily: '"Great Vibes", cursive' }}>Sale</span>
+            <span className="block text-[48px] sm:text-[100px] md:text-[120px] leading-[0.85] font-black text-white drop-shadow-[4px_4px_0px_rgba(15,118,110,0.4)] uppercase italic tracking-tighter">SUMMER</span>
+            <span className="block text-[64px] sm:text-[130px] md:text-[150px] leading-[0.7] font-normal text-teal-300 drop-shadow-[4px_4px_0px_rgba(0,0,0,0.2)] -mt-4 italic tracking-tight" style={{ fontFamily: '"Great Vibes", cursive' }}>Sale</span>
           </h1>
         </motion.div>
 

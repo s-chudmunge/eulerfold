@@ -19,46 +19,7 @@ synonyms:
 
 At its core, **Backpropagation** is the mathematical engine that allows a neural network to learn from its mistakes. While the "forward pass" of a model involves passing data through layers to generate a prediction, backpropagation is the process of moving from that prediction back to the inputs to adjust the internal weights of the model.
 
-```d2
-direction: down
 
-Graph: "Computation Graph" {
-  style: {
-    stroke: "#0F766E"
-    stroke-width: 2
-  }
-
-  Input: "Input Features (x)" {shape: parallelogram}
-
-  Weights: "Model Parameters (W, b)" {
-    shape: cylinder
-    style: {
-      fill: "#e8f2f1"
-    }
-  }
-
-  Forward_Flow: "1. Forward Pass" {
-    Prediction: "Prediction (ŷ)"
-    Loss: "Loss Function (L)" {shape: diamond}
-    Prediction -> Loss: "Error Check"
-  }
-
-  Backward_Flow: "2. Backward Pass" {
-    style: {
-      stroke: "#dc2626"
-      stroke-dash: 3
-    }
-    Gradients: "Chain Rule Gradients (∂L/∂W)"
-    Optimizer: "Weight Update (Adam/SGD)" {shape: diamond}
-    Gradients -> Optimizer
-  }
-}
-
-Graph.Input -> Graph.Forward_Flow.Prediction
-Graph.Weights -> Graph.Forward_Flow.Prediction: "Inference"
-Graph.Forward_Flow.Loss -> Graph.Backward_Flow.Gradients: "Derivatives"
-Graph.Backward_Flow.Optimizer -> Graph.Weights: "Update Step"
-```
 
 ## The Chain Rule of Calculus {#the-chain-rule}
 

@@ -20,47 +20,7 @@ synonyms:
 
 If training a neural network is like a hiker trying to find the bottom of a fog-covered mountain range, **Gradient Descent** is the strategy of feeling the slope of the ground beneath your feet and always taking a step in the direction that goes down.
 
-```d2
-direction: down
 
-Loop: "Optimization Loop" {
-  style: {
-    stroke: "#0F766E"
-    stroke-width: 2
-  }
-
-  Weights: "Model Weights (θ)" {
-    shape: cylinder
-    style: {
-      fill: "#e8f2f1"
-    }
-  }
-
-  Calculation: "Evaluation" {
-    Error: "Loss Calculation (L)" {shape: diamond}
-    Grad: "Compute Gradient (∇L)" {
-      style: {
-        stroke: "#dc2626"
-      }
-    }
-    Error -> Grad
-  }
-
-  Update_Stage: "Weight Update" {
-    LR: "Learning Rate (η)"
-    Rule: "Update: θ - η∇L" {
-      style: {
-        fill: "#e8f2f1"
-      }
-    }
-    LR -> Rule
-  }
-}
-
-Loop.Weights -> Loop.Calculation.Error: "Check Performance"
-Loop.Calculation.Grad -> Loop.Update_Stage.Rule: "Direction"
-Loop.Update_Stage.Rule -> Loop.Weights: "Feedback"
-```
 
 ## The Gradient as a Compass {#the-compass}
 

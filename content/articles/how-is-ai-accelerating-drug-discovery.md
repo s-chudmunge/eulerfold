@@ -28,61 +28,7 @@ There are an estimated **$10^{60}$** possible small molecules that could theoret
 
 AI acts as a high-speed navigator. Using **Generative Chemistry** (often based on Diffusion models or Variational Autoencoders), AI doesn't just search through existing databases; it "dreams up" entirely new molecules that have never been synthesized before. It can be programmed to optimize for multiple things at once: making sure the molecule is small enough to enter a cell, stable enough to last in the bloodstream, and shaped perfectly to hit its target. This process, known as **Multi-Objective Optimization**, allows researchers to satisfy complex biological requirements that would take humans years of trial and error.
 
-```d2
-direction: down
 
-ChemicalSpace: "Virtual Chemical Universe" {
-  shape: cloud
-  tooltip: "10^60 possible molecules"
-}
-
-Discovery_Pipeline: "AI Discovery Funnel" {
-  style: {
-    stroke: "#0f766e"
-    stroke-width: 2
-  }
-
-  Generative: "1. Generative Design" {
-    shape: diamond
-    Model: "Diffusion / VAEs"
-    Target: "Candidate Generation"
-  }
-
-  Physics: "2. Geometric Filter" {
-    shape: hexagon
-    Docking: "3D Protein Docking"
-    Energy: "Binding Affinity (ΔG)"
-  }
-
-  Safety: "3. ADMET Predictor" {
-    Toxicity: "Toxicity Screening"
-    Stability: "Metabolic Stability"
-  }
-
-  Generative -> Physics: "High-Hits"
-  Physics -> Safety: "Optimized Leads"
-}
-
-Lab: "Physical Validation" {
-  style: {fill: "#f0fdfa"}
-  Synthesis: "Automated Chemistry"
-  Assay: "Biological Testing"
-}
-
-ChemicalSpace -> Discovery_Pipeline.Generative
-Discovery_Pipeline.Safety -> Lab: "PCC (Pre-clinical Candidate)"
-Lab -> Discovery_Pipeline.Generative: "SAR Feedback Loop" {
-  style: {
-    stroke-dash: 3
-    stroke: "#0f766e"
-  }
-}
-
-Result: "Clinical Trial Entry" {
-  shape: parallelogram
-  style: {fill: "#fee2e2"}
-}
-```
 
 ## The Lock and Key: Geometric Deep Learning {#geometric}
 
@@ -111,5 +57,5 @@ If AI can reduce the failure rate of drug discovery by even 10%, it would save t
 Previously, if a disease only affected 5,000 people, the \$2.6 billion cost of development made it impossible to pursue a cure. By dropping that cost into the tens of millions, AI makes it profitable to save lives that were previously deemed "unprofitable."
 
 ## The Future: Orphan Diseases and Personalization {#future}
-...
+
 Because AI reduces the cost of discovery so dramatically, it is making it economically viable to develop drugs for **Orphan Diseases**—rare conditions that affect small numbers of people and were previously ignored by big pharmaceutical companies. Furthermore, we are moving toward **Personalized Medicine**, where AI could help design a treatment tailored to the specific genetic makeup of an individual's tumor. We are entering an era of "Programmable Medicine," where the path from identifying a new virus to deploying a treatment is measured in days, not years.

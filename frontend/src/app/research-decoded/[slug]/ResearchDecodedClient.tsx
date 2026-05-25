@@ -72,7 +72,6 @@ const slugify = (text: string) => {
     .replace(/[^\w\s-]/g, '')
     .replace(/\s+/g, '-');
 };
-
 const D2Diagram = ({ code }: { code: string }) => {
   const [svg, setSvg] = React.useState<string>('');
   const [loading, setLoading] = React.useState(true);
@@ -82,15 +81,14 @@ const D2Diagram = ({ code }: { code: string }) => {
     let isMounted = true;
     setLoading(true);
     setError(false);
-    
+
     fetch('https://kroki.io/d2/svg', {
       method: 'POST',
       headers: {
         'Content-Type': 'text/plain',
       },
       body: code,
-    })
-      .then(res => {
+    })      .then(res => {
         if (!res.ok) throw new Error('Failed to fetch SVG');
         return res.text();
       })
@@ -323,7 +321,7 @@ const MarkdownWithLinks = ({ content }: { content: string }) => {
       components={{
         // Custom h2 for IDs (we disable automatic IDs here to avoid conflict with main section IDs)
         h2: ({node, children, ...props}) => {
-          return <h2 className="text-[20px] md:text-[24px] font-bold text-accent mb-6 flex items-center gap-3" {...props}>{children}</h2>;
+          return <h2 className="text-[20px] md:text-[24px] text-accent mb-6 flex items-center gap-3" {...props}>{children}</h2>;
         },
         // We target the paragraph and list items to process their text children
         p: ({ children }) => {
@@ -472,7 +470,7 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
           <div className="max-w-4xl w-full">
         {/* Paper Header */}
         <header className="mb-20 text-center flex flex-col items-center">
-          <h1 className="font-bold text-text-heading mb-8 leading-[1.15] tracking-tight text-4xl md:text-5xl lg:text-6xl max-w-4xl mx-auto">
+          <h1 className="font-semibold text-text-heading mb-8 leading-[1.15] tracking-tight text-4xl md:text-5xl lg:text-6xl max-w-4xl mx-auto">
             {paper.title}
           </h1>
 

@@ -9,6 +9,8 @@ heroImage: null
 
 In 2017, researchers at OpenAI introduced Proximal Policy Optimization (PPO), a reinforcement learning (RL) algorithm that addresses the instability of policy gradient methods by constraining the magnitude of policy updates. Prior to this research, RL agents were prone to catastrophic performance collapse caused by large gradient updates that moved the policy into degenerate regions of the parameter space. The researchers demonstrated that by utilizing a clipped surrogate objective to enforce a "trust region" using only first-order gradients, a system can achieve high sample efficiency and stability across diverse tasks, including the alignment of large language models via human feedback.
 
+
+
 ## The Clipped Surrogate Objective and Policy Stability {#clipping}
 
 The primary technical innovation of PPO is the clipped surrogate objective, which prevents the new policy from diverging excessively from the previous one. The objective function is defined as $L^{CLIP} = \mathbb{E}[\min(r_t A_t, \text{clip}(r_t, 1-\epsilon, 1+\epsilon) A_t)]$, where $r_t$ represents the probability ratio between the current and old policies, and $A_t$ is the estimated advantage of an action. By taking the minimum of the unclipped and clipped ratios, the algorithm creates a pessimistic bound on the optimization goal. If a proposed update attempts to change the action probabilities by more than a fixed percentage (typically 20%), the clipping mechanism removes the incentive for further movement. This finding revealed that the robustness of an RL agent is determined by its ability to maintain a structural proximity to its data-collection policy.

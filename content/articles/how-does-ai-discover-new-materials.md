@@ -37,52 +37,7 @@ Crystals are essentially repeating patterns of atoms in 3D space. GNoME uses **G
 
 By "massaging" the data through layers of neural networks, the model learns the complex physics of how atoms interact without needing to solve the Schrödinger equation every time. It can predict if a new arrangement of atoms will be stable in milliseconds, rather than hours.
 
-```d2
-direction: down
 
-SearchSpace: "Crystal Search Space" {
-  Combinations: "Atomic Combinations (10^12)" {shape: cloud}
-}
-
-Funnel: "Screening Funnel" {
-  style: {
-    stroke: "#0f766e"
-    stroke-width: 2
-  }
-
-  GNN: "GNoME (GNN Predictor)" {
-    shape: diamond
-    Task: "Stability Estimation"
-  }
-
-  Physics_Filter: "Convex Hull Analysis" {
-    shape: hexagon
-    Logic: "Energy Above Hull ≤ 0.0"
-  }
-
-  DFT: "DFT Validation" {
-    shape: cylinder
-    style: {fill: "#e8f2f1"}
-    tooltip: "Quantum Mechanical Ground Truth"
-  }
-
-  GNN -> Physics_Filter: "Candidates"
-  Physics_Filter -> DFT: "Stable Structures"
-}
-
-Result: "New Stable Materials" {
-  Data: "380,000 Verified Crystals" {
-    shape: parallelogram
-    style: {fill: "#fee2e2"}
-  }
-}
-
-SearchSpace -> Funnel.GNN
-Funnel.DFT -> Result: "Physical Realization"
-Funnel.DFT -> Funnel.GNN: "Active Learning Loop" {
-  style: {stroke-dash: 3}
-}
-```
 
 ## Scaling to 800 Years of Knowledge {#scaling}
 

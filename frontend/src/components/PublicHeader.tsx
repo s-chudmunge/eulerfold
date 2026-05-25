@@ -293,16 +293,31 @@ export default function PublicHeader() {
         }`}
         style={{ top: isScrolled ? '48px' : '64px' }}
       >
-        <div className="px-6 py-10 flex flex-col gap-10 h-full overflow-y-auto">
+        <div className="px-6 py-10 flex flex-col gap-10 h-full overflow-y-auto pb-32">
           <div className="flex flex-col gap-8">
-            <Link href="/generate" className="text-[32px] font-bold text-text-heading hover:text-teal-700 transition-colors">Platforms</Link>
-            <Link href="/research-decoded" className="text-[32px] font-bold text-text-heading hover:text-teal-700 transition-colors">Research</Link>
-            <Link href="/explore" className="text-[32px] font-bold text-text-heading hover:text-teal-700 transition-colors">Library</Link>
-            <Link href="/about" className="text-[32px] font-bold text-text-heading hover:text-teal-700 transition-colors">About</Link>
-            <Link href="/pricing" className="text-[32px] font-bold text-text-heading hover:text-teal-700 transition-colors">Pricing</Link>
+            <div className="flex flex-col gap-4">
+              <span className="text-[11px] font-bold text-text-muted uppercase tracking-widest opacity-60">Tools</span>
+              <Link href="/generate" className="text-2xl font-bold text-text-heading hover:text-teal-700 transition-colors">Generator</Link>
+              <Link href="/planner" className="text-2xl font-bold text-text-heading hover:text-teal-700 transition-colors">Planner</Link>
+              <Link href="/practice" className="text-2xl font-bold text-text-heading hover:text-teal-700 transition-colors">Practice</Link>
+            </div>
+
+            <div className="flex flex-col gap-4 border-t border-border pt-8">
+              <span className="text-[11px] font-bold text-text-muted uppercase tracking-widest opacity-60">Research & Library</span>
+              <Link href="/research-decoded" className="text-2xl font-bold text-text-heading hover:text-teal-700 transition-colors">Research</Link>
+              <Link href="/articles" className="text-2xl font-bold text-text-heading hover:text-teal-700 transition-colors">Articles</Link>
+              <Link href="/explore" className="text-2xl font-bold text-text-heading hover:text-teal-700 transition-colors">Library</Link>
+              <Link href="/leaderboard" className="text-2xl font-bold text-text-heading hover:text-teal-700 transition-colors">Leaderboard</Link>
+            </div>
+            
+            <div className="flex flex-col gap-4 border-t border-border pt-8">
+              <span className="text-[11px] font-bold text-text-muted uppercase tracking-widest opacity-60">Platform</span>
+              <Link href="/about" className="text-2xl font-bold text-text-heading hover:text-teal-700 transition-colors">About</Link>
+              <Link href="/pricing" className="text-2xl font-bold text-text-heading hover:text-teal-700 transition-colors">Pricing</Link>
+            </div>
           </div>
 
-          <div className="mt-auto border-t border-border pt-10 pb-6">
+          <div className="mt-8 border-t border-border pt-10 pb-6">
             <Link href="/generate" className="w-full bg-text-heading text-background py-5 rounded-xl flex items-center justify-center gap-3 text-[16px] font-bold active:scale-95 transition-all">
               <Plus className="w-5 h-5" /> Get Started
             </Link>

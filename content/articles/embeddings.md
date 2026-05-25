@@ -21,43 +21,7 @@ synonyms:
 
 At the heart of every modern AI system—whether it’s translating text, generating images, or recommending music—is a process of translation. Computers cannot understand "meaning" in the human sense; they can only process numbers. **Vector Embeddings** are the mathematical bridge that allows computers to represent the nuances of the real world in a language of coordinates.
 
-```d2
-direction: down
 
-High_Dim: "Discrete Input Space" {
-  Vocab: "One-Hot / Raw IDs (100k+)" {shape: rectangle}
-}
-
-Projection: "Encoder Stage" {
-  style: {
-    stroke: "#0f766e"
-    stroke-width: 2
-  }
-  Matrix: "Embedding Weights (W_E)" {shape: cylinder}
-  Lookup: "Vector Retrieval" {shape: diamond}
-  Matrix -> Lookup
-}
-
-Latent_Space: "Semantic Latent Space (z)" {
-  shape: cloud
-  style: {fill: "#e8f2f1"}
-  
-  Relationships: "Vector Math" {
-    King: "King"
-    Man: "Man"
-    Woman: "Woman"
-    Queen: "Queen"
-    
-    King -> Man: "Gender Dir" {style: {stroke: "#dc2626"}}
-    King -> Queen: "Result: K - M + W" {
-      style: {stroke: "#0f766e"; stroke-width: 2}
-    }
-  }
-}
-
-High_Dim -> Projection.Lookup
-Projection.Lookup -> Latent_Space: "Projected Coordinate"
-```
 
 ## Meaning as a Coordinate {#coordinates}
 

@@ -22,57 +22,7 @@ synonyms:
 
 For years, the standard way to make an AI model smarter was to make it larger. However, in a traditional "dense" model, every single parameter must be calculated for every single word the model processes. This creates a massive "compute tax"—as the model gets bigger, it becomes exponentially more expensive and slower to run. **Mixture of Experts (MoE)** is the architectural breakthrough that broke this linear relationship between model size and speed.
 
-```d2
-direction: down
 
-Sequence: "Input Processing" {
-  Token: "Input Token (x)" {
-    shape: parallelogram
-  }
-}
-
-MoE_Layer: "Sparse MoE Layer" {
-  style: {
-    stroke: "#0F766E"
-    stroke-width: 2
-  }
-
-  Gating: "Routing Mechanism" {
-    Router: "Gating Network" {
-      shape: diamond
-      style: {
-        fill: "#e8f2f1"
-      }
-    }
-    Softmax: "Top-k Selection"
-    Router -> Softmax
-  }
-
-  Expert_Pool: "Specialized Experts" {
-    Expert1: "Expert A" {shape: cylinder}
-    Expert2: "Expert B" {shape: cylinder}
-    ExpertN: "Expert ..." {shape: cylinder}
-  }
-
-  Combiner: "Weighted Output" {
-    Sum: "Σ (Weight * Expert_i)"
-    style: {
-      fill: "#e8f2f1"
-    }
-  }
-}
-
-Sequence.Token -> MoE_Layer.Gating.Router
-MoE_Layer.Gating.Softmax -> MoE_Layer.Expert_Pool.Expert1: "Active"
-MoE_Layer.Gating.Softmax -> MoE_Layer.Expert_Pool.Expert2: "Active"
-MoE_Layer.Expert_Pool.Expert1 -> MoE_Layer.Combiner.Sum
-MoE_Layer.Expert_Pool.Expert2 -> MoE_Layer.Combiner.Sum
-MoE_Layer.Combiner.Sum -> Final_Output: "Contextual Token"
-
-Final_Output: {
-  shape: parallelogram
-}
-```
 
 ## Sparse vs. Dense Architectures {#sparse-vs-dense}
 

@@ -23,44 +23,7 @@ synonyms:
 
 The Transformer architecture is inherently permutation-invariant. This means that if you shuffle the words in a sentence, the **self-attention** mechanism will produce the exact same results for each word, just in a different order. To a Transformer, "The dog bit the man" and "The man bit the dog" are identical unless we provide a way to distinguish the *position* of each token.
 
-```d2
-direction: down
 
-Input: "Sequence Processing" {
-  Tokens: "Token Embeddings (d_model)" {shape: cylinder}
-}
-
-Encoding_Logic: "Positional Signal Generation" {
-  style: {
-    stroke: "#0f766e"
-    stroke-width: 2
-  }
-  
-  Functions: "Periodic Basis Functions" {
-    Sine: "sin(pos / 10000^(2i/d))" {style: {stroke: "#0f766e"}}
-    Cosine: "cos(pos / 10000^(2i/d))" {style: {stroke: "#dc2626"}}
-  }
-
-  Interleaving: "Positional Vector (PE)" {
-    shape: rectangle
-    Logic: "Interleave [Sin, Cos] for each dimension"
-  }
-
-  Functions.Sine -> Interleaving
-  Functions.Cosine -> Interleaving
-}
-
-Integration: "Transformer Input" {
-  Add: "Summation (X + PE)" {
-    shape: diamond
-    style: {fill: "#e8f2f1"}
-  }
-}
-
-Input.Tokens -> Integration.Add
-Encoding_Logic.Interleaving -> Integration.Add
-Integration.Add -> Transformer: "Position-Aware Embeddings"
-```
 
 ## The Signal Injection {#injection}
 
@@ -76,7 +39,7 @@ The original Transformer paper used a specific pattern of sine and cosine waves 
 
 $$PE_{(pos, 2i)} = \sin(pos / 10000^{2i/d_{model}})$$
 
-$$PE_{(pos, 2i+1)} = \cos(pos / 10000^{2i/d_{model}})$$
+$$PE_{(pos, 2i+1)} = \cos(pos / 1000^{2i/d_{model}})$$
 
 This choice is mathematically elegant because for any fixed offset $k$, $PE_{pos+k}$ can be represented as a linear function of $PE_{pos}$. This allows the model to easily learn to attend to relative positions (e.g., "the word 3 places to my left").
 

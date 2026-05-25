@@ -36,42 +36,7 @@ Instead of telling the computer *how* to move the magnets, researchers gave the 
 2.  **The Reward:** Every time the plasma stayed stable, the AI got a "point." Every time it touched a wall, it lost.
 3.  **Real-time Control:** Once trained, the AI was moved from the simulator to the real reactor. It can now adjust the voltage of 19 different magnetic coils every **10,000th of a second**.
 
-```d2
-direction: down
 
-Environment: "The Tokamak (Hardware)" {
-  Plasma: "Magnetic Confinement" {shape: circle}
-  Sensors: "State Data (B-field, density)" {shape: cylinder}
-  Plasma -> Sensors
-}
-
-AI_Controller: "Deep RL Agent" {
-  style: {
-    stroke: "#0f766e"
-    stroke-width: 2
-  }
-  CNN: "Visual State Encoder"
-  Policy: "Voltage Decision (PPO)" {
-    shape: diamond
-    style: {fill: "#e8f2f1"}
-  }
-  CNN -> Policy
-}
-
-Actuators: "Magnetic Control" {
-  Magnets: "19 Poloidal Coils" {shape: cylinder}
-  Action: "Voltage Adjustment (a_t)"
-  Magnets -> Action
-}
-
-Environment.Sensors -> AI_Controller.CNN: "State (s_t)"
-AI_Controller.Policy -> Actuators.Magnets: "Decision"
-Actuators.Action -> Environment.Plasma: "Containment Force"
-
-Loop: "10,000 Hz Feedback Cycle" {
-  style: {stroke-dash: 3; stroke: "#dc2626"}
-}
-```
 
 ## Sculpting the Star {#sculpting}
 

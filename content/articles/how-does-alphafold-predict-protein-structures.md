@@ -29,60 +29,7 @@ AlphaFold doesn't just guess the shape; it reads the "history" of the protein wr
 
 If amino acid A and amino acid B always change in tandem over millions of years, it’s a strong mathematical signal that they are physically touching or interacting in the folded structure. AlphaFold's "Evoformer" engine uses this co-evolutionary data to build a probabilistic map of which parts of the chain are near each other.
 
-```d2
-direction: down
 
-Inputs: "Data Pipelines" {
-  MSA: "Multiple Sequence Alignment" {
-    tooltip: "Evolutionary History"
-    shape: cylinder
-  }
-  Templates: "Structural Templates" {
-    shape: cylinder
-  }
-}
-
-Evoformer: "Evoformer Engine" {
-  style: {
-    stroke: "#0f766e"
-    stroke-width: 2
-  }
-
-  MSATrack: "MSA Representation" {
-    RowAtt: "Row-wise Attention" {shape: diamond}
-    ColAtt: "Column-wise Attention" {shape: diamond}
-    RowAtt -> ColAtt
-  }
-
-  PairTrack: "Pair Representation" {
-    TriAtt: "Triangular Multiplicative Update" {shape: hexagon}
-    TriSelf: "Triangular Self-Attention" {shape: diamond}
-    TriAtt -> TriSelf
-  }
-
-  MSATrack.RowAtt <-> PairTrack.TriAtt: "Outer Product Mean" {
-    style: {stroke-dash: 3}
-  }
-}
-
-StructureModule: "3D Structure Module" {
-  IPA: "Invariant Point Attention" {
-    shape: diamond
-    style: {fill: "#e8f2f1"}
-  }
-  Equiv: "3D Equivariant Refinement"
-  IPA -> Equiv
-}
-
-Inputs -> Evoformer: "Embedding & Feature Extraction"
-Evoformer -> StructureModule: "Residue Pair Constraints"
-StructureModule -> Output: "Atomic Coordinates (PDB)"
-
-Output: "Validated Prediction" {
-  shape: parallelogram
-  style: {fill: "#fee2e2"}
-}
-```
 
 ## Moving from 2D to 3D {#spatial}
 

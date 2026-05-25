@@ -23,45 +23,7 @@ synonyms:
 
 **Contrastive Learning** is a self-supervised learning paradigm that teaches a model to distinguish between similar and dissimilar data points. Instead of training a model to map an image to a fixed label (e.g., "Dog"), contrastive learning trains the model to ensure that two different views of the same dog are represented by similar vectors, while a view of a cat is represented by a distant vector.
 
-```d2
-direction: down
 
-Inputs: "Sample Triplet" {
-  A: "Anchor (Reference)" {shape: person}
-  P: "Positive (Same)" {shape: person}
-  N: "Negative (Different)" {shape: person}
-}
-
-Encoder_Stack: "Siamese Architecture" {
-  style: {
-    stroke: "#0f766e"
-    stroke-width: 2
-  }
-  Backbone: "Shared Weights (f)" {shape: cylinder}
-  Projection: "Non-Linear Head (g)" {shape: diamond}
-  Backbone -> Projection
-}
-
-Objective: "Latent Space Geometry" {
-  shape: cloud
-  style: {fill: "#e8f2f1"}
-  
-  Logic: "Metric Optimization" {
-    Pull: "Attract (A <-> P)" {
-      style: {stroke: "#0f766e"; stroke-width: 3}
-    }
-    Push: "Repel (A <-> N)" {
-      style: {stroke: "#dc2626"; stroke-width: 3; stroke-dash: 3}
-    }
-  }
-}
-
-Inputs.A -> Encoder_Stack.Backbone
-Inputs.P -> Encoder_Stack.Backbone
-Inputs.N -> Encoder_Stack.Backbone
-
-Encoder_Stack.Projection -> Objective: "z = g(f(x))"
-```
 
 ## The Objective: Similarity as Distance {#objective}
 

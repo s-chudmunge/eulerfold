@@ -20,60 +20,7 @@ synonyms:
 
 The **Transformer** is the architectural backbone of modern artificial intelligence. Introduced in the 2017 paper *"Attention Is All You Need"*, it fundamentally changed how machines process sequence data—moving away from step-by-step recurrence toward a massive, parallelized understanding of context.
 
-```d2
-direction: down
 
-Inputs: "Input Processing" {
-  Tokens: "Token Embeddings" {shape: parallelogram}
-  Pos: "Positional Encodings" {shape: parallelogram}
-  Tokens -> Pos: "Add"
-}
-
-Architecture: "Transformer System" {
-  style: {
-    stroke: "#0F766E"
-    stroke-width: 2
-  }
-
-  Encoder: "Encoder (N-Layers)" {
-    MHA: "Multi-Head Attention" {
-      style: {
-        fill: "#e8f2f1"
-      }
-    }
-    Norm1: "Add & Norm"
-    FFN: "Feed-Forward"
-    Norm2: "Add & Norm"
-
-    MHA -> Norm1 -> FFN -> Norm2
-  }
-
-  Decoder: "Decoder (N-Layers)" {
-    MaskedMHA: "Masked Multi-Head Attention"
-    Norm1: "Add & Norm"
-    CrossMHA: "Encoder-Decoder Attention" {
-      style: {
-        fill: "#e8f2f1"
-      }
-    }
-    Norm2: "Add & Norm"
-    FFN: "Feed-Forward"
-    Norm3: "Add & Norm"
-
-    MaskedMHA -> Norm1 -> CrossMHA -> Norm2 -> FFN -> Norm3
-  }
-}
-
-Outputs: "Output Processing" {
-  Linear: "Linear Transformation"
-  Softmax: "Softmax probabilities" {shape: parallelogram}
-  Linear -> Softmax
-}
-
-Inputs.Pos -> Architecture.Encoder
-Architecture.Encoder -> Architecture.Decoder: "Key/Value Vectors"
-Architecture.Decoder -> Outputs.Linear
-```
 
 ## The End of Recurrence {#the-end-of-recurrence}
 

@@ -126,10 +126,10 @@ async function compile() {
         }
 
         // Extract D2 blocks and pre-fetch them
-        const d2Matches = parsed.content.matchAll(/```d2\n([\s\S]*?)\n```/g);
+        const d2Matches = parsed.content.matchAll(/```d2\s*?\n([\s\S]*?)\n\s*?```/g);
         parsed.d2Cache = {};
         for (const match of d2Matches) {
-            const code = match[1];
+            const code = match[1].trim();
             try {
                 const svg = await fetchDiagram(code);
                 parsed.d2Cache[code] = svg;

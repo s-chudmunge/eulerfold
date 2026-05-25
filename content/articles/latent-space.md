@@ -27,63 +27,7 @@ In machine learning, a **Latent Space** is a compressed, high-dimensional mathem
 
 Raw data is often redundant. A $1024 \times 1024$ image has over a million pixels, but the "meaning" of the image—for instance, that it contains a "cat"—can be expressed in a much smaller set of numbers. This reduction is called **dimensionality reduction**.
 
-```d2
-direction: down
 
-Input_Space: "High-Dimensional Input" {
-  Image: "Raw Image Data" {
-    shape: parallelogram
-    style: {
-      fill: "#f8fafc"
-    }
-    Pixels: "1,048,576 Pixels"
-  }
-}
-
-Architecture: "Autoencoder System" {
-  style: {
-    stroke: "#0F766E"
-    stroke-width: 2
-  }
-
-  Encoder: "Encoder Network" {
-    shape: diamond
-    style: {
-      fill: "#e8f2f1"
-    }
-  }
-
-  Bottleneck: "Latent Representation" {
-    shape: cloud
-    style: {
-      stroke: "#0F766E"
-      stroke-width: 3
-    }
-    Vector: "512-dim Vector"
-  }
-
-  Decoder: "Decoder Network" {
-    shape: diamond
-    style: {
-      fill: "#e8f2f1"
-    }
-  }
-}
-
-Output_Space: "Reconstructed Data" {
-  Recon: "Output Image" {
-    shape: parallelogram
-    style: {
-      fill: "#f8fafc"
-    }
-  }
-}
-
-Input_Space.Image -> Architecture.Encoder: "Compression"
-Architecture.Encoder -> Architecture.Bottleneck: "Mapping"
-Architecture.Bottleneck -> Architecture.Decoder: "Extraction"
-Architecture.Decoder -> Output_Space.Recon: "Reconstruction"
-```
 
 The magic of a well-trained latent space is that it is **semantically organized**. Points that are close together in this space represent concepts that are similar in reality. In a latent space for faces, moving a small distance in one direction might change the hair color, while moving in another might add glasses.
 

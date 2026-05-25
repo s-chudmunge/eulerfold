@@ -17,7 +17,7 @@ export default function HeroSection() {
     {
       id: 'original',
       content: (
-        <section className="relative pt-24 pb-32 md:pt-32 md:pb-48 px-6 min-h-[650px] md:min-h-[850px] flex items-center overflow-hidden w-full">
+        <section className="relative pt-16 pb-20 md:pt-32 md:pb-48 px-6 min-h-[500px] md:min-h-[850px] flex items-center overflow-hidden w-full">
           <HeroBackground />
           <div className="max-w-7xl mx-auto w-full relative z-10">
             <div className="max-w-3xl">
