@@ -8,7 +8,7 @@ import { motion } from 'framer-motion';
 const products = [
   {
     title: "Decode",
-    description: "On-demand technical breakdown of academic papers. Convert complex research into high-fidelity technical blueprints.",
+    description: "On-demand technical breakdown of academic papers. Convert complex research into precise technical blueprints.",
     icon: Microscope,
     href: "/research-lab",
     isNew: true,

@@ -52,7 +52,7 @@ export default function ObjectiveSelectionStep({ displayName, onSuccess }: Objec
     {
       id: 'curiosity' as ObjectiveType,
       title: 'Curiosity & Exploration',
-      description: 'Broad exploration of high-signal technical concepts.',
+      description: 'Broad exploration of core technical concepts.',
       placeholder: 'What has piqued your interest recently?'
     }
   ];

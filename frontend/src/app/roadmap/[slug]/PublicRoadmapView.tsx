@@ -477,7 +477,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                             />
                         </div>
                         <p className="manrope-body text-[13px] text-text-muted italic opacity-70">
-                            Help the community find high-signal technical paths.
+                            Help the community find verified technical paths.
                         </p>
                     </div>
 
