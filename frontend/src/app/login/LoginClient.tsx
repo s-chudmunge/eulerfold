@@ -20,16 +20,34 @@ export default function LoginPage() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const next = searchParams.get('next');
+    const message = searchParams.get('message');
+
+    const getMessageContent = () => {
+        switch (message) {
+            case 'auth_required_to_decode':
+                return 'Please sign in to decode research papers.';
+            case 'auth_required_to_generate':
+                return 'Please sign in to generate learning roadmaps.';
+            case 'auth_required_to_view_profile':
+                return 'Please sign in to view your profile.';
+            case 'already_signed_in':
+                return 'You are already signed in.';
+            default:
+                return null;
+        }
+    };
+
+    const messageContent = getMessageContent();
 
     useEffect(() => {
         const checkSession = async () => {
             const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
+            if (session && message !== 'already_signed_in') {
                 router.push('/?message=already_signed_in');
             }
         };
         checkSession();
-    }, [router]);
+    }, [router, message]);
 
     const getRedirectUrl = () => {
         return next 
@@ -149,7 +167,7 @@ export default function LoginPage() {
                                     {isSignUp ? 'Create your account' : 'Welcome back'}
                                 </h1>
                                 <p className="text-text-muted text-[13px] manrope-body font-medium">
-                                    {isSignUp ? 'Start your learning journey today.' : 'Continue your learning journey.'}
+                                    {messageContent || (isSignUp ? 'Start your learning journey today.' : 'Continue your learning journey.')}
                                 </p>
                             </div>
 

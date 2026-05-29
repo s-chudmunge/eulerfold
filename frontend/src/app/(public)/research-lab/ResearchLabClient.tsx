@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Search, Loader, BookOpen, History, AlertCircle, ChevronRight, FlaskConical, Beaker, ArrowRight, FileText, Sparkles, BrainCircuit } from 'lucide-react';
+import { Search, Loader, BookOpen, History, AlertCircle, ChevronRight, FlaskConical, Beaker, ArrowRight, FileText, Sparkles, BrainCircuit, LogIn } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
@@ -10,7 +10,6 @@ import { format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import Footer from '@/components/Footer';
-import ResearchLibrarySidebar from '@/components/research-lab/ResearchLibrarySidebar';
 
 const TechnicalCube = () => (
     <div className="relative w-20 h-20 flex items-center justify-center" style={{ perspective: '800px' }}>
@@ -119,7 +118,7 @@ export default function ResearchLabClient() {
     const handleStartAnalysis = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!user) {
-            router.push('/login?next=/research-lab');
+            router.push('/login?message=auth_required_to_decode&next=/research-lab');
             return;
         }
 
@@ -288,6 +287,11 @@ export default function ResearchLabClient() {
                                                 <Loader className="w-4 h-4 animate-spin" />
                                                 Analyzing Paper...
                                             </>
+                                        ) : !user ? (
+                                            <>
+                                                <LogIn className="w-4 h-4" />
+                                                Sign In to Analyze
+                                            </>
                                         ) : (
                                             "Start Analysis"
                                         )}
@@ -303,7 +307,13 @@ export default function ResearchLabClient() {
                                     <div className="flex items-center gap-5">
                                         <div className="text-right">
                                             <span className="block text-[9px] font-bold text-text-muted uppercase tracking-[0.1em] mb-0.5">Available Balance</span>
-                                            <span className="inconsolata-ui text-[13px] font-black text-text-primary">{user?.roadmap_credits ?? 0} Credits</span>
+                                            {user ? (
+                                                <span className="inconsolata-ui text-[13px] font-black text-text-primary">{user.roadmap_credits ?? 0} Credits</span>
+                                            ) : (
+                                                <Link href="/login?next=/research-lab" className="inconsolata-ui text-[11px] font-black text-accent uppercase tracking-widest hover:underline">
+                                                    Sign in to view
+                                                </Link>
+                                            )}
                                         </div>
                                         <Link href="/pricing" className="w-10 h-10 flex items-center justify-center bg-accent/10 text-accent rounded-full hover:bg-accent/20 transition-all group">
                                             <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
@@ -355,7 +365,9 @@ export default function ResearchLabClient() {
                             ) : (
                                 <div className="py-16 text-center border border-dashed border-border rounded-xl bg-sidebar/10">
                                     <Beaker className="w-8 h-8 text-text-muted/20 mx-auto mb-3" />
-                                    <p className="text-[11px] text-text-muted uppercase font-bold tracking-widest">No active sessions found.</p>
+                                    <p className="text-[11px] text-text-muted uppercase font-bold tracking-widest">
+                                        {user ? "No active sessions found." : "Sign in to view your history."}
+                                    </p>
                                 </div>
                             )}
                         </div>
