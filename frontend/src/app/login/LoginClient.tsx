@@ -5,8 +5,10 @@ import { supabase } from '@/lib/supabase/client';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ShieldCheck, Github, Mail, Check } from 'lucide-react';
+import { useSettings } from '@/components/SettingsProvider';
 
 export default function LoginPage() {
+    const { openSettings } = useSettings();
     const [error, setError] = useState<string | null>(null);
     const [isSuccess, setIsSuccess] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -284,7 +286,12 @@ export default function LoginPage() {
                         <div className="flex flex-col gap-1">
                             <Link href="/research-decoded" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Research</Link>
                             <Link href="/help" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Help center</Link>
-                            <Link href="/settings" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Settings</Link>
+                            <button 
+                                onClick={openSettings}
+                                className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors text-left"
+                            >
+                                Settings
+                            </button>
                         </div>
                     </div>
                     <div className="flex flex-col gap-2">

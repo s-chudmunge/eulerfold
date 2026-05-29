@@ -7,10 +7,12 @@ import { LogOut, ChevronDown, Settings, ArrowLeft, ArrowRight, ChevronLeft, Chev
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { authAPI } from '@/lib/api';
+import { useSettings } from './SettingsProvider';
 
 const ProfileDropdown = ({ user, profile, handleSignOut }: { user: any; profile: any; handleSignOut: () => void }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = React.useRef<HTMLDivElement>(null);
+  const { openSettings } = useSettings();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -64,14 +66,13 @@ const ProfileDropdown = ({ user, profile, handleSignOut }: { user: any; profile:
             </Link>
           )}
 
-          <Link 
-            href="/settings" 
-            onClick={() => setIsOpen(false)}
-            className="flex items-center space-x-3 px-4 py-2 text-[12px] font-bold text-text-muted hover:bg-callout-bg hover:text-text-heading transition-colors"
+          <button 
+            onClick={() => { setIsOpen(false); openSettings(); }}
+            className="flex items-center space-x-3 w-full px-4 py-2 text-[12px] font-bold text-text-muted hover:bg-callout-bg hover:text-text-heading transition-colors"
           >
             <Settings className="h-3.5 w-3.5" />
             <span className="tracking-tight">Settings</span>
-          </Link>
+          </button>
 
           <div className="h-px bg-[var(--border)]/50 my-1 mx-2" />
           

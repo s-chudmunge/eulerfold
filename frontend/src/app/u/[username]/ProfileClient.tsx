@@ -38,6 +38,7 @@ import PublicHeader from '@/components/PublicHeader';
 import ActivityChart from '@/components/dashboard/ActivityChart';
 import ActivityHeatmap from '@/components/profile/ActivityHeatmap';
 import TTSListenButton from '@/components/TTSListenButton';
+import { useSettings } from '@/components/SettingsProvider';
 
 interface Props {
     profile: PublicProfile;
@@ -46,6 +47,7 @@ interface Props {
 type TabType = 'overview' | 'skills' | 'evidence' | 'assessments' | 'insights';
 
 export default function ProfileClient({ profile }: Props) {
+    const { openSettings } = useSettings();
     const [searchQuery, setSearchQuery] = useState("");
     const [isOwner, setIsOwner] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -269,12 +271,12 @@ export default function ProfileClient({ profile }: Props) {
                             </div>
 
                             {isOwner && (
-                            <Link 
-                                href="/settings"
-                                className="w-full py-1.5 mb-8 bg-sidebar border border-border hover:bg-callout-bg rounded-none text-[11px] font-bold text-text-heading flex items-center justify-center gap-2 transition-all uppercase tracking-widest inconsolata-ui"
+                            <button 
+                                onClick={openSettings}
+                                className="w-full py-1.5 mb-8 bg-sidebar border border-border hover:bg-callout-bg rounded-none text-[11px] font-bold text-text-heading flex items-center justify-center gap-2 transition-all uppercase tracking-widest inconsolata-ui cursor-pointer"
                             >
                                 <Edit2 className="w-3 h-3 opacity-60" /> Edit profile
-                            </Link>
+                            </button>
                             )}
 
                             {/* Bio/Info */}

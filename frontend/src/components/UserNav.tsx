@@ -6,10 +6,12 @@ import { useAuth } from '@/components/AuthProvider';
 import { User as UserIcon, LayoutDashboard, LogOut, Settings, ChevronDown, UserCircle } from 'lucide-react';
 import { supabase } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
+import { useSettings } from './SettingsProvider';
 
 export default function UserNav() {
   const { user, loading } = useAuth();
   const router = useRouter();
+  const { openSettings } = useSettings();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -98,16 +100,15 @@ export default function UserNav() {
                 </Link>
               )}
 
-              <Link 
-                href="/settings"
-                onClick={() => setIsOpen(false)}
-                className="flex items-center gap-3 px-2.5 py-2 text-[13px] font-medium text-text-muted hover:text-text-heading hover:bg-sidebar/50 rounded-lg transition-all group"
+              <button 
+                onClick={() => { setIsOpen(false); openSettings(); }}
+                className="w-full flex items-center gap-3 px-2.5 py-2 text-[13px] font-medium text-text-muted hover:text-text-heading hover:bg-sidebar/50 rounded-lg transition-all group"
               >
                 <div className="w-5 h-5 rounded-md bg-sidebar border border-border/50 flex items-center justify-center group-hover:bg-header group-hover:border-accent/30 transition-all">
                   <Settings className="w-3 h-3 opacity-60 group-hover:opacity-100 group-hover:text-accent" />
                 </div>
                 Settings
-              </Link>
+              </button>
             </div>
 
             {/* Sign Out Section */}

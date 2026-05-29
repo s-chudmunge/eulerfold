@@ -198,37 +198,24 @@ export default function SummerSaleHero() {
         </div>
 
         {/* Right Side: Sale Content */}
-        <div className="flex flex-col items-center lg:items-start text-center lg:text-left order-2 lg:order-none">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, ease: "easeOut" }} className="mb-6 sm:mb-8">
-          <h1 className="relative flex flex-col items-center lg:items-start">
-            <span className="block text-[48px] sm:text-[100px] md:text-[120px] leading-[0.85] font-black text-white drop-shadow-[4px_4px_0px_rgba(15,118,110,0.4)] uppercase italic tracking-tighter">SUMMER</span>
-            <span className="block text-[64px] sm:text-[130px] md:text-[150px] leading-[0.7] font-normal text-teal-300 drop-shadow-[4px_4px_0px_rgba(0,0,0,0.2)] -mt-4 italic tracking-tight" style={{ fontFamily: '"Great Vibes", cursive' }}>Sale</span>
-          </h1>
-        </motion.div>
-
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 0.5 }} className="mb-8 sm:mb-10 w-full">
-          <div className="inline-flex items-center gap-4">
-              <motion.div
-                animate={{ rotate: [0, 90, 180, 270, 360] }}
-                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-              >
-                <Sun className="w-5 h-5 sm:w-6 sm:h-6 text-teal-400 fill-teal-400/20" />
-              </motion.div>
-              <h2 className="text-[18px] sm:text-[24px] md:text-[32px] font-black text-white tracking-tight uppercase">
-                {discountPercentage}% <span className="text-teal-400">OFF PRO</span>
-              </h2>
-              <motion.div
-                animate={{ rotate: [0, -90, -180, -270, -360] }}
-                transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-              >
-                <Sun className="w-5 h-5 sm:w-6 sm:h-6 text-teal-400 fill-teal-400/20" />
-              </motion.div>
-          </div>
-        </motion.div>
-
-          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6, duration: 0.5 }}>
-            <Link href="/pricing" className="bg-white text-teal-900 px-8 sm:px-10 py-4 sm:py-5 rounded-full text-[12px] sm:text-[14px] font-black uppercase tracking-[0.2em] transition-all hover:scale-105 hover:bg-teal-50 active:scale-95 shadow-2xl flex items-center gap-3">
-              Shop Now <ArrowUpRight className="w-4 h-4 sm:w-5 sm:h-5" />
+        <div className="flex flex-col items-start text-left order-2 lg:order-none relative z-10">
+          <motion.div 
+            initial={{ opacity: 0, x: 20 }} 
+            animate={{ opacity: 1, x: 0 }} 
+            transition={{ duration: 0.8, ease: "easeOut" }} 
+            className="flex flex-col items-start"
+          >
+            <span className="text-[14px] sm:text-[18px] font-black text-teal-400 uppercase tracking-[0.25em] mb-1">
+              SUMMER SALE
+            </span>
+            <h1 className="text-[42px] sm:text-[72px] md:text-[90px] xl:text-[110px] leading-[0.85] font-black text-white tracking-tighter uppercase mb-8 whitespace-nowrap">
+              {discountPercentage}% <span className="text-teal-400">OFF PRO</span>
+            </h1>
+            <Link 
+              href="/pricing" 
+              className="bg-white hover:bg-teal-50 text-teal-950 px-12 sm:px-16 py-4 sm:py-5 rounded-md text-[14px] sm:text-[16px] font-black uppercase tracking-widest transition-all hover:scale-105 active:scale-95 shadow-2xl flex items-center gap-3"
+            >
+              Shop Now <ArrowUpRight className="w-5 h-5" />
             </Link>
           </motion.div>
         </div>

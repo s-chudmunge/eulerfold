@@ -40,6 +40,7 @@ import HomeworkSubmissionModal from '@/components/roadmap/HomeworkSubmissionModa
 import Celebration from '@/components/Celebration';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Inconsolata, Manrope } from 'next/font/google';
+import { useSettings } from '@/components/SettingsProvider';
 
 const inconsolata = Inconsolata({
   subsets: ['latin'],
@@ -88,6 +89,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
     const [showCloneModal, setShowCloneModal] = useState<boolean>(false);
     const [submittingModule, setSubmittingModule] = useState<{number: number, title: string, instructions?: string} | null>(null);
     const router = useRouter();
+    const { openSettings } = useSettings();
 
     const refreshProfile = React.useCallback(async () => {
         const { data: { session } } = await supabase.auth.getSession();
@@ -893,7 +895,12 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                         <div className="flex flex-col gap-1">
                             <Link href="/research-decoded" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Research</Link>
                             <Link href="/help" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Help center</Link>
-                            <Link href="/settings" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Settings</Link>
+                            <button 
+                                onClick={openSettings}
+                                className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors text-left"
+                            >
+                                Settings
+                            </button>
                         </div>
                     </div>
 

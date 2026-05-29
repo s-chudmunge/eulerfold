@@ -1,9 +1,13 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
 import { Instagram, Mail, Youtube } from 'lucide-react';
 import { FaXTwitter } from 'react-icons/fa6';
+import { useSettings } from './SettingsProvider';
 
 export default function Footer() {
+  const { openSettings } = useSettings();
   return (
     <footer className="w-full px-6 py-12 border-t border-border bg-background">
       <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-4">
@@ -35,7 +39,12 @@ export default function Footer() {
             <Link href="/research-decoded" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Research</Link>
             <Link href="/articles" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Article Index</Link>
             <Link href="/help" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Help center</Link>
-            <Link href="/settings" className="text-[13px] text-text-muted hover:text-text-heading transition-colors">Settings</Link>
+            <button 
+              onClick={openSettings}
+              className="text-[13px] text-text-muted hover:text-text-heading transition-colors text-left"
+            >
+              Settings
+            </button>
           </div>
         </div>
         <div className="flex flex-col gap-2">

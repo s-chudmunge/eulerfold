@@ -31,6 +31,7 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase/client';
 import { authAPI, roadmapsAPI, coinsAPI } from '@/lib/api';
+import { useSettings } from './SettingsProvider';
 
 interface SidebarProps {
     children?: React.ReactNode; // For page-specific slots like Telemetry or Stats
@@ -132,6 +133,7 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
     };
 
     const isActive = (path: string) => pathname === path;
+    const { openSettings } = useSettings();
 
     const navLinkClass = (path: string) => `
         flex items-center gap-2 px-2.5 py-1 text-[13px] transition-colors rounded-md
@@ -254,9 +256,12 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                                 <Link href="/help" aria-current={isActive('/help') ? 'page' : undefined} className={navLinkClass('/help')} onClick={onClose}>
                                     <HelpCircle className="w-3.5 h-3.5 stroke-[1.5px]" /> Help Center
                                 </Link>
-                                <Link href="/settings" aria-current={isActive('/settings') ? 'page' : undefined} className={navLinkClass('/settings')} onClick={onClose}>
+                                <button 
+                                    onClick={() => { openSettings(); onClose?.(); }} 
+                                    className={navLinkClass('/settings')}
+                                >
                                     <Settings className="w-3.5 h-3.5 stroke-[1.5px]" /> Settings
-                                </Link>
+                                </button>
                                 <Link href="/terms" aria-current={isActive('/terms') ? 'page' : undefined} className={navLinkClass('/terms')} onClick={onClose}>
                                     <FileText className="w-3.5 h-3.5 stroke-[1.5px]" /> Terms
                                 </Link>
@@ -281,7 +286,6 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                                     {[
                                         { label: 'feedback', icon: MessageSquare, path: '/help' },
                                         { label: 'home page', icon: Home, path: '/' },
-                                        { label: 'settings', icon: Settings, path: '/settings' },
                                     ].map((item) => (
                                         <button 
                                             key={item.label}
@@ -292,6 +296,13 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                                             <span className="lowercase">{item.label}</span>
                                         </button>
                                     ))}
+                                    <button 
+                                        className="flex items-center gap-2 w-full px-2 py-1 text-[11px] font-medium text-text-muted hover:bg-sidebar dark:hover:bg-background/5 rounded transition-colors"
+                                        onClick={() => { openSettings(); setIsMenuOpen(false); }}
+                                    >
+                                        <Settings className="w-3 h-3 stroke-[1.5px]" /> 
+                                        <span className="lowercase">settings</span>
+                                    </button>
                                     <div className="h-px bg-sidebar dark:bg-white/5 my-1 mx-1" />
                                     <button 
                                         onClick={handleSignOut}

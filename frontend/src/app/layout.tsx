@@ -5,6 +5,8 @@ import Script from 'next/script';
 // import { Inter, Inconsolata, Manrope } from 'next/font/google';
 import BannerWrapper from '@/components/BannerWrapper';
 import AuthProvider from '@/components/AuthProvider';
+import { SettingsProvider } from '@/components/SettingsProvider';
+import SettingsModal from '@/components/SettingsModal';
 import QueryProvider from '@/app/providers/QueryProvider';
 import SessionTracker from '@/components/SessionTracker';
 import { Analytics } from "@vercel/analytics/next";
@@ -199,15 +201,18 @@ export default function RootLayout({
       >
         <QueryProvider>
           <AuthProvider>
-            <Suspense fallback={null}>
-              <SessionTracker />
-            </Suspense>
-            <BannerWrapper />
-            <main>
-              {children}
-            </main>
-            <Analytics />
-            <SpeedInsights />
+            <SettingsProvider>
+              <Suspense fallback={null}>
+                <SessionTracker />
+              </Suspense>
+              <BannerWrapper />
+              <main>
+                {children}
+              </main>
+              <SettingsModal />
+              <Analytics />
+              <SpeedInsights />
+            </SettingsProvider>
           </AuthProvider>
         </QueryProvider>
       </body>
