@@ -10,7 +10,7 @@ excerpt: "Meredith Whittaker's transition from Google researcher to President of
 technicalInsight: "Whittaker's advocacy highlights the 'Compute Monopoly' where AI development is gated by the massive infrastructure requirements of a few corporations."
 synonyms:
   - "Meredith Whittaker"
-  - "Signal"
+  - "Signal Foundation"
   - "AI Ethics"
   - "Data Privacy"
 ---

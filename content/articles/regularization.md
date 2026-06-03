@@ -14,7 +14,7 @@ faq:
   - q: "What is the difference between L1 and L2 regularization?"
     a: "L2 (Weight Decay) penalizes the square of the weights, tending to spread error across many small weights. L1 penalizes the absolute value, which often results in 'sparse' models where many weights are forced to exactly zero."
 synonyms:
-  - "Dropout"
+  - "Dropout Regularization"
   - "Weight Decay"
   - "L2 regularization"
   - "overfitting"

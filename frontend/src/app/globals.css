@@ -235,13 +235,16 @@ body {
 
 .prose-eulerfold a {
   text-decoration: none;
-  border-bottom: 1px solid rgba(15, 118, 110, 0.2);
+  color: var(--link);
+  font-weight: 550;
+  border-bottom: 1.5px solid var(--accent-muted);
   transition: all 0.2s ease-in-out;
 }
 
 .prose-eulerfold a:hover {
-  border-bottom-color: var(--accent);
+  border-bottom-color: var(--link);
   background-color: var(--accent-muted);
+  opacity: 0.85;
 }
 
 .prose-eulerfold h3 {
