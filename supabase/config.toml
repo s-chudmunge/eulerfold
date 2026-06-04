@@ -318,7 +318,7 @@ email_optional = false
 [auth.external.github]
 enabled = true
 client_id = "Ov23liIHexS2GB50PY1C"
-secret = "REMOVED_SECRET"
+secret = "env(SUPABASE_AUTH_EXTERNAL_GITHUB_SECRET)"
 redirect_uri = "https://yddnqnbpnrjnhwzhmlht.supabase.co/auth/v1/callback"
 url = "https://github.com/login/oauth/authorize"
 skip_nonce_check = false
