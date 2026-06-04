@@ -3,8 +3,6 @@
 <div align="center">
   <img src="frontend/public/android-chrome-512x512.png" alt="EulerFold" width="100">
 
-  ### Personalized Adaptive Learning · Technical Proof of Work · Research Decoded
-
   [![License](https://img.shields.io/github/license/s-chudmunge/eulerfold?style=for-the-badge&color=0F766E)](LICENSE)
   [![Stars](https://img.shields.io/github/stars/s-chudmunge/eulerfold?style=for-the-badge&color=0F766E)](https://github.com/s-chudmunge/eulerfold/stargazers)
   [![Forks](https://img.shields.io/github/forks/s-chudmunge/eulerfold?style=for-the-badge&color=0F766E)](https://github.com/s-chudmunge/eulerfold/network/members)
@@ -16,19 +14,18 @@
   [Explore](https://www.eulerfold.com/explore) · [Research](https://www.eulerfold.com/research-lab) · [Planner](https://www.eulerfold.com/planner) · [Setup](#setup)
 </div>
 
-EulerFold is a tool to help you learn new technical subjects by building a path for you and making sure you follow it. Most learning platforms focus on video progress; EulerFold focuses on building a week-by-week plan based on your goals and verifying that you actually understand the material through technical submissions.
+EulerFold is a tool to help you learn new technical subjects by building a path for you and making sure you follow it. Most learning platforms focus on video progress; EulerFold focuses on building a week-by-week plan based on your goals and verifying that you actually understand the material.
 
 ### How it works
 
 The goal is to move from just reading about a topic to actually building things.
 
-- **Roadmap Generation**: Type in a goal like "Quantum Physics" or "React" and get a structured curriculum.
-- **Learning & Practice**: Study each module and answer technical questions to move forward.
-- **Proof of Work**: Upload code, PDFs, or images to prove you hit the learning goals. An AI reviewer checks your work and gives direct feedback.
-- **Career Growth**: Paste a job description to get a roadmap that fills the gap between your current skills and the role requirements.
-- **Study Planning**: Schedule tasks based on how much time you have (Casual, Balanced, or Intense).
-- **Research**: Use the Research Lab to analyze technical papers and test your recall.
-- **Earned Records**: Track your progress on a public profile and export your credentials as a PDF with a QR code.
+- **[Roadmap Generation](https://www.eulerfold.com/)**: Type in a goal like "Quantum Physics" or "React" and get a structured curriculum.
+- **[Learning & Practice](https://www.eulerfold.com/dashboard)**: Study each module and answer technical questions to move forward.
+- **[Career Growth](https://www.eulerfold.com/generate?mode=job)**: Paste a job description to get a roadmap that fills the gap between your current skills and the role requirements.
+- **[Study Planning](https://www.eulerfold.com/planner)**: Schedule tasks based on how much time you have (Casual, Balanced, or Intense).
+- **[Research](https://www.eulerfold.com/research-lab)**: Use the Research Lab to analyze technical papers and test your recall.
+- **[Earned Records](https://www.eulerfold.com/account)**: Track your progress on a public profile and export your credentials as a PDF with a QR code.
 
 ### Tech Stack
 
@@ -59,9 +56,15 @@ npm install
 npm run dev
 ```
 
-### Star History
+## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=s-chudmunge/eulerfold&type=Date)](https://star-history.com/#s-chudmunge/eulerfold&Date)
+<a href="https://www.star-history.com/?type=date&repos=s-chudmunge%2Feulerfold">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=s-chudmunge/eulerfold&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=s-chudmunge/eulerfold&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=s-chudmunge/eulerfold&type=date&legend=top-left" />
+ </picture>
+</a>
 
 ---
 <div align="center">
