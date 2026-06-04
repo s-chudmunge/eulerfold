@@ -57,10 +57,10 @@ export default function SocialFeed() {
         });
       }
 
-      // 2. Instagram & X placeholders (reflecting current Flash Sale)
+      // 2. Instagram & X placeholders (Evergreen)
       combinedPosts.push(
-        { id: "ig-1", platform: "Instagram", content: "END OF SUMMER FLASH SALE! ☀️ 25% OFF on all EulerFold credits. Valid May 18th to June 18th. Don't miss out on your learning journey.", date: "Coming Soon", link: platformLinks.Instagram },
-        { id: "tw-1", platform: "X", content: "End of Summer Flash Sale Alert: 25% discount on all credits starting now! Build your premium roadmaps at a fraction of the cost. 🚀", date: "Coming Soon", link: platformLinks.X }
+        { id: "ig-1", platform: "Instagram", content: "Check out our latest Research Decoded series where we break down complex technical papers into first principles. Link in bio! 🔬", date: "Recent", link: platformLinks.Instagram },
+        { id: "tw-1", platform: "X", content: "We just updated our roadmap engine for better precision in technical depth mapping. Try generating your next study plan! 🚀", date: "Recent", link: platformLinks.X }
       );
 
       setPosts(combinedPosts);

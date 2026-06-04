@@ -28,19 +28,8 @@ def get_current_price(coupon_code: Optional[str] = None):
     """
     Returns (price_in_paise, has_discount)
     Normal price: ₹299 (29900 paise)
-    Special discount: 25% off on May 18 - June 18, 2026 (End of Summer Sale), all day IST.
     Coupon code: #SANKALP21 gives 50% discount.
     """
-    # IST is UTC+5:30
-    ist_offset = timedelta(hours=5, minutes=30)
-    now_ist = datetime.now(timezone.utc) + ist_offset
-
-    # End of Summer Sale: May 18th to June 30th, 2026
-    start_date = datetime(2026, 5, 18, 0, 0, 0)
-    end_date = datetime(2026, 7, 1, 0, 0, 0) # End at start of July 1st (all day June 30th)
-    
-    is_sale_period = start_date <= now_ist.replace(tzinfo=None) < end_date
-
     # Coupon Logic
     VALID_COUPONS = {
         "#SANKALP21": 0.5, # 50% discount
@@ -50,11 +39,8 @@ def get_current_price(coupon_code: Optional[str] = None):
     if coupon_code and coupon_code.upper() in VALID_COUPONS:
         coupon_discount = VALID_COUPONS[coupon_code.upper()]
 
-    if is_sale_period or coupon_discount > 0:
-        discount = 0.25 # Default sale discount (End of Summer)
-        if coupon_discount > 0:
-            # Coupons take precedence if they are higher
-            discount = max(discount, coupon_discount)
+    if coupon_discount > 0:
+        discount = coupon_discount
             
         # ₹299 * (1 - discount)
         final_price_rs = 299 * (1 - discount)

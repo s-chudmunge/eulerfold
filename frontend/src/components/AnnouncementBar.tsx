@@ -68,85 +68,43 @@ export default function AnnouncementBar() {
     return null;
   }
 
-  const showFlashSale = discountStatus.hasDiscount || (discountStatus.isToday && discountStatus.remainingSeconds > 0 && !discountStatus.hasDiscount);
-
   return (
     <div className="fixed top-0 inset-x-0 z-[70] bg-gradient-to-r from-teal-900 via-teal-700 to-teal-900 text-white h-[38px] flex items-center px-4 md:px-6 transition-all duration-500 ease-in-out border-b border-white/10 shadow-sm overflow-hidden">
       <div className="w-full max-w-7xl mx-auto flex items-center justify-center h-full relative">
         
         <AnimatePresence mode="wait">
-          {activeOffer === 0 || !showFlashSale ? (
-            <motion.div 
-              key="launch-offer"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -20, opacity: 0 }}
-              transition={{ duration: 0.5 }}
-              className="flex items-center justify-center gap-3 w-full"
-            >
-              <div className="flex items-center gap-2.5 text-[13px] md:text-[15px] font-bold uppercase tracking-wider">
-                <motion.div
-                  animate={{ 
-                    rotate: [0, -15, 15, -15, 15, 0],
-                    scale: [1, 1.2, 1],
-                  }}
-                  transition={{ 
-                    duration: 1.2, 
-                    repeat: Infinity, 
-                    repeatDelay: 2.5,
-                    ease: "easeInOut"
-                  }}
-                >
-                  <Gift className="w-4 h-4 text-teal-300" />
-                </motion.div>
-                <span>LAUNCH OFFER: Get 5 free roadmaps on signup</span>
-              </div>
-              <Link 
-                href={isLoggedIn ? "/generate" : "/login"} 
-                className="bg-white text-teal-800 px-4 py-1 rounded-full text-[11px] md:text-[12px] font-black uppercase tracking-tighter hover:bg-teal-50 transition-colors hidden sm:block shadow-sm"
+          <motion.div 
+            key="launch-offer"
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            exit={{ y: -20, opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="flex items-center justify-center gap-3 w-full"
+          >
+            <div className="flex items-center gap-2.5 text-[13px] md:text-[15px] font-bold uppercase tracking-wider">
+              <motion.div
+                animate={{ 
+                  rotate: [0, -15, 15, -15, 15, 0],
+                  scale: [1, 1.2, 1],
+                }}
+                transition={{ 
+                  duration: 1.2, 
+                  repeat: Infinity, 
+                  repeatDelay: 2.5,
+                  ease: "easeInOut"
+                }}
               >
-                Claim Now
-              </Link>
-            </motion.div>
-          ) : (
-            <motion.div 
-              key="flash-sale"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -20, opacity: 0 }}
-              transition={{ duration: 0.5 }}
-              className="flex items-center justify-center gap-3 w-full"
+                <Gift className="w-4 h-4 text-teal-300" />
+              </motion.div>
+              <span>LAUNCH OFFER: Get 5 free roadmaps on signup</span>
+            </div>
+            <Link 
+              href={isLoggedIn ? "/generate" : "/login"} 
+              className="bg-white text-teal-800 px-4 py-1 rounded-full text-[11px] md:text-[12px] font-black uppercase tracking-tighter hover:bg-teal-50 transition-colors hidden sm:block shadow-sm"
             >
-              <div className="flex items-center gap-2.5 text-[13px] md:text-[15px] font-bold uppercase tracking-wider text-orange-300">
-                <motion.div
-                  animate={{ 
-                    scale: [1, 1.2, 1],
-                    rotate: [0, 20, 0]
-                  }}
-                  transition={{ 
-                    duration: 2, 
-                    repeat: Infinity, 
-                  }}
-                  className="text-lg"
-                >
-                  ☀️
-                </motion.div>
-                <span className="text-white">
-                    {discountStatus.hasDiscount ? (
-                        <>END OF SUMMER SALE: 25% OFF — <span className="font-black text-orange-300 font-mono">{formatTime(discountStatus.remainingSeconds)}</span> LEFT</>
-                    ) : (
-                        <>END OF SUMMER SALE STARTING IN — <span className="font-black text-orange-300 font-mono">{formatTime(discountStatus.remainingSeconds)}</span></>
-                    )}
-                </span>
-              </div>
-              <Link 
-                href="/pricing" 
-                className="bg-orange-500 text-white px-4 py-1 rounded-full text-[11px] md:text-[12px] font-black uppercase tracking-tighter hover:bg-orange-600 transition-colors hidden sm:block shadow-sm border border-orange-400/20"
-              >
-                Buy Now
-              </Link>
-            </motion.div>
-          )}
+              Claim Now
+            </Link>
+          </motion.div>
         </AnimatePresence>
 
         <button 

@@ -19,18 +19,17 @@ export function getDiscountStatus(): DiscountStatus {
     // Current time in UTC
     const now = new Date();
     
-    // End of Summer Flash Sale: May 18th to June 18th, 2026
     // IST is UTC+5:30
     
     const startTimeIST = new Date('2026-05-18T00:00:00+05:30');
     const endTimeIST = new Date('2026-07-01T00:00:00+05:30'); // End at start of July 1st (all day June 30th)
     
-    const isWithinTime = now >= startTimeIST && now < endTimeIST;
-    const hasDiscount = isWithinTime;
+    const isWithinTime = false; // now >= startTimeIST && now < endTimeIST;
+    const hasDiscount = false; // isWithinTime;
     
     // Check if it's "today" (May 17th or earlier) to show upcoming notice
     // Set to show notice if within 7 days of start for better visibility
-    const isToday = now < startTimeIST && (startTimeIST.getTime() - now.getTime()) < (7 * 86400 * 1000);
+    const isToday = false; // now < startTimeIST && (startTimeIST.getTime() - now.getTime()) < (7 * 86400 * 1000);
     
     let remainingSeconds = 0;
     if (isWithinTime) {
@@ -41,10 +40,10 @@ export function getDiscountStatus(): DiscountStatus {
     }
     
     return {
-        isToday: isToday || isWithinTime,
-        isWithinTime,
-        hasDiscount,
-        remainingSeconds,
+        isToday: false,
+        isWithinTime: false,
+        hasDiscount: false,
+        remainingSeconds: 0,
         startTime: startTimeIST,
         endTime: endTimeIST
     };
