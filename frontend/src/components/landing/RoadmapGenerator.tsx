@@ -82,6 +82,11 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
   
   const [roleSearchTarget, setRoleSearchTarget] = useState('');
   const [isRoleDropdownOpenTarget, setIsRoleDropdownOpenTarget] = useState(false);
+  const [showOptionalFields, setShowOptionalFields] = useState(false);
+
+  useEffect(() => {
+    setShowOptionalFields(false);
+  }, [step]);
 
   const currentRoleRef = useRef<HTMLDivElement>(null);
   const targetRoleRef = useRef<HTMLDivElement>(null);
@@ -206,148 +211,34 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
     switch(step) {
       case 1:
         return (
-          <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="space-y-3">
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="space-y-5">
                <label className="inconsolata-ui flex items-center text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted">
-                 1. Identity & Objective
+                 1. Core Objective
                </label>
 
-               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {/* Current Role */}
-                  <div className="relative" ref={currentRoleRef}>
-                      <div className="flex items-center gap-1.5 mb-1.5">
-                        <User className="w-3 h-3 text-accent" />
-                        <span className="text-[12px] font-bold text-text-heading">Current Role <span className="text-text-muted font-normal text-[10px] ml-1">(Optional)</span></span>
-                      </div>
-                      <div className="relative">
-                        <input 
-                          type="text"
-                          placeholder="What you do now..."
-                          value={roleSearchCurrent || formData.current_role}
-                          onFocus={() => setIsRoleDropdownOpenCurrent(true)}
-                          onChange={(e) => {
-                            setRoleSearchCurrent(e.target.value);
-                            setFormData(prev => ({ ...prev, current_role: e.target.value }));
-                          }}
-                          className="w-full px-3 py-2 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[13px] font-medium"
-                        />
-                        <ChevronDown className={`absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted transition-transform ${isRoleDropdownOpenCurrent ? 'rotate-180' : ''}`} />
-
-                        {isRoleDropdownOpenCurrent && (
-                          <div className="absolute z-20 w-full mt-1 bg-surface border border-border shadow-2xl max-h-40 overflow-y-auto no-scrollbar rounded-xl">
-                            {filteredRolesCurrent.map(r => (
-                              <button
-                                key={r}
-                                onClick={() => {
-                                  setFormData(prev => ({ ...prev, current_role: r }));
-                                  setRoleSearchCurrent(r);
-                                  setIsRoleDropdownOpenCurrent(false);
-                                }}
-                                className="w-full text-left px-3 py-2 text-[12px] hover:bg-sidebar transition-colors flex items-center justify-between bg-surface"
-                              >
-                                {r}
-                                {formData.current_role === r && <Check className="w-3 h-3 text-accent" />}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                  </div>
-
-                  {/* Target Role */}
-                  <div className="relative" ref={targetRoleRef}>
-                      <div className="flex items-center gap-1.5 mb-1.5">
-                        <Target className="w-3 h-3 text-accent" />
-                        <span className="text-[12px] font-bold text-text-heading">Target Goal <span className="text-text-muted font-normal text-[10px] ml-1">(Optional)</span></span>
-                      </div>
-                      <div className="relative">
-                        <input 
-                          type="text"
-                          placeholder="What you want to be..."
-                          value={roleSearchTarget || formData.target_role}
-                          onFocus={() => setIsRoleDropdownOpenTarget(true)}
-                          onChange={(e) => {
-                            setRoleSearchTarget(e.target.value);
-                            setFormData(prev => ({ ...prev, target_role: e.target.value }));
-                          }}
-                          className="w-full px-3 py-2 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[13px] font-medium"
-                        />
-                        <ChevronDown className={`absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted transition-transform ${isRoleDropdownOpenTarget ? 'rotate-180' : ''}`} />
-
-                        {isRoleDropdownOpenTarget && (
-                          <div className="absolute z-20 w-full mt-1 bg-surface border border-border shadow-2xl max-h-40 overflow-y-auto no-scrollbar rounded-xl">
-                            {filteredRolesTarget.map(r => (
-                              <button
-                                key={r}
-                                onClick={() => {
-                                  setFormData(prev => ({ ...prev, target_role: r }));
-                                  setRoleSearchTarget(r);
-                                  setIsRoleDropdownOpenTarget(false);
-                                }}
-                                className="w-full text-left px-3 py-2 text-[12px] hover:bg-sidebar transition-colors flex items-center justify-between bg-surface"
-                              >
-                                {r}
-                                {formData.target_role === r && <Check className="w-3 h-3 text-accent" />}
-                              </button>
-                            ))}
-                          </div>
-                        )}
-                      </div>
-                  </div>
-               </div>
-
-               {/* Experience Level */}
-               <div className="space-y-2 pt-1">
-                  <div className="flex items-center gap-1.5">
-                    <GraduationCap className="w-3 h-3 text-accent" />
-                    <span className="text-[12px] font-bold text-text-heading">Current Proficiency <span className="text-text-muted font-normal text-[10px] ml-1">(Optional)</span></span>
-                  </div>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                    {EXPERIENCE_LEVELS.map(level => (
-                      <button
-                        key={level.id}
-                        type="button"
-                        onClick={() => setFormData(prev => ({ ...prev, experience_level: level.id }))}
-                        className={`p-2 border text-left transition-all rounded-lg ${
-                          formData.experience_level === level.id 
-                            ? 'bg-accent/10 border-accent ring-1 ring-accent' 
-                            : 'bg-surface border-border hover:border-accent/40 shadow-sm'
-                        }`}
-                      >
-                        <div className={`text-[10px] font-bold uppercase tracking-wider mb-0.5 ${formData.experience_level === level.id ? 'text-accent' : 'text-text-muted'}`}>
-                          {level.label}
-                        </div>
-                        <div className="text-[9px] text-text-muted leading-tight">
-                          {level.desc}
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-               </div>
-
-               <div className="h-[1px] bg-border my-4" />
-
-               {/* Subject */}
-               <div className="space-y-2">
-                  <div className="flex items-center gap-1.5">
-                    <Zap className="w-3 h-3 text-accent" />
-                    <span className="text-[12px] font-bold text-text-heading">What subject do you want to master?</span>
+               {/* Subject - Required & More Prominent */}
+               <div className="space-y-2.5">
+                  <div className="flex items-center gap-2">
+                    <Zap className="w-3.5 h-3.5 text-accent" />
+                    <span className="text-[13px] font-bold text-text-heading">What subject do you want to master?</span>
                   </div>
                   <input
                     type="text"
                     name="subject"
+                    autoFocus
                     value={formData.subject}
                     onChange={handleInputChange}
                     placeholder="e.g. Distributed Systems"
-                    className="w-full px-3 py-2 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[14px] font-bold text-text-heading"
+                    className="w-full px-4 py-3 bg-callout-bg border-2 border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[16px] font-bold text-text-heading placeholder:font-normal placeholder:text-text-muted/50"
                   />
                </div>
 
-               {/* Goal */}
-               <div className="space-y-2 pt-1">
-                  <div className="flex items-center gap-1.5">
-                    <Route className="w-3 h-3 text-accent" />
-                    <span className="text-[12px] font-bold text-text-heading">Specific End Goal</span>
+               {/* Goal - Required & More Prominent */}
+               <div className="space-y-2.5">
+                  <div className="flex items-center gap-2">
+                    <Route className="w-3.5 h-3.5 text-accent" />
+                    <span className="text-[13px] font-bold text-text-heading">Specific End Goal</span>
                   </div>
                   <textarea
                     name="goal"
@@ -355,19 +246,149 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
                     onChange={handleInputChange}
                     rows={2}
                     placeholder="Example: I want to be able to build a scalable real-time chat application using WebSockets and Redis."
-                    className="w-full px-3 py-2 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[13px] font-medium resize-none h-16"
+                    className="w-full px-4 py-3 bg-callout-bg border-2 border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[14px] font-medium text-text-heading placeholder:text-text-muted/50 resize-none h-20"
                   />
+               </div>
+
+               <div className="pt-2">
+                  <button 
+                    type="button"
+                    onClick={() => setShowOptionalFields(!showOptionalFields)}
+                    className="flex items-center gap-2 text-[11px] font-bold text-text-muted hover:text-accent transition-colors uppercase tracking-widest"
+                  >
+                    <div className={`transition-transform duration-300 ${showOptionalFields ? 'rotate-180' : ''}`}>
+                      <ChevronDown className="w-3.5 h-3.5" />
+                    </div>
+                    {showOptionalFields ? 'Hide Personal Context' : 'Add Personal Context (Optional)'}
+                  </button>
+
+                  {showOptionalFields && (
+                    <div className="mt-6 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {/* Current Role */}
+                        <div className="relative" ref={currentRoleRef}>
+                            <div className="flex items-center gap-1.5 mb-2">
+                              <User className="w-3 h-3 text-accent" />
+                              <span className="text-[12px] font-bold text-text-heading">Current Role</span>
+                            </div>
+                            <div className="relative">
+                              <input 
+                                type="text"
+                                placeholder="What you do now..."
+                                value={roleSearchCurrent || formData.current_role}
+                                onFocus={() => setIsRoleDropdownOpenCurrent(true)}
+                                onChange={(e) => {
+                                  setRoleSearchCurrent(e.target.value);
+                                  setFormData(prev => ({ ...prev, current_role: e.target.value }));
+                                }}
+                                className="w-full px-3 py-2 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[13px] font-medium"
+                              />
+                              <ChevronDown className={`absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted transition-transform ${isRoleDropdownOpenCurrent ? 'rotate-180' : ''}`} />
+
+                              {isRoleDropdownOpenCurrent && (
+                                <div className="absolute z-20 w-full mt-1 bg-surface border border-border shadow-2xl max-h-40 overflow-y-auto no-scrollbar rounded-xl">
+                                  {filteredRolesCurrent.map(r => (
+                                    <button
+                                      key={r}
+                                      onClick={() => {
+                                        setFormData(prev => ({ ...prev, current_role: r }));
+                                        setRoleSearchCurrent(r);
+                                        setIsRoleDropdownOpenCurrent(false);
+                                      }}
+                                      className="w-full text-left px-3 py-2 text-[12px] hover:bg-sidebar transition-colors flex items-center justify-between bg-surface"
+                                    >
+                                      {r}
+                                      {formData.current_role === r && <Check className="w-3 h-3 text-accent" />}
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                        </div>
+
+                        {/* Target Role */}
+                        <div className="relative" ref={targetRoleRef}>
+                            <div className="flex items-center gap-1.5 mb-2">
+                              <Target className="w-3 h-3 text-accent" />
+                              <span className="text-[12px] font-bold text-text-heading">Target Goal</span>
+                            </div>
+                            <div className="relative">
+                              <input 
+                                type="text"
+                                placeholder="What you want to be..."
+                                value={roleSearchTarget || formData.target_role}
+                                onFocus={() => setIsRoleDropdownOpenTarget(true)}
+                                onChange={(e) => {
+                                  setRoleSearchTarget(e.target.value);
+                                  setFormData(prev => ({ ...prev, target_role: e.target.value }));
+                                }}
+                                className="w-full px-3 py-2 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[13px] font-medium"
+                              />
+                              <ChevronDown className={`absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted transition-transform ${isRoleDropdownOpenTarget ? 'rotate-180' : ''}`} />
+
+                              {isRoleDropdownOpenTarget && (
+                                <div className="absolute z-20 w-full mt-1 bg-surface border border-border shadow-2xl max-h-40 overflow-y-auto no-scrollbar rounded-xl">
+                                  {filteredRolesTarget.map(r => (
+                                    <button
+                                      key={r}
+                                      onClick={() => {
+                                        setFormData(prev => ({ ...prev, target_role: r }));
+                                        setRoleSearchTarget(r);
+                                        setIsRoleDropdownOpenTarget(false);
+                                      }}
+                                      className="w-full text-left px-3 py-2 text-[12px] hover:bg-sidebar transition-colors flex items-center justify-between bg-surface"
+                                    >
+                                      {r}
+                                      {formData.target_role === r && <Check className="w-3 h-3 text-accent" />}
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                        </div>
+                      </div>
+
+                      {/* Experience Level */}
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-1.5">
+                          <GraduationCap className="w-3 h-3 text-accent" />
+                          <span className="text-[12px] font-bold text-text-heading">Current Proficiency</span>
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                          {EXPERIENCE_LEVELS.map(level => (
+                            <button
+                              key={level.id}
+                              type="button"
+                              onClick={() => setFormData(prev => ({ ...prev, experience_level: level.id }))}
+                              className={`p-2.5 border text-left transition-all rounded-lg ${
+                                formData.experience_level === level.id 
+                                  ? 'bg-accent/10 border-accent ring-1 ring-accent' 
+                                  : 'bg-surface border-border hover:border-accent/40 shadow-sm'
+                              }`}
+                            >
+                              <div className={`text-[10px] font-bold uppercase tracking-wider mb-0.5 ${formData.experience_level === level.id ? 'text-accent' : 'text-text-muted'}`}>
+                                {level.label}
+                              </div>
+                              <div className="text-[9px] text-text-muted leading-tight">
+                                {level.desc}
+                              </div>
+                            </button>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
                </div>
             </div>
 
             {!isGenerating && (
-              <div className="pt-1">
+              <div className="pt-2">
                 <button
                   onClick={() => setStep(2)}
                   disabled={!formData.subject.trim() || !formData.goal.trim()}
-                  className="w-full sm:w-fit px-6 py-2.5 bg-text-heading text-background text-[10px] font-bold uppercase tracking-[0.2em] hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-2 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed"
+                  className="w-full sm:w-fit px-8 py-3 bg-text-heading text-background text-[11px] font-bold uppercase tracking-[0.2em] hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-2 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed shadow-xl shadow-text-heading/10"
                 >
-                  Set Timeline <ArrowRight className="w-3 h-3" />
+                  Set Timeline <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
             )}
@@ -415,19 +436,34 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
                </div>
 
                {/* Context */}
-               <div className="space-y-2 pt-1">
-                  <div className="flex items-center gap-1.5">
-                    <History className="w-3 h-3 text-accent" />
-                    <span className="text-[12px] font-bold text-text-heading">Detailed Context (Optional)</span>
-                  </div>
-                  <textarea
-                    name="prior_experience"
-                    value={formData.prior_experience}
-                    onChange={handleInputChange}
-                    rows={2}
-                    placeholder="What do you already know? Any specific technologies you prefer or want to avoid?"
-                    className="w-full px-3 py-2 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[13px] font-medium resize-none h-16"
-                  />
+               <div className="pt-2">
+                  <button 
+                    type="button"
+                    onClick={() => setShowOptionalFields(!showOptionalFields)}
+                    className="flex items-center gap-2 text-[11px] font-bold text-text-muted hover:text-accent transition-colors uppercase tracking-widest"
+                  >
+                    <div className={`transition-transform duration-300 ${showOptionalFields ? 'rotate-180' : ''}`}>
+                      <ChevronDown className="w-3.5 h-3.5" />
+                    </div>
+                    {showOptionalFields ? 'Hide Detailed Context' : 'Add Detailed Context (Optional)'}
+                  </button>
+
+                  {showOptionalFields && (
+                    <div className="mt-4 space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                      <div className="flex items-center gap-1.5">
+                        <History className="w-3 h-3 text-accent" />
+                        <span className="text-[12px] font-bold text-text-heading">Detailed Context</span>
+                      </div>
+                      <textarea
+                        name="prior_experience"
+                        value={formData.prior_experience}
+                        onChange={handleInputChange}
+                        rows={2}
+                        placeholder="What do you already know? Any specific technologies you prefer or want to avoid?"
+                        className="w-full px-3 py-2 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[13px] font-medium resize-none h-20"
+                      />
+                    </div>
+                  )}
                </div>
             </div>
 

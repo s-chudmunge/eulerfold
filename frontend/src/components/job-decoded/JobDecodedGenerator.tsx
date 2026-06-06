@@ -135,9 +135,9 @@ const JobDecodedGenerator: React.FC<JobDecodedGeneratorProps> = ({
 
         <div className="space-y-6">
           {/* JD Input */}
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             <label className="inconsolata-ui flex items-center text-[10px] font-bold uppercase tracking-widest text-text-muted ml-0.5">
-              <SearchCode className="w-3 h-3 mr-1.5 text-accent" /> Job Description
+              <SearchCode className="w-3.5 h-3.5 mr-1.5 text-accent" /> Job Description
             </label>
             <textarea
               name="job_description"
@@ -145,15 +145,15 @@ const JobDecodedGenerator: React.FC<JobDecodedGeneratorProps> = ({
               onChange={handleInputChange}
               rows={6}
               placeholder="Paste the requirements, role description, or the full JD here..."
-              className="w-full px-4 py-3 bg-callout-bg border border-border rounded-none focus:outline-none focus:border-accent transition-all text-[13px] font-medium text-text-heading placeholder:text-text-muted/40 resize-none"
+              className="w-full px-4 py-3 bg-callout-bg border-2 border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[14px] font-bold text-text-heading placeholder:font-normal placeholder:text-text-muted/40 resize-none"
               required
             />
           </div>
 
           {/* Experience Input */}
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             <label className="inconsolata-ui flex items-center text-[10px] font-bold uppercase tracking-widest text-text-muted ml-0.5">
-              <Cpu className="w-3 h-3 mr-1.5 text-teal-600" /> Your Current Level & Context
+              <Cpu className="w-3.5 h-3.5 mr-1.5 text-teal-600" /> Your Current Level & Context
             </label>
             <textarea
               name="current_experience"
@@ -161,7 +161,7 @@ const JobDecodedGenerator: React.FC<JobDecodedGeneratorProps> = ({
               onChange={handleInputChange}
               rows={4}
               placeholder="What do you already know? (e.g. 'I'm a junior frontend dev with 1 year of React, but no backend experience')"
-              className="w-full px-4 py-3 bg-callout-bg border border-border rounded-none focus:outline-none focus:border-accent transition-all text-[13px] font-medium text-text-heading placeholder:text-text-muted/40 resize-none"
+              className="w-full px-4 py-3 bg-callout-bg border-2 border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[14px] font-medium text-text-heading placeholder:font-normal placeholder:text-text-muted/40 resize-none h-28"
               required
             />
           </div>

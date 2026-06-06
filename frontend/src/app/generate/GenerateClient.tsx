@@ -112,7 +112,7 @@ export default function GeneratePage() {
         <main className="flex-1 min-w-0 bg-background scroll-smooth">
           <div className="max-w-7xl mx-auto px-6 py-12 md:py-20">
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 justify-center items-center lg:items-start">
-              <div className="flex-1 min-w-0 max-w-[800px] w-full mx-auto">
+              <div className="flex-1 min-w-0 max-w-[640px] w-full mx-auto">
                 <div className="mb-6 flex justify-center md:block">
                   <Breadcrumbs items={[{ label: 'Goal Architect' }]} />
                 </div>
