@@ -13,7 +13,7 @@ export default function TermsContent() {
         <div className="max-w-[800px] mx-auto px-8 py-8 md:py-12">
           <header className="mb-12">
             <h1 className="text-3xl font-bold mt-4 text-text-heading manrope-body">Terms of Service</h1>
-            <p className="text-text-muted mt-2 inconsolata-ui text-sm uppercase tracking-tight">Last Updated: March 2026</p>
+            <p className="text-text-muted mt-2 inconsolata-ui text-sm uppercase tracking-tight">Last Updated: June 2026</p>
           </header>
 
           <div className="manrope-body space-y-12">
@@ -153,7 +153,24 @@ export default function TermsContent() {
 
             <section>
               <h2 className="inconsolata-ui text-[20px] font-bold text-text-heading mb-4 uppercase tracking-tight flex items-center gap-3">
-                <span className="text-accent">10.</span> Contact Us
+                <span className="text-accent">10.</span> API Keys & Local AI
+              </h2>
+              <div className="h-[1px] w-full bg-[var(--border)] mb-6"></div>
+              <ul className="space-y-4 list-none p-0">
+                <li className="flex gap-3">
+                  <span className="text-accent font-bold">→</span>
+                  <span><strong>Bring Your Own Key (OpenRouter):</strong> Certain features, such as the Practice Lab, allow you to use your own OpenRouter API key. You are solely responsible for managing your API key, including any costs or usage limits incurred through your OpenRouter account. EulerFold does not store these keys on our backend servers; they are securely saved locally in your browser.</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-accent font-bold">→</span>
+                  <span><strong>Local AI (WebGPU):</strong> EulerFold allows you to run AI models locally using your device's hardware via WebGPU. You acknowledge that running local models is resource-intensive. EulerFold is not responsible for any hardware degradation, battery drain, or system instability that may occur from utilizing local AI features.</span>
+                </li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 className="inconsolata-ui text-[20px] font-bold text-text-heading mb-4 uppercase tracking-tight flex items-center gap-3">
+                <span className="text-accent">11.</span> Contact Us
               </h2>
               <div className="h-[1px] w-full bg-[var(--border)] mb-6"></div>
               <p>

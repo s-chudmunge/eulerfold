@@ -25,7 +25,8 @@ import {
     Plus,
     ArrowRight,
     User,
-    Calendar
+    Calendar,
+    Edit3
 } from 'lucide-react';
 
 interface Props {
@@ -101,7 +102,10 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
             if (session && roadmap) {
                 const sessionEmail = session.user.email?.toLowerCase();
                 const roadmapEmail = roadmap?.email?.toLowerCase();
-                const ownerStatus = sessionEmail === roadmapEmail;
+                let ownerStatus = false;
+                if (sessionEmail && roadmapEmail && sessionEmail === roadmapEmail) {
+                    ownerStatus = true;
+                }
                 setIsOwner(ownerStatus);
 
                 console.log("Auth Debug:", { 
@@ -110,6 +114,13 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                     roadmapEmail, 
                     sessionEmail 
                 });
+
+                // Secondary owner check once profile is loaded
+                if (!ownerStatus && profile && roadmap?.user_id) {
+                    if (profile.id === roadmap.user_id) {
+                        setIsOwner(true);
+                    }
+                }
 
                 // ALWAYS fetch fresh roadmap data when authenticated to get personal progress/extension info
                 try {
@@ -363,7 +374,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                         disabled={saving}
                                         className="inline-flex items-center justify-center bg-accent text-white px-4 py-1.5 rounded text-[11px] font-bold transition-all hover:bg-teal-700 active:scale-[0.98] gap-2 font-inter disabled:opacity-50 shadow-sm"
                                     >
-                                        <Play className="w-3 h-3 fill-current" /> Continue Learning
+                                        <Edit3 className="w-3 h-3" /> Edit / Manage
                                     </button>
                                 ) : (
                                     <button 

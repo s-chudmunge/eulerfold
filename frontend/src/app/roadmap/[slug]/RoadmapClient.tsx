@@ -131,11 +131,26 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
             if (session && roadmap) {
                 const sessionEmail = session.user.email?.toLowerCase();
                 const roadmapEmail = roadmap.email?.toLowerCase();
-                setIsOwner(sessionEmail === roadmapEmail);
+                
+                let ownerStatus = false;
+                if (sessionEmail && roadmapEmail && sessionEmail === roadmapEmail) {
+                    ownerStatus = true;
+                }
+                
+                setIsOwner(ownerStatus);
             }
         };
         checkAuth();
     }, [roadmap]);
+
+    // Secondary owner check once profile is loaded (for cases where email might be missing)
+    useEffect(() => {
+        if (profile && roadmap && roadmap.user_id) {
+            if (profile.id === roadmap.user_id) {
+                setIsOwner(true);
+            }
+        }
+    }, [profile, roadmap]);
 
     useEffect(() => {
         if (roadmap) {
@@ -326,7 +341,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
         if (!roadmap) return;
         
         if (isOwner) {
-            if (effectiveIsProject) {
+            if (isProject) {
                 router.push(`/project/${roadmap.slug}/build/1`);
             } else {
                 router.push(`/roadmap/${roadmap.slug}/learn`);
@@ -451,8 +466,8 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                     disabled={saving}
                                     className="whitespace-nowrap rounded-lg bg-background border border-border px-4 md:px-5 py-1.5 text-text-heading text-[10px] md:text-[12px] font-bold hover:bg-callout-bg transition-opacity flex items-center gap-2 disabled:opacity-50"
                                 >
-                                    <Play className="w-3.5 h-3.5 fill-current" /> <span className="hidden sm:inline">Continue Learning</span>
-                                    <span className="sm:hidden">Learn</span>
+                                    <Edit3 className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Edit/Manage</span>
+                                    <span className="sm:hidden">Manage</span>
                                 </button>
                             ) : (
                                 <button 
@@ -627,6 +642,24 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
 
                 <main className="flex-1 min-w-0 h-full overflow-y-auto no-scrollbar bg-background">
                     <div className="max-w-[900px] mx-auto px-8 py-6">
+                        {isOwner && !roadmap.is_public && !roadmap.cloned_from && (
+                            <div className="mb-6 p-2.5 px-4 bg-sidebar/40 border border-border rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-in fade-in">
+                                <div className="flex items-center gap-2">
+                                    <Globe className="w-3.5 h-3.5 text-text-muted shrink-0" />
+                                    <p className="text-[11px] text-text-muted font-medium">
+                                        <span className="text-text-heading font-bold">Share your knowledge:</span> Make your roadmap public to let others clone it and learn from your journey.
+                                    </p>
+                                </div>
+                                <button 
+                                    onClick={() => handleUpdateVisibility({ is_public: true })}
+                                    disabled={saving}
+                                    className="shrink-0 px-3 py-1 bg-background border border-border text-text-heading font-bold text-[10px] rounded hover:border-accent hover:text-accent transition-colors disabled:opacity-50"
+                                >
+                                    {saving ? 'Saving...' : 'Make Public'}
+                                </button>
+                            </div>
+                        )}
+                        
                         {showLogs ? (
                             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                                 <div className="flex items-center justify-between mb-8 pb-4 border-b border-border">

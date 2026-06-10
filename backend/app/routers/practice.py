@@ -21,6 +21,7 @@ from app.schemas import (
     PracticeProgressRead,
     MCQSessionCreate,
     MCQSessionRead,
+    MCQSessionSaveExternal,
     MCQSubmitAnswer,
     MCQQuestion
 )
@@ -318,6 +319,38 @@ async def _generate_mcq_questions(topic: str, subject: str, week: int, num_quest
     except Exception as e:
         logger.error(f"Gemini MCQ generation failed: {e}")
         return []
+
+@router.post("/mcq/save-external", response_model=MCQSessionRead)
+async def save_external_mcq_session(data: MCQSessionSaveExternal, current_user: User = Depends(get_current_user)):
+    logger.info(f"User {current_user.email} saving external MCQ session for: {data.topic_name}")
+    sb = get_supabase_client()
+    uid = current_user.supabase_uid
+    
+    # Validation
+    if not data.questions or len(data.questions) == 0:
+        raise HTTPException(status_code=400, detail="Cannot save empty session")
+
+    # Invalidate any existing active sessions
+    if data.subtopic_id:
+        sb.table("mcq_sessions").update({"status": "abandoned"}).eq("user_id", uid).eq("subtopic_id", str(data.subtopic_id)).eq("status", "active").execute()
+
+    new_session = {
+        "user_id": uid,
+        "roadmap_id": data.roadmap_id,
+        "subtopic_id": str(data.subtopic_id) if data.subtopic_id else None,
+        "topic_name": data.topic_name,
+        "subject": data.subject,
+        "week_number": data.week_number,
+        "questions": [q.dict() for q in data.questions],
+        "credit_cost": 0.0, # External/Local costs 0 cloud credits
+        "status": "active"
+    }
+
+    result = sb.table("mcq_sessions").insert(new_session).execute()
+    if not result.data:
+        raise HTTPException(status_code=500, detail="Failed to save external MCQ session.")
+
+    return result.data[0]
 
 @router.post("/mcq/generate", response_model=MCQSessionRead)
 async def generate_mcq_session(data: MCQSessionCreate, current_user: User = Depends(get_current_user)):

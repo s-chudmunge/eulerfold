@@ -11,6 +11,7 @@ import SocialFeed from '@/components/SocialFeed';
 import TestimonialSection from '@/components/landing/TestimonialSection';
 import PricingSection from '@/components/landing/PricingSection';
 import ProductEcosystem from '@/components/landing/ProductEcosystem';
+import GenerationSystems from '@/components/landing/GenerationSystems';
 import RoadmapDiscovery from '@/components/landing/RoadmapDiscovery';
 import LatestArticlesCarousel from '@/components/landing/LatestArticlesCarousel';
 import EulerLogoCanvas from '@/components/EulerLogoCanvas';
@@ -175,6 +176,8 @@ export default async function LandingPage() {
       
       <main className="flex-grow">
         <HeroSection />
+
+        <GenerationSystems />
 
         <RoadmapDiscovery initialRoadmaps={featuredRoadmaps} />
 

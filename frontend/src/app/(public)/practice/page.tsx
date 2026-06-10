@@ -212,7 +212,7 @@ function PracticeContent() {
                                                     ) : isAuthenticated && profile && !profile.is_pro ? (
                                                         <div className="flex items-center gap-2 text-[10px] appropriate-sans text-text-muted italic">
                                                             <Target className="w-3 h-3 text-emerald-600" />
-                                                            <span>Requires Pro Status</span>
+                                                            <span>Cloud AI requires Pro. Local/OpenRouter is free!</span>
                                                         </div>
                                                     ) : null}
                                                 </div>
@@ -227,7 +227,7 @@ function PracticeContent() {
                                                 ) : isAuthenticated && profile && !profile.is_pro ? (
                                                     <div className="flex items-center gap-3 text-[10px] appropriate-sans text-text-muted italic">
                                                         <Target className="w-3 h-3 text-emerald-600 shrink-0" />
-                                                        <span>Requires Pro Status (0.10 credits).</span>
+                                                        <span>Cloud AI requires Pro. Local/OpenRouter is free!</span>
                                                     </div>
                                                 ) : null}
                                             </div>

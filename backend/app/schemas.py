@@ -143,6 +143,7 @@ class JobRoadmapCreate(BaseModel):
 class RoadmapRead(BaseModel):
     id: int
     user_id: Optional[int] = None
+    email: Optional[str] = None
     title: str
     slug: str
     description: str
@@ -152,8 +153,17 @@ class RoadmapRead(BaseModel):
     time_value: Optional[int] = None
     time_unit: Optional[str] = None
     model: Optional[str] = None
-    created_at: datetime
-    updated_at: datetime
+    is_public: bool = False
+    cloned_from: Optional[int] = None
+    email: Optional[str] = None
+
+class ExternalRoadmapCreate(BaseModel):
+    roadmap_plan: Dict[str, Any]
+    subject: str
+    goal: str
+    time_value: int
+    time_unit: str
+    model: str
     last_position: Optional[Dict[str, int]] = Field(default={"mIdx": 0, "tIdx": 0})
     is_public: bool = False
     show_author: bool = True
@@ -215,7 +225,7 @@ class RatingCreate(BaseModel):
 
 class VisibilityUpdate(BaseModel):
     is_public: bool
-    show_author: bool
+    show_author: bool = True
 
 class RoadmapStatusUpdate(BaseModel):
     status: Literal["active", "completed", "archived", "quit"]
@@ -333,6 +343,17 @@ class MCQSessionCreate(BaseModel):
     subject: str
     week_number: int
     num_questions: int = Field(10, ge=10, le=20)
+    engine_type: Optional[str] = "cloud"
+    api_key: Optional[str] = None
+    model_name: Optional[str] = None
+
+class MCQSessionSaveExternal(BaseModel):
+    roadmap_id: Optional[int] = None
+    subtopic_id: Optional[uuid.UUID] = None
+    topic_name: str
+    subject: str
+    week_number: int
+    questions: List[MCQQuestion]
 
 class MCQSessionRead(BaseModel):
     id: uuid.UUID

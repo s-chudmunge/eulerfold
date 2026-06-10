@@ -32,3 +32,4 @@ google-generativeai==0.8.6
 google-genai==1.2.0
 protobuf==5.29.6
 json-repair==0.59.5
+pypdf==4.2.0

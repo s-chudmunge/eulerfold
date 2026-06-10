@@ -261,6 +261,7 @@ export default function PublicHeader() {
             <MegaMenu id="research" data={NAVIGATION_DATA.research} />
             <MegaMenu id="library" data={NAVIGATION_DATA.library} />
             <NavLink href="/about" label="About" />
+            <NavLink href="/pricing" label="Pricing" />
           </nav>
         </div>
 

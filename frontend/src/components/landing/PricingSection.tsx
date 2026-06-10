@@ -66,7 +66,10 @@ export default function PricingSection() {
                         <span className="text-accent">✓</span> Track your skills and progress
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> 5 AI roadmap generations
+                        <span className="text-accent">✓</span> 5 Cloud AI roadmap generations
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <span className="text-accent">✓</span> Unlimited Local AI & OpenRouter generations
                     </div>
                     <div className="flex items-center gap-2">
                         <span className="text-accent">✓</span> 4-week goal projections
@@ -74,6 +77,9 @@ export default function PricingSection() {
                     <div className="pt-1.5 mt-1.5 border-t border-border/40 opacity-50">
                         <div className="flex items-center gap-2 text-text-muted">
                             <span className="text-red-500/60 font-bold text-[8px]">✗</span> No Priority AI models
+                        </div>
+                        <div className="flex items-center gap-2 text-text-muted mt-1.5">
+                            <span className="text-red-500/60 font-bold text-[8px]">✗</span> No Research Lab access
                         </div>
                     </div>
                 </div>
@@ -116,8 +122,14 @@ export default function PricingSection() {
                     <div className="flex items-center gap-2">
                         <span className="text-accent">✓</span> 12-week strategic mapping
                     </div>
+                    <div className="flex items-center gap-2 font-bold text-accent">
+                        <span className="text-accent">✓</span> Research Lab Paper Decoding
+                    </div>
                     <div className="flex items-center gap-2 font-bold text-teal-600 dark:text-teal-400">
                         <span className="">✓</span> Priority AI reasoning models
+                    </div>
+                    <div className="flex items-center gap-2 font-bold text-teal-600 dark:text-teal-400">
+                        <span className="">✓</span> Cloud AI Practice Portal
                     </div>
                 </div>
 

@@ -28,8 +28,11 @@ export default function AnnouncementBar() {
       setIsLoggedIn(!!session);
     });
 
-    // Only show if not on dashboard
-    if (pathname !== '/dashboard') {
+    // Only show on public landing pages
+    const internalPaths = ['/dashboard', '/planner', '/practice', '/research-lab', '/roadmap', '/explore', '/u/', '/generate'];
+    const isInternal = internalPaths.some(p => pathname.startsWith(p));
+
+    if (!isInternal) {
         setIsVisible(true);
         document.documentElement.style.setProperty('--announcement-height', '38px');
     } else {

@@ -144,6 +144,7 @@ export interface User {
     github_username?: string;
     is_active: boolean;
     is_admin: boolean;
+    is_pro?: boolean;
     profile_completed: boolean;
     onboarding_completed: boolean;
     tos_accepted_at?: string;
@@ -684,6 +685,10 @@ export const practiceAPI = {
     },
     generateMCQSession: async (payload: { roadmap_id?: number, subtopic_id?: string, topic_name: string, subject: string, week_number: number, num_questions: number }): Promise<MCQSessionRead> => {
         const response = await api.post('/practice/mcq/generate', payload);
+        return response.data;
+    },
+    saveExternalMCQSession: async (payload: { roadmap_id?: number, subtopic_id?: string, topic_name: string, subject: string, week_number: number, questions: any[] }): Promise<MCQSessionRead> => {
+        const response = await api.post('/practice/mcq/save-external', payload);
         return response.data;
     },
     getIncompleteMCQSession: async (subtopicId: string): Promise<MCQSessionRead | null> => {

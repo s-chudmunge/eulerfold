@@ -321,8 +321,11 @@ export default function DashboardPage() {
                                 <h2 className="inconsolata-ui text-[0.7rem] font-[var(--font-weight-bold)] text-text-muted  tracking-wide">Activity</h2>
                                 <div className="h-[1px] flex-1 bg-[var(--border)]"></div>
                             </div>
-                            <div className="bg-callout-bg border border-callout-border rounded-xl p-6">
-                                <ActivityChart roadmaps={roadmaps} profile={profile} />
+                            <div className="bg-header border border-border rounded-xl p-6 shadow-sm hover:shadow-md hover:border-accent/30 transition-all duration-500 relative group overflow-hidden">
+                                <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-accent/5 rounded-full blur-[60px] group-hover:bg-accent/10 transition-colors duration-500 pointer-events-none" />
+                                <div className="relative z-10">
+                                    <ActivityChart roadmaps={roadmaps} profile={profile} />
+                                </div>
                             </div>
                         </section>
 
@@ -437,15 +440,24 @@ export default function DashboardPage() {
                                 <div className="h-[1px] flex-1 bg-[var(--border)]"></div>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                                <div className="bg-callout-bg border border-callout-border rounded-xl p-6">
-                                    <TechnicalSignature skills={verifiedSkills} />
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div className="bg-header border border-border rounded-xl p-6 shadow-sm hover:shadow-md hover:border-accent/30 transition-all duration-500 relative group overflow-hidden">
+                                    <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-teal-500/5 rounded-full blur-3xl group-hover:bg-teal-500/10 transition-colors duration-500 pointer-events-none" />
+                                    <div className="relative z-10 h-full">
+                                        <TechnicalSignature skills={verifiedSkills} />
+                                    </div>
                                 </div>
-                                <div className="bg-callout-bg border border-border rounded-xl p-6">
-                                    <MilestoneLedger submissions={allSubmissions} />
+                                <div className="bg-header border border-border rounded-xl p-6 shadow-sm hover:shadow-md hover:border-accent/30 transition-all duration-500 relative group overflow-hidden">
+                                    <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl group-hover:bg-blue-500/10 transition-colors duration-500 pointer-events-none" />
+                                    <div className="relative z-10 h-full">
+                                        <MilestoneLedger submissions={allSubmissions} />
+                                    </div>
                                 </div>
-                                <div className="bg-callout-bg border border-border rounded-xl p-6">
-                                    <IntensityHeatmap weeklyData={weeklyStats} />
+                                <div className="bg-header border border-border rounded-xl p-6 shadow-sm hover:shadow-md hover:border-accent/30 transition-all duration-500 relative group overflow-hidden">
+                                    <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-indigo-500/5 rounded-full blur-3xl group-hover:bg-indigo-500/10 transition-colors duration-500 pointer-events-none" />
+                                    <div className="relative z-10 h-full">
+                                        <IntensityHeatmap weeklyData={weeklyStats} />
+                                    </div>
                                 </div>
                             </div>
                         </section>

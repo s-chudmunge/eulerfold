@@ -53,6 +53,7 @@ export default function PricingClient() {
                 href="/research-decoded"
                 currentQuote={QUOTES[quoteIndex]}
                 quoteIndex={quoteIndex}
+                topClass="-top-4 md:-top-12"
             />
 
             {/* Balance Row */}
@@ -121,7 +122,11 @@ export default function PricingClient() {
                             </div>
                             <div className="flex items-start gap-3 text-[12px] text-text-primary">
                                 <span className="text-teal-600 mt-0.5">✓</span>
-                                <span>5 AI roadmap generations</span>
+                                <span>5 Cloud AI roadmap generations</span>
+                            </div>
+                            <div className="flex items-start gap-3 text-[12px] text-text-primary">
+                                <span className="text-teal-600 mt-0.5">✓</span>
+                                <span>Unlimited Local AI & OpenRouter generations</span>
                             </div>
                             <div className="flex items-start gap-3 text-[12px] text-text-primary">
                                 <span className="text-teal-600 mt-0.5">✓</span>
@@ -133,6 +138,10 @@ export default function PricingClient() {
                             <div className="flex items-start gap-3 text-[11px] text-text-muted">
                                 <span className="text-text-muted/50 mt-0.5">×</span>
                                 <span>No Priority AI models</span>
+                            </div>
+                            <div className="flex items-start gap-3 text-[11px] text-text-muted">
+                                <span className="text-text-muted/50 mt-0.5">×</span>
+                                <span>No Research Lab access</span>
                             </div>
                         </div>
                     </div>
@@ -183,12 +192,20 @@ export default function PricingClient() {
                                 <span>Job market insights</span>
                             </div>
                             <div className="flex items-start gap-3 text-[12px] text-text-primary">
-                                <span className="text-teal-600 mt-0.5">✓</span>
+                                <span className="text-teal-600 mt-0.5 font-bold">✓</span>
                                 <span>12-week strategic mapping</span>
                             </div>
-                            <div className="flex items-start gap-3 text-[12px] text-teal-700 font-black italic">
-                                <span className="mt-0.5">✓</span>
+                            <div className="flex items-start gap-3 text-[12px] text-accent font-bold">
+                                <span className="text-accent mt-0.5">✓</span>
+                                <span>Research Lab Paper Decoding</span>
+                            </div>
+                            <div className="flex items-start gap-3 text-[12px] text-teal-600 dark:text-teal-400 font-bold">
+                                <span className="text-teal-600 dark:text-teal-400 mt-0.5">✓</span>
                                 <span>Priority AI reasoning models</span>
+                            </div>
+                            <div className="flex items-start gap-3 text-[12px] text-teal-600 dark:text-teal-400 font-bold">
+                                <span className="text-teal-600 dark:text-teal-400 mt-0.5">✓</span>
+                                <span>Cloud AI Practice Portal</span>
                             </div>
                         </div>
                     </div>

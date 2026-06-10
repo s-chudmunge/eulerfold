@@ -135,26 +135,31 @@ export default function ProductEcosystem() {
                 className="min-w-[280px] sm:min-w-[320px] md:min-w-[380px] scroll-snap-align-start h-full"
                 style={{ scrollSnapAlign: 'start' }}
               >
-                <Link href={p.href} className="group bg-background border border-border/60 p-7 rounded-lg hover:border-accent/40 hover:shadow-sm hover:bg-accent/[0.01] transition-all flex flex-col h-[280px] relative overflow-hidden">
-                  <div className={`w-11 h-11 ${p.bgColor} ${p.color} rounded-lg flex items-center justify-center mb-7 group-hover:scale-105 transition-transform duration-300`}>
-                    <p.icon className="w-5 h-5" />
-                  </div>
-                  
-                  <div className="flex items-center gap-3 mb-3">
-                    <h4 className="inconsolata-ui text-[16px] font-bold text-text-heading tracking-tight leading-none">{p.title}</h4>
-                    {p.isNew && (
-                      <span className="text-[9px] font-bold uppercase tracking-widest text-accent px-2 py-0.5 rounded-full border border-accent/20 bg-accent/5">
-                        New
-                      </span>
-                    )}
-                  </div>
-                  
-                  <p className="manrope-body text-[13px] text-text-muted/90 font-medium leading-relaxed mb-6 flex-1">
-                    {p.description}
-                  </p>
+                <Link href={p.href} className="group bg-sidebar border border-border/50 hover:border-accent/30 transition-all duration-300 rounded-2xl p-8 h-full flex flex-col relative overflow-hidden backdrop-blur-sm shadow-sm hover:shadow-md">
+                  {/* Hover glow background */}
+                  <div className="absolute inset-0 bg-gradient-to-br from-transparent to-transparent group-hover:from-accent/[0.03] group-hover:to-transparent transition-all duration-500 z-0"></div>
 
-                  <div className="flex items-center gap-2 text-[11px] font-black text-accent uppercase tracking-[0.15em] group-hover:gap-2.5 transition-all mt-auto inconsolata-ui">
-                    Try it <ArrowRight className="w-3.5 h-3.5" />
+                  <div className="relative z-10 flex flex-col h-full">
+                    <div className={`w-12 h-12 ${p.bgColor} ${p.color} border border-border/50 rounded-xl flex items-center justify-center mb-8 shadow-sm group-hover:scale-[1.05] group-hover:-rotate-3 transition-transform duration-300`}>
+                      <p.icon className="w-5 h-5" />
+                    </div>
+                    
+                    <div className="flex items-center gap-3 mb-4">
+                      <h4 className="text-xl font-bold text-text-heading tracking-tight leading-none">{p.title}</h4>
+                      {p.isNew && (
+                        <span className="text-[9px] font-bold uppercase tracking-widest text-accent px-2.5 py-1 rounded-full border border-accent/20 bg-accent/5">
+                          New
+                        </span>
+                      )}
+                    </div>
+                    
+                    <p className="text-[13px] text-text-muted font-medium leading-relaxed mb-8 flex-1">
+                      {p.description}
+                    </p>
+
+                    <div className="flex items-center gap-2 text-[11px] font-bold text-accent uppercase tracking-widest group-hover:gap-3 transition-all mt-auto">
+                      Explore Tool <ArrowRight className="w-3.5 h-3.5 opacity-70 group-hover:opacity-100 transition-opacity" />
+                    </div>
                   </div>
                 </Link>
               </motion.div>

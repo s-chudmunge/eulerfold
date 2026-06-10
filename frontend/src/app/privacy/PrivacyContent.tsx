@@ -14,7 +14,7 @@ export default function PrivacyContent() {
         <div className="max-w-[800px] mx-auto px-8 py-8 md:py-12">
           <header className="mb-12">
             <h1 className="text-3xl font-bold mt-4 text-text-heading manrope-body">Privacy Policy</h1>
-            <p className="text-text-muted mt-2 inconsolata-ui text-sm uppercase tracking-tight">Last Updated: March 2026</p>
+            <p className="text-text-muted mt-2 inconsolata-ui text-sm uppercase tracking-tight">Last Updated: June 2026</p>
           </header>
 
 
@@ -52,6 +52,10 @@ export default function PrivacyContent() {
                 <li className="flex gap-3">
                   <span className="text-accent font-bold">→</span>
                   <span><strong>YouTube Data:</strong> We collect and store minimal YouTube data — specifically video IDs and titles — to embed educational content within your roadmaps. This data is retrieved via the YouTube Data API and stored on our servers solely to display relevant video resources in your learning roadmaps.</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-accent font-bold">→</span>
+                  <span><strong>API Keys (OpenRouter):</strong> If you choose to use your own OpenRouter API key for generation, this key is strictly stored locally in your browser's <code>localStorage</code>. It is never transmitted to, stored on, or processed by EulerFold's backend servers.</span>
                 </li>
               </ul>
             </section>
@@ -102,6 +106,10 @@ export default function PrivacyContent() {
                 <li className="flex gap-3">
                   <span className="text-accent font-bold">→</span>
                   <span><strong>Google / YouTube:</strong> For authentication, analytics, and educational video content. EulerFold uses YouTube API Services to fetch and display video resources. By using EulerFold, you are also subject to Google&apos;s Privacy Policy, available at <a href="http://www.google.com/policies/privacy" target="_blank" rel="noopener noreferrer" className="text-accent underline">http://www.google.com/policies/privacy</a>, and the YouTube Terms of Service, available at <a href="https://www.youtube.com/t/terms" target="_blank" rel="noopener noreferrer" className="text-accent underline">https://www.youtube.com/t/terms</a>.</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-accent font-bold">→</span>
+                  <span><strong>OpenRouter & Local AI:</strong> If you use OpenRouter, your generations are securely routed directly from your browser to OpenRouter's API using your personal key. If you use Local AI, generations occur entirely on your own device and no conversational data leaves your browser.</span>
                 </li>
               </ul>
               <div className="mt-6 p-4 bg-sidebar/30 border border-border rounded-lg text-sm italic">

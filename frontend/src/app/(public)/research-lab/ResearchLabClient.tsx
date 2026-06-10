@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { Search, Loader, BookOpen, History, AlertCircle, ChevronRight, FlaskConical, Beaker, ArrowRight, FileText, Sparkles, BrainCircuit, LogIn } from 'lucide-react';
+import { Search, Loader, BookOpen, History, AlertCircle, ChevronRight, FlaskConical, Beaker, ArrowRight, FileText, Sparkles, BrainCircuit, LogIn, Cpu, Cloud, Key } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
@@ -10,6 +10,8 @@ import { format } from 'date-fns';
 import { motion, AnimatePresence } from 'framer-motion';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import Footer from '@/components/Footer';
+import { OpenRouterModal } from '@/components/landing/OpenRouterModal';
+import { LocalAIModal } from '@/components/landing/LocalAIModal';
 
 const TechnicalCube = () => (
     <div className="relative w-20 h-20 flex items-center justify-center" style={{ perspective: '800px' }}>
@@ -82,6 +84,20 @@ export default function ResearchLabClient() {
     const [history, setHistory] = useState<any[]>([]);
     const [loadingHistory, setLoadingHistory] = useState(true);
     const [statusIndex, setStatusIndex] = useState(0);
+
+    const [engineType, setEngineType] = useState<'cloud' | 'openrouter' | 'local'>('cloud');
+    
+    // OpenRouter State
+    const [isOpenRouterModalOpen, setIsOpenRouterModalOpen] = useState(false);
+    const [openRouterKey, setOpenRouterKey] = useState<string | null>(null);
+    const [openRouterModel, setOpenRouterModel] = useState<string | null>(null);
+    const [useOpenRouter, setUseOpenRouter] = useState(false);
+
+    // Local AI State
+    const [isLocalAIModalOpen, setIsLocalAIModalOpen] = useState(false);
+    const [localAIModelId, setLocalAIModelId] = useState<string | null>(null);
+    const [localAIModelName, setLocalAIModelName] = useState<string | null>(null);
+    const [useLocalAI, setUseLocalAI] = useState(false);
 
     const statusMessages = [
         "Analyzing...",
@@ -218,20 +234,33 @@ export default function ResearchLabClient() {
                 </div>
             )}
             {/* Hero Section */}
-            <div className="relative pt-12 pb-24 overflow-hidden border-b border-border/30">
-                <div className="max-w-6xl mx-auto px-6 relative z-10 text-center lg:text-left">
-                    <Breadcrumbs items={[{ label: 'Decode' }]} />
+            <div className="relative pt-12 pb-16 overflow-hidden border-b border-border/30 bg-sidebar/10">
+                <div className="absolute inset-0 bg-gradient-to-b from-background/50 to-transparent pointer-events-none" />
+                <div className="max-w-7xl mx-auto px-6 relative z-10 text-left">
+                    <div className="mt-4 max-w-3xl">
+                        <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-accent/10 border border-accent/20 rounded-md mb-5">
+                            <BrainCircuit className="w-4 h-4 text-accent" />
+                            <span className="inconsolata-ui text-[11px] font-black text-accent uppercase tracking-widest">Research Lab</span>
+                        </div>
+                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-text-heading tracking-tight mb-4">
+                            Decode complex papers into <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-teal-400">Engineering Blueprints.</span>
+                        </h1>
+                        <p className="text-[15px] text-text-muted leading-relaxed font-medium max-w-2xl">
+                            Enter an ArXiv or PDF URL to extract the core mechanism, logic map, and architectural decisions. We bypass the dense mathematics to give you exactly what you need to build.
+                        </p>
+                    </div>
                 </div>
             </div>
 
-            <main className="max-w-6xl mx-auto px-6 py-16 flex-grow w-full">
-                <div className="max-w-2xl mx-auto">
-                    {/* Main Interaction Area */}
-                    <div className="min-w-0">
-                        <div className="text-center mb-8 -mt-16 relative z-20">
-                            <h2 className="inconsolata-ui text-[11px] font-bold text-accent uppercase tracking-[0.3em] mb-3">Instruction</h2>
-                            <p className="manrope-body text-[14px] text-text-muted max-w-sm mx-auto leading-relaxed opacity-80">
-                                Paste a research paper URL to get a technical breakdown and logic map.
+            <main className="max-w-7xl mx-auto px-6 py-16 flex-grow w-full">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
+                    
+                    {/* Left Column: Form */}
+                    <div className="lg:col-span-7 xl:col-span-6 min-w-0">
+                        <div className="text-left mb-8 relative z-20">
+                            <h2 className="inconsolata-ui text-[11px] font-bold text-accent uppercase tracking-[0.3em] mb-3">Decode Paper</h2>
+                            <p className="manrope-body text-[14px] text-text-muted leading-relaxed opacity-80">
+                                Paste an ArXiv or PDF URL to generate a technical blueprint.
                             </p>
                         </div>
 
@@ -240,10 +269,30 @@ export default function ResearchLabClient() {
                             initial={{ opacity: 0, scale: 0.98 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 0.5, delay: 0.2 }}
-                            className="bg-header border border-border rounded-xl shadow-2xl overflow-hidden mb-16 relative z-20 backdrop-blur-sm"
+                            className="relative mb-16 z-20"
                         >
-                            <div className="p-5 md:p-6">
-                                <form onSubmit={handleStartAnalysis} className="space-y-5">
+                            {/* Pro Upgrade Overlay */}
+                            {user && !user.is_pro && (
+                                <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-background/80 backdrop-blur-[3px] rounded-xl border border-border/50 text-center p-6">
+                                    <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mb-4">
+                                        <Sparkles className="w-6 h-6 text-accent" />
+                                    </div>
+                                    <h3 className="text-[16px] font-bold text-text-heading mb-2">Pro Exclusive Feature</h3>
+                                    <p className="text-[13px] text-text-muted max-w-sm mb-6 leading-relaxed">
+                                        Research Lab completely deconstructs complex technical papers using our highest-capability AI pipeline.
+                                    </p>
+                                    <Link 
+                                        href="/pricing"
+                                        className="inline-flex items-center gap-2 px-6 py-3 bg-[#111] dark:bg-accent text-white rounded-lg font-bold text-[12px] uppercase tracking-[0.2em] shadow-xl hover:opacity-90 transition-opacity"
+                                    >
+                                        Upgrade to Pro
+                                    </Link>
+                                </div>
+                            )}
+
+                            <div className="bg-header border border-border rounded-xl shadow-2xl overflow-hidden backdrop-blur-sm">
+                                <div className="p-5 md:p-6">
+                                    <form onSubmit={handleStartAnalysis} className="space-y-5">
                                     <div className="space-y-2 text-left">
                                         <label className="inconsolata-ui text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1 flex items-center gap-2">
                                             <BrainCircuit className="w-3.5 h-3.5 text-accent" /> Paper URL (ArXiv or PDF)
@@ -269,6 +318,66 @@ export default function ResearchLabClient() {
                                                 Format: ArXiv link or direct PDF URL
                                             </p>
                                         )}
+                                    </div>
+
+                                    {/* Engine Selection */}
+                                    <div className="space-y-3 pt-2">
+                                        <label className="inconsolata-ui text-[10px] font-black text-text-muted uppercase tracking-[0.2em] ml-1 flex items-center gap-2">
+                                            <Cpu className="w-3.5 h-3.5 text-accent" /> Engine Selection
+                                        </label>
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                            <button
+                                                type="button"
+                                                onClick={() => setEngineType('cloud')}
+                                                className={`flex flex-col items-start p-3 rounded-lg border transition-all ${
+                                                    engineType === 'cloud' 
+                                                        ? 'border-accent bg-accent/5 shadow-sm' 
+                                                        : 'border-border/50 bg-background hover:border-border hover:bg-sidebar'
+                                                }`}
+                                            >
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <Cloud className={`w-4 h-4 ${engineType === 'cloud' ? 'text-accent' : 'text-text-muted'}`} />
+                                                    <span className="text-[12px] font-bold text-text-heading">Cloud AI</span>
+                                                </div>
+                                                <span className="text-[10px] text-text-muted">Zero setup, uses credits</span>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setEngineType('openrouter');
+                                                    if (!useOpenRouter) setIsOpenRouterModalOpen(true);
+                                                }}
+                                                className={`flex flex-col items-start p-3 rounded-lg border transition-all ${
+                                                    engineType === 'openrouter' 
+                                                        ? 'border-emerald-500 bg-emerald-500/5 shadow-sm' 
+                                                        : 'border-border/50 bg-background hover:border-border hover:bg-sidebar'
+                                                }`}
+                                            >
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <Key className={`w-4 h-4 ${engineType === 'openrouter' ? 'text-emerald-500' : 'text-text-muted'}`} />
+                                                    <span className="text-[12px] font-bold text-text-heading">OpenRouter</span>
+                                                </div>
+                                                <span className="text-[10px] text-text-muted">Bring your own key</span>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    setEngineType('local');
+                                                    if (!useLocalAI) setIsLocalAIModalOpen(true);
+                                                }}
+                                                className={`flex flex-col items-start p-3 rounded-lg border transition-all ${
+                                                    engineType === 'local' 
+                                                        ? 'border-amber-500 bg-amber-500/5 shadow-sm' 
+                                                        : 'border-border/50 bg-background hover:border-border hover:bg-sidebar'
+                                                }`}
+                                            >
+                                                <div className="flex items-center gap-2 mb-1">
+                                                    <Cpu className={`w-4 h-4 ${engineType === 'local' ? 'text-amber-500' : 'text-text-muted'}`} />
+                                                    <span className="text-[12px] font-bold text-text-heading">Local AI</span>
+                                                </div>
+                                                <span className="text-[10px] text-text-muted">Private, local inference</span>
+                                            </button>
+                                        </div>
                                     </div>
 
                                     {error && (
@@ -301,7 +410,7 @@ export default function ResearchLabClient() {
                                 <div className="mt-6 flex items-center justify-between pt-6 border-t border-border/40">
                                     <div className="flex items-center gap-3">
                                         <div className="px-2 py-1 bg-accent/10 rounded text-accent inconsolata-ui text-[10px] font-black uppercase tracking-widest">
-                                            1 Credit / Paper
+                                            {engineType === 'cloud' ? '1 Credit / Paper' : 'Free / Unlimited'}
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-5">
@@ -319,6 +428,7 @@ export default function ResearchLabClient() {
                                             <ArrowRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" />
                                         </Link>
                                     </div>
+                                </div>
                                 </div>
                             </div>
                         </motion.div>
@@ -372,9 +482,104 @@ export default function ResearchLabClient() {
                             )}
                         </div>
                     </div>
+
+                    {/* Right Column: Instructions & Info */}
+                    <div className="lg:col-span-5 xl:col-span-6 relative z-10">
+                        <div className="sticky top-24 space-y-10">
+                            <div>
+                                <div className="inline-flex items-center gap-2 px-3 py-1 bg-accent/10 border border-accent/20 rounded-full mb-6">
+                                    <Sparkles className="w-3.5 h-3.5 text-accent" />
+                                    <span className="inconsolata-ui text-[10px] font-bold text-accent uppercase tracking-widest">How it Works</span>
+                                </div>
+                                <h3 className="text-2xl lg:text-3xl font-bold text-text-heading mb-4 tracking-tight">
+                                    From PDF to <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-teal-400">Engineering Dossier</span>
+                                </h3>
+                                <p className="text-[14px] text-text-muted leading-relaxed max-w-md">
+                                    Research Lab bypasses the fluff. We extract the core logic, structural architecture, and mathematical realities directly from academic papers so you can build faster.
+                                </p>
+                            </div>
+
+                            <div className="grid gap-4">
+                                {[
+                                    {
+                                        icon: <FlaskConical className="w-5 h-5 text-teal-500" />,
+                                        title: "The Shift & Logic",
+                                        desc: "Instantly see what the paper solves (The Before vs After) and the step-by-step logic required to replicate it."
+                                    },
+                                    {
+                                        icon: <BrainCircuit className="w-5 h-5 text-amber-500" />,
+                                        title: "Architectural Concept",
+                                        desc: "Deep-dive into the actual mechanism behind the paper without reading 40 pages of dense preamble."
+                                    },
+                                    {
+                                        icon: <AlertCircle className="w-5 h-5 text-rose-500" />,
+                                        title: "Engineering Realities",
+                                        desc: "We extract the 'Gotchas'—the performance bottlenecks, hidden assumptions, and scaling issues mentioned in the paper."
+                                    }
+                                ].map((feature, i) => (
+                                    <div key={i} className="flex gap-4 p-5 rounded-xl border border-border/50 bg-sidebar/50 hover:bg-sidebar transition-colors">
+                                        <div className="shrink-0 mt-0.5">
+                                            {feature.icon}
+                                        </div>
+                                        <div>
+                                            <h4 className="text-[14px] font-bold text-text-heading mb-1">{feature.title}</h4>
+                                            <p className="text-[13px] text-text-muted leading-relaxed">{feature.desc}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                            
+                            <div className="pt-6 border-t border-border/30">
+                                <div className="flex items-start gap-4">
+                                    <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center shrink-0">
+                                        <BookOpen className="w-4 h-4 text-blue-500" />
+                                    </div>
+                                    <div>
+                                        <h4 className="text-[12px] font-bold uppercase tracking-widest text-text-primary mb-1">Supported Formats</h4>
+                                        <p className="text-[12px] text-text-muted">Direct URLs to <code>arxiv.org/abs/...</code> or any publicly accessible <code>.pdf</code> link.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </main>
+
+            <div className="border-t border-border/30">
+                <div className="max-w-7xl mx-auto px-6 py-6">
+                    <Breadcrumbs items={[{ label: 'Decode' }]} />
+                </div>
+            </div>
+
             <Footer />
+
+            <OpenRouterModal 
+                isOpen={isOpenRouterModalOpen}
+                onClose={() => setIsOpenRouterModalOpen(false)}
+                onSave={(key, model) => {
+                    setOpenRouterKey(key);
+                    setOpenRouterModel(model);
+                    setUseOpenRouter(true);
+                    setEngineType('openrouter');
+                }}
+                onRemove={() => {
+                    setOpenRouterKey(null);
+                    setOpenRouterModel(null);
+                    setUseOpenRouter(false);
+                    setEngineType('cloud');
+                }}
+            />
+
+            <LocalAIModal 
+                isOpen={isLocalAIModalOpen}
+                onClose={() => setIsLocalAIModalOpen(false)}
+                onSelectModel={(modelId, modelName) => {
+                    setLocalAIModelId(modelId);
+                    setLocalAIModelName(modelName);
+                    setUseLocalAI(true);
+                    setEngineType('local');
+                }}
+            />
         </div>
     );
 }

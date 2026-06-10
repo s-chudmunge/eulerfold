@@ -15,7 +15,7 @@ from fastapi import APIRouter, HTTPException, Request, Depends, BackgroundTasks
 
 from app.core.config import settings
 from app.core.supabase_client import supabase, get_supabase_client
-from app.schemas import RoadmapCreate, RoadmapMe, RoadmapRead, RoadmapSave, User, ProgressUpdate, RoadmapExtend, RoadmapStatusUpdate, ManualBuildRequest, JobRoadmapCreate
+from app.schemas import RoadmapCreate, RoadmapMe, RoadmapRead, RoadmapSave, User, ProgressUpdate, RoadmapExtend, RoadmapStatusUpdate, ManualBuildRequest, JobRoadmapCreate, ExternalRoadmapCreate
 from app.utils.gemini_client import generate_text, clean_json_string, robust_json_loads
 from app.utils.resend_client import send_onboarding_email
 from app.utils.youtube_client import search_youtube_videos
@@ -850,6 +850,81 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
     except Exception as e:
         logger.error(f"Roadmap generation failed: {e}")
         raise HTTPException(status_code=500, detail=f"Generation error: {str(e)}")
+
+@router.post("/roadmaps/save-external", response_model=RoadmapRead)
+@monitor_query(query_type="save_external_roadmap", table="roadmaps")
+async def save_external_roadmap(
+    roadmap_create: ExternalRoadmapCreate,
+    background_tasks: BackgroundTasks,
+    current_user: User = Depends(get_current_user)
+):
+    """Save a roadmap generated externally (e.g., via OpenRouter on frontend)."""
+    email = current_user.email
+    uid = current_user.supabase_uid
+    if not email:
+        raise HTTPException(status_code=401, detail="Could not determine user email")
+
+    sb = get_supabase_client()
+    roadmap_plan = roadmap_create.roadmap_plan
+    
+    # 1. Add IDs and YouTube Videos
+    for i, module in enumerate(roadmap_plan.get("modules", [])):
+        module["id"] = f"module_{i+1}"
+        if not module.get("outcome"):
+             module["outcome"] = "By the end of this module you will be able to apply the listed topics and solve basic related problems."
+        for t_idx, topic in enumerate(module.get("topics", [])):
+            topic["id"] = f"topic_{i+1}_{t_idx+1}"
+            topic["uuid"] = str(uuid.uuid4())
+            for s_idx, subtopic in enumerate(topic.get("subtopics", [])):
+                subtopic["id"] = str(uuid.uuid4())
+            
+            # YouTube Enrichment
+            if settings.YOUTUBE_API_KEY:
+                try:
+                    search_query = f"{roadmap_create.subject} {topic['title']} tutorial"
+                    results = await search_youtube_videos(search_query, max_results=1)
+                    if results:
+                        topic["youtube_video_id"] = results[0]["video_id"]
+                        topic["youtube_video_title"] = results[0]["video_title"]
+                        topic["duration"] = results[0]["duration_minutes"]
+                    # Throttle a bit
+                    await asyncio.sleep(0.1)
+                except Exception as yt_err:
+                    logger.error(f"YouTube enrichment failed for topic {topic['title']}: {yt_err}")
+
+    # 2. Save to DB
+    slug = await _generate_unique_slug(roadmap_plan.get("title", roadmap_create.subject), email, sb)
+    
+    db_data = {
+        "title": roadmap_plan.get("title", roadmap_create.subject),
+        "description": roadmap_plan.get("description", "A custom generated learning path."),
+        "roadmap_plan": roadmap_plan,
+        "subject": roadmap_create.subject,
+        "goal": roadmap_create.goal,
+        "time_value": roadmap_create.time_value,
+        "time_unit": roadmap_create.time_unit,
+        "model": roadmap_create.model,
+        "email": email,
+        "slug": slug,
+        "status": "active",
+        "version": 1,
+        "snapshot_hash": _generate_plan_hash(roadmap_plan)
+    }
+    
+    try:
+        response = sb.table("roadmaps").insert(db_data).execute()
+        
+        if not response.data:
+            raise HTTPException(status_code=500, detail="Failed to save external roadmap")
+            
+        # 3. Background task to extract skills
+        if uid:
+            background_tasks.add_task(extract_skills_from_roadmap, response.data[0]["id"], uid)
+
+        return RoadmapRead(**response.data[0])
+    except Exception as e:
+        logger.error(f"External Roadmap save failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Save error: {str(e)}")
 
 @router.post("/roadmaps/generate-from-jd", response_model=RoadmapRead)
 @monitor_query(query_type="generate_from_jd", table="roadmaps")

@@ -15,7 +15,11 @@ import {
   Github,
   Globe,
   Loader2,
-  ChevronRight
+  ChevronRight,
+  Zap,
+  History,
+  Cpu,
+  Unlink
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/components/AuthProvider';
@@ -23,8 +27,9 @@ import { supabase } from '@/lib/supabase/client';
 import { authAPI, profileAPI } from '@/lib/api';
 import { useSettings } from './SettingsProvider';
 import Link from 'next/link';
+import { LocalAIModal } from './landing/LocalAIModal';
 
-type TabId = 'general' | 'appearance' | 'connections' | 'account';
+type TabId = 'general' | 'appearance' | 'connections' | 'usage' | 'account';
 
 export default function SettingsModal() {
   const { isOpen, closeSettings } = useSettings();
@@ -41,6 +46,15 @@ export default function SettingsModal() {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
+  const [openRouterKey, setOpenRouterKey] = useState<string | null>(null);
+  const [openRouterModel, setOpenRouterModel] = useState<string>('openai/gpt-4o');
+  const [availableModels, setAvailableModels] = useState<any[]>([]);
+  const [usageHistory, setUsageHistory] = useState<any[]>([]);
+  const [keyInfo, setKeyInfo] = useState<any>(null);
+  
+  const [localAIModelId, setLocalAIModelId] = useState<string | null>(null);
+  const [localAIModelName, setLocalAIModelName] = useState<string | null>(null);
+  const [isLocalAIModalOpen, setIsLocalAIModalOpen] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -58,6 +72,40 @@ export default function SettingsModal() {
       } else {
         setTheme('light');
       }
+      
+      const key = localStorage.getItem('openRouterKey');
+      setOpenRouterKey(key);
+      const savedModel = localStorage.getItem('openRouterModel') || 'openai/gpt-4o';
+      setOpenRouterModel(savedModel);
+
+      setLocalAIModelId(localStorage.getItem('localAIModelId'));
+      setLocalAIModelName(localStorage.getItem('localAIModelName'));
+
+      if (key && !keyInfo) {
+        fetch("https://openrouter.ai/api/v1/auth/key", {
+          headers: { "Authorization": `Bearer ${key}` }
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (data && data.data) {
+             setKeyInfo(data.data);
+          }
+        })
+        .catch(console.error);
+        
+        fetch("https://openrouter.ai/api/v1/models")
+          .then(res => res.json())
+          .then(data => {
+            if (data && data.data) {
+              setAvailableModels(data.data);
+            }
+          })
+          .catch(console.error);
+      }
+      try {
+        const history = JSON.parse(localStorage.getItem('openRouterUsageHistory') || '[]');
+        setUsageHistory(history);
+      } catch (e) {}
     }
   }, [isOpen]);
 
@@ -124,6 +172,7 @@ export default function SettingsModal() {
     { id: 'general', label: 'General', icon: UserIcon },
     { id: 'appearance', label: 'Appearance', icon: Settings },
     { id: 'connections', label: 'Connections', icon: Globe },
+    { id: 'usage', label: 'Usage', icon: Zap },
     { id: 'account', label: 'Account', icon: Trash2 },
   ];
 
@@ -298,17 +347,184 @@ export default function SettingsModal() {
                     <div className="px-3 py-1 rounded-md text-[10px] font-bold inconsolata-ui bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 uppercase">
                       Active
                     </div>
+                    <span className="text-[9px] font-bold text-text-muted opacity-50 uppercase">Connected</span>
                   </div>
                 ) : (
                   <button
                     onClick={handleLinkGithub}
-                    className="px-4 py-1.5 bg-text-heading text-background rounded-md text-[10px] font-bold inconsolata-ui hover:opacity-90 transition-all uppercase"
+                    className="px-4 py-1.5 rounded-md text-[10px] font-bold inconsolata-ui bg-text-heading text-background hover:opacity-90 transition-all uppercase"
                   >
                     Connect
                   </button>
                 )}
               </div>
+
+              <div className="flex items-center justify-between gap-6 p-4 bg-background border border-border rounded-xl">
+                <div className="flex items-center gap-4">
+                  <div className={`w-9 h-9 rounded-lg flex items-center justify-center border ${keyInfo && !keyInfo.is_free_tier ? 'bg-yellow-500/10 border-yellow-500/20' : 'bg-sidebar border-border'}`}>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className={keyInfo && !keyInfo.is_free_tier ? 'text-yellow-500' : 'text-text-heading'}>
+                      <path d="M16.778 1.844v1.919q-.569-.026-1.138-.032-.708-.008-1.415.037c-1.93.126-4.023.728-6.149 2.237-2.911 2.066-2.731 1.95-4.14 2.75-.396.223-1.342.574-2.185.798-.841.225-1.753.333-1.751.333v4.229s.768.108 1.61.333c.842.224 1.789.575 2.185.799 1.41.798 1.228.683 4.14 2.75 2.126 1.509 4.22 2.11 6.148 2.236.88.058 1.716.041 2.555.005v1.918l7.222-4.168-7.222-4.17v2.176c-.86.038-1.611.065-2.278.021-1.364-.09-2.417-.357-3.979-1.465-2.244-1.593-2.866-2.027-3.68-2.508.889-.518 1.449-.906 3.822-2.59 1.56-1.109 2.614-1.377 3.978-1.466.667-.044 1.418-.017 2.278.02v2.176L24 6.014Z"/>
+                    </svg>
+                  </div>
+                  <div className="space-y-0.5">
+                    <h3 className="inconsolata-ui text-[12px] font-bold text-text-heading">OpenRouter</h3>
+                    <p className="manrope-body text-[10px] text-text-muted italic opacity-60">
+                      Bring Your Own Key for AI generation.
+                    </p>
+                  </div>
+                </div>
+                
+                {openRouterKey ? (
+                  <div className="flex flex-col items-end gap-1.5 w-full">
+                    <div className="flex items-center gap-2">
+                       {keyInfo && (
+                          <div className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-widest border ${keyInfo.is_free_tier ? 'bg-sidebar text-text-muted border-border' : 'bg-yellow-500/10 text-yellow-600 border-yellow-500/20'}`}>
+                            {keyInfo.is_free_tier ? 'Free Tier' : 'Paid Tier'}
+                          </div>
+                       )}
+                       <div className="px-3 py-1 rounded-md text-[10px] font-bold inconsolata-ui bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 uppercase">
+                         Active
+                       </div>
+                    </div>
+                    {keyInfo?.is_free_tier && (
+                       <a href="https://openrouter.ai/credits" target="_blank" rel="noopener noreferrer" className="text-[9px] font-bold text-accent hover:underline flex items-center gap-1 mb-2">
+                         Upgrade to Paid <ExternalLink className="w-2.5 h-2.5" />
+                       </a>
+                    )}
+                    
+                    <div className="w-full mt-2 pt-3 border-t border-border/50 text-left">
+                      <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-1.5">Preferred Default Model</label>
+                      <select 
+                        value={openRouterModel} 
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setOpenRouterModel(val);
+                          localStorage.setItem('openRouterModel', val);
+                        }}
+                        className="w-full bg-sidebar border border-border rounded-lg px-3 py-2 text-[11px] font-bold text-text-heading outline-none focus:border-accent transition-colors"
+                      >
+                        {availableModels.length > 0 ? availableModels.map(m => (
+                          <option key={m.id} value={m.id}>{m.name || m.id}</option>
+                        )) : (
+                          <option value={openRouterModel}>{openRouterModel} (Loading...)</option>
+                        )}
+                      </select>
+                    </div>
+
+                    <button 
+                      onClick={() => { localStorage.removeItem('openRouterKey'); setOpenRouterKey(null); setKeyInfo(null); }}
+                      className="text-[9px] font-bold text-red-500 hover:underline uppercase mt-3"
+                    >
+                      Disconnect OpenRouter
+                    </button>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => {
+                      const callbackUrl = encodeURIComponent(window.location.origin + "/auth/openrouter");
+                      window.location.href = `https://openrouter.ai/auth?callback_url=${callbackUrl}`;
+                    }}
+                    className="px-4 py-1.5 rounded-md text-[10px] font-bold inconsolata-ui bg-text-heading text-background hover:opacity-90 transition-all uppercase"
+                  >
+                    Connect
+                  </button>
+                )}
+              </div>
+
+              <div className="flex items-center justify-between gap-6 p-4 bg-background border border-border rounded-xl">
+                <div className="flex items-center gap-4">
+                  <div className={`w-9 h-9 rounded-lg flex items-center justify-center border ${localAIModelId ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-sidebar border-border'}`}>
+                    <Cpu className={localAIModelId ? 'w-4 h-4 text-emerald-500' : 'w-4 h-4 text-text-heading'} />
+                  </div>
+                  <div className="space-y-0.5">
+                    <h3 className="inconsolata-ui text-[12px] font-bold text-text-heading">Local AI</h3>
+                    <p className="manrope-body text-[10px] text-text-muted italic opacity-60">
+                      Run models privately on your hardware via WebGPU.
+                    </p>
+                  </div>
+                </div>
+                
+                {localAIModelId ? (
+                  <div className="flex flex-col items-end gap-1.5 w-full">
+                    <div className="px-3 py-1 rounded-md text-[10px] font-bold inconsolata-ui bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 uppercase mb-2">
+                      Connected
+                    </div>
+                    
+                    <div className="w-full pt-3 border-t border-border/50 text-left">
+                      <label className="text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-1.5">Selected Model</label>
+                      <div className="w-full bg-sidebar border border-border rounded-lg px-3 py-2 text-[11px] font-bold text-text-heading outline-none">
+                        {localAIModelName || localAIModelId}
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 mt-3">
+                      <button 
+                        onClick={() => { localStorage.removeItem('localAIModelId'); localStorage.removeItem('localAIModelName'); setLocalAIModelId(null); setLocalAIModelName(null); }}
+                        className="text-[9px] font-bold text-red-500 hover:underline uppercase"
+                      >
+                        Disconnect
+                      </button>
+                      <button
+                        onClick={() => setIsLocalAIModalOpen(true)}
+                        className="text-[9px] font-bold text-text-heading hover:text-accent hover:underline uppercase"
+                      >
+                        Change Model
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => setIsLocalAIModalOpen(true)}
+                    className="px-4 py-1.5 rounded-md text-[10px] font-bold inconsolata-ui bg-text-heading text-background hover:opacity-90 transition-all uppercase"
+                  >
+                    Configure
+                  </button>
+                )}
+              </div>
             </div>
+          </div>
+        );
+      case 'usage':
+        return (
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <div className="pb-2 border-b border-border/50 flex items-center justify-between">
+              <div>
+                <h2 className="inconsolata-ui text-[14px] font-bold tracking-tight text-text-heading">EXTERNAL AI USAGE</h2>
+                <p className="manrope-body text-[11px] text-text-muted italic opacity-60">Your OpenRouter and Local AI generation history.</p>
+              </div>
+              <a href="https://openrouter.ai/activity" target="_blank" rel="noopener noreferrer" className="inconsolata-ui text-[10px] font-bold text-accent hover:underline flex items-center gap-1.5">
+                Full Log <ExternalLink className="w-3 h-3" />
+              </a>
+            </div>
+
+            {usageHistory.length === 0 ? (
+              <div className="p-8 text-center bg-sidebar/50 rounded-xl border border-border">
+                <History className="w-8 h-8 text-text-muted mx-auto mb-3 opacity-20" />
+                <p className="inconsolata-ui text-[12px] font-bold text-text-heading">No usage history found</p>
+                <p className="manrope-body text-[11px] text-text-muted mt-1">Generations made using OpenRouter or Local AI will appear here.</p>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {usageHistory.map((h, i) => (
+                  <div key={i} className="flex items-center justify-between p-4 bg-background border border-border/50 rounded-xl shadow-sm">
+                    <div className="flex-1 min-w-0 pr-4">
+                      <div className="text-[13px] font-bold text-text-heading truncate mb-1">{h.subject}</div>
+                      <div className="flex items-center gap-2">
+                        <span className="text-[10px] font-medium px-2 py-0.5 bg-sidebar rounded border border-border/50 text-text-muted truncate">{h.model}</span>
+                        <span className="text-[10px] text-text-muted italic">{new Date(h.date).toLocaleDateString()} {new Date(h.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                      </div>
+                    </div>
+                    <div className="text-right shrink-0 flex flex-col items-end gap-1">
+                      <div className="text-[12px] font-black text-accent tracking-tight">{h.total_tokens.toLocaleString()} <span className="text-[9px] font-bold uppercase opacity-60">tokens</span></div>
+                      <div className="text-[9px] text-text-muted flex gap-2">
+                        <span title="Prompt Tokens">P: {h.prompt_tokens.toLocaleString()}</span>
+                        <span title="Completion Tokens">C: {h.completion_tokens.toLocaleString()}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         );
       case 'account':
@@ -347,8 +563,9 @@ export default function SettingsModal() {
   };
 
   return (
-    <AnimatePresence>
-      {isOpen && (
+    <>
+      <AnimatePresence>
+        {isOpen && (
         <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 sm:p-6 md:p-10">
           <motion.div
             initial={{ opacity: 0 }}
@@ -429,23 +646,35 @@ export default function SettingsModal() {
               </div>
 
               <div className="flex-1 overflow-y-auto p-6 md:p-8 pt-6 md:pt-16">
-                {message && (
-                  <div className={`mb-6 p-3 rounded-xl flex items-center gap-3 text-[12px] font-bold inconsolata-ui animate-in fade-in slide-in-from-top-2 duration-300 ${
-                    message.type === 'success' 
-                      ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20' 
-                      : 'bg-red-500/10 text-red-500 border border-red-500/20'
-                  }`}>
-                    {message.type === 'success' ? <CheckCircle className="h-3.5 w-3.5" /> : <AlertCircle className="h-3.5 w-3.5" />}
-                    <span>{message.text}</span>
-                  </div>
-                )}
-                
-                {renderContent()}
+                  {message && (
+                    <div className={`mb-6 p-3 rounded-xl flex items-center gap-3 text-[12px] font-bold inconsolata-ui animate-in fade-in slide-in-from-top-2 duration-300 ${
+                      message.type === 'success' 
+                        ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20' 
+                        : 'bg-red-500/10 text-red-500 border border-red-500/20'
+                    }`}>
+                      {message.type === 'success' ? <CheckCircle className="h-3.5 w-3.5" /> : <AlertCircle className="h-3.5 w-3.5" />}
+                      <span>{message.text}</span>
+                    </div>
+                  )}
+                  
+                  {renderContent()}
+                </div>
               </div>
-            </div>
-          </motion.div>
-        </div>
-      )}
-    </AnimatePresence>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      <LocalAIModal
+        isOpen={isLocalAIModalOpen}
+        onClose={() => setIsLocalAIModalOpen(false)}
+        onSelectModel={(modelId, modelName) => {
+          localStorage.setItem('localAIModelId', modelId);
+          localStorage.setItem('localAIModelName', modelName);
+          setLocalAIModelId(modelId);
+          setLocalAIModelName(modelName);
+        }}
+      />
+    </>
   );
 }

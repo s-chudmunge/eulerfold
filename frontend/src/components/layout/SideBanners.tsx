@@ -47,15 +47,16 @@ interface BannerProps {
     currentQuote: { text: string; author?: string };
     quoteIndex: number;
     isStatic?: boolean;
+    topClass?: string;
 }
 
-export const SideBanner = ({ buttonText, href, align, currentQuote, quoteIndex, isStatic = false }: BannerProps) => {
+export const SideBanner = ({ buttonText, href, align, currentQuote, quoteIndex, isStatic = false, topClass = "top-16 md:top-24" }: BannerProps) => {
     const containerClasses = isStatic 
         ? "flex flex-col w-full h-[500px] bg-background border border-border/10 rounded-lg shadow-sm overflow-hidden group transition-all duration-500 [mask-image:linear-gradient(to_bottom,transparent,black_5%,black_95%,transparent),linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] [-webkit-mask-composite:source-in] [mask-composite:intersect]"
         : `flex flex-col w-[170px] h-[650px] bg-background border-none rounded-lg shadow-sm overflow-hidden group transition-all duration-500 [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent),linear-gradient(to_right,transparent,black_15%,black_85%,transparent)] [-webkit-mask-composite:source-in] [mask-composite:intersect]`;
 
     return (
-        <Link href={href} className={isStatic ? "block w-full" : `absolute top-16 md:top-24 hidden 2xl:block z-10 ${
+        <Link href={href} className={isStatic ? "block w-full" : `absolute ${topClass} hidden 2xl:block z-10 ${
             align === 'left' ? 'right-full mr-10' : 'left-full ml-10'
         }`}>
             <motion.div 

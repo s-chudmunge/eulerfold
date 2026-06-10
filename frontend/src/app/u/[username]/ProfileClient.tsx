@@ -182,7 +182,7 @@ export default function ProfileClient({ profile }: Props) {
             <div className="flex-1 pt-6 md:pt-12">
                 {/* Profile Header (Tabs Area) - GitHub style */}
                 <div 
-                    className="border-b border-border bg-sidebar/30 sticky top-[56px] z-30 hidden md:block"
+                    className="border-b border-border bg-background/80 backdrop-blur-xl sticky top-[56px] z-30 hidden md:block"
                     style={{ top: 'calc(56px + var(--announcement-height, 0px))' }}
                 >
                     <div className="max-w-[1280px] mx-auto px-6 lg:px-10 flex items-center justify-between">
@@ -232,7 +232,7 @@ export default function ProfileClient({ profile }: Props) {
                             <aside className="w-full md:w-[260px] shrink-0 flex flex-col">
                             {/* Avatar/Name Group */}
                             <div className="flex md:flex-col items-center md:items-start gap-4 md:gap-0 mb-6 relative">
-                            <div className="w-20 h-20 md:w-full md:h-auto aspect-square rounded-none border border-border shadow-sm overflow-hidden bg-background flex items-center justify-center relative z-10 group">
+                            <div className="w-20 h-20 md:w-full md:h-auto aspect-square rounded-xl border border-border shadow-md overflow-hidden bg-header flex items-center justify-center relative z-10 group">
                                 {effectiveAvatarUrl ? (
                                     <img src={effectiveAvatarUrl} alt={profile.username} className="w-full h-full object-cover" />
                                 ) : (
@@ -273,7 +273,7 @@ export default function ProfileClient({ profile }: Props) {
                             {isOwner && (
                             <button 
                                 onClick={openSettings}
-                                className="w-full py-1.5 mb-8 bg-sidebar border border-border hover:bg-callout-bg rounded-none text-[11px] font-bold text-text-heading flex items-center justify-center gap-2 transition-all uppercase tracking-widest inconsolata-ui cursor-pointer"
+                                className="w-full py-2 mb-8 bg-sidebar border border-border hover:bg-callout-bg rounded-lg text-[11px] font-bold text-text-heading flex items-center justify-center gap-2 transition-all uppercase tracking-widest inconsolata-ui cursor-pointer shadow-sm hover:shadow"
                             >
                                 <Edit2 className="w-3 h-3 opacity-60" /> Edit profile
                             </button>
@@ -327,9 +327,9 @@ export default function ProfileClient({ profile }: Props) {
                                                 <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">{item.label}</span>
                                                 <span className="text-[11px] font-bold text-text-heading tabular-nums">{item.count}{item.label === 'MCQ Mastery' && ` / ${item.total}`}</span>
                                             </div>
-                                            <div className="h-1 w-full bg-sidebar rounded-none overflow-hidden border border-border/50">
+                                            <div className="h-1.5 w-full bg-sidebar rounded-full overflow-hidden border border-border/50">
                                                 <div
-                                                    className={`h-full ${item.color} transition-all duration-1000`}
+                                                    className={`h-full ${item.color} transition-all duration-1000 rounded-full`}
                                                     style={{ width: `${item.count > 0 ? Math.max(percentage, 5) : 0}%` }}
                                                 />
                                             </div>
@@ -364,7 +364,9 @@ export default function ProfileClient({ profile }: Props) {
                                 {strongSkills.length > 0 && (
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {strongSkills.slice(0, 4).map(skill => (
-                                            <div key={skill.id} className="p-5 bg-sidebar/20 border border-border rounded-none hover:border-accent/40 transition-all group relative">
+                                            <div key={skill.id} className="p-5 bg-header border border-border rounded-xl shadow-sm hover:shadow-md hover:border-accent/40 transition-all group relative overflow-hidden">
+                                                <div className="absolute -bottom-10 -right-10 w-24 h-24 bg-accent/5 rounded-full blur-2xl group-hover:bg-accent/10 transition-colors duration-500 pointer-events-none" />
+                                                <div className="relative z-10">
                                                 <div className="flex justify-between items-start mb-3">
                                                     <div className="flex items-center gap-2.5">
                                                         <BookOpen className="w-4 h-4 text-accent opacity-40" />
@@ -379,13 +381,14 @@ export default function ProfileClient({ profile }: Props) {
                                                     <span className="flex items-center gap-2"><Clock className="w-3.5 h-3.5 opacity-40" /> {Math.round(skill.time_invested)}H</span>
                                                     <span className="flex items-center gap-2"><Target className="w-3.5 h-3.5 opacity-40" /> {skill.confidence_score.toFixed(1)}</span>
                                                 </div>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
                                 )}
 
                                 {/* Activity Graph */}
-                                <div className="p-6 border border-border rounded-none bg-background relative overflow-hidden">
+                                <div className="p-6 border border-border rounded-xl shadow-sm bg-header relative overflow-hidden">
                                     <ActivityChart roadmaps={profile.roadmaps} profile={profile} />
                                 </div>
 
@@ -397,7 +400,7 @@ export default function ProfileClient({ profile }: Props) {
                             <div className="space-y-6 animate-in fade-in duration-300">
                                 <div className="relative mb-8">
                                     <input 
-                                        className="w-full bg-sidebar/20 border border-border rounded-none px-10 py-3 text-[13px] text-text-heading placeholder:text-text-muted outline-none focus:border-accent transition-all font-bold inconsolata-ui uppercase tracking-widest"
+                                        className="w-full bg-header border border-border rounded-xl shadow-sm px-10 py-3 text-[13px] text-text-heading placeholder:text-text-muted outline-none focus:border-accent transition-all font-bold inconsolata-ui uppercase tracking-widest"
                                         placeholder="Filter Skills..."
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
@@ -407,7 +410,7 @@ export default function ProfileClient({ profile }: Props) {
 
                                 <div className="space-y-6">
                                     {strongSkills.length > 0 && (
-                                        <div className="border border-border rounded-none overflow-hidden bg-sidebar/10">
+                                        <div className="border border-border rounded-xl shadow-sm overflow-hidden bg-header">
                                             <button onClick={() => setIsExpertiseOpen(!isExpertiseOpen)} className="w-full px-5 py-4 flex items-center justify-between hover:bg-sidebar/20 border-b border-border/50">
                                                 <h3 className="text-[11px] font-black text-accent tracking-[0.3em] uppercase inconsolata-ui">Expertise // {strongSkills.length}</h3>
                                                 {isExpertiseOpen ? <ChevronUp className="w-3.5 h-3.5 text-text-muted" /> : <ChevronDown className="w-3.5 h-3.5 text-text-muted" />}
@@ -416,7 +419,7 @@ export default function ProfileClient({ profile }: Props) {
                                         </div>
                                     )}
                                     {developingSkills.length > 0 && (
-                                        <div className="border border-border rounded-none overflow-hidden bg-sidebar/5">
+                                        <div className="border border-border rounded-xl shadow-sm overflow-hidden bg-header">
                                             <button onClick={() => setIsAdvancingOpen(!isAdvancingOpen)} className="w-full px-5 py-4 flex items-center justify-between hover:bg-sidebar/10 border-b border-border/50">
                                                 <h3 className="text-[11px] font-black text-text-muted tracking-[0.3em] uppercase inconsolata-ui">Advancing // {developingSkills.length}</h3>
                                                 {isAdvancingOpen ? <ChevronUp className="w-3.5 h-3.5 text-text-muted" /> : <ChevronDown className="w-3.5 h-3.5 text-text-muted" />}
@@ -432,12 +435,14 @@ export default function ProfileClient({ profile }: Props) {
                             <div className="space-y-4 animate-in fade-in duration-300">
                                 {profile.submissions && profile.submissions.length > 0 ? (
                                     profile.submissions.map((sub, idx) => (
-                                        <div key={idx} className="bg-background border border-border rounded-none p-6 relative group hover:border-accent/40 transition-all duration-200">
+                                        <div key={idx} className="bg-header border border-border shadow-sm rounded-xl p-6 relative group hover:border-accent/40 hover:shadow-md transition-all duration-300 overflow-hidden">
+                                            <div className="absolute -bottom-20 -right-20 w-48 h-48 bg-accent/5 rounded-full blur-[40px] group-hover:bg-accent/10 transition-colors duration-500 pointer-events-none" />
+                                            <div className="relative z-10">
                                             <div className="flex justify-between items-start mb-6">
                                                 <div className="flex flex-col gap-2">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="text-[9px] font-black text-accent bg-accent-muted px-2 py-0.5 rounded-none border border-accent/20 inconsolata-ui tracking-widest uppercase">LOG #{profile.submissions.length - idx}</div>
-                                                        <div className={`text-[9px] font-black px-2 py-0.5 rounded-none border inconsolata-ui tracking-widest uppercase ${
+                                                        <div className="text-[9px] font-black text-accent bg-accent-muted px-2.5 py-0.5 rounded-md border border-accent/20 inconsolata-ui tracking-widest uppercase">LOG #{profile.submissions.length - idx}</div>
+                                                        <div className={`text-[9px] font-black px-2.5 py-0.5 rounded-md border inconsolata-ui tracking-widest uppercase ${
                                                             sub.evaluation_level === 'Solid' || sub.evaluation_level === 'Expert' 
                                                             ? 'border-emerald-500/30 text-emerald-600 bg-emerald-500/5' 
                                                             : 'border-blue-500/30 text-blue-600 bg-blue-500/5'
@@ -474,10 +479,11 @@ export default function ProfileClient({ profile }: Props) {
                                                     View Full Log <ChevronRight className="w-3.5 h-3.5" />
                                                 </button>
                                             </div>
+                                            </div>
                                         </div>
                                     ))
                                 ) : (
-                                    <div className="py-20 text-center border border-dashed border-border rounded-none bg-sidebar/5">
+                                    <div className="py-20 text-center border border-dashed border-border rounded-xl bg-sidebar/5">
                                         <p className="text-[13px] text-text-muted italic opacity-60">Awaiting review logs.</p>
                                     </div>
                                 )}
@@ -491,7 +497,7 @@ export default function ProfileClient({ profile }: Props) {
                                         <AssessmentCard key={idx} mcq={mcq} index={profile.mcq_history!.length - idx} />
                                     ))
                                 ) : (
-                                    <div className="py-20 text-center border border-dashed border-border rounded-none bg-sidebar/5">
+                                    <div className="py-20 text-center border border-dashed border-border rounded-xl bg-sidebar/5">
                                         <p className="text-[13px] text-text-muted italic opacity-60">No practice records available.</p>
                                     </div>
                                 )}
@@ -502,10 +508,12 @@ export default function ProfileClient({ profile }: Props) {
                             <div className="space-y-4 animate-in fade-in duration-300">
                                 {profile.discussions && profile.discussions.length > 0 ? (
                                     profile.discussions.map((disc, idx) => (
-                                        <div key={idx} className="bg-background border border-border rounded-none p-6 relative group hover:border-accent/40 transition-all duration-200">
+                                        <div key={idx} className="bg-header border border-border shadow-sm rounded-xl p-6 relative group hover:border-accent/40 hover:shadow-md transition-all duration-300 overflow-hidden">
+                                            <div className="absolute -bottom-20 -right-20 w-48 h-48 bg-accent/5 rounded-full blur-[40px] group-hover:bg-accent/10 transition-colors duration-500 pointer-events-none" />
+                                            <div className="relative z-10">
                                             <div className="flex justify-between items-start mb-6">
                                                 <div className="flex flex-col gap-2">
-                                                    <div className="text-[9px] font-black text-accent bg-accent-muted px-2 py-0.5 rounded-none border border-accent/20 w-fit uppercase tracking-widest inconsolata-ui">{disc.context_type}</div>
+                                                    <div className="text-[9px] font-black text-accent bg-accent-muted px-2.5 py-0.5 rounded-md border border-accent/20 w-fit uppercase tracking-widest inconsolata-ui">{disc.context_type}</div>
                                                     <Link href={`/roadmap/${disc.context_id}`} className="text-[15px] font-bold text-text-heading hover:text-accent transition-colors tracking-tight">
                                                         {disc.context_id.replace('-', ' ')}
                                                     </Link>
@@ -518,10 +526,11 @@ export default function ProfileClient({ profile }: Props) {
                                             <Link href={`/roadmap/${disc.context_id}`} className="text-[10px] font-bold text-accent hover:opacity-80 flex items-center gap-2 uppercase tracking-[0.2em] inconsolata-ui transition-all">
                                                 View Context <ArrowRight className="w-3 h-3" />
                                             </Link>
+                                            </div>
                                         </div>
                                     ))
                                 ) : (
-                                    <div className="py-20 text-center border border-dashed border-border rounded-none bg-sidebar/5">
+                                    <div className="py-20 text-center border border-dashed border-border rounded-xl bg-sidebar/5">
                                         <p className="text-[13px] text-text-muted italic opacity-60">Awaiting community insights.</p>
                                     </div>
                                 )}
@@ -546,13 +555,13 @@ export default function ProfileClient({ profile }: Props) {
 function ReviewModal({ sub, onClose }: { sub: any; onClose: () => void }) {
     return (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 animate-in fade-in duration-200">
-            <div className="w-full max-w-2xl max-h-[85vh] bg-background border border-border shadow-2xl rounded-none flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="w-full max-w-2xl max-h-[85vh] bg-background border border-border shadow-2xl rounded-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
                 {/* Fixed Header */}
                 <div className="px-8 py-6 border-b border-border flex justify-between items-start bg-background shrink-0">
                     <div className="space-y-1">
                         <div className="flex items-center gap-3">
                             <h3 className="inconsolata-ui text-xl font-bold text-text-heading tracking-tight">Homework Review Record</h3>
-                            <div className={`px-2.5 py-1 rounded-none text-[10px] font-black uppercase tracking-widest inconsolata-ui border ${
+                            <div className={`px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-widest inconsolata-ui border ${
                                 sub.evaluation_level === 'Solid' || sub.evaluation_level === 'Expert' ? 'bg-emerald-500/5 border-emerald-500/10 text-emerald-600' :
                                 sub.evaluation_level === 'Developing' ? 'bg-amber-500/5 border-amber-500/10 text-amber-600' :
                                 'bg-zinc-500/5 border-zinc-500/10 text-text-muted'
@@ -574,7 +583,7 @@ function ReviewModal({ sub, onClose }: { sub: any; onClose: () => void }) {
                     <div className="space-y-8 pb-4">
                         <section className="space-y-3">
                             <h4 className="inconsolata-ui text-[11px] font-black uppercase tracking-widest text-text-muted">Submission Overview</h4>
-                            <div className="p-5 bg-sidebar/30 border border-border rounded-none">
+                            <div className="p-5 bg-sidebar/30 border border-border rounded-xl shadow-sm">
                                 <p className="text-[15px] text-text-heading leading-relaxed italic">
                                     &ldquo;{sub.description}&rdquo;
                                 </p>
@@ -589,7 +598,7 @@ function ReviewModal({ sub, onClose }: { sub: any; onClose: () => void }) {
                                     { label: 'Understanding', reasoning: sub.senate_reasoning?.understanding || sub.senate_reasoning?.educator, icon: Target },
                                     { label: 'Relevance', reasoning: sub.senate_reasoning?.relevance || sub.senate_reasoning?.relevance_judge, icon: ShieldCheck }
                                 ].map((item) => (
-                                   <div key={item.label} className="p-6 bg-header border border-border rounded-none space-y-3">
+                                   <div key={item.label} className="p-6 bg-header border border-border rounded-xl shadow-sm space-y-3">
                                        <div className="flex items-center gap-3">
                                            <item.icon className="w-4 h-4 text-accent/50" />
                                            <p className="text-[11px] font-black uppercase tracking-widest text-text-muted inconsolata-ui">{item.label}</p>

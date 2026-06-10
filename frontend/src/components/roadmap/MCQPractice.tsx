@@ -1,11 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Loader, X, Trophy, Check, ArrowRight, Zap } from 'lucide-react';
+import { Loader, X, Trophy, Check, ArrowRight, Zap, Cloud, Key, Cpu } from 'lucide-react';
 import { practiceAPI, MCQSessionRead, MCQQuestion } from '@/lib/api';
 import Link from 'next/link';
 import EulerLogoCanvas from '@/components/EulerLogoCanvas';
 import TTSListenButton from '@/components/TTSListenButton';
+import { OpenRouterModal } from '@/components/landing/OpenRouterModal';
+import { LocalAIModal } from '@/components/landing/LocalAIModal';
+import { CreateMLCEngine } from '@mlc-ai/web-llm';
 
 interface MCQPracticeProps {
     roadmapId?: number;
@@ -41,6 +44,24 @@ export default function MCQPractice({
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [questionCount, setQuestionCount] = useState(10);
     const [showResults, setShowResults] = useState(false);
+
+    // Engine Selection State
+    const [useOpenRouter, setUseOpenRouter] = useState(false);
+    const [openRouterKey, setOpenRouterKey] = useState<string | null>(null);
+    const [openRouterModel, setOpenRouterModel] = useState<string>('openai/gpt-4o');
+    const [isOpenRouterModalOpen, setIsOpenRouterModalOpen] = useState(false);
+
+    const [useLocalAI, setUseLocalAI] = useState(false);
+    const [localAIModelId, setLocalAIModelId] = useState<string | null>(null);
+    const [localAIModelName, setLocalAIModelName] = useState<string | null>(null);
+    const [isLocalAIModalOpen, setIsLocalAIModalOpen] = useState(false);
+
+    React.useEffect(() => {
+        setOpenRouterKey(localStorage.getItem('openRouterKey'));
+        setOpenRouterModel(localStorage.getItem('openRouterModel') || 'openai/gpt-4o');
+        setLocalAIModelId(localStorage.getItem('localAIModelId'));
+        setLocalAIModelName(localStorage.getItem('localAIModelName'));
+    }, []);
 
     // Check for incomplete sessions on load or subtopic change
     React.useEffect(() => {
@@ -82,17 +103,162 @@ export default function MCQPractice({
     };
 
     const handleGenerate = async () => {
-        if (!isPro) return;
+        if (!useOpenRouter && !useLocalAI && !isPro) return;
         setIsGenerating(true);
+        
+        const systemPrompt = `You are a subject matter expert in "${subject}".
+Generate ${questionCount} Multiple Choice Questions (MCQs) for a learner currently in Week ${weekNumber} studying the specific topic: "${topicName}".
+
+CRITICAL QUALITY STANDARDS:
+- Questions must be CONCEPTUAL and SITUATIONAL. Avoid simple recall or rote memorization.
+- Focus on application of principles and "what would happen if" scenarios.
+- Each question must have exactly 4 options.
+- Only one option must be clearly correct.
+- Options should be plausible but distinct.
+- Do not generate questions that can be answered by simply recalling a definition. Every question must require the learner to think, apply, or reason.
+- Provide a detailed explanation for why the correct answer is right.
+
+Return ONLY a JSON array of objects. Each object must have:
+- id: a unique string ID for the question (e.g. "q1", "q2")
+- question: string
+- options: array of 4 strings
+- correct_answer_index: integer (0-3)
+- explanation: a concise one-line explanation of the correct choice`;
+
         try {
-            const session = await practiceAPI.generateMCQSession({
-                roadmap_id: roadmapId,
-                subtopic_id: subtopicId,
-                topic_name: topicName,
-                subject: subject,
-                week_number: weekNumber,
-                num_questions: questionCount
-            });
+            let session;
+            
+            if (openRouterKey && useOpenRouter) {
+                const requestBody = {
+                    model: openRouterModel || 'openai/gpt-4o',
+                    messages: [
+                        { role: "system", content: systemPrompt }
+                    ],
+                    response_format: { type: "json_object" }
+                };
+
+                const orResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${openRouterKey}`,
+                        "Content-Type": "application/json",
+                        "HTTP-Referer": window.location.origin,
+                        "X-Title": "EulerFold AI"
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const orData = await orResponse.json();
+                if (!orResponse.ok) throw new Error(orData.error?.message || "OpenRouter generation failed.");
+
+                let questions;
+                try {
+                    questions = JSON.parse(orData.choices[0].message.content);
+                    if (questions.questions) questions = questions.questions; // Handle nested json
+                } catch (e) {
+                    throw new Error("Failed to parse JSON from OpenRouter response.");
+                }
+
+                session = await practiceAPI.saveExternalMCQSession({
+                    roadmap_id: roadmapId,
+                    subtopic_id: subtopicId,
+                    topic_name: topicName,
+                    subject: subject,
+                    week_number: weekNumber,
+                    questions: questions
+                });
+                
+                try {
+                    const rawUsage = orData.usage || {};
+                    const newEntry = {
+                        id: session?.id || Date.now().toString(),
+                        subject: `Practice: ${topicName}`,
+                        model: orData.model || openRouterModel,
+                        prompt_tokens: rawUsage.prompt_tokens || 0,
+                        completion_tokens: rawUsage.completion_tokens || 0,
+                        total_tokens: rawUsage.total_tokens || 0,
+                        date: new Date().toISOString()
+                    };
+                    const existingHistory = JSON.parse(localStorage.getItem('openRouterUsageHistory') || '[]');
+                    const updatedHistory = [newEntry, ...existingHistory].slice(0, 100);
+                    localStorage.setItem('openRouterUsageHistory', JSON.stringify(updatedHistory));
+                } catch (e) {}
+            } else if (localAIModelId && useLocalAI) {
+                let engine;
+                try {
+                    const initProgressCallback = (report: { text: string }) => {
+                        console.log("Local AI Init:", report.text);
+                    };
+                    engine = await CreateMLCEngine(localAIModelId, { initProgressCallback });
+                } catch (err) {
+                    throw new Error("Hardware Crash: Failed to load the local AI engine. Please try a different model.");
+                }
+
+                let generatedText = '';
+                let parseSuccess = false;
+                let parsedJSON = null;
+
+                let responseUsage = null;
+
+                for (let attempt = 1; attempt <= 2; attempt++) {
+                    try {
+                        const response = await engine.chat.completions.create({
+                            messages: [
+                                { role: "system", content: systemPrompt }
+                            ],
+                        });
+                        
+                        generatedText = response.choices[0].message.content || '';
+                        responseUsage = response.usage || null;
+                        const cleanedText = generatedText.replace(/```json/g, '').replace(/```/g, '').trim();
+                        parsedJSON = JSON.parse(cleanedText);
+                        if (parsedJSON.questions) parsedJSON = parsedJSON.questions; // Handle nested json
+                        parseSuccess = true;
+                        break;
+                    } catch (err: any) {
+                        if (attempt === 2) throw new Error("Local AI failed to generate valid JSON after 2 attempts. Try a different model or use Cloud AI.");
+                    }
+                }
+
+                if (!parseSuccess || !parsedJSON) {
+                    throw new Error("Local AI failed to generate valid JSON.");
+                }
+
+                session = await practiceAPI.saveExternalMCQSession({
+                    roadmap_id: roadmapId,
+                    subtopic_id: subtopicId,
+                    topic_name: topicName,
+                    subject: subject,
+                    week_number: weekNumber,
+                    questions: parsedJSON
+                });
+
+                try {
+                    const rawUsage = responseUsage || {};
+                    const newEntry = {
+                        id: session?.id || Date.now().toString(),
+                        subject: `Practice: ${topicName}`,
+                        model: localAIModelId,
+                        prompt_tokens: rawUsage.prompt_tokens || 0,
+                        completion_tokens: rawUsage.completion_tokens || 0,
+                        total_tokens: rawUsage.total_tokens || 0,
+                        date: new Date().toISOString()
+                    };
+                    const existingHistory = JSON.parse(localStorage.getItem('openRouterUsageHistory') || '[]');
+                    const updatedHistory = [newEntry, ...existingHistory].slice(0, 100);
+                    localStorage.setItem('openRouterUsageHistory', JSON.stringify(updatedHistory));
+                } catch (e) {}
+            } else {
+                session = await practiceAPI.generateMCQSession({
+                    roadmap_id: roadmapId,
+                    subtopic_id: subtopicId,
+                    topic_name: topicName,
+                    subject: subject,
+                    week_number: weekNumber,
+                    num_questions: questionCount
+                });
+            }
+
             setMcqSession(session);
             setCurrentMcqIdx(0);
             setMcqAnswers([]);
@@ -100,7 +266,7 @@ export default function MCQPractice({
             await onRefreshProfile(); // Update credits display
         } catch (err: any) {
             console.error('Error generating MCQ:', err);
-            alert(err.response?.data?.detail || 'Failed to generate assessment');
+            alert(err.response?.data?.detail || err.message || 'Failed to generate assessment');
         } finally {
             setIsGenerating(false);
         }
@@ -134,50 +300,18 @@ export default function MCQPractice({
         if (onClose) onClose();
     };
 
-    if (!isPro) {
-        return (
-            <div className="flex flex-col p-5 border border-border rounded-lg bg-background shadow-sm h-full">
-                <div className="mb-4">
-                    <span className="appropriate-sans text-[9px] font-bold text-text-muted mb-2 inline-block">Pro Feature</span>
-                    <div className="flex items-baseline justify-between mb-0.5">
-                        <span className="appropriate-sans text-[15px] font-bold text-text-heading uppercase tracking-tight">Curated Questions</span>
-                        <span className="appropriate-sans text-[9px] font-bold text-accent uppercase">Locked</span>
-                    </div>
-                    <p className="appropriate-sans text-[11px] text-text-muted italic opacity-70">Practice with MCQ questions.</p>
-                </div>
-                
-                <div className="flex-1 flex flex-col items-center justify-center py-6 text-center border-y border-border/50 border-dashed my-4">
-                    <div className="mb-3 text-xl">💎</div>
-                    <p className="appropriate-sans text-[10px] text-text-muted mb-4 max-w-[180px] leading-relaxed">Upgrade to Pro to practice with AI-generated questions.</p>
-                    <Link 
-                        href="/pricing"
-                        className="px-5 py-1.5 bg-[var(--text-heading)] text-[var(--bg-main)] rounded-lg text-[9px] font-bold uppercase tracking-widest hover:opacity-90 transition-all active:scale-95"
-                    >
-                        See Plans 🚀
-                    </Link>
-                </div>
-
-                <div className="space-y-1.5 text-[9px] text-text-muted font-bold uppercase tracking-wider opacity-50">
-                    <div className="flex items-center gap-2">
-                        <span className="text-accent text-[8px]">●</span> Specific to this topic
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="text-accent text-[8px]">●</span> Earn skill points
-                    </div>
-                </div>
-            </div>
-        );
-    }
 
     return (
         <div className="flex flex-col p-5 border border-[var(--accent)] rounded-lg bg-accent-muted/5 shadow-sm h-full relative group">
             <div className="mb-4">
                 <div className="flex items-center justify-between mb-2">
-                    <span className="appropriate-sans text-[8px] font-bold text-accent uppercase tracking-[0.2em]">Pro Feature</span>
-                    <div className="flex items-center gap-1 opacity-60">
-                        <span className="text-[10px]">💎</span>
-                        <span className="appropriate-sans text-[8px] font-bold text-text-heading">{userCredits} Credits</span>
-                    </div>
+                    <span className="appropriate-sans text-[8px] font-bold text-accent uppercase tracking-[0.2em]">AI Generation</span>
+                    {isPro && (
+                        <div className="flex items-center gap-1 opacity-60">
+                            <span className="text-[10px]">💎</span>
+                            <span className="appropriate-sans text-[8px] font-bold text-text-heading">{userCredits} Credits</span>
+                        </div>
+                    )}
                 </div>
                 <div className="flex items-baseline justify-between mb-0.5">
                     <span className="appropriate-sans text-[15px] font-bold text-text-heading uppercase tracking-tight">Curated Questions</span>
@@ -233,21 +367,86 @@ export default function MCQPractice({
                                 ))}
                             </div>
                             <div className="mt-2 text-right">
-                                <span className="appropriate-sans text-[8px] font-bold text-text-muted uppercase opacity-40">Cost: {(questionCount * 0.01).toFixed(2)} Credits</span>
+                                <span className="appropriate-sans text-[8px] font-bold text-text-muted uppercase opacity-40">
+                                    Cost: {useOpenRouter || useLocalAI ? '0.00' : (questionCount * 0.01).toFixed(2)} Credits
+                                </span>
                             </div>
+                        </div>
+
+                        {/* Engine Selector */}
+                        <div className="mb-4">
+                            <label className="appropriate-sans text-[10px] font-bold text-text-muted uppercase tracking-[0.2em] ml-1 flex items-center gap-2 mb-2">
+                                <Cpu className="w-3 h-3 text-accent" /> Engine
+                            </label>
+                            <div className="flex bg-sidebar p-1 rounded-lg border border-border">
+                                <button
+                                    onClick={() => { setUseOpenRouter(false); setUseLocalAI(false); }}
+                                    className={`flex-1 py-1.5 px-2 rounded-md text-[9px] font-bold uppercase tracking-widest transition-all ${(!useOpenRouter && !useLocalAI) ? 'bg-background text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
+                                >
+                                    Cloud AI
+                                </button>
+                                <button
+                                    onClick={() => { setUseOpenRouter(true); setUseLocalAI(false); }}
+                                    className={`flex-1 py-1.5 px-2 rounded-md text-[9px] font-bold uppercase tracking-widest transition-all ${useOpenRouter ? 'bg-background text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
+                                >
+                                    OpenRouter
+                                </button>
+                                <button
+                                    onClick={() => { setUseOpenRouter(false); setUseLocalAI(true); }}
+                                    className={`flex-1 py-1.5 px-2 rounded-md text-[9px] font-bold uppercase tracking-widest transition-all ${useLocalAI ? 'bg-background text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
+                                >
+                                    Local AI
+                                </button>
+                            </div>
+
+                            {/* Configuration Buttons */}
+                            {useOpenRouter && (
+                                <div className="mt-2 flex justify-end">
+                                    <button onClick={() => setIsOpenRouterModalOpen(true)} className="text-[9px] font-bold text-accent hover:underline flex items-center gap-1">
+                                        {openRouterKey ? 'Configure OpenRouter' : 'Set API Key'}
+                                    </button>
+                                </div>
+                            )}
+                            {useLocalAI && (
+                                <div className="mt-2 flex justify-end">
+                                    <button onClick={() => setIsLocalAIModalOpen(true)} className="text-[9px] font-bold text-accent hover:underline flex items-center gap-1">
+                                        {localAIModelId ? 'Change Local Model' : 'Select Local Model'}
+                                    </button>
+                                </div>
+                            )}
                         </div>
 
                         <button
                             onClick={handleGenerate}
-                            disabled={isGenerating}
-                            className="w-full mt-auto py-2 bg-[#111] dark:bg-[#14b8a6] !text-white rounded-lg text-center appropriate-sans text-[9px] font-bold uppercase tracking-[0.2em] hover:opacity-90 transition-all shadow-md flex items-center justify-center gap-2"
+                            disabled={isGenerating || (useLocalAI && !localAIModelId) || (useOpenRouter && !openRouterKey) || (!useOpenRouter && !useLocalAI && (!isPro || userCredits < questionCount * 0.01))}
+                            className={`w-full mt-auto py-2 rounded-lg text-center appropriate-sans text-[9px] font-bold uppercase tracking-[0.2em] transition-all shadow-md flex items-center justify-center gap-2 ${
+                                (useLocalAI && !localAIModelId) || (useOpenRouter && !openRouterKey) || (!useOpenRouter && !useLocalAI && (!isPro || userCredits < questionCount * 0.01))
+                                ? 'bg-sidebar border border-border text-text-muted opacity-50 cursor-not-allowed'
+                                : 'bg-[#111] dark:bg-[#14b8a6] !text-white hover:opacity-90'
+                            }`}
                         >
                             {isGenerating ? (
                                 <><Loader className="w-2.5 h-2.5 animate-spin" /> Generating...</>
+                            ) : (useLocalAI && !localAIModelId) ? (
+                                <>Select Local Model</>
+                            ) : (useOpenRouter && !openRouterKey) ? (
+                                <>Set OpenRouter Key</>
+                            ) : (!useOpenRouter && !useLocalAI && !isPro) ? (
+                                <>Pro Status Required</>
+                            ) : (!useOpenRouter && !useLocalAI && userCredits < questionCount * 0.01) ? (
+                                <>Not Enough Credits</>
                             ) : (
                                 <>Start Practice ⚡</>
                             )}
                         </button>
+                        
+                        {!useLocalAI && !useOpenRouter && !isPro && (
+                            <div className="mt-2 text-center">
+                                <Link href="/pricing" className="text-[9px] font-bold text-accent uppercase tracking-widest hover:underline">
+                                    Upgrade to Pro →
+                                </Link>
+                            </div>
+                        )}
 
                         {/* Previous Assessment History */}
                         {mcqHistory.length > 0 && (
@@ -277,6 +476,41 @@ export default function MCQPractice({
                     </>
                 )}
             </div>
+
+            {isGenerating && (
+                <div className="absolute inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center p-6 text-center">
+                    <div className="animate-in fade-in zoom-in duration-300">
+                        <Loader className="w-8 h-8 text-accent animate-spin mx-auto mb-4" />
+                        <p className="appropriate-sans text-[11px] font-bold text-accent mb-4">
+                            Wait... generating custom questions for {topicName}.
+                        </p>
+                    </div>
+                </div>
+            )}
+
+            <OpenRouterModal 
+                isOpen={isOpenRouterModalOpen} 
+                onClose={() => {
+                    setIsOpenRouterModalOpen(false);
+                    setOpenRouterKey(localStorage.getItem('openRouterKey'));
+                    setOpenRouterModel(localStorage.getItem('openRouterModel') || 'openai/gpt-4o');
+                }} 
+                formData={{ subject, time_value: weekNumber, goal: topicName }}
+                onSuccess={() => {}}
+            />
+            <LocalAIModal
+                isOpen={isLocalAIModalOpen}
+                onClose={() => setIsLocalAIModalOpen(false)}
+                onSelectModel={(modelId, modelName) => {
+                    localStorage.setItem('localAIModelId', modelId);
+                    localStorage.setItem('localAIModelName', modelName);
+                    setLocalAIModelId(modelId);
+                    setLocalAIModelName(modelName);
+                    setUseLocalAI(true);
+                    setUseOpenRouter(false);
+                }}
+            />
+
             {/* MCQ Active Session Overlay */}
             {mcqSession && !showResults && (
                 <div className="fixed inset-0 z-[120] bg-background flex flex-col animate-in fade-in duration-300 overflow-y-auto">
