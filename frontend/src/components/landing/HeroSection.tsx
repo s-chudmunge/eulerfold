@@ -15,10 +15,10 @@ export default function HeroSection() {
         <div className="max-w-7xl mx-auto w-full relative z-10">
           <div className="max-w-3xl">
             <h1 className="font-inter text-3xl sm:text-4xl md:text-5xl font-semibold text-text-heading mb-6 leading-[1.15] md:leading-[1.1] tracking-tight">
-              Infrastructure for <AnimatedEfficient />,<br className="hidden md:block" /> structured learning
+              Escape the stale curriculum with <br className="hidden md:block" /><AnimatedEfficient /> learning paths
             </h1>
             <p className="text-text-muted text-base md:text-lg manrope-body font-medium mb-10 leading-relaxed max-w-2xl">
-              EulerFold builds personalized learning paths to help you bridge the gap between information and mastery.
+              Education shouldn't lag years behind. EulerFold develops adaptive curriculum dynamically aligned with the latest technology and cutting-edge research.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-4 mb-8">

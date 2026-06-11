@@ -374,7 +374,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                         disabled={saving}
                                         className="inline-flex items-center justify-center bg-accent text-white px-4 py-1.5 rounded text-[11px] font-bold transition-all hover:bg-teal-700 active:scale-[0.98] gap-2 font-inter disabled:opacity-50 shadow-sm"
                                     >
-                                        <Edit3 className="w-3 h-3" /> Edit / Manage
+                                        <ArrowRight className="w-3 h-3" /> Continue
                                     </button>
                                 ) : (
                                     <button 

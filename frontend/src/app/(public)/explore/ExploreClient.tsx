@@ -276,12 +276,12 @@ export default function ExploreClient({
             <Suspense fallback={null}>
                 <SearchParamsHandler onParams={handleSearchParams} />
             </Suspense>
-            <div className="max-w-[1400px] mx-auto px-6 pt-6 pb-12">
-                <div className="flex flex-col lg:flex-row gap-10 xl:gap-16">
+            <div className="max-w-[1400px] mx-auto px-4 md:px-6 pt-4 md:pt-6 pb-8">
+                <div className="flex flex-col lg:flex-row gap-6 xl:gap-10">
                     
                     <main className="flex-1 min-w-0">
-                        <header className="mb-8">
-                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+                        <header className="mb-6">
+                            <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                                 <div>
                                     <h1 className="inconsolata-ui text-3xl font-black text-text-heading tracking-tight mb-2">Explore Roadmaps</h1>
                                     <p className="manrope-body text-[14px] text-text-muted font-medium">Discover and clone learning paths from the community.</p>
@@ -328,7 +328,7 @@ export default function ExploreClient({
 
                         {/* Leaderboard Strip - Compact & Refined */}
                         {leaderboard.length > 0 && (
-                            <div className="mb-8 flex items-center gap-4 py-2 px-5 bg-teal-500/[0.03] border border-teal-500/10 rounded-2xl overflow-x-auto whitespace-nowrap scrollbar-hide">
+                            <div className="mb-6 flex items-center gap-4 py-1.5 px-4 bg-teal-500/[0.03] border border-teal-500/10 rounded-2xl overflow-x-auto whitespace-nowrap scrollbar-hide">
                                 <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-teal-700 shrink-0 inconsolata-ui">
                                     <Trophy className="h-3 w-3" />
                                     <span>Top Builders</span>
@@ -346,8 +346,8 @@ export default function ExploreClient({
                         )}
 
                         {/* Filter Bar - Horizontal Scroll with Fade */}
-                        <div className="mb-8 relative group">
-                            <div className="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-hide mask-fade-right">
+                        <div className="mb-6 relative group">
+                            <div className="flex items-center gap-2 overflow-x-auto pb-1.5 scrollbar-hide mask-fade-right">
                                 {Object.keys(CATEGORY_METADATA).map((cat) => (
                                     <button
                                         key={cat}
@@ -370,9 +370,9 @@ export default function ExploreClient({
                             <table className="w-full text-left border-collapse table-fixed md:table-auto">
                                 <thead>
                                     <tr className="border-b border-border bg-sidebar/20">
-                                        <th scope="col" className="px-4 md:px-6 py-4 text-[11px] font-black uppercase tracking-widest text-text-muted inconsolata-ui opacity-60">Learning Roadmap</th>
-                                        <th scope="col" className="hidden md:table-cell w-[18%] px-6 py-4 text-[11px] font-black uppercase tracking-widest text-text-muted inconsolata-ui opacity-60">Duration</th>
-                                        <th scope="col" className="w-[80px] md:w-[17%] px-4 md:px-6 py-4 text-[11px] font-black uppercase tracking-widest text-text-muted inconsolata-ui opacity-60 text-right">Reach</th>
+                                        <th scope="col" className="px-3 md:px-5 py-3 text-[10px] font-black uppercase tracking-widest text-text-muted inconsolata-ui opacity-60">Learning Roadmap</th>
+                                        <th scope="col" className="hidden md:table-cell w-[18%] px-5 py-3 text-[10px] font-black uppercase tracking-widest text-text-muted inconsolata-ui opacity-60">Duration</th>
+                                        <th scope="col" className="w-[80px] md:w-[17%] px-3 md:px-5 py-3 text-[10px] font-black uppercase tracking-widest text-text-muted inconsolata-ui opacity-60 text-right">Reach</th>
                                     </tr>
                                 </thead>
                                 <tbody className={`divide-y divide-border/50 transition-opacity ${roadmapsLoading ? 'opacity-50' : 'opacity-100'}`}>
@@ -380,20 +380,20 @@ export default function ExploreClient({
                                         const cat = getCategory(r.subject || '');
                                         return (
                                             <tr key={r.id} className="group hover:bg-sidebar/30 transition-all cursor-pointer" onClick={() => router.push(`/roadmap/${r.slug}`)}>
-                                                <td className="px-4 md:px-6 py-5">
-                                                    <div className="flex items-start gap-3 md:gap-4">
-                                                        <div className="flex items-center justify-center w-9 h-9 md:w-10 md:h-10 rounded-xl bg-sidebar border border-border text-text-muted shrink-0 group-hover:scale-110 transition-transform group-hover:border-accent/30 group-hover:text-accent">
-                                                            <CategoryIcon category={cat} className="w-4 h-4 md:w-5 md:h-5 stroke-[1.5px]" />
+                                                <td className="px-3 md:px-5 py-3 md:py-4">
+                                                    <div className="flex items-start gap-3">
+                                                        <div className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-[10px] bg-sidebar border border-border text-text-muted shrink-0 group-hover:scale-110 transition-transform group-hover:border-accent/30 group-hover:text-accent mt-0.5">
+                                                            <CategoryIcon category={cat} className="w-3.5 h-3.5 md:w-4 md:h-4 stroke-[1.5px]" />
                                                         </div>
                                                         <div className="flex flex-col min-w-0">
-                                                            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mb-1">
-                                                                <span className="text-[14px] md:text-[15px] font-bold text-text-heading group-hover:text-accent transition-colors leading-tight">
+                                                            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-0.5">
+                                                                <span className="text-[13px] md:text-[14px] font-bold text-text-heading group-hover:text-accent transition-colors leading-tight">
                                                                     {r.title}
                                                                 </span>
-                                                                {r.username === 'eulerfold' && <VerifiedBadge size={14} className="shrink-0" />}
+                                                                {r.username === 'eulerfold' && <VerifiedBadge size={13} className="shrink-0" />}
                                                             </div>
-                                                            <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                                                                <span className="text-[10px] font-black uppercase tracking-wider text-teal-700/60 inconsolata-ui whitespace-nowrap">{cat}</span>
+                                                            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                                                                <span className="text-[9px] font-black uppercase tracking-wider text-teal-700/60 inconsolata-ui whitespace-nowrap">{cat}</span>
                                                                 <span className="hidden sm:inline text-[10px] font-medium text-text-muted/50">•</span>
                                                                 <span className="text-[11px] md:text-[12px] font-medium text-text-muted truncate max-w-[120px] md:max-w-none">by @{r.username || r.author}</span>
                                                                 {r.average_rating > 0 && (
@@ -405,15 +405,15 @@ export default function ExploreClient({
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td className="hidden md:table-cell px-6 py-5">
-                                                    <span className="inconsolata-ui text-[13px] font-bold text-text-muted">
+                                                <td className="hidden md:table-cell px-5 py-3 md:py-4">
+                                                    <span className="inconsolata-ui text-[12px] font-bold text-text-muted">
                                                         {r.time_value} {r.time_unit}
                                                     </span>
                                                 </td>
-                                                <td className="px-4 md:px-6 py-5 text-right">
+                                                <td className="px-3 md:px-5 py-3 md:py-4 text-right">
                                                     <div className="flex items-center justify-end gap-2 md:gap-3">
                                                         <div className="flex flex-col items-end">
-                                                            <span className="text-[12px] md:text-[13px] font-black text-text-heading inconsolata-ui">{r.clone_count}</span>
+                                                            <span className="text-[12px] font-black text-text-heading inconsolata-ui">{r.clone_count}</span>
                                                             <span className="text-[8px] md:text-[9px] font-black uppercase tracking-tighter text-text-muted opacity-50">Clones</span>
                                                         </div>
                                                         <button 

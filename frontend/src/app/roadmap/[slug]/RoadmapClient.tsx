@@ -28,7 +28,8 @@ import {
     Plus,
     ArrowRight,
     User,
-    Calendar
+    Calendar,
+    Edit3
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -466,8 +467,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                     disabled={saving}
                                     className="whitespace-nowrap rounded-lg bg-background border border-border px-4 md:px-5 py-1.5 text-text-heading text-[10px] md:text-[12px] font-bold hover:bg-callout-bg transition-opacity flex items-center gap-2 disabled:opacity-50"
                                 >
-                                    <Edit3 className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Edit/Manage</span>
-                                    <span className="sm:hidden">Manage</span>
+                                    <ArrowRight className="w-3.5 h-3.5" /> <span>Continue</span>
                                 </button>
                             ) : (
                                 <button 

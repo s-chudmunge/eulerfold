@@ -38,6 +38,8 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 logger = logging.getLogger(__name__)
 
 from fastapi import FastAPI, Depends, WebSocket, status
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from app.core.config import settings
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -102,6 +104,17 @@ app.add_middleware(
 
 
 app.add_middleware(COOPMiddleware)
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    import logging
+    logging.error(f"422 Validation Error on {request.method} {request.url}")
+    logging.error(f"Body: {exc.body}")
+    logging.error(f"Detail: {exc.errors()}")
+    return JSONResponse(
+        status_code=422,
+        content={"detail": exc.errors(), "body": exc.body},
+    )
 
 # Prioritize auth router
 app.include_router(auth.router)

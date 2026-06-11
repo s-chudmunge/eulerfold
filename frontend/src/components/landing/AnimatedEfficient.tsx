@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const WORDS = ['efficient', 'fast', 'cost-effective', 'productive'];
+const WORDS = ['cutting-edge', 'revolutionary', 'dynamic', 'state-of-the-art'];
 
 export default function AnimatedEfficient() {
   const [index, setIndex] = useState(0);

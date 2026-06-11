@@ -122,6 +122,26 @@ export default async function LandingPage() {
       schemaAnswer: "Videos are passive. EulerFold requires you to practice and prove what you've learned through technical reviews and recall sessions, ensuring the knowledge actually sticks."
     },
     {
+      question: "What is Local AI Mode?",
+      answer: "Local AI mode runs generation models directly on your device via WebGPU. It ensures complete privacy since no data ever leaves your machine.",
+      schemaAnswer: "Local AI mode runs generation models directly on your device via WebGPU. It ensures complete privacy since no data ever leaves your machine."
+    },
+    {
+      question: "What are the limitations of Local AI Mode?",
+      answer: "It requires a modern GPU and browser. Downloading the initial model takes time and storage space, and generation speed depends entirely on your local hardware.",
+      schemaAnswer: "It requires a modern GPU and browser. Downloading the initial model takes time and storage space, and generation speed depends entirely on your local hardware."
+    },
+    {
+      question: "What is OpenRouter?",
+      answer: "OpenRouter is a unified API gateway that allows you to access dozens of top-tier AI models (including Claude 3.5, GPT-4o, and Gemini 2.5) from a single interface.",
+      schemaAnswer: "OpenRouter is a unified API gateway that allows you to access dozens of top-tier AI models from a single interface."
+    },
+    {
+      question: "How does using my own OpenRouter key help?",
+      answer: "By bringing your own API key, you get total flexibility to choose the exact model powering your learning generation. It prevents vendor lock-in, and your key remains completely secure—it is only stored locally in your browser and never touches our servers.",
+      schemaAnswer: "By bringing your own API key, you get total flexibility to choose the exact model powering your learning generation. It prevents vendor lock-in, and your key remains completely secure—it is only stored locally in your browser and never touches our servers."
+    },
+    {
       question: "Need more help or have feedback?",
       answer: (
         <span>

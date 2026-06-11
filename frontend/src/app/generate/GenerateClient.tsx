@@ -2,21 +2,106 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import Link from 'next/link';
 import RoadmapGenerator from '@/components/landing/RoadmapGenerator';
 import RoadmapDisplay from '@/components/landing/RoadmapDisplay';
 import JobDecodedGenerator from '@/components/job-decoded/JobDecodedGenerator';
-import { RoadmapData } from '@/lib/api';
+import { RoadmapData, ExploreRoadmap } from '@/lib/api';
 import { 
   Sparkles,
-  Briefcase
+  Briefcase,
+  HelpCircle,
+  FileText,
+  CheckCircle2,
+  TrendingUp,
+  ArrowRight,
+  Calendar,
+  Zap,
+  BookOpen,
+  Library,
+  Microscope,
+  Archive,
+  GraduationCap,
+  Compass
 } from 'lucide-react';
-import Breadcrumbs from '@/components/Breadcrumbs';
 import { supabase } from '@/lib/supabase/client';
 import PublicHeader from '@/components/PublicHeader';
 import Footer from '@/components/Footer';
 import { SideBanner, QUOTES } from '@/components/layout/SideBanners';
 
-export default function GeneratePage() {
+function InstructionsSidePanel() {
+  return (
+    <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-left-4 duration-700">
+      <div className="bg-sidebar border border-border rounded-lg p-5">
+         <h3 className="flex items-center gap-2 text-[13px] font-bold text-text-heading uppercase tracking-widest mb-4">
+           <FileText className="w-4 h-4 text-accent" />
+           Instructions
+         </h3>
+         <ul className="space-y-3">
+           <li className="flex items-start gap-2 text-[12px] text-text-muted leading-relaxed">
+             <CheckCircle2 className="w-3.5 h-3.5 mt-0.5 text-teal-600 shrink-0" />
+             <span>Be specific about your goal. Instead of "Learn Python", try "Build scalable backend APIs in Python".</span>
+           </li>
+           <li className="flex items-start gap-2 text-[12px] text-text-muted leading-relaxed">
+             <CheckCircle2 className="w-3.5 h-3.5 mt-0.5 text-teal-600 shrink-0" />
+             <span>Select a timeline that matches your realistic schedule.</span>
+           </li>
+           <li className="flex items-start gap-2 text-[12px] text-text-muted leading-relaxed">
+             <CheckCircle2 className="w-3.5 h-3.5 mt-0.5 text-teal-600 shrink-0" />
+             <span>Our AI autonomously browses the web to attach verified, cutting-edge resources to every topic.</span>
+           </li>
+         </ul>
+      </div>
+
+      <div className="bg-sidebar border border-border rounded-lg p-5">
+         <h3 className="flex items-center gap-2 text-[13px] font-bold text-text-heading uppercase tracking-widest mb-4">
+           <HelpCircle className="w-4 h-4 text-accent" />
+           FAQ
+         </h3>
+         <div className="space-y-4">
+           <div>
+             <h4 className="text-[12px] font-bold text-text-heading mb-1">How are references verified?</h4>
+             <p className="text-[11px] text-text-muted leading-relaxed">The AI executes real-time DuckDuckGo searches for every module to guarantee live, authoritative references.</p>
+           </div>
+           <div>
+             <h4 className="text-[12px] font-bold text-text-heading mb-1">What is Job Decoded?</h4>
+             <p className="text-[11px] text-text-muted leading-relaxed">Paste any job description text to instantly generate a targeted roadmap tailored exactly to those requirements.</p>
+           </div>
+           <div>
+             <h4 className="text-[12px] font-bold text-text-heading mb-1">Are credits refundable?</h4>
+             <p className="text-[11px] text-text-muted leading-relaxed">Credits are non-refundable once used to generate a roadmap.</p>
+           </div>
+           <div>
+             <h4 className="text-[12px] font-bold text-text-heading mb-1">How long does generation take?</h4>
+             <p className="text-[11px] text-text-muted leading-relaxed">Usually 20-40 seconds depending on the complexity of the live web searches.</p>
+           </div>
+           <div>
+             <h4 className="text-[12px] font-bold text-text-heading mb-1">Can I edit my roadmap later?</h4>
+             <p className="text-[11px] text-text-muted leading-relaxed">Yes! Roadmap owners get full editing tools on their dashboard to customize the content.</p>
+           </div>
+           <div className="pt-2 border-t border-border/50">
+             <h4 className="text-[12px] font-bold text-text-heading mb-1">What is Local AI Mode?</h4>
+             <p className="text-[11px] text-text-muted leading-relaxed">It runs models directly on your device via WebGPU, ensuring total privacy since no data leaves your machine.</p>
+           </div>
+           <div>
+             <h4 className="text-[12px] font-bold text-text-heading mb-1">Local AI Limitations</h4>
+             <p className="text-[11px] text-text-muted leading-relaxed">It requires a modern GPU and browser. Model downloading takes upfront time and space, and speed depends entirely on your local hardware.</p>
+           </div>
+           <div className="pt-2 border-t border-border/50">
+             <h4 className="text-[12px] font-bold text-text-heading mb-1">What is OpenRouter?</h4>
+             <p className="text-[11px] text-text-muted leading-relaxed">It's a unified API gateway that lets you access multiple AI models (like Claude, GPT-4, and Gemini) through a single interface.</p>
+           </div>
+           <div>
+             <h4 className="text-[12px] font-bold text-text-heading mb-1">How does using my own key help?</h4>
+             <p className="text-[11px] text-text-muted leading-relaxed">Providing your own OpenRouter key gives you absolute control over which models run your generation, avoiding vendor lock-in. Your key is stored securely in your browser and never on our servers.</p>
+           </div>
+         </div>
+      </div>
+    </div>
+  );
+}
+
+export default function GenerateClient({ featuredRoadmaps }: { featuredRoadmaps?: ExploreRoadmap[] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const initialMode = searchParams.get('mode') as 'ai' | 'job' || 'ai';
@@ -66,9 +151,9 @@ export default function GeneratePage() {
     localStorage.setItem('last_generated_form_data', JSON.stringify({ data: formData, timestamp }));
     sessionStorage.setItem('roadmap_just_generated', 'true');
     
-    if (data.slug) {
+    if ((data as any).slug || data.id) {
       setIsRedirecting(true);
-      router.push(`/roadmap/${data.slug}`);
+      router.push(`/roadmap/${(data as any).slug || data.id}`);
     } else {
       setRoadmapData(data);
       setGeneratedFormData(formData);
@@ -110,13 +195,16 @@ export default function GeneratePage() {
 
       <div className="flex-1 flex flex-col relative">
         <main className="flex-1 min-w-0 bg-background scroll-smooth">
-          <div className="max-w-7xl mx-auto px-6 py-12 md:py-20">
-            <div className="flex flex-col lg:flex-row gap-8 lg:gap-12 justify-center items-center lg:items-start">
-              <div className="flex-1 min-w-0 max-w-[640px] w-full mx-auto">
-                <div className="mb-6 flex justify-center md:block">
-                  <Breadcrumbs items={[{ label: 'Goal Architect' }]} />
+          <div className="max-w-[1440px] w-full mx-auto px-6 py-12 md:py-20">
+            <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 xl:gap-24 justify-center items-center lg:items-start w-full">
+              
+              {!roadmapData && (
+                <div className="w-full lg:w-[260px] xl:w-[280px] shrink-0 lg:sticky lg:top-24 lg:pt-[116px] order-2 lg:order-1 pt-8">
+                  <InstructionsSidePanel />
                 </div>
+              )}
 
+              <div className="flex-1 min-w-0 max-w-[640px] w-full order-1 lg:order-2">
                 {/* Compact Header */}
                 {!isLoading && (
                   <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -165,6 +253,112 @@ export default function GeneratePage() {
                         onLoadingChange={setIsLoading}
                       />
                     )}
+
+                    {/* Featured Roadmaps List below the form */}
+                    {featuredRoadmaps && featuredRoadmaps.length > 0 && !isLoading && (
+                      <div className="mt-16 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="flex items-center gap-2 text-[12px] font-bold text-text-heading uppercase tracking-widest">
+                            <TrendingUp className="w-4 h-4 text-accent" />
+                            Popular Roadmaps
+                          </h3>
+                          <Link href="/explore" className="text-[11px] font-bold text-accent hover:text-teal-400 flex items-center gap-1 transition-colors">
+                            Explore All <ArrowRight className="w-3 h-3" />
+                          </Link>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                          {featuredRoadmaps.map((roadmap) => (
+                            <Link 
+                              key={roadmap.id} 
+                              href={`/roadmap/${roadmap.slug}`}
+                              className="block p-4 rounded-xl border border-border/50 bg-sidebar/30 hover:bg-sidebar/80 hover:border-accent/30 transition-all group"
+                            >
+                              <div className="flex justify-between items-start gap-4">
+                                <h4 className="font-bold text-[13px] text-text-heading group-hover:text-accent transition-colors line-clamp-2">
+                                  {roadmap.title}
+                                </h4>
+                              </div>
+                              <div className="mt-3 flex items-center justify-between text-[10px] text-text-muted">
+                                <span>{roadmap.topic_count} Topics</span>
+                                <span className="bg-background px-2 py-0.5 rounded-full border border-border/50">
+                                  {roadmap.clone_count} Clones
+                                </span>
+                              </div>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Additional Tools Section */}
+                    {!isLoading && (
+                      <div className="mt-8 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500">
+                        <div className="flex items-center justify-between mb-4">
+                          <h3 className="flex items-center gap-2 text-[12px] font-bold text-text-heading uppercase tracking-widest">
+                            <Library className="w-4 h-4 text-accent" />
+                            Ecosystem Tools
+                          </h3>
+                        </div>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                          <Link href="/learn" className="flex flex-col gap-2 p-4 rounded-xl border border-border/50 bg-background hover:bg-sidebar/50 hover:border-accent/30 transition-all group">
+                            <GraduationCap className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
+                            <div>
+                              <h4 className="font-bold text-[12px] text-text-heading leading-tight">Learning Hub</h4>
+                              <p className="text-[10px] text-text-muted mt-1 leading-snug">Active study modules</p>
+                            </div>
+                          </Link>
+                          <Link href="/explore" className="flex flex-col gap-2 p-4 rounded-xl border border-border/50 bg-background hover:bg-sidebar/50 hover:border-accent/30 transition-all group">
+                            <Compass className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
+                            <div>
+                              <h4 className="font-bold text-[12px] text-text-heading leading-tight">Global Explore</h4>
+                              <p className="text-[10px] text-text-muted mt-1 leading-snug">Discover community roadmaps</p>
+                            </div>
+                          </Link>
+                          <Link href="/planner" className="flex flex-col gap-2 p-4 rounded-xl border border-border/50 bg-background hover:bg-sidebar/50 hover:border-accent/30 transition-all group">
+                            <Calendar className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
+                            <div>
+                              <h4 className="font-bold text-[12px] text-text-heading leading-tight">Study Planner</h4>
+                              <p className="text-[10px] text-text-muted mt-1 leading-snug">Dynamic progress tracking</p>
+                            </div>
+                          </Link>
+                          <Link href="/practice" className="flex flex-col gap-2 p-4 rounded-xl border border-border/50 bg-background hover:bg-sidebar/50 hover:border-accent/30 transition-all group">
+                            <Zap className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
+                            <div>
+                              <h4 className="font-bold text-[12px] text-text-heading leading-tight">Practice Portal</h4>
+                              <p className="text-[10px] text-text-muted mt-1 leading-snug">Validate your skills</p>
+                            </div>
+                          </Link>
+                          <Link href="/research-lab" className="flex flex-col gap-2 p-4 rounded-xl border border-border/50 bg-background hover:bg-sidebar/50 hover:border-accent/30 transition-all group">
+                            <Microscope className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
+                            <div>
+                              <h4 className="font-bold text-[12px] text-text-heading leading-tight">Research Lab</h4>
+                              <p className="text-[10px] text-text-muted mt-1 leading-snug">Advanced AI tooling</p>
+                            </div>
+                          </Link>
+                          <Link href="/research-decoded" className="flex flex-col gap-2 p-4 rounded-xl border border-border/50 bg-background hover:bg-sidebar/50 hover:border-accent/30 transition-all group">
+                            <BookOpen className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
+                            <div>
+                              <h4 className="font-bold text-[12px] text-text-heading leading-tight">Research Decoded</h4>
+                              <p className="text-[10px] text-text-muted mt-1 leading-snug">Deep paper breakdowns</p>
+                            </div>
+                          </Link>
+                          <Link href="/articles" className="flex flex-col gap-2 p-4 rounded-xl border border-border/50 bg-background hover:bg-sidebar/50 hover:border-accent/30 transition-all group">
+                            <FileText className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
+                            <div>
+                              <h4 className="font-bold text-[12px] text-text-heading leading-tight">Technical Articles</h4>
+                              <p className="text-[10px] text-text-muted mt-1 leading-snug">First-principles deep dives</p>
+                            </div>
+                          </Link>
+                          <Link href="/archive" className="flex flex-col gap-2 p-4 rounded-xl border border-border/50 bg-background hover:bg-sidebar/50 hover:border-accent/30 transition-all group">
+                            <Archive className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
+                            <div>
+                              <h4 className="font-bold text-[12px] text-text-heading leading-tight">Study Archive</h4>
+                              <p className="text-[10px] text-text-muted mt-1 leading-snug">Verified past resources</p>
+                            </div>
+                          </Link>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
@@ -187,7 +381,7 @@ export default function GeneratePage() {
               </div>
 
               {!roadmapData && (
-                <div className="hidden xl:block w-[240px] shrink-0 sticky top-24 pt-[116px]">
+                <div className="hidden xl:block w-[240px] shrink-0 sticky top-24 lg:pt-[116px] order-3">
                   <SideBanner 
                     isStatic
                     buttonText="Research"

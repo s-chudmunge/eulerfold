@@ -480,18 +480,16 @@ They now want to EXTEND this roadmap for {payload.weeks} more week(s) to learn: 
          "timeline": "string",
          "workspace_type": "code|research|design",
          "proof_of_work_instructions": {{
-           "what_to_build": "string",
-           "what_counts_as_evidence": "string",
-           "eval_criteria": ["string", "string"]
+            "what_to_build": "string",
+            "what_counts_as_evidence": "string",
+            "eval_criteria": ["string", "string"]
          }},
+         "optimal_search_query": "A targeted search query to find the best academic/technical resources for this module",
          "topics": [
-           {{
-             "title": "string",
-             "subtopics": [ {{ "title": "string" }} ]
-           }}
+           {{ "title": "string", "subtopics": [ {{ "title": "string" }} ] }}
          ],
          "resources": [
-           {{ "title": "string", "url": "string", "type": "docs|article" }}
+            {{ "title": "string", "url": "string", "type": "docs|article" }}
          ]
        }}
      ]
@@ -741,7 +739,8 @@ The learner's specific goal is: "{roadmap_create.goal}".
 Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
 
 **Rules:**
-1. **Technical Rigor:** Focus on depth and verifiable technical skills. Avoid introductory fluff.
+1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "The Complete Guide to Number Theory", "Mastering React Hooks"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Roadmap". Do NOT include the time duration in the title.
+2. **Technical Rigor:** Focus on depth and verifiable technical skills. Avoid introductory fluff.
 2. **Logical Progression:** Structure the path into modules that build upon each other logically.
 3. **Specific Topics:** Each module must have 3-5 specific topics. Use industry-standard technical terms.
 4. **Practical Outcomes:** For each module, include a "proof_of_work_instructions" object that details a realistic technical task the user must solve to demonstrate mastery.
@@ -761,20 +760,17 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
             "what_counts_as_evidence": "string",
             "eval_criteria": ["string", "string"]
          }},
+         "optimal_search_query": "A targeted search query to find the best academic/technical resources for this module",
          "topics": [
            {{
              "title": "string",
              "subtopics": [ {{ "title": "string" }} ]
            }}
-         ],
-         "resources": [
-            {{ "title": "string", "url": "string", "type": "docs|article" }}
          ]
        }}
      ]
    }}
-7. **Quality Resources:** In the "resources" array, provide ONLY high-quality documentation, articles, or books (non-YouTube links).
-8. **Workspace Selection:** 
+7. **Workspace Selection:** 
    - Set "workspace_type" to "code" for implementation, algorithms, or scripting tasks.
    - Set "workspace_type" to "design" for system architecture, distributed systems, infrastructure, or UI/UX.
    - Set "workspace_type" to "research" for theoretical science, mathematics, or technical writing.
@@ -789,13 +785,16 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
 
         # 2. Add IDs and YouTube Videos
         for i, module in enumerate(roadmap_plan.get("modules", [])):
+            if not isinstance(module, dict): continue
             module["id"] = f"module_{i+1}"
             if not module.get("outcome"):
                  module["outcome"] = "By the end of this module you will be able to apply the listed topics and solve basic related problems."
             for t_idx, topic in enumerate(module.get("topics", [])):
+                if not isinstance(topic, dict): continue
                 topic["id"] = f"topic_{i+1}_{t_idx+1}"
                 topic["uuid"] = str(uuid.uuid4())
                 for s_idx, subtopic in enumerate(topic.get("subtopics", [])):
+                    if not isinstance(subtopic, dict): continue
                     subtopic["id"] = str(uuid.uuid4())
                 
                 # YouTube Enrichment
@@ -811,6 +810,22 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
                         await asyncio.sleep(0.1)
                     except Exception as yt_err:
                         logger.error(f"YouTube enrichment failed for topic {topic['title']}: {yt_err}")
+
+            # DuckDuckGo Enrichment
+            search_query = module.get("optimal_search_query")
+            if search_query:
+                def fetch_ddg():
+                    try:
+                        from ddgs import DDGS
+                        with DDGS() as ddgs:
+                            return list(ddgs.text(search_query, max_results=3))
+                    except Exception as e:
+                        logger.error(f"DDG search failed for query {search_query}: {e}")
+                        return []
+                ddg_results = await asyncio.to_thread(fetch_ddg)
+                if ddg_results:
+                    logger.info(f"DuckDuckGo search successful for '{search_query}'. Found {len(ddg_results)} references.")
+                    module["resources"] = [{"title": r["title"], "url": r["href"], "type": "article"} for r in ddg_results]
 
         # 3. Save to DB
         slug = await _generate_unique_slug(roadmap_plan["title"], email, sb)
@@ -869,13 +884,16 @@ async def save_external_roadmap(
     
     # 1. Add IDs and YouTube Videos
     for i, module in enumerate(roadmap_plan.get("modules", [])):
+        if not isinstance(module, dict): continue
         module["id"] = f"module_{i+1}"
         if not module.get("outcome"):
              module["outcome"] = "By the end of this module you will be able to apply the listed topics and solve basic related problems."
         for t_idx, topic in enumerate(module.get("topics", [])):
+            if not isinstance(topic, dict): continue
             topic["id"] = f"topic_{i+1}_{t_idx+1}"
             topic["uuid"] = str(uuid.uuid4())
             for s_idx, subtopic in enumerate(topic.get("subtopics", [])):
+                if not isinstance(subtopic, dict): continue
                 subtopic["id"] = str(uuid.uuid4())
             
             # YouTube Enrichment
@@ -891,6 +909,22 @@ async def save_external_roadmap(
                     await asyncio.sleep(0.1)
                 except Exception as yt_err:
                     logger.error(f"YouTube enrichment failed for topic {topic['title']}: {yt_err}")
+
+        # DuckDuckGo Enrichment
+        search_query = module.get("optimal_search_query")
+        if search_query:
+            def fetch_ddg(query=search_query):
+                try:
+                    from ddgs import DDGS
+                    with DDGS() as ddgs:
+                        return list(ddgs.text(query, max_results=3))
+                except Exception as e:
+                    logger.error(f"DDG search failed for query {query}: {e}")
+                    return []
+            ddg_results = await asyncio.to_thread(fetch_ddg)
+            if ddg_results:
+                logger.info(f"DuckDuckGo search successful for '{search_query}'. Found {len(ddg_results)} references.")
+                module["resources"] = [{"title": r["title"], "url": r["href"], "type": "article"} for r in ddg_results]
 
     # 2. Save to DB
     slug = await _generate_unique_slug(roadmap_plan.get("title", roadmap_create.subject), email, sb)
@@ -985,7 +1019,8 @@ Duration: {payload.time_value} {payload.time_unit}.
 {generation_strategy}
 
 **RULES:**
-1. **Logical Progression:** Structure modules from foundational technical gaps to advanced implementation.
+1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "The Complete Guide to Data Engineering"). Do NOT use dry, robotic formats like "Intensive 4-Week X Roadmap". Do NOT include the time duration in the title.
+2. **Logical Progression:** Structure modules from foundational technical gaps to advanced implementation.
 2. **Technical Rigor:** Prioritize hard skills, tools, and theoretical knowledge required for the role.
 3. **Specific Topics:** Each module must have 3-5 specific topics. Avoid generic titles like "Introduction to X". Use industry-standard technical terms (e.g., "Memory-Mapped I/O" or "Asynchronous Event Loops").
 4. **Practical Outcomes:** The `proof_of_work_instructions` must describe a realistic technical task or project that demonstrates competency in that module's specific skills.
@@ -1006,11 +1041,9 @@ Duration: {payload.time_value} {payload.time_unit}.
             "what_counts_as_evidence": "string",
             "eval_criteria": ["string", "string"]
          }},
+         "optimal_search_query": "A targeted search query to find the best academic/technical resources for this module",
          "topics": [
            {{ "title": "string", "subtopics": [ {{ "title": "string" }} ] }}
-         ],
-         "resources": [
-            {{ "title": "string", "url": "string", "type": "docs|article" }}
          ]
        }}
      ]
@@ -1027,14 +1060,17 @@ Duration: {payload.time_value} {payload.time_unit}.
 
         # Enrichment logic (IDs, YouTube) - Shared with standard generator
         for i, module in enumerate(roadmap_plan.get("modules", [])):
+            if not isinstance(module, dict): continue
             module["id"] = f"module_{i+1}"
             if not module.get("outcome"):
                  module["outcome"] = "By the end of this module you will be able to apply the listed topics and solve basic related problems."
             
             for t_idx, topic in enumerate(module.get("topics", [])):
+                if not isinstance(topic, dict): continue
                 topic["id"] = f"topic_{i+1}_{t_idx+1}"
                 topic["uuid"] = str(uuid.uuid4())
                 for s_idx, subtopic in enumerate(topic.get("subtopics", [])):
+                    if not isinstance(subtopic, dict): continue
                     subtopic["id"] = str(uuid.uuid4())
                 
                 if settings.YOUTUBE_API_KEY:
@@ -1049,6 +1085,22 @@ Duration: {payload.time_value} {payload.time_unit}.
                             topic["duration"] = results[0]["duration_minutes"]
                         await asyncio.sleep(0.1)
                     except: pass
+
+            # DuckDuckGo Enrichment
+            search_query = module.get("optimal_search_query")
+            if search_query:
+                def fetch_ddg():
+                    try:
+                        from ddgs import DDGS
+                        with DDGS() as ddgs:
+                            return list(ddgs.text(search_query, max_results=3))
+                    except Exception as e:
+                        logger.error(f"DDG search failed for query {search_query}: {e}")
+                        return []
+                ddg_results = await asyncio.to_thread(fetch_ddg)
+                if ddg_results:
+                    logger.info(f"DuckDuckGo search successful for '{search_query}'. Found {len(ddg_results)} references.")
+                    module["resources"] = [{"title": r["title"], "url": r["href"], "type": "article"} for r in ddg_results]
 
         slug = await _generate_unique_slug(roadmap_plan["title"], email, sb)
         

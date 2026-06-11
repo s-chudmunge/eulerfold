@@ -1,8 +1,8 @@
 "use client"
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldCheck, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Sparkles } from 'lucide-react';
 
 interface CelebrationProps {
     show: boolean;
@@ -12,6 +12,14 @@ interface CelebrationProps {
 }
 
 export default function Celebration({ show, title = "Success!", subtitle, icon }: CelebrationProps) {
+    const [mounted, setMounted] = useState(false);
+    
+    useEffect(() => {
+        setMounted(true);
+    }, []);
+
+    if (!mounted) return null;
+
     return (
         <AnimatePresence>
             {show && (
@@ -19,60 +27,81 @@ export default function Celebration({ show, title = "Success!", subtitle, icon }
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="fixed inset-0 z-[500] pointer-events-none overflow-hidden"
+                    transition={{ duration: 0.4 }}
+                    className="fixed inset-0 z-[500] pointer-events-none overflow-hidden flex items-center justify-center bg-black/40 backdrop-blur-sm"
                 >
-                    {/* Confetti Particles */}
-                    {[...Array(40)].map((_, i) => (
+                    {/* Confetti Fountain Explosion */}
+                    {[...Array(60)].map((_, i) => (
                         <motion.div
                             key={i}
-                            className="absolute w-2 h-2 rounded-sm"
+                            className="absolute z-0"
                             style={{
-                                backgroundColor: ['#0F766E', '#14B8A6', '#F59E0B', '#10B981', '#3B82F6'][i % 5],
-                                left: `${Math.random() * 100}%`,
-                                top: `-5%`,
+                                width: Math.random() > 0.5 ? '8px' : '14px',
+                                height: Math.random() > 0.5 ? '8px' : '14px',
+                                backgroundColor: ['#0F766E', '#14B8A6', '#F59E0B', '#10B981', '#3B82F6', '#EC4899', '#8B5CF6'][i % 7],
+                                borderRadius: i % 3 === 0 ? '50%' : '2px', // mix of circles and squares
+                            }}
+                            initial={{ 
+                                x: 0, 
+                                y: 0, 
+                                scale: 0,
+                                opacity: 1
                             }}
                             animate={{
-                                top: '105%',
-                                left: `${(Math.random() * 100) + (Math.random() - 0.5) * 40}%`,
-                                rotate: 360 * 2,
+                                x: (Math.random() - 0.5) * 1000, // Wide spread
+                                y: [0, -300 - Math.random() * 400, 800], // Shoot up then fall down
+                                scale: [0, 1, 1, 0],
+                                rotate: [0, Math.random() * 1080 - 540], // Crazy spinning
                             }}
                             transition={{
-                                duration: 2 + Math.random() * 2,
-                                ease: "easeOut",
-                                delay: Math.random() * 0.5,
+                                duration: 3.5 + Math.random() * 2,
+                                ease: "easeInOut",
                             }}
                         />
                     ))}
                     
                     {/* Success Message Card */}
-                    <div className="absolute inset-0 flex items-center justify-center">
-                        <motion.div
-                            initial={{ scale: 0.9, opacity: 0, y: 10 }}
-                            animate={{ scale: 1, opacity: 1, y: 0 }}
-                            exit={{ scale: 0.9, opacity: 0, y: -10 }}
-                            className="bg-background/95 backdrop-blur-md border border-border p-8 rounded-lg shadow-2xl text-center pointer-events-auto max-w-[320px] w-full"
+                    <motion.div
+                        initial={{ scale: 0.8, opacity: 0, y: 20 }}
+                        animate={{ scale: 1, opacity: 1, y: 0 }}
+                        exit={{ scale: 0.8, opacity: 0, y: -20 }}
+                        transition={{ 
+                            type: "spring", 
+                            stiffness: 300, 
+                            damping: 20, 
+                            mass: 0.8 
+                        }}
+                        className="relative z-10 bg-background/95 backdrop-blur-xl border border-accent/20 p-8 rounded-2xl shadow-[0_0_60px_-15px_rgba(15,118,110,0.4)] text-center pointer-events-auto max-w-[340px] w-full mx-4"
+                    >
+                        {/* Glow effect behind icon */}
+                        <div className="absolute top-10 left-1/2 -translate-x-1/2 w-24 h-24 bg-accent/20 rounded-full blur-2xl animate-pulse pointer-events-none" />
+                        
+                        <motion.div 
+                            initial={{ scale: 0, rotate: -20 }}
+                            animate={{ scale: 1, rotate: 0 }}
+                            transition={{ delay: 0.15, type: "spring", stiffness: 400, damping: 10 }}
+                            className="relative z-10 w-16 h-16 bg-gradient-to-tr from-teal-700 to-teal-400 text-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-teal-900/20"
                         >
-                            <div className="w-16 h-16 bg-accent/10 text-accent rounded-md flex items-center justify-center mx-auto mb-5 border border-accent/20">
-                                {icon || <ShieldCheck className="w-8 h-8" />}
-                            </div>
-                            <h3 className="inconsolata-ui text-xl font-bold text-text-heading mb-2 tracking-tight">
-                                {title}
-                            </h3>
-                            {subtitle && (
-                                <p className="manrope-body text-[13px] text-text-muted font-medium italic leading-relaxed">
-                                    {subtitle}
-                                </p>
-                            )}
-
-                            <div className="mt-6 pt-4 border-t border-border/50">
-                                <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md bg-accent/5 border border-accent/10">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
-                                    <span className="inconsolata-ui text-[9px] font-bold text-accent uppercase tracking-widest">EulerFold Verified</span>
-                                </div>
-                            </div>
+                            {icon || <ShieldCheck className="w-8 h-8 drop-shadow-sm" />}
                         </motion.div>
+                        
+                        <h3 className="inconsolata-ui text-2xl font-bold text-text-heading mb-3 tracking-tight">
+                            {title}
+                        </h3>
+                        
+                        {subtitle && (
+                            <p className="manrope-body text-[14px] text-text-muted font-medium leading-relaxed">
+                                {subtitle}
+                            </p>
+                        )}
 
-                    </div>
+                        <div className="mt-8 pt-5 border-t border-border/50">
+                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20">
+                                <Sparkles className="w-3.5 h-3.5 text-accent" />
+                                <span className="inconsolata-ui text-[10px] font-bold text-accent uppercase tracking-widest">EulerFold Verified</span>
+                            </div>
+                        </div>
+                    </motion.div>
                 </motion.div>
             )}
         </AnimatePresence>

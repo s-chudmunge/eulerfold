@@ -103,7 +103,7 @@ export function TrustedSourcesTicker() {
   return (
     <div className="mt-12 w-full max-w-3xl overflow-hidden relative">
       <div className="mb-8">
-        <span className="manrope-body text-[13px] text-text-muted font-medium">We use Trusted sources to build your roadmap</span>
+        <span className="manrope-body text-[13px] text-text-muted font-medium">Curriculum generated from cutting-edge research and verified sources</span>
       </div>
 
       <div className="relative">
@@ -184,21 +184,43 @@ export function FAQAccordion({ items }: { items: { question: string, answer: Rea
         return (
           <div 
             key={index} 
-            className={`border border-border/50 rounded-2xl transition-all duration-300 ${isOpen ? 'bg-sidebar/30 shadow-sm' : 'hover:bg-sidebar/20'}`}
+            className={`relative overflow-hidden border transition-all duration-500 ease-out rounded-2xl group ${
+              isOpen 
+                ? 'border-accent/40 bg-background shadow-[0_0_40px_-10px_rgba(15,118,110,0.15)]' 
+                : 'border-border/50 bg-background hover:border-accent/20 hover:bg-sidebar/30'
+            }`}
           >
+            {/* Ambient Background Glow for open state */}
+            <div 
+              className={`absolute inset-0 bg-gradient-to-br from-teal-500/5 to-transparent opacity-0 transition-opacity duration-700 ${
+                isOpen ? 'opacity-100' : 'group-hover:opacity-60'
+              }`} 
+              style={{ pointerEvents: 'none' }}
+            />
+            
             <button
               onClick={() => setOpenIndex(isOpen ? null : index)}
-              className="w-full flex items-center justify-between p-6 text-left"
+              className="relative w-full flex items-center justify-between p-6 md:p-8 text-left z-10"
             >
-              <span className="font-inter text-[16px] md:text-[18px] font-bold text-text-heading tracking-tight">
+              <span className={`font-inter text-[15px] md:text-[17px] font-bold tracking-tight transition-colors duration-300 ${
+                isOpen ? 'text-accent' : 'text-text-heading group-hover:text-text-primary'
+              }`}>
                 {item.question}
               </span>
-              <ChevronDown className={`w-5 h-5 text-accent transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+              <div className={`shrink-0 ml-6 flex items-center justify-center w-8 h-8 rounded-full border transition-all duration-500 ${
+                isOpen 
+                  ? 'border-accent/30 bg-accent/10 text-accent rotate-180 shadow-[0_0_15px_-3px_rgba(15,118,110,0.3)]' 
+                  : 'border-border/50 text-text-muted group-hover:border-accent/30 group-hover:text-accent'
+              }`}>
+                <ChevronDown className="w-4 h-4" />
+              </div>
             </button>
             <div 
-              className={`overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-[300px] opacity-100' : 'max-h-0 opacity-0'}`}
+              className={`relative z-10 overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${
+                isOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'
+              }`}
             >
-              <div className="px-6 pb-6 pt-0">
+              <div className="px-6 md:px-8 pb-6 md:pb-8 pt-0">
                 <p className="manrope-body text-[14px] md:text-[15px] text-text-muted leading-relaxed max-w-3xl">
                   {item.answer}
                 </p>

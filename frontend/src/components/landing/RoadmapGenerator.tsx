@@ -10,6 +10,7 @@ import PaymentModal from '../PaymentModal';
 import { OpenRouterModal } from './OpenRouterModal';
 import { LocalAIModal } from './LocalAIModal';
 import { CreateMLCEngine, hasModelInCache } from '@mlc-ai/web-llm';
+import { jsonrepair } from 'jsonrepair';
 
 interface RoadmapGeneratorProps {
   onRoadmapGenerated: (data: RoadmapData, formData: any) => void;
@@ -222,7 +223,8 @@ ${context_str}
 Estimated duration: ${formData.time_value} ${formData.time_unit || 'weeks'}.
 
 **Rules:**
-1. **Technical Rigor:** Focus on depth and verifiable technical skills. Avoid introductory fluff.
+1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "The Complete Guide to Number Theory", "Mastering React Hooks"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Roadmap". Do NOT include the time duration in the title.
+2. **Technical Rigor:** Focus on depth and verifiable technical skills. Avoid introductory fluff.
 2. **Logical Progression:** Structure the path into modules that build upon each other logically.
 3. **Specific Topics:** Each module must have 3-5 specific topics. Use industry-standard technical terms.
 4. **Practical Outcomes:** For each module, include a "proof_of_work_instructions" object that details a realistic technical task the user must solve to demonstrate mastery.
@@ -245,13 +247,11 @@ Estimated duration: ${formData.time_value} ${formData.time_unit || 'weeks'}.
          "topics": [
            { "title": "string", "subtopics": [ { "title": "string" } ] }
          ],
-         "resources": [
-            { "title": "string", "url": "string", "type": "docs|article" }
-         ]
+         "optimal_search_query": "string"
        }
      ]
    }
-7. **Quality Resources:** In the "resources" array, provide ONLY high-quality documentation, articles, or books (non-YouTube links).
+7. **Optimal Search Query:** For EACH module, provide an "optimal_search_query" field. This must be a highly specific, clean search string (e.g. "React Hooks useEffect tutorial") that will yield the best search engine results for reading materials about this exact module.
 8. **Workspace Selection:** 
    - Set "workspace_type" to "code" for implementation, algorithms, or scripting tasks.
    - Set "workspace_type" to "design" for system architecture, distributed systems, infrastructure, or UI/UX.
@@ -264,6 +264,8 @@ Estimated duration: ${formData.time_value} ${formData.time_unit || 'weeks'}.
 Generate a technical learning roadmap for the subject: "${formData.subject}". Goal: "${formData.goal}".
 Context: ${context_str}
 Duration: ${formData.time_value} ${formData.time_unit || 'weeks'}.
+
+Generate a catchy, SEO-friendly, and natural title (e.g., "The Complete Guide to Number Theory"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Roadmap" and do NOT include the duration in the title.
 
 Reply ONLY with a raw JSON object matching EXACTLY this structure:
 {
@@ -283,9 +285,7 @@ Reply ONLY with a raw JSON object matching EXACTLY this structure:
       "topics": [
         { "title": "Topic", "subtopics": [ { "title": "Subtopic" } ] }
       ],
-      "resources": [
-        { "title": "Resource", "url": "https://example.com", "type": "docs" }
-      ]
+      "optimal_search_query": "Specific search query for DuckDuckGo"
     }
   ]
 }
@@ -325,15 +325,39 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
         }
 
         const data = await response.json();
-        let generatedText = data.choices[0].message.content;
+        let generatedText = data.choices[0].message.content || "";
         
-        if (generatedText.startsWith("\`\`\`json")) {
-          generatedText = generatedText.replace(/^\`\`\`json/, "").replace(/\`\`\`$/, "");
-        } else if (generatedText.startsWith("\`\`\`")) {
-          generatedText = generatedText.replace(/^\`\`\`/, "").replace(/\`\`\`$/, "");
+        let cleanedText = generatedText.trim();
+        if (cleanedText.startsWith("```json")) {
+          cleanedText = cleanedText.replace(/^```json\n?/, "").replace(/```$/, "");
+        } else if (cleanedText.startsWith("```")) {
+          cleanedText = cleanedText.replace(/^```\n?/, "").replace(/```$/, "");
         }
 
-        const roadmapPlan = JSON.parse(generatedText);
+        cleanedText = cleanedText.trim();
+        cleanedText = cleanedText.replace(/"([^"\\]*(?:\\.[^"\\]*)*)"/g, (match: string) => {
+            return match.replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t");
+        });
+        cleanedText = cleanedText.replace(/[\u0000-\u0009\u000B-\u001F]/g, "");
+
+        if (!cleanedText) {
+          throw new Error("The AI model returned an empty response. It may have hit a safety filter. Please try a different model or adjust your prompt.");
+        }
+
+        let roadmapPlan;
+        try {
+          roadmapPlan = JSON.parse(jsonrepair(cleanedText));
+          if (Array.isArray(roadmapPlan)) {
+             roadmapPlan = {
+                title: "Generated Roadmap",
+                description: "Technical learning path",
+                modules: roadmapPlan
+             };
+          }
+        } catch (e: any) {
+          console.error("JSON parse failed. Cleaned text:", cleanedText);
+          throw new Error("Failed to parse AI response: " + e.message);
+        }
 
         const saveResponse = await api.post("/roadmaps/save-external", {
           roadmap_plan: roadmapPlan,
@@ -401,8 +425,27 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
               
               generatedText = response.choices[0].message.content || '';
               responseUsage = response.usage || null;
-              const cleanedText = generatedText.replace(/```json/g, '').replace(/```/g, '').trim();
-              parsedJSON = JSON.parse(cleanedText);
+              let cleanedText = generatedText.trim();
+              if (cleanedText.startsWith("```json")) {
+                cleanedText = cleanedText.replace(/^```json\n?/, "").replace(/```$/, "");
+              } else if (cleanedText.startsWith("```")) {
+                cleanedText = cleanedText.replace(/^```\n?/, "").replace(/```$/, "");
+              }
+              
+              cleanedText = cleanedText.trim();
+              cleanedText = cleanedText.replace(/"([^"\\]*(?:\\.[^"\\]*)*)"/g, (match: string) => {
+                  return match.replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t");
+              });
+              cleanedText = cleanedText.replace(/[\u0000-\u0009\u000B-\u001F]/g, "");
+
+              parsedJSON = JSON.parse(jsonrepair(cleanedText));
+              if (Array.isArray(parsedJSON)) {
+                 parsedJSON = {
+                    title: "Generated Roadmap",
+                    description: "Technical learning path",
+                    modules: parsedJSON
+                 };
+              }
               parseSuccess = true;
               break;
             } catch (err: any) {

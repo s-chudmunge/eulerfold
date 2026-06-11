@@ -24,6 +24,7 @@ import PaymentModal from '../PaymentModal';
 import { OpenRouterModal } from '../landing/OpenRouterModal';
 import { LocalAIModal } from '../landing/LocalAIModal';
 import { CreateMLCEngine } from '@mlc-ai/web-llm';
+import { jsonrepair } from 'jsonrepair';
 
 interface JobDecodedGeneratorProps {
   onRoadmapGenerated: (data: RoadmapData, formData: any) => void;
@@ -129,7 +130,9 @@ const JobDecodedGenerator: React.FC<JobDecodedGeneratorProps> = ({
     setIsGenerating(true);
     setError(null);
 
-    const generation_strategy = `**STRATEGY:**\nGenerate a comprehensive technical learning path for this role over ${formData.time_value} weeks.\nAnalyze the user's current experience against the Job Description and identify precise technical gaps.\nThe roadmap must bridge these gaps with rigorous modules that lead to demonstrable mastery.`;
+    const generation_strategy = `**Rules:**
+1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "The Complete Guide to Data Engineering"). Do NOT use dry, robotic formats like "Intensive 4-Week X Roadmap". Do NOT include the time duration in the title.
+2. **Actionable Roadmap:** Translate the JD into a step-by-step technical learning path for this role over ${formData.time_value} weeks.\nAnalyze the user's current experience against the Job Description and identify precise technical gaps.\nThe roadmap must bridge these gaps with rigorous modules that lead to demonstrable mastery.`;
 
     const systemPrompt = `You are a technical lead. Generate a rigorous technical learning roadmap. Output JSON ONLY matching the required schema.`;
 
@@ -191,6 +194,8 @@ ${formData.current_experience}
 **CONSTRAINTS:**
 Duration: ${formData.time_value} weeks.
 
+Generate a catchy, SEO-friendly, and natural title (e.g., "The Complete Guide to Data Engineering"). Do NOT use dry, robotic formats like "Intensive 4-Week X Roadmap" and do NOT include the duration in the title.
+
 Reply ONLY with a raw JSON object matching EXACTLY this structure:
 {
   "title": "Roadmap Title",
@@ -209,9 +214,7 @@ Reply ONLY with a raw JSON object matching EXACTLY this structure:
       "topics": [
         { "title": "Topic", "subtopics": [ { "title": "Subtopic" } ] }
       ],
-      "resources": [
-        { "title": "Resource", "url": "https://example.com", "type": "docs" }
-      ]
+      "optimal_search_query": "Specific search query for DuckDuckGo"
     }
   ]
 }
@@ -248,10 +251,35 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
 
 
 
+        let generatedText = orData.choices[0].message.content || "";
+        let cleanedText = generatedText.trim();
+        if (cleanedText.startsWith("```json")) {
+          cleanedText = cleanedText.replace(/^```json\n?/, "").replace(/```$/, "");
+        } else if (cleanedText.startsWith("```")) {
+          cleanedText = cleanedText.replace(/^```\n?/, "").replace(/```$/, "");
+        }
+        cleanedText = cleanedText.trim();
+        cleanedText = cleanedText.replace(/"([^"\\]*(?:\\.[^"\\]*)*)"/g, (match: string) => {
+            return match.replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t");
+        });
+        cleanedText = cleanedText.replace(/[\u0000-\u0009\u000B-\u001F]/g, "");
+
+        if (!cleanedText) {
+          throw new Error("The AI model returned an empty response. It may have hit a safety filter. Please try a different model or adjust your prompt.");
+        }
+
         let roadmapPlan;
         try {
-          roadmapPlan = JSON.parse(orData.choices[0].message.content);
+          roadmapPlan = JSON.parse(jsonrepair(cleanedText));
+          if (Array.isArray(roadmapPlan)) {
+             roadmapPlan = {
+                title: "Generated Roadmap",
+                description: "Technical learning path",
+                modules: roadmapPlan
+             };
+          }
         } catch (e) {
+          console.error("JSON parse failed. Cleaned text:", cleanedText);
           throw new Error("Failed to parse JSON from OpenRouter response.");
         }
 
@@ -261,7 +289,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
           time_value: formData.time_value,
           time_unit: 'weeks',
           roadmap_plan: roadmapPlan,
-          custom_model: openRouterModel || 'openai/gpt-4o',
+          model: openRouterModel || 'openai/gpt-4o',
           is_job_decoded: true
         };
 
@@ -309,8 +337,26 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
               
               generatedText = response.choices[0].message.content || '';
               responseUsage = response.usage || null;
-              const cleanedText = generatedText.replace(/```json/g, '').replace(/```/g, '').trim();
-              parsedJSON = JSON.parse(cleanedText);
+              let cleanedText = generatedText.trim();
+              if (cleanedText.startsWith("```json")) {
+                cleanedText = cleanedText.replace(/^```json\n?/, "").replace(/```$/, "");
+              } else if (cleanedText.startsWith("```")) {
+                cleanedText = cleanedText.replace(/^```\n?/, "").replace(/```$/, "");
+              }
+              cleanedText = cleanedText.trim();
+              cleanedText = cleanedText.replace(/"([^"\\]*(?:\\.[^"\\]*)*)"/g, (match: string) => {
+                  return match.replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t");
+              });
+              cleanedText = cleanedText.replace(/[\u0000-\u0009\u000B-\u001F]/g, "");
+
+              parsedJSON = JSON.parse(jsonrepair(cleanedText));
+              if (Array.isArray(parsedJSON)) {
+                 parsedJSON = {
+                    title: "Generated Roadmap",
+                    description: "Technical learning path",
+                    modules: parsedJSON
+                 };
+              }
               parseSuccess = true;
               break;
             } catch (err: any) {
@@ -332,7 +378,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
             time_value: formData.time_value,
             time_unit: 'weeks',
             roadmap_plan: parsedJSON,
-            custom_model: localAIModelId,
+            model: localAIModelId,
             is_job_decoded: true
           };
 
