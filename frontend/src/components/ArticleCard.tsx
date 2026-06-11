@@ -16,7 +16,7 @@ export default function ArticleCard({ article, variant = 'horizontal' }: Article
         href={`/articles/${article.slug}`}
         className="group flex flex-col bg-background hover:bg-sidebar/30 border border-border/50 rounded-2xl overflow-hidden hover:shadow-xl hover:border-accent/30 transition-all duration-500 h-full"
       >
-        <div className="aspect-[16/9] overflow-hidden shrink-0">
+        <div className="aspect-[2/1] overflow-hidden shrink-0">
           <img 
             src={article.heroImage} 
             alt={article.title} 

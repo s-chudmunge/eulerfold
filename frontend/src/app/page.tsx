@@ -13,13 +13,10 @@ import PricingSection from '@/components/landing/PricingSection';
 import ProductEcosystem from '@/components/landing/ProductEcosystem';
 import GenerationSystems from '@/components/landing/GenerationSystems';
 import RoadmapDiscovery from '@/components/landing/RoadmapDiscovery';
-import LatestArticlesCarousel from '@/components/landing/LatestArticlesCarousel';
 import EulerLogoCanvas from '@/components/EulerLogoCanvas';
 import { ExploreRoadmap } from '@/lib/api';
 import VerifiedBadge from '@/components/VerifiedBadge';
 import { getCategory } from '@/lib/roadmapUtils';
-import { articles } from './articles/generatedArticles';
-import ArticleCard from '@/components/ArticleCard';
 
 export const revalidate = 3600;
 
@@ -216,24 +213,6 @@ export default async function LandingPage() {
               items={faqItems}
             />
           </div>
-        </section>
-
-        {/* Articles & Readings Section */}
-        <section className="py-12 md:py-32 px-6 bg-background border-t border-border/30">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 gap-6">
-              <div className="max-w-2xl">
-                <h2 className="text-[11px] font-bold text-accent tracking-[0.2em] uppercase mb-4 manrope-body">Articles & Readings</h2>
-              </div>
-              <Link 
-                href="/articles" 
-                className="inline-flex items-center gap-2 text-accent font-bold text-[14px] hover:underline underline-offset-4 group"
-              >
-                Browse all articles <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </Link>
-            </div>
-
-            <LatestArticlesCarousel articles={Object.values(articles).slice(0, 18)} />          </div>
         </section>
 
         <SocialFeed />
