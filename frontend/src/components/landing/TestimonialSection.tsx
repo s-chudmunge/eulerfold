@@ -141,10 +141,10 @@ export default function TestimonialSection() {
           className="inline-flex items-center gap-3 bg-sidebar/50 border border-border px-5 py-2.5 rounded-full backdrop-blur-sm shadow-sm"
         >
           <div className="flex -space-x-2">
-            {[1, 2, 3, 4].map((i) => (
+            {['Alex', 'Sarah', 'James', 'Priya'].map((seed, i) => (
               <div key={i} className="w-8 h-8 rounded-full border-2 border-background bg-sidebar flex items-center justify-center overflow-hidden">
                 <img 
-                  src={`https://i.pravatar.cc/150?u=${i + 20}`} 
+                  src={`https://api.dicebear.com/7.x/notionists/svg?seed=${seed}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`} 
                   alt="User" 
                   className="w-full h-full object-cover"
                 />
@@ -224,9 +224,11 @@ function TestimonialCard({ testimonial: t }: { testimonial: any }) {
     <div className="break-inside-avoid bg-sidebar border border-border p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col gap-4 group">
       {t.layout === "author-top" && (
         <div className="flex items-center gap-3 mb-2">
-          <div className={`size-10 shrink-0 flex items-center justify-center rounded-full text-xs font-bold ${t.color}`}>
-            {t.initials}
-          </div>
+          <img 
+            src={`https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(t.author)}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`} 
+            alt={t.author} 
+            className="size-10 shrink-0 rounded-full object-cover border border-border" 
+          />
           <div className="min-w-0">
             <p className="truncate text-sm font-bold text-text-heading">{t.author}</p>
             <p className="truncate text-[11px] text-text-muted font-medium">{t.role}</p>
@@ -244,9 +246,11 @@ function TestimonialCard({ testimonial: t }: { testimonial: any }) {
 
       {(t.layout === "standard" || t.layout === "quote-bottom") && (
         <div className="flex items-center gap-3 pt-4 mt-auto border-t border-border/50">
-          <div className={`size-8 shrink-0 flex items-center justify-center rounded-full text-[11px] font-bold ${t.color}`}>
-            {t.initials}
-          </div>
+          <img 
+            src={`https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(t.author)}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`} 
+            alt={t.author} 
+            className="size-8 shrink-0 rounded-full object-cover border border-border" 
+          />
           <div className="min-w-0">
             <p className="truncate text-xs font-bold text-text-heading">{t.author}</p>
             <p className="truncate text-[10px] text-text-muted font-medium">{t.role}</p>

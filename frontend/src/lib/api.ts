@@ -414,6 +414,7 @@ export interface EulerCoinBalance {
 export interface LeaderboardEntry {
     author: string;
     username: string;
+    avatar_url?: string;
     composite_score: number;
     top_skill: string | null;
     top_skill_score: number;

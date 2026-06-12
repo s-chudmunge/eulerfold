@@ -321,11 +321,11 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                         >
                             <div className="flex items-center gap-2 min-w-0">
                                 <div className="w-5 h-5 rounded bg-sidebar dark:bg-white/5 flex items-center justify-center border border-border dark:border-white/10 shrink-0 overflow-hidden">
-                                    {user.user_metadata?.avatar_url ? (
-                                        <img src={user.user_metadata.avatar_url} alt="" className="w-full h-full object-cover grayscale-[0.5]" />
-                                    ) : (
-                                        <User className="w-3 h-3 text-text-muted" />
-                                    )}
+                                    <img 
+                                        src={(user.user_metadata?.avatar_url?.includes('initials') ? null : user.user_metadata?.avatar_url) || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(user.user_metadata?.full_name?.split(' ')[0] || user.email?.split('@')[0] || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`} 
+                                        alt="" 
+                                        className="w-full h-full object-cover grayscale-[0.5]" 
+                                    />
                                 </div>
                                 <div className="min-w-0">
                                     <p className="text-[11px] font-semibold text-text-heading truncate leading-none">

@@ -116,19 +116,11 @@ export const CommentCard: React.FC<CommentCardProps> = ({
     <div className={`group relative flex gap-4 ${isReply ? 'ml-12 mt-4' : 'mt-8'} transition-all`}>
       {/* Avatar */}
       <div className="flex-shrink-0">
-        {comment.author_avatar ? (
-          <img 
-            src={comment.author_avatar} 
-            alt={comment.author_name} 
-            className="w-10 h-10 rounded-full border border-border object-cover"
-          />
-        ) : (
-          <div className="w-10 h-10 rounded-full bg-accent-muted flex items-center justify-center border border-border">
-            <span className="text-accent font-bold text-sm">
-              {comment.author_name.charAt(0).toUpperCase()}
-            </span>
-          </div>
-        )}
+        <img 
+          src={(comment.author_avatar?.includes('initials') ? null : comment.author_avatar) || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(comment.author_name || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`} 
+          alt={comment.author_name} 
+          className="w-10 h-10 rounded-full border border-border object-cover"
+        />
       </div>
 
       <div className="flex-1 min-w-0">

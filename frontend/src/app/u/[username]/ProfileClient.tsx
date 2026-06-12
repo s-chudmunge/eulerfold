@@ -38,6 +38,7 @@ import PublicHeader from '@/components/PublicHeader';
 import ActivityChart from '@/components/dashboard/ActivityChart';
 import ActivityHeatmap from '@/components/profile/ActivityHeatmap';
 import TTSListenButton from '@/components/TTSListenButton';
+import VerifiedBadge from '@/components/VerifiedBadge';
 import { useSettings } from '@/components/SettingsProvider';
 
 interface Props {
@@ -165,7 +166,10 @@ export default function ProfileClient({ profile }: Props) {
         }
     };
 
-    const effectiveAvatarUrl = isOwner ? (authUser?.user_metadata?.avatar_url || currentAvatarUrl) : currentAvatarUrl;
+    let effectiveAvatarUrl = (isOwner ? (authUser?.user_metadata?.avatar_url || currentAvatarUrl) : currentAvatarUrl) || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(profile.display_name || profile.username)}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`;
+    if (effectiveAvatarUrl?.includes('dicebear.com') && effectiveAvatarUrl?.includes('initials')) {
+        effectiveAvatarUrl = `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(profile.display_name || profile.username)}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`;
+    }
 
     const tabs: { id: TabType; label: string; icon: any; count?: number }[] = [
         { id: 'overview', label: 'Overview', icon: Layout },
@@ -263,8 +267,9 @@ export default function ProfileClient({ profile }: Props) {
                             </div>
 
                             <div className="flex-1 md:mt-6">
-                                <h1 className="text-[20px] md:text-[22px] font-bold text-text-heading tracking-tight leading-tight inconsolata-ui">
+                                <h1 className="text-[20px] md:text-[22px] font-bold text-text-heading tracking-tight leading-tight inconsolata-ui flex items-center gap-2">
                                     {profile.display_name || profile.username}
+                                    {profile.is_pro && <VerifiedBadge size={18} className="shrink-0 text-accent" />}
                                 </h1>
                                 <p className="text-[14px] md:text-[15px] font-medium text-text-muted opacity-60 inconsolata-ui">@{profile.username}</p>
                             </div>

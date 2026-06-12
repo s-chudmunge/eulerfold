@@ -335,8 +335,25 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                     </div>
                                     {(roadmap.author || roadmap.username) && (
                                         <div className="flex items-center gap-1.5 group/meta">
-                                            <User className="w-3.5 h-3.5 text-accent/50 group-hover/meta:text-accent transition-colors" />
-                                            <span>{roadmap.author || roadmap.username}</span>
+                                            {roadmap.username ? (
+                                                <Link href={`/u/${roadmap.username}`} className="hover:text-accent transition-colors underline-offset-4 hover:underline flex items-center gap-1.5">
+                                                    <img 
+                                                        src={(roadmap.avatar_url?.includes('initials') ? null : roadmap.avatar_url) || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(roadmap.author || roadmap.username || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`}
+                                                        alt={roadmap.author || roadmap.username}
+                                                        className="w-4 h-4 rounded-full border border-border/50 object-cover"
+                                                    />
+                                                    {roadmap.author || roadmap.username}
+                                                </Link>
+                                            ) : (
+                                                <span className="flex items-center gap-1.5">
+                                                    <img 
+                                                        src={(roadmap.avatar_url?.includes('initials') ? null : roadmap.avatar_url) || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(roadmap.author || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`}
+                                                        alt={roadmap.author || "User"}
+                                                        className="w-4 h-4 rounded-full border border-border/50 object-cover"
+                                                    />
+                                                    {roadmap.author || roadmap.username}
+                                                </span>
+                                            )}
                                         </div>
                                     )}
                                     {roadmap.created_at && (

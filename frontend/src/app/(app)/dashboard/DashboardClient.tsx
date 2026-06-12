@@ -290,11 +290,11 @@ export default function DashboardPage() {
                     header={
                         <div className="flex items-center gap-4 mb-8">
                             <div className="w-10 h-10 bg-callout-bg border border-border rounded-full flex items-center justify-center text-lg font-black text-text-heading overflow-hidden">
-                                {profile?.avatar_url ? (
-                                    <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
-                                ) : (
-                                    profile?.display_name?.[0] || 'M'
-                                )}
+                                <img 
+                                    src={(profile?.avatar_url?.includes('initials') ? null : profile?.avatar_url) || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(profile?.display_name || profile?.username || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`} 
+                                    alt="Profile" 
+                                    className="w-full h-full object-cover" 
+                                />
                             </div>
                             <div className="min-w-0">
                                 <p className="text-[13px] font-bold text-text-heading truncate">{profile?.display_name || 'Explorer'}</p>

@@ -620,11 +620,11 @@ export default function SettingsModal() {
               <div className="p-4 border-t border-border/50 hidden md:block">
                 <div className="flex items-center gap-3 p-2 rounded-xl bg-background/40 border border-border/50">
                   <div className="w-8 h-8 rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center overflow-hidden">
-                    {profile?.avatar_url ? (
-                      <img src={profile.avatar_url} alt="" className="w-full h-full object-cover" />
-                    ) : (
-                      <UserIcon className="w-4 h-4 text-accent" />
-                    )}
+                    <img 
+                      src={(profile?.avatar_url?.includes('initials') ? null : profile?.avatar_url) || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(displayName || username || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`} 
+                      alt="" 
+                      className="w-full h-full object-cover" 
+                    />
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="manrope-body text-[11px] font-bold text-text-heading truncate">{displayName || 'User'}</p>

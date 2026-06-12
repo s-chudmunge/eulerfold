@@ -214,6 +214,7 @@ class ExploreRoadmap(BaseModel):
     average_rating: float = 0.0
     rating_count: int = 0
     author: str  # Username from profiles or "Anonymous"
+    avatar_url: Optional[str] = None
     week_count: int  # len(roadmap_plan["modules"])
     topic_count: int  # sum of topics across all modules
     created_at: datetime
@@ -267,6 +268,7 @@ class CoinBalance(BaseModel):
 class LeaderboardEntry(BaseModel):
     author: str
     username: str
+    avatar_url: Optional[str] = None
     composite_score: float
     top_skill: Optional[str] = None
     top_skill_score: float = 0.0

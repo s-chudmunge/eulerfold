@@ -65,10 +65,7 @@ async def get_leaderboard(
 
     def format_name(email, display_name):
         if display_name:
-            parts = display_name.strip().split(' ')
-            if len(parts) > 1 and parts[1]:
-                return f"{parts[0]} {parts[1][0]}."
-            return parts[0]
+            return display_name.strip()
         return email.split("@")[0].capitalize() if email else "Anonymous"
 
     entries = []
@@ -76,6 +73,7 @@ async def get_leaderboard(
         entries.append(LeaderboardEntry(
             author=format_name(u.get("email"), u.get("display_name")),
             username=u["username"],
+            avatar_url=u.get("avatar_url"),
             composite_score=float(u["composite_score"]), 
             top_skill=u.get("top_skill_name"),
             top_skill_score=u.get("top_skill_score") or 0.0,
@@ -109,6 +107,7 @@ async def get_leaderboard(
                 user_rank_entry = LeaderboardEntry(
                     author=format_name(u.get("email"), u.get("display_name")),
                     username=u["username"],
+                    avatar_url=u.get("avatar_url"),
                     composite_score=float(u["composite_score"]),
                     rank=u["rank"],
                     is_me=True,

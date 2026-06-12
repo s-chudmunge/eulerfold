@@ -50,13 +50,11 @@ export default function UserNav() {
           className="flex items-center gap-2 p-1 rounded-lg hover:bg-sidebar/40 transition-colors border border-transparent hover:border-border/40"
         >
           <div className="w-6.5 h-6.5 rounded-md bg-accent/10 border border-accent/20 flex items-center justify-center overflow-hidden">
-            {avatarUrl ? (
-              <img src={avatarUrl} alt="" className="w-full h-full object-cover" />
-            ) : (
-              <span className="text-[10px] font-bold text-accent uppercase tracking-tighter">
-                {initials}
-              </span>
-            )}
+            <img 
+              src={(avatarUrl?.includes('initials') ? null : avatarUrl) || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(displayName)}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`} 
+              alt={displayName} 
+              className="w-full h-full object-cover" 
+            />
           </div>
           <div className="flex items-center gap-1">
             <span className="text-[13px] font-semibold text-text-heading tracking-tight max-w-[100px] truncate hidden sm:block">

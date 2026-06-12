@@ -52,7 +52,7 @@ export default function PricingPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       <main className="flex-grow min-w-0 bg-background scroll-smooth">
-        <div className="max-w-[700px] mx-auto px-6 py-10 md:py-16">
+        <div className="max-w-[1000px] mx-auto px-6 py-10 md:py-16">
           <PricingClient />
         </div>
       </main>

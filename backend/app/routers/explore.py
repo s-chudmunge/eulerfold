@@ -102,15 +102,17 @@ async def explore_roadmaps(
     if not response or not response.data:
         return []
 
-    # 1. Fetch usernames for these roadmaps to avoid email-derived fallbacks
     emails = list(set(r.get("email") for r in response.data if r.get("email")))
     username_map = {}
+    avatar_map = {}
     if emails:
         try:
-            profile_res = sb.table("profiles").select("email, username").in_("email", emails).execute()
+            profile_res = sb.table("profiles").select("email, username, avatar_url").in_("email", emails).execute()
             for p in profile_res.data:
                 if p.get("username"):
                     username_map[p["email"]] = p["username"]
+                if p.get("avatar_url"):
+                    avatar_map[p["email"]] = p["avatar_url"]
         except Exception as e:
             logger.warning(f"Failed to fetch usernames for explore: {e}")
 
@@ -170,6 +172,7 @@ async def explore_roadmaps(
 
         r_email = r.get("email")
         username = username_map.get(r_email)
+        avatar_url = avatar_map.get(r_email)
         
         author = "Anonymous"
         if r.get("show_author") and r_email:
@@ -203,6 +206,7 @@ async def explore_roadmaps(
                 average_rating=float(r.get("average_rating") or 0.0),
                 rating_count=r.get("rating_count", 0),
                 author=author,
+                avatar_url=avatar_url,
                 week_count=week_count,
                 topic_count=topic_count,
                 created_at=r["created_at"],

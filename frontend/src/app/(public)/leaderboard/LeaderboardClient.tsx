@@ -95,6 +95,11 @@ export default function LeaderboardPage({
         <span className="inconsolata-ui text-[12px] md:text-[13px] font-bold text-accent w-8 md:w-10 shrink-0">
           #{user.rank.toString().padStart(2, '0')}
         </span>
+        <img 
+          src={(user.avatar_url?.includes('initials') ? null : user.avatar_url) || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(user.author || user.username || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`} 
+          alt={user.username} 
+          className="w-8 h-8 rounded-full border border-border object-cover shrink-0"
+        />
         <div className="flex flex-col min-w-0">
           <span className="manrope-body text-[13px] md:text-[14px] font-bold text-text-heading truncate group-hover:text-accent transition-colors leading-tight">
             {user.author}

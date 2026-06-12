@@ -34,13 +34,11 @@ const ProfileDropdown = ({ user, profile, handleSignOut }: { user: any; profile:
         className="flex items-center space-x-2 px-2 py-1 bg-background border border-border rounded-full transition-all hover:bg-callout-bg"
       >
         <div className="w-5 h-5 rounded-full overflow-hidden border border-border/50 flex items-center justify-center bg-callout-bg shrink-0">
-          {avatarUrl ? (
-            <img src={avatarUrl} alt={firstName} className="w-full h-full object-cover" />
-          ) : (
-            <span className="text-[9px] font-bold text-text-muted uppercase">
-              {firstName.substring(0, 2)}
-            </span>
-          )}
+          <img 
+            src={(avatarUrl?.includes('initials') ? null : avatarUrl) || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(firstName || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`} 
+            alt={firstName} 
+            className="w-full h-full object-cover" 
+          />
         </div>
         <span className="text-[11px] font-bold text-text-muted hidden sm:inline-block tracking-tight">
           {firstName}

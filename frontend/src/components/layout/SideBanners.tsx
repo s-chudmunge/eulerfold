@@ -52,8 +52,8 @@ interface BannerProps {
 
 export const SideBanner = ({ buttonText, href, align, currentQuote, quoteIndex, isStatic = false, topClass = "top-16 md:top-24" }: BannerProps) => {
     const containerClasses = isStatic 
-        ? "flex flex-col w-full h-[500px] bg-background border border-border/10 rounded-lg shadow-sm overflow-hidden group transition-all duration-500 [mask-image:linear-gradient(to_bottom,transparent,black_5%,black_95%,transparent),linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] [-webkit-mask-composite:source-in] [mask-composite:intersect]"
-        : `flex flex-col w-[170px] h-[650px] bg-background border-none rounded-lg shadow-sm overflow-hidden group transition-all duration-500 [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent),linear-gradient(to_right,transparent,black_15%,black_85%,transparent)] [-webkit-mask-composite:source-in] [mask-composite:intersect]`;
+        ? "flex flex-col w-full h-[350px] bg-background border border-border/10 rounded-lg shadow-sm overflow-hidden group transition-all duration-500 [mask-image:linear-gradient(to_bottom,transparent,black_5%,black_95%,transparent),linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] [-webkit-mask-composite:source-in] [mask-composite:intersect]"
+        : `flex flex-col w-[170px] h-[400px] bg-background border-none rounded-lg shadow-sm overflow-hidden group transition-all duration-500 [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent),linear-gradient(to_right,transparent,black_15%,black_85%,transparent)] [-webkit-mask-composite:source-in] [mask-composite:intersect]`;
 
     return (
         <Link href={href} className={isStatic ? "block w-full" : `absolute ${topClass} hidden 2xl:block z-10 ${

@@ -53,7 +53,7 @@ export default function PricingClient() {
                 href="/research-decoded"
                 currentQuote={QUOTES[quoteIndex]}
                 quoteIndex={quoteIndex}
-                topClass="-top-4 md:-top-12"
+                topClass="top-24 md:top-32"
             />
 
             {/* Balance Row */}
@@ -92,7 +92,7 @@ export default function PricingClient() {
             </div>
 
             {/* Pricing Tiers Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
                 {/* Starter Tier */}
                 <div className="flex flex-col p-8 border border-border rounded-lg bg-background relative group">
                     <div className="mb-8">
@@ -226,7 +226,44 @@ export default function PricingClient() {
                         </Link>
                     )}
                 </div>
+
+                {/* Enterprise Tier */}
+                <div className="flex flex-col p-8 border border-border/40 rounded-lg bg-background/30 relative overflow-hidden group opacity-80 backdrop-blur-sm">
+                    {/* Background glow */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-slate-500/5 rounded-full blur-3xl -z-10" />
+                    
+                    <div className="mb-8 relative z-10">
+                        <div className="flex items-center justify-between mb-4">
+                            <span className="inconsolata-ui text-[10px] font-black text-text-muted uppercase tracking-[0.2em]">Custom Solutions</span>
+                        </div>
+                        <h2 className="inconsolata-ui text-[24px] font-bold text-text-heading tracking-tight mb-2 flex items-center gap-2">
+                            Enterprise 
+                            <span className="text-xs bg-slate-500/10 text-slate-400 px-2 py-0.5 rounded-full font-medium">BETA</span>
+                        </h2>
+                        <p className="manrope-body text-[13px] text-text-muted leading-relaxed">
+                            For teams and organizations.
+                        </p>
+                    </div>
+
+                    <div className="space-y-4 mb-10 flex-1 relative z-10 flex flex-col items-center justify-center py-10">
+                        <div className="text-center space-y-3">
+                            <div className="w-12 h-12 rounded-full bg-slate-500/10 flex items-center justify-center mx-auto mb-4 border border-slate-500/20">
+                                <span className="text-xl">🤫</span>
+                            </div>
+                            <div className="inconsolata-ui text-lg font-black text-text-heading/80">Coming soon...</div>
+                            <p className="text-[12px] text-text-muted px-4 leading-relaxed">We are crafting something specialized for engineering teams.</p>
+                        </div>
+                    </div>
+
+                    <button 
+                        disabled
+                        className="w-full py-3 border border-border/40 text-text-muted rounded-lg text-center inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] bg-background/40 cursor-not-allowed opacity-50 relative z-10"
+                    >
+                        Waitlist Closed
+                    </button>
+                </div>
             </div>
+
 
             <PaymentModal 
                 isOpen={isPaymentModalOpen} 
