@@ -67,6 +67,7 @@ async def generate_text(prompt: str, model: str = "models/gemini-2.5-flash", res
     if not is_valid:
         raise ValueError(f"Invalid model '{model}'.")
     
+    # Use AI Studio client directly
     client = get_gemini_client()
     if not client:
         raise RuntimeError("Gemini Client not initialized")

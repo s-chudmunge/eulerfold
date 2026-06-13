@@ -31,6 +31,31 @@ from app.database.monitor import monitor_query
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
+def extract_core_subject(title: str) -> str:
+    """Extract a concise subject from a potentially long generated title for search queries."""
+    fluff_patterns = [
+        r"(?i)^the complete guide to\s+",
+        r"(?i)^mastering\s+",
+        r"(?i)^advanced\s+",
+        r"(?i)^basics of\s+",
+        r"(?i)^introduction to\s+",
+        r"(?i)^become a\s+",
+        r"(?i)^how to become an?\s+",
+        r"(?i)^comprehensive guide to\s+"
+    ]
+    core = title
+    for p in fluff_patterns:
+        core = re.sub(p, "", core)
+    
+    # Take up to the first colon or dash
+    core = re.split(r'[:\-]', core)[0].strip()
+    
+    words = core.split()
+    if len(words) > 4:
+        core = " ".join(words[:4])
+        
+    return core
+
 async def transition_roadmap_status(roadmap_id: int, new_status: str, user_email: str, user_uid: Optional[str] = None):
     """
     Centralized status transition logic. 
@@ -480,9 +505,9 @@ They now want to EXTEND this roadmap for {payload.weeks} more week(s) to learn: 
          "timeline": "string",
          "workspace_type": "code|research|design",
          "proof_of_work_instructions": {{
-            "what_to_build": "string",
-            "what_counts_as_evidence": "string",
-            "eval_criteria": ["string", "string"]
+            "what_to_build": "string (Max 1 line, strictly concise)",
+            "what_counts_as_evidence": "string (Max 1 line, strictly concise)",
+            "eval_criteria": ["string (Short criterion)", "string (Short criterion)"]
          }},
          "optimal_search_query": "A targeted search query to find the best academic/technical resources for this module",
          "topics": [
@@ -740,15 +765,16 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
 
 **Rules:**
 1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "The Complete Guide to Number Theory", "Mastering React Hooks"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Roadmap". Do NOT include the time duration in the title.
-2. **Technical Rigor:** Focus on depth and verifiable technical skills. Avoid introductory fluff.
-2. **Logical Progression:** Structure the path into modules that build upon each other logically.
-3. **Specific Topics:** Each module must have 3-5 specific topics. Use industry-standard technical terms.
-4. **Practical Outcomes:** For each module, include a "proof_of_work_instructions" object that details a realistic technical task the user must solve to demonstrate mastery.
-5. **Applied Mastery:** Ensure each module leads to a specific competency string starting with "By the end of this module you will be able to...".
-6. **Output JSON ONLY** matching this schema:
+2. **SEO-Friendly Description:** The "description" must be a single, punchy, search-engine-friendly sentence similar to the title. Do NOT use long paragraphs like "This intensive intensive X-week roadmap is designed for...".
+3. **Technical Rigor:** Focus on depth and verifiable technical skills. Avoid introductory fluff.
+4. **Logical Progression:** Structure the path into modules that build upon each other logically.
+5. **Specific Topics:** Each module must have 3-5 specific topics. Use industry-standard technical terms.
+6. **Practical Outcomes:** For each module, include a "proof_of_work_instructions" object that details a realistic technical task the user must solve to demonstrate mastery.
+7. **Applied Mastery:** Ensure each module leads to a specific competency string starting with "By the end of this module you will be able to...".
+8. **Output JSON ONLY** matching this schema:
    {{
      "title": "string",
-     "description": "Concise technical overview of the learning path (max 2 sentences).",
+     "description": "A single, search engine friendly line describing the roadmap (max 1 sentence).",
      "modules": [
        {{
          "title": "string",
@@ -756,9 +782,9 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
          "timeline": "string",
          "workspace_type": "code|research|design",
          "proof_of_work_instructions": {{
-            "what_to_build": "string",
-            "what_counts_as_evidence": "string",
-            "eval_criteria": ["string", "string"]
+            "what_to_build": "string (Max 1 line, strictly concise)",
+            "what_counts_as_evidence": "string (Max 1 line, strictly concise)",
+            "eval_criteria": ["string (Short criterion)", "string (Short criterion)"]
          }},
          "optimal_search_query": "A targeted search query to find the best academic/technical resources for this module",
          "topics": [
@@ -899,7 +925,8 @@ async def save_external_roadmap(
             # YouTube Enrichment
             if settings.YOUTUBE_API_KEY:
                 try:
-                    search_query = f"{roadmap_create.subject} {topic['title']} tutorial"
+                    short_subject = extract_core_subject(roadmap_create.subject)
+                    search_query = f"{short_subject} {topic['title']} tutorial"
                     results = await search_youtube_videos(search_query, max_results=1)
                     if results:
                         topic["youtube_video_id"] = results[0]["video_id"]
@@ -951,9 +978,6 @@ async def save_external_roadmap(
         if not response.data:
             raise HTTPException(status_code=500, detail="Failed to save external roadmap")
             
-        # 3. Background task to extract skills
-        if uid:
-            background_tasks.add_task(extract_skills_from_roadmap, response.data[0]["id"], uid)
 
         return RoadmapRead(**response.data[0])
     except Exception as e:
@@ -1037,9 +1061,9 @@ Duration: {payload.time_value} {payload.time_unit}.
          "timeline": "string",
          "workspace_type": "code|research|design",
          "proof_of_work_instructions": {{
-            "what_to_build": "string",
-            "what_counts_as_evidence": "string",
-            "eval_criteria": ["string", "string"]
+            "what_to_build": "string (Max 1 line, strictly concise)",
+            "what_counts_as_evidence": "string (Max 1 line, strictly concise)",
+            "eval_criteria": ["string (Short criterion)", "string (Short criterion)"]
          }},
          "optimal_search_query": "A targeted search query to find the best academic/technical resources for this module",
          "topics": [

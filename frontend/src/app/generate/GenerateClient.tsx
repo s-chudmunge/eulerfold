@@ -101,6 +101,45 @@ function InstructionsSidePanel() {
   );
 }
 
+function GenerateHero({ setMode }: { setMode: (mode: 'ai' | 'job') => void }) {
+  return (
+    <div className="relative pt-16 md:pt-24 pb-16 overflow-hidden border-b border-border/40 bg-background/50">
+      <div className="absolute inset-0 bg-teal-900/[0.02] -z-10" />
+      <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-teal-500/10 rounded-full blur-[120px] -z-10" />
+      
+      <div className="max-w-4xl mx-auto px-6 text-center">
+        <h1 className="font-inter text-3xl sm:text-4xl md:text-5xl font-semibold text-text-heading mb-6 tracking-tight leading-[1.15] md:leading-[1.1] animate-in fade-in slide-in-from-bottom-3 duration-700 delay-100">
+          Architect your learning with <br className="hidden md:block"/> 
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-teal-400">precision and depth</span>
+        </h1>
+        <p className="text-text-muted text-base md:text-lg manrope-body font-medium leading-relaxed max-w-2xl mx-auto mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
+          Bypass generic tutorials. Generate custom, technical roadmaps curated in real-time. Whether you are mastering a new stack or decoding a job description, build a structured plan.
+        </p>
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-in fade-in slide-in-from-bottom-5 duration-700 delay-300">
+          <button 
+            onClick={() => {
+              setMode('ai');
+              document.getElementById('generator-workspace')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }}
+            className="w-full sm:w-auto inline-flex items-center justify-center bg-gradient-to-b from-teal-400 to-teal-600 text-white px-8 py-3.5 rounded-2xl text-[14px] font-bold transition-all hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-teal-800 shadow-lg gap-2"
+          >
+            <Sparkles className="w-4 h-4" /> AI Generator
+          </button>
+          <button 
+            onClick={() => {
+              setMode('job');
+              document.getElementById('generator-workspace')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }}
+            className="w-full sm:w-auto inline-flex items-center justify-center bg-sidebar border border-border text-text-heading px-8 py-3.5 rounded-2xl text-[14px] font-bold transition-all hover:bg-header active:scale-95 shadow-sm gap-2"
+          >
+            <Briefcase className="w-4 h-4" /> Job Decoded
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function GenerateClient({ featuredRoadmaps }: { featuredRoadmaps?: ExploreRoadmap[] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -195,16 +234,22 @@ export default function GenerateClient({ featuredRoadmaps }: { featuredRoadmaps?
 
       <div className="flex-1 flex flex-col relative">
         <main className="flex-1 min-w-0 bg-background scroll-smooth">
-          <div className="max-w-[1440px] w-full mx-auto px-6 py-12 md:py-20">
-            <div className="flex flex-col lg:flex-row gap-8 lg:gap-16 xl:gap-24 justify-center items-center lg:items-start w-full">
+          
+          {/* Hero Section */}
+          {!roadmapData && !isLoading && (
+            <GenerateHero setMode={setMode} />
+          )}
+
+          <div id="generator-workspace" className="max-w-7xl w-full mx-auto px-6 py-12 md:py-16">
+            <div className="flex flex-col lg:flex-row gap-8 lg:gap-10 xl:gap-12 justify-center lg:items-start w-full">
               
               {!roadmapData && (
-                <div className="w-full lg:w-[260px] xl:w-[280px] shrink-0 lg:sticky lg:top-24 lg:pt-[116px] order-2 lg:order-1 pt-8">
+                <div className="w-full lg:w-[260px] shrink-0 lg:sticky lg:top-28 order-2 lg:order-1 mt-8 lg:mt-0">
                   <InstructionsSidePanel />
                 </div>
               )}
 
-              <div className="flex-1 min-w-0 max-w-[640px] w-full order-1 lg:order-2">
+              <div className="flex-1 min-w-0 max-w-2xl w-full order-1 lg:order-2">
                 {/* Compact Header */}
                 {!isLoading && (
                   <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -256,7 +301,7 @@ export default function GenerateClient({ featuredRoadmaps }: { featuredRoadmaps?
 
                     {/* Featured Roadmaps List below the form */}
                     {featuredRoadmaps && featuredRoadmaps.length > 0 && !isLoading && (
-                      <div className="mt-16 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+                      <div className="mt-80 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
                         <div className="flex items-center justify-between mb-4">
                           <h3 className="flex items-center gap-2 text-[12px] font-bold text-text-heading uppercase tracking-widest">
                             <TrendingUp className="w-4 h-4 text-accent" />
@@ -381,7 +426,7 @@ export default function GenerateClient({ featuredRoadmaps }: { featuredRoadmaps?
               </div>
 
               {!roadmapData && (
-                <div className="hidden xl:block w-[240px] shrink-0 sticky top-24 lg:pt-[116px] order-3">
+                <div className="hidden xl:block w-[240px] shrink-0 sticky top-28 order-3">
                   <SideBanner 
                     isStatic
                     buttonText="Research"

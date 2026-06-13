@@ -303,13 +303,18 @@ async def save_external_decode(payload: dict = Body(...), current_user: User = D
         
     sb = get_supabase_client()
     
+    # Extract core analysis and full text
+    core_analysis = analysis_data.get("analysis", analysis_data)
+    extracted_text = analysis_data.get("extracted_text", "")
+    
     # Generate ID and insert
     new_decode = {
         "user_id": current_user.supabase_uid,
         "email": current_user.email,
         "paper_url": paper_url,
-        "paper_title": analysis_data.get("paper_title", "Untitled Paper"),
-        "analysis_data": analysis_data,
+        "paper_title": core_analysis.get("paper_title", "Untitled Paper"),
+        "core_analysis": core_analysis,
+        "extracted_text": extracted_text,
         "status": "completed"
     }
     
@@ -345,3 +350,4 @@ async def get_decode_detail(decode_id: str, current_user: User = Depends(get_cur
         raise HTTPException(status_code=403, detail="Not authorized")
         
     return decode
+

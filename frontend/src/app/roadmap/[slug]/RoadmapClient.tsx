@@ -89,6 +89,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
     const [isHomeworkModalOpen, setIsHomeworkModalOpen] = useState<boolean>(false);
     const [showCloneModal, setShowCloneModal] = useState<boolean>(false);
     const [submittingModule, setSubmittingModule] = useState<{number: number, title: string, instructions?: string} | null>(null);
+    const [viewOnlyResult, setViewOnlyResult] = useState<any>(null);
     const router = useRouter();
     const { openSettings } = useSettings();
 
@@ -593,7 +594,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                     <div className="space-y-4 px-3">
                         <div className="space-y-1">
                             <p className="inconsolata-ui text-[0.7rem] font-bold text-text-muted  tracking-wide">Duration</p>
-                            <p className="inconsolata-ui text-[0.875rem] font-bold text-text-heading">{roadmap.time_value} {roadmap.time_unit}</p>
+                            <p className="inconsolata-ui text-[0.875rem] font-bold text-text-heading">{roadmap.roadmap_plan?.modules?.length || roadmap.time_value} {roadmap.roadmap_plan?.modules?.length ? (roadmap.roadmap_plan.modules.length === 1 ? 'week' : 'weeks') : roadmap.time_unit}</p>
                         </div>
 
                         {(roadmap.author || roadmap.username) && (
@@ -814,7 +815,28 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                     onDeleteExtension={handleDeleteExtension}
                                     onPractice={(topic, mIdx) => setSelectedPracticeTopic({ topic, moduleIndex: mIdx })}
                                     onOpenHomework={(mNum, mTitle, mInst) => {
-                                        setSubmittingModule({ number: mNum, title: mTitle, instructions: mInst });
+                                        setSubmittingModule({ 
+                                            number: mNum, 
+                                            title: mTitle, 
+                                            instructions: mInst,
+                                            topics: roadmap.roadmap_plan?.modules?.[mNum - 1]?.topics || []
+                                        });
+                                        setViewOnlyResult(null);
+                                        setIsHomeworkModalOpen(true);
+                                    }}
+                                    onViewSubmissionResult={(sub) => {
+                                        setSubmittingModule({ number: sub.module_number, title: `Module ${sub.module_number} Submission`, instructions: null });
+                                        setViewOnlyResult({
+                                            level: sub.evaluation_level,
+                                            summary: sub.evaluation,
+                                            link: sub.link,
+                                            evidence: sub.user_skill_evidence?.map((e: any) => ({
+                                                skill: e.skill_name,
+                                                strength: e.evidence_strength,
+                                                confidence: e.confidence,
+                                                reason: e.reason
+                                            })) || []
+                                        });
                                         setIsHomeworkModalOpen(true);
                                     }}
                                 />
@@ -1131,13 +1153,19 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
             {roadmap && submittingModule && (
                 <HomeworkSubmissionModal
                     isOpen={isHomeworkModalOpen}
-                    onClose={() => setIsHomeworkModalOpen(false)}
+                    onClose={() => {
+                        setIsHomeworkModalOpen(false);
+                        setViewOnlyResult(null);
+                    }}
                     roadmapId={roadmap.id}
                     moduleNumber={submittingModule.number}
                     moduleTitle={submittingModule.title}
                     instructions={submittingModule.instructions}
+                    roadmapSubject={roadmap.subject || roadmap.title}
+                    moduleTopicsText={JSON.stringify((submittingModule as any).topics || [])}
+                    isPro={isPro}
+                    initialResult={viewOnlyResult}
                     onSuccess={(evaluation) => {
-                        setIsHomeworkModalOpen(false);
                         fetchSubmissions();
                     }}
                 />

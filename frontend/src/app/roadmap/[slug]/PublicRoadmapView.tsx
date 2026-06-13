@@ -57,6 +57,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
     const [isHomeworkModalOpen, setIsHomeworkModalOpen] = useState<boolean>(false);
     const [showCloneModal, setShowCloneModal] = useState<boolean>(false);
     const [submittingModule, setSubmittingModule] = useState<{number: number, title: string, instructions?: string} | null>(null);
+    const [viewOnlyResult, setViewOnlyResult] = useState<any>(null);
 
     const router = useRouter();
 
@@ -298,8 +299,6 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
             
             <main className="flex-grow">
                 <div className="max-w-[1000px] mx-auto px-6 pt-16 pb-12 md:px-12 md:pt-24 md:pb-16 relative">
-                    <BrandedSideBanners />
-                    
                     {/* Public Header Area - Minimalist Design */}
                     <div className="relative mb-10 pb-8 border-b border-border/60 group/header">
                         <div className="flex flex-col gap-5">
@@ -327,7 +326,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                 <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 manrope-body text-[11px] text-text-muted font-medium pt-1">
                                     <div className="flex items-center gap-1.5 group/meta">
                                         <Clock className="w-3.5 h-3.5 text-accent/50 group-hover/meta:text-accent transition-colors" />
-                                        <span>{roadmap.time_value} {roadmap.time_unit}</span>
+                                        <span>{roadmap.roadmap_plan?.modules?.length || roadmap.time_value} {roadmap.roadmap_plan?.modules?.length ? (roadmap.roadmap_plan.modules.length === 1 ? 'week' : 'weeks') : roadmap.time_unit}</span>
                                     </div>
                                     <div className="flex items-center gap-1.5 group/meta">
                                         <Users className="w-3.5 h-3.5 text-accent/50 group-hover/meta:text-accent transition-colors" />
@@ -389,17 +388,17 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                     <button 
                                         onClick={handleContinueLearning}
                                         disabled={saving}
-                                        className="inline-flex items-center justify-center bg-accent text-white px-4 py-1.5 rounded text-[11px] font-bold transition-all hover:bg-teal-700 active:scale-[0.98] gap-2 font-inter disabled:opacity-50 shadow-sm"
+                                        className="inline-flex items-center justify-center bg-gradient-to-b from-teal-400 to-teal-600 text-white px-6 py-2 rounded-xl text-[12px] font-bold transition-all hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-teal-800 gap-2 font-inter disabled:opacity-50 shadow-md"
                                     >
-                                        <ArrowRight className="w-3 h-3" /> Continue
+                                        <ArrowRight className="w-3.5 h-3.5" /> Continue
                                     </button>
                                 ) : (
                                     <button 
                                         onClick={handleClone}
                                         disabled={saving}
-                                        className="inline-flex items-center justify-center bg-text-heading text-background px-4 py-1.5 rounded text-[11px] font-bold transition-all hover:opacity-90 active:scale-[0.98] gap-2 font-inter shadow-sm"
+                                        className="inline-flex items-center justify-center bg-gradient-to-b from-zinc-700 to-zinc-900 text-white px-6 py-2 rounded-xl text-[12px] font-bold transition-all hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-zinc-950 gap-2 font-inter shadow-md"
                                     >
-                                        <Copy className="w-3 h-3" /> {saving ? '...' : 'Clone to Dashboard'}
+                                        <Copy className="w-3.5 h-3.5" /> {saving ? '...' : 'Clone to Dashboard'}
                                     </button>
                                 )}
 
@@ -417,7 +416,8 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                     </div>
 
                     {/* Main Roadmap Display */}
-                    <div className="mb-20">
+                    <div className="mb-20 relative">
+                        <BrandedSideBanners topClass="top-0 md:top-0" />
                         {/* DEBUG: {JSON.stringify({ isPro, isOwner, completed: roadmap.progress?.completed_topics, total: roadmap.progress?.total_topics, extCount: roadmap.extension_count })} */}
                         <RoadmapDisplay 
                             roadmapData={roadmap} 
@@ -435,7 +435,28 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                             onDeleteExtension={handleDeleteExtension}
                             onPractice={(topic, mIdx) => setSelectedPracticeTopic({ topic, moduleIndex: mIdx })}
                             onOpenHomework={(mNum, mTitle, mInst) => {
-                                setSubmittingModule({ number: mNum, title: mTitle, instructions: mInst });
+                                setSubmittingModule({ 
+                                    number: mNum, 
+                                    title: mTitle, 
+                                    instructions: mInst,
+                                    topics: roadmap.roadmap_plan?.modules?.[mNum - 1]?.topics || []
+                                });
+                                setViewOnlyResult(null);
+                                setIsHomeworkModalOpen(true);
+                            }}
+                            onViewSubmissionResult={(sub) => {
+                                setSubmittingModule({ number: sub.module_number, title: `Module ${sub.module_number} Submission`, instructions: null });
+                                setViewOnlyResult({
+                                    level: sub.evaluation_level,
+                                    summary: sub.evaluation,
+                                    link: sub.link,
+                                    evidence: sub.user_skill_evidence?.map((e: any) => ({
+                                        skill: e.skill_name,
+                                        strength: e.evidence_strength,
+                                        confidence: e.confidence,
+                                        reason: e.reason
+                                    })) || []
+                                });
                                 setIsHomeworkModalOpen(true);
                             }}
                         />
@@ -636,13 +657,19 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
             {roadmap && submittingModule && (
                 <HomeworkSubmissionModal
                     isOpen={isHomeworkModalOpen}
-                    onClose={() => setIsHomeworkModalOpen(false)}
+                    onClose={() => {
+                        setIsHomeworkModalOpen(false);
+                        setViewOnlyResult(null);
+                    }}
                     roadmapId={roadmap.id}
                     moduleNumber={submittingModule.number}
                     moduleTitle={submittingModule.title}
                     instructions={submittingModule.instructions}
+                    roadmapSubject={roadmap.subject || roadmap.title}
+                    moduleTopicsText={JSON.stringify((submittingModule as any).topics || [])}
+                    isPro={isPro}
+                    initialResult={viewOnlyResult}
                     onSuccess={(evaluation) => {
-                        setIsHomeworkModalOpen(false);
                         fetchSubmissions();
                     }}
                 />

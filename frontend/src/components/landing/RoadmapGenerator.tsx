@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { api, RoadmapData } from '../../lib/api';
 import { Loader, Route, Target, Zap, AlertCircle, Compass, History, Hourglass, Check, ChevronDown, Search, User, GraduationCap, Briefcase, ArrowRight, LogIn, Cpu, ShieldCheck, Unlink, Sparkles, BookOpen, Clock, Loader2, Link2, CheckCircle2, X, HardDrive, PlayCircle } from 'lucide-react';
+import { orModelOptions } from '@/lib/modelUtils';
+import { logAIUsage } from '@/lib/usageTracker';
 import { supabase } from '@/lib/supabase/client';
 import PaymentModal from '../PaymentModal';
 import { OpenRouterModal } from './OpenRouterModal';
@@ -98,13 +100,32 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
   const [isRoleDropdownOpenTarget, setIsRoleDropdownOpenTarget] = useState(false);
   const [showOptionalFields, setShowOptionalFields] = useState(false);
 
-  const checkConfig = () => {
+  const checkConfig = async () => {
     setOpenRouterKey(localStorage.getItem('openRouterKey'));
     setOpenRouterModel(localStorage.getItem('openRouterModel') || 'openai/gpt-4o');
-    try {
-      const history = JSON.parse(localStorage.getItem('openRouterUsageHistory') || '[]');
-      setUsageHistory(history);
-    } catch (e) {}
+    
+    // Fetch unified AI usage from backend if session exists, else fallback
+    const { data: { session: currentSession } } = await supabase.auth.getSession();
+    if (currentSession) {
+      try {
+        const res = await api.get('/ai-usage?limit=3');
+        // Map backend response to match the expected format
+        const mappedHistory = res.data.map((log: any) => ({
+          subject: log.subject,
+          model: log.model_name,
+          total_tokens: log.total_tokens,
+          date: log.created_at
+        }));
+        setUsageHistory(mappedHistory);
+      } catch (err) {
+        console.error("Failed to load AI usage history", err);
+      }
+    } else {
+      try {
+        const history = JSON.parse(localStorage.getItem('openRouterUsageHistory') || '[]');
+        setUsageHistory(history);
+      } catch (e) {}
+    }
 
     setLocalAIModelId(localStorage.getItem('localAIModelId'));
     setLocalAIModelName(localStorage.getItem('localAIModelName'));
@@ -224,15 +245,16 @@ Estimated duration: ${formData.time_value} ${formData.time_unit || 'weeks'}.
 
 **Rules:**
 1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "The Complete Guide to Number Theory", "Mastering React Hooks"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Roadmap". Do NOT include the time duration in the title.
-2. **Technical Rigor:** Focus on depth and verifiable technical skills. Avoid introductory fluff.
-2. **Logical Progression:** Structure the path into modules that build upon each other logically.
-3. **Specific Topics:** Each module must have 3-5 specific topics. Use industry-standard technical terms.
-4. **Practical Outcomes:** For each module, include a "proof_of_work_instructions" object that details a realistic technical task the user must solve to demonstrate mastery.
-5. **Applied Mastery:** Ensure each module leads to a specific competency string starting with "By the end of this module you will be able to...".
-6. **Output JSON ONLY** matching this schema:
+2. **SEO-Friendly Description:** The "description" must be a single, punchy, search-engine-friendly sentence similar to the title. Do NOT use long paragraphs like "This intensive intensive X-week roadmap is designed for...".
+3. **Technical Rigor:** Focus on depth and verifiable technical skills. Avoid introductory fluff.
+4. **Logical Progression:** Structure the path into modules that build upon each other logically.
+5. **Specific Topics:** Each module must have 3-5 specific topics. Use industry-standard technical terms.
+6. **Practical Outcomes:** For each module, include a "proof_of_work_instructions" object that details a realistic technical task the user must solve to demonstrate mastery.
+7. **Applied Mastery:** Ensure each module leads to a specific competency string starting with "By the end of this module you will be able to...".
+8. **Output JSON ONLY** matching this schema:
    {
      "title": "string",
-     "description": "Concise technical overview of the learning path (max 2 sentences).",
+     "description": "A single, search engine friendly line describing the roadmap (max 1 sentence).",
      "modules": [
        {
          "title": "string",
@@ -240,9 +262,9 @@ Estimated duration: ${formData.time_value} ${formData.time_unit || 'weeks'}.
          "timeline": "string",
          "workspace_type": "code|research|design",
          "proof_of_work_instructions": {
-            "what_to_build": "string",
-            "what_counts_as_evidence": "string",
-            "eval_criteria": ["string", "string"]
+            "what_to_build": "string (Max 1 line, strictly concise)",
+            "what_counts_as_evidence": "string (Max 1 line, strictly concise)",
+            "eval_criteria": ["string (Short criterion)", "string (Short criterion)"]
          },
          "topics": [
            { "title": "string", "subtopics": [ { "title": "string" } ] }
@@ -267,6 +289,8 @@ Duration: ${formData.time_value} ${formData.time_unit || 'weeks'}.
 
 Generate a catchy, SEO-friendly, and natural title (e.g., "The Complete Guide to Number Theory"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Roadmap" and do NOT include the duration in the title.
 
+CRITICAL REQUIREMENT: You MUST generate EXACTLY ${formData.time_value} modules in the "modules" array (one module for each unit of time). Do not just output one module.
+
 Reply ONLY with a raw JSON object matching EXACTLY this structure:
 {
   "title": "Roadmap Title",
@@ -278,9 +302,9 @@ Reply ONLY with a raw JSON object matching EXACTLY this structure:
       "timeline": "Week 1",
       "workspace_type": "code",
       "proof_of_work_instructions": {
-        "what_to_build": "Task description",
-        "what_counts_as_evidence": "Evidence",
-        "eval_criteria": ["Criteria 1", "Criteria 2"]
+        "what_to_build": "Task description (Max 1 line, strictly concise)",
+        "what_counts_as_evidence": "Evidence (Max 1 line, strictly concise)",
+        "eval_criteria": ["Criteria 1 (Short)", "Criteria 2 (Short)"]
       },
       "topics": [
         { "title": "Topic", "subtopics": [ { "title": "Subtopic" } ] }
@@ -377,22 +401,15 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
            total_tokens: 0
         };
 
-        const newEntry = {
-          id: saveResponse.data?.slug || Date.now().toString(),
-          subject: formData.subject,
-          model: openRouterModel || 'openai/gpt-4o',
-          prompt_tokens: usageObj.prompt_tokens || 0,
-          completion_tokens: usageObj.completion_tokens || 0,
-          total_tokens: usageObj.total_tokens || 0,
-          date: new Date().toISOString()
-        };
-        
         try {
-          const existingHistory = JSON.parse(localStorage.getItem('openRouterUsageHistory') || '[]');
-          const updatedHistory = [newEntry, ...existingHistory].slice(0, 50);
-          localStorage.setItem('openRouterUsageHistory', JSON.stringify(updatedHistory));
-          setUsageHistory(updatedHistory);
-          console.log("Successfully saved usage history:", updatedHistory);
+          await logAIUsage({
+            id: saveResponse.data?.slug,
+            subject: formData.subject,
+            model: openRouterModel || 'openai/gpt-4o',
+            prompt_tokens: usageObj.prompt_tokens || 0,
+            completion_tokens: usageObj.completion_tokens || 0,
+            total_tokens: usageObj.total_tokens || 0
+          });
         } catch (e) {
           console.error("Failed to save usage history:", e);
         }
@@ -419,6 +436,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                   { role: "system", content: localSystemPrompt },
                   { role: "user", content: localUserPrompt }
                 ],
+                max_tokens: 8192,
                 // Not all WebLLM models support json_object, but we can try response_format if needed.
                 // We will rely on strong prompting here and manual parsing.
               });
@@ -451,10 +469,10 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
             } catch (err: any) {
               const errMsg = err?.message || err?.toString() || '';
               if (errMsg.includes('Instance reference') || errMsg.includes('disposed') || errMsg.includes('Device was lost') || errMsg.includes('OperationError')) {
-                throw new Error("Hardware Crash: Your GPU ran out of memory. Please select a smaller model (like Llama 3.2 1B) or use Cloud AI.");
+                throw new Error("Hardware Crash: Your GPU ran out of memory. Please select a smaller model (like Llama 3.2 1B) or use EulerFold AI.");
               }
               console.warn(`Local AI Generation attempt ${attempt} failed to parse JSON.`, err);
-              if (attempt === 2) throw new Error("Local AI failed to generate valid JSON after 2 attempts. Try a different model or use Cloud AI.");
+              if (attempt === 2) throw new Error("Local AI failed to generate valid JSON after 2 attempts. Try a different model or use EulerFold AI.");
             }
           }
 
@@ -472,21 +490,17 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
           });
 
           try {
-            const rawUsage = responseUsage || {};
-            const newEntry = {
-              id: saveResponse.data?.slug || Date.now().toString(),
+            await logAIUsage({
+              id: saveResponse.data?.slug,
               subject: formData.subject,
               model: localAIModelId,
-              prompt_tokens: rawUsage.prompt_tokens || 0,
-              completion_tokens: rawUsage.completion_tokens || 0,
-              total_tokens: rawUsage.total_tokens || 0,
-              date: new Date().toISOString()
-            };
-            const existingHistory = JSON.parse(localStorage.getItem('openRouterUsageHistory') || '[]');
-            const updatedHistory = [newEntry, ...existingHistory].slice(0, 100);
-            localStorage.setItem('openRouterUsageHistory', JSON.stringify(updatedHistory));
-            setUsageHistory(updatedHistory);
-          } catch (e) {}
+              prompt_tokens: responseUsage?.prompt_tokens || 0,
+              completion_tokens: responseUsage?.completion_tokens || 0,
+              total_tokens: responseUsage?.total_tokens || 0
+            });
+          } catch (e) {
+            console.error("Failed to log AI usage:", e);
+          }
 
           onRoadmapGenerated(saveResponse.data, { ...formData, time_unit: 'weeks' });
         } finally {
@@ -705,10 +719,11 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                 <div className="flex items-center justify-between p-1 bg-sidebar border border-border rounded-lg w-full">
                   <button
                     type="button"
-                    onClick={() => { setUseOpenRouter(false); setUseLocalAI(false); }}
-                    className={`flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all ${(!useOpenRouter && !useLocalAI) ? 'bg-background text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
+                    disabled={true}
+                    onClick={() => {}}
+                    className={`flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all text-red-500 opacity-60 cursor-not-allowed`}
                   >
-                    Default AI
+                    EulerFold AI (Temporary Outage)
                   </button>
                   <button
                     type="button"
@@ -734,7 +749,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                         </div>
                         <div>
                           <h3 className="text-[13px] font-bold text-text-heading leading-tight mb-0.5">
-                            Cloud AI (Default)
+                            EulerFold AI (Default)
                           </h3>
                           <p className="text-[11px] text-text-muted leading-tight">
                             Powered by Google Gemini 2.5. Fast, robust roadmaps. <span className="text-amber-500/90 font-bold">Costs 1 Credit per generation.</span>
@@ -862,7 +877,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                   <div className="flex items-center justify-between mb-3">
                     <div className="flex items-center gap-2">
                       <History className="w-3.5 h-3.5 text-text-muted" />
-                      <span className="text-[9px] font-bold text-text-heading uppercase tracking-widest">Recent OpenRouter Usage</span>
+                      <span className="text-[9px] font-bold text-text-heading uppercase tracking-widest">Recent AI Usage</span>
                     </div>
                     <a href="https://openrouter.ai/activity" target="_blank" rel="noopener noreferrer" className="text-[9px] font-bold text-accent hover:underline">
                       View Log →
@@ -914,7 +929,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                    <div className="text-left">
                      <p className="text-[11px] font-bold text-text-heading mb-0.5 uppercase tracking-widest">Generation Cost</p>
                      <p className="text-[11px] text-text-muted leading-relaxed font-medium">
-                       Architecting this roadmap with Cloud AI will utilize <span className="font-bold text-amber-500/90">1 Credit</span> from your account balance.
+                       Architecting this roadmap with EulerFold AI will utilize <span className="font-bold text-amber-500/90">1 Credit</span> from your account balance.
                      </p>
                    </div>
                  </div>
@@ -995,10 +1010,11 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                     <div className="flex items-center justify-between p-1 bg-sidebar border border-border rounded-lg w-full">
                       <button
                         type="button"
-                        onClick={() => { setUseOpenRouter(false); setUseLocalAI(false); }}
-                        className={`flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all ${(!useOpenRouter && !useLocalAI) ? 'bg-background text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
+                        disabled={true}
+                        onClick={() => {}}
+                        className={`flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all text-red-500 opacity-60 cursor-not-allowed`}
                       >
-                        Default AI
+                        EulerFold AI (Temporary Outage)
                       </button>
                       <button
                         type="button"
@@ -1032,24 +1048,24 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                 {!session ? (
                     <button
                       onClick={generateRoadmap}
-                      className="w-full sm:w-fit group relative inline-flex items-center justify-center px-8 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] transition-all bg-accent text-white hover:opacity-90 active:scale-95 shadow-xl shadow-accent/20 gap-2 rounded-lg"
+                      className="w-full sm:w-fit group relative inline-flex items-center justify-center px-7 py-3 text-[14px] font-bold transition-all bg-gradient-to-b from-teal-400 to-teal-600 text-white hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-teal-800 shadow-lg gap-2 rounded-2xl"
                     >
-                      <LogIn className="w-3 h-3" /> Authenticate
+                      <LogIn className="w-4 h-4" /> Authenticate
                     </button>
                 ) : (
                     <button
                       onClick={generateRoadmap}
                       disabled={isGenerating}
-                      className={`w-full sm:w-fit group relative inline-flex items-center justify-center px-8 py-2.5 text-[10px] font-bold uppercase tracking-[0.2em] transition-all rounded-lg ${
+                      className={`w-full sm:w-fit group relative inline-flex items-center justify-center px-7 py-3 text-[14px] font-bold transition-all rounded-2xl ${
                         (!useLocalAI && !(openRouterKey && useOpenRouter) && credits !== null && credits < 1)
-                        ? 'bg-sidebar border border-border text-text-muted hover:border-accent/40' 
-                        : 'bg-text-heading text-background hover:opacity-90 active:scale-95 shadow-xl'
+                        ? 'bg-sidebar border-2 border-border text-text-muted hover:border-accent/40' 
+                        : 'bg-gradient-to-b from-teal-400 to-teal-600 text-white hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-teal-800 shadow-lg'
                       }`}
                     >
                       <div className="flex items-center justify-center gap-2">
                         {(openRouterKey && useOpenRouter) || useLocalAI ? (
                           <>
-                            <Cpu className="w-3.5 h-3.5" /> Architect {useLocalAI ? '(Local)' : '(OpenRouter)'}
+                            <Cpu className="w-4 h-4" /> Architect {useLocalAI ? '(Local)' : '(OpenRouter)'}
                           </>
                         ) : (
                           <>
@@ -1076,7 +1092,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                      <div className="flex items-center justify-between mb-3">
                        <div className="flex items-center gap-2">
                          <History className="w-3.5 h-3.5 text-text-muted" />
-                         <span className="text-[9px] font-bold text-text-heading uppercase tracking-widest">Recent OpenRouter Usage</span>
+                         <span className="text-[9px] font-bold text-text-heading uppercase tracking-widest">Recent AI Usage</span>
                        </div>
                        <a href="https://openrouter.ai/activity" target="_blank" rel="noopener noreferrer" className="text-[9px] font-bold text-accent hover:underline">
                          View Log →

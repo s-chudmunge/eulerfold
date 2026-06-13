@@ -59,6 +59,30 @@ const manrope = Manrope({
   weight: ['400', '500', '600', '700'],
 });
 
+const getModelPill = (model: string | undefined) => {
+    if (!model || model === 'manual-build') return null;
+    
+    let text = 'AI Generated';
+    let colorClass = 'bg-zinc-500/5 border-zinc-500/20 text-zinc-500';
+    
+    if (model.includes('gemini')) {
+        text = 'EulerFold AI';
+        colorClass = 'bg-blue-500/5 border-blue-500/20 text-blue-500';
+    } else if (model.includes('/')) {
+        text = 'OpenRouter';
+        colorClass = 'bg-purple-500/5 border-purple-500/20 text-purple-500';
+    } else {
+        text = 'Local AI';
+        colorClass = 'bg-teal-500/5 border-teal-500/20 text-teal-600';
+    }
+
+    return (
+        <div className={`flex items-center px-1.5 py-0.5 rounded border ${colorClass}`} title={`Generated via ${model}`}>
+            <span className="inconsolata-ui text-[8px] font-black uppercase tracking-tighter">{text}</span>
+        </div>
+    );
+};
+
 export default function DashboardPage() {
     const router = useRouter();
     const { user: authUser, loading: authLoading } = useAuth();
@@ -358,6 +382,7 @@ export default function DashboardPage() {
                                                             <span className="inconsolata-ui text-[8px] font-black text-amber-500 uppercase tracking-tighter">Cloned</span>
                                                         </div>
                                                     )}
+                                                    {getModelPill(r.model)}
                                                     {r.status && r.status !== 'active' && (
                                                         <div className={`flex items-center px-1.5 py-0.5 rounded border ${
                                                             r.status === 'completed' ? 'bg-teal-500/5 border-teal-500/20 text-teal-600' :

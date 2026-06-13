@@ -37,7 +37,20 @@ export const QUOTES = [
     { text: "If I have seen further it is by standing on the shoulders of Giants.", author: "Isaac Newton" },
     { text: "Education is the most powerful weapon which you can use to change the world.", author: "Nelson Mandela" },
     { text: "The function of good software is to make the complex appear to be simple.", author: "Grady Booch" },
-    { text: "Talk is cheap. Show me the code.", author: "Linus Torvalds" }
+    { text: "Talk is cheap. Show me the code.", author: "Linus Torvalds" },
+    { text: "Millions saw the apple fall, but Newton asked why.", author: "Bernard Baruch" },
+    { text: "I have no special talent. I am only passionately curious.", author: "Albert Einstein" },
+    { text: "Somewhere, something incredible is waiting to be known.", author: "Carl Sagan" },
+    { text: "Research is formalized curiosity. It is poking and prying with a purpose.", author: "Zora Neale Hurston" },
+    { text: "To be surprised, to wonder, is to begin to understand.", author: "Jose Ortega y Gasset" },
+    { text: "Wonder is the seed of knowledge.", author: "Francis Bacon" },
+    { text: "The mind that opens to a new idea never returns to its original size.", author: "Albert Einstein" },
+    { text: "Equipped with his five senses, man explores the universe around him and calls the adventure Science.", author: "Edwin Hubble" },
+    { text: "Curiosity is the engine of achievement.", author: "Ken Robinson" },
+    { text: "The universe is under no obligation to make sense to you.", author: "Neil deGrasse Tyson" },
+    { text: "We are a way for the cosmos to know itself.", author: "Carl Sagan" },
+    { text: "Curiosity is the wick in the candle of learning.", author: "William Arthur Ward" },
+    { text: "Look up at the stars and not down at your feet. Try to make sense of what you see, and wonder about what makes the universe exist.", author: "Stephen Hawking" }
 ];
 
 interface BannerProps {
@@ -104,7 +117,7 @@ export const SideBanner = ({ buttonText, href, align, currentQuote, quoteIndex, 
     );
 };
 
-export default function BrandedSideBanners() {
+export default function BrandedSideBanners({ topClass }: { topClass?: string }) {
     const [quoteIndex, setQuoteIndex] = useState(0);
 
     useEffect(() => {
@@ -128,6 +141,7 @@ export default function BrandedSideBanners() {
                 href="/dashboard"
                 currentQuote={currentQuote}
                 quoteIndex={quoteIndex}
+                topClass={topClass}
             />
         </>
     );

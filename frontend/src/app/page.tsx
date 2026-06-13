@@ -14,6 +14,7 @@ import ProductEcosystem from '@/components/landing/ProductEcosystem';
 import GenerationSystems from '@/components/landing/GenerationSystems';
 import RoadmapDiscovery from '@/components/landing/RoadmapDiscovery';
 import EulerLogoCanvas from '@/components/EulerLogoCanvas';
+import InteractiveDemo from '@/components/landing/InteractiveDemo';
 import { ExploreRoadmap } from '@/lib/api';
 import VerifiedBadge from '@/components/VerifiedBadge';
 import { getCategory } from '@/lib/roadmapUtils';
@@ -194,6 +195,8 @@ export default async function LandingPage() {
       <main className="flex-grow">
         <HeroSection />
 
+        <InteractiveDemo />
+
         <GenerationSystems />
 
         <RoadmapDiscovery initialRoadmaps={featuredRoadmaps} />
@@ -229,7 +232,7 @@ export default async function LandingPage() {
               </p>
               <Link 
                 href="/generate"
-                className="inline-flex items-center justify-center bg-accent text-white px-9 py-4 rounded-2xl text-[15px] font-bold transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-accent/30 active:scale-[0.98] gap-3 mb-8"
+                className="inline-flex items-center justify-center bg-gradient-to-b from-teal-400 to-teal-600 text-white px-9 py-4 rounded-2xl text-[15px] font-bold transition-all hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-teal-800 gap-3 group overflow-hidden shadow-lg mb-8"
               >
                 <Plus className="w-4 h-4" /> Generate My Roadmap
               </Link>

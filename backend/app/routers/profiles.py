@@ -167,7 +167,6 @@ async def get_public_profile(username: str):
         s_res = sb.table("submissions") \
             .select("*, roadmaps(title)") \
             .eq("user_email", user_email) \
-            .in_("evaluation_level", ["Solid", "Developing"]) \
             .order("submitted_at", desc=True) \
             .execute()
         subs_data = s_res.data
@@ -272,6 +271,7 @@ async def get_public_profile(username: str):
         eulercoins=profile.get("eulercoins", 0),
         roadmap_credits=profile.get("roadmap_credits", 0),
         review_precision=review_precision,
+        current_streak=profile.get("current_streak", 0),
         learning_momentum=learning_momentum,
         total_skills=len(skills),
         total_roadmaps=total_roadmaps_count,

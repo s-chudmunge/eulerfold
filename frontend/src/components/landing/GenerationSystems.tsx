@@ -7,7 +7,7 @@ import { Cloud, Key, Cpu } from 'lucide-react';
 const SYSTEMS = [
   {
     id: 'default',
-    title: 'Cloud AI',
+    title: 'EulerFold AI',
     subtitle: 'Zero Setup',
     icon: <Cloud className="w-5 h-5 text-accent" />,
     description: 'The fastest way to get started. Uses our managed cloud models to generate your roadmaps instantly.',
@@ -83,8 +83,8 @@ export default function GenerationSystems() {
           </motion.p>
         </div>
 
-        {/* Carousel / Grid Container */}
-        <div className="flex overflow-x-auto pb-12 pt-4 -mx-6 px-6 md:mx-0 md:px-0 scroll-smooth no-scrollbar snap-x snap-mandatory md:grid md:grid-cols-3 gap-6 md:overflow-visible">
+        {/* Grid Container */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 md:gap-6">
           {SYSTEMS.map((system, index) => (
             <motion.div
               key={system.id}
@@ -92,37 +92,32 @@ export default function GenerationSystems() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.15 }}
-              className="min-w-[300px] md:min-w-0 snap-start relative group"
+              className="relative group h-full"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-border/50 to-transparent rounded-3xl -z-10 group-hover:scale-[1.02] transition-transform duration-500"></div>
-              
-              <div className="bg-sidebar border border-border/50 hover:border-accent/30 transition-colors duration-300 rounded-2xl p-8 h-full flex flex-col relative overflow-hidden backdrop-blur-sm shadow-sm">
-                
-                {/* Top header */}
-                <div className="flex items-start justify-between mb-8">
-                  <div className="w-12 h-12 rounded-xl bg-background border border-border flex items-center justify-center shadow-sm">
-                    {system.icon}
-                  </div>
-                  <span className="text-[9px] font-bold text-text-muted uppercase tracking-widest px-3 py-1 bg-background border border-border rounded-full">
+              <div className="flex flex-col p-6 lg:p-8 border border-border rounded-lg bg-transparent relative h-full transition-all duration-300 hover:border-accent/40 group">
+                <div className="mb-6">
+                  <span className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-widest mb-2 inline-block">
                     {system.subtitle}
                   </span>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="inconsolata-ui text-xl lg:text-2xl font-bold text-text-heading">{system.title}</span>
+                    <div className="flex items-center">
+                        {system.icon}
+                    </div>
+                  </div>
+                  <p className="manrope-body text-[12px] lg:text-[13px] text-text-muted mt-3 leading-relaxed">
+                    {system.description}
+                  </p>
                 </div>
 
-                <h3 className="text-xl font-bold text-text-heading mb-3 tracking-tight">{system.title}</h3>
-                <p className="text-[13px] text-text-muted leading-relaxed mb-8 flex-grow">
-                  {system.description}
-                </p>
-
-                <ul className="space-y-4 border-t border-border/50 pt-6">
+                <div className="space-y-3 flex-1 text-[11px] lg:text-[12px] text-text-primary font-medium mt-4">
                   {system.points.map((point, i) => (
-                    <li key={i} className="flex items-start gap-3">
-                      <div className="mt-1 flex-shrink-0">
-                        <div className="w-1.5 h-1.5 rounded-full bg-accent/40 group-hover:bg-accent transition-colors"></div>
-                      </div>
-                      <span className="text-[12px] font-medium text-text-secondary leading-snug">{point}</span>
-                    </li>
+                    <div key={i} className="flex items-start gap-2.5">
+                      <span className="text-accent shrink-0">✓</span>
+                      <span className="leading-snug text-text-secondary group-hover:text-text-primary transition-colors">{point}</span>
+                    </div>
                   ))}
-                </ul>
+                </div>
               </div>
             </motion.div>
           ))}

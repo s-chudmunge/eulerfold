@@ -751,6 +751,7 @@ export interface PublicProfile {
     supabase_uid?: string;
     eulercoins: number;
     review_precision: number;
+    current_streak: number;
     learning_momentum: {
         mastered: number;
         explored: number;

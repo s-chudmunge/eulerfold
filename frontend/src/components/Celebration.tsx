@@ -94,13 +94,6 @@ export default function Celebration({ show, title = "Success!", subtitle, icon }
                                 {subtitle}
                             </p>
                         )}
-
-                        <div className="mt-8 pt-5 border-t border-border/50">
-                            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20">
-                                <Sparkles className="w-3.5 h-3.5 text-accent" />
-                                <span className="inconsolata-ui text-[10px] font-bold text-accent uppercase tracking-widest">EulerFold Verified</span>
-                            </div>
-                        </div>
                     </motion.div>
                 </motion.div>
             )}

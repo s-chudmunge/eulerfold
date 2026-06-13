@@ -117,7 +117,7 @@ export default function RoadmapIndexClient({ initialRoadmaps }: { initialRoadmap
                                                     <span className="text-accent font-bold uppercase tracking-widest text-[10px] font-inter">{roadmap.subject}</span>
                                                     <span className="w-1 h-1 rounded-full bg-border" />
                                                     <span className="manrope-body text-[12px] text-text-muted font-medium">
-                                                        {roadmap.time_value} {roadmap.time_unit}
+                                                        {roadmap.roadmap_plan?.modules?.length || roadmap.time_value} {roadmap.roadmap_plan?.modules?.length ? (roadmap.roadmap_plan.modules.length === 1 ? 'week' : 'weeks') : roadmap.time_unit}
                                                     </span>
                                                     <span className="w-1 h-1 rounded-full bg-border" />
                                                     <span className="manrope-body text-[12px] text-text-muted font-medium">

@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { X, Key, Cpu, Zap, Loader2, Link2, Unlink, CheckCircle2, History, ExternalLink, ShieldCheck } from 'lucide-react';
-import api from '@/lib/api';
+import { api } from '@/lib/api';
+import { supabase } from '@/lib/supabase/client';
 
 interface OpenRouterModalProps {
   isOpen: boolean;
@@ -68,10 +69,29 @@ export function OpenRouterModal({ isOpen, onClose, formData, onSuccess, onSave, 
       setModel(savedModel);
       setModelSearch(savedModel);
       
-      try {
-        const history = JSON.parse(localStorage.getItem('openRouterUsageHistory') || '[]');
-        setUsageHistory(history);
-      } catch (e) {}
+      const fetchUsage = async () => {
+        const { data: { session: currentSession } } = await supabase.auth.getSession();
+        if (currentSession) {
+          try {
+            const res = await api.get('/ai-usage?limit=5');
+            const mappedHistory = res.data.map((log: any) => ({
+              subject: log.subject,
+              model: log.model_name,
+              total_tokens: log.total_tokens,
+              date: log.created_at
+            }));
+            setUsageHistory(mappedHistory);
+          } catch (err) {
+            console.error("Failed to load AI usage history", err);
+          }
+        } else {
+          try {
+            const history = JSON.parse(localStorage.getItem('openRouterUsageHistory') || '[]');
+            setUsageHistory(history);
+          } catch (e) {}
+        }
+      };
+      fetchUsage();
 
       if (availableModels.length === 0) {
         setIsLoadingModels(true);

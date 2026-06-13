@@ -132,7 +132,7 @@ export default function UserNav() {
     <div className="flex items-center gap-4">
       <Link
         href="/login"
-        className="text-[12px] font-bold text-text-heading px-5 py-2 rounded-full border border-border/80 hover:bg-sidebar/60 hover:border-text-muted transition-all active:scale-95 shadow-sm hover:shadow-md"
+        className="inline-flex items-center justify-center bg-gradient-to-b from-teal-400 to-teal-600 text-white px-5 py-1.5 rounded-lg text-[12px] font-bold transition-all hover:brightness-110 active:border-b-0 active:translate-y-[3px] border-b-[3px] border-teal-800 shadow-sm"
       >
         Sign in
       </Link>

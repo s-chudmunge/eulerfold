@@ -12,6 +12,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import Footer from '@/components/Footer';
 import { OpenRouterModal } from '@/components/landing/OpenRouterModal';
 import { LocalAIModal } from '@/components/landing/LocalAIModal';
+import { logAIUsage } from '@/lib/usageTracker';
 
 const TechnicalCube = () => (
     <div className="relative w-20 h-20 flex items-center justify-center" style={{ perspective: '800px' }}>
@@ -85,7 +86,7 @@ export default function ResearchLabClient() {
     const [loadingHistory, setLoadingHistory] = useState(true);
     const [statusIndex, setStatusIndex] = useState(0);
 
-    const [engineType, setEngineType] = useState<'cloud' | 'openrouter' | 'local'>('cloud');
+    const [engineType, setEngineType] = useState<'cloud' | 'local' | 'openrouter'>('openrouter');
     
     // OpenRouter State
     const [isOpenRouterModalOpen, setIsOpenRouterModalOpen] = useState(false);
@@ -152,10 +153,168 @@ export default function ResearchLabClient() {
         setError(null);
 
         try {
-            const res = await api.post('/research-lab/decode', { paper_url: paperUrl });
-            router.push(`/research-lab/${res.data.id}`);
+            if (engineType === 'cloud') {
+                const res = await api.post('/research-lab/decode', { paper_url: paperUrl });
+                router.push(`/research-lab/${res.data.id}`);
+            } else {
+                if (engineType === 'local' && !localAIModelId) {
+                    setIsLocalAIModalOpen(true);
+                    setIsProcessing(false);
+                    return;
+                }
+                if (engineType === 'openrouter' && !openRouterKey) {
+                    setIsOpenRouterModalOpen(true);
+                    setIsProcessing(false);
+                    return;
+                }
+
+                // 1. Extract
+                const extRes = await api.post('/research-lab/extract', { paper_url: paperUrl });
+                const rawText = extRes.data.text;
+
+                const prompt = `You are a world-class Technical Consultant. Deconstruct the attached paper into an 'Engineering Dossier'.
+        
+        TASK:
+        1. Identify the paper archetype: (Theoretical Math, Systems/Hardware, AI Architecture, or Applied Engineering).
+        2. Extract Metadata: (Clean Title, List of Authors, Publication Year).
+        3. Create 5-6 high-utility technical modules based on that archetype.
+
+        MODULE RULES:
+        - ALWAYS include: 'The Shift', 'Logic', and 'Realities'.
+        - 'The Shift' data schema: {"before": "...", "after": "...", "the_win": "..."}
+        - 'Logic' data schema: {"details": "Step-by-step logic in Markdown"}
+        - 'Realities' data schema: {"items": ["list of technical gotchas"]}
+        - 'Concept' data schema: {"details": "Technical breakdown of the underlying architecture or core mechanism. Avoid oversimplification. Focus on structural insights."}
+        - For others like 'Math', 'Blueprint', 'Benchmarks', 'Industry':
+            - Use "details" for text.
+            - Use "items" for lists.
+            - Use "math" for formula maps: [{"formula": "LaTeX", "action": "...", "intuition": "..."}]
+
+        STRICT STYLE: Plain English. Technical Precision. No fluff.
+        CRITICAL MATH RULE: You MUST wrap ALL mathematical expressions, variables, and formulas in standard markdown math delimiters! Use single \`$\` for inline math (e.g. $x = y$) and double \`$$\` for block math. NEVER use bare LaTeX or \\( \\) or \\[ \\].
+
+        OUTPUT JSON STRUCTURE:
+        {
+            "extracted_text": "...",
+            "analysis": {
+                "paper_title": "Clean Title",
+                "authors": ["Author 1", "Author 2"],
+                "year": "202X",
+                "archetype": "The identified paper type",
+                "modules": [
+                    {
+                        "id": "unique_id",
+                        "label": "The Shift", 
+                        "data": {"before": "...", "after": "...", "the_win": "..."}
+                    }
+                ],
+                "summary": "Final technical synthesis"
+            }
+        }`;
+
+                let jsonStr = "";
+                let aiModel = "";
+                let usage = { p: 0, c: 0, t: 0 };
+
+                if (engineType === 'local') {
+                    const { CreateMLCEngine } = await import('@mlc-ai/web-llm');
+                    const engine = await CreateMLCEngine(localAIModelId!, { 
+                        initProgressCallback: (p) => console.log(p) 
+                    });
+                    const msg = await engine.chat.completions.create({
+                        messages: [{role: "user", content: prompt + "\n\nTEXT:\n" + rawText}],
+                        response_format: { type: "json_object" },
+                        max_tokens: 8000
+                    });
+                    jsonStr = msg.choices[0].message.content || "{}";
+                    aiModel = localAIModelName || "local";
+                    usage = { p: msg.usage?.prompt_tokens || 0, c: msg.usage?.completion_tokens || 0, t: msg.usage?.total_tokens || 0 };
+                } else {
+                    console.log(`[OpenRouter] Sending request to model: ${openRouterModel}`);
+                    console.log(`[OpenRouter] Payload text length: ${rawText.length} characters`);
+                    
+                    const orRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                        method: "POST",
+                        headers: {
+                            "Authorization": `Bearer ${openRouterKey}`,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            model: openRouterModel,
+                            messages: [{role: "user", content: prompt + "\n\nTEXT:\n" + rawText}],
+                            response_format: { type: "json_object" },
+                            max_tokens: 8000
+                        })
+                    });
+                    
+                    if (!orRes.ok) {
+                        const errText = await orRes.text();
+                        console.error(`[OpenRouter] HTTP Error ${orRes.status}:`, errText);
+                        throw new Error(`OpenRouter returned status ${orRes.status}: ${errText.slice(0, 100)}`);
+                    }
+                    
+                    const data = await orRes.json();
+                    if (data.error) {
+                        console.error("[OpenRouter] API Error Response:", data.error);
+                        throw new Error(data.error.message || "OpenRouter Error");
+                    }
+                    
+                    jsonStr = data.choices[0].message.content;
+                    console.log("[OpenRouter] Received response successfully. Length:", jsonStr.length);
+                    
+                    aiModel = openRouterModel || "openrouter";
+                    usage = { p: data.usage?.prompt_tokens || 0, c: data.usage?.completion_tokens || 0, t: data.usage?.total_tokens || 0 };
+                }
+
+                // Log usage immediately so even if JSON parsing fails (e.g. max_tokens cutoff), 
+                // the tokens consumed are still recorded in the user's dashboard.
+                if (usage.t > 0) {
+                    await logAIUsage({
+                        subject: "Research Lab Analysis",
+                        model: aiModel,
+                        prompt_tokens: usage.p,
+                        completion_tokens: usage.c,
+                        total_tokens: usage.t,
+                        source: 'client'
+                    }).catch(console.error);
+                }
+
+                let analysisData;
+                try {
+                    analysisData = JSON.parse(jsonStr);
+                } catch (parseErr) {
+                    console.error("[JSON Parse Error] Raw Model Output was:", jsonStr);
+                    throw new Error("The AI model failed to output valid JSON. Try a different model or lower the paper complexity.");
+                }
+                
+                if (!analysisData.extracted_text) {
+                    analysisData.extracted_text = rawText.slice(0, 15000);
+                }
+
+                const saveRes = await api.post('/research-lab/save-external', {
+                    paper_url: paperUrl,
+                    analysis_data: analysisData.analysis ? analysisData : { analysis: analysisData, extracted_text: rawText.slice(0, 15000) }
+                });
+                router.push(`/research-lab/${saveRes.data.id}`);
+            }
         } catch (err: any) {
-            const msg = err.response?.data?.detail || "Failed to start analysis. Please check the URL and your credits.";
+            console.error("Analysis failed:", err);
+            
+            let msg = err.response?.data?.detail || err.message || "Failed to start analysis. Please check the URL and your credits.";
+            
+            // Format OpenRouter specific errors for the UI while keeping raw logs in console
+            if (msg.includes("OpenRouter returned status 429") || msg.includes("rate limit")) {
+                msg = "This model is currently overloaded on OpenRouter (Rate Limited). Please wait a moment or select a different model.";
+            } else if (msg.includes("OpenRouter returned status 400") || msg.includes("context length")) {
+                msg = "OpenRouter rejected the request. The paper might be too long for this specific model's context window. Try a model with a larger context size.";
+            } else if (msg.includes("OpenRouter returned status 401")) {
+                msg = "Your OpenRouter API key is invalid. Please update it in the settings.";
+            } else if (msg.includes("OpenRouter returned status 402")) {
+                msg = "Your OpenRouter account has insufficient credits.";
+            } else if (msg === "Provider returned error") {
+                msg = "The upstream AI provider failed to process the request. This usually happens with free models. Try selecting a different model.";
+            }
+            
             setError(msg);
             setIsProcessing(false);
         }
@@ -168,30 +327,11 @@ export default function ResearchLabClient() {
             <div className="text-center space-y-4">
                 <div>
                     <h2 className="inconsolata-ui text-[16px] font-black uppercase tracking-[0.4em] text-text-heading mb-1">
-                        Analyzing Paper
+                        Loading Lab
                     </h2>
                     <p className="manrope-body text-[11px] font-medium text-text-muted">
-                        We are analyzing the logic and math in this paper.
+                        Authenticating your session...
                     </p>
-                </div>
-                <div className="h-6 flex items-center justify-center">
-                    <AnimatePresence mode="wait">
-                        <motion.span
-                            key={statusIndex}
-                            initial={{ opacity: 0, y: 5 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -5 }}
-                            transition={{ duration: 0.5, ease: "easeInOut" }}
-                            className="inconsolata-ui text-[10px] font-bold text-accent uppercase tracking-widest block"
-                        >
-                            {statusMessages[statusIndex]}
-                        </motion.span>
-                    </AnimatePresence>
-                </div>
-                <div className="flex justify-center gap-1.5 mt-2">
-                    {[0, 1, 2].map(i => (
-                        <div key={i} className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
-                    ))}
                 </div>
             </div>
         </div>
@@ -238,21 +378,23 @@ export default function ResearchLabClient() {
                 <div className="absolute inset-0 bg-gradient-to-b from-background/50 to-transparent pointer-events-none" />
                 <div className="max-w-7xl mx-auto px-6 relative z-10 text-left">
                     <div className="mt-4 max-w-3xl">
-                        <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-accent/10 border border-accent/20 rounded-md mb-5">
-                            <BrainCircuit className="w-4 h-4 text-accent" />
-                            <span className="inconsolata-ui text-[11px] font-black text-accent uppercase tracking-widest">Research Lab</span>
-                        </div>
-                        <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-text-heading tracking-tight mb-4">
+                        <h1 className="font-inter text-3xl sm:text-4xl md:text-5xl font-semibold text-text-heading mb-6 leading-[1.15] md:leading-[1.1] tracking-tight">
                             Decode complex papers into <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-teal-400">Engineering Blueprints.</span>
                         </h1>
-                        <p className="text-[15px] text-text-muted leading-relaxed font-medium max-w-2xl">
+                        <p className="text-text-muted text-base md:text-lg manrope-body font-medium mb-10 leading-relaxed max-w-2xl">
                             Enter an ArXiv or PDF URL to extract the core mechanism, logic map, and architectural decisions. We bypass the dense mathematics to give you exactly what you need to build.
                         </p>
+                        <button 
+                            onClick={() => { document.getElementById('decode-form')?.scrollIntoView({ behavior: 'smooth' }) }}
+                            className="px-6 py-3 bg-[#111] dark:bg-[#14b8a6] !text-white rounded-lg font-bold text-[12px] uppercase tracking-[0.2em] shadow-xl hover:opacity-90 transition-all active:scale-[0.99] flex items-center gap-2"
+                        >
+                            Start Decoding <ArrowRight className="w-4 h-4" />
+                        </button>
                     </div>
                 </div>
             </div>
 
-            <main className="max-w-7xl mx-auto px-6 py-16 flex-grow w-full">
+            <main id="decode-form" className="max-w-7xl mx-auto px-6 py-16 flex-grow w-full">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20">
                     
                     {/* Left Column: Form */}
@@ -277,8 +419,8 @@ export default function ResearchLabClient() {
                                     <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mb-4">
                                         <Sparkles className="w-6 h-6 text-accent" />
                                     </div>
-                                    <h3 className="text-[16px] font-bold text-text-heading mb-2">Pro Exclusive Feature</h3>
-                                    <p className="text-[13px] text-text-muted max-w-sm mb-6 leading-relaxed">
+                                    <h3 className="font-inter text-[16px] font-semibold text-text-heading mb-2">Pro Exclusive Feature</h3>
+                                    <p className="manrope-body font-medium text-[13px] text-text-muted max-w-sm mb-6 leading-relaxed">
                                         Research Lab completely deconstructs complex technical papers using our highest-capability AI pipeline.
                                     </p>
                                     <Link 
@@ -328,24 +470,25 @@ export default function ResearchLabClient() {
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                                             <button
                                                 type="button"
-                                                onClick={() => setEngineType('cloud')}
-                                                className={`flex flex-col items-start p-3 rounded-lg border transition-all ${
-                                                    engineType === 'cloud' 
-                                                        ? 'border-accent bg-accent/5 shadow-sm' 
-                                                        : 'border-border/50 bg-background hover:border-border hover:bg-sidebar'
-                                                }`}
+                                                disabled={true}
+                                                onClick={() => {}}
+                                                className={`flex flex-col items-start p-3 rounded-lg border transition-all opacity-60 cursor-not-allowed border-red-500/20 bg-background`}
                                             >
                                                 <div className="flex items-center gap-2 mb-1">
-                                                    <Cloud className={`w-4 h-4 ${engineType === 'cloud' ? 'text-accent' : 'text-text-muted'}`} />
-                                                    <span className="text-[12px] font-bold text-text-heading">Cloud AI</span>
+                                                    <Cloud className={`w-4 h-4 text-red-500`} />
+                                                    <span className="text-[12px] font-bold text-red-500">EulerFold AI (Outage)</span>
                                                 </div>
-                                                <span className="text-[10px] text-text-muted">Zero setup, uses credits</span>
+                                                <span className="text-[10px] text-red-400/70">Temporary Outage</span>
                                             </button>
                                             <button
                                                 type="button"
                                                 onClick={() => {
-                                                    setEngineType('openrouter');
-                                                    if (!useOpenRouter) setIsOpenRouterModalOpen(true);
+                                                    if (engineType === 'openrouter') {
+                                                        setIsOpenRouterModalOpen(true);
+                                                    } else {
+                                                        setEngineType('openrouter');
+                                                        if (!useOpenRouter) setIsOpenRouterModalOpen(true);
+                                                    }
                                                 }}
                                                 className={`flex flex-col items-start p-3 rounded-lg border transition-all ${
                                                     engineType === 'openrouter' 
@@ -362,8 +505,12 @@ export default function ResearchLabClient() {
                                             <button
                                                 type="button"
                                                 onClick={() => {
-                                                    setEngineType('local');
-                                                    if (!useLocalAI) setIsLocalAIModalOpen(true);
+                                                    if (engineType === 'local') {
+                                                        setIsLocalAIModalOpen(true);
+                                                    } else {
+                                                        setEngineType('local');
+                                                        if (!useLocalAI) setIsLocalAIModalOpen(true);
+                                                    }
                                                 }}
                                                 className={`flex flex-col items-start p-3 rounded-lg border transition-all ${
                                                     engineType === 'local' 
@@ -450,7 +597,7 @@ export default function ResearchLabClient() {
                                             className="group flex items-center justify-between py-4 border-b border-border/40 hover:border-accent transition-all text-left"
                                         >
                                             <div className="min-w-0">
-                                                <h3 className="text-[14px] font-bold text-text-heading truncate group-hover:text-accent transition-colors pr-10">
+                                                <h3 className="font-inter text-[14px] font-semibold text-text-heading truncate group-hover:text-accent transition-colors pr-10">
                                                     {item.paper_title || item.paper_url}
                                                 </h3>
                                                 <div className="flex items-center gap-3 mt-1.5">
@@ -487,14 +634,11 @@ export default function ResearchLabClient() {
                     <div className="lg:col-span-5 xl:col-span-6 relative z-10">
                         <div className="sticky top-24 space-y-10">
                             <div>
-                                <div className="inline-flex items-center gap-2 px-3 py-1 bg-accent/10 border border-accent/20 rounded-full mb-6">
-                                    <Sparkles className="w-3.5 h-3.5 text-accent" />
-                                    <span className="inconsolata-ui text-[10px] font-bold text-accent uppercase tracking-widest">How it Works</span>
-                                </div>
-                                <h3 className="text-2xl lg:text-3xl font-bold text-text-heading mb-4 tracking-tight">
+
+                                <h3 className="font-inter text-2xl lg:text-3xl font-semibold text-text-heading mb-4 tracking-tight">
                                     From PDF to <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-teal-400">Engineering Dossier</span>
                                 </h3>
-                                <p className="text-[14px] text-text-muted leading-relaxed max-w-md">
+                                <p className="manrope-body font-medium text-[14px] text-text-muted leading-relaxed max-w-md">
                                     Research Lab bypasses the fluff. We extract the core logic, structural architecture, and mathematical realities directly from academic papers so you can build faster.
                                 </p>
                             </div>
@@ -522,8 +666,8 @@ export default function ResearchLabClient() {
                                             {feature.icon}
                                         </div>
                                         <div>
-                                            <h4 className="text-[14px] font-bold text-text-heading mb-1">{feature.title}</h4>
-                                            <p className="text-[13px] text-text-muted leading-relaxed">{feature.desc}</p>
+                                            <h4 className="font-inter text-[14px] font-semibold text-text-heading mb-1">{feature.title}</h4>
+                                            <p className="manrope-body font-medium text-[13px] text-text-muted leading-relaxed">{feature.desc}</p>
                                         </div>
                                     </div>
                                 ))}
@@ -535,8 +679,8 @@ export default function ResearchLabClient() {
                                         <BookOpen className="w-4 h-4 text-blue-500" />
                                     </div>
                                     <div>
-                                        <h4 className="text-[12px] font-bold uppercase tracking-widest text-text-primary mb-1">Supported Formats</h4>
-                                        <p className="text-[12px] text-text-muted">Direct URLs to <code>arxiv.org/abs/...</code> or any publicly accessible <code>.pdf</code> link.</p>
+                                        <h4 className="font-inter text-[12px] font-semibold uppercase tracking-widest text-text-primary mb-1">Supported Formats</h4>
+                                        <p className="manrope-body font-medium text-[12px] text-text-muted">Direct URLs to <code>arxiv.org/abs/...</code> or any publicly accessible <code>.pdf</code> link.</p>
                                     </div>
                                 </div>
                             </div>

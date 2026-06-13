@@ -27,6 +27,7 @@ class SubmissionCreate(BaseModel):
     description: str
     link: Optional[str] = None
     files: Optional[List[Dict]] = []
+    evaluation_result: Optional[dict] = None
 
 async def evaluate_submission(context: dict) -> dict:
     """
@@ -61,6 +62,8 @@ OUTPUT RULES:
 - NO fluff, NO encouragement, NO "Great job". Just analysis.
 - Decide a level: Solid (Pass), Developing (Needs improvement), or Beginner (Failed).
 - If 'Developing' or 'Beginner', provide direct next steps.
+- Map the submission to the roadmap module’s objectives and extract only skills that are directly evidenced by the work.
+- Return a JSON array of `{{"skill": string, "strength": float 0.0-1.0, "confidence": float 0.0-1.0, "reason": string}}` for evidence. Do not invent skills not supported by the submission.
 
 Respond ONLY with JSON:
 {{
@@ -70,7 +73,15 @@ Respond ONLY with JSON:
     "technical": "...",
     "understanding": "...",
     "relevance": "..."
-  }}
+  }},
+  "evidence": [
+    {{
+      "skill": "skill_name",
+      "strength": 0.95,
+      "confidence": 0.90,
+      "reason": "..."
+    }}
+  ]
 }}
 """
 
@@ -82,8 +93,60 @@ Respond ONLY with JSON:
         return {
             "level": "Developing", 
             "summary": "Evaluation engine error. Submission recorded.",
-            "feedback_details": {"technical": "N/A", "understanding": "N/A", "relevance": "N/A"}
+            "feedback_details": {"technical": "N/A", "understanding": "N/A", "relevance": "N/A"},
+            "evidence": []
         }
+
+def process_skill_evidence(
+    uid: str,
+    submission_id: int,
+    roadmap_id: int,
+    module_number: int,
+    evidence_list: list
+):
+    sb = get_supabase_client()
+    for ev in evidence_list:
+        skill = ev.get("skill")
+        strength = float(ev.get("strength", 0.0))
+        confidence = float(ev.get("confidence", 0.0))
+        reason = ev.get("reason", "")
+        if not skill:
+            continue
+            
+        # 1. Insert into user_skill_evidence
+        sb.table("user_skill_evidence").insert({
+            "user_id": uid,
+            "submission_id": submission_id,
+            "roadmap_id": roadmap_id,
+            "module_number": module_number,
+            "skill_name": skill,
+            "evidence_strength": strength,
+            "confidence": confidence,
+            "reason": reason
+        }).execute()
+        
+        # 2. Upsert into user_skill_summary
+        summary_res = sb.table("user_skill_summary").select("*").eq("user_id", uid).eq("skill_name", skill).execute()
+        if summary_res.data and len(summary_res.data) > 0:
+            old_score = float(summary_res.data[0].get("mastery_score", 0.0))
+            count = int(summary_res.data[0].get("evidence_count", 0))
+            new_score = old_score * 0.85 + strength * 0.15
+            sb.table("user_skill_summary").update({
+                "mastery_score": new_score,
+                "evidence_count": count + 1,
+                "last_seen": datetime.now(timezone.utc).isoformat(),
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }).eq("user_id", uid).eq("skill_name", skill).execute()
+        else:
+            new_score = strength * 0.15
+            sb.table("user_skill_summary").insert({
+                "user_id": uid,
+                "skill_name": skill,
+                "mastery_score": new_score,
+                "evidence_count": 1,
+                "last_seen": datetime.now(timezone.utc).isoformat(),
+                "updated_at": datetime.now(timezone.utc).isoformat()
+            }).execute()
 
 @router.post("/submissions", status_code=201)
 async def create_submission(
@@ -131,17 +194,19 @@ async def create_submission(
             pass
 
     # 4. Evaluate
-    context = {
-        "module_title": module.get("title", f"Module {submission.module_number}"),
-        "roadmap_subject": roadmap.get("subject"),
-        "topics_text": str(module.get("topics", [])),
-        "expected_deliverable": str(module.get("proof_of_work_instructions", {})),
-        "description": submission.description,
-        "link": submission.link,
-        "link_content": link_content
-    }
-
-    eval_result = await evaluate_submission(context)
+    if submission.evaluation_result:
+        eval_result = submission.evaluation_result
+    else:
+        context = {
+            "module_title": module.get("title", f"Module {submission.module_number}"),
+            "roadmap_subject": roadmap.get("subject"),
+            "topics_text": str(module.get("topics", [])),
+            "expected_deliverable": str(module.get("proof_of_work_instructions", {})),
+            "description": submission.description,
+            "link": submission.link,
+            "link_content": link_content
+        }
+        eval_result = await evaluate_submission(context)
 
     # 5. Save Submission
     sub_data = {
@@ -159,6 +224,19 @@ async def create_submission(
     }
 
     res = sb.table("submissions").insert(sub_data).execute()
+    
+    if res.data and len(res.data) > 0:
+        submission_id = res.data[0].get("id")
+        evidence_list = eval_result.get("evidence", [])
+        if evidence_list:
+            background_tasks.add_task(
+                process_skill_evidence,
+                uid,
+                submission_id,
+                submission.roadmap_id,
+                submission.module_number,
+                evidence_list
+            )
     
     # 6. Track Activity
     await track_activity(email)
@@ -186,7 +264,7 @@ async def list_submissions(
     current_user: User = Depends(get_current_user)
 ):
     sb = get_supabase_client()
-    res = sb.table("submissions").select("*").eq("roadmap_id", roadmap_id).eq("user_email", current_user.email).order("submitted_at", desc=True).execute()
+    res = sb.table("submissions").select("*, user_skill_evidence(*)").eq("roadmap_id", roadmap_id).eq("user_email", current_user.email).order("submitted_at", desc=True).execute()
     return {"submissions": res.data}
 
 

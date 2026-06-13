@@ -27,15 +27,78 @@ import {
     Loader2,
     Github,
     Code2,
-    X,
     ChevronRight,
-    ArrowUpRight
+    ArrowUpRight,
+    Link as LinkIcon,
+    CheckCircle2,
+    X,
+    Flame,
+    Zap,
+    CheckCircle,
+    TrendingUp
 } from 'lucide-react';
 import Link from 'next/link';
 import { supabase } from '@/lib/supabase/client';
 import { PublicProfile, profileAPI } from '@/lib/api';
 import PublicHeader from '@/components/PublicHeader';
+
+import { 
+    SiPython, SiJavascript, SiTypescript, SiReact, SiVuedotjs, SiAngular, 
+    SiNextdotjs, SiNodedotjs, SiGo, SiRust, 
+    SiTailwindcss, SiPostgresql, SiMysql, SiMongodb, 
+    SiDocker, SiKubernetes, SiGooglecloud,
+    SiFigma, SiSupabase, SiFirebase
+} from 'react-icons/si';
+
+import { FaJava, FaCalculator, FaFlask, FaGlobe, FaBrain, FaBookOpen, FaAws, FaHtml5, FaCss3Alt, FaCode } from 'react-icons/fa';
+import { BiAtom, BiDna } from 'react-icons/bi';
+import { MdOutlineScience, MdBusinessCenter } from 'react-icons/md';
+
+function getSkillIcon(name: string) {
+    const s = (name || '').toLowerCase();
+    
+    // Tech Stack
+    if (s.includes('python')) return <SiPython className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('javascript') || s === 'js') return <SiJavascript className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('typescript') || s === 'ts') return <SiTypescript className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('react')) return <SiReact className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('vue')) return <SiVuedotjs className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('angular')) return <SiAngular className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('next.js') || s.includes('nextjs')) return <SiNextdotjs className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('node') || s.includes('express')) return <SiNodedotjs className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('java ') || s === 'java') return <FaJava className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('go ') || s === 'go' || s === 'golang') return <SiGo className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('rust')) return <SiRust className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('c++') || s.includes('c#') || s.includes('csharp')) return <FaCode className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('html')) return <FaHtml5 className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('css')) return <FaCss3Alt className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('tailwind')) return <SiTailwindcss className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('postgres') || s.includes('sql')) return <SiPostgresql className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('mongo')) return <SiMongodb className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('docker')) return <SiDocker className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('kubernetes') || s.includes('k8s')) return <SiKubernetes className="w-4 h-4 text-inherit opacity-80" />;
+    if (s.includes('aws') || s.includes('amazon web')) return <FaAws className="w-4 h-4 text-inherit opacity-80" />;
+    if (s.includes('gcp') || s.includes('google cloud')) return <SiGooglecloud className="w-4 h-4 text-inherit opacity-80" />;
+    if (s.includes('figma') || s.includes('design')) return <SiFigma className="w-4 h-4 text-inherit opacity-80" />;
+    if (s.includes('supabase')) return <SiSupabase className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('firebase')) return <SiFirebase className="w-5 h-5 text-accent opacity-70" />;
+
+    // Subjects
+    if (s.includes('math') || s.includes('calculus') || s.includes('algebra')) return <FaCalculator className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('physic') || s.includes('quantum') || s.includes('mechanic')) return <BiAtom className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('chemist')) return <FaFlask className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('biolog') || s.includes('geneti')) return <BiDna className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('science')) return <MdOutlineScience className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('histor') || s.includes('geograph') || s.includes('world')) return <FaGlobe className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('psycholog') || s.includes('philosoph')) return <FaBrain className="w-5 h-5 text-accent opacity-70" />;
+    if (s.includes('business') || s.includes('econom') || s.includes('financ')) return <MdBusinessCenter className="w-5 h-5 text-accent opacity-70" />;
+
+    // Fallback
+    return <BookOpen className="w-5 h-5 text-accent opacity-40" />;
+}
+
 import ActivityChart from '@/components/dashboard/ActivityChart';
+import SkillsProfile from '@/components/dashboard/SkillsProfile';
 import ActivityHeatmap from '@/components/profile/ActivityHeatmap';
 import TTSListenButton from '@/components/TTSListenButton';
 import VerifiedBadge from '@/components/VerifiedBadge';
@@ -98,11 +161,15 @@ export default function ProfileClient({ profile }: Props) {
     }, [profile.email, profile.supabase_uid]);
 
     const filteredSkills = (profile.skills || []).filter(s => 
-        s.name.toLowerCase().includes(searchQuery.toLowerCase())
+        (s.name || '').toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     const strongSkills = (profile.skills || []).filter(s => s.confidence_score >= 80);
     const developingSkills = filteredSkills.filter(s => s.confidence_score >= 40 && s.confidence_score < 80);
+
+    const pAny = profile as any;
+    const activeRoadmaps = pAny.roadmaps?.filter((r: any) => r.depth_score > 0 && r.depth_score < 100).sort((a: any, b: any) => new Date(b.updated_at || b.created_at || 0).getTime() - new Date(a.updated_at || a.created_at || 0).getTime()).slice(0, 2) || [];
+    const recentVerified = pAny.submissions?.find((s: any) => s.evaluation_level === 'Solid' || s.evaluation_level === 'Expert');
 
     const handleExportPDF = async () => {
         try {
@@ -269,7 +336,7 @@ export default function ProfileClient({ profile }: Props) {
                             <div className="flex-1 md:mt-6">
                                 <h1 className="text-[20px] md:text-[22px] font-bold text-text-heading tracking-tight leading-tight inconsolata-ui flex items-center gap-2">
                                     {profile.display_name || profile.username}
-                                    {profile.is_pro && <VerifiedBadge size={18} className="shrink-0 text-accent" />}
+                                    {(profile as any).is_pro && <VerifiedBadge size={18} className="shrink-0 text-accent" />}
                                 </h1>
                                 <p className="text-[14px] md:text-[15px] font-medium text-text-muted opacity-60 inconsolata-ui">@{profile.username}</p>
                             </div>
@@ -365,92 +432,159 @@ export default function ProfileClient({ profile }: Props) {
                             </div>
                         {activeTab === 'overview' && (
                             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                                {/* Recent Activity Stats */}
+                                <div className="grid grid-cols-3 gap-3 md:gap-4">
+                                    <div className="group relative bg-header border border-border/60 rounded-xl p-4 md:p-5 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md hover:border-accent/50 transition-all duration-300 overflow-hidden">
+                                        <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                                        <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
+                                            <TrendingUp className="w-4 h-4 text-accent" />
+                                        </div>
+                                        <span className="text-2xl md:text-3xl font-black text-text-heading tracking-tight mb-1">{profile.learning_momentum.mastered}</span>
+                                        <span className="text-[9px] md:text-[10px] font-bold text-text-muted uppercase tracking-widest">Skills Mastered (30d)</span>
+                                    </div>
+                                    <div className="group relative bg-header border border-border/60 rounded-xl p-4 md:p-5 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md hover:border-amber-500/50 transition-all duration-300 overflow-hidden">
+                                        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                                        <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
+                                            <Zap className="w-4 h-4 text-amber-500" />
+                                        </div>
+                                        <span className="text-2xl md:text-3xl font-black text-text-heading tracking-tight mb-1">{profile.learning_momentum.explored}</span>
+                                        <span className="text-[9px] md:text-[10px] font-bold text-text-muted uppercase tracking-widest">Skills Explored (30d)</span>
+                                    </div>
+                                    <div className="group relative bg-header border border-border/60 rounded-xl p-4 md:p-5 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md hover:border-orange-500/50 transition-all duration-300 overflow-hidden">
+                                        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                                        <div className="w-8 h-8 rounded-full bg-orange-500/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
+                                            <Flame className="w-4 h-4 text-orange-500" />
+                                        </div>
+                                        <span className="text-2xl md:text-3xl font-black text-text-heading tracking-tight mb-1">{profile.current_streak || 0}</span>
+                                        <span className="text-[9px] md:text-[10px] font-bold text-text-muted uppercase tracking-widest">Day Streak</span>
+                                    </div>
+                                </div>
+
+                                {/* Currently Learning */}
+                                {activeRoadmaps.length > 0 && (
+                                    <div className="space-y-3">
+                                        <h4 className="text-[11px] font-black text-text-muted uppercase tracking-widest px-1">Currently Learning</h4>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            {activeRoadmaps.map((roadmap: any) => (
+                                                <div key={roadmap.id} className="group relative p-5 bg-header border border-border/60 rounded-xl shadow-sm hover:shadow-lg hover:border-accent/40 transition-all duration-300 flex flex-col justify-between gap-5 overflow-hidden cursor-pointer" onClick={() => router.push(`/roadmaps/${roadmap.id}`)}>
+                                                    <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full blur-2xl group-hover:bg-accent/10 transition-colors pointer-events-none" />
+                                                    <div className="relative z-10">
+                                                        <h5 className="text-[15px] font-bold text-text-heading leading-tight mb-1.5 line-clamp-2 group-hover:text-accent transition-colors">{roadmap.title}</h5>
+                                                        <p className="text-[10px] text-text-muted font-bold tracking-widest uppercase flex items-center gap-1.5">
+                                                            <Target className="w-3 h-3" /> Active Roadmap
+                                                        </p>
+                                                    </div>
+                                                    <div className="space-y-2.5 relative z-10">
+                                                        <div className="flex justify-between items-end text-[10px] font-black uppercase tracking-widest">
+                                                            <span className="text-text-muted">Progress</span>
+                                                            <span className="text-accent text-[12px]">{Math.round(roadmap.depth_score)}%</span>
+                                                        </div>
+                                                        <div className="h-1.5 bg-sidebar rounded-full overflow-hidden shadow-inner">
+                                                            <div className="h-full bg-gradient-to-r from-accent/80 to-accent rounded-full transition-all duration-1000 relative" style={{ width: `${roadmap.depth_score}%` }}>
+                                                                <div className="absolute top-0 right-0 bottom-0 w-10 bg-white/20 blur-[2px] animate-[shimmer_2s_infinite]" />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Recent Verification */}
+                                {recentVerified && (
+                                    <div className="space-y-3">
+                                        <h4 className="text-[11px] font-black text-text-muted uppercase tracking-widest px-1">Recent Validated Homework</h4>
+                                        <div className="p-5 bg-header border border-border/60 rounded-xl shadow-sm relative overflow-hidden group hover:shadow-md hover:border-emerald-500/30 transition-all duration-300">
+                                            <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-emerald-400 to-emerald-600" />
+                                            <div className="absolute right-0 top-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none group-hover:bg-emerald-500/10 transition-colors" />
+                                            <div className="flex items-start gap-4 relative z-10">
+                                                <div className="mt-1 bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 text-emerald-500 p-2.5 rounded-xl shrink-0 border border-emerald-500/20 shadow-sm">
+                                                    <CheckCircle className="w-5 h-5" />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
+                                                        <h5 className="text-[14px] font-bold text-text-heading truncate group-hover:text-emerald-600 transition-colors">
+                                                            {recentVerified.roadmaps?.title || 'Technical Submission'}
+                                                        </h5>
+                                                        <span className="text-[9px] font-black text-emerald-600 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-md uppercase tracking-widest w-fit shadow-sm">
+                                                            {recentVerified.evaluation_level}
+                                                        </span>
+                                                    </div>
+                                                    <p className="text-[13px] text-text-muted leading-relaxed font-medium italic line-clamp-2 pl-3 border-l-2 border-emerald-500/20">
+                                                        &ldquo;{recentVerified.description}&rdquo;
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
                                 {/* Top Skills Grid */}
+                                <div className="space-y-3">
+                                    <h4 className="text-[11px] font-black text-text-muted uppercase tracking-widest px-1">Strongest Skills</h4>
                                 {strongSkills.length > 0 && (
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {strongSkills.slice(0, 4).map(skill => (
-                                            <div key={skill.id} className="p-5 bg-header border border-border rounded-xl shadow-sm hover:shadow-md hover:border-accent/40 transition-all group relative overflow-hidden">
-                                                <div className="absolute -bottom-10 -right-10 w-24 h-24 bg-accent/5 rounded-full blur-2xl group-hover:bg-accent/10 transition-colors duration-500 pointer-events-none" />
-                                                <div className="relative z-10">
-                                                <div className="flex justify-between items-start mb-3">
-                                                    <div className="flex items-center gap-2.5">
-                                                        <BookOpen className="w-4 h-4 text-accent opacity-40" />
-                                                        <h4 className="text-[14px] font-bold text-text-heading group-hover:text-accent transition-colors tracking-tight">
-                                                            {skill.name}
-                                                        </h4>
+                                            <div key={skill.id} className="flex items-center justify-between p-4 bg-header border border-border/60 hover:border-accent/40 rounded-xl group transition-all duration-300 shadow-sm hover:shadow-md hover:bg-accent/[0.02] relative overflow-hidden">
+                                                <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                                                <div className="flex items-center gap-3.5 relative z-10">
+                                                    <div className="w-10 h-10 rounded-xl bg-sidebar border border-border/50 flex items-center justify-center shadow-sm text-text-muted group-hover:text-accent group-hover:border-accent/30 group-hover:bg-background transition-all duration-300 shrink-0">
+                                                        {getSkillIcon(skill.name || '')}
                                                     </div>
-                                                    <div className="px-2 py-0.5 border border-accent/20 bg-accent/5 text-[10px] font-black text-accent tabular-nums inconsolata-ui tracking-tighter">{skill.tier}</div>
+                                                    <div className="min-w-0">
+                                                        <h4 className="text-[14px] font-bold text-text-heading tracking-tight leading-tight mb-1 truncate group-hover:text-accent transition-colors">{skill.name}</h4>
+                                                        <span className="text-[9px] text-text-muted font-bold uppercase tracking-widest truncate block opacity-80">{skill.category}</span>
+                                                    </div>
                                                 </div>
-                                                <p className="text-[11px] text-text-muted mb-6 uppercase tracking-wider font-bold opacity-60">{skill.category}</p>
-                                                <div className="flex items-center gap-6 text-[10px] font-bold text-text-muted uppercase tracking-widest inconsolata-ui">
-                                                    <span className="flex items-center gap-2"><Clock className="w-3.5 h-3.5 opacity-40" /> {Math.round(skill.time_invested)}H</span>
-                                                    <span className="flex items-center gap-2"><Target className="w-3.5 h-3.5 opacity-40" /> {skill.confidence_score.toFixed(1)}</span>
-                                                </div>
+                                                <div className="flex flex-col items-end gap-2 shrink-0 pl-3 relative z-10">
+                                                    <div className="px-2 py-1 border border-accent/20 bg-background shadow-sm text-[10px] font-black text-accent rounded-md uppercase tracking-widest leading-none">{skill.tier}</div>
+                                                    <div className="text-[9px] font-black text-text-muted/80 inconsolata-ui flex items-center gap-2 tracking-widest uppercase">
+                                                        <span className="flex items-center gap-1 group-hover:text-text-muted transition-colors"><Clock className="w-3 h-3 opacity-60" /> {Math.round(skill.time_invested)}H</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         ))}
                                     </div>
                                 )}
-
-                                {/* Activity Graph */}
-                                <div className="p-6 border border-border rounded-xl shadow-sm bg-header relative overflow-hidden">
-                                    <ActivityChart roadmaps={profile.roadmaps} profile={profile} />
                                 </div>
 
-                                <ActivityHeatmap profile={profile} activityMap={activityMap} />
+                                {/* Activity Graph */}
+                                <div className="space-y-3">
+                                    <h4 className="text-[11px] font-black text-text-muted uppercase tracking-widest px-1">Activity Chart</h4>
+                                    <div className="p-6 border border-border rounded-xl shadow-sm bg-header relative overflow-hidden">
+                                        <ActivityChart roadmaps={pAny.roadmaps} profile={profile} />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-3">
+                                    <h4 className="text-[11px] font-black text-text-muted uppercase tracking-widest px-1">Commit History</h4>
+                                    <ActivityHeatmap profile={profile} activityMap={activityMap} />
+                                </div>
                             </div>
                         )}
 
                         {activeTab === 'skills' && (
-                            <div className="space-y-6 animate-in fade-in duration-300">
-                                <div className="relative mb-8">
-                                    <input 
-                                        className="w-full bg-header border border-border rounded-xl shadow-sm px-10 py-3 text-[13px] text-text-heading placeholder:text-text-muted outline-none focus:border-accent transition-all font-bold inconsolata-ui uppercase tracking-widest"
-                                        placeholder="Filter Skills..."
-                                        value={searchQuery}
-                                        onChange={(e) => setSearchQuery(e.target.value)}
-                                    />
-                                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted opacity-30" />
-                                </div>
-
-                                <div className="space-y-6">
-                                    {strongSkills.length > 0 && (
-                                        <div className="border border-border rounded-xl shadow-sm overflow-hidden bg-header">
-                                            <button onClick={() => setIsExpertiseOpen(!isExpertiseOpen)} className="w-full px-5 py-4 flex items-center justify-between hover:bg-sidebar/20 border-b border-border/50">
-                                                <h3 className="text-[11px] font-black text-accent tracking-[0.3em] uppercase inconsolata-ui">Expertise // {strongSkills.length}</h3>
-                                                {isExpertiseOpen ? <ChevronUp className="w-3.5 h-3.5 text-text-muted" /> : <ChevronDown className="w-3.5 h-3.5 text-text-muted" />}
-                                            </button>
-                                            {isExpertiseOpen && <div className="px-5 pb-5 divide-y divide-border/30">{strongSkills.map(skill => <SkillCard key={skill.id} skill={skill} />)}</div>}
-                                        </div>
-                                    )}
-                                    {developingSkills.length > 0 && (
-                                        <div className="border border-border rounded-xl shadow-sm overflow-hidden bg-header">
-                                            <button onClick={() => setIsAdvancingOpen(!isAdvancingOpen)} className="w-full px-5 py-4 flex items-center justify-between hover:bg-sidebar/10 border-b border-border/50">
-                                                <h3 className="text-[11px] font-black text-text-muted tracking-[0.3em] uppercase inconsolata-ui">Advancing // {developingSkills.length}</h3>
-                                                {isAdvancingOpen ? <ChevronUp className="w-3.5 h-3.5 text-text-muted" /> : <ChevronDown className="w-3.5 h-3.5 text-text-muted" />}
-                                            </button>
-                                            {isAdvancingOpen && <div className="px-5 pb-5 divide-y divide-border/30">{developingSkills.map(skill => <SkillCard key={skill.id} skill={skill} />)}</div>}
-                                        </div>
-                                    )}
-                                </div>
+                            <div className="animate-in fade-in duration-300">
+                                <SkillsProfile skills={profile.skills as any[]} />
                             </div>
                         )}
 
                         {activeTab === 'evidence' && (
                             <div className="space-y-4 animate-in fade-in duration-300">
-                                {profile.submissions && profile.submissions.length > 0 ? (
-                                    profile.submissions.map((sub, idx) => (
+                                {pAny.submissions && pAny.submissions.length > 0 ? (
+                                    pAny.submissions.map((sub: any, idx: number) => (
                                         <div key={idx} className="bg-header border border-border shadow-sm rounded-xl p-6 relative group hover:border-accent/40 hover:shadow-md transition-all duration-300 overflow-hidden">
                                             <div className="absolute -bottom-20 -right-20 w-48 h-48 bg-accent/5 rounded-full blur-[40px] group-hover:bg-accent/10 transition-colors duration-500 pointer-events-none" />
                                             <div className="relative z-10">
                                             <div className="flex justify-between items-start mb-6">
                                                 <div className="flex flex-col gap-2">
                                                     <div className="flex items-center gap-3">
-                                                        <div className="text-[9px] font-black text-accent bg-accent-muted px-2.5 py-0.5 rounded-md border border-accent/20 inconsolata-ui tracking-widest uppercase">LOG #{profile.submissions.length - idx}</div>
+                                                        <div className="text-[9px] font-black text-accent bg-accent-muted px-2.5 py-0.5 rounded-md border border-accent/20 inconsolata-ui tracking-widest uppercase">LOG #{pAny.submissions.length - idx}</div>
                                                         <div className={`text-[9px] font-black px-2.5 py-0.5 rounded-md border inconsolata-ui tracking-widest uppercase ${
-                                                            sub.evaluation_level === 'Solid' || sub.evaluation_level === 'Expert' 
-                                                            ? 'border-emerald-500/30 text-emerald-600 bg-emerald-500/5' 
-                                                            : 'border-blue-500/30 text-blue-600 bg-blue-500/5'
+                                                            sub.evaluation_level === 'Solid' || sub.evaluation_level === 'Expert' ? 'border-emerald-500/30 text-emerald-600 bg-emerald-500/5' :
+                                                            sub.evaluation_level === 'Developing' ? 'border-amber-500/30 text-amber-600 bg-amber-500/5' :
+                                                            'border-red-500/30 text-red-600 bg-red-500/5'
                                                         }`}>{sub.evaluation_level}</div>
                                                     </div>
                                                     <h4 className="text-[15px] font-bold text-text-heading tracking-tight">
@@ -558,97 +692,96 @@ export default function ProfileClient({ profile }: Props) {
 
 /* Review Details Modal component */
 function ReviewModal({ sub, onClose }: { sub: any; onClose: () => void }) {
+    const isSuccess = sub.evaluation_level === 'Solid' || sub.evaluation_level === 'Expert';
+    const isWarning = sub.evaluation_level === 'Developing';
+    const isError = !isSuccess && !isWarning;
+    
     return (
-        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 animate-in fade-in duration-200">
-            <div className="w-full max-w-2xl max-h-[85vh] bg-background border border-border shadow-2xl rounded-2xl flex flex-col overflow-hidden animate-in zoom-in-95 duration-200">
-                {/* Fixed Header */}
-                <div className="px-8 py-6 border-b border-border flex justify-between items-start bg-background shrink-0">
-                    <div className="space-y-1">
-                        <div className="flex items-center gap-3">
-                            <h3 className="inconsolata-ui text-xl font-bold text-text-heading tracking-tight">Homework Review Record</h3>
-                            <div className={`px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-widest inconsolata-ui border ${
-                                sub.evaluation_level === 'Solid' || sub.evaluation_level === 'Expert' ? 'bg-emerald-500/5 border-emerald-500/10 text-emerald-600' :
-                                sub.evaluation_level === 'Developing' ? 'bg-amber-500/5 border-amber-500/10 text-amber-600' :
-                                'bg-zinc-500/5 border-zinc-500/10 text-text-muted'
-                            }`}>
-                                {sub.evaluation_level}
-                            </div>
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-background/80 animate-in fade-in duration-200">
+            <div className="relative w-full max-w-2xl max-h-[90vh] flex flex-col bg-sidebar border border-border shadow-2xl rounded-xl overflow-hidden animate-in zoom-in-95 duration-200">
+                <button 
+                    onClick={onClose}
+                    className="absolute top-4 right-4 p-2 hover:bg-callout-bg rounded-full text-text-muted transition-colors z-10"
+                >
+                    <X className="w-4 h-4" />
+                </button>
+                
+                <div className="p-6 md:p-8 flex flex-col h-full overflow-y-auto no-scrollbar">
+                    <div className="flex items-center gap-4 mb-6">
+                        <div className={`w-12 h-12 shrink-0 rounded-lg flex items-center justify-center ${
+                            isSuccess ? 'bg-emerald-500/10 text-emerald-500' : 
+                            isWarning ? 'bg-amber-500/10 text-amber-500' : 'bg-red-500/10 text-red-500'
+                        }`}>
+                            <CheckCircle2 className="w-6 h-6" />
                         </div>
-                        <p className="text-[12px] font-bold text-text-muted inconsolata-ui uppercase tracking-wider opacity-60">
-                            Logged on {new Date(sub.submitted_at).toLocaleString()}
-                        </p>
+                        <div>
+                            <h3 className="text-[18px] font-bold text-text-heading tracking-tight">Homework Evaluated</h3>
+                            <p className="text-[11px] font-bold text-accent uppercase tracking-widest mt-0.5">Status: {sub.evaluation_level}</p>
+                            <p className="text-[10px] font-bold text-text-muted mt-1 uppercase tracking-widest opacity-60">
+                                Logged on {new Date(sub.submitted_at).toLocaleString()}
+                            </p>
+                        </div>
                     </div>
-                    <button onClick={onClose} className="text-text-muted hover:text-text-heading p-1 transition-colors">
-                        <X className="w-5 h-5" />
-                    </button>
-                </div>
-
-                {/* Scrollable Content */}
-                <div className="p-8 overflow-y-auto">
-                    <div className="space-y-8 pb-4">
-                        <section className="space-y-3">
-                            <h4 className="inconsolata-ui text-[11px] font-black uppercase tracking-widest text-text-muted">Submission Overview</h4>
-                            <div className="p-5 bg-sidebar/30 border border-border rounded-xl shadow-sm">
-                                <p className="text-[15px] text-text-heading leading-relaxed italic">
-                                    &ldquo;{sub.description}&rdquo;
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 flex-1 min-h-0">
+                        {/* Left column: Summary and Link */}
+                        <div className="flex flex-col gap-4 overflow-y-auto pr-2 no-scrollbar">
+                            <div className="bg-background/50 border border-border p-4 rounded-lg">
+                                <h4 className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-2 flex justify-between">
+                                    <span>Evaluation Summary</span>
+                                    {sub.senate_summary && <TTSListenButton text={`Evaluation: ${sub.senate_summary || sub.evaluation}`} label="summary" />}
+                                </h4>
+                                <p className="manrope-body text-[13px] text-text-primary leading-relaxed italic">
+                                    &ldquo;{sub.senate_summary || sub.evaluation}&rdquo;
                                 </p>
                             </div>
-                        </section>
-
-                        <section className="space-y-4">
-                            <h4 className="inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] text-text-muted">Technical Analysis</h4>
-                            <div className="grid grid-cols-1 gap-4">
-                                {[
-                                    { label: 'Technical Depth', reasoning: sub.senate_reasoning?.technical || sub.senate_reasoning?.technician, icon: Code2 },
-                                    { label: 'Understanding', reasoning: sub.senate_reasoning?.understanding || sub.senate_reasoning?.educator, icon: Target },
-                                    { label: 'Relevance', reasoning: sub.senate_reasoning?.relevance || sub.senate_reasoning?.relevance_judge, icon: ShieldCheck }
-                                ].map((item) => (
-                                   <div key={item.label} className="p-6 bg-header border border-border rounded-xl shadow-sm space-y-3">
-                                       <div className="flex items-center gap-3">
-                                           <item.icon className="w-4 h-4 text-accent/50" />
-                                           <p className="text-[11px] font-black uppercase tracking-widest text-text-muted inconsolata-ui">{item.label}</p>
-                                           {item.reasoning && (
-                                               <TTSListenButton text={`${item.label} analysis: ${item.reasoning}`} label={item.label} />
-                                           )}
-                                       </div>
-                                       <p className="text-[14px] text-text-heading leading-relaxed font-medium">
-                                           {item.reasoning || 'Not explicitly detailed.'}
-                                       </p>
-                                   </div>
-                                ))}
-                                </div>
-                                {(sub.senate_summary || sub.evaluation) && (
-                                <div className="p-5 bg-accent/5 border border-accent/10 rounded-none flex items-center justify-between gap-4">
-                                   <p className="text-[14px] text-accent font-bold leading-relaxed">
-                                       Verdict: {sub.senate_summary || sub.evaluation}
-                                   </p>
-                                   <TTSListenButton 
-                                       text={`Final Verdict: ${sub.senate_summary || sub.evaluation}`} 
-                                       variant="full" 
-                                       label="Listen to Verdict" 
-                                   />
-                                </div>
+                            
+                            <div className="bg-background/50 border border-border p-4 rounded-lg">
+                                <h4 className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-2">Submission</h4>
+                                <p className="manrope-body text-[13px] text-text-primary leading-relaxed mb-3">
+                                    {sub.description}
+                                </p>
+                                {sub.link && (
+                                    <a href={sub.link} target="_blank" rel="noreferrer" className="text-[12px] font-medium text-accent hover:underline break-all flex items-start gap-2">
+                                        <LinkIcon className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+                                        {sub.link}
+                                    </a>
                                 )}
+                            </div>
+                        </div>
 
-                        </section>
-
-                        {sub.link && (
-                            <section className="space-y-3">
-                                <h4 className="inconsolata-ui text-[11px] font-black uppercase tracking-widest text-text-muted">Evidence Chain</h4>
-                                <a 
-                                    href={sub.link}
-                                    target="_blank"
-                                    rel="noreferrer"
-                                    className="flex items-center justify-between p-4 bg-background border border-border rounded-none group hover:border-accent/30 transition-all"
-                                >
-                                    <div className="flex items-center gap-3">
-                                        <Github className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
-                                        <span className="text-[13px] font-bold text-text-heading">View Resource</span>
+                        {/* Right column: Feedback Details */}
+                        <div className="flex flex-col min-h-0">
+                            <h4 className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-3 shrink-0">Technical Analysis</h4>
+                            <div className="space-y-2 overflow-y-auto no-scrollbar pr-1 flex-1">
+                                {[
+                                    { label: 'Technical Depth', reasoning: sub.senate_reasoning?.technical || sub.senate_reasoning?.technician },
+                                    { label: 'Understanding', reasoning: sub.senate_reasoning?.understanding || sub.senate_reasoning?.educator },
+                                    { label: 'Relevance', reasoning: sub.senate_reasoning?.relevance || sub.senate_reasoning?.relevance_judge }
+                                ].map((item, idx) => (
+                                    <div key={idx} className="bg-background/40 border border-border/50 rounded-lg p-3 group hover:border-accent/30 transition-colors">
+                                        <div className="flex justify-between items-start mb-1.5">
+                                            <span className="text-[12px] font-bold text-text-primary inconsolata-ui tracking-wide">{item.label}</span>
+                                            {item.reasoning && (
+                                                <TTSListenButton text={`${item.label}: ${item.reasoning}`} label={item.label} />
+                                            )}
+                                        </div>
+                                        <p className="text-[11px] text-text-muted leading-relaxed">
+                                            {item.reasoning || 'Not explicitly detailed.'}
+                                        </p>
                                     </div>
-                                    <ArrowUpRight className="w-4 h-4 text-text-muted" />
-                                </a>
-                            </section>
-                        )}
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div className="pt-2 shrink-0">
+                        <button 
+                            onClick={onClose}
+                            className="w-full py-3 bg-text-heading text-background rounded-lg text-[13px] font-bold tracking-wide hover:opacity-90 transition-all active:scale-[0.98]"
+                        >
+                            Close
+                        </button>
                     </div>
                 </div>
             </div>

@@ -82,6 +82,18 @@ async def get_current_user(request: Request) -> User:
     user_metadata = supabase_user.user_metadata or {}
     display_name = user_metadata.get('full_name') or user_metadata.get('name')
     
+    # Fetch profile data for authorization checks (like is_pro)
+    is_pro = False
+    roadmap_credits = 1.0
+    try:
+        supabase = get_supabase_client()
+        profile_res = supabase.table("profiles").select("is_pro, roadmap_credits").eq("supabase_uid", uid).execute()
+        if profile_res.data:
+            is_pro = profile_res.data[0].get("is_pro", False)
+            roadmap_credits = profile_res.data[0].get("roadmap_credits", 1.0)
+    except Exception as e:
+        logger.error(f"Auth: Failed to fetch profile data for {uid}: {e}")
+
     # We provide a placeholder username to satisfy the mandatory schema.
     # The actual profile data will be fetched in the /auth/me route.
     return User(
@@ -92,7 +104,9 @@ async def get_current_user(request: Request) -> User:
         is_active=True,
         display_name=display_name,
         profile_completed=False,
-        onboarding_completed=False
+        onboarding_completed=False,
+        is_pro=is_pro,
+        roadmap_credits=roadmap_credits
     )
 
 async def get_optional_user(request: Request) -> Optional[User]:

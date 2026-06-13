@@ -66,7 +66,7 @@ export default function PricingSection() {
                         <span className="text-accent">✓</span> Track your skills and progress
                     </div>
                     <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> 5 Cloud AI roadmap generations
+                        <span className="text-accent">✓</span> 5 EulerFold AI roadmap generations
                     </div>
                     <div className="flex items-center gap-2">
                         <span className="text-accent">✓</span> Unlimited Local AI & OpenRouter generations
@@ -113,8 +113,8 @@ export default function PricingSection() {
                     <div className="flex items-center gap-2">
                         <span className="text-accent">✓</span> Unlimited depth extensions
                     </div>
-                    <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> AI homework reviews
+                    <div className="flex items-center gap-2 font-bold text-accent">
+                        <span className="text-accent">✓</span> Homework Submission & Evaluation
                     </div>
                     <div className="flex items-center gap-2">
                         <span className="text-accent">✓</span> Job market insights
@@ -129,13 +129,13 @@ export default function PricingSection() {
                         <span className="">✓</span> Priority AI reasoning models
                     </div>
                     <div className="flex items-center gap-2 font-bold text-teal-600 dark:text-teal-400">
-                        <span className="">✓</span> Cloud AI Practice Portal
+                        <span className="">✓</span> EulerFold AI Practice Portal
                     </div>
                 </div>
 
                 <Link 
                     href="/pricing"
-                    className="w-full py-2 bg-[#111] dark:bg-[#14b8a6] !text-white rounded-lg text-center inconsolata-ui text-[10px] font-bold uppercase tracking-widest hover:opacity-90 transition-all shadow-md"
+                    className="w-full inline-flex items-center justify-center bg-gradient-to-b from-teal-400 to-teal-600 text-white py-3 rounded-2xl text-[14px] font-bold transition-all hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-teal-800 shadow-lg"
                 >
                     Buy Credits (₹{currentPrice})
                 </Link>

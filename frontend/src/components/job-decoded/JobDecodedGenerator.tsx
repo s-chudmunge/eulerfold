@@ -23,6 +23,7 @@ import { supabase } from '@/lib/supabase/client';
 import PaymentModal from '../PaymentModal';
 import { OpenRouterModal } from '../landing/OpenRouterModal';
 import { LocalAIModal } from '../landing/LocalAIModal';
+import { logAIUsage } from '@/lib/usageTracker';
 import { CreateMLCEngine } from '@mlc-ai/web-llm';
 import { jsonrepair } from 'jsonrepair';
 
@@ -77,10 +78,32 @@ const JobDecodedGenerator: React.FC<JobDecodedGeneratorProps> = ({
     fetchProfileAndCredits();
     setOpenRouterKey(localStorage.getItem('openRouterKey'));
     setOpenRouterModel(localStorage.getItem('openRouterModel') || 'openai/gpt-4o');
-    try {
-      const history = JSON.parse(localStorage.getItem('openRouterUsageHistory') || '[]');
-      setUsageHistory(history);
-    } catch { }
+    
+    // Fetch unified AI usage from backend if session exists, else fallback
+    const fetchUsage = async () => {
+      const { data: { session: currentSession } } = await supabase.auth.getSession();
+      if (currentSession) {
+        try {
+          const res = await api.get('/ai-usage?limit=3');
+          const mappedHistory = res.data.map((log: any) => ({
+            subject: log.subject,
+            model: log.model_name,
+            total_tokens: log.total_tokens,
+            date: log.created_at
+          }));
+          setUsageHistory(mappedHistory);
+        } catch (err) {
+          console.error("Failed to load AI usage history", err);
+        }
+      } else {
+        try {
+          const history = JSON.parse(localStorage.getItem('openRouterUsageHistory') || '[]');
+          setUsageHistory(history);
+        } catch { }
+      }
+    };
+    fetchUsage();
+
     setLocalAIModelId(localStorage.getItem('localAIModelId'));
     setLocalAIModelName(localStorage.getItem('localAIModelName'));
   }, []);
@@ -196,6 +219,8 @@ Duration: ${formData.time_value} weeks.
 
 Generate a catchy, SEO-friendly, and natural title (e.g., "The Complete Guide to Data Engineering"). Do NOT use dry, robotic formats like "Intensive 4-Week X Roadmap" and do NOT include the duration in the title.
 
+CRITICAL REQUIREMENT: You MUST generate EXACTLY ${formData.time_value} modules in the "modules" array (one module for each unit of time). Do not just output one module.
+
 Reply ONLY with a raw JSON object matching EXACTLY this structure:
 {
   "title": "Roadmap Title",
@@ -296,21 +321,17 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
         const saveResponse = await api.post("/roadmaps/save-external", backendPayload);
         
         try {
-          const rawUsage = orData.usage || {};
-          const newEntry = {
-            id: saveResponse?.data?.slug || Date.now().toString(),
-            subject: formData.job_description.substring(0, 30) + "...",
+          await logAIUsage({
+            id: saveResponse?.data?.slug,
+            subject: roadmapPlan.title || 'Job Decoded Roadmap',
             model: orData.model || openRouterModel,
-            prompt_tokens: rawUsage.prompt_tokens || 0,
-            completion_tokens: rawUsage.completion_tokens || 0,
-            total_tokens: rawUsage.total_tokens || 0,
-            date: new Date().toISOString()
-          };
-          const existingHistory = JSON.parse(localStorage.getItem('openRouterUsageHistory') || '[]');
-          const updatedHistory = [newEntry, ...existingHistory].slice(0, 100);
-          localStorage.setItem('openRouterUsageHistory', JSON.stringify(updatedHistory));
-          setUsageHistory(updatedHistory);
-        } catch (e) {}
+            prompt_tokens: orData.usage?.prompt_tokens || 0,
+            completion_tokens: orData.usage?.completion_tokens || 0,
+            total_tokens: orData.usage?.total_tokens || 0
+          });
+        } catch (e) {
+          console.error("Failed to log AI usage:", e);
+        }
 
         onRoadmapGenerated(saveResponse.data, { ...formData, time_unit: 'weeks' });
 
@@ -333,6 +354,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                   { role: "system", content: localSystemPrompt },
                   { role: "user", content: localUserPrompt }
                 ],
+                max_tokens: 8192,
               });
               
               generatedText = response.choices[0].message.content || '';
@@ -362,9 +384,9 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
             } catch (err: any) {
               const errMsg = err?.message || err?.toString() || '';
               if (errMsg.includes('Instance reference') || errMsg.includes('disposed') || errMsg.includes('Device was lost') || errMsg.includes('OperationError')) {
-                throw new Error("Hardware Crash: Your GPU ran out of memory. Please select a smaller model (like Llama 3.2 1B) or use Cloud AI.");
+                throw new Error("Hardware Crash: Your GPU ran out of memory. Please select a smaller model (like Llama 3.2 1B) or use EulerFold AI.");
               }
-              if (attempt === 2) throw new Error("Local AI failed to generate valid JSON after 2 attempts. Try a different model or use Cloud AI.");
+              if (attempt === 2) throw new Error("Local AI failed to generate valid JSON after 2 attempts. Try a different model or use EulerFold AI.");
             }
           }
 
@@ -385,21 +407,17 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
           const saveResponse = await api.post("/roadmaps/save-external", backendPayload);
           
           try {
-            const rawUsage = responseUsage || {};
-            const newEntry = {
-              id: saveResponse.data?.slug || Date.now().toString(),
-              subject: formData.job_description.substring(0, 30) + "...",
+            await logAIUsage({
+              id: saveResponse.data?.slug,
+              subject: roadmapPlan.title || 'Job Decoded Roadmap',
               model: localAIModelId,
-              prompt_tokens: rawUsage.prompt_tokens || 0,
-              completion_tokens: rawUsage.completion_tokens || 0,
-              total_tokens: rawUsage.total_tokens || 0,
-              date: new Date().toISOString()
-            };
-            const existingHistory = JSON.parse(localStorage.getItem('openRouterUsageHistory') || '[]');
-            const updatedHistory = [newEntry, ...existingHistory].slice(0, 100);
-            localStorage.setItem('openRouterUsageHistory', JSON.stringify(updatedHistory));
-            setUsageHistory(updatedHistory);
-          } catch (e) {}
+              prompt_tokens: responseUsage?.prompt_tokens || 0,
+              completion_tokens: responseUsage?.completion_tokens || 0,
+              total_tokens: responseUsage?.total_tokens || 0
+            });
+          } catch (e) {
+            console.error("Failed to log AI usage:", e);
+          }
 
           onRoadmapGenerated(saveResponse.data, { ...formData, time_unit: 'weeks' });
         } finally {
@@ -515,10 +533,11 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                 <div className="flex items-center justify-between p-1 bg-sidebar border border-border rounded-lg w-full">
                   <button
                     type="button"
-                    onClick={() => { setUseOpenRouter(false); setUseLocalAI(false); }}
-                    className={`flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all ${(!useOpenRouter && !useLocalAI) ? 'bg-background text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
+                    disabled={true}
+                    onClick={() => {}}
+                    className={`flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all text-red-500 opacity-60 cursor-not-allowed`}
                   >
-                    Default AI
+                    EulerFold AI (Temporary Outage)
                   </button>
                   <button
                     type="button"
@@ -544,7 +563,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                         </div>
                         <div>
                           <h3 className="text-[13px] font-bold text-text-heading leading-tight mb-0.5">
-                            Cloud AI (Default)
+                            EulerFold AI (Default)
                           </h3>
                           <p className="text-[11px] text-text-muted leading-tight">
                             Powered by Google Gemini 2.5. Fast, robust paths. <span className="text-amber-500/90 font-bold">Costs 1 Credit per generation.</span>
@@ -673,7 +692,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                 <div className="text-left">
                   <p className="text-[11px] font-bold text-text-heading mb-0.5 uppercase tracking-widest">Generation Cost</p>
                   <p className="text-[11px] text-text-muted leading-relaxed font-medium">
-                    Decoding this path with Cloud AI will utilize <span className="font-bold text-amber-500/90">1 Credit</span> from your account balance.
+                    Decoding this path with EulerFold AI will utilize <span className="font-bold text-amber-500/90">1 Credit</span> from your account balance.
                   </p>
                 </div>
               </div>
@@ -682,16 +701,16 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
             <button
               onClick={handleSubmit}
               disabled={isGenerating || (useLocalAI && !localAIModelId)}
-              className={`mt-4 group relative w-full sm:w-fit inline-flex items-center justify-center overflow-hidden px-10 py-3 rounded-none text-[11px] font-bold uppercase tracking-widest transition-all ${
+              className={`mt-4 group relative w-full sm:w-fit inline-flex items-center justify-center overflow-hidden px-7 py-3 rounded-2xl text-[14px] font-bold transition-all ${
                 (!((openRouterKey && useOpenRouter) || (localAIModelId && useLocalAI)) && credits !== null && credits < 1)
-                ? 'bg-sidebar border border-border text-text-muted hover:border-accent/40' 
+                ? 'bg-sidebar border-2 border-border text-text-muted hover:border-accent/40' 
                 : (useLocalAI && !localAIModelId)
-                  ? 'bg-sidebar border border-border text-text-muted cursor-not-allowed opacity-50'
-                  : 'bg-text-heading text-background hover:opacity-90 active:scale-95 shadow-xl'
+                  ? 'bg-sidebar border-2 border-border text-text-muted cursor-not-allowed opacity-50'
+                  : 'bg-gradient-to-b from-teal-400 to-teal-600 text-white hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-teal-800 shadow-lg'
               }`}
             >
               <div className="flex items-center justify-center gap-2.5">
-                <Sparkles className={`w-4 h-4 ${(!((openRouterKey && useOpenRouter) || (localAIModelId && useLocalAI)) && credits !== null && credits < 1) ? 'text-text-muted' : 'text-accent'}`} />
+                <Sparkles className="w-4 h-4" />
                 {useLocalAI ? (
                   localAIModelId ? <span>Decode Path <span className="opacity-50">(Local)</span></span> : 'Select Local Model'
                 ) : (openRouterKey && useOpenRouter) ? (

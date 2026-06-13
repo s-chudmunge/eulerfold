@@ -7,7 +7,6 @@ import { practiceAPI, MCQSessionRead } from '@/lib/api';
 import MCQPractice from '@/components/roadmap/MCQPractice';
 import { BrainCircuit, Target, ArrowRight, ArrowLeft, Sparkles, History, ChevronRight, X } from 'lucide-react';
 import Breadcrumbs from '@/components/Breadcrumbs';
-import Footer from '@/components/Footer';
 import TTSListenButton from '@/components/TTSListenButton';
 import { useRouter } from 'next/navigation';
 import { SideBanner, QUOTES } from '@/components/layout/SideBanners';
@@ -212,7 +211,7 @@ function PracticeContent() {
                                                     ) : isAuthenticated && profile && !profile.is_pro ? (
                                                         <div className="flex items-center gap-2 text-[10px] appropriate-sans text-text-muted italic">
                                                             <Target className="w-3 h-3 text-emerald-600" />
-                                                            <span>Cloud AI requires Pro. Local/OpenRouter is free!</span>
+                                                            <span>EulerFold AI requires Pro. Local/OpenRouter is free!</span>
                                                         </div>
                                                     ) : null}
                                                 </div>
@@ -227,7 +226,7 @@ function PracticeContent() {
                                                 ) : isAuthenticated && profile && !profile.is_pro ? (
                                                     <div className="flex items-center gap-3 text-[10px] appropriate-sans text-text-muted italic">
                                                         <Target className="w-3 h-3 text-emerald-600 shrink-0" />
-                                                        <span>Cloud AI requires Pro. Local/OpenRouter is free!</span>
+                                                        <span>EulerFold AI requires Pro. Local/OpenRouter is free!</span>
                                                     </div>
                                                 ) : null}
                                             </div>
@@ -355,7 +354,6 @@ function PracticeContent() {
                     </div>
                 </div>
             </main>
-            <Footer />
 
             {selectedHistorySession && (
                 <div className="fixed inset-0 z-[120] bg-background flex flex-col animate-in fade-in duration-300 overflow-y-auto">

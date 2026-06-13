@@ -65,7 +65,7 @@ export default function RecommendedRoadmaps({ query, limit = 3, className = "" }
                 {roadmap.title}
               </span>
               <span className="text-[13px] text-text-muted font-medium italic opacity-70">
-                {roadmap.subject} {roadmap.time_value && `• ${roadmap.time_value} ${roadmap.time_unit}`}
+                {roadmap.subject} {roadmap.time_value && `• ${roadmap.roadmap_plan?.modules?.length || roadmap.time_value} ${roadmap.roadmap_plan?.modules?.length ? (roadmap.roadmap_plan.modules.length === 1 ? 'week' : 'weeks') : roadmap.time_unit}`}
               </span>
             </div>
             <ArrowRight className="w-4 h-4 text-accent opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all shrink-0 mt-1" />

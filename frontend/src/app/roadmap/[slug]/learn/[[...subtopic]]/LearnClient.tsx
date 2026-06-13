@@ -897,6 +897,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                         // Optional: refresh progress or show celebration
                         console.log("Homework submitted successfully:", evaluation);
                     }}
+                    isPro={profile?.is_pro || false}
                 />
             )}
         </div>

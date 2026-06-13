@@ -1,9 +1,13 @@
 "use client";
 
 import React, { useState } from 'react';
-import { X, Link as LinkIcon, Send, Sparkles, CheckCircle2, AlertCircle, HelpCircle, ChevronRight, Info } from 'lucide-react';
+import { X, Link as LinkIcon, Send, Sparkles, CheckCircle2, AlertCircle, HelpCircle, ChevronRight, Info, Lock } from 'lucide-react';
 import { submissionsAPI } from '@/lib/api';
 import { supabase } from '@/lib/supabase/client';
+import { OpenRouterModal } from '@/components/landing/OpenRouterModal';
+import { LocalAIModal } from '@/components/landing/LocalAIModal';
+import { CreateMLCEngine } from '@mlc-ai/web-llm';
+import { logAIUsage } from '@/lib/usageTracker';
 
 interface Props {
     isOpen: boolean;
@@ -13,15 +17,31 @@ interface Props {
     moduleTitle: string;
     instructions?: string | any;
     onSuccess?: (evaluation: any) => void;
+    initialResult?: any;
+    roadmapSubject?: string;
+    moduleTopicsText?: string;
+    isPro?: boolean;
 }
 
-export default function HomeworkSubmissionModal({ isOpen, onClose, roadmapId, moduleNumber, moduleTitle, instructions, onSuccess }: Props) {
+export default function HomeworkSubmissionModal({ isOpen, onClose, roadmapId, moduleNumber, moduleTitle, instructions, onSuccess, initialResult, roadmapSubject, moduleTopicsText, isPro }: Props) {
     const [link, setLink] = useState('');
     const [description, setDescription] = useState('');
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [result, setResult] = useState<any>(null);
-    const [showInstructions, setShowInstructions] = useState(true);
+    const [result, setResult] = useState<any>(initialResult || null);
+    const [showInstructions, setShowInstructions] = useState(!initialResult);
+    
+    // Engine Selection State
+    const [useOpenRouter, setUseOpenRouter] = useState(true);
+    const [openRouterKey, setOpenRouterKey] = useState<string | null>(null);
+    const [openRouterModel, setOpenRouterModel] = useState<string>('openai/gpt-4o');
+    const [isOpenRouterModalOpen, setIsOpenRouterModalOpen] = useState(false);
+
+    const [useLocalAI, setUseLocalAI] = useState(false);
+    const [localAIModelId, setLocalAIModelId] = useState<string | null>(null);
+    const [localAIModelName, setLocalAIModelName] = useState<string | null>(null);
+    const [isLocalAIModalOpen, setIsLocalAIModalOpen] = useState(false);
+    const [evaluatingProgress, setEvaluatingProgress] = useState<string>('');
 
     React.useEffect(() => {
         if (isOpen) {
@@ -29,9 +49,15 @@ export default function HomeworkSubmissionModal({ isOpen, onClose, roadmapId, mo
             setDescription('');
             setSubmitting(false);
             setError(null);
-            setResult(null);
+            setResult(initialResult || null);
+            setShowInstructions(!initialResult);
+            
+            setOpenRouterKey(localStorage.getItem('openRouterKey'));
+            setOpenRouterModel(localStorage.getItem('openRouterModel') || 'openai/gpt-4o');
+            setLocalAIModelId(localStorage.getItem('localAIModelId'));
+            setLocalAIModelName(localStorage.getItem('localAIModelName'));
         }
-    }, [isOpen, moduleNumber]);
+    }, [isOpen, moduleNumber, initialResult]);
 
     if (!isOpen) return null;
 
@@ -104,11 +130,160 @@ export default function HomeworkSubmissionModal({ isOpen, onClose, roadmapId, mo
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) throw new Error("Authentication required");
 
+            let evaluation_result = null;
+
+            if (useOpenRouter && openRouterKey) {
+                setEvaluatingProgress('Evaluating via OpenRouter...');
+                const prompt = `You are a Technical Reviewer analyzing homework for: ${moduleTitle}.
+ROADMAP SUBJECT: ${roadmapSubject || 'N/A'}
+MODULE OBJECTIVES: ${moduleTopicsText || 'N/A'}
+EXPECTED DELIVERABLE: ${typeof instructions === 'string' ? instructions : JSON.stringify(instructions)}
+
+USER SUBMISSION:
+Description: ${description}
+Link: ${link || 'None'}
+
+CRITERIA:
+1. Technical Depth: Accurate and deep enough?
+2. Evidence of Learning: Shows genuine understanding?
+3. Relevance: Aligns with roadmap?
+
+OUTPUT RULES:
+- BE CONCISE. Max 3 lines total for the summary.
+- NO fluff, NO encouragement, NO "Great job". Just analysis.
+- Decide a level: Solid, Developing, or Beginner.
+- If 'Developing' or 'Beginner', provide direct next steps.
+- Map the submission to the roadmap module’s objectives and extract only skills that are directly evidenced by the work.
+- Return a JSON object with this exact structure:
+{
+  "level": "Solid | Developing | Beginner",
+  "summary": "Direct analysis of the work (max 3 lines).",
+  "feedback_details": {
+    "technical": "...",
+    "understanding": "...",
+    "relevance": "..."
+  },
+  "evidence": [
+    {"skill": "string", "strength": 0.0, "confidence": 0.0, "reason": "string"}
+  ]
+}
+
+Respond ONLY with valid JSON. Do not include markdown code blocks.`;
+
+                const orResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${openRouterKey}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        model: openRouterModel || 'openai/gpt-4o',
+                        messages: [{ role: "user", content: prompt }]
+                    })
+                });
+
+                const orData = await orResponse.json();
+                if (!orResponse.ok) throw new Error(orData.error?.message || "OpenRouter generation failed.");
+                
+                try {
+                    let content = orData.choices[0].message.content.trim();
+                    if (content.startsWith("```json")) content = content.replace(/^```json/, "").replace(/```$/, "").trim();
+                    evaluation_result = JSON.parse(content);
+                    
+                    logAIUsage({
+                        subject: `Homework Evaluation: ${moduleTitle}`,
+                        model: openRouterModel || 'openai/gpt-4o',
+                        prompt_tokens: orData.usage?.prompt_tokens || 0,
+                        completion_tokens: orData.usage?.completion_tokens || 0,
+                        total_tokens: orData.usage?.total_tokens || 0,
+                    });
+                } catch (e) {
+                    throw new Error("Failed to parse evaluation from OpenRouter.");
+                }
+
+            } else if (useLocalAI && localAIModelId) {
+                setEvaluatingProgress('Loading Local AI Engine...');
+                const initProgressCallback = (report: any) => {
+                    setEvaluatingProgress(`Loading Local AI: ${Math.round(report.progress * 100)}%`);
+                };
+
+                let engine;
+                try {
+                    engine = await CreateMLCEngine(localAIModelId, { initProgressCallback });
+                } catch (e) {
+                    console.error(e);
+                    throw new Error("Hardware Crash: Failed to load the local AI engine. Please try a different model.");
+                }
+
+                setEvaluatingProgress('Evaluating via Local AI (This may take a while)...');
+                const prompt = `You are a Technical Reviewer analyzing homework for: ${moduleTitle}.
+ROADMAP SUBJECT: ${roadmapSubject || 'N/A'}
+MODULE OBJECTIVES: ${moduleTopicsText || 'N/A'}
+EXPECTED DELIVERABLE: ${typeof instructions === 'string' ? instructions : JSON.stringify(instructions)}
+
+USER SUBMISSION:
+Description: ${description}
+Link: ${link || 'None'}
+
+CRITERIA:
+1. Technical Depth: Accurate and deep enough?
+2. Evidence of Learning: Shows genuine understanding?
+3. Relevance: Aligns with roadmap?
+
+OUTPUT RULES:
+- BE CONCISE. Max 3 lines total for the summary.
+- NO fluff, NO encouragement, NO "Great job". Just analysis.
+- Decide a level: Solid, Developing, or Beginner.
+- If 'Developing' or 'Beginner', provide direct next steps.
+- Map the submission to the roadmap module’s objectives and extract only skills that are directly evidenced by the work.
+- Return a JSON object with this exact structure:
+{
+  "level": "Solid | Developing | Beginner",
+  "summary": "Direct analysis of the work (max 3 lines).",
+  "feedback_details": {
+    "technical": "...",
+    "understanding": "...",
+    "relevance": "..."
+  },
+  "evidence": [
+    {"skill": "string", "strength": 0.8, "confidence": 0.9, "reason": "string"}
+  ]
+}
+
+Respond ONLY with valid JSON. Do not include markdown code blocks.`;
+
+                try {
+                    const reply = await engine.chat.completions.create({
+                        messages: [{ role: "user", content: prompt }]
+                    });
+                    let content = reply.choices[0].message.content || "";
+                    content = content.trim();
+                    if (content.startsWith("```json")) content = content.replace(/^```json/, "").replace(/```$/, "").trim();
+                    evaluation_result = JSON.parse(content);
+                    
+                    logAIUsage({
+                        subject: `Homework Evaluation: ${moduleTitle}`,
+                        model: localAIModelId,
+                        prompt_tokens: reply.usage?.prompt_tokens || 0,
+                        completion_tokens: reply.usage?.completion_tokens || 0,
+                        total_tokens: reply.usage?.total_tokens || 0,
+                    });
+                } catch (e) {
+                    console.error(e);
+                    throw new Error("Local AI failed to generate valid JSON evaluation.");
+                } finally {
+                    if (engine) await engine.unload();
+                }
+            } else {
+                setEvaluatingProgress('Evaluating via EulerFold AI...');
+            }
+
             const payload = {
                 roadmap_id: roadmapId,
                 module_number: moduleNumber,
                 description,
-                link: link || null
+                link: link || null,
+                evaluation_result: evaluation_result
             };
 
             const data = await submissionsAPI.createSubmission(payload, session.access_token);
@@ -125,30 +300,77 @@ export default function HomeworkSubmissionModal({ isOpen, onClose, roadmapId, mo
     if (result) {
         return (
             <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-background/80 animate-in fade-in duration-200">
-                <div className="relative w-full max-w-[400px] bg-sidebar border border-border shadow-2xl rounded-xl overflow-hidden animate-in zoom-in-95 duration-200">
+                <div className="relative w-full max-w-2xl max-h-[90vh] flex flex-col bg-sidebar border border-border shadow-2xl rounded-xl overflow-hidden animate-in zoom-in-95 duration-200">
                     <button 
                         onClick={onClose}
                         className="absolute top-4 right-4 p-2 hover:bg-callout-bg rounded-full text-text-muted transition-colors z-10"
                     >
                         <X className="w-4 h-4" />
                     </button>
-                    <div className="p-8 text-center">
-                        <div className={`w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-6 ${
-                            result.level === 'Solid' ? 'bg-emerald-500/10 text-emerald-500' : 
-                            result.level === 'Developing' ? 'bg-blue-500/10 text-blue-500' : 'bg-red-500/10 text-red-500'
-                        }`}>
-                            <CheckCircle2 className="w-6 h-6" />
+                    
+                    <div className="p-6 md:p-8 flex flex-col h-full overflow-y-auto no-scrollbar">
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className={`w-12 h-12 shrink-0 rounded-lg flex items-center justify-center ${
+                                result.level === 'Solid' ? 'bg-emerald-500/10 text-emerald-500' : 
+                                result.level === 'Developing' ? 'bg-blue-500/10 text-blue-500' : 'bg-red-500/10 text-red-500'
+                            }`}>
+                                <CheckCircle2 className="w-6 h-6" />
+                            </div>
+                            <div>
+                                <h3 className="text-[18px] font-bold text-text-heading tracking-tight">Homework Evaluated</h3>
+                                <p className="text-[11px] font-bold text-accent uppercase tracking-widest mt-0.5">Status: {result.level}</p>
+                            </div>
                         </div>
-                        <h3 className="text-[18px] font-bold text-text-heading mb-1 tracking-tight">Homework Evaluated</h3>
-                        <p className="text-[11px] font-bold text-accent uppercase tracking-widest mb-6">Status: {result.level}</p>
                         
-                        <div className="bg-background/50 border border-border p-5 rounded-lg mb-8 text-left">
-                            <p className="manrope-body text-[13px] text-text-primary leading-relaxed italic">
-                                &ldquo;{result.summary}&rdquo;
-                            </p>
-                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 flex-1 min-h-0">
+                            {/* Left column: Summary and Link */}
+                            <div className="flex flex-col gap-4 overflow-y-auto pr-2 no-scrollbar">
+                                <div className="bg-background/50 border border-border p-4 rounded-lg">
+                                    <h4 className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-2">Evaluation</h4>
+                                    <p className="manrope-body text-[13px] text-text-primary leading-relaxed italic">
+                                        &ldquo;{result.summary}&rdquo;
+                                    </p>
+                                </div>
+                                
+                                {(result.link || link) && (
+                                    <div className="bg-background/50 border border-border p-4 rounded-lg">
+                                        <h4 className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-2">Source Work</h4>
+                                        <a href={result.link || link} target="_blank" rel="noreferrer" className="text-[12px] font-medium text-accent hover:underline break-all flex items-start gap-2">
+                                            <LinkIcon className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+                                            {result.link || link}
+                                        </a>
+                                    </div>
+                                )}
+                            </div>
 
-                        <div className="flex flex-col gap-2">
+                            {/* Right column: Skills */}
+                            {result.evidence && result.evidence.length > 0 && (
+                                <div className="flex flex-col min-h-0">
+                                    <h4 className="text-[10px] font-black text-text-muted uppercase tracking-widest mb-3 shrink-0">Skills Validated</h4>
+                                    <div className="space-y-2 overflow-y-auto no-scrollbar pr-1 flex-1">
+                                        {result.evidence.map((ev: any, idx: number) => (
+                                            <div key={idx} className="bg-background/40 border border-border/50 rounded-lg p-3 group hover:border-accent/30 transition-colors">
+                                                <div className="flex justify-between items-start">
+                                                    <span className="text-[12px] font-bold text-text-primary inconsolata-ui tracking-wide">{ev.skill}</span>
+                                                    <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                                                        ev.strength >= 0.8 ? 'bg-emerald-500/10 text-emerald-500' :
+                                                        ev.strength >= 0.5 ? 'bg-blue-500/10 text-blue-500' :
+                                                        'bg-amber-500/10 text-amber-500'
+                                                    }`}>
+                                                        {Math.round(ev.strength * 100)}%
+                                                    </span>
+                                                </div>
+                                                {ev.reason && (
+                                                    <p className="text-[11px] text-text-muted leading-relaxed mt-1.5">{ev.reason}</p>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                        
+                        <div className="pt-2 shrink-0">
                             <button 
                                 onClick={onClose}
                                 className="w-full py-3 bg-text-heading text-background rounded-lg text-[13px] font-bold tracking-wide hover:opacity-90 transition-all active:scale-[0.98]"
@@ -203,8 +425,24 @@ export default function HomeworkSubmissionModal({ isOpen, onClose, roadmapId, mo
                         </div>
                     </div>
 
-                    <form onSubmit={handleSubmit} className="space-y-4">
-                        <div className="space-y-1.5">
+                    {!isPro && !result ? (
+                        <div className="p-4 bg-red-500/5 border border-red-500/20 rounded-xl flex items-start gap-3">
+                            <Lock className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
+                            <div className="flex-1">
+                                <h4 className="text-[13px] font-bold text-red-500">Pro Feature</h4>
+                                <p className="text-[11px] text-text-muted mt-1 leading-relaxed">
+                                    Unlock AI-powered homework evaluation and technical reviews with a Pro subscription.
+                                </p>
+                                <div className="mt-3">
+                                    <Link href="/pricing" className="text-[11px] font-bold text-accent uppercase tracking-widest hover:underline flex items-center gap-1">
+                                        Upgrade to Pro <ChevronRight className="w-3 h-3" />
+                                    </Link>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <form onSubmit={handleSubmit} className="space-y-4">
+                            <div className="space-y-1.5">
                             <label className="text-[9px] font-bold text-text-muted uppercase tracking-widest ml-1">
                                 Proof Link (Optional)
                             </label>
@@ -233,6 +471,61 @@ export default function HomeworkSubmissionModal({ isOpen, onClose, roadmapId, mo
                             />
                         </div>
 
+                        {/* AI Engine Selection */}
+                        <div className="bg-background/40 border border-border/50 rounded-lg p-2 flex flex-col gap-2">
+                            <div className="flex justify-between items-center px-1">
+                                <span className="text-[9px] font-bold text-text-muted uppercase tracking-widest flex items-center gap-1.5">
+                                    <Sparkles className="w-3 h-3 text-accent" /> Evaluator Engine
+                                </span>
+                            </div>
+                            
+                            <div className="flex gap-1.5 p-1 bg-background rounded-lg border border-border/50">
+                                <button
+                                    type="button"
+                                    disabled={true}
+                                    onClick={() => {}}
+                                    className={`flex-1 py-1.5 px-2 rounded-md text-[9px] font-bold uppercase tracking-widest transition-all text-red-500 opacity-60 cursor-not-allowed`}
+                                >
+                                    EulerFold AI (Temporary Outage)
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => { setUseOpenRouter(true); setUseLocalAI(false); }}
+                                    className={`flex-1 py-1.5 px-2 rounded-md text-[9px] font-bold uppercase tracking-widest transition-all ${useOpenRouter ? 'bg-sidebar text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
+                                >
+                                    OpenRouter
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => { setUseOpenRouter(false); setUseLocalAI(true); }}
+                                    className={`flex-1 py-1.5 px-2 rounded-md text-[9px] font-bold uppercase tracking-widest transition-all ${useLocalAI ? 'bg-sidebar text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
+                                >
+                                    Local AI
+                                </button>
+                            </div>
+
+                            <div className="px-1 py-1 flex items-center justify-between">
+                                <span className="text-[10px] text-text-muted/70 font-medium">
+                                    {(!useOpenRouter && !useLocalAI) && "Free standard evaluation."}
+                                    {useOpenRouter && "Uses your API key."}
+                                    {useLocalAI && "Runs locally in browser. Free & Private."}
+                                </span>
+                                
+                                {useOpenRouter && (
+                                    <button type="button" onClick={() => setIsOpenRouterModalOpen(true)} className="text-[9px] font-bold text-accent hover:underline flex items-center gap-1">
+                                        {openRouterKey ? 'Configure OpenRouter' : 'Set API Key'}
+                                    </button>
+                                )}
+                                {useLocalAI && (
+                                    <button type="button" onClick={() => setIsLocalAIModalOpen(true)} className="text-[9px] font-bold text-accent hover:underline flex items-center gap-1">
+                                        {localAIModelId ? 'Change Local Model' : 'Select Local Model'}
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+
+
+
                         {error && (
                             <div className="p-3 bg-red-500/5 border border-red-500/20 rounded-lg flex items-center gap-2.5 text-red-600 animate-in fade-in duration-300">
                                 <AlertCircle className="w-3.5 h-3.5 shrink-0" />
@@ -243,7 +536,7 @@ export default function HomeworkSubmissionModal({ isOpen, onClose, roadmapId, mo
                         <div className="pt-1">
                             <button
                                 type="submit"
-                                disabled={submitting}
+                                disabled={submitting || (useLocalAI && !localAIModelId) || (useOpenRouter && !openRouterKey)}
                                 className="w-full py-2.5 bg-teal-700 text-white rounded-lg text-[13px] font-bold tracking-wide hover:bg-teal-800 transition-all flex items-center justify-center gap-2.5 disabled:opacity-50 active:scale-[0.98]"
                             >
                                 {submitting ? (
@@ -257,8 +550,12 @@ export default function HomeworkSubmissionModal({ isOpen, onClose, roadmapId, mo
                                                 />
                                             ))}
                                         </div>
-                                        <span className="opacity-90">Analyzing...</span>
+                                        <span className="opacity-90">{evaluatingProgress || 'Analyzing...'}</span>
                                     </div>
+                                ) : (useLocalAI && !localAIModelId) ? (
+                                    <>Select Local Model</>
+                                ) : (useOpenRouter && !openRouterKey) ? (
+                                    <>Set OpenRouter Key</>
                                 ) : (
                                     <>
                                         Send for Review
@@ -268,6 +565,7 @@ export default function HomeworkSubmissionModal({ isOpen, onClose, roadmapId, mo
                             </button>
                         </div>
                     </form>
+                    )}
                 </div>
 
                 {/* Instructions Sidebar */}
@@ -293,6 +591,35 @@ export default function HomeworkSubmissionModal({ isOpen, onClose, roadmapId, mo
                     </div>
                 )}
             </div>
+
+            <OpenRouterModal 
+                isOpen={isOpenRouterModalOpen} 
+                onClose={() => {
+                    setIsOpenRouterModalOpen(false);
+                    setOpenRouterKey(localStorage.getItem('openRouterKey'));
+                    setOpenRouterModel(localStorage.getItem('openRouterModel') || 'openai/gpt-4o');
+                }} 
+            />
+
+            <LocalAIModal 
+                isOpen={isLocalAIModalOpen} 
+                onClose={() => setIsLocalAIModalOpen(false)} 
+                onSelectModel={(modelId, modelName) => {
+                    localStorage.setItem('localAIModelId', modelId);
+                    localStorage.setItem('localAIModelName', modelName);
+                    setLocalAIModelId(modelId);
+                    setLocalAIModelName(modelName);
+                    setIsLocalAIModalOpen(false);
+                }}
+                onClearModel={() => {
+                    localStorage.removeItem('localAIModelId');
+                    localStorage.removeItem('localAIModelName');
+                    setLocalAIModelId(null);
+                    setLocalAIModelName(null);
+                    setUseLocalAI(false);
+                    setIsLocalAIModalOpen(false);
+                }}
+            />
         </div>
     );
 }

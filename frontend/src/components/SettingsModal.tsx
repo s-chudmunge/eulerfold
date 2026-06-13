@@ -24,7 +24,7 @@ import {
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/components/AuthProvider';
 import { supabase } from '@/lib/supabase/client';
-import { authAPI, profileAPI } from '@/lib/api';
+import { authAPI, profileAPI, api } from '@/lib/api';
 import { useSettings } from './SettingsProvider';
 import Link from 'next/link';
 import { LocalAIModal } from './landing/LocalAIModal';
@@ -50,6 +50,7 @@ export default function SettingsModal() {
   const [openRouterModel, setOpenRouterModel] = useState<string>('openai/gpt-4o');
   const [availableModels, setAvailableModels] = useState<any[]>([]);
   const [usageHistory, setUsageHistory] = useState<any[]>([]);
+  const [isLoadingUsage, setIsLoadingUsage] = useState(true);
   const [keyInfo, setKeyInfo] = useState<any>(null);
   
   const [localAIModelId, setLocalAIModelId] = useState<string | null>(null);
@@ -116,6 +117,14 @@ export default function SettingsModal() {
       setUsername(authUser.username || '');
       setEmail(authUser.email || '');
       setLoading(false);
+      
+      setIsLoadingUsage(true);
+      api.get('/ai-usage?limit=100')
+        .then(res => {
+          if (res.data) setUsageHistory(res.data);
+        })
+        .catch(e => console.error("Failed to load usage history", e))
+        .finally(() => setIsLoadingUsage(false));
     }
   }, [authUser, isOpen]);
 
@@ -497,7 +506,25 @@ export default function SettingsModal() {
               </a>
             </div>
 
-            {usageHistory.length === 0 ? (
+            {isLoadingUsage ? (
+              <div className="space-y-3">
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <div key={i} className="flex items-center justify-between p-4 bg-background border border-border/50 rounded-xl shadow-sm animate-pulse">
+                    <div className="flex-1 min-w-0 pr-4">
+                      <div className="h-4 bg-border/40 rounded w-2/3 mb-2"></div>
+                      <div className="flex flex-wrap items-center gap-2 mt-2">
+                        <div className="h-3 bg-border/40 rounded w-20"></div>
+                        <div className="h-3 bg-border/40 rounded w-24"></div>
+                      </div>
+                    </div>
+                    <div className="text-right shrink-0 flex flex-col items-end gap-1">
+                      <div className="h-4 bg-border/40 rounded w-16 mb-1"></div>
+                      <div className="h-3 bg-border/40 rounded w-12"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : usageHistory.length === 0 ? (
               <div className="p-8 text-center bg-sidebar/50 rounded-xl border border-border">
                 <History className="w-8 h-8 text-text-muted mx-auto mb-3 opacity-20" />
                 <p className="inconsolata-ui text-[12px] font-bold text-text-heading">No usage history found</p>
@@ -508,10 +535,21 @@ export default function SettingsModal() {
                 {usageHistory.map((h, i) => (
                   <div key={i} className="flex items-center justify-between p-4 bg-background border border-border/50 rounded-xl shadow-sm">
                     <div className="flex-1 min-w-0 pr-4">
-                      <div className="text-[13px] font-bold text-text-heading truncate mb-1">{h.subject}</div>
-                      <div className="flex items-center gap-2">
-                        <span className="text-[10px] font-medium px-2 py-0.5 bg-sidebar rounded border border-border/50 text-text-muted truncate">{h.model}</span>
-                        <span className="text-[10px] text-text-muted italic">{new Date(h.date).toLocaleDateString()} {new Date(h.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                      <div className="text-[13px] font-bold text-text-heading line-clamp-2 mb-1">{h.subject}</div>
+                      <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded border truncate ${
+                          (h.model || h.model_name || '').includes('gemini') 
+                            ? 'bg-blue-500/10 text-blue-500 border-blue-500/20' 
+                            : (h.model || h.model_name || '').includes('/') 
+                              ? 'bg-purple-500/10 text-purple-500 border-purple-500/20' 
+                              : 'bg-teal-500/10 text-teal-600 border-teal-500/20'
+                        }`}>{h.model || h.model_name}</span>
+                        <span className="text-[10px] text-text-muted italic whitespace-nowrap">{new Date(h.created_at || h.date).toLocaleDateString()} {new Date(h.created_at || h.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                        {(h.model || h.model_name) && (h.model || h.model_name).includes('/') && (
+                          <a href="https://openrouter.ai/activity" target="_blank" rel="noopener noreferrer" className="text-[10px] text-accent hover:underline flex items-center gap-1">
+                            <ExternalLink className="w-2.5 h-2.5" /> OpenRouter Logs
+                          </a>
+                        )}
                       </div>
                     </div>
                     <div className="text-right shrink-0 flex flex-col items-end gap-1">

@@ -1,6 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { logAIUsage } from '@/lib/usageTracker';
 import { Loader, X, Trophy, Check, ArrowRight, Zap, Cloud, Key, Cpu } from 'lucide-react';
 import { practiceAPI, MCQSessionRead, MCQQuestion } from '@/lib/api';
 import Link from 'next/link';
@@ -46,7 +48,7 @@ export default function MCQPractice({
     const [showResults, setShowResults] = useState(false);
 
     // Engine Selection State
-    const [useOpenRouter, setUseOpenRouter] = useState(false);
+    const [useOpenRouter, setUseOpenRouter] = useState(true);
     const [openRouterKey, setOpenRouterKey] = useState<string | null>(null);
     const [openRouterModel, setOpenRouterModel] = useState<string>('openai/gpt-4o');
     const [isOpenRouterModalOpen, setIsOpenRouterModalOpen] = useState(false);
@@ -169,19 +171,14 @@ Return ONLY a JSON array of objects. Each object must have:
                 });
                 
                 try {
-                    const rawUsage = orData.usage || {};
-                    const newEntry = {
-                        id: session?.id || Date.now().toString(),
+                    logAIUsage({
+                        id: session?.id,
                         subject: `Practice: ${topicName}`,
                         model: orData.model || openRouterModel,
-                        prompt_tokens: rawUsage.prompt_tokens || 0,
-                        completion_tokens: rawUsage.completion_tokens || 0,
-                        total_tokens: rawUsage.total_tokens || 0,
-                        date: new Date().toISOString()
-                    };
-                    const existingHistory = JSON.parse(localStorage.getItem('openRouterUsageHistory') || '[]');
-                    const updatedHistory = [newEntry, ...existingHistory].slice(0, 100);
-                    localStorage.setItem('openRouterUsageHistory', JSON.stringify(updatedHistory));
+                        prompt_tokens: orData.usage?.prompt_tokens || 0,
+                        completion_tokens: orData.usage?.completion_tokens || 0,
+                        total_tokens: orData.usage?.total_tokens || 0
+                    });
                 } catch (e) {}
             } else if (localAIModelId && useLocalAI) {
                 let engine;
@@ -216,7 +213,7 @@ Return ONLY a JSON array of objects. Each object must have:
                         parseSuccess = true;
                         break;
                     } catch (err: any) {
-                        if (attempt === 2) throw new Error("Local AI failed to generate valid JSON after 2 attempts. Try a different model or use Cloud AI.");
+                        if (attempt === 2) throw new Error("Local AI failed to generate valid JSON after 2 attempts. Try a different model or use EulerFold AI.");
                     }
                 }
 
@@ -234,19 +231,14 @@ Return ONLY a JSON array of objects. Each object must have:
                 });
 
                 try {
-                    const rawUsage = responseUsage || {};
-                    const newEntry = {
-                        id: session?.id || Date.now().toString(),
+                    logAIUsage({
+                        id: session?.id,
                         subject: `Practice: ${topicName}`,
                         model: localAIModelId,
-                        prompt_tokens: rawUsage.prompt_tokens || 0,
-                        completion_tokens: rawUsage.completion_tokens || 0,
-                        total_tokens: rawUsage.total_tokens || 0,
-                        date: new Date().toISOString()
-                    };
-                    const existingHistory = JSON.parse(localStorage.getItem('openRouterUsageHistory') || '[]');
-                    const updatedHistory = [newEntry, ...existingHistory].slice(0, 100);
-                    localStorage.setItem('openRouterUsageHistory', JSON.stringify(updatedHistory));
+                        prompt_tokens: responseUsage?.prompt_tokens || 0,
+                        completion_tokens: responseUsage?.completion_tokens || 0,
+                        total_tokens: responseUsage?.total_tokens || 0
+                    });
                 } catch (e) {}
             } else {
                 session = await practiceAPI.generateMCQSession({
@@ -380,10 +372,11 @@ Return ONLY a JSON array of objects. Each object must have:
                             </label>
                             <div className="flex bg-sidebar p-1 rounded-lg border border-border">
                                 <button
-                                    onClick={() => { setUseOpenRouter(false); setUseLocalAI(false); }}
-                                    className={`flex-1 py-1.5 px-2 rounded-md text-[9px] font-bold uppercase tracking-widest transition-all ${(!useOpenRouter && !useLocalAI) ? 'bg-background text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
+                                    disabled={true}
+                                    onClick={() => {}}
+                                    className={`flex-1 py-1.5 px-2 rounded-md text-[9px] font-bold uppercase tracking-widest transition-all text-red-500 opacity-60 cursor-not-allowed`}
                                 >
-                                    Cloud AI
+                                    EulerFold AI (Temporary Outage)
                                 </button>
                                 <button
                                     onClick={() => { setUseOpenRouter(true); setUseLocalAI(false); }}

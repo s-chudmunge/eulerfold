@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { RoadmapData, saveRoadmap, roadmapsAPI, submissionsAPI } from '../../lib/api';
-import { Download, CheckCircle, ChevronDown, ChevronUp, Play, BookOpen, X, Trophy, Plus, FileText, Copy, Target, MonitorPlay, BookText, Hash, Scroll, ChevronRight, Trash2, Hammer, Edit3 } from 'lucide-react';
+import { Download, CheckCircle, ChevronDown, ChevronUp, Play, BookOpen, X, Trophy, Plus, FileText, Copy, Target, MonitorPlay, BookText, Hash, Scroll, ChevronRight, Trash2, Hammer, Edit3, Eye } from 'lucide-react';
 import { supabase } from '../../lib/supabase/client';
 import Link from 'next/link';
 
@@ -24,8 +24,8 @@ interface RoadmapDisplayProps {
   onDeleteExtension?: () => void;
   onPractice?: (topic: any, moduleIndex: number) => void;
   onOpenHomework?: (moduleNumber: number, moduleTitle: string, instructions: string) => void;
-  hideHeader?: boolean;
   externalSubmissions?: any[];
+  onViewSubmissionResult?: (submission: any) => void;
   }
 
   const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({ 
@@ -41,7 +41,8 @@ interface RoadmapDisplayProps {
   onPractice,
   onOpenHomework,
   hideHeader,
-  externalSubmissions
+  externalSubmissions,
+  onViewSubmissionResult
   }) => {
   const currentModule = (roadmapData as any).current_module || 1;
   const [expandedModules, setExpandedModules] = useState<number[]>([currentModule - 1]);
@@ -491,6 +492,18 @@ interface RoadmapDisplayProps {
                               {submissionsByModule[index+1][0].evaluation_level}
                             </span>
                           </div>
+                          {onViewSubmissionResult && (
+                            <button
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  e.stopPropagation();
+                                  onViewSubmissionResult(submissionsByModule[index+1][0]);
+                                }}
+                                className="text-[10px] font-bold text-accent hover:underline flex items-center gap-1 bg-accent/5 px-2 py-1 rounded-md border border-accent/20 transition-all hover:bg-accent/10"
+                            >
+                                <Eye className="w-3.5 h-3.5" /> View Result
+                            </button>
+                          )}
                         </div>
                       )}
                     </div>

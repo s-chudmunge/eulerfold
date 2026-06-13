@@ -7,100 +7,100 @@ import ActivityPill from '@/components/ActivityPill';
 const testimonials = [
   {
     quote: "I was struggling with where to start with LLMs. EulerFold gave me a roadmap in like 5 seconds that actually made sense. The reviews are tough but fair.",
-    author: "Alex M.",
+    author: "Reet Tiwari",
     role: "Software Engineer",
-    initials: "AM",
+    initials: "RT",
     color: "bg-accent/10 text-accent",
     layout: "author-top"
   },
   {
     quote: "The search for research papers is usually a mess. This portal actually organizes them into a path. Saved me so much time on my thesis.",
-    author: "Sarah K.",
+    author: "Pihu Mishra",
     role: "Grad Student",
-    initials: "SK",
+    initials: "PM",
     color: "bg-teal-500/10 text-teal-600",
     layout: "quote-bottom"
   },
   {
     quote: "I finally passed my systems design interview because I actually had to prove I knew the stuff. No more passive video watching.",
-    author: "James L.",
+    author: "Fatehgopal Agnihotri",
     role: "CS Student",
-    initials: "JL",
+    initials: "FA",
     color: "bg-blue-500/10 text-blue-600",
     layout: "standard"
   },
   {
     quote: "The AI roadmaps aren't just generic lists. They actually link to the right papers and videos. It's my go-to for any new skill.",
-    author: "Priya R.",
+    author: "Tavish Kaspate",
     role: "Product Manager",
-    initials: "PR",
+    initials: "TK",
     color: "bg-purple-500/10 text-purple-600",
     tag: "Product Expert",
     layout: "quote-tag"
   },
   {
     quote: "Simple, clean, and does exactly what it says. Best tool for structured self-study I've found in a long time.",
-    author: "Chen W.",
+    author: "Ritvik Shinde",
     role: "Self-taught Developer",
-    initials: "CW",
+    initials: "RS",
     color: "bg-orange-500/10 text-orange-600",
     layout: "standard"
   },
   {
     quote: "Found a roadmap for quantum computing that didn't assume I was a math genius. Really approachable for beginners.",
-    author: "David O.",
+    author: "Rahyl Kalate",
     role: "Researcher",
-    initials: "DO",
+    initials: "RK",
     color: "bg-pink-500/10 text-pink-600",
     tag: "PhD Student",
     layout: "quote-tag"
   },
   {
     quote: "The AI-generated practice questions are surprisingly good. They actually test your understanding instead of just rote memorization.",
-    author: "Liam S.",
+    author: "Ranveer Chavan",
     role: "Data Scientist",
-    initials: "LS",
+    initials: "RC",
     color: "bg-indigo-500/10 text-indigo-600",
     layout: "author-top"
   },
   {
     quote: "EulerFold's integration with ArXiv is a game-changer. I can go from a general topic to a specific foundational paper in minutes.",
-    author: "Dr. Elena V.",
+    author: "Dhruv Verma",
     role: "AI Researcher",
-    initials: "EV",
+    initials: "DV",
     color: "bg-emerald-500/10 text-emerald-600",
     layout: "standard"
   },
   {
     quote: "I love the Review System concept. It's much more motivating to have my work evaluated than just checking a box.",
-    author: "Marcus T.",
+    author: "Kiaan Aggarwal",
     role: "Backend Developer",
-    initials: "MT",
+    initials: "KA",
     color: "bg-amber-500/10 text-amber-600",
     layout: "quote-bottom"
   },
   {
     quote: "The Learning Directory is so well-curated. It's like having a senior engineer pointing you to the best resources.",
-    author: "Sofia G.",
+    author: "Manan Kudale",
     role: "UX Designer",
-    initials: "SG",
+    initials: "MK",
     color: "bg-rose-500/10 text-rose-600",
     layout: "standard"
   },
   {
     quote: "I used the deep learning roadmap to prepare for my internship. The path was logical and the resources were top-notch.",
-    author: "Arjun K.",
+    author: "Arnav Iyer",
     role: "CS Undergrad",
-    initials: "AK",
+    initials: "AI",
     color: "bg-cyan-500/10 text-cyan-600",
     layout: "quote-tag",
     tag: "Machine Learning"
   },
   {
     quote: "The UI is beautiful and distraction-free. It makes long study sessions much more pleasant.",
-    author: "Isabella N.",
+    author: "Lavanya Pawar",
     role: "Self-learner",
-    initials: "IN",
+    initials: "LP",
     color: "bg-violet-500/10 text-violet-600",
     layout: "standard"
   }
@@ -221,7 +221,7 @@ export default function TestimonialSection() {
 
 function TestimonialCard({ testimonial: t }: { testimonial: any }) {
   return (
-    <div className="break-inside-avoid bg-sidebar border border-border p-6 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300 flex flex-col gap-4 group">
+    <div className="break-inside-avoid bg-transparent border border-border p-6 lg:p-8 rounded-lg transition-all duration-300 hover:border-accent/40 flex flex-col gap-4 group">
       {t.layout === "author-top" && (
         <div className="flex items-center gap-3 mb-2">
           <img 

@@ -31,9 +31,9 @@ export default function HeroSection() {
 
   return (
     <div className="relative w-full overflow-hidden">
-      <section className="relative pt-16 pb-20 md:pt-32 md:pb-48 px-6 min-h-[500px] md:min-h-[850px] flex items-center overflow-hidden w-full">
+      <section className="relative pt-32 pb-20 md:pt-48 md:pb-48 px-6 min-h-[500px] md:min-h-[850px] flex items-center overflow-hidden w-full">
         <HeroBackground />
-        <div className="max-w-7xl mx-auto w-full relative z-10">
+        <div className="max-w-7xl mx-auto w-full relative z-10 mt-8 md:mt-2">
           <div className="max-w-3xl">
             <h1 className="font-inter text-3xl sm:text-4xl md:text-5xl font-semibold text-text-heading mb-6 leading-[1.15] md:leading-[1.1] tracking-tight">
               Escape the stale curriculum with <br className="hidden md:block" /><AnimatedEfficient /> learning paths
@@ -45,7 +45,7 @@ export default function HeroSection() {
             <div className="flex flex-col sm:flex-row flex-wrap items-center gap-4 mb-8">
               <Link 
                 href="/generate"
-                className="w-full sm:w-auto inline-flex items-center justify-center bg-accent text-white px-7 py-3.5 rounded-2xl text-[14px] font-bold transition-all hover:scale-[1.02] hover:shadow-2xl hover:shadow-accent/30 active:scale-[0.98] gap-3"
+                className="w-full sm:w-auto inline-flex items-center justify-center bg-gradient-to-b from-teal-400 to-teal-600 text-white px-7 py-3 rounded-2xl text-[14px] font-bold transition-all hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-teal-800 gap-3 shadow-lg"
               >
                 <Plus className="w-4 h-4" /> Start Your Learning
               </Link>

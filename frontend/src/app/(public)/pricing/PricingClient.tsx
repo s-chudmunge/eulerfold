@@ -122,7 +122,7 @@ export default function PricingClient() {
                             </div>
                             <div className="flex items-start gap-3 text-[12px] text-text-primary">
                                 <span className="text-teal-600 mt-0.5">✓</span>
-                                <span>5 Cloud AI roadmap generations</span>
+                                <span>5 EulerFold AI roadmap generations</span>
                             </div>
                             <div className="flex items-start gap-3 text-[12px] text-text-primary">
                                 <span className="text-teal-600 mt-0.5">✓</span>
@@ -183,9 +183,9 @@ export default function PricingClient() {
                                 <span className="text-teal-600 mt-0.5">✓</span>
                                 <span>Unlimited depth extensions</span>
                             </div>
-                            <div className="flex items-start gap-3 text-[12px] text-text-primary">
-                                <span className="text-teal-600 mt-0.5">✓</span>
-                                <span>AI homework reviews</span>
+                            <div className="flex items-start gap-3 text-[12px] text-teal-600 dark:text-teal-400 font-bold">
+                                <span className="text-teal-600 dark:text-teal-400 mt-0.5">✓</span>
+                                <span>Homework Submission & Evaluation</span>
                             </div>
                             <div className="flex items-start gap-3 text-[12px] text-text-primary">
                                 <span className="text-teal-600 mt-0.5">✓</span>
@@ -205,7 +205,7 @@ export default function PricingClient() {
                             </div>
                             <div className="flex items-start gap-3 text-[12px] text-teal-600 dark:text-teal-400 font-bold">
                                 <span className="text-teal-600 dark:text-teal-400 mt-0.5">✓</span>
-                                <span>Cloud AI Practice Portal</span>
+                                <span>EulerFold AI Practice Portal</span>
                             </div>
                         </div>
                     </div>
@@ -213,14 +213,14 @@ export default function PricingClient() {
                     {isLoggedIn ? (
                         <button
                             onClick={() => setIsPaymentModalOpen(true)}
-                            className="w-full py-3 bg-teal-700 hover:bg-teal-800 text-white rounded-lg text-center inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] transition-all shadow-xl active:scale-[0.98] relative z-10"
+                            className="w-full inline-flex items-center justify-center bg-gradient-to-b from-teal-400 to-teal-600 text-white py-3 rounded-2xl text-[14px] font-bold transition-all hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-teal-800 shadow-lg relative z-10"
                         >
                             Activate Pro (₹{currentPrice})
                         </button>
                     ) : (
                         <Link 
                             href="/login?next=/pricing"
-                            className="w-full py-3 bg-teal-700 hover:bg-teal-800 text-white rounded-lg text-center inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] transition-all shadow-xl relative z-10"
+                            className="w-full inline-flex items-center justify-center bg-gradient-to-b from-teal-400 to-teal-600 text-white py-3 rounded-2xl text-[14px] font-bold transition-all hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-teal-800 shadow-lg relative z-10"
                         >
                             Login to Upgrade
                         </Link>

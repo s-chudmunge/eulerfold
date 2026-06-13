@@ -384,6 +384,7 @@ class PublicProfile(BaseModel):
     eulercoins: int = 0
     roadmap_credits: float = 0.0
     review_precision: float = 0.0 # % of Solid ratings
+    current_streak: int = 0
     learning_momentum: Dict[str, int] = Field(default={"mastered": 0, "explored": 0})
     total_skills: int
     total_roadmaps: int
@@ -478,3 +479,20 @@ class LikeToggle(BaseModel):
     context_type: str
     context_id: str
 
+
+# --- AI Usage Logging ---
+
+class AIUsageLogCreate(BaseModel):
+    model_name: str
+    subject: str
+    prompt_tokens: int = 0
+    completion_tokens: int = 0
+    total_tokens: int = 0
+    status: str
+    source: str
+    error_message: Optional[str] = None
+
+class AIUsageLogRead(AIUsageLogCreate):
+    id: uuid.UUID
+    user_id: uuid.UUID
+    created_at: datetime

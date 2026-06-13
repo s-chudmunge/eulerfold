@@ -415,7 +415,7 @@ export default function ExploreClient({
                                                 </td>
                                                 <td className="hidden md:table-cell px-5 py-3 md:py-4">
                                                     <span className="inconsolata-ui text-[12px] font-bold text-text-muted">
-                                                        {r.time_value} {r.time_unit}
+                                                        {r.week_count || r.time_value} {r.week_count ? (r.week_count === 1 ? 'week' : 'weeks') : r.time_unit}
                                                     </span>
                                                 </td>
                                                 <td className="px-3 md:px-5 py-3 md:py-4 text-right">
