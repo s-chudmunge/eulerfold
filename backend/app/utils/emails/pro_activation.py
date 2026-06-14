@@ -12,6 +12,11 @@ async def send_pro_activation_email(to: str, display_name: str = None) -> dict:
     base_url = settings.FRONTEND_URL.rstrip('/')
     
     html_body = f"""
+        <div style="text-align: center; margin-bottom: 16px;">
+            <span style="display: inline-block; background-color: #fffbeb; color: #b45309; border: 1px solid #fcd34d; padding: 6px 16px; border-radius: 24px; font-size: 13px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase;">
+                ✦ EulerFold Pro
+            </span>
+        </div>
         <h2 style="color: #0f766e; font-size: 20px; font-weight: 800; margin: 0 0 24px 0; letter-spacing: -0.025em; text-align: center;">
             Welcome to Pro Mode!
         </h2>
@@ -30,16 +35,28 @@ async def send_pro_activation_email(to: str, display_name: str = None) -> dict:
 
         <ul style="font-size: 15px; line-height: 1.6; padding-left: 20px; margin: 0 0 32px 0; color: #334155;">
             <li style="margin-bottom: 8px;">
-                <strong>20 Roadmap Credits:</strong> Use these to create detailed roadmaps for any subject you want to learn.
+                <strong>50 Roadmap Credits:</strong> Create detailed roadmaps for any subject you want to learn.
             </li>
             <li style="margin-bottom: 8px;">
-                <strong>Better AI Models:</strong> Your roadmaps will now use more capable AI for better structure and depth.
+                <strong>Unlimited Depth Extensions:</strong> Extend roadmap topics as many times as you need.
             </li>
             <li style="margin-bottom: 8px;">
-                <strong>Detailed Content:</strong> Get thorough module breakdowns and better resources for your study.
+                <strong>Homework Submission & Evaluation:</strong> Submit your work and receive direct, analytical feedback.
             </li>
             <li style="margin-bottom: 8px;">
-                <strong>New Features:</strong> Get early access to new tools as we release them.
+                <strong>12-Week Strategic Mapping:</strong> Generate extended 12-week study schedules.
+            </li>
+            <li style="margin-bottom: 8px;">
+                <strong>Job Market Insights:</strong> Align your learning directly with real job requirements.
+            </li>
+            <li style="margin-bottom: 8px;">
+                <strong>Research Lab Paper Decoding:</strong> Break down complex academic papers into understandable formats.
+            </li>
+            <li style="margin-bottom: 8px;">
+                <strong>EulerFold AI Practice Portal:</strong> Test your knowledge and practice what you've learned.
+            </li>
+            <li style="margin-bottom: 8px;">
+                <strong>Priority AI Reasoning Models:</strong> Use more capable AI for better structure and depth.
             </li>
         </ul>
         
