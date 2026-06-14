@@ -25,6 +25,7 @@ from app.utils.streaks import track_activity
 from app.core.auth import get_current_user
 from app.routers.optional_auth import get_optional_current_user
 from app.services.skills_service import extract_skills_from_roadmap, calculate_user_skill_scores_for_roadmap, cleanup_skills_after_roadmap_deletion
+from app.routers.payments import check_and_revoke_pro_if_no_credits
 
 from app.database.monitor import monitor_query
 
@@ -878,7 +879,10 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
             raise HTTPException(status_code=500, detail="Failed to save generated roadmap")
             
         # 4. Deduct credit
-        sb.table("profiles").update({"roadmap_credits": credits - 1}).eq("email", email).execute()
+        new_credits = credits - 1
+        sb.table("profiles").update({"roadmap_credits": new_credits}).eq("email", email).execute()
+        if new_credits <= 0:
+            await check_and_revoke_pro_if_no_credits(email, sb)
         
         # 5. Background task to extract skills
         if uid:
@@ -1093,7 +1097,7 @@ Duration: {payload.time_value} {payload.time_unit}.
                 if not isinstance(topic, dict): continue
                 topic["id"] = f"topic_{i+1}_{t_idx+1}"
                 topic["uuid"] = str(uuid.uuid4())
-                for s_idx, subtopic in enumerate(topic.get("subtopics", [])):
+                for s_idx, subtopic in enumerate(module.get("subtopics", [])):
                     if not isinstance(subtopic, dict): continue
                     subtopic["id"] = str(uuid.uuid4())
                 
@@ -1148,8 +1152,11 @@ Duration: {payload.time_value} {payload.time_unit}.
         if not response.data:
             raise HTTPException(status_code=500, detail="Failed to save roadmap")
             
-        sb.table("profiles").update({"roadmap_credits": credits - 1}).eq("email", email).execute()
-        
+        new_credits = credits - 1
+        sb.table("profiles").update({"roadmap_credits": new_credits}).eq("email", email).execute()
+        if new_credits <= 0:
+            await check_and_revoke_pro_if_no_credits(email, sb)
+            
         if uid:
             background_tasks.add_task(extract_skills_from_roadmap, response.data[0]["id"], uid)
 

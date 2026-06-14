@@ -73,21 +73,6 @@ export default function PricingClient() {
                             {loading ? '...' : userCredits !== null ? `${userCredits} Credit${userCredits !== 1 ? 's' : ''}` : '0 Credits'}
                         </p>
                     </div>
-                    {isLoggedIn ? (
-                        <button 
-                            onClick={() => setIsPaymentModalOpen(true)}
-                            className="px-3 py-1 bg-[var(--text-heading)] text-[var(--bg-main)] rounded-lg text-[10px] font-bold uppercase tracking-widest hover:opacity-90 transition-all active:scale-95 whitespace-nowrap"
-                        >
-                            Top Up
-                        </button>
-                    ) : (
-                        <Link 
-                            href="/login?next=/pricing"
-                            className="px-3 py-1 bg-[var(--text-heading)] text-[var(--bg-main)] rounded-lg text-[10px] font-bold uppercase tracking-widest hover:opacity-90 transition-all active:scale-95 whitespace-nowrap"
-                        >
-                            Login to Purchase
-                        </Link>
-                    )}
                 </div>
             </div>
 
@@ -161,9 +146,9 @@ export default function PricingClient() {
                     
                     <div className="mb-8 relative z-10">
                         <div className="flex items-center justify-between mb-4">
-                            <span className="inconsolata-ui text-[10px] font-black text-teal-600 uppercase tracking-[0.2em]">One-time payment</span>
+                            <span className="inconsolata-ui text-[10px] font-black text-teal-600 uppercase tracking-[0.2em]">Monthly subscription</span>
                             <div className="flex items-center gap-2">
-                                <span className="inconsolata-ui text-2xl font-black text-text-heading">₹{currentPrice}</span>
+                                <span className="inconsolata-ui text-2xl font-black text-text-heading">₹{currentPrice}/mo</span>
                             </div>
                         </div>
                         <h2 className="inconsolata-ui text-[24px] font-bold text-text-heading tracking-tight mb-2">Pro</h2>
@@ -211,12 +196,18 @@ export default function PricingClient() {
                     </div>
 
                     {isLoggedIn ? (
-                        <button
-                            onClick={() => setIsPaymentModalOpen(true)}
-                            className="w-full inline-flex items-center justify-center bg-gradient-to-b from-teal-400 to-teal-600 text-white py-3 rounded-2xl text-[14px] font-bold transition-all hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-teal-800 shadow-lg relative z-10"
-                        >
-                            Activate Pro (₹{currentPrice})
-                        </button>
+                        user?.is_pro ? (
+                            <div className="w-full text-center py-3 px-4 bg-teal-600/10 border border-teal-600/20 rounded-2xl text-teal-700 dark:text-teal-400 relative z-10">
+                                <p className="text-[13px] font-bold inconsolata-ui tracking-tight">Welcome {user.full_name?.split(' ')[0] || user.username || 'back'}, you are already a pro member, Yay! 🎉</p>
+                            </div>
+                        ) : (
+                            <button
+                                onClick={() => setIsPaymentModalOpen(true)}
+                                className="w-full inline-flex items-center justify-center bg-gradient-to-b from-teal-400 to-teal-600 text-white py-3 rounded-2xl text-[14px] font-bold transition-all hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-teal-800 shadow-lg relative z-10"
+                            >
+                                Activate Pro (₹{currentPrice}/mo)
+                            </button>
+                        )
                     ) : (
                         <Link 
                             href="/login?next=/pricing"

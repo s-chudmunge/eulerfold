@@ -36,7 +36,7 @@ export default function HelpPage() {
     },
     {
       question: 'How do Roadmap Credits work?',
-      answer: 'Roadmap Credits allow you to generate full-scale, premium AI roadmaps. All users get 5 free credits upon signup. Additional credits can be purchased for ₹299 (includes 50 credits).',
+      answer: 'Roadmap Credits allow you to generate full-scale, premium AI roadmaps. All users get 5 free credits upon signup. Additional credits can be purchased for ₹149/month (includes 50 credits/month).',
     },
     {
       question: 'What is the refund policy for credits?',

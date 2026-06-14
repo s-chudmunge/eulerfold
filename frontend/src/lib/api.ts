@@ -819,6 +819,14 @@ export const paymentsAPI = {
     getTransactions: async (): Promise<any[]> => {
         const response = await api.get('/payments/transactions');
         return response.data;
+    },
+    getSubscriptionStatus: async (): Promise<any> => {
+        const response = await api.get('/payments/subscription/status');
+        return response.data;
+    },
+    cancelSubscription: async (): Promise<{ status: string, message: string }> => {
+        const response = await api.post('/payments/cancel-subscription');
+        return response.data;
     }
 };
 

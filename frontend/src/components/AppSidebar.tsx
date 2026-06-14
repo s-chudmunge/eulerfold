@@ -250,9 +250,6 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                                 <Link href="/pricing" aria-current={isActive('/pricing') ? 'page' : undefined} className={navLinkClass('/pricing')} onClick={onClose}>
                                     <CreditCard className="w-3.5 h-3.5 stroke-[1.5px]" /> Pricing
                                 </Link>
-                                <Link href="/account" aria-current={isActive('/account') ? 'page' : undefined} className={navLinkClass('/account')} onClick={onClose}>
-                                    <User className="w-3.5 h-3.5 stroke-[1.5px]" /> Account
-                                </Link>
                                 <Link href="/help" aria-current={isActive('/help') ? 'page' : undefined} className={navLinkClass('/help')} onClick={onClose}>
                                     <HelpCircle className="w-3.5 h-3.5 stroke-[1.5px]" /> Help Center
                                 </Link>

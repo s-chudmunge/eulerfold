@@ -95,11 +95,11 @@ export default function PricingSection() {
             {/* Pro Tier */}
             <div className="flex flex-col p-5 border border-[var(--accent)] rounded-lg bg-accent-muted/5 relative shadow-md hover:shadow-lg transition-shadow overflow-hidden">
                 <div className="mb-5">
-                    <span className="inconsolata-ui text-[9px] font-bold text-accent uppercase tracking-widest mb-2 inline-block">One-time payment</span>
+                    <span className="inconsolata-ui text-[9px] font-bold text-accent uppercase tracking-widest mb-2 inline-block">Monthly subscription</span>
                     <div className="flex items-baseline justify-between mb-1">
                         <span className="inconsolata-ui text-xl font-bold text-text-heading">Pro</span>
                         <div className="flex items-center gap-2">
-                            <span className="inconsolata-ui text-lg font-bold text-accent">₹{currentPrice}</span>
+                            <span className="inconsolata-ui text-lg font-bold text-accent">₹{currentPrice}/mo</span>
                         </div>
                     </div>
                     <p className="manrope-body text-[11px] text-text-muted">For deep technical mastery.</p>
@@ -137,7 +137,7 @@ export default function PricingSection() {
                     href="/pricing"
                     className="w-full inline-flex items-center justify-center bg-gradient-to-b from-teal-400 to-teal-600 text-white py-3 rounded-2xl text-[14px] font-bold transition-all hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-teal-800 shadow-lg"
                 >
-                    Buy Credits (₹{currentPrice})
+                    Subscribe Pro (₹{currentPrice}/mo)
                 </Link>
             </div>
         </div>

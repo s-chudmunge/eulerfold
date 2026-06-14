@@ -48,6 +48,7 @@ class Settings(BaseSettings):
     RAZORPAY_KEY_ID: Optional[str] = None
     RAZORPAY_KEY_SECRET: Optional[str] = None
     RAZORPAY_WEBHOOK_SECRET: Optional[str] = None
+    RAZORPAY_PLAN_ID: Optional[str] = None
 
     CORS_ALLOWED_ORIGINS: str = Field(
         default="*",

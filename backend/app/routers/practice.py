@@ -11,6 +11,7 @@ from fastapi import APIRouter, HTTPException, Depends, Request, BackgroundTasks
 from app.core.config import settings
 from app.core.supabase_client import get_supabase_client
 from app.core.auth import get_current_user
+from app.routers.payments import check_and_revoke_pro_if_no_credits
 from app.services.skills_service import calculate_user_skill_scores_for_roadmap
 from app.schemas import (
     User, 
@@ -389,6 +390,8 @@ async def generate_mcq_session(data: MCQSessionCreate, current_user: User = Depe
     # 2. Deduct credits first (Fail-safe: Refund if Gemini fails)
     new_credit_balance = round(current_credits - credit_cost, 2)
     sb.table("profiles").update({"roadmap_credits": new_credit_balance}).eq("supabase_uid", uid).execute()
+    if new_credit_balance <= 0:
+        await check_and_revoke_pro_if_no_credits(current_user.email, sb)
 
     try:
         # 3. Generate Questions

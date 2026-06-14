@@ -97,17 +97,15 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
           return;
         }
 
-        const options = {
+        const options: any = {
           key: res.data.key,
-          amount: res.data.amount,
-          currency: res.data.currency,
           name: 'EulerFold',
-          description: 'Roadmap Generation',
-          order_id: res.data.order_id,
+          description: 'Pro Subscription',
           handler: async function (response: Record<string, string>) {
             try {
               await api.post('/payments/verify-razorpay', {
                 razorpay_order_id: response.razorpay_order_id,
+                razorpay_subscription_id: response.razorpay_subscription_id,
                 razorpay_payment_id: response.razorpay_payment_id,
                 razorpay_signature: response.razorpay_signature,
                 coupon_code: appliedCoupon?.code || null
@@ -123,6 +121,14 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
           },
           theme: { color: '#0f766e' }
         };
+
+        if (res.data.subscription_id) {
+          options.subscription_id = res.data.subscription_id;
+        } else {
+          options.order_id = res.data.order_id;
+          options.amount = res.data.amount;
+          options.currency = res.data.currency;
+        }
 
         const rzp = new (window as Record<string, any>).Razorpay(options);
         rzp.on('payment.failed', (response: any) => setError('Payment failed.'));
@@ -156,7 +162,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
         <div className="p-6">
           <div className="flex justify-between items-center mb-6">
             <div className="flex flex-col">
-              <span className="text-[10px] font-bold uppercase text-text-muted tracking-widest">Add 50 credits</span>
+              <span className="text-[10px] font-bold uppercase text-text-muted tracking-widest">Pro Subscription (1 Month)</span>
             </div>
             <div className="flex flex-col items-end">
                 {(discountStatus.hasDiscount || appliedCoupon) && (
@@ -225,7 +231,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
             disabled={loading}
             className={`w-full py-3 ${ (discountStatus.hasDiscount || appliedCoupon) ? 'bg-orange-600' : 'bg-text-heading text-background'} !text-white rounded-lg font-bold text-[12px] uppercase tracking-widest flex items-center justify-center hover:opacity-90 disabled:opacity-50 transition-all shadow-lg active:scale-[0.98]`}
           >
-            {loading ? <Loader className="w-4 h-4 animate-spin" /> : 'Purchase Now'}
+            {loading ? <Loader className="w-4 h-4 animate-spin" /> : 'Subscribe Now'}
           </button>
           
           <p className="text-[8px] text-text-muted mt-4 text-center uppercase tracking-widest opacity-40">
@@ -236,8 +242,8 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
       
       <Celebration 
         show={showCelebration} 
-        title="Payment Successful!" 
-        subtitle="Credits have been added to your account."
+        title="Subscription Active!" 
+        subtitle="Your Pro subscription is now active."
         icon={<CreditCard className="w-10 h-10" />}
       />
     </div>

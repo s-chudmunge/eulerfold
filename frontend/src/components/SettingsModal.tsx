@@ -16,20 +16,22 @@ import {
   Globe,
   Loader2,
   ChevronRight,
-  Zap,
   History,
   Cpu,
-  Unlink
+  Unlink,
+  CreditCard,
+  Clock,
+  Zap
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/components/AuthProvider';
 import { supabase } from '@/lib/supabase/client';
-import { authAPI, profileAPI, api } from '@/lib/api';
+import { authAPI, profileAPI, api, paymentsAPI } from '@/lib/api';
 import { useSettings } from './SettingsProvider';
 import Link from 'next/link';
 import { LocalAIModal } from './landing/LocalAIModal';
 
-type TabId = 'general' | 'appearance' | 'connections' | 'usage' | 'account';
+type TabId = 'general' | 'appearance' | 'connections' | 'usage' | 'billing' | 'account';
 
 export default function SettingsModal() {
   const { isOpen, closeSettings } = useSettings();
@@ -41,6 +43,9 @@ export default function SettingsModal() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
+  const [transactions, setTransactions] = useState<any[]>([]);
+  const [subStatus, setSubStatus] = useState<any>(null);
+  const [isCancelling, setIsCancelling] = useState(false);
   
   const [displayName, setDisplayName] = useState('');
   const [username, setUsername] = useState('');
@@ -125,6 +130,14 @@ export default function SettingsModal() {
         })
         .catch(e => console.error("Failed to load usage history", e))
         .finally(() => setIsLoadingUsage(false));
+
+      paymentsAPI.getTransactions()
+        .then(res => setTransactions(res))
+        .catch(e => console.error("Failed to load transactions", e));
+
+      paymentsAPI.getSubscriptionStatus()
+        .then(res => setSubStatus(res))
+        .catch(e => console.error("Failed to load subscription status", e));
     }
   }, [authUser, isOpen]);
 
@@ -177,11 +190,27 @@ export default function SettingsModal() {
     }
   };
 
+  const handleCancelSubscription = async () => {
+    if (!confirm('Are you sure you want to cancel your Pro Subscription? You will retain access until the end of your billing cycle.')) return;
+    
+    setIsCancelling(true);
+    try {
+        await paymentsAPI.cancelSubscription();
+        setMessage({ type: 'success', text: 'Your subscription has been cancelled successfully.' });
+        setTimeout(() => window.location.reload(), 2000);
+    } catch (err: any) {
+        setMessage({ type: 'error', text: err.response?.data?.detail || 'Failed to cancel subscription. If you are on a one-time plan, it will expire automatically.' });
+    } finally {
+        setIsCancelling(false);
+    }
+  };
+
   const tabs: { id: TabId; label: string; icon: any }[] = [
     { id: 'general', label: 'General', icon: UserIcon },
     { id: 'appearance', label: 'Appearance', icon: Settings },
     { id: 'connections', label: 'Connections', icon: Globe },
     { id: 'usage', label: 'Usage', icon: Zap },
+    { id: 'billing', label: 'Billing', icon: CreditCard },
     { id: 'account', label: 'Account', icon: Trash2 },
   ];
 
@@ -563,6 +592,127 @@ export default function SettingsModal() {
                 ))}
               </div>
             )}
+          </div>
+        );
+      case 'billing':
+        return (
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <div className="pb-2 border-b border-border/50">
+              <h2 className="inconsolata-ui text-[14px] font-bold tracking-tight text-text-heading">BILLING & CREDITS</h2>
+              <p className="manrope-body text-[11px] text-text-muted italic opacity-60">Manage your subscription and premium credits.</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="p-5 border border-border bg-accent-muted/5 relative overflow-hidden group rounded-xl">
+                    <span className="inconsolata-ui text-[9px] font-bold text-accent uppercase tracking-widest mb-4 block">Credit Balance</span>
+                    <div className="flex items-center gap-4">
+                        <div className="text-4xl font-black text-text-heading tracking-tighter">
+                            {authUser?.roadmap_credits || 0}
+                        </div>
+                        <div className="flex flex-col">
+                            <span className="inconsolata-ui text-[11px] font-bold text-text-heading uppercase tracking-wide">Premium Credits</span>
+                            <Link href="/pricing" onClick={closeSettings} className="text-[10px] text-accent font-bold uppercase tracking-widest hover:underline flex items-center gap-1 mt-0.5">
+                                Top up now <CreditCard className="w-2.5 h-2.5" />
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+                
+                <div className="p-5 border border-border bg-callout-bg/30 relative overflow-hidden group rounded-xl">
+                    <span className="inconsolata-ui text-[9px] font-bold text-text-muted uppercase tracking-widest mb-4 block">Subscription Status</span>
+                    <div className="flex flex-col gap-3 h-full pb-4">
+                        <div className="flex items-center gap-2">
+                            <span className="inconsolata-ui text-[11px] font-bold uppercase tracking-wider text-text-heading">Pro Tier</span>
+                            {authUser?.is_pro ? (
+                                <span className="px-2 py-0.5 bg-accent/10 text-accent text-[9px] font-bold rounded-full uppercase tracking-widest">Active</span>
+                            ) : (
+                                <span className="px-2 py-0.5 bg-border text-text-muted text-[9px] font-bold rounded-full uppercase tracking-widest">Inactive</span>
+                            )}
+                        </div>
+
+                        {subStatus && ['active', 'authenticated'].includes(subStatus.status) && subStatus.current_end && (
+                            <div className="text-[10px] text-text-muted font-bold inconsolata-ui -mt-1">
+                                {subStatus.cancel_at_cycle_end ? 'Expires' : 'Renews'} in {Math.max(0, Math.ceil((subStatus.current_end * 1000 - Date.now()) / (1000 * 60 * 60 * 24)))} days
+                            </div>
+                        )}
+
+                        {subStatus && subStatus.status === 'inactive' && authUser?.is_pro && (
+                            <div className="flex flex-col gap-2 mt-1">
+                                <div className="text-[10px] text-orange-500 font-bold inconsolata-ui">
+                                    Subscription Syncing...
+                                </div>
+                            </div>
+                        )}
+
+                        {authUser?.is_pro && subStatus && ['active', 'authenticated'].includes(subStatus.status) && !subStatus.cancel_at_cycle_end && !subStatus.is_legacy && (
+                            <button 
+                                onClick={handleCancelSubscription}
+                                disabled={isCancelling}
+                                className="text-[10px] text-red-500 hover:text-red-600 font-bold uppercase tracking-widest transition-colors disabled:opacity-50 text-left mt-auto inline-flex w-fit"
+                            >
+                                {isCancelling ? 'Cancelling...' : 'Cancel Subscription'}
+                            </button>
+                        )}
+                    </div>
+                </div>
+            </div>
+
+            <div className="space-y-4 pt-4 border-t border-border/50">
+                <div className="flex items-center justify-between">
+                    <h2 className="inconsolata-ui text-[12px] font-bold text-text-heading tracking-tight">Transaction History</h2>
+                    <span className="inconsolata-ui text-[10px] text-text-muted">{transactions.length} total</span>
+                </div>
+
+                {transactions.length > 0 ? (
+                    <div className="overflow-x-auto rounded-xl border border-border bg-background">
+                        <table className="w-full text-left border-collapse min-w-[500px]">
+                            <thead>
+                                <tr className="border-b border-border bg-sidebar/50">
+                                    <th className="py-2.5 px-3 inconsolata-ui text-[9px] font-bold text-text-muted uppercase tracking-widest">Date</th>
+                                    <th className="py-2.5 px-3 inconsolata-ui text-[9px] font-bold text-text-muted uppercase tracking-widest">ID</th>
+                                    <th className="py-2.5 px-3 inconsolata-ui text-[9px] font-bold text-text-muted uppercase tracking-widest">Amount</th>
+                                    <th className="py-2.5 px-3 inconsolata-ui text-[9px] font-bold text-text-muted uppercase tracking-widest">Details</th>
+                                    <th className="py-2.5 px-3 inconsolata-ui text-[9px] font-bold text-text-muted uppercase tracking-widest text-right">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-border/50">
+                                {transactions.map((tx) => (
+                                    <tr key={tx.id} className="hover:bg-callout-bg/20 transition-colors">
+                                        <td className="py-3 px-3 manrope-body text-[11px] text-text-primary whitespace-nowrap">
+                                            {new Date(tx.created_at).toLocaleDateString()}
+                                        </td>
+                                        <td className="py-3 px-3 inconsolata-ui text-[10px] text-text-muted">
+                                            {tx.razorpay_payment_id}
+                                        </td>
+                                        <td className="py-3 px-3 manrope-body text-[11px] font-bold text-text-heading">
+                                            ₹{(tx.amount / 100).toFixed(2)}
+                                        </td>
+                                        <td className="py-3 px-3">
+                                            <span className="px-1.5 py-0.5 bg-accent/10 text-accent text-[9px] font-bold inconsolata-ui rounded">
+                                                {tx.razorpay_order_id?.startsWith('sub_') ? 'Pro Subscription' : 'Pro Credits'}
+                                            </span>
+                                        </td>
+                                        <td className="py-3 px-3 text-right">
+                                            <div className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400">
+                                                <CheckCircle className="w-3 h-3" />
+                                                <span className="inconsolata-ui text-[9px] font-bold uppercase tracking-wider">{tx.status}</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
+                ) : (
+                    <div className="py-10 border border-dashed border-border flex flex-col items-center justify-center text-center rounded-xl">
+                        <div className="w-10 h-10 rounded-full bg-callout-bg flex items-center justify-center mb-3 text-text-muted/30">
+                            <Clock className="w-5 h-5" />
+                        </div>
+                        <p className="inconsolata-ui text-[11px] font-bold text-text-muted uppercase tracking-widest mb-1">No transactions yet</p>
+                        <p className="manrope-body text-[10px] text-text-muted/60">Your purchases will appear here.</p>
+                    </div>
+                )}
+            </div>
           </div>
         );
       case 'account':

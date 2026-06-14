@@ -3,8 +3,8 @@
  * Handles time-sensitive discounts and pricing logic.
  */
 
-export const NORMAL_PRICE = 299;
-export const DISCOUNTED_PRICE = 224; // 25% off from 299 (approx)
+export const NORMAL_PRICE = 149;
+export const DISCOUNTED_PRICE = 149; // Same as normal price for now
 
 export interface DiscountStatus {
     isToday: boolean;

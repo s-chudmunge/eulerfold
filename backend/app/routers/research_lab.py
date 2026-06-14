@@ -13,6 +13,7 @@ from app.utils.gemini_client import robust_json_loads
 from app.core.config import settings
 from google import genai
 from google.genai import types
+from app.routers.payments import check_and_revoke_pro_if_no_credits
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/research-lab", tags=["Research Lab"])
@@ -238,7 +239,10 @@ async def start_analysis(background_tasks: BackgroundTasks, payload: dict = Body
     if credits < 1.0:
         raise HTTPException(status_code=402, detail="Insufficient credits. Analyzing a paper costs 1.0 credit.")
         
-    sb.table("profiles").update({"roadmap_credits": credits - 1.0}).eq("email", email).execute()
+    new_credits = credits - 1.0
+    sb.table("profiles").update({"roadmap_credits": new_credits}).eq("email", email).execute()
+    if new_credits <= 0:
+        await check_and_revoke_pro_if_no_credits(email, sb)
     
     new_decode = {
         "user_id": current_user.supabase_uid,
