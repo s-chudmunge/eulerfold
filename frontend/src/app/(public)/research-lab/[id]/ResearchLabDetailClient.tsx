@@ -17,28 +17,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ResearchToolbox from '@/components/research-lab/ResearchToolbox';
 import ResearchHelpBot from '@/components/research-lab/ResearchHelpBot';
 
-const TechnicalCube = () => (
-    <div className="relative w-16 h-16 flex items-center justify-center mx-auto mb-8" style={{ perspective: '1000px' }}>
-        <motion.div
-            animate={{ rotateX: [0, 360], rotateY: [0, 360] }}
-            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-            style={{ transformStyle: 'preserve-3d' }}
-            className="w-8 h-8 relative"
-        >
-            {[0, 90, 180, 270].map((rot, i) => (
-                <div key={i} className="absolute inset-0 border border-accent/40 bg-accent/5 grid grid-cols-2 grid-rows-2" style={{ transform: `rotateY(${rot}deg) translateZ(16px)` }}>
-                    <div className="border-[0.5px] border-accent/20" /><div className="border-[0.5px] border-accent/20" /><div className="border-[0.5px] border-accent/20" /><div className="border-[0.5px] border-accent/20" />
-                </div>
-            ))}
-            <div className="absolute inset-0 border border-accent/40 bg-accent/5 grid grid-cols-2 grid-rows-2" style={{ transform: `rotateX(90deg) translateZ(16px)` }}>
-                <div className="border-[0.5px] border-accent/20" /><div className="border-[0.5px] border-accent/20" /><div className="border-[0.5px] border-accent/20" /><div className="border-[0.5px] border-accent/20" />
-            </div>
-            <div className="absolute inset-0 border border-accent/40 bg-accent/5 grid grid-cols-2 grid-rows-2" style={{ transform: `rotateX(-90deg) translateZ(16px)` }}>
-                <div className="border-[0.5px] border-accent/20" /><div className="border-[0.5px] border-accent/20" /><div className="border-[0.5px] border-accent/20" /><div className="border-[0.5px] border-accent/20" />
-            </div>
-        </motion.div>
-    </div>
-);
+import EulerLogoCanvas from '@/components/EulerLogoCanvas';
 
 
 const CopyButton = ({ text }: { text: string }) => {
@@ -174,7 +153,7 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
 
     if (loading && !data) return (
         <div className="flex flex-col items-center justify-center min-h-[80vh] gap-6">
-            <TechnicalCube />
+            <EulerLogoCanvas size={80} color1={0x1e3a8a} color2={0x3b82f6} emissive1={0x1d4ed8} emissive2={0x2563eb} emissiveIntensity={0.6} wireframe={true} className="mx-auto mb-8 block" />
             <div className="h-6 flex items-center justify-center">
                 <AnimatePresence mode="wait">
                     <motion.span
@@ -212,7 +191,7 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
             <div className="flex flex-col min-h-screen">
                 <main className="flex-grow flex items-center justify-center py-24 px-6 text-center">
                     <div className="max-w-sm w-full">
-                        <TechnicalCube />
+                        <EulerLogoCanvas size={80} color1={0x1e3a8a} color2={0x3b82f6} emissive1={0x1d4ed8} emissive2={0x2563eb} emissiveIntensity={0.6} wireframe={true} className="mx-auto mb-8 block" />
                         <h2 className="inconsolata-ui text-[18px] font-black text-text-heading uppercase tracking-[0.4em] mb-4">Analyzing Paper</h2>
                         <div className="space-y-4 mb-10">
                             <p className="text-text-muted text-[13px] leading-relaxed manrope-body">We are analyzing the logic and math in this paper.</p>

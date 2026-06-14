@@ -26,6 +26,7 @@ import { LocalAIModal } from '../landing/LocalAIModal';
 import { logAIUsage } from '@/lib/usageTracker';
 import { CreateMLCEngine } from '@mlc-ai/web-llm';
 import { jsonrepair } from 'jsonrepair';
+import EulerLogoCanvas from '../EulerLogoCanvas';
 
 interface JobDecodedGeneratorProps {
   onRoadmapGenerated: (data: RoadmapData, formData: any) => void;
@@ -449,8 +450,10 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
       <div className="bg-header border border-border rounded-xl shadow-2xl overflow-hidden backdrop-blur-sm relative z-20">
         <div className="p-5 md:p-8 space-y-8">
           
-          <div className="bg-teal-500/5 border border-teal-500/20 p-4 rounded-xl flex gap-3">
-            <Mountain className="w-5 h-5 text-teal-600 shrink-0 mt-0.5" />
+          <div className="bg-teal-500/5 border border-teal-500/20 p-4 rounded-xl flex gap-3 items-start">
+            <div className="shrink-0 mt-0.5">
+              <EulerLogoCanvas size={24} color1={0x0f766e} color2={0x2dd4bf} wireframe={false} />
+            </div>
             <p className="text-[13px] text-text-primary leading-relaxed font-medium">
               Generates a complete career bridge to meet every requirement in the job description based on your current background.
             </p>

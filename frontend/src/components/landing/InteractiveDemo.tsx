@@ -87,8 +87,11 @@ export default function InteractiveDemo() {
         <section className="py-20 md:py-32 px-4 md:px-6 relative z-20">
             <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-16">
-                    <h2 className="font-inter text-2xl sm:text-3xl md:text-4xl font-semibold text-text-heading mb-6 leading-[1.15] md:leading-[1.1] tracking-tight flex items-center justify-center gap-2 md:gap-3">
-                        See <div className="scale-75 sm:scale-90 md:scale-100 flex items-center justify-center"><EulerLogoCanvas size={40} /></div> <span>Euler<span className="transition-colors duration-300 hover:text-accent cursor-default">Fold</span></span> in Action!
+                    <h2 className="retro-title text-[16px] sm:text-[20px] md:text-[28px] mb-8 flex flex-wrap items-center justify-center gap-3 md:gap-4 leading-relaxed">
+                        <span>See</span>
+                        <div className="scale-75 sm:scale-90 flex items-center justify-center retro-blink"><EulerLogoCanvas size={36} /></div> 
+                        <span>Euler<span className="text-text-primary">Fold</span></span> 
+                        <span>in Action!</span>
                     </h2>
                 </div>
 
@@ -103,10 +106,10 @@ export default function InteractiveDemo() {
                         >
                             <button 
                                 onClick={handleTry}
-                                className="inline-flex items-center justify-center bg-gradient-to-b from-teal-400 to-teal-600 text-white px-7 py-3 rounded-xl text-[14px] font-bold transition-all hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-teal-800 gap-2 shadow-[0_0_30px_rgba(15,118,110,0.25)]"
+                                className="retro-arcade-btn inline-flex items-center justify-center px-5 py-3 text-[11px] md:text-[12px] font-bold gap-2"
                             >
-                                <PlayCircle className="w-4 h-4" />
-                                Try Live
+                                <PlayCircle className="w-4 h-4 retro-blink" />
+                                <span className="retro-blink">Try Live</span>
                             </button>
                         </motion.div>
                     ) : (
@@ -123,15 +126,15 @@ export default function InteractiveDemo() {
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0 }}
-                                className="w-full max-w-lg p-8 relative z-10"
+                                className="w-full max-w-lg p-8 relative z-10 retro-scanlines"
                             >
-                                <div className="flex flex-col gap-4">
+                                <div className="flex flex-col gap-4 relative z-20">
                                     {steps.map((text, i) => (
                                         <motion.div 
                                             key={i}
                                             initial={{ opacity: 0, x: -10 }}
                                             animate={{ opacity: i <= genStep ? 1 : 0, x: i <= genStep ? 0 : -10 }}
-                                            className="flex items-center gap-4 bg-background/80 backdrop-blur-md border border-border/50 p-5 rounded-2xl shadow-sm"
+                                            className="flex items-center gap-4 bg-background/90 backdrop-blur-md border-[2px] border-accent/30 p-5 rounded-none shadow-[4px_4px_0px_rgba(15,118,110,0.2)]"
                                         >
                                             {i < genStep ? (
                                                 <CheckCircle2 className="w-5 h-5 text-accent shrink-0" />
@@ -140,7 +143,7 @@ export default function InteractiveDemo() {
                                             ) : (
                                                 <div className="w-5 h-5 border-[2px] border-border rounded-full shrink-0" />
                                             )}
-                                            <span className="manrope-body text-[14px] font-medium text-text-primary">{text}</span>
+                                            <span className="retro-arcade-text text-[10px] sm:text-[11px] md:text-[12px] leading-relaxed">{text}</span>
                                         </motion.div>
                                     ))}
                                 </div>
@@ -152,39 +155,39 @@ export default function InteractiveDemo() {
                                 key="ready"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
-                                className="w-full h-full flex flex-col bg-transparent"
+                                className="w-full h-full flex flex-col bg-transparent relative z-20"
                             >
                                 {/* Header */}
                                 <div className="h-16 flex items-center px-4 md:px-8 shrink-0 justify-between relative z-20">
                                     <div className="flex items-center gap-4">
                                         <div className="w-8 h-8 rounded-lg bg-accent/10 flex items-center justify-center border border-accent/20">
-                                            <Cpu className="w-4 h-4 text-accent" />
+                                            <EulerLogoCanvas size={24} />
                                         </div>
                                         <div className="flex flex-col">
-                                            <span className="inconsolata-ui text-[10px] font-black tracking-widest text-text-muted uppercase opacity-70">Unit 1 of 4</span>
-                                            <span className="font-inter text-[15px] font-semibold text-text-heading leading-tight mt-0.5">{demoTopics[activeTopic].title}</span>
+                                            <span className="retro-arcade-text text-[8px] md:text-[10px] text-accent/80 mb-1">Unit 1 of 4</span>
+                                            <span className="retro-arcade-text text-[10px] md:text-[12px]">{demoTopics[activeTopic].title}</span>
                                         </div>
                                     </div>
                                     <button onClick={() => setState('idle')} className="text-[12px] font-bold text-text-muted hover:text-accent transition-colors">Reset Demo</button>
                                 </div>
 
-                                <div className="flex flex-1 overflow-hidden">
+                                <div className="flex flex-1 overflow-hidden relative z-20">
                                     {/* Sidebar */}
                                     <div className="w-[300px] hidden md:flex flex-col p-5 relative z-10">
-                                        <div className="mb-5">
-                                            <h2 className="font-inter text-[14px] font-semibold text-text-heading">Module 1: The Core Mechanism</h2>
+                                        <div className="mb-6">
+                                            <h2 className="retro-arcade-text text-[10px] md:text-[11px] text-accent">Module 1: The Core Mechanism</h2>
                                         </div>
-                                        <div className="space-y-1.5">
+                                        <div className="space-y-3">
                                             {demoTopics.map((topic, idx) => (
                                                 <button 
                                                     key={idx}
                                                     onClick={() => setActiveTopic(idx)}
-                                                    className={`w-full flex items-start text-left px-3.5 py-3.5 rounded-xl text-[13px] transition-all group ${activeTopic === idx ? 'bg-accent/10 text-accent font-semibold shadow-sm border border-accent/10' : 'hover:bg-callout-bg text-text-primary opacity-70 hover:opacity-100'}`}
+                                                    className={`w-full flex items-start text-left px-3.5 py-3.5 rounded-xl transition-all group ${activeTopic === idx ? 'bg-accent/10 shadow-sm border border-accent/10' : 'hover:bg-callout-bg border border-transparent'}`}
                                                 >
-                                                    <PlayCircle className={`h-5 w-5 mr-3 shrink-0 ${activeTopic === idx ? '' : 'opacity-60'}`} />
+                                                    <PlayCircle className={`h-5 w-5 mr-3 shrink-0 ${activeTopic === idx ? 'text-accent' : 'text-text-muted opacity-60'}`} />
                                                     <div className="flex flex-col min-w-0">
-                                                        <span className="line-clamp-2 leading-snug">{topic.title}</span>
-                                                        <span className="text-[11px] mt-1 opacity-80 font-medium">Video • {topic.duration}</span>
+                                                        <span className={`retro-arcade-text text-[9px] leading-relaxed ${activeTopic === idx ? 'text-accent' : 'text-text-primary/70'}`}>{topic.title}</span>
+                                                        <span className="retro-arcade-text text-[8px] mt-2 opacity-60">Video • {topic.duration}</span>
                                                     </div>
                                                 </button>
                                             ))}
@@ -192,12 +195,12 @@ export default function InteractiveDemo() {
                                     </div>
 
                                     {/* Main Content */}
-                                    <div className="flex-1 flex flex-col relative overflow-hidden">
-                                        <div className="h-14 flex items-center px-6 gap-8 shrink-0 overflow-x-auto no-scrollbar">
-                                            <button onClick={() => setActiveTab('video')} className={`text-[13px] font-semibold h-full border-b-2 transition-colors flex items-center gap-1.5 ${activeTab === 'video' ? 'border-accent text-accent' : 'border-transparent text-text-muted hover:text-text-primary'}`}>
-                                                Video <span className="bg-accent/10 text-accent text-[10px] px-2 py-0.5 rounded-md ml-1 border border-accent/20">{demoTopics[activeTopic].duration.replace(' min', 'm')}</span>
+                                    <div className="flex-1 flex flex-col relative z-20 overflow-hidden">
+                                        <div className="h-14 flex items-center px-6 gap-6 shrink-0 overflow-x-auto no-scrollbar border-b border-border/40">
+                                            <button onClick={() => setActiveTab('video')} className={`retro-arcade-text text-[10px] h-full border-b-[2px] flex items-center gap-2 transition-colors ${activeTab === 'video' ? 'border-accent text-accent' : 'border-transparent text-text-muted hover:text-text-primary'}`}>
+                                                Video <span className="bg-accent/10 border border-accent/20 text-[8px] px-2 py-1 rounded-md ml-1">{demoTopics[activeTopic].duration.replace(' min', 'm')}</span>
                                             </button>
-                                            <button onClick={() => setActiveTab('theory')} className={`text-[13px] font-semibold h-full border-b-2 transition-colors ${activeTab === 'theory' ? 'border-accent text-accent' : 'border-transparent text-text-muted hover:text-text-primary'}`}>
+                                            <button onClick={() => setActiveTab('theory')} className={`retro-arcade-text text-[10px] h-full border-b-[2px] transition-colors ${activeTab === 'theory' ? 'border-accent text-accent' : 'border-transparent text-text-muted hover:text-text-primary'}`}>
                                                 Theory
                                             </button>
                                         </div>
@@ -212,14 +215,14 @@ export default function InteractiveDemo() {
                                                             </div>
                                                         </div>
                                                         <div className="mt-8 max-w-4xl">
-                                                            <h3 className="font-inter text-xl font-semibold text-text-heading mb-2">{demoTopics[activeTopic].title}</h3>
-                                                            <p className="manrope-body text-text-muted text-[15px]">{demoTopics[activeTopic].description}</p>
+                                                            <h3 className="retro-arcade-text text-[12px] md:text-[14px] text-accent mb-4">{demoTopics[activeTopic].title}</h3>
+                                                            <p className="retro-arcade-text text-[9px] md:text-[10px] text-text-muted leading-[2] tracking-wide">{demoTopics[activeTopic].description}</p>
                                                         </div>
                                                     </motion.div>
                                                 )}
                                                 {activeTab === 'theory' && (
                                                     <motion.div key="theory" initial={{opacity:0, y:10}} animate={{opacity:1, y:0}} className="max-w-3xl">
-                                                        <h1 className="font-inter text-3xl font-semibold text-text-heading mb-8">{demoTopics[activeTopic].title}</h1>
+                                                        <h1 className="retro-arcade-text text-[14px] md:text-[18px] text-accent mb-8">{demoTopics[activeTopic].title}</h1>
                                                         <div className="prose prose-sm dark:prose-invert max-w-none manrope-body text-[16px]
                                                             [&_.katex-display]:block [&_.katex-display]:border [&_.katex-display]:border-teal-500/40 [&_.katex-display]:bg-teal-500/10 [&_.katex-display]:rounded-xl [&_.katex-display]:px-5 [&_.katex-display]:py-6 [&_.katex-display]:my-8 [&_.katex-display]:shadow-sm
                                                         ">

@@ -13,52 +13,7 @@ import Footer from '@/components/Footer';
 import { OpenRouterModal } from '@/components/landing/OpenRouterModal';
 import { LocalAIModal } from '@/components/landing/LocalAIModal';
 import { logAIUsage } from '@/lib/usageTracker';
-
-const TechnicalCube = () => (
-    <div className="relative w-20 h-20 flex items-center justify-center" style={{ perspective: '800px' }}>
-        <motion.div
-            animate={{
-                rotateX: [0, 360],
-                rotateY: [0, 360],
-            }}
-            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-            style={{ transformStyle: 'preserve-3d' }}
-            className="w-10 h-10 relative"
-        >
-            {/* 6 faces of a technical wireframe cube */}
-            {[0, 90, 180, 270].map((rot, i) => (
-                <div
-                    key={i}
-                    className="absolute inset-0 border border-accent/40 bg-accent/5 grid grid-cols-2 grid-rows-2"
-                    style={{ transform: `rotateY(${rot}deg) translateZ(20px)` }}
-                >
-                    <div className="border-[0.5px] border-accent/20" />
-                    <div className="border-[0.5px] border-accent/20" />
-                    <div className="border-[0.5px] border-accent/20" />
-                    <div className="border-[0.5px] border-accent/20" />
-                </div>
-            ))}
-            <div
-                className="absolute inset-0 border border-accent/40 bg-accent/5 grid grid-cols-2 grid-rows-2"
-                style={{ transform: `rotateX(90deg) translateZ(20px)` }}
-            >
-                <div className="border-[0.5px] border-accent/20" />
-                <div className="border-[0.5px] border-accent/20" />
-                <div className="border-[0.5px] border-accent/20" />
-                <div className="border-[0.5px] border-accent/20" />
-            </div>
-            <div
-                className="absolute inset-0 border border-accent/40 bg-accent/5 grid grid-cols-2 grid-rows-2"
-                style={{ transform: `rotateX(-90deg) translateZ(20px)` }}
-            >
-                <div className="border-[0.5px] border-accent/20" />
-                <div className="border-[0.5px] border-accent/20" />
-                <div className="border-[0.5px] border-accent/20" />
-                <div className="border-[0.5px] border-accent/20" />
-            </div>
-        </motion.div>
-    </div>
-);
+import EulerLogoCanvas from '@/components/EulerLogoCanvas';
 
 export default function ResearchLabClient() {
     const { user, loading: authLoading } = useAuth();
@@ -322,7 +277,7 @@ export default function ResearchLabClient() {
 
     if (authLoading && !user) return (
         <div className="flex flex-col items-center justify-center min-h-[80vh] gap-10">
-            <TechnicalCube />
+            <EulerLogoCanvas size={80} color1={0x1e3a8a} color2={0x3b82f6} emissive1={0x1d4ed8} emissive2={0x2563eb} emissiveIntensity={0.6} wireframe={true} className="mx-auto mb-8 block" />
 
             <div className="text-center space-y-4">
                 <div>
@@ -341,7 +296,7 @@ export default function ResearchLabClient() {
         <div className="flex flex-col min-h-screen">
             {isProcessing && (
                 <div className="fixed inset-0 z-[100] bg-background/95 backdrop-blur-md flex flex-col items-center justify-center gap-10 animate-in fade-in duration-500">
-                    <TechnicalCube />
+                    <EulerLogoCanvas size={80} color1={0x1e3a8a} color2={0x3b82f6} emissive1={0x1d4ed8} emissive2={0x2563eb} emissiveIntensity={0.6} wireframe={true} className="mx-auto mb-8 block" />
                     <div className="text-center space-y-4">
                         <div>
                             <h2 className="inconsolata-ui text-[18px] md:text-[22px] font-black uppercase tracking-[0.4em] text-text-heading mb-2">
@@ -378,9 +333,14 @@ export default function ResearchLabClient() {
                 <div className="absolute inset-0 bg-gradient-to-b from-background/50 to-transparent pointer-events-none" />
                 <div className="max-w-7xl mx-auto px-6 relative z-10 text-left">
                     <div className="mt-4 max-w-3xl">
-                        <h1 className="font-inter text-3xl sm:text-4xl md:text-5xl font-semibold text-text-heading mb-6 leading-[1.15] md:leading-[1.1] tracking-tight">
-                            Decode complex papers into <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-teal-400">Engineering Blueprints.</span>
-                        </h1>
+                        <div className="flex flex-col md:flex-row md:items-center items-start gap-4 mb-6">
+                            <div className="shrink-0 mb-2 md:mb-0">
+                                <EulerLogoCanvas size={64} color1={0x1e3a8a} color2={0x3b82f6} emissive1={0x1d4ed8} emissive2={0x2563eb} emissiveIntensity={0.6} wireframe={true} />
+                            </div>
+                            <h1 className="font-inter text-3xl sm:text-4xl md:text-5xl font-semibold text-text-heading leading-[1.15] md:leading-[1.1] tracking-tight">
+                                Decode complex papers into <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-teal-400">Engineering Blueprints.</span>
+                            </h1>
+                        </div>
                         <p className="text-text-muted text-base md:text-lg manrope-body font-medium mb-10 leading-relaxed max-w-2xl">
                             Enter an ArXiv or PDF URL to extract the core mechanism, logic map, and architectural decisions. We bypass the dense mathematics to give you exactly what you need to build.
                         </p>

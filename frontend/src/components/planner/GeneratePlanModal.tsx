@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Calendar, Wand2, CheckCircle2, AlertCircle, Info } from 'lucide-react';
 import { roadmapsAPI, plannerAPI, RoadmapMe } from '@/lib/api';
+import EulerLogoCanvas from '@/components/EulerLogoCanvas';
 import { format, addMonths } from 'date-fns';
 
 interface Props {
@@ -72,9 +73,9 @@ export default function GeneratePlanModal({ onClose, onRefresh }: Props) {
       <div className="bg-sidebar w-full max-w-[480px] border border-border rounded-xl shadow-2xl flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-border bg-sidebar/50">
-          <div className="flex items-center gap-2">
-            <Wand2 className="w-3.5 h-3.5 text-accent" />
-            <h3 className="text-[13px] font-bold text-text-heading tracking-tight">
+          <div className="flex items-center gap-3">
+            <EulerLogoCanvas size={24} color1={0x94a3b8} color2={0x0f766e} emissive1={0x475569} emissive2={0x0d9488} emissiveIntensity={0.4} wireframe={true} />
+            <h3 className="text-[14px] font-bold text-text-heading tracking-tight">
               AI Study Plan Generator
             </h3>
           </div>

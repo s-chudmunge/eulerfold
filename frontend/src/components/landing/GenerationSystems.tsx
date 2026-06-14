@@ -51,17 +51,7 @@ export default function GenerationSystems() {
       
       <div className="max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-16 md:mb-24">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="flex items-center justify-center gap-2 mb-4"
-          >
-            <div className="w-8 h-px bg-accent/30"></div>
-            <span className="text-[10px] font-bold text-accent tracking-[0.2em] uppercase">Engine Architecture</span>
-            <div className="w-8 h-px bg-accent/30"></div>
-          </motion.div>
-          
+
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}

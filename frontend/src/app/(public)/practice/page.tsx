@@ -10,6 +10,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import TTSListenButton from '@/components/TTSListenButton';
 import { useRouter } from 'next/navigation';
 import { SideBanner, QUOTES } from '@/components/layout/SideBanners';
+import EulerLogoCanvas from '@/components/EulerLogoCanvas';
 
 const SUGGESTIONS: Record<string, string[]> = {
     "Computer Science": ["Distributed Systems", "Algorithms", "Operating Systems", "Networking", "Compilers", "Cryptography", "Database Theory", "Graph Theory", "Parallel Computing", "Computer Graphics", "Formal Languages", "Complexity Theory", "Cloud Computing", "Computer Architecture", "Quantum Computing", "Information Theory", "Distributed Hash Tables", "Formal Verification", "Type Theory", "Computability", "Raft/Paxos Consensus", "HCI", "Randomized Algorithms", "Logic Programming", "Automata Theory"],
@@ -119,11 +120,16 @@ function PracticeContent() {
 
                             {!isStarted ? (
                                 <div className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-                                    <div className="mb-8">
-                                        <h1 className="appropriate-sans text-[24px] md:text-[28px] font-bold text-text-heading tracking-tight mb-1">
-                                            Practice <span className="text-emerald-600">Lab</span>
-                                        </h1>
-                                        <p className="appropriate-sans text-[13px] text-text-muted">Master any topic through interactive AI-generated assessments.</p>
+                                    <div className="mb-8 flex items-start gap-4">
+                                        <div className="mt-1 shrink-0">
+                                            <EulerLogoCanvas size={48} color1={0x064e3b} color2={0x10b981} wireframe={false} />
+                                        </div>
+                                        <div>
+                                            <h1 className="appropriate-sans text-[24px] md:text-[28px] font-bold text-text-heading tracking-tight mb-1">
+                                                Practice <span className="text-emerald-600">Lab</span>
+                                            </h1>
+                                            <p className="appropriate-sans text-[13px] text-text-muted">Master any topic through interactive AI-generated assessments.</p>
+                                        </div>
                                     </div>
 
                                     <div className="relative max-w-xl">

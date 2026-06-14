@@ -13,6 +13,7 @@ import { OpenRouterModal } from './OpenRouterModal';
 import { LocalAIModal } from './LocalAIModal';
 import { CreateMLCEngine, hasModelInCache } from '@mlc-ai/web-llm';
 import { jsonrepair } from 'jsonrepair';
+import EulerLogoCanvas from '../EulerLogoCanvas';
 
 interface RoadmapGeneratorProps {
   onRoadmapGenerated: (data: RoadmapData, formData: any) => void;
@@ -535,6 +536,15 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
       case 1:
         return (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <div className="bg-amber-500/5 border border-amber-500/20 p-4 rounded-xl flex gap-3 items-start">
+              <div className="shrink-0 mt-0.5">
+                <EulerLogoCanvas size={24} color1={0xd97706} color2={0xf59e0b} wireframe={false} />
+              </div>
+              <p className="text-[13px] text-text-primary leading-relaxed font-medium">
+                Generates a fully custom, structured technical roadmap tailored precisely to your goals and current expertise level.
+              </p>
+            </div>
+            
             <div className="space-y-5">
                <label className="inconsolata-ui flex items-center text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted">
                  1. Core Objective

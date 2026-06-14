@@ -7,12 +7,30 @@ interface EulerLogoCanvasProps {
   size?: number;
   className?: string;
   rotationSpeed?: number;
+  color1?: string | number;
+  color2?: string | number;
+  wireframe?: boolean;
+  emissive1?: string | number;
+  emissive2?: string | number;
+  emissiveIntensity?: number;
+  tiltX?: number;
+  tiltZ?: number;
+  floatSpeed?: number;
 }
 
 export default function EulerLogoCanvas({ 
   size = 28, 
   className = "", 
-  rotationSpeed = 0.004 
+  rotationSpeed = 0.004,
+  color1 = 0xb0bec5,
+  color2 = 0x26c6c6,
+  wireframe = false,
+  emissive1 = 0x000000,
+  emissive2 = 0x000000,
+  emissiveIntensity = 0.5,
+  tiltX = 0,
+  tiltZ = 0,
+  floatSpeed = 0
 }: EulerLogoCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -24,8 +42,8 @@ export default function EulerLogoCanvas({
     const scene = new THREE.Scene();
     
     // Orthographic camera for a perfectly flat, logo-like feel
-    const aspect = 1; // Since it's a square container
-    const frustum = 1.5;
+    const aspect = 1; 
+    const frustum = 1.6; // Slightly zoomed out to prevent clipping when tilted
     const camera = new THREE.OrthographicCamera(
       -frustum * aspect, frustum * aspect,
        frustum, -frustum,
@@ -36,10 +54,10 @@ export default function EulerLogoCanvas({
 
     const renderer = new THREE.WebGLRenderer({ 
       antialias: true, 
-      alpha: true // Important for background transparency
+      alpha: true
     });
     renderer.setSize(size, size);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Bump pixel ratio for sharper edges
     containerRef.current.appendChild(renderer.domElement);
     rendererRef.current = renderer;
 
@@ -59,7 +77,6 @@ export default function EulerLogoCanvas({
       [1, 4, 2], [1, 3, 4], [1, 5, 3], [1, 2, 5],
     ];
 
-    // Alternate faces by color using index for a "checkered" look
     const grayFaces = faces.filter((_, i) => i % 2 === 0);
     const tealFaces = faces.filter((_, i) => i % 2 !== 0);
 
@@ -92,38 +109,67 @@ export default function EulerLogoCanvas({
 
     const materials = [
       new THREE.MeshStandardMaterial({ 
-        color: 0xb0bec5, // Slate gray
+        color: color1,
+        emissive: emissive1,
+        emissiveIntensity: emissiveIntensity,
         flatShading: true, 
-        metalness: 0.2, 
-        roughness: 0.4 
+        metalness: wireframe ? 0.8 : 0.3, 
+        roughness: wireframe ? 0.2 : 0.4,
+        wireframe: wireframe,
+        transparent: true,
+        opacity: wireframe ? 0.85 : 1
       }),
       new THREE.MeshStandardMaterial({ 
-        color: 0x26c6c6, // Teal
+        color: color2,
+        emissive: emissive2,
+        emissiveIntensity: emissiveIntensity,
         flatShading: true, 
-        metalness: 0.1, 
-        roughness: 0.3 
+        metalness: wireframe ? 0.8 : 0.2, 
+        roughness: wireframe ? 0.2 : 0.3,
+        wireframe: wireframe,
+        transparent: true,
+        opacity: wireframe ? 0.85 : 1
       }),
     ];
 
     const mesh = new THREE.Mesh(geometry, materials);
+    
+    // Initial Tilt Configuration
+    mesh.rotation.x = tiltX;
+    mesh.rotation.z = tiltZ;
     scene.add(mesh);
 
-    // --- Lights ---
-    const keyLight = new THREE.DirectionalLight(0xffffff, 1.4);
-    keyLight.position.set(-2, 3, 2);
+    // --- Lights (Enhanced for polishing) ---
+    const keyLight = new THREE.DirectionalLight(0xffffff, wireframe ? 2.0 : 1.6);
+    keyLight.position.set(-2, 4, 3);
     scene.add(keyLight);
 
-    const fillLight = new THREE.DirectionalLight(0xffffff, 0.4);
-    fillLight.position.set(3, -1, 1);
+    const fillLight = new THREE.DirectionalLight(0xffffff, wireframe ? 1.0 : 0.6);
+    fillLight.position.set(4, -2, 2);
     scene.add(fillLight);
+    
+    const rimLight = new THREE.DirectionalLight(0xffffff, wireframe ? 1.5 : 0.8);
+    rimLight.position.set(0, 5, -5); // Backlight for nice edge highlights
+    scene.add(rimLight);
 
-    scene.add(new THREE.AmbientLight(0xffffff, 0.35));
+    scene.add(new THREE.AmbientLight(0xffffff, wireframe ? 0.8 : 0.4));
 
     // --- Animation Loop ---
     let frameId: number | null = null;
+    const startTime = Date.now();
+    
     const animate = () => {
       frameId = requestAnimationFrame(animate);
-      mesh.rotation.y += rotationSpeed;
+      
+      // Core rotation on local Y axis
+      mesh.rotateY(rotationSpeed);
+      
+      // Smooth floating animation
+      if (floatSpeed > 0) {
+        const t = (Date.now() - startTime) * 0.001 * floatSpeed;
+        mesh.position.y = Math.sin(t) * 0.15;
+      }
+      
       renderer.render(scene, camera);
     };
 
@@ -156,7 +202,7 @@ export default function EulerLogoCanvas({
       geometry.dispose();
       materials.forEach(m => m.dispose());
     };
-  }, [size, rotationSpeed]);
+  }, [size, rotationSpeed, color1, color2, wireframe, emissive1, emissive2, emissiveIntensity, tiltX, tiltZ, floatSpeed]);
 
   return (
     <div 

@@ -7,6 +7,7 @@ import RoadmapGenerator from '@/components/landing/RoadmapGenerator';
 import RoadmapDisplay from '@/components/landing/RoadmapDisplay';
 import JobDecodedGenerator from '@/components/job-decoded/JobDecodedGenerator';
 import { RoadmapData, ExploreRoadmap } from '@/lib/api';
+import EulerLogoCanvas from '@/components/EulerLogoCanvas';
 import { 
   Sparkles,
   Briefcase,
@@ -108,10 +109,13 @@ function GenerateHero({ setMode }: { setMode: (mode: 'ai' | 'job') => void }) {
       <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-teal-500/10 rounded-full blur-[120px] -z-10" />
       
       <div className="max-w-4xl mx-auto px-6 text-center">
-        <h1 className="font-inter text-3xl sm:text-4xl md:text-5xl font-semibold text-text-heading mb-6 tracking-tight leading-[1.15] md:leading-[1.1] animate-in fade-in slide-in-from-bottom-3 duration-700 delay-100">
-          Architect your learning with <br className="hidden md:block"/> 
-          <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-teal-400">precision and depth</span>
-        </h1>
+        <div className="flex flex-col items-center justify-center gap-4 mb-6 animate-in fade-in slide-in-from-bottom-3 duration-700 delay-100">
+          <EulerLogoCanvas size={64} color1={0xb45309} color2={0xfbbf24} wireframe={false} />
+          <h1 className="font-inter text-3xl sm:text-4xl md:text-5xl font-semibold text-text-heading tracking-tight leading-[1.15] md:leading-[1.1]">
+            Architect your learning with <br className="hidden md:block"/> 
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-teal-400">precision and depth</span>
+          </h1>
+        </div>
         <p className="text-text-muted text-base md:text-lg manrope-body font-medium leading-relaxed max-w-2xl mx-auto mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
           Bypass generic tutorials. Generate custom, technical roadmaps curated in real-time. Whether you are mastering a new stack or decoding a job description, build a structured plan.
         </p>

@@ -1,24 +1,25 @@
 "use client";
 
 import React from 'react';
-import { Briefcase, Calendar, Microscope, Target, ArrowRight, Zap } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import EulerLogoCanvas from '../EulerLogoCanvas';
 
 const products = [
   {
     title: "Decode",
     description: "On-demand technical breakdown of academic papers. Convert complex research into precise technical blueprints.",
-    icon: Microscope,
+    logoProps: { color1: 0x1e3a8a, color2: 0x3b82f6, emissive1: 0x1d4ed8, emissive2: 0x2563eb, emissiveIntensity: 0.6, wireframe: true },
     href: "/research-lab",
     isNew: true,
     color: "text-blue-600",
-    bgColor: "bg-blue-500/10"
+    bgColor: "bg-blue-600/10"
   },
   {
     title: "Job Decoded",
     description: "Turn any job description into a learning path. See exactly what skills you are missing for a specific role.",
-    icon: Briefcase,
+    logoProps: { color1: 0x0f766e, color2: 0x2dd4bf, wireframe: false },
     href: "/generate?mode=job",
     isNew: true,
     color: "text-teal-700",
@@ -27,17 +28,16 @@ const products = [
   {
     title: "Study Planner",
     description: "Create a daily schedule from your roadmaps. Pick your intensity and get a list of tasks to complete.",
-    icon: Calendar,
+    logoProps: { color1: 0x94a3b8, color2: 0x0f766e, emissive1: 0x475569, emissive2: 0x0d9488, emissiveIntensity: 0.4, wireframe: true },
     href: "/planner",
     isNew: true,
     color: "text-accent",
     bgColor: "bg-accent/10"
   },
-
   {
     title: "Practice",
     description: "Test your knowledge with AI-generated assessments and practice problems across 20+ domains.",
-    icon: Target,
+    logoProps: { color1: 0x064e3b, color2: 0x10b981, wireframe: false },
     href: "/practice",
     color: "text-emerald-600",
     bgColor: "bg-emerald-500/10"
@@ -45,7 +45,7 @@ const products = [
   {
     title: "Roadmap Generator",
     description: "Generate personalized, step-by-step learning paths for any subject or skill in seconds.",
-    icon: Zap,
+    logoProps: { color1: 0xb45309, color2: 0xfbbf24, wireframe: false },
     href: "/generate",
     color: "text-amber-600",
     bgColor: "bg-amber-500/10"
@@ -89,8 +89,8 @@ export default function ProductEcosystem() {
                           </span>
                         )}
                       </div>
-                      <div className={`w-8 h-8 ${p.color} flex items-center justify-center group-hover:scale-[1.1] transition-transform duration-300`}>
-                        <p.icon className="w-full h-full" />
+                      <div className={`w-8 h-8 flex items-center justify-center group-hover:scale-[1.1] transition-transform duration-300`}>
+                        <EulerLogoCanvas size={32} {...p.logoProps} />
                       </div>
                     </div>
                     
