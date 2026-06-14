@@ -36,6 +36,10 @@ async def verify_token_with_timeout(token: str, timeout: float = 10.0):
         logger.error(f"Auth: Supabase token verification timed out after {timeout}s")
         raise # Raise for tenacity to retry
     except Exception as e:
+        # Do not retry on definite Auth errors (invalid token, missing session, etc.)
+        if type(e).__name__ in ('AuthApiError', 'AuthError', 'AuthSessionMissingError', 'AuthInvalidTokenResponseError', 'AuthInvalidJwtError'):
+            logger.warning(f"Auth verification failed (non-retriable): {e}")
+            return None
         logger.error(f"Auth verification attempt failed: {e}")
         raise # Raise for tenacity to retry
 

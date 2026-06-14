@@ -92,6 +92,19 @@ async def create_checkout(req: CheckoutRequest, current_user: User = Depends(get
             except Exception as e:
                 pass # ignore fetch errors and proceed
                 
+        # Create a Razorpay Customer first (Required for some Subscriptions validations)
+        customer_id = None
+        try:
+            # Just create a new customer for this session to ensure it's fresh and valid
+            rcust = razorpay_client.customer.create(data={
+                "name": current_user.display_name or "User",
+                "email": user_email,
+                "contact": "9999999999" # Dummy contact
+            })
+            customer_id = rcust["id"]
+        except Exception as ce:
+            logger.warning(f"Failed to create customer, proceeding without it: {ce}")
+
         sub_data = {
             "plan_id": settings.RAZORPAY_PLAN_ID,
             "total_count": 120, # 10 years max
@@ -101,6 +114,9 @@ async def create_checkout(req: CheckoutRequest, current_user: User = Depends(get
                 "coupon_code": req.coupon_code
             }
         }
+        if customer_id:
+            sub_data["customer_id"] = customer_id
+            
         subscription = razorpay_client.subscription.create(data=sub_data)
         return {
             "provider": "razorpay",

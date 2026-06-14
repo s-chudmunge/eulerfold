@@ -101,6 +101,9 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
           key: res.data.key,
           name: 'EulerFold',
           description: 'Pro Subscription',
+          prefill: {
+            email: session.user.email
+          },
           handler: async function (response: Record<string, string>) {
             try {
               await api.post('/payments/verify-razorpay', {
