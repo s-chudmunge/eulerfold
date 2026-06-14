@@ -60,10 +60,16 @@ async def send_pro_activation_email(to: str, display_name: str = None) -> dict:
             </li>
         </ul>
         
-        <div style="text-align: center; margin-bottom: 32px;">
-            <a href="{base_url}/generate" style="display: inline-block; background-color: #0f766e; color: #ffffff; padding: 14px 32px; border-radius: 12px; font-weight: 700; text-decoration: none; font-size: 15px;">
+        <div style="text-align: center; margin-bottom: 24px;">
+            <a href="https://www.eulerfold.com/generate" style="display: inline-block; background-color: #0f766e; color: #ffffff; padding: 14px 32px; border-radius: 12px; font-weight: 700; text-decoration: none; font-size: 15px;">
                 Start Generating
             </a>
+        </div>
+        
+        <div style="text-align: center; margin-bottom: 32px; font-size: 13px;">
+            <a href="https://www.eulerfold.com/research-lab" style="color: #64748b; text-decoration: none; border-bottom: 1px solid #cbd5e1; margin: 0 12px; padding-bottom: 2px;">Research Lab</a>
+            <a href="https://www.eulerfold.com/practice" style="color: #64748b; text-decoration: none; border-bottom: 1px solid #cbd5e1; margin: 0 12px; padding-bottom: 2px;">Practice Portal</a>
+            <a href="https://www.eulerfold.com/explore" style="color: #64748b; text-decoration: none; border-bottom: 1px solid #cbd5e1; margin: 0 12px; padding-bottom: 2px;">Explore</a>
         </div>
         
         <p style="font-size: 15px; color: #64748b; text-align: center; margin-top: 32px;">
