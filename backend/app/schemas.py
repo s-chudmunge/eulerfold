@@ -156,6 +156,8 @@ class RoadmapRead(BaseModel):
     is_public: bool = False
     cloned_from: Optional[int] = None
     email: Optional[str] = None
+    skills_extracted: Optional[bool] = False
+    last_position: Optional[Dict[str, int]] = None
 
 class ExternalRoadmapCreate(BaseModel):
     roadmap_plan: Dict[str, Any]
@@ -189,6 +191,10 @@ class ExternalRoadmapCreate(BaseModel):
             except json.JSONDecodeError:
                 return v
         return v
+
+class SyncSkillsRequest(BaseModel):
+    mappings: List[Dict[str, Any]]
+    skill_depths: Dict[str, float]
 
 class RoadmapMe(RoadmapRead):
     progress: Optional[Dict[str, Any]] = None

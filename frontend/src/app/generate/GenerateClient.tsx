@@ -23,7 +23,9 @@ import {
   Microscope,
   Archive,
   GraduationCap,
-  Compass
+  Compass,
+  ChevronDown,
+  Hourglass
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase/client';
 import PublicHeader from '@/components/PublicHeader';
@@ -31,72 +33,97 @@ import Footer from '@/components/Footer';
 import { SideBanner, QUOTES } from '@/components/layout/SideBanners';
 
 function InstructionsSidePanel() {
+  const [openSection, setOpenSection] = useState<'instructions' | 'faq' | null>(null);
+
   return (
-    <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-left-4 duration-700">
-      <div className="bg-sidebar border border-border rounded-lg p-5">
-         <h3 className="flex items-center gap-2 text-[13px] font-bold text-text-heading uppercase tracking-widest mb-4">
-           <FileText className="w-4 h-4 text-accent" />
-           Instructions
-         </h3>
-         <ul className="space-y-3">
-           <li className="flex items-start gap-2 text-[12px] text-text-muted leading-relaxed">
-             <CheckCircle2 className="w-3.5 h-3.5 mt-0.5 text-teal-600 shrink-0" />
-             <span>Be specific about your goal. Instead of "Learn Python", try "Build scalable backend APIs in Python".</span>
-           </li>
-           <li className="flex items-start gap-2 text-[12px] text-text-muted leading-relaxed">
-             <CheckCircle2 className="w-3.5 h-3.5 mt-0.5 text-teal-600 shrink-0" />
-             <span>Select a timeline that matches your realistic schedule.</span>
-           </li>
-           <li className="flex items-start gap-2 text-[12px] text-text-muted leading-relaxed">
-             <CheckCircle2 className="w-3.5 h-3.5 mt-0.5 text-teal-600 shrink-0" />
-             <span>Our AI autonomously browses the web to attach verified, cutting-edge resources to every topic.</span>
-           </li>
-         </ul>
+    <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-left-4 duration-700">
+      <div className="bg-sidebar border border-border rounded-lg overflow-hidden">
+        <button 
+          onClick={() => setOpenSection(openSection === 'instructions' ? null : 'instructions')}
+          className="w-full flex items-center justify-between p-4 bg-sidebar hover:bg-sidebar/80 transition-colors"
+        >
+          <div className="flex items-center gap-2">
+            <FileText className="w-4 h-4 text-accent" />
+            <span className="text-[13px] font-bold text-text-heading uppercase tracking-widest">Instructions</span>
+          </div>
+          <ChevronDown className={`w-4 h-4 text-text-muted transition-transform duration-300 ${openSection === 'instructions' ? 'rotate-180' : ''}`} />
+        </button>
+        <div className={`transition-all duration-300 ease-in-out overflow-hidden ${openSection === 'instructions' ? 'max-h-96 border-t border-border/50' : 'max-h-0'}`}>
+          <div className="p-4 bg-background/50">
+            <ul className="space-y-3">
+              <li className="flex items-start gap-2 text-[12px] text-text-muted leading-relaxed">
+                <CheckCircle2 className="w-3.5 h-3.5 mt-0.5 text-teal-600 shrink-0" />
+                <span>Be specific about your goal. Instead of "Learn Python", try "Build scalable backend APIs in Python".</span>
+              </li>
+              <li className="flex items-start gap-2 text-[12px] text-text-muted leading-relaxed">
+                <CheckCircle2 className="w-3.5 h-3.5 mt-0.5 text-teal-600 shrink-0" />
+                <span>Select a timeline that matches your realistic schedule.</span>
+              </li>
+              <li className="flex items-start gap-2 text-[12px] text-text-muted leading-relaxed">
+                <CheckCircle2 className="w-3.5 h-3.5 mt-0.5 text-teal-600 shrink-0" />
+                <span>Our AI autonomously browses the web to attach verified, cutting-edge resources to every topic.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
 
-      <div className="bg-sidebar border border-border rounded-lg p-5">
-         <h3 className="flex items-center gap-2 text-[13px] font-bold text-text-heading uppercase tracking-widest mb-4">
-           <HelpCircle className="w-4 h-4 text-accent" />
-           FAQ
-         </h3>
-         <div className="space-y-4">
-           <div>
-             <h4 className="text-[12px] font-bold text-text-heading mb-1">How are references verified?</h4>
-             <p className="text-[11px] text-text-muted leading-relaxed">The AI executes real-time DuckDuckGo searches for every module to guarantee live, authoritative references.</p>
-           </div>
-           <div>
-             <h4 className="text-[12px] font-bold text-text-heading mb-1">What is Job Decoded?</h4>
-             <p className="text-[11px] text-text-muted leading-relaxed">Paste any job description text to instantly generate a targeted roadmap tailored exactly to those requirements.</p>
-           </div>
-           <div>
-             <h4 className="text-[12px] font-bold text-text-heading mb-1">Are credits refundable?</h4>
-             <p className="text-[11px] text-text-muted leading-relaxed">Credits are non-refundable once used to generate a roadmap.</p>
-           </div>
-           <div>
-             <h4 className="text-[12px] font-bold text-text-heading mb-1">How long does generation take?</h4>
-             <p className="text-[11px] text-text-muted leading-relaxed">Usually 20-40 seconds depending on the complexity of the live web searches.</p>
-           </div>
-           <div>
-             <h4 className="text-[12px] font-bold text-text-heading mb-1">Can I edit my roadmap later?</h4>
-             <p className="text-[11px] text-text-muted leading-relaxed">Yes! Roadmap owners get full editing tools on their dashboard to customize the content.</p>
-           </div>
-           <div className="pt-2 border-t border-border/50">
-             <h4 className="text-[12px] font-bold text-text-heading mb-1">What is Local AI Mode?</h4>
-             <p className="text-[11px] text-text-muted leading-relaxed">It runs models directly on your device via WebGPU, ensuring total privacy since no data leaves your machine.</p>
-           </div>
-           <div>
-             <h4 className="text-[12px] font-bold text-text-heading mb-1">Local AI Limitations</h4>
-             <p className="text-[11px] text-text-muted leading-relaxed">It requires a modern GPU and browser. Model downloading takes upfront time and space, and speed depends entirely on your local hardware.</p>
-           </div>
-           <div className="pt-2 border-t border-border/50">
-             <h4 className="text-[12px] font-bold text-text-heading mb-1">What is OpenRouter?</h4>
-             <p className="text-[11px] text-text-muted leading-relaxed">It's a unified API gateway that lets you access multiple AI models (like Claude, GPT-4, and Gemini) through a single interface.</p>
-           </div>
-           <div>
-             <h4 className="text-[12px] font-bold text-text-heading mb-1">How does using my own key help?</h4>
-             <p className="text-[11px] text-text-muted leading-relaxed">Providing your own OpenRouter key gives you absolute control over which models run your generation, avoiding vendor lock-in. Your key is stored securely in your browser and never on our servers.</p>
-           </div>
-         </div>
+      <div className="bg-sidebar border border-border rounded-lg overflow-hidden">
+        <button 
+          onClick={() => setOpenSection(openSection === 'faq' ? null : 'faq')}
+          className="w-full flex items-center justify-between p-4 bg-sidebar hover:bg-sidebar/80 transition-colors"
+        >
+          <div className="flex items-center gap-2">
+            <HelpCircle className="w-4 h-4 text-accent" />
+            <span className="text-[13px] font-bold text-text-heading uppercase tracking-widest">FAQ</span>
+          </div>
+          <ChevronDown className={`w-4 h-4 text-text-muted transition-transform duration-300 ${openSection === 'faq' ? 'rotate-180' : ''}`} />
+        </button>
+        <div className={`transition-all duration-300 ease-in-out overflow-hidden ${openSection === 'faq' ? 'max-h-[800px] border-t border-border/50' : 'max-h-0'}`}>
+          <div className="p-4 bg-background/50 space-y-4">
+            <div>
+              <h4 className="text-[12px] font-bold text-text-heading mb-1">How are references verified?</h4>
+              <p className="text-[11px] text-text-muted leading-relaxed">The AI executes real-time DuckDuckGo searches for every module to guarantee live, authoritative references.</p>
+            </div>
+            <div>
+              <h4 className="text-[12px] font-bold text-text-heading mb-1">What is Job Decoded?</h4>
+              <p className="text-[11px] text-text-muted leading-relaxed">Paste any job description text to instantly generate a targeted roadmap tailored exactly to those requirements.</p>
+            </div>
+            <div>
+              <h4 className="text-[12px] font-bold text-text-heading mb-1">Are credits refundable?</h4>
+              <p className="text-[11px] text-text-muted leading-relaxed">Credits are non-refundable once used to generate a roadmap.</p>
+            </div>
+            <div>
+              <h4 className="text-[12px] font-bold text-text-heading mb-1">How long does generation take?</h4>
+              <p className="text-[11px] text-text-muted leading-relaxed">Usually 20-40 seconds depending on the complexity of the live web searches.</p>
+            </div>
+            <div>
+              <h4 className="text-[12px] font-bold text-text-heading mb-1">Can I edit my roadmap later?</h4>
+              <p className="text-[11px] text-text-muted leading-relaxed">Yes! Roadmap owners get full editing tools on their dashboard to customize the content.</p>
+            </div>
+            <div className="pt-2 border-t border-border/50">
+              <h4 className="text-[12px] font-bold text-text-heading mb-1">What is Local AI Mode?</h4>
+              <p className="text-[11px] text-text-muted leading-relaxed">It runs models directly on your device via WebGPU, ensuring total privacy since no data leaves your machine.</p>
+            </div>
+            <div>
+              <h4 className="text-[12px] font-bold text-text-heading mb-1">Local AI Limitations</h4>
+              <p className="text-[11px] text-text-muted leading-relaxed">It requires a modern GPU and browser. Model downloading takes upfront time and space, and speed depends entirely on your local hardware.</p>
+            </div>
+            <div className="pt-2 border-t border-border/50">
+              <h4 className="text-[12px] font-bold text-text-heading mb-1">What is OpenRouter?</h4>
+              <p className="text-[11px] text-text-muted leading-relaxed">It's a unified API gateway that lets you access multiple AI models (like Claude, GPT-4, and Gemini) through a single interface.</p>
+            </div>
+            <div>
+              <h4 className="text-[12px] font-bold text-text-heading mb-1">How does using my own key help?</h4>
+              <p className="text-[11px] text-text-muted leading-relaxed">Providing your own OpenRouter key gives you absolute control over which models run your generation, avoiding vendor lock-in. Your key is stored securely in your browser and never on our servers.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="p-4 bg-accent/5 border border-accent/20 rounded-xl text-center w-full shadow-sm mt-2">
+        <p className="text-[11px] font-bold text-accent mb-1.5 flex items-center justify-center gap-1.5 uppercase tracking-widest"><Hourglass className="w-3.5 h-3.5"/> Generation Takes Time</p>
+        <p className="text-[11px] text-text-muted leading-relaxed">Our AI requires about 20-40 seconds to architect a complete learning roadmap. Please be patient after clicking generate.</p>
       </div>
     </div>
   );

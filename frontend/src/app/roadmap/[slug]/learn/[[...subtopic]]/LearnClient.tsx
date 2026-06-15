@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
-import { RoadmapData, roadmapsAPI, authAPI, practiceAPI, PracticeSession, PracticeProgress } from '@/lib/api';
+import { RoadmapData, roadmapsAPI, authAPI, practiceAPI, submissionsAPI, PracticeSession, PracticeProgress } from '@/lib/api';
 import { 
   ChevronLeft, 
   ChevronRight, 
@@ -42,6 +42,7 @@ import SyllabusModal from './SyllabusModal';
 import TaskModal from '@/components/planner/TaskModal';
 import YouTubePlayer from '@/components/roadmap/YouTubePlayer';
 import HomeworkSubmissionModal from '@/components/roadmap/HomeworkSubmissionModal';
+import SkillExtractor from '@/components/roadmap/SkillExtractor';
 
 export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoadmap }: { id?: string, slug?: string[], initialRoadmap?: RoadmapData | null }) {
     const params = useParams();
@@ -50,13 +51,14 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
     
     const [roadmap, setRoadmap] = useState<RoadmapData | null>(initialRoadmap || null);
     const [loading, setLoading] = useState(!initialRoadmap);
+    const [isFreshRoadmapLoaded, setIsFreshRoadmapLoaded] = useState(false);
     const [isHomeworkModalOpen, setIsHomeworkModalOpen] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [profile, setProfile] = useState<any>(null);
     
     // Navigation & Progress State
-    const [currentModuleIndex, setCurrentModuleIndex] = useState(0);
-    const [currentTopicIndex, setCurrentTopicIndex] = useState(0);
+    const [currentModuleIndex, setCurrentModuleIndex] = useState(initialRoadmap?.last_position?.mIdx || 0);
+    const [currentTopicIndex, setCurrentTopicIndex] = useState(initialRoadmap?.last_position?.tIdx || 0);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [isSyllabusOpen, setIsSyllabusOpen] = useState(false);
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
@@ -70,6 +72,9 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
     const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
     const [showMuteTooltip, setShowMuteTooltip] = useState(false);
     const [activeTab, setActiveTab] = useState<'objectives' | 'resources' | 'outcome'>('objectives');
+
+    // Submissions State
+    const [submissions, setSubmissions] = useState<any[]>([]);
 
     // Practice State
     const [practiceSession, setPracticeSession] = useState<PracticeSession | null>(null);
@@ -87,6 +92,12 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
             if (userData) setProfile(userData);
         }
     }, []);
+
+    useEffect(() => {
+        if (roadmap) {
+            console.log(`[EulerFold] Roadmap Skills Extracted: ${roadmap.skills_extracted} (Exists in Database)`);
+        }
+    }, [roadmap]);
 
     const allWeekResources = useMemo(() => {
         if (!roadmap || !roadmap.roadmap_plan?.modules?.[currentModuleIndex]) return [];
@@ -170,7 +181,14 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
 
     useEffect(() => {
         fetchPracticeSession();
-    }, [fetchPracticeSession]);
+        
+        // Fetch submissions
+        if (roadmap?.id) {
+            submissionsAPI.listSubmissions(roadmap.id).then((res) => {
+                if (res.submissions) setSubmissions(res.submissions);
+            }).catch(console.error);
+        }
+    }, [fetchPracticeSession, roadmap?.id]);
 
     const handleStartPractice = async () => {
         if (!roadmap || !roadmap.id) return;
@@ -324,6 +342,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
 
                 if (currentRoadmap && isMounted) {
                     setRoadmap(currentRoadmap);
+                    setIsFreshRoadmapLoaded(true);
                     const isOwner = currentRoadmap.email?.toLowerCase() === session.user.email?.toLowerCase();
                     
                     if (isOwner && currentRoadmap.last_position) {
@@ -625,11 +644,23 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                     onClick={() => setIsHomeworkModalOpen(true)}
                                     className="w-full flex items-start gap-3 px-3 py-3 rounded-lg text-[13px] text-text-primary hover:text-text-heading hover:bg-callout-bg transition-all group"
                                 >
-                                    <Send className="h-5 w-5 mt-0.5 opacity-60 group-hover:opacity-100" />
-                                    <div className="flex flex-col">
-                                        <span className="font-medium">Submit Homework</span>
-                                        <span className="text-[10px] mt-1 opacity-80 group-hover:opacity-100 transition-opacity">Verify your skills</span>
-                                    </div>
+                                    {submissions.some(s => s.module_number === currentModuleIndex + 1) ? (
+                                        <>
+                                            <CheckCircle className="h-5 w-5 mt-0.5 text-accent opacity-80 group-hover:opacity-100" />
+                                            <div className="flex flex-col">
+                                                <span className="font-medium">View Submission</span>
+                                                <span className="text-[10px] mt-1 opacity-80 group-hover:opacity-100 transition-opacity">See your evaluation</span>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Send className="h-5 w-5 mt-0.5 opacity-60 group-hover:opacity-100" />
+                                            <div className="flex flex-col">
+                                                <span className="font-medium">Submit Homework</span>
+                                                <span className="text-[10px] mt-1 opacity-80 group-hover:opacity-100 transition-opacity">Verify your skills</span>
+                                            </div>
+                                        </>
+                                    )}
                                 </button>
 
                             </div>
@@ -642,9 +673,9 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                     <p className="text-[11px] font-bold text-text-primary uppercase tracking-wider mb-2 px-1">Previous</p>
                                     <button 
                                         onClick={() => handleTopicChange(currentModuleIndex - 1, 0)}
-                                        className="w-full flex items-center justify-between px-3 py-3 rounded-lg text-[13px] font-bold text-text-heading hover:bg-callout-bg transition-all group"
+                                        className="w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-[12px] font-semibold text-text-heading hover:bg-callout-bg transition-all group"
                                     >
-                                        <ChevronLeft className="h-4 w-4 shrink-0 transition-transform group-hover:-translate-x-0.5" />
+                                        <ChevronLeft className="h-3.5 w-3.5 shrink-0 transition-transform group-hover:-translate-x-0.5" />
                                         <span className="truncate ml-2 text-right">
                                             {modules[currentModuleIndex - 1].title?.toLowerCase().startsWith('module')
                                                 ? modules[currentModuleIndex - 1].title
@@ -659,14 +690,14 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                     <p className="text-[11px] font-bold text-text-primary uppercase tracking-wider mb-2 px-1">Next</p>
                                     <button 
                                         onClick={() => handleTopicChange(currentModuleIndex + 1, 0)}
-                                        className="w-full flex items-center justify-between px-3 py-3 rounded-lg text-[13px] font-bold text-text-heading hover:bg-callout-bg transition-all group"
+                                        className="w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-[12px] font-semibold text-text-heading hover:bg-callout-bg transition-all group"
                                     >
                                         <span className="truncate mr-2 text-left">
                                             {modules[currentModuleIndex + 1].title?.toLowerCase().startsWith('module')
                                                 ? modules[currentModuleIndex + 1].title
                                                 : `Module ${currentModuleIndex + 2}: ${modules[currentModuleIndex + 1].title}`}
                                         </span>
-                                        <ChevronRight className="h-4 w-4 shrink-0 transition-transform group-hover:translate-x-0.5" />
+                                        <ChevronRight className="h-3.5 w-3.5 shrink-0 transition-transform group-hover:translate-x-0.5" />
                                     </button>
                                 </div>
                             )}
@@ -678,12 +709,16 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                         <div className="mb-4">
                             <div className="flex items-center justify-between text-[11px] font-bold mb-1.5 px-1">
                                 <span className="text-text-primary uppercase tracking-wider">Progress</span>
-                                <span className="text-text-heading">{Math.round((completedInCurrentWeekCount / currentWeekTopicsCount) * 100)}%</span>
+                                <span className="text-text-heading">
+                                    {roadmap?.progress ? 
+                                        Math.min(100, Math.max(0, Math.round(roadmap.progress.percent + ((completedTopics.size - (roadmap.progress.completed_topics || 0)) / (roadmap.progress.total_topics || 1)) * 30))) 
+                                        : 0}%
+                                </span>
                             </div>
                             <div className="h-1.5 w-full bg-border rounded-full overflow-hidden">
                                 <div 
                                     className="h-full bg-accent transition-all duration-500 ease-out rounded-full"
-                                    style={{ width: `${(completedInCurrentWeekCount / currentWeekTopicsCount) * 100}%` }}
+                                    style={{ width: `${roadmap?.progress ? Math.min(100, Math.max(0, Math.round(roadmap.progress.percent + ((completedTopics.size - (roadmap.progress.completed_topics || 0)) / (roadmap.progress.total_topics || 1)) * 30))) : 0}%` }}
                                 />
                             </div>
                         </div>
@@ -893,11 +928,40 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                     moduleNumber={currentModuleIndex + 1}
                     moduleTitle={modules[currentModuleIndex].title}
                     instructions={modules[currentModuleIndex].proof_of_work_instructions}
+                    initialResult={
+                        (() => {
+                            const submission = submissions.find(s => s.module_number === currentModuleIndex + 1);
+                            if (!submission) return null;
+                            return {
+                                level: submission.evaluation_level,
+                                summary: submission.evaluation || submission.senate_summary,
+                                link: submission.link,
+                                evidence: submission.user_skill_evidence?.map((ev: any) => ({
+                                    skill: ev.skill_name,
+                                    strength: ev.evidence_strength,
+                                    reason: ev.reason
+                                })) || []
+                            };
+                        })()
+                    }
                     onSuccess={(evaluation) => {
-                        // Optional: refresh progress or show celebration
                         console.log("Homework submitted successfully:", evaluation);
+                        if (roadmap?.id) {
+                            submissionsAPI.listSubmissions(roadmap.id).then((res) => {
+                                if (res.submissions) setSubmissions(res.submissions);
+                            }).catch(console.error);
+                        }
                     }}
                     isPro={profile?.is_pro || false}
+                />
+            )}
+
+            {roadmap && isFreshRoadmapLoaded && roadmap.skills_extracted === false && (
+                <SkillExtractor 
+                    roadmap={roadmap} 
+                    onComplete={() => {
+                        setRoadmap(prev => prev ? { ...prev, skills_extracted: true } : null);
+                    }} 
                 />
             )}
         </div>

@@ -529,10 +529,12 @@ async def submit_mcq_session(
         
     session = session_res.data[0]
     if session.get("status") == "completed":
+        print(f"DEBUG: Session already completed. status: {session.get('status')}")
         raise HTTPException(status_code=400, detail="Session already completed")
         
     questions = session.get("questions", [])
     if len(submission.answers) != len(questions):
+        print(f"DEBUG: Missing answers. len(submission.answers): {len(submission.answers)}, len(questions): {len(questions)}")
         raise HTTPException(status_code=400, detail="Missing answers for some questions")
         
     # 2. Calculate score

@@ -15,7 +15,7 @@ from fastapi import APIRouter, HTTPException, Request, Depends, BackgroundTasks
 
 from app.core.config import settings
 from app.core.supabase_client import supabase, get_supabase_client
-from app.schemas import RoadmapCreate, RoadmapMe, RoadmapRead, RoadmapSave, User, ProgressUpdate, RoadmapExtend, RoadmapStatusUpdate, ManualBuildRequest, JobRoadmapCreate, ExternalRoadmapCreate
+from app.schemas import RoadmapCreate, RoadmapMe, RoadmapRead, RoadmapSave, User, ProgressUpdate, RoadmapExtend, RoadmapStatusUpdate, ManualBuildRequest, JobRoadmapCreate, ExternalRoadmapCreate, SyncSkillsRequest
 from app.utils.gemini_client import generate_text, clean_json_string, robust_json_loads
 from app.utils.resend_client import send_onboarding_email
 from app.utils.youtube_client import search_youtube_videos
@@ -24,7 +24,7 @@ from app.utils.eulercoins import award_coins
 from app.utils.streaks import track_activity
 from app.core.auth import get_current_user
 from app.routers.optional_auth import get_optional_current_user
-from app.services.skills_service import extract_skills_from_roadmap, calculate_user_skill_scores_for_roadmap, cleanup_skills_after_roadmap_deletion
+from app.services.skills_service import extract_skills_from_roadmap, calculate_user_skill_scores_for_roadmap, cleanup_skills_after_roadmap_deletion, process_extracted_skills
 from app.routers.payments import check_and_revoke_pro_if_no_credits
 
 from app.database.monitor import monitor_query
@@ -125,20 +125,31 @@ async def _enrich_roadmap_progress(roadmaps: List[Dict], email: str, uid: str, s
     if not email or not uid:
         return roadmaps
 
-    # Fetch data in bulk
+    # Fetch data in bulk in parallel using threads
+    import asyncio
+    
     roadmap_ids = [r["id"] for r in roadmaps]
     if not roadmap_ids:
         return roadmaps
+    
+    def fetch_mp():
+        return sb.table("module_progress").select("roadmap_id, module_number, topic_index, completed").eq("user_email", email).in_("roadmap_id", roadmap_ids).eq("completed", True).execute()
+        
+    def fetch_sub():
+        return sb.table("submissions").select("roadmap_id, module_number, evaluation_level").eq("user_email", email).in_("roadmap_id", roadmap_ids).order("submitted_at", desc=True).execute()
+        
+    def fetch_ps():
+        return sb.table("practice_sessions").select("id, roadmap_id, resources").eq("user_id", uid).in_("roadmap_id", roadmap_ids).execute()
+        
+    def fetch_pp():
+        return sb.table("practice_progress").select("session_id, resource_id, completed").eq("user_id", uid).eq("completed", True).execute()
 
-    # 1. Fetch module_progress (completed topics)
-    mp_res = sb.table("module_progress").select("roadmap_id, module_number, topic_index, completed").eq("user_email", email).in_("roadmap_id", roadmap_ids).eq("completed", True).execute()
-    
-    # 2. Fetch submissions (ordered by latest first)
-    sub_res = sb.table("submissions").select("roadmap_id, module_number, evaluation_level").eq("user_email", email).in_("roadmap_id", roadmap_ids).order("submitted_at", desc=True).execute()
-    
-    # 3. Fetch practice sessions & progress
-    ps_res = sb.table("practice_sessions").select("id, roadmap_id, resources").eq("user_id", uid).in_("roadmap_id", roadmap_ids).execute()
-    pp_res = sb.table("practice_progress").select("session_id, resource_id, completed").eq("user_id", uid).eq("completed", True).execute()
+    mp_res, sub_res, ps_res, pp_res = await asyncio.gather(
+        asyncio.to_thread(fetch_mp),
+        asyncio.to_thread(fetch_sub),
+        asyncio.to_thread(fetch_ps),
+        asyncio.to_thread(fetch_pp)
+    )
 
     # Organize data for quick lookup
     mp_map = {} # roadmap_id -> set of (module_number, topic_index)
@@ -311,6 +322,7 @@ async def get_my_roadmaps(background_tasks: BackgroundTasks, current_user: User 
             average_rating=float(r.get("average_rating") or 0.0),
             rating_count=r.get("rating_count", 0),
             cloned_from=r.get("cloned_from"),
+            skills_extracted=r.get("skills_extracted", False),
             is_cloned=bool(r.get("cloned_from")),
             progress=r.get("calculated_progress"),
             status=r.get("calculated_status", "active"),
@@ -435,6 +447,7 @@ async def get_roadmap_by_slug(slug: str, background_tasks: BackgroundTasks, curr
         average_rating=float(r.get("average_rating") or 0.0),
         rating_count=r.get("rating_count", 0),
         cloned_from=r.get("cloned_from"),
+        skills_extracted=r.get("skills_extracted", False),
         progress=r.get("calculated_progress"),
         status=r.get("calculated_status", "active"),
         email=r.get("email"),
@@ -648,6 +661,7 @@ async def get_roadmap_by_id(roadmap_id: int, background_tasks: BackgroundTasks, 
 
     return RoadmapMe(
         id=r["id"],
+        email=r.get("email"),
         slug=r.get("slug", ""),
         title=r["title"],
         description=r["description"],
@@ -667,6 +681,7 @@ async def get_roadmap_by_id(roadmap_id: int, background_tasks: BackgroundTasks, 
         average_rating=float(r.get("average_rating") or 0.0),
         rating_count=r.get("rating_count", 0),
         cloned_from=r.get("cloned_from"),
+        skills_extracted=r.get("skills_extracted", False),
         progress=r.get("calculated_progress"),
         status=r.get("calculated_status", "active"),
         extension_count=r.get("extension_count", 0),
@@ -1373,3 +1388,19 @@ async def delete_roadmap(roadmap_id: int, current_user: User = Depends(get_curre
     except Exception as e:
         logger.error(f"Error deleting roadmap: {e}")
         raise HTTPException(status_code=500, detail="Failed to delete roadmap")
+
+@router.post("/roadmaps/{roadmap_id}/skills/sync")
+async def sync_roadmap_skills(roadmap_id: int, request: SyncSkillsRequest, current_user: User = Depends(get_current_user)):
+    sb = get_supabase_client()
+    uid = current_user.supabase_uid
+    
+    r_res = sb.table("roadmaps").select("*").eq("id", roadmap_id).eq("email", current_user.email).execute()
+    if not r_res.data:
+        raise HTTPException(status_code=404, detail="Roadmap not found or unauthorized")
+        
+    try:
+        await process_extracted_skills(roadmap_id, uid, request.dict())
+        return {"status": "ok", "message": "Skills synced successfully"}
+    except Exception as e:
+        logger.error(f"Error syncing skills: {e}")
+        raise HTTPException(status_code=500, detail="Failed to sync skills")

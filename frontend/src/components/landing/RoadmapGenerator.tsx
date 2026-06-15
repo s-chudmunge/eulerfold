@@ -532,10 +532,8 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
   const filteredRolesTarget = ROLES.filter(r => r.toLowerCase().includes(roleSearchTarget.toLowerCase()));
 
   const renderStep = () => {
-    switch(step) {
-      case 1:
-        return (
-          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
+    return (
+      <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
             <div className="bg-amber-500/5 border border-amber-500/20 p-4 rounded-xl flex gap-3 items-start">
               <div className="shrink-0 mt-0.5">
                 <EulerLogoCanvas size={24} color1={0xd97706} color2={0xf59e0b} wireframe={false} />
@@ -714,17 +712,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                </div>
             </div>
 
-            {!isGenerating && (
-              <div className="pt-2">
-                <button
-                  onClick={() => setStep(2)}
-                  disabled={!formData.subject.trim() || !formData.goal.trim()}
-                  className="w-full sm:w-fit px-8 py-3 bg-text-heading text-background text-[11px] font-bold uppercase tracking-[0.2em] hover:opacity-90 active:scale-95 transition-all flex items-center justify-center gap-2 rounded-lg disabled:opacity-30 disabled:cursor-not-allowed shadow-xl shadow-text-heading/10"
-                >
-                  Set Timeline <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              </div>
-            )}
+            
             <div className="mt-8 flex flex-col gap-2 max-w-sm">
                 <div className="flex items-center justify-between p-1 bg-sidebar border border-border rounded-lg w-full">
                   <button
@@ -911,11 +899,8 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
               )}
             </div>
             )}
-          </div>
-        );
-      case 2:
-        return (
-          <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {/* --- Start of Step 2 content merged --- */}
+            <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 mt-8">
             <div className="space-y-3">
                <label className="inconsolata-ui flex items-center text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted">
                  2. Intensity & Context
@@ -1012,10 +997,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
 
             {!isGenerating && (
               <div className="mt-8 flex flex-col gap-6">
-                <div className="p-4 bg-accent/5 border border-accent/20 rounded-xl text-center max-w-lg mx-auto w-full shadow-sm">
-                  <p className="text-[11px] font-bold text-accent mb-1.5 flex items-center justify-center gap-1.5 uppercase tracking-widest"><Hourglass className="w-3.5 h-3.5"/> Generation Takes Time</p>
-                  <p className="text-[11px] text-text-muted leading-relaxed max-w-sm mx-auto">Our AI requires about 20-40 seconds to architect a complete learning roadmap. Please be patient after clicking generate.</p>
-                </div>
+
                   <div className="flex flex-col gap-2 max-w-sm mx-auto w-full">
                     <div className="flex items-center justify-between p-1 bg-sidebar border border-border rounded-lg w-full">
                       <button
@@ -1049,12 +1031,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                   </div>
                 
                 <div className="flex flex-col sm:flex-row items-center gap-4">
-                  <button
-                    onClick={() => setStep(1)}
-                  className="w-full sm:w-fit px-6 py-2.5 bg-background border border-border text-text-muted text-[10px] font-bold uppercase tracking-[0.2em] hover:bg-sidebar transition-all rounded-lg"
-                >
-                  Back
-                </button>
+
                 {!session ? (
                     <button
                       onClick={generateRoadmap}
@@ -1126,27 +1103,14 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                  )}
                </div>
             )}
+            </div>
           </div>
-        );
-      default:
-        return null;
-    }
+    );
   };
 
   return (
     <div className="w-full manrope-body">
-      <div className="mb-4 flex items-center justify-center md:justify-start gap-4">
-        {[1, 2].map(i => (
-          <div key={i} className="flex items-center gap-2">
-            <div className={`w-8 h-8 flex items-center justify-center text-[11px] font-bold border transition-all rounded-md ${
-              step === i ? 'bg-accent text-white border-accent' : step > i ? 'bg-sidebar text-text-muted border-border' : 'bg-background text-text-muted border-border'
-            }`}>
-              {step > i ? <Check className="w-4 h-4" /> : i}
-            </div>
-            {i < 2 && <div className={`w-8 md:w-16 h-[1px] ${step > i ? 'bg-accent' : 'bg-border'}`} />}
-          </div>
-        ))}
-      </div>
+
 
       {renderStep()}
 

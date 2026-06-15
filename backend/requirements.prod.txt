@@ -26,10 +26,10 @@ edge-tts
 qrcode
 pillow
 sentry-sdk[fastapi]
-stripe
-razorpay
-google-generativeai
-google-genai
+stripe==11.4.0
+razorpay==1.4.2
+google-generativeai==0.8.3
+google-genai==0.3.0
 protobuf
 json-repair
 pypdf

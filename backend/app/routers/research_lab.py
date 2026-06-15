@@ -50,6 +50,8 @@ async def run_research_analysis(decode_id: str, paper_url: str):
         if not pdf_bytes:
             raise Exception("Could not retrieve paper content from the provided URL.")
 
+        raise Exception("EulerFold Cloud AI is currently disabled per user request.")
+
         client = genai.Client(api_key=settings.GEMINI_API_KEY)
 
         # Dynamic Technical Module Prompt
@@ -142,6 +144,7 @@ async def run_research_analysis(decode_id: str, paper_url: str):
             "updated_at": datetime.now(timezone.utc).isoformat()
         }).eq("id", decode_id).execute()
 
+
 @router.post("/decodes/{decode_id}/chat")
 async def lab_chat(decode_id: str, payload: dict = Body(...), current_user: User = Depends(get_current_user)):
     # Pro check
@@ -190,6 +193,8 @@ async def lab_chat(decode_id: str, payload: dict = Body(...), current_user: User
     client = genai.Client(api_key=settings.GEMINI_API_KEY)
     
     try:
+        raise Exception("Cloud AI is disabled")
+        
         response = await client.aio.models.generate_content(
             model="gemini-2.5-flash",
             contents=prompt,

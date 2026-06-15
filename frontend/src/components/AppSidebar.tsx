@@ -59,49 +59,13 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
             const { data: { session } } = await supabase.auth.getSession();
             setUser(session?.user ?? null);
             
-            if (session) {
-                try {
-                    // Validate UUID before querying to prevent Postgres errors
-                    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(session.user.id);
-                    
-                    let profile = null;
-                    if (isUUID) {
-                        // Fetch profile for streak, coins, credits, and pro status
-                        const { data, error: profileErr } = await supabase
-                            .from('profiles')
-                            .select('current_streak,eulercoins,roadmap_credits,is_pro')
-                            .eq('supabase_uid', session.user.id)
-                            .maybeSingle();
-                        
-                        if (profileErr) {
-                            console.warn("Sidebar profile fetch error:", profileErr);
-                        }
-                        profile = data;
-                    } else {
-                        console.warn("Sidebar session user ID is not a valid UUID:", session.user.id);
-                    }
-                    
-                    // Fetch roadmaps for count
-                    let activeCount = 0;
-                    try {
-                        const roadmaps = await roadmapsAPI.getMyRoadmaps();
-                        activeCount = roadmaps.filter(r => r.status !== 'completed').length;
-                    } catch (err) {
-                        console.error("Sidebar roadmaps fetch failed:", err);
-                    }
-
-                    setStats({
-                        streak: profile?.current_streak || 0,
-                        coins: profile?.eulercoins || 0,
-                        roadmaps: activeCount,
-                        credits: profile?.roadmap_credits || 0,
-                        isPro: profile?.is_pro || false
-                    });
-                } catch (error) {
-                    console.error('Error loading sidebar stats:', error);
-                    setStats(prev => ({ ...prev, streak: 0, coins: 0 }));
-                }
-            }
+            setStats({
+                streak: 0,
+                coins: 0,
+                roadmaps: 0,
+                credits: 0,
+                isPro: false
+            });
         };
         loadData();
 
@@ -217,25 +181,6 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                             </nav>
                         </div>
 
-                        {/* Persistent Stats */}
-                        {user && (
-                            <div className="pt-3 border-t border-border dark:border-white/[0.05] space-y-0.5 px-0.5">
-                                {[
-                                    { label: 'Streak', val: `${stats.streak}d`, icon: Zap },
-                                    { label: 'EulerCoins', val: stats.coins, icon: Coins },
-                                    { label: 'Credits', val: stats.credits, icon: CreditCard },
-                                    { label: 'Roadmaps', val: stats.roadmaps, icon: TrendingUp }
-                                ].map((item) => (
-                                    <div key={item.label} className="flex items-center justify-between px-2.5 py-1 text-[12px] font-medium text-text-muted">
-                                        <div className="flex items-center gap-2">
-                                            <item.icon className="w-3.5 h-3.5 stroke-[1.5px]" />
-                                            <span>{item.label}</span>
-                                        </div>
-                                        <span className="font-bold text-text-heading inconsolata-ui">{item.val}</span>
-                                    </div>
-                                ))}
-                            </div>
-                        )}
 
                         {/* Progress Section */}
                         {children && (

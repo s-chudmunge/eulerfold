@@ -149,7 +149,12 @@ async def get_public_profile(username: str):
     roadmaps_data = []
     if contributing_ids:
         r_res = sb.table("roadmaps").select("id, title, created_at, updated_at, depth_score, roadmap_plan").in_("id", list(contributing_ids)).execute()
-        roadmaps_data = r_res.data
+        from app.routers.roadmaps import _enrich_roadmap_progress
+        roadmaps_data = await _enrich_roadmap_progress(r_res.data, user_email, uid, sb)
+        # Update depth_score to equal the calculated percentage so the UI shows it correctly
+        for r in roadmaps_data:
+            if "calculated_progress" in r:
+                r["depth_score"] = r["calculated_progress"].get("percent", 0)
 
     # 4. Fetch Proof of Work (Verified only) - Include Solid and Developing
     subs_data = []

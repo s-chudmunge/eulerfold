@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { logAIUsage } from '@/lib/usageTracker';
-import { Loader, X, Trophy, Check, ArrowRight, Zap, Cloud, Key, Cpu } from 'lucide-react';
+import { Loader, X, Trophy, Check, ArrowRight, ArrowLeft, Zap, Cloud, Key, Cpu } from 'lucide-react';
 import { practiceAPI, MCQSessionRead, MCQQuestion } from '@/lib/api';
 import Link from 'next/link';
 import EulerLogoCanvas from '@/components/EulerLogoCanvas';
@@ -201,18 +201,26 @@ Return ONLY a JSON array of objects. Each object must have:
                     try {
                         const response = await engine.chat.completions.create({
                             messages: [
-                                { role: "system", content: systemPrompt }
-                            ],
+                                { role: "user", content: systemPrompt }
+                            ]
                         });
                         
                         generatedText = response.choices[0].message.content || '';
                         responseUsage = response.usage || null;
-                        const cleanedText = generatedText.replace(/```json/g, '').replace(/```/g, '').trim();
+                        
+                        let cleanedText = generatedText.replace(/```json/gi, '').replace(/```/g, '').trim();
+                        const startIdx = cleanedText.indexOf('[');
+                        const endIdx = cleanedText.lastIndexOf(']');
+                        if (startIdx !== -1 && endIdx !== -1) {
+                            cleanedText = cleanedText.substring(startIdx, endIdx + 1);
+                        }
+                        
                         parsedJSON = JSON.parse(cleanedText);
                         if (parsedJSON.questions) parsedJSON = parsedJSON.questions; // Handle nested json
                         parseSuccess = true;
                         break;
                     } catch (err: any) {
+                        console.error("Local AI JSON parse attempt failed", err, generatedText);
                         if (attempt === 2) throw new Error("Local AI failed to generate valid JSON after 2 attempts. Try a different model or use EulerFold AI.");
                     }
                 }
@@ -265,7 +273,13 @@ Return ONLY a JSON array of objects. Each object must have:
     };
 
     const handleSubmit = async () => {
-        if (!mcqSession || mcqAnswers.length !== mcqSession.questions.length) return;
+        const validAnswers = mcqAnswers.filter(a => a !== undefined && a !== null);
+        if (!mcqSession || validAnswers.length !== mcqSession.questions.length) return;
+        
+        if (!confirm('Are you sure you want to submit your answers for grading?')) {
+            return;
+        }
+
         setIsSubmitting(true);
         try {
             const result = await practiceAPI.submitMCQSession(mcqSession.id, mcqAnswers);
@@ -279,8 +293,9 @@ Return ONLY a JSON array of objects. Each object must have:
             }
             
             await onRefreshProfile();
-        } catch (err) {
+        } catch (err: any) {
             console.error('Error submitting MCQ:', err);
+            alert(err.response?.data?.detail || err.message || 'Failed to submit MCQ. Please try again.');
         } finally {
             setIsSubmitting(false);
         }
@@ -297,7 +312,7 @@ Return ONLY a JSON array of objects. Each object must have:
         <div className="flex flex-col p-5 border border-[var(--accent)] rounded-lg bg-accent-muted/5 shadow-sm h-full relative group">
             <div className="mb-4">
                 <div className="flex items-center justify-between mb-2">
-                    <span className="appropriate-sans text-[8px] font-bold text-accent uppercase tracking-[0.2em]">AI Generation</span>
+                    <span className="appropriate-sans text-[8px] font-bold text-accent uppercase tracking-[0.2em]">Targeted Practice</span>
                     {isPro && (
                         <div className="flex items-center gap-1 opacity-60">
                             <span className="text-[10px]">💎</span>
@@ -445,22 +460,35 @@ Return ONLY a JSON array of objects. Each object must have:
                         {mcqHistory.length > 0 && (
                             <div className="mt-4 pt-4 border-t border-border">
                                 <h4 className="appropriate-sans text-[8px] font-bold text-text-muted uppercase tracking-[0.2em] mb-2">History</h4>
-                                <div className="space-y-1 max-h-[100px] overflow-y-auto no-scrollbar">
+                                <div className="space-y-2 max-h-[150px] overflow-y-auto no-scrollbar">
                                     {mcqHistory.map((session, idx) => (
-                                        <div key={session.id} className="flex items-center justify-between p-1.5 bg-sidebar/30 border border-border/50 text-[9px]">
-                                            <div className="flex items-center gap-2">
-                                                <span className="text-text-muted">{new Date(session.created_at).toLocaleDateString()}</span>
-                                                <span className="appropriate-sans font-bold text-text-heading">{session.questions.length} Qs</span>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-12 h-1 bg-border rounded-full overflow-hidden">
-                                                    <div 
-                                                        className="h-full bg-accent" 
-                                                        style={{ width: `${(session.score || 0) * 100}%` }}
-                                                    />
+                                        <div key={session.id} className="flex flex-col gap-2 p-2 rounded-lg bg-sidebar/30 border border-border/50 text-[9px]">
+                                            <div className="flex items-center justify-between">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="text-text-muted">{new Date(session.created_at).toLocaleDateString()}</span>
+                                                    <span className="appropriate-sans font-bold text-text-heading">{session.questions.length} Qs</span>
                                                 </div>
-                                                <span className="appropriate-sans font-bold text-accent">{Math.round((session.score || 0) * 100)}%</span>
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-12 h-1 bg-border rounded-full overflow-hidden">
+                                                        <div 
+                                                            className="h-full bg-accent" 
+                                                            style={{ width: `${(session.score || 0) * 100}%` }}
+                                                        />
+                                                    </div>
+                                                    <span className="appropriate-sans font-bold text-accent">{Math.round((session.score || 0) * 100)}%</span>
+                                                </div>
                                             </div>
+                                            <button
+                                                onClick={() => {
+                                                    setMcqSession(session);
+                                                    setCurrentMcqIdx(0);
+                                                    setMcqAnswers([]);
+                                                    setShowResults(false);
+                                                }}
+                                                className="w-full py-1.5 bg-background hover:bg-callout-bg text-accent border border-accent/20 rounded-md appropriate-sans text-[8px] font-bold uppercase tracking-widest transition-all text-center flex justify-center items-center gap-1"
+                                            >
+                                                <Zap className="w-2.5 h-2.5" /> Attempt Again
+                                            </button>
                                         </div>
                                     ))}
                                 </div>
@@ -587,24 +615,41 @@ Return ONLY a JSON array of objects. Each object must have:
                                 <span>Euler<span className="text-accent">Fold</span></span>
                             </div>
                             
-                            {currentMcqIdx === mcqSession.questions.length - 1 && mcqAnswers[currentMcqIdx] !== undefined ? (
-                                <button
-                                    onClick={handleSubmit}
-                                    disabled={isSubmitting}
-                                    className="px-10 py-3 bg-text-heading text-background rounded-lg appropriate-sans text-[11px] font-bold uppercase tracking-widest hover:opacity-90 shadow-xl transition-all"
-                                >
-                                    {isSubmitting ? 'Finalizing...' : 'Submit Session 🏁'}
-                                </button>
-                            ) : mcqAnswers[currentMcqIdx] !== undefined ? (
-                                <button
-                                    onClick={() => setCurrentMcqIdx(prev => prev + 1)}
-                                    className="px-10 py-3 bg-text-heading text-background rounded-lg appropriate-sans text-[11px] font-bold uppercase tracking-widest hover:opacity-90 shadow-xl transition-all flex items-center gap-2"
-                                >
-                                    Next Question <ArrowRight className="w-3.5 h-3.5" />
-                                </button>
-                            ) : (
-                                null
-                            )}
+                            <div className="flex items-center gap-2.5">
+                                {currentMcqIdx > 0 && (
+                                    <button
+                                        onClick={() => setCurrentMcqIdx(prev => prev - 1)}
+                                        className="px-4 py-2 border border-border text-text-muted hover:text-text-heading hover:bg-sidebar rounded-md appropriate-sans text-[10px] font-bold uppercase tracking-widest transition-all flex items-center gap-1.5"
+                                    >
+                                        <ArrowLeft className="w-3 h-3" /> Previous
+                                    </button>
+                                )}
+
+                                {currentMcqIdx === mcqSession.questions.length - 1 ? (
+                                    <button
+                                        onClick={async () => {
+                                            try {
+                                                await handleSubmit();
+                                            } catch (error) {
+                                                alert(`Error submitting session: ${error.message || 'Unknown error'}`);
+                                            }
+                                        }}
+                                        disabled={mcqAnswers.filter(a => a !== undefined && a !== null).length !== mcqSession.questions.length || isSubmitting}
+                                        className="px-6 py-2 bg-text-heading text-background rounded-md appropriate-sans text-[10px] font-bold uppercase tracking-widest hover:opacity-90 shadow-md transition-all"
+                                    >
+                                        {isSubmitting ? 'Finalizing...' : 'Submit Session 🏁'}
+                                    </button>
+                                ) : mcqAnswers[currentMcqIdx] !== undefined ? (
+                                    <button
+                                        onClick={() => setCurrentMcqIdx(prev => prev + 1)}
+                                        className="px-6 py-2 bg-text-heading text-background rounded-md appropriate-sans text-[10px] font-bold uppercase tracking-widest hover:opacity-90 shadow-md transition-all flex items-center gap-1.5"
+                                    >
+                                        Next Question <ArrowRight className="w-3 h-3" />
+                                    </button>
+                                ) : (
+                                    null
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -4,7 +4,7 @@ from typing import List, Dict, Any, Optional
 from datetime import datetime, timezone
 import asyncio
 
-from app.core.supabase_client import get_supabase_client
+from app.core.supabase_client import get_supabase_client, get_admin_supabase_client
 from app.utils.gemini_client import generate_text, clean_json_string, robust_json_loads
 from app.core.config import settings
 from app.utils.scoring import calculate_confidence_score_formula, get_letter_grade
@@ -49,10 +49,11 @@ async def extract_skills_from_roadmap(roadmap_id: int, user_id: str):
 USER'S EXISTING TECHNICAL INVENTORY:
 [{inventory_text}]
 
-MISSION:
-1. Map each topic below to exactly ONE canonical skill name (e.g., 'Python', 'FastAPI', 'React').
-2. **CRITICAL:** If a topic fits into a skill already in the user's inventory, you MUST use that EXACT name and category.
-3. Assign a 'depth' score (1.0 to 5.0) for each skill based on the topics in THIS roadmap.
+MISSIONS:
+1. Map each topic below to exactly ONE canonical skill name (e.g., 'Game Physics', 'Python', 'React').
+2. **IMPORTANT:** If a topic genuinely belongs to a skill already in the user's inventory, use that EXACT name and category.
+3. **CRITICAL:** DO NOT force a topic into an existing skill if the domain is fundamentally different. Create a NEW, highly accurate skill name instead.
+4. Assign a 'depth' score (1.0 to 5.0) for each skill based on the topics in THIS roadmap.
 
 DEPTH SCORING RULES:
 - 1.0 to 1.5: Fundamentals, syntax, basic concepts.
@@ -76,68 +77,79 @@ Topics:
     try:
         gen_raw = await generate_text(prompt, model=settings.GEMINI_MODEL, response_mime_type="application/json")
         data = robust_json_loads(gen_raw)
-        mappings = data.get("mappings", [])
-        depths = data.get("skill_depths", {})
-        
-        skill_topic_map = {}
-        skill_category_map = {}
-        for m in mappings:
-            s_name = m["canonical_skill"]
-            if s_name not in skill_topic_map: 
-                skill_topic_map[s_name] = []
-                skill_category_map[s_name] = m["category"]
-            skill_topic_map[s_name].append(m["topic_id"])
-            
-        for s_name, topic_ids in skill_topic_map.items():
-            cs_upsert = sb.table("canonical_skills").upsert({
-                "name": s_name, "category": skill_category_map[s_name]
-            }, on_conflict="name").execute()
-            
-            if cs_upsert.data:
-                cs_id = cs_upsert.data[0]["id"]
-                skill_depth = float(depths.get(s_name, roadmap.get("depth_score", 1.0)))
-                
-                us_res = sb.table("user_skills").select("*").eq("user_id", user_id).eq("canonical_skill_id", cs_id).execute()
-                
-                if us_res.data:
-                    us = us_res.data[0]
-                    r_ids = set(us.get("contributing_roadmap_ids", []))
-                    r_ids.add(roadmap_id)
-                    
-                    t_maps = us.get("topic_mappings", {}) or {}
-                    t_maps[str(roadmap_id)] = {
-                        "topics": topic_ids,
-                        "depth": skill_depth # Store depth at the mapping level
-                    }
-                    
-                    sb.table("user_skills").update({
-                        "contributing_roadmap_ids": list(r_ids),
-                        "topic_mappings": t_maps,
-                        "user_email": email,
-                        "last_updated": datetime.now(timezone.utc).isoformat()
-                    }).eq("id", us["id"]).execute()
-                else:
-                    score = calculate_confidence_score_formula(0, 0, 0, skill_depth, 0, 10.0)
-                    sb.table("user_skills").insert({
-                        "user_id": user_id,
-                        "user_email": email,
-                        "canonical_skill_id": cs_id,
-                        "contributing_roadmap_ids": [roadmap_id],
-                        "confidence_score": score,
-                        "tier": get_letter_grade(score),
-                        "pow_score": 0, "practice_score": 0,
-                        "topic_completion": 0, "depth_score": skill_depth / 5.0,
-                        "time_invested": 0,
-                        "topic_mappings": {str(roadmap_id): {"topics": topic_ids, "depth": skill_depth}}
-                    }).execute()
-                
-                await calculate_user_skill_score(user_id, cs_id)
-        
-        sb.table("roadmaps").update({"skills_extracted": True}).eq("id", roadmap_id).execute()
-                
+        await process_extracted_skills(roadmap_id, user_id, data)
     except Exception as e:
         logger.error(f"Extraction failed: {e}")
         sb.table("roadmaps").update({"skills_extracted": False, "skills_extraction_error": str(e)}).eq("id", roadmap_id).execute()
+
+async def process_extracted_skills(roadmap_id: int, user_id: str, data: dict):
+    sb = get_supabase_client()
+    
+    r_res = sb.table("roadmaps").select("*").eq("id", roadmap_id).execute()
+    if not r_res.data: return
+    roadmap = r_res.data[0]
+    email = roadmap.get("email")
+
+    mappings = data.get("mappings", [])
+    depths = data.get("skill_depths", {})
+    
+    skill_topic_map = {}
+    skill_category_map = {}
+    for m in mappings:
+        s_name = m["canonical_skill"]
+        if s_name not in skill_topic_map: 
+            skill_topic_map[s_name] = []
+            skill_category_map[s_name] = m["category"]
+        skill_topic_map[s_name].append(m["topic_id"])
+        
+    for s_name, topic_ids in skill_topic_map.items():
+        cs_upsert = sb.table("canonical_skills").upsert({
+            "name": s_name, "category": skill_category_map[s_name]
+        }, on_conflict="name").execute()
+        
+        if cs_upsert.data:
+            cs_id = cs_upsert.data[0]["id"]
+            skill_depth = float(depths.get(s_name, roadmap.get("depth_score", 1.0)))
+            
+            us_res = sb.table("user_skills").select("*").eq("user_id", user_id).eq("canonical_skill_id", cs_id).execute()
+            
+            if us_res.data:
+                us = us_res.data[0]
+                r_ids = set(us.get("contributing_roadmap_ids", []))
+                r_ids.add(roadmap_id)
+                
+                t_maps = us.get("topic_mappings", {}) or {}
+                t_maps[str(roadmap_id)] = {
+                    "topics": topic_ids,
+                    "depth": skill_depth
+                }
+                
+                sb.table("user_skills").update({
+                    "contributing_roadmap_ids": list(r_ids),
+                    "topic_mappings": t_maps,
+                    "user_email": email,
+                    "last_updated": datetime.now(timezone.utc).isoformat()
+                }).eq("id", us["id"]).execute()
+            else:
+                score = calculate_confidence_score_formula(0, 0, 0, skill_depth, 0, 10.0)
+                sb.table("user_skills").insert({
+                    "user_id": user_id,
+                    "user_email": email,
+                    "canonical_skill_id": cs_id,
+                    "contributing_roadmap_ids": [roadmap_id],
+                    "confidence_score": score,
+                    "tier": get_letter_grade(score),
+                    "pow_score": 0, "practice_score": 0,
+                    "topic_completion": 0, "depth_score": skill_depth / 5.0,
+                    "time_invested": 0,
+                    "topic_mappings": {str(roadmap_id): {"topics": topic_ids, "depth": skill_depth}}
+                }).execute()
+            
+            await calculate_user_skill_score(user_id, cs_id)
+    
+    admin_sb = get_admin_supabase_client()
+    admin_sb.table("roadmaps").update({"skills_extracted": True, "skills_extraction_error": None}).eq("id", roadmap_id).execute()
+
 
 async def calculate_user_skill_score(user_id: str, canonical_skill_id: str):
     sb = get_supabase_client()
@@ -257,9 +269,16 @@ async def calculate_user_skill_score(user_id: str, canonical_skill_id: str):
     final_topics = (total_topic_comp_sum / total_weight) if total_weight > 0 else 0.0
     final_depth = max_depth # peak mastery
     
+    old_score = us.get("confidence_score", 0.0)
     score = calculate_confidence_score_formula(
         final_pow, final_practice, final_topics, final_depth, total_time, 10.0
     )
+    
+    cs_res = sb.table("canonical_skills").select("name").eq("id", canonical_skill_id).execute()
+    skill_name = cs_res.data[0]["name"] if cs_res.data else canonical_skill_id
+    
+    if abs(old_score - score) > 0.01:
+        logger.info(f"Skill Updated: {skill_name} | Old Score: {old_score:.1f} -> New Score: {score:.1f}")
     
     sb.table("user_skills").update({
         "confidence_score": score,

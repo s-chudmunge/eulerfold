@@ -4,7 +4,7 @@ import LearnClient from './LearnClient';
 import { supabase } from '@/lib/supabase/client';
 import { redirect, notFound } from 'next/navigation';
 
-export const revalidate = 3600;
+export const dynamic = 'force-dynamic';
 
 async function getRoadmapBySlugOrId(identifier: string) {
     try {

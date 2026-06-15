@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from app.schemas import UserUpdate, User, OnboardingStatusResponse
 from app.core.auth import get_current_user
 from app.core.supabase_client import get_supabase_client
@@ -199,44 +199,69 @@ async def accept_tos(
 
 
 @router.get("/me", response_model=User)
-async def read_users_me(current_user: User = Depends(get_current_user)):
+async def read_users_me(background_tasks: BackgroundTasks, current_user: User = Depends(get_current_user)):
     # Ensure streak is accurate
     if current_user and current_user.email:
         email = current_user.email.lower()
-        await refresh_streak(email)
+        uid = current_user.supabase_uid
         
         supabase = get_supabase_client()
-        # Fetch profile
-        res = supabase.table("profiles").select("*").eq("supabase_uid", current_user.supabase_uid).execute()
         
-        if not res.data:
+        import asyncio
+        
+        def fetch_profile():
+            return supabase.table("profiles").select("*").eq("supabase_uid", uid).execute()
+            
+        def fetch_github():
+            try:
+                from app.core.supabase_client import get_admin_supabase_client
+                admin_sb = get_admin_supabase_client()
+                return admin_sb.auth.admin.get_user_by_id(uid)
+            except Exception as e:
+                logger.error(f"Failed to fetch GitHub identity: {e}")
+                return None
+                
+        def fetch_skills():
+            return supabase.table("user_skills").select("*, canonical_skills(name, category)").eq("user_id", uid).execute()
+            
+        def fetch_reviews():
+            return supabase.table("submissions").select("id", count="exact").eq("user_email", email).eq("is_senate_eval", True).execute()
+
+        # refresh_streak is async
+        results = await asyncio.gather(
+            refresh_streak(email),
+            asyncio.to_thread(fetch_profile),
+            asyncio.to_thread(fetch_github),
+            asyncio.to_thread(fetch_skills),
+            asyncio.to_thread(fetch_reviews),
+            return_exceptions=True
+        )
+        
+        res = results[1]
+        
+        if isinstance(res, Exception) or not getattr(res, "data", None):
             # RACE CONDITION: Profile might not be created by trigger yet.
-            # Return the current_user (from JWT) which is enough for onboarding to start.
-            logger.warning(f"Profile not found for {current_user.email} (UID: {current_user.supabase_uid}). Returning transient user.")
+            logger.warning(f"Profile not found for {current_user.email} (UID: {uid}). Returning transient user.")
             return current_user
 
         user_data = res.data[0]
 
         # Sync GitHub username if linked but not in profile
-        try:
-            from app.core.supabase_client import get_admin_supabase_client
-            admin_sb = get_admin_supabase_client()
-            auth_user_res = admin_sb.auth.admin.get_user_by_id(current_user.supabase_uid)
-            if auth_user_res and auth_user_res.user:
-                github_identity = next((id for id in (auth_user_res.user.identities or []) if id.provider == "github"), None)
-                if github_identity:
-                    github_username = github_identity.identity_data.get("user_name")
-                    if github_username and github_username != user_data.get("github_username"):
-                        supabase.table("profiles").update({"github_username": github_username}).eq("supabase_uid", current_user.supabase_uid).execute()
-                        user_data["github_username"] = github_username
-        except Exception as e:
-            logger.error(f"Failed to sync GitHub identity for {current_user.email}: {e}")
+        auth_user_res = results[2]
+        if not isinstance(auth_user_res, Exception) and auth_user_res and getattr(auth_user_res, "user", None):
+            github_identity = next((id for id in (auth_user_res.user.identities or []) if id.provider == "github"), None)
+            if github_identity:
+                github_username = github_identity.identity_data.get("user_name")
+                if github_username and github_username != user_data.get("github_username"):
+                    background_tasks.add_task(
+                        lambda: supabase.table("profiles").update({"github_username": github_username}).eq("supabase_uid", uid).execute()
+                    )
+                    user_data["github_username"] = github_username
         
-        # Fetch user skills
-        uid = user_data.get("supabase_uid")
+        # Parse skills
+        skills_res = results[3]
         skills = []
-        if uid:
-            skills_res = supabase.table("user_skills").select("*, canonical_skills(name, category)").eq("user_id", uid).execute()
+        if not isinstance(skills_res, Exception) and getattr(skills_res, "data", None):
             for us in skills_res.data:
                 cs = us.get("canonical_skills", {}) or {}
                 skills.append({
@@ -244,12 +269,14 @@ async def read_users_me(current_user: User = Depends(get_current_user)):
                     "name": cs.get("name"),
                     "category": cs.get("category")
                 })
-        
         user_data["skills"] = skills
 
-        # Fetch Homework Review count for this user
-        review_res = supabase.table("submissions").select("id", count="exact").eq("user_email", email).eq("is_senate_eval", True).execute()
-        user_data["review_count"] = review_res.count or 0
+        # Parse reviews
+        review_res = results[4]
+        if not isinstance(review_res, Exception):
+            user_data["review_count"] = getattr(review_res, "count", 0) or 0
+        else:
+            user_data["review_count"] = 0
 
         return user_data
     return current_user

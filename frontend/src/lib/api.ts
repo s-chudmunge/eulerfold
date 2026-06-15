@@ -133,6 +133,10 @@ export const roadmapsAPI = {
     generateFromJD: async (payload: { job_description: string, current_experience: string, generation_type: 'incremental' | 'full', time_value: number, time_unit: string }): Promise<RoadmapRead> => {
         const response = await api.post('/roadmaps/generate-from-jd', payload);
         return response.data;
+    },
+    syncRoadmapSkills: async (roadmapId: number, data: any): Promise<any> => {
+        const response = await api.post(`/roadmaps/${roadmapId}/skills/sync`, data);
+        return response.data;
     }
 };
 
@@ -306,6 +310,7 @@ export interface RoadmapData {
     title: string;
     description: string;
     roadmap_plan: any; // Can be detailed RoadmapItem[] or raw JSON
+    email?: string;
     subject?: string;
     goal?: string;
     time_value?: number;
@@ -314,6 +319,7 @@ export interface RoadmapData {
     last_position?: { mIdx: number; tIdx: number };
     is_public?: boolean;
     show_author?: boolean;
+    skills_extracted?: boolean;
     updated_at: string;
     clone_count?: number;
     average_rating?: number;
@@ -329,10 +335,10 @@ export interface RoadmapMe extends RoadmapData {
         percent: number;
         completed_topics: number;
         total_topics: number;
-        completed_submissions: number;
-        total_submissions: number;
-        completed_resources: number;
-        total_resources: number;
+        completed_submissions?: number;
+        total_submissions?: number;
+        completed_resources?: number;
+        total_resources?: number;
         bottleneck_module?: number;
     };
     status?: 'active' | 'completed' | 'action_required' | 'archived' | 'quit' | 'needs_improvement' | 'resubmit_required';
@@ -904,6 +910,18 @@ export const plannerAPI = {
     },
     generatePlan: async (data: { roadmap_ids: number[], start_date: string, target_date: string, intensity: string }): Promise<any> => {
         const response = await api.post('/planner/generate', data);
+        return response.data;
+    }
+};
+
+export const dashboardAPI = {
+    getOverview: async (): Promise<{
+        profile: any,
+        roadmaps: any[],
+        coins: { balance: number, transactions: any[] },
+        sessions: { total: { total_seconds: number, active_days: number }, weekly: any[] }
+    }> => {
+        const response = await api.get('/dashboard/overview');
         return response.data;
     }
 };

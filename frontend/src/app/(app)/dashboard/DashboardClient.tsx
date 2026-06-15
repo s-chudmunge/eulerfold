@@ -36,16 +36,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import { useAuth } from '@/components/AuthProvider';
-import { coinsAPI, EulerCoinBalance, authAPI, roadmapsAPI, RoadmapMe, sessionsAPI, profileAPI } from '@/lib/api';
+import { coinsAPI, EulerCoinBalance, authAPI, roadmapsAPI, RoadmapMe, sessionsAPI, profileAPI, dashboardAPI } from '@/lib/api';
 import IntensityHeatmap from '@/components/dashboard/IntensityHeatmap';
 import { format } from 'date-fns';
 import AppSidebar from '@/components/AppSidebar';
 import OnboardingFlow from '@/components/onboarding/OnboardingFlow';
 
-// Dynamic imports for Recharts-heavy components
-const ActivityChart = dynamic(() => import('@/components/dashboard/ActivityChart'), { ssr: false });
-const TechnicalSignature = dynamic(() => import('@/components/dashboard/TechnicalSignature'), { ssr: false });
-const MilestoneLedger = dynamic(() => import('@/components/dashboard/MilestoneLedger'), { ssr: false });
+
 
 const inconsolata = Inconsolata({
   subsets: ['latin'],
@@ -90,11 +87,7 @@ export default function DashboardPage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [profile, setProfile] = useState<any>(null);
-    const [allSubmissions, setAllSubmissions] = useState<any[]>([]);
-    const [coinData, setCoinData] = useState<EulerCoinBalance | null>(null);
-    const [totalSeconds, setTotalSeconds] = useState(0);
-    const [activeDays, setActiveDays] = useState(0);
-    const [weeklyStats, setWeeklyStats] = useState<any[]>([]);
+
     const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
     const [deleting, setDeleting] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -113,13 +106,7 @@ export default function DashboardPage() {
         
         async function loadData() {
             if (!authUser) return;
-
             try {
-                // Get token for background API calls
-                const { data: { session } } = await supabase.auth.getSession();
-                const token = session?.access_token;
-
-                // 1. Basic Profile - use maybeSingle() to avoid 406 error if profile is missing
                 if (!authUser.supabase_uid) {
                     throw new Error("No Supabase UID found for user");
                 }
@@ -134,69 +121,18 @@ export default function DashboardPage() {
                     console.error("Profile fetch error:", profileError);
                 }
 
-                let activeProfile = userProfile;
-
-                if (!userProfile) {
-                    // Fallback: Try backend /auth/me which creates transient profile if missing
-                    try {
-                        const me = await authAPI.getMe();
-                        if (isMounted) {
-                            setProfile(me);
-                            activeProfile = me as any;
-                            if (!me.username || me.username.startsWith('user_') || !me.onboarding_completed) {
-                                setShowOnboarding(true);
-                            }
-                        }
-                    } catch (authMeErr) {
-                        console.error("Backend auth/me failed:", authMeErr);
-                        if (isMounted) setError("Profile not found. Please try logging out and in again.");
-                    }
-                } else {
-                    if (isMounted) {
-                        setProfile(userProfile);
-                        if (!userProfile.username || userProfile.username.startsWith('user_') || !userProfile.onboarding_completed) {
-                            setShowOnboarding(true);
-                        }
+                if (isMounted) {
+                    setProfile(userProfile);
+                    if (!userProfile || !userProfile.username || userProfile.username.startsWith('user_') || !userProfile.onboarding_completed) {
+                        setShowOnboarding(true);
                     }
                 }
 
                 if (!isMounted) return;
 
-                // 2. Full Technical Identity (Skills, Submissions, etc.)
-                if (activeProfile?.username) {
-                    try {
-                        const fullProfile = await profileAPI.getPublicProfile(activeProfile.username);
-                        if (isMounted && fullProfile) {
-                            // Merge data to preserve is_pro and credits if they exist in state
-                            setProfile((prev: any) => ({ ...prev, ...fullProfile }));
-                            if (fullProfile.submissions) {
-                                setAllSubmissions(fullProfile.submissions);
-                            }
-                        }
-                    } catch (err) {
-                        console.error("❌ Failed to load technical identity:", err);
-                    }
-                }
-
-                if (token && activeProfile) {
-                    coinsAPI.getBalance(token).then(data => {
-                        if (isMounted) setCoinData(data);
-                    }).catch(console.error);
-                }
-                
                 const myRoadmaps = await roadmapsAPI.getMyRoadmaps();
                 if (isMounted) setRoadmaps(myRoadmaps);
 
-                sessionsAPI.getTotalTime().then(data => {
-                    if (isMounted) {
-                        setTotalSeconds(data.total_seconds);
-                        setActiveDays(data.active_days);
-                    }
-                }).catch(console.error);
-
-                sessionsAPI.getWeeklyStats().then(data => {
-                    if (isMounted) setWeeklyStats(data);
-                }).catch(console.error);
             } catch (err: any) {
                 if (isMounted) setError(err.message);
             } finally {
@@ -229,10 +165,6 @@ export default function DashboardPage() {
         }
     };
 
-    const totalTimeInvested = totalSeconds / 3600;
-
-    // Filter verified skills for Technical Signature - Reactive
-    const verifiedSkills = React.useMemo(() => profile?.skills || [], [profile]);
 
     if (authLoading || (loading && !profile)) return (
         <div className="fixed inset-0 bg-background flex flex-col">
@@ -339,19 +271,6 @@ export default function DashboardPage() {
                             </div>
                         )}
 
-                        {/* Activity Section */}
-                        <section className="mb-12">
-                            <div className="flex items-center gap-4 mb-6">
-                                <h2 className="inconsolata-ui text-[0.7rem] font-[var(--font-weight-bold)] text-text-muted  tracking-wide">Activity</h2>
-                                <div className="h-[1px] flex-1 bg-[var(--border)]"></div>
-                            </div>
-                            <div className="bg-header border border-border rounded-xl p-6 shadow-sm hover:shadow-md hover:border-accent/30 transition-all duration-500 relative group overflow-hidden">
-                                <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-accent/5 rounded-full blur-[60px] group-hover:bg-accent/10 transition-colors duration-500 pointer-events-none" />
-                                <div className="relative z-10">
-                                    <ActivityChart roadmaps={roadmaps} profile={profile} />
-                                </div>
-                            </div>
-                        </section>
 
                         {/* Objectives Section */}
                         <section className="mb-12">
@@ -361,7 +280,13 @@ export default function DashboardPage() {
                             </div>
                             
                             <div className="border-t border-border divide-y divide-[var(--border)]">
-                                {roadmaps.length > 0 ? (
+                                {loading ? (
+                                    <div className="flex flex-col gap-2 py-4">
+                                        {[1, 2, 3].map((i) => (
+                                            <div key={i} className="h-[44px] w-full bg-callout-bg border border-border rounded-lg animate-pulse" />
+                                        ))}
+                                    </div>
+                                ) : roadmaps.length > 0 ? (
                                     roadmaps.map((r) => (
                                         <div key={r.id} className={`group flex flex-col md:flex-row md:items-center gap-4 py-2 hover:bg-sidebar/50 dark:hover:bg-background/[0.01] transition-colors ${r.status === 'archived' || r.status === 'quit' ? 'opacity-60' : ''}`}>
                                             {/* Title & Info */}
@@ -458,34 +383,6 @@ export default function DashboardPage() {
                             </div>
                         </section>
 
-                        {/* Analytics Section */}
-                        <section className="mb-20">
-                            <div className="flex items-center gap-4 mb-6">
-                                <h2 className="inconsolata-ui text-[0.7rem] font-[var(--font-weight-bold)] text-text-muted  tracking-wide">Analytics</h2>
-                                <div className="h-[1px] flex-1 bg-[var(--border)]"></div>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                <div className="bg-header border border-border rounded-xl p-6 shadow-sm hover:shadow-md hover:border-accent/30 transition-all duration-500 relative group overflow-hidden">
-                                    <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-teal-500/5 rounded-full blur-3xl group-hover:bg-teal-500/10 transition-colors duration-500 pointer-events-none" />
-                                    <div className="relative z-10 h-full">
-                                        <TechnicalSignature skills={verifiedSkills} />
-                                    </div>
-                                </div>
-                                <div className="bg-header border border-border rounded-xl p-6 shadow-sm hover:shadow-md hover:border-accent/30 transition-all duration-500 relative group overflow-hidden">
-                                    <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl group-hover:bg-blue-500/10 transition-colors duration-500 pointer-events-none" />
-                                    <div className="relative z-10 h-full">
-                                        <MilestoneLedger submissions={allSubmissions} />
-                                    </div>
-                                </div>
-                                <div className="bg-header border border-border rounded-xl p-6 shadow-sm hover:shadow-md hover:border-accent/30 transition-all duration-500 relative group overflow-hidden">
-                                    <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-indigo-500/5 rounded-full blur-3xl group-hover:bg-indigo-500/10 transition-colors duration-500 pointer-events-none" />
-                                    <div className="relative z-10 h-full">
-                                        <IntensityHeatmap weeklyData={weeklyStats} />
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
 
                     </div>
                 </main>

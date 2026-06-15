@@ -43,6 +43,8 @@ def get_gemini_client():
 
 async def generate_text(prompt: str, model: str = "models/gemini-2.5-flash", response_mime_type: str = None) -> str:
     """Generates text from Gemini using the modern google-genai SDK with native async."""
+    raise RuntimeError("EulerFold Cloud AI is currently disabled per user request. Please use Local AI or OpenRouter.")
+    
     # Strip 'models/' prefix if present for the new SDK's model string
     current_model = model.replace("models/", "") if model.startswith("models/") else model
     

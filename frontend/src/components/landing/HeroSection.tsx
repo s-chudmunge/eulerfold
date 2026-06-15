@@ -39,7 +39,7 @@ export default function HeroSection() {
               Escape the stale curriculum with <br className="hidden md:block" /><AnimatedEfficient /> learning paths
             </h1>
             <p className="text-text-muted text-base md:text-lg manrope-body font-medium mb-10 leading-relaxed max-w-2xl">
-              Education shouldn't lag years behind. EulerFold develops adaptive curriculum dynamically aligned with the latest technology and cutting-edge research.
+              Education shouldn't lag years behind. EulerFold builds personalized learning paths to help you easily master the newest skills and technology.
             </p>
 
             <div className="flex flex-col sm:flex-row flex-wrap items-center gap-4 mb-8">

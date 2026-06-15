@@ -178,7 +178,6 @@ export default function ResearchLabClient() {
                     });
                     const msg = await engine.chat.completions.create({
                         messages: [{role: "user", content: prompt + "\n\nTEXT:\n" + rawText}],
-                        response_format: { type: "json_object" },
                         max_tokens: 8000
                     });
                     jsonStr = msg.choices[0].message.content || "{}";

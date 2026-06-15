@@ -65,8 +65,8 @@ interface BannerProps {
 
 export const SideBanner = ({ buttonText, href, align, currentQuote, quoteIndex, isStatic = false, topClass = "top-16 md:top-24" }: BannerProps) => {
     const containerClasses = isStatic 
-        ? "flex flex-col w-full h-[350px] bg-background border border-border/10 rounded-lg shadow-sm overflow-hidden group transition-all duration-500 [mask-image:linear-gradient(to_bottom,transparent,black_5%,black_95%,transparent),linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] [-webkit-mask-composite:source-in] [mask-composite:intersect]"
-        : `flex flex-col w-[170px] h-[400px] bg-background border-none rounded-lg shadow-sm overflow-hidden group transition-all duration-500 [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent),linear-gradient(to_right,transparent,black_15%,black_85%,transparent)] [-webkit-mask-composite:source-in] [mask-composite:intersect]`;
+        ? "flex flex-col w-full h-[350px] bg-sidebar border border-border/10 rounded-lg shadow-sm overflow-hidden group transition-all duration-500 [mask-image:linear-gradient(to_bottom,transparent,black_5%,black_95%,transparent),linear-gradient(to_right,transparent,black_5%,black_95%,transparent)] [-webkit-mask-composite:source-in] [mask-composite:intersect]"
+        : `flex flex-col w-[170px] h-[400px] bg-sidebar border-none rounded-lg shadow-sm overflow-hidden group transition-all duration-500 [mask-image:linear-gradient(to_bottom,transparent,black_15%,black_85%,transparent),linear-gradient(to_right,transparent,black_15%,black_85%,transparent)] [-webkit-mask-composite:source-in] [mask-composite:intersect]`;
 
     return (
         <Link href={href} className={isStatic ? "block w-full" : `absolute ${topClass} hidden 2xl:block z-10 ${
@@ -79,9 +79,9 @@ export const SideBanner = ({ buttonText, href, align, currentQuote, quoteIndex, 
                 className={containerClasses}
             >
                 {/* Full Height Gradient Container */}
-                <div className="relative h-full w-full prism-striped-gradient flex flex-col items-center pt-16 pb-12 px-6">
-                    {/* Texture Layer */}
-                    <div className="prism-striped-gradient-noise" />
+                <div className="relative h-full w-full bg-gradient-to-b from-sidebar via-background to-sidebar flex flex-col items-center pt-16 pb-12 px-6">
+                    {/* Texture Layer - subtle stripes */}
+                    <div className="absolute inset-0 opacity-[0.02] bg-[linear-gradient(90deg,black_1px,transparent_1px)] bg-[size:10px_10px]" />
 
                     {/* Quote Area - Uniform serif font */}
                     <div className="flex-1 flex flex-col justify-center text-center relative w-full z-10">

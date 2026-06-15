@@ -30,12 +30,24 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
   useEffect(() => {
     let isInitialized = false;
 
+    // We use a ref to prevent duplicate fetches for the same session ID
+    let currentSessionId = '';
+
     const fetchUserProfile = async (session: any) => {
       if (!session?.user) {
         setUser(null);
         setLoading(false);
+        currentSessionId = '';
         return;
       }
+
+      // If we already fetched for this user's current session, skip
+      if (currentSessionId === session.user.id) {
+        setLoading(false);
+        return;
+      }
+
+      currentSessionId = session.user.id;
 
       try {
         const userData = await authAPI.getMe();
@@ -76,15 +88,20 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
         setUser(null);
         setShowTOS(false);
         setLoading(false);
+        currentSessionId = '';
         isInitialized = true;
       } else if (event === 'SIGNED_IN' && session) {
         setLoading(true);
         fetchUserProfile(session);
         isInitialized = true;
       } else if (event === 'TOKEN_REFRESHED' && session) {
-        // Background refresh only - do NOT set loading to true
+        // Only fetch if we somehow don't have the user yet
         fetchUserProfile(session);
         isInitialized = true;
+      } else if (event === 'USER_UPDATED' && session) {
+        // Force refetch on user update
+        currentSessionId = '';
+        fetchUserProfile(session);
       }
     });
 

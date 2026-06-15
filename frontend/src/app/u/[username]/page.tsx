@@ -27,7 +27,7 @@ async function getProfile(username: string) {
     
     try {
         const res = await fetch(`${API_URL}/profile/${username}`, { 
-            next: { revalidate: 3600 } // Cache for 1 hour
+            next: { revalidate: 0 } // Always fetch fresh data to sync skill updates
         });
         
         if (!res.ok) return null;

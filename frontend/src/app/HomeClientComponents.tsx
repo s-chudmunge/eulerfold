@@ -149,14 +149,9 @@ export function LandingOnboardingTrigger() {
   useEffect(() => {
     async function checkOnboarding() {
       if (!loading && user) {
-        try {
-          const me = await authAPI.getMe();
-          setProfile(me);
-          if (!me.username || me.username.startsWith('user_') || !me.onboarding_completed) {
-            setShowOnboarding(true);
-          }
-        } catch (err) {
-          console.error("Failed to check onboarding on landing:", err);
+        setProfile(user);
+        if (!user.username || user.username.startsWith('user_') || !user.onboarding_completed) {
+          setShowOnboarding(true);
         }
       }
     }

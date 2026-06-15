@@ -48,22 +48,25 @@ async function getFeaturedRoadmaps(): Promise<ExploreRoadmap[]> {
 }
 
 export const metadata: Metadata = {
-  title: 'EulerFold - Build and track your learning paths',
-  description: 'Create structured learning roadmaps, track your progress, and analyze your technical skills.',
-  keywords: 'learning roadmaps, skill tracking, AI learning paths, technical mastery, structured learning, EulerFold',
-  alternates: {
-    canonical: 'https://www.eulerfold.com',
-  },
+  title: 'EulerFold AI - Build and track your learning paths',
+  description: 'Design dynamic, AI-generated curriculum aligned with the latest technology. Master deep technical skills with interactive roadmaps, curated resources, and comprehensive progress tracking.',
   openGraph: {
-    title: 'EulerFold - Build and track your learning paths',
-    description: 'Create structured learning roadmaps, track your progress, and analyze your technical skills.',
-    url: 'https://www.eulerfold.com',
-    siteName: 'EulerFold',
     type: 'website',
+    locale: 'en_US',
+    url: 'https://www.eulerfold.com/',
+    title: 'EulerFold AI - Build and track your learning paths',
+    description: 'Design dynamic, AI-generated curriculum aligned with the latest technology. Master deep technical skills with interactive roadmaps, curated resources, and comprehensive progress tracking.',
+    siteName: 'EulerFold',
+    images: [{
+      url: '/og-image.png',
+      width: 1200,
+      height: 630,
+      alt: 'EulerFold - Intelligent Learning Paths',
+    }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'EulerFold - Build and track your learning paths',
+    title: 'EulerFold AI - Build and track your learning paths',
     description: 'Create structured learning roadmaps, track your progress, and analyze your technical skills.',
     creator: '@eulerfold',
   },
