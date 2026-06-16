@@ -11,13 +11,14 @@ class EnterpriseInterestRequest(BaseModel):
 
 @router.post("/enterprise-interest")
 async def submit_enterprise_interest(request: EnterpriseInterestRequest, background_tasks: BackgroundTasks):
+    requirements_formatted = request.requirements.replace('\n', '<br/>')
     html_content = f"""
     <h2>New Enterprise Interest Submission</h2>
     <p><strong>Email:</strong> {request.email}</p>
     <p><strong>Institution/Company:</strong> {request.institution}</p>
     <br/>
     <p><strong>Requirements/Interest:</strong></p>
-    <p>{request.requirements.replace('\n', '<br/>')}</p>
+    <p>{requirements_formatted}</p>
     """
     
     background_tasks.add_task(
