@@ -283,8 +283,8 @@ export default function ExploreClient({
                         <header className="mb-6">
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                                 <div>
-                                    <h1 className="inconsolata-ui text-3xl font-black text-text-heading tracking-tight mb-2">Explore Roadmaps</h1>
-                                    <p className="manrope-body text-[14px] text-text-muted font-medium">Discover and clone learning paths from the community.</p>
+                                    <h1 className="font-inter text-3xl sm:text-4xl font-semibold text-text-heading tracking-tight mb-2">Explore Roadmaps</h1>
+                                    <p className="text-text-muted text-base md:text-lg manrope-body font-medium leading-relaxed max-w-2xl">Discover and clone learning paths from the community.</p>
                                 </div>
                                 <button 
                                     onClick={() => setIsRoadmapModalOpen(true)}
