@@ -2,7 +2,7 @@
 title: "Why Latent Space is Not a Map: The Dangers of Linear Interpolation"
 slug: "latent-space"
 shortSlug: "latent-space"
-author: "Ananya Rao — Data Science Research Editor, MSc Data Analytics"
+author: "Sankalp — Engineering Lead"
 date: "April 27, 2026"
 subject: "AI & Data Science"
 heroImage: "https://images.openai.com/static-rsc-4/6dIU7Zw1Hri2tGQOKMlY8LxYBKOpesWnIY89Ezgl-MfMMeMAKmdKbQLIEFclwDp_2NB0KjhSmebzN__w2clSb1xqd9et8P6YbDjVqnl0S6MIFhITQ-kcLvRu3pk0EBBY9IRhBl8GmX6v_X4XMRPbDuYg4ynZVSQJPMPdRykdaMbx5wIKSdhYqd0HlVDJF4rc?purpose=fullsize"

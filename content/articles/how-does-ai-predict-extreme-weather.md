@@ -2,7 +2,7 @@
 title: "Why AI Weather Models Are More Accurate Than Supercomputers"
 slug: "how-does-ai-predict-extreme-weather"
 shortSlug: "weather-prediction"
-author: "Dr. Siddharth Iyer — Computational Research Scientist, PhD Applied Computing"
+author: "Sankalp — Engineering Lead"
 date: "May 5, 2026"
 subject: "Environment"
 heroImage: "https://images.openai.com/static-rsc-4/XxaXIv8wb1A1LDRRyUa8fbPrudHcBdx_StxAr74OeXRPaf-zKCKdxOHMuFX3NP_IgMVdEHsyUPBFvCxXHD4tgOX52-c0l_RHMyZtYSmsKK8SFxiYYt9FZ77Lw7CTzBLMRnm52PTl5DVaewVhf3-qkqpJBmvzxCg7MwfiqjRY20mmQzJMeXIsJ0HOucAbI49H?purpose=fullsize"

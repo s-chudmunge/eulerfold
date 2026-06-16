@@ -2,7 +2,6 @@
 
 import React from 'react';
 import PublicHeader from '@/components/PublicHeader';
-import Footer from '@/components/Footer';
 
 export default function TermsContent() {
   return (
@@ -153,17 +152,22 @@ export default function TermsContent() {
 
             <section>
               <h2 className="inconsolata-ui text-[20px] font-bold text-text-heading mb-4 uppercase tracking-tight flex items-center gap-3">
-                <span className="text-accent">10.</span> API Keys & Local AI
+                <span className="text-accent">10.</span> AI Integrations: OpenRouter BYOK & Local Models
               </h2>
               <div className="h-[1px] w-full bg-[var(--border)] mb-6"></div>
+              <p className="mb-4">We are committed to providing an open, secure, and flexible learning platform. To support this, we offer distinct AI interaction modes:</p>
               <ul className="space-y-4 list-none p-0">
                 <li className="flex gap-3">
                   <span className="text-accent font-bold">→</span>
-                  <span><strong>Bring Your Own Key (OpenRouter):</strong> Certain features, such as the Practice Lab, allow you to use your own OpenRouter API key. You are solely responsible for managing your API key, including any costs or usage limits incurred through your OpenRouter account. EulerFold does not store these keys on our backend servers; they are securely saved locally in your browser.</span>
+                  <span><strong>Bring Your Own Key (OpenRouter):</strong> You may opt to use your personal OpenRouter API key for certain features. You acknowledge that you are solely responsible for the security, management, and financial costs associated with your OpenRouter account. Because EulerFold routes these requests directly from your browser without intercepting them, we cannot limit your usage or protect against API overages caused by third-party billing policies. By using this feature, you also agree to the <a href="https://openrouter.ai/terms" target="_blank" rel="noopener noreferrer" className="text-accent underline">OpenRouter Terms of Service</a>.</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-accent font-bold">→</span>
-                  <span><strong>Local AI (WebGPU):</strong> EulerFold allows you to run AI models locally using your device's hardware via WebGPU. You acknowledge that running local models is resource-intensive. EulerFold is not responsible for any hardware degradation, battery drain, or system instability that may occur from utilizing local AI features.</span>
+                  <span><strong>Local AI (WebGPU):</strong> EulerFold provides the option to execute AI models directly on your device hardware via WebGPU. By using Local AI mode, you acknowledge that this process is highly resource-intensive. EulerFold is provided &quot;as is&quot; and we assume no liability for any hardware degradation, thermal throttling, battery drain, or system instability resulting from running local models.</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-accent font-bold">→</span>
+                  <span><strong>Honest Communication:</strong> We guarantee that if you are using Local AI or BYOK, your generations are not secretly routed through our servers. We prioritize your sovereignty over your compute and data.</span>
                 </li>
               </ul>
             </section>
@@ -180,8 +184,6 @@ export default function TermsContent() {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

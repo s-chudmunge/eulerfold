@@ -1,8 +1,8 @@
 ---
-title: "Rewriting Evolution with Jennifer Doudna’s Genetic Scalpel"
+title: "How is Jennifer Doudna Rewriting Evolution with CRISPR?"
 slug: "jennifer-doudna-crispr-logic"
 shortSlug: "doudna"
-author: "Dr. Kavya Nair — Bioinformatics Research Lead, PhD Computational Biology"
+author: "Sankalp — Engineering Lead"
 date: "May 9, 2026"
 subject: "Biology"
 heroImage: "https://images.openai.com/static-rsc-4/xeombDtaEN0ixCnK45t0ObIab0eDgP_J1Sslbc9JWV7fi1zoyGcaMVCyYB_EbbL2fQUeyLGDpGGPNIy8u1QYudgeqz5HXDg7XyzqBBqSZWxcakFcyrZF5qIyKbdPR4os5wlq4i4oHRJbUc48Pwjn5t5SRpZ4QEkEgAHqWJLsn0Cg2Cqakyns0K9zKzL9CDR5?purpose=fullsize"

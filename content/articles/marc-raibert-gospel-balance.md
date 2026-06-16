@@ -1,8 +1,8 @@
 ---
-title: "Marc Raibert and the dynamic stability of biological locomotion"
+title: "How Does Marc Raibert Build Robots with Dynamic Biological Stability?"
 slug: "marc-raibert-gospel-balance"
 shortSlug: "raibert"
-author: "Meera Venkatesh — Software Architecture Consultant, BEng Engineering"
+author: "Sankalp — Engineering Lead"
 date: "May 15, 2026"
 subject: "Computer Science"
 heroImage: "https://images.openai.com/static-rsc-4/YUlWuJV91BTvude_zEAROa1irVXx0SwPrC5KzbY-5JeRmdBnM9WezC-Jb8YtbfjEZeTfz2UwlT8WruUE0rARloKfqhtTaXj-4eg4tYPNcbS4krgEqsj_8qjJx8h4v7gTmQvzoM-5E62m5RhIKL4Zah3RXY1muWyw9u9WnLTf_Wr0tU1JLOXHxqgwv5nOC9XI?purpose=fullsize"

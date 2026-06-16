@@ -1,5 +1,5 @@
 ---
-title: "Why Strong Consistency is a Trap for Distributed State"
+title: "Why is Strong Consistency a Trap?"
 slug: "strong-consistency-trap"
 shortSlug: "consistency"
 author: "Sankalp — Engineering Lead"

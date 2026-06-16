@@ -1,8 +1,8 @@
 ---
-title: "How Jensen Huang turned NVIDIA into the engine room of AI"
+title: "How Did Jensen Huang Turn NVIDIA Into the Engine Room of AI?"
 slug: "jensen-huang-gpu-apocalypse"
 shortSlug: "jensen"
-author: "Meera Venkatesh — Software Architecture Consultant, BEng Engineering"
+author: "Sankalp — Engineering Lead"
 date: "May 15, 2026"
 subject: "Computer Science"
 heroImage: "https://images.openai.com/static-rsc-4/EMAueGP-X7Q5D4IlUfwD1j6HTHmLNGJFz6MhPveJa32iQo9lwUkq5eErEW26HJt7u7playJ41U-HNta5AUGrjBF-IplXrBjJq7U6TyO31-P5c0YrLiOJYx-OetPVYpNVj_-L8XUYlqAs1ZLWfH7R8rE9-zKXDntj5dM6l882hK7XKsQUG_BMxauLxTqSDa4e?purpose=fullsize"

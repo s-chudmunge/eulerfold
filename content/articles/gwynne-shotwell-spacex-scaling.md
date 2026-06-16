@@ -1,8 +1,8 @@
 ---
-title: "The Gravity of Math: Gwynne Shotwell’s Operational Grip on SpaceX"
+title: "How Does Gwynne Shotwell Maintain Operational Grip at SpaceX?"
 slug: "gwynne-shotwell-spacex-scaling"
 shortSlug: "shotwell"
-author: "Ananya Rao — Data Science Research Editor, MSc Data Analytics"
+author: "Sankalp — Engineering Lead"
 date: "May 9, 2026"
 subject: "Computer Science"
 heroImage: "https://images.openai.com/static-rsc-4/xYf29NWFCfApHKWAFjTSafnGIsQXjkcBSo8DNhtjVlK4OQf_ltI9Vi3Q_HZtoY9O8bV1R7nBnL9fWAmhYWO4c1Yufq7qhI6lsD8sRA-KICjwHTq79fleylubrGkmDFmsy-NfzGJ319HVc8zuXa_JkhXQdZvuX1E0weBkuNzwMiJkcYBlOPp1S1zRGuHyZrjr?purpose=fullsize"

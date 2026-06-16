@@ -1,11 +1,11 @@
 ---
-title: "The Confidence Crisis: Why Softmax is a Mathematical Illusion"
+title: "Why is Softmax a Mathematical Illusion?"
 slug: "softmax"
 shortSlug: "softmax"
-author: "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence"
+author: "Sankalp — Engineering Lead"
 date: "April 25, 2026"
 subject: "AI & Data Science"
-heroImage: "https://images.openai.com/static-rsc-4/PzXk2fasOiQGnry7yo4ifDHf5bQ7EtSh1fYf5SIho5FyOEKcdITDcVrjTAIS9rFsBqjWae_fYNFJJ08bsAZ47WgTcSVGuKhQSaWisY3KjU51sWOw8bvrrbvbqMMsjNdpEHKhTYPVXWcEFna-fFibtRXKUDRrjzSl75rj08_ncPFJqArYujO7ppSnno8oBbCI?purpose=fullsize"
+heroImage: "/images/articles/hero_softmax_abstract.jpg"
 excerpt: "Softmax is a physical compromise masquerading as a probability distribution. In production, its aggressive exponentiation creates a dangerous illusion of certainty that obscures the model's underlying noise."
 technicalInsight: "Modern deep networks are poorly calibrated; they frequently assign high Softmax probabilities to incorrect predictions. Reliability requires implementing Temperature Scaling or Label Smoothing to align mathematical confidence with actual accuracy."
 synonyms:

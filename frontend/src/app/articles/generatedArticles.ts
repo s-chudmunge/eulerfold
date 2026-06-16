@@ -18,10 +18,10 @@ export interface Article {
 
 export const articles: Record<string, Article> = {
   "andrej-karpathy-first-principles": {
-    "title": "Andrej Karpathy and the reduction of intelligence to First Principles",
+    "title": "How Does Andrej Karpathy Reduce Intelligence to First Principles?",
     "slug": "andrej-karpathy-first-principles",
     "shortSlug": "karpathy",
-    "author": "Meera Venkatesh — Software Architecture Consultant, BEng Engineering",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 9, 2026",
     "subject": "Computer Science",
     "heroImage": "https://images.openai.com/static-rsc-4/-RPOBN2st7oDhUso3OBVLJ-xH-M8WPuBE_lLVaxII2qvLCE7-4L9vrafniwK6wDeXNGzcAgNPY4IRvNvycmS1__RDMaGszpmqLg1s5LkhNMxFCr9FFjJsyRID5hVMLm_02UsUxPS03ytWmb3M_-ZScWepDHqWa1kYVozN4SE9zTOx0ciUWEYTqzJL_rS2N1v?purpose=fullsize",
@@ -38,10 +38,10 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "arthur-mensch-mistral-efficiency": {
-    "title": "Arthur Mensch and the Quest for Algorithmic Minimalism at Mistral",
+    "title": "Why is Arthur Mensch Pursuing Algorithmic Minimalism at Mistral?",
     "slug": "arthur-mensch-mistral-efficiency",
     "shortSlug": "mensch",
-    "author": "Meera Venkatesh — Software Architecture Consultant, BEng Engineering",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 9, 2026",
     "subject": "Computer Science",
     "heroImage": "https://images.openai.com/static-rsc-4/UXhH4nHlUaQEbKvYQi0Wwvjn5ihLcTKJbLEdFI_6e8iFqNKE3IfJckt-ZRx0tt6AOCsGwnpEJf0VAqQnK0H6k9DptfPcwtpaw_onbVAJn6xsy9fsZPuzVg1ZLl1xA-falM2adq5pasMrt3Z-CEc-7Tv4vu1bHMUQwgI18HHPDBV-qKE0DOAW7qu0ES5pG07Z?purpose=fullsize",
@@ -59,13 +59,13 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "backpropagation": {
-    "title": "Why AI Training is Throttled by the Chain Rule",
+    "title": "Why is AI Training Throttled by the Chain Rule?",
     "slug": "backpropagation",
     "shortSlug": "backpropagation",
-    "author": "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence",
+    "author": "Sankalp — Engineering Lead",
     "date": "April 16, 2026",
     "subject": "AI Infrastructure",
-    "heroImage": "https://images.openai.com/static-rsc-4/KspyUXXMEeH_EAGTotATSQK-IT3MUpM-QhnAuEBgzSrPM8xmJvB2njHVmX-egWesR_DlDcuXmu63oQ2s5ZlMhYdKMSBAL3O1p2GLNxQ2km6-PDaQCckhIlb_EQRg8ADZIJksR6CckGIC-JbT6kjh19ze64FnapJsdc7q-NuIUWdapkiDUGzBSBp9exoxD-U1?purpose=fullsize",
+    "heroImage": "/images/articles/hero_backprop_abstract.jpg",
     "excerpt": "Backpropagation forces global synchronization on hardware that wants to be local. The memory-bandwidth tax of the backward pass is the primary ceiling on AI scaling.",
     "technicalInsight": "The backward pass requires storing all intermediate activations from the forward pass, creating a global locking mechanism that throttles distributed GPU clusters.",
     "synonyms": [
@@ -79,10 +79,10 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "caitlin-kalinowski-hardware-future": {
-    "title": "Caitlin Kalinowski on the mechanical constraints of wearable hardware",
+    "title": "Why Does Wearable Hardware Face Mechanical Constraints?",
     "slug": "caitlin-kalinowski-hardware-future",
     "shortSlug": "kalinowski",
-    "author": "Ananya Rao — Data Science Research Editor, MSc Data Analytics",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 15, 2026",
     "subject": "Computer Science",
     "heroImage": "https://images.openai.com/static-rsc-4/tlmtZJohPNbZCpRThVuKHaZ7lqo2SlMcTbJjKkD5cNkpIlP_HqMIaPxYW30oDuDpdtj-ywujHpg5GTXJDG95yEkC83PKLWiIbha0WIASnBOCI3FA6STSn_X9YgpePN7C2AEG-_l1Oyzte4l4ax3AyglcS7n_dijy5PfaLEP5qfmnHgiey-ymKQC1GZV2bb5A?purpose=fullsize",
@@ -98,13 +98,13 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "computing-with-glass": {
-    "title": "Why Analog AI Chips Slowly Forget Their Own Weights",
+    "title": "Why Do Analog AI Chips Forget Their Weights?",
     "slug": "computing-with-glass",
     "shortSlug": "pcm-drift",
     "author": "Sankalp — Engineering Lead",
     "date": "May 31, 2026",
     "subject": "Computer Science",
-    "heroImage": "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2000&auto=format&fit=crop",
+    "heroImage": "/images/articles/hero_analog_chips.jpg",
     "excerpt": "The amorphous state of phase-change memory is a metastable liquid that settling into a lower-energy glass, creating a resistance drift that threatens analog AI precision.",
     "technicalInsight": "Resistance drift in PCM follows a power law R(t) ∝ t^ν, driven by the shedding of defect states in the mobility gap during structural relaxation.",
     "synonyms": [
@@ -118,13 +118,13 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "contrastive-learning": {
-    "title": "When AI is Penalized for Finding True Similarities",
+    "title": "Why is AI Penalized for Finding True Similarities?",
     "slug": "contrastive-learning",
     "shortSlug": "contrastive",
-    "author": "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence",
+    "author": "Sankalp — Engineering Lead",
     "date": "April 27, 2026",
     "subject": "AI & Data Science",
-    "heroImage": "https://images.openai.com/static-rsc-4/5X9RVv3vTY7UR-FZQ3GnPplU2aQmmIT2TgXD3wKcRymB-kO6KvP7Y0YvUvQy5FBYuiIgFTgMJgCjELo31k-s8DE4AHGMqQVZKTcDC-7-F3_9SvQcNHiSvmBgWTMmQYaMKwWRSTTiy45T2u6e9g2_ctkmOg_y8mLnljr7sGYiHnkCbWDAlRBISCq67mfGqyIm?purpose=fullsize",
+    "heroImage": "/images/articles/hero_contrastive_abstract.jpg",
     "excerpt": "Large batch sizes prevent latent space collapse but force models to penalize true semantic similarities as false negatives.",
     "technicalInsight": "SimCLR benchmarks rely on a batch size of 4096 to supply enough hard negatives, exponentially increasing the rate of un-learning valid semantic links.",
     "faq": [
@@ -148,10 +148,10 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "demis-hassabis-universal-learning": {
-    "title": "Demis Hassabis and the quest for a Universal Learning Machine",
+    "title": "How is Demis Hassabis Building a Universal Learning Machine?",
     "slug": "demis-hassabis-universal-learning",
     "shortSlug": "hassabis",
-    "author": "Meera Venkatesh — Software Architecture Consultant, BEng Engineering",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 15, 2026",
     "subject": "Computer Science",
     "heroImage": "https://images.openai.com/static-rsc-4/Z-Ku2p5IEiSQIIJdnQsDgmKE1m4x4sn8Tc10Tkn1EO5SzWVzzGYs3KTjN3DdiG8LUcEApBxv-cE_j2XQdxInqMNXHYDu6TFpYrCKbY7Fk6MLCCTzLWfMDwGoKIqtyIecR4cls7QUZOl3VF3-nKIbn4hXT1AlTpbY6j2Sthmum3UrkB8WhNcqlCy3I58alOeO?purpose=fullsize",
@@ -167,13 +167,13 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "double-descent": {
-    "title": "Why Perfectly Sized Models Fail in Production",
+    "title": "Why Do Perfectly Sized Models Fail in Production?",
     "slug": "double-descent",
     "shortSlug": "double-descent",
-    "author": "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence",
+    "author": "Sankalp — Engineering Lead",
     "date": "April 15, 2026",
     "subject": "AI & Data Science",
-    "heroImage": "https://images.openai.com/static-rsc-4/EWhEhVw8NFcxMv1Wxn3ZIl2Mv5btWpJPNjrlz3wNFXb6qJvQjQGpG9M-Qdz81rs64-m8VWbcLdYr_EKAQ92yR6qreNthsrUmX6LJfC3QZbQORJ6r0vNp_XyvbmXVogO9rXLRNTtw8g3AVS9e0Fpe8h1b38_62rdZejaJ4wBzQePmw9Zgqpn57dulEckDA5Vu?purpose=fullsize",
+    "heroImage": "/images/articles/hero_double_descent_abstract.jpg",
     "excerpt": "Standard model selection maximizes error at the interpolation threshold. Pushing into massive overparameterization allows SGD to find minimum-norm solutions.",
     "technicalInsight": "Belkin et al. (2019) demonstrated that the interpolation threshold forces maximum test error. A second descent occurs only when excess capacity alters the loss landscape.",
     "faq": [
@@ -193,13 +193,13 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "dram-refresh-leakage": {
-    "title": "DRAM Refresh Cycles and Charge Leakage",
+    "title": "Why Does DRAM Leak Charge?",
     "slug": "dram-refresh-leakage",
     "shortSlug": "dram-leakage",
     "author": "Sankalp — Engineering Lead",
     "date": "May 31, 2026",
     "subject": "Computer Science",
-    "heroImage": "https://images.unsplash.com/photo-1555664424-778a1e5e1b48?q=80&w=2000&auto=format&fit=crop",
+    "heroImage": "/images/articles/hero_dram_leakage.jpg",
     "excerpt": "DRAM cells are leaky capacitors that must be recharged every 64ms, a frantic maintenance cycle that consumes up to 50% of throughput in high-density nodes.",
     "technicalInsight": "RAIDR reduces refresh power by 16% by grouping rows into retention bins, exploiting the fact that 99% of cells retain charge for >256ms.",
     "synonyms": [
@@ -213,13 +213,13 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "embeddings": {
-    "title": "The Proximity Paradox: Why Vector Distance is a Poor Proxy for Meaning",
+    "title": "Why is Vector Distance a Poor Proxy for Meaning?",
     "slug": "embeddings",
     "shortSlug": "embeddings",
-    "author": "Ananya Rao — Data Science Research Editor, MSc Data Analytics",
+    "author": "Sankalp — Engineering Lead",
     "date": "April 17, 2026",
     "subject": "AI & Data Science",
-    "heroImage": "https://images.openai.com/static-rsc-4/TQKyfj5PHPYFXGED5mQMVxXwHLUXYEYqPHtq4_8nylmY5_jct7opoI4RqhZP9x4FrLGsFeRrpWckjYiNqDfryNRjCDqpLhj0JjoPxd-Cmt-P6wVXaqXdCQWd2nOWtexihQlEkVjmgC0ckaC1cLIzcSEzHdo5IOjkdZYYdQ2MP3RyfEUT6cdQk5PoxdYtGz-_?purpose=fullsize",
+    "heroImage": "/images/articles/hero_embeddings_abstract.jpg",
     "excerpt": "As dimensions scale into the thousands, the fundamental laws of geometry warp. Proximity in a high-dimensional embedding space is often a statistical mirage, not a guarantee of semantic relevance.",
     "technicalInsight": "The 'hubness' problem in high-dimensional spaces causes a small subset of generic vectors to emerge as universal nearest neighbors, severely degrading retrieval accuracy in RAG systems despite mathematically perfect cosine similarity.",
     "synonyms": [
@@ -236,7 +236,7 @@ export const articles: Record<string, Article> = {
     "title": "Why Handedness is a Life-or-Death Problem for AI",
     "slug": "equivariant-neural-networks",
     "shortSlug": "equivariant-nn",
-    "author": "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 7, 2026",
     "subject": "Computer Science",
     "heroImage": "https://images.openai.com/static-rsc-4/tLbvZO2qCw5oS1KLvbXvJVtxYDmOcNWymldQT5w-xB7laWbb53u9aFn_fLFGHWTTkTfNk7fePEZZ6vleUfTEPFyPs2Lmpbay7TySXQKNaFOZOZ8wgo1knhwjO6Cvw4rFclQv7KwPdvEERzOXf0kM9nvFkOx2TfR3lkCTQ7EZ3XDuQvfAXRPQPIsaIbGRIKfR?purpose=fullsize",
@@ -261,10 +261,10 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "fei-fei-li-north-star-vision": {
-    "title": "Fei-Fei Li and the data-driven revolution of visual intelligence",
+    "title": "How Did Fei-Fei Li Spark the Revolution in Visual Intelligence?",
     "slug": "fei-fei-li-north-star-vision",
     "shortSlug": "feifeili",
-    "author": "Meera Venkatesh — Software Architecture Consultant, BEng Engineering",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 15, 2026",
     "subject": "AI & Data Science",
     "heroImage": "https://images.openai.com/static-rsc-4/VFZuwhLsq4zxbV5KszM1d3vvsCdAglDIyjaohVpKV6nrnr12ER00h5IQyg5B-3g3dnHOQLYBSsdYwpzLEKnrs4WoXTKcq14591uatdyz7DOYIcCEWNSHmdu59Tc0otRiknPXUMfFSgNubYtNGpyGe3U2J-l7xlCIUZ4Dafo0NdhDUyVCd26-OyrF4HEX3lAa?purpose=fullsize",
@@ -283,7 +283,7 @@ export const articles: Record<string, Article> = {
     "title": "Why the Best Cures are Hidden in Mud",
     "slug": "functional-search",
     "shortSlug": "functional-search",
-    "author": "Dr. Siddharth Iyer — Computational Research Scientist, PhD Applied Computing",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 7, 2026",
     "subject": "Computer Science",
     "heroImage": "https://images.openai.com/static-rsc-4/GBlLPtjQmyIxfUF4PIw2J8Q0bgc2GJ3eoIJrE0HFuCJ_fcz4YAxYnjZ4nFhoAemC3sBcDn_exasxFtxdls5V-ax_OmIIr4QFyUTeO8wdDmJSm1uUQiDTCZxSN_GnZm7ghz3nB5HKN8ILvX2bCzkUJyqGcVCyUcX7gh9Kx1-92fFpvOXor_6i6E6NxPndbUdf?purpose=fullsize",
@@ -311,7 +311,7 @@ export const articles: Record<string, Article> = {
     "title": "Why AI Dreams of Molecules We Cannot Build",
     "slug": "generative-chemistry",
     "shortSlug": "generative-chem",
-    "author": "Dr. Nitin Bansal — Semiconductor Technology Researcher, PhD Materials Science",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 7, 2026",
     "subject": "Chemistry",
     "heroImage": "https://images.openai.com/static-rsc-4/DBOqZHyUFLGM_17pTZJ1peI1CA1cw1Yne_9t7TmCHrpOQUCcuI18Xuz5H2LE9Nw0lXOk36GrhDblbggC4jMNm2TmXKKNdiUMI21uY4G3JEhJd0hB1RKWApIUaF9o6Cs55r_98dNrp91zlTpqYhTH2qh9KJ-qPV7hmPuzfk2JbJ2t8GpsboqkUNd7y61Azv3_?purpose=fullsize",
@@ -339,7 +339,7 @@ export const articles: Record<string, Article> = {
     "title": "Why Flat AI Cannot Understand a Round World",
     "slug": "geometric-deep-learning",
     "shortSlug": "gdl",
-    "author": "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 7, 2026",
     "subject": "Computer Science",
     "heroImage": "https://images.openai.com/static-rsc-4/ZkSJ2CAoglonGTjIex9ocxZAoAv_jWKk21GJT3cY-UPTZcm851dOUjY6CDbR3KrFGHI8aMj5Dvwih02OoRe2O2vzeF9Bhw7RGFsTn5TWSQ97X7ntNGUKT659tg-0DbcddONqOBYcNrOEEkApi-QeWi02cc56xEbdMfH0D8LQvZQvmim7yG7VvfLMwSNaKI5l?purpose=fullsize",
@@ -364,13 +364,13 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "gradient-descent": {
-    "title": "The Myth of the Global Minimum: Why Optimization is a Journey Through Flatlands",
+    "title": "Why Do Neural Networks Stall at Saddle Points?",
     "slug": "gradient-descent",
     "shortSlug": "gradient-descent",
-    "author": "Dr. Siddharth Iyer — Computational Research Scientist, PhD Applied Computing",
+    "author": "Sankalp — Engineering Lead",
     "date": "April 20, 2026",
     "subject": "AI & Data Science",
-    "heroImage": "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1400&h=700&auto=format&fit=crop",
+    "heroImage": "/images/articles/hero_flatlands_optimization.jpg",
     "excerpt": "In high-dimensional spaces, the greatest threat to learning is not a suboptimal pit, but a vast, featureless plateau. Optimization is less about rolling downhill and more about breaking the symmetry of the flatlands.",
     "technicalInsight": "Local minima are vanishingly rare in neural networks with billions of parameters. Most 'traps' are actually saddle points—geometric configurations where the gradient is near zero, causing learning to stall indefinitely.",
     "synonyms": [
@@ -384,10 +384,10 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "gwynne-shotwell-spacex-scaling": {
-    "title": "The Gravity of Math: Gwynne Shotwell’s Operational Grip on SpaceX",
+    "title": "How Does Gwynne Shotwell Maintain Operational Grip at SpaceX?",
     "slug": "gwynne-shotwell-spacex-scaling",
     "shortSlug": "shotwell",
-    "author": "Ananya Rao — Data Science Research Editor, MSc Data Analytics",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 9, 2026",
     "subject": "Computer Science",
     "heroImage": "https://images.openai.com/static-rsc-4/xYf29NWFCfApHKWAFjTSafnGIsQXjkcBSo8DNhtjVlK4OQf_ltI9Vi3Q_HZtoY9O8bV1R7nBnL9fWAmhYWO4c1Yufq7qhI6lsD8sRA-KICjwHTq79fleylubrGkmDFmsy-NfzGJ319HVc8zuXa_JkhXQdZvuX1E0weBkuNzwMiJkcYBlOPp1S1zRGuHyZrjr?purpose=fullsize",
@@ -408,7 +408,7 @@ export const articles: Record<string, Article> = {
     "title": "Why AI Found More New Materials in One Year Than Scientists Did in a Century",
     "slug": "how-does-ai-discover-new-materials",
     "shortSlug": "materials-discovery",
-    "author": "Dr. Nitin Bansal — Semiconductor Technology Researcher, PhD Materials Science",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 5, 2026",
     "subject": "Chemistry",
     "heroImage": "https://images.openai.com/static-rsc-4/SOd3n4eUwalqUZ6XVhNRjsuQPaFYWGx_JA63HoahxNuoAYwgrdP5xqj3nBmvs-dUD8cqLn2lXPBlArs6B-wQGZNgTwXRihB9E-VmCZ3FyqJvfhbw3noAavCdylt1af8VYIfNXMz0NwgqSOqgvWl86U50Tuk50jVJweAUgCpYDpGg04JyYjz44rZJiF-jz5eq?purpose=fullsize",
@@ -438,7 +438,7 @@ export const articles: Record<string, Article> = {
     "title": "Why AI Weather Models Are More Accurate Than Supercomputers",
     "slug": "how-does-ai-predict-extreme-weather",
     "shortSlug": "weather-prediction",
-    "author": "Dr. Siddharth Iyer — Computational Research Scientist, PhD Applied Computing",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 5, 2026",
     "subject": "Environment",
     "heroImage": "https://images.openai.com/static-rsc-4/XxaXIv8wb1A1LDRRyUa8fbPrudHcBdx_StxAr74OeXRPaf-zKCKdxOHMuFX3NP_IgMVdEHsyUPBFvCxXHD4tgOX52-c0l_RHMyZtYSmsKK8SFxiYYt9FZ77Lw7CTzBLMRnm52PTl5DVaewVhf3-qkqpJBmvzxCg7MwfiqjRY20mmQzJMeXIsJ0HOucAbI49H?purpose=fullsize",
@@ -468,7 +468,7 @@ export const articles: Record<string, Article> = {
     "title": "Why AI Can Control Plasma Faster Than Any Human Physicist",
     "slug": "how-does-ai-simulate-nuclear-fusion",
     "shortSlug": "nuclear-fusion",
-    "author": "Dr. Siddharth Iyer — Computational Research Scientist, PhD Applied Computing",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 5, 2026",
     "subject": "Physics",
     "heroImage": "https://images.openai.com/static-rsc-4/rKd0jeH-Ngzrsja10lrAHtvz7zccGL7HfHdW_i2g3QDCKPBb9XUCOSouXZMaAfoaRMrR5BmK-ff8XOzzZBF4CVSIMagwF2OHLPYeJ9QKV-c7Lxx3V3Qh-NYImvFZ6y8LnkeffJctpZ83xRKze--VeWBSZuy9SRrECAkZXAYxF5epd3gT4OcV4h5ZArTpdEkW?purpose=fullsize",
@@ -495,13 +495,13 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "how-does-alphafold-predict-protein-structures": {
-    "title": "Why Static Maps Fail to Predict Living Machinery",
+    "title": "Why Do Static Maps Fail to Predict Living Machinery?",
     "slug": "how-does-alphafold-predict-protein-structures",
     "shortSlug": "alphafold",
-    "author": "Dr. Kavya Nair — Bioinformatics Research Lead, PhD Computational Biology",
+    "author": "Sankalp — Engineering Lead",
     "date": "April 30, 2026",
     "subject": "Biology",
-    "heroImage": "https://images.openai.com/static-rsc-4/zFZPWX9Wub5oKzHu6YO8sJCOUQ-p3aaValZJ2z7HWTJVy1pbhorEP9270mRGLOyPAvQNyB0nXPI7bnfWz3PKYgV8GJAmxWolFm9aaUAAhH9sn3SBB5Z5NyEUxGGi-EUz3c6HhCGE9qz1YnfN_etdb3nDhqgwPwqwitr6ScAdN1RRM6qvg1ksU2ad1E6NBbVM?purpose=fullsize",
+    "heroImage": "/images/articles/hero_alphafold_abstract.jpg",
     "excerpt": "AlphaFold solved the 50-year-old protein folding problem, but its single-state predictions often miss the dynamic, shape-shifting nature of active biology.",
     "technicalInsight": "Jumper et al. (2021) demonstrated that AlphaFold 2's Evoformer treats proteins as 3D spatial graphs, achieving atomic accuracy, yet it struggles with conformational flexibility.",
     "faq": [
@@ -528,7 +528,7 @@ export const articles: Record<string, Article> = {
     "title": "Why Perfect AI Drugs Fail in Human Trials",
     "slug": "how-is-ai-accelerating-drug-discovery",
     "shortSlug": "drug-discovery",
-    "author": "Dr. Kavya Nair — Bioinformatics Research Lead, PhD Computational Biology",
+    "author": "Sankalp — Engineering Lead",
     "date": "April 30, 2026",
     "subject": "Medicine",
     "heroImage": "https://images.openai.com/static-rsc-4/AxAIOW1uW_PEJnZ-HGreXn42ShdPwWdMDLB3Dpml4ITf6h1VacsJhRxeYJ7m1eVVSSZDeKTV9Aq8fP2NDgrpsPZGB9TyWoSi1GrZilyKYI-wmy9JFtbblKVcK4FMEpoZgbD2DqN_TYCgALxIQCarDSmDKe_6GmviVrmu4M_g0swjR6Fke9kmCvu4yp6F7v3V?purpose=fullsize",
@@ -557,7 +557,7 @@ export const articles: Record<string, Article> = {
     "title": "Why AI Cannot Simulate a Single Human Cell",
     "slug": "how-is-ai-building-a-digital-twin-of-the-cell",
     "shortSlug": "digital-twin",
-    "author": "Dr. Kavya Nair — Bioinformatics Research Lead, PhD Computational Biology",
+    "author": "Sankalp — Engineering Lead",
     "date": "April 30, 2026",
     "subject": "Biology",
     "heroImage": "https://images.openai.com/static-rsc-4/_rv0J0GqluW1Chpa1kNA4-ExRbHKNc-x3_66noQxncx5ANd2lWwHWS3yNFrA_afqtaeIC3J_P1xpuKawBqD_XNLMZAzoFoBFQB5wnPYzqQtGkaSR0aN8yaie2JTd13gVJRp7RcRYHJHlQ-o9jmmpl3IsEFAr9aU9fGWqvF1YtLiYcRTdyFdsXqzoUws5cZov?purpose=fullsize",
@@ -586,7 +586,7 @@ export const articles: Record<string, Article> = {
     "title": "Why Plants Are Inefficient Carbon Sinks and How AI Is Fixing That",
     "slug": "how-is-ai-designing-plants-to-fight-climate-change",
     "shortSlug": "plant-design",
-    "author": "Dr. Nitin Bansal — Semiconductor Technology Researcher, PhD Materials Science",
+    "author": "Sankalp — Engineering Lead",
     "date": "April 30, 2026",
     "subject": "Environment",
     "heroImage": "https://images.openai.com/static-rsc-4/rOuMizTC9osDPIcW8tpLmuh54zjeAEhKzgRnK8lLcXZDBjjhU4HgNvLs9tjo8dTSBxGW3BjzpghXhmfRK8w6PxLf63sLSZpGPfszaZp97-cw3axo4kcnQr3zhnD5z5QZnlLnLzjrM6A4K_CxdiFogK1KoNVEpHkgluvC5tQdh6QRCw9rJa-z9Hw2uSti_mSy?purpose=fullsize",
@@ -615,7 +615,7 @@ export const articles: Record<string, Article> = {
     "title": "Why We Have Billions of Whale Sounds and Still Cannot Understand Them",
     "slug": "how-is-ai-helping-us-decode-animal-communication",
     "shortSlug": "animal-communication",
-    "author": "Dr. Kavya Nair — Bioinformatics Research Lead, PhD Computational Biology",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 5, 2026",
     "subject": "Biology",
     "heroImage": "https://images.openai.com/static-rsc-4/DTQR0scWO7n9e7JkEP8Bufd5WpgNcW4WuZ7EWVhulQoIASJKaIDGAalLuWBNlzPSJh4pyLSajskC79qm3iH1GShBkkIDEDRCovep9rZ0qHTyBJ4KIlKeI0-amuC8_L25k83uOM7V748D9vE6RsRq98wWW13AfcGc2MWTVmoo0IX-UT8r49Dfxvl4L8ay444S?purpose=fullsize",
@@ -645,7 +645,7 @@ export const articles: Record<string, Article> = {
     "title": "Why Mapping the Brain Does Not Explain the Mind",
     "slug": "how-is-ai-mapping-the-brain-connectomics",
     "shortSlug": "connectomics",
-    "author": "Dr. Kavya Nair — Bioinformatics Research Lead, PhD Computational Biology",
+    "author": "Sankalp — Engineering Lead",
     "date": "April 30, 2026",
     "subject": "Neuroscience",
     "heroImage": "https://images.openai.com/static-rsc-4/HHliW1TQXGwx-DyB_qLcP2vyFlKD0LqcUwh78JaNxi6Av1wYB4g6Zqj_eiz_zrUXSQbAdElP4ZtakZlSrCMXJHP7IClu4hdTUcPeHziCkZF4oY7Vt2X3O3kYAiu4aue-BN1_aJOKqxCBEBanbhCiqVhXPJ_oVrSUtIPw-YdmMzCsS5DVgJFCh39sgBFR3VL0?purpose=fullsize",
@@ -671,10 +671,10 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "ilya-sutskever-superalignment": {
-    "title": "Ilya Sutskever and the Spiritual Devotion to Machine Scale",
+    "title": "Why is Ilya Sutskever Devoted to Machine Scale?",
     "slug": "ilya-sutskever-superalignment",
     "shortSlug": "sutskever",
-    "author": "Meera Venkatesh — Software Architecture Consultant, BEng Engineering",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 9, 2026",
     "subject": "Computer Science",
     "heroImage": "https://images.openai.com/static-rsc-4/6HFyg4qnvJtpKFd8EXN2_u-m-diOTCnAc1mNeMegNZM_GC11SS3GQobNMi7T0jjhF89wxXJtRyJmDT__5N-EcM2h_WHtKT8kU_f1cHZM8XDGLlazfwvvdTw82m236hb_x_TUR0UbSWwOD4oUSY3xPmTKglBUSn6VF2o3pPJ3iWZkF10wS0wYQAAWmGSCojKg?purpose=fullsize",
@@ -695,7 +695,7 @@ export const articles: Record<string, Article> = {
     "title": "What is In Silico Medicine?",
     "slug": "insilico-medicine",
     "shortSlug": "insilico-medicine",
-    "author": "Dr. Nitin Bansal — Semiconductor Technology Researcher, PhD Materials Science",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 7, 2026",
     "subject": "Medicine",
     "heroImage": "https://images.openai.com/static-rsc-4/Vo9BJefAUd89e9x5o0LKVwCId5j7W_IgML3va0sPMeHOQBZw6I8HKzrjI-eWfJTqEWksDIrE3juunmlOseX9twqxGQuMOUPIonB3rGynr3_WQK2riXXkVf2PfWjdbDtdJSWgdtQv8pVlnipg_yGuj_A008UadTNQNurOX7IYziOEAZGwpBUBo4RzN4_NZSIk?purpose=fullsize",
@@ -720,10 +720,10 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "jb-straubel-circular-alchemist": {
-    "title": "JB Straubel’s vision for a circular battery supply chain",
+    "title": "Why is JB Straubel Building a Circular Battery Supply Chain?",
     "slug": "jb-straubel-circular-alchemist",
     "shortSlug": "straubel",
-    "author": "Ananya Rao — Data Science Research Editor, MSc Data Analytics",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 15, 2026",
     "subject": "Computer Science",
     "heroImage": "https://images.openai.com/static-rsc-4/nWzeq-xyP-CVBa7kv6nfuwNtg67jAWxi1RD37LyW4FwDokuE3qbwstAsU_Mc4KEHcEHSHHaLLE90JGbqUVYqUHqqBSo2Nm2bXXCX0jHImuiDGUobYwcC_D-otNtVJvNq-8aqfyKdOJ6OjQg0QC4JxO59P5xoDM-6_j-dFAVu8WqzfF1QdqFefwuF4Pg0TzUJ?purpose=fullsize",
@@ -739,10 +739,10 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "jennifer-doudna-crispr-logic": {
-    "title": "Rewriting Evolution with Jennifer Doudna’s Genetic Scalpel",
+    "title": "How is Jennifer Doudna Rewriting Evolution with CRISPR?",
     "slug": "jennifer-doudna-crispr-logic",
     "shortSlug": "doudna",
-    "author": "Dr. Kavya Nair — Bioinformatics Research Lead, PhD Computational Biology",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 9, 2026",
     "subject": "Biology",
     "heroImage": "https://images.openai.com/static-rsc-4/xeombDtaEN0ixCnK45t0ObIab0eDgP_J1Sslbc9JWV7fi1zoyGcaMVCyYB_EbbL2fQUeyLGDpGGPNIy8u1QYudgeqz5HXDg7XyzqBBqSZWxcakFcyrZF5qIyKbdPR4os5wlq4i4oHRJbUc48Pwjn5t5SRpZ4QEkEgAHqWJLsn0Cg2Cqakyns0K9zKzL9CDR5?purpose=fullsize",
@@ -760,10 +760,10 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "jensen-huang-gpu-apocalypse": {
-    "title": "How Jensen Huang turned NVIDIA into the engine room of AI",
+    "title": "How Did Jensen Huang Turn NVIDIA Into the Engine Room of AI?",
     "slug": "jensen-huang-gpu-apocalypse",
     "shortSlug": "jensen",
-    "author": "Meera Venkatesh — Software Architecture Consultant, BEng Engineering",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 15, 2026",
     "subject": "Computer Science",
     "heroImage": "https://images.openai.com/static-rsc-4/EMAueGP-X7Q5D4IlUfwD1j6HTHmLNGJFz6MhPveJa32iQo9lwUkq5eErEW26HJt7u7playJ41U-HNta5AUGrjBF-IplXrBjJq7U6TyO31-P5c0YrLiOJYx-OetPVYpNVj_-L8XUYlqAs1ZLWfH7R8rE9-zKXDntj5dM6l882hK7XKsQUG_BMxauLxTqSDa4e?purpose=fullsize",
@@ -780,10 +780,10 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "jonathan-ross-lpu-architecture": {
-    "title": "Eliminating the Bottleneck: Jonathan Ross and the LPU Paradigm",
+    "title": "How Does Jonathan Ross Eliminate Bottlenecks with the LPU Paradigm?",
     "slug": "jonathan-ross-lpu-architecture",
     "shortSlug": "ross",
-    "author": "Meera Venkatesh — Software Architecture Consultant, BEng Engineering",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 9, 2026",
     "subject": "Computer Science",
     "heroImage": "https://images.openai.com/static-rsc-4/yuuAsT6lPwZLoD3yiToZ5jnzIbSvQ1KySDMMtCWrfOVyHTAaquyQ8-o6m7Hw7DmntW8QbA_3hFNbeApDTKow6qRL7ibnW8Hb6dahB1rMlL9qRUXV7ZvBjqb55gN5hoBn3hBw-lpk5XQFYXk0n7BapKRNeU0mJfxSlzDyN2BAQqFHWToR5WwyNCwe1K_zX2ra?purpose=fullsize",
@@ -801,10 +801,10 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "katalin-kariko-mrna-resurrection": {
-    "title": "The persistence of Katalin Karikó and the breakthrough of modified mRNA",
+    "title": "How Did Katalin Karikó's Persistence Lead to the mRNA Breakthrough?",
     "slug": "katalin-kariko-mrna-resurrection",
     "shortSlug": "kariko",
-    "author": "Dr. Kavya Nair — Bioinformatics Research Lead, PhD Computational Biology",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 15, 2026",
     "subject": "Medicine",
     "heroImage": "https://images.openai.com/static-rsc-4/kA2pSYyoJNqxGgtU81baj0XUxuc_WoDxwDh5AvpoaKYsTbaBTIA4bL5YEplkuNyHCGKVREkXuEPsNA1mzposQM_zMQdYM7kOcpfKWNraq1DVktU1BGfTurJTzc6yxmeOxvrnxomoU5QkUrtevs-dgik36IrGqVWIZDBel4hPjHER6W_wVEwz_Yh2ZYiKSLO1?purpose=fullsize",
@@ -823,7 +823,7 @@ export const articles: Record<string, Article> = {
     "title": "Why Latent Space is Not a Map: The Dangers of Linear Interpolation",
     "slug": "latent-space",
     "shortSlug": "latent-space",
-    "author": "Ananya Rao — Data Science Research Editor, MSc Data Analytics",
+    "author": "Sankalp — Engineering Lead",
     "date": "April 27, 2026",
     "subject": "AI & Data Science",
     "heroImage": "https://images.openai.com/static-rsc-4/6dIU7Zw1Hri2tGQOKMlY8LxYBKOpesWnIY89Ezgl-MfMMeMAKmdKbQLIEFclwDp_2NB0KjhSmebzN__w2clSb1xqd9et8P6YbDjVqnl0S6MIFhITQ-kcLvRu3pk0EBBY9IRhBl8GmX6v_X4XMRPbDuYg4ynZVSQJPMPdRykdaMbx5wIKSdhYqd0HlVDJF4rc?purpose=fullsize",
@@ -840,10 +840,10 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "lisa-su-amd-turnaround": {
-    "title": "Dr. Lisa Su and the Technical Blueprint for AMD’s Resurrection",
+    "title": "How Did Dr. Lisa Su Engineer the Resurrection of AMD?",
     "slug": "lisa-su-amd-turnaround",
     "shortSlug": "lisa-su",
-    "author": "Meera Venkatesh — Software Architecture Consultant, BEng Engineering",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 9, 2026",
     "subject": "Computer Science",
     "heroImage": "https://images.openai.com/static-rsc-4/7ypsNHR62Aegh712iSs90oW_UW2cNub9hQSyEzE21xwjJh5WKdh9w27nLPblVuilsjzs6Z613H9Y-1EaHjVNWMagtSqeenW5LBT70YQxe0E5nyxPW2J09Cye_gnnhQ-imLdO6xY6axZ6shcptNJnXFMXaczHLD8HP9MOuyyPQ4hIrHeT-yN5w1IWq2n82PyB?purpose=fullsize",
@@ -861,10 +861,10 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "marc-raibert-gospel-balance": {
-    "title": "Marc Raibert and the dynamic stability of biological locomotion",
+    "title": "How Does Marc Raibert Build Robots with Dynamic Biological Stability?",
     "slug": "marc-raibert-gospel-balance",
     "shortSlug": "raibert",
-    "author": "Meera Venkatesh — Software Architecture Consultant, BEng Engineering",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 15, 2026",
     "subject": "Computer Science",
     "heroImage": "https://images.openai.com/static-rsc-4/YUlWuJV91BTvude_zEAROa1irVXx0SwPrC5KzbY-5JeRmdBnM9WezC-Jb8YtbfjEZeTfz2UwlT8WruUE0rARloKfqhtTaXj-4eg4tYPNcbS4krgEqsj_8qjJx8h4v7gTmQvzoM-5E62m5RhIKL4Zah3RXY1muWyw9u9WnLTf_Wr0tU1JLOXHxqgwv5nOC9XI?purpose=fullsize",
@@ -880,10 +880,10 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "mary-lou-jepsen-vision-beyond-skull": {
-    "title": "Mary Lou Jepsen and the use of holographic light to see inside the brain",
+    "title": "How is Mary Lou Jepsen Using Holographic Light to See Inside the Brain?",
     "slug": "mary-lou-jepsen-vision-beyond-skull",
     "shortSlug": "jepsen",
-    "author": "Dr. Nitin Bansal — Semiconductor Technology Researcher, PhD Materials Science",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 15, 2026",
     "subject": "Medicine",
     "heroImage": "https://images.openai.com/static-rsc-4/Rc-HeCQGJXI42LufCHspYCtWnL151-ut5-CUZZy07J1x7hIj0cbhLNQNnZ45rpbPafZAk9-Hz5PW4Ly9H89Eiwsw_gY_tUPARQhDaf1PwWIbGiFdXxaO6YYWtHx_n95EDhnlRzO4O3lgIioMGoxEy_xazeIhrNziRqU73epcFwQAA62sDtUKQ3DNhMfbAEfl?purpose=fullsize",
@@ -899,7 +899,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "memory-wall-ai": {
-    "title": "The Memory Wall and AI Performance",
+    "title": "Why is the Memory Wall Bottlenecking AI?",
     "slug": "memory-wall-ai",
     "shortSlug": "memory-wall",
     "author": "Sankalp — Engineering Lead",
@@ -919,10 +919,10 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "meredith-whittaker-war-open-web": {
-    "title": "Meredith Whittaker’s case for privacy in the age of compute monopolies",
+    "title": "Why Does Meredith Whittaker Defend Privacy Against Compute Monopolies?",
     "slug": "meredith-whittaker-war-open-web",
     "shortSlug": "whittaker",
-    "author": "Meera Venkatesh — Software Architecture Consultant, BEng Engineering",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 15, 2026",
     "subject": "Computer Science",
     "heroImage": "https://images.openai.com/static-rsc-4/dzUXA2byYuDjtBoTOPYd8CRTbKzGQrUSIVkpF3xVBNE8wrhJWIHxCiVnbCNc4GygGcfgKsoSyId4bVO0903c5k5TAEGgxQHDVV0WOI-IwXriRg8pRSU6CwaIZsG_ImWiI4G0Npds5VGzt7AvzJ2GQVCvRtHls2RGusViCPpQt1G7pey9c7T_zLyWiRWhSZ62?purpose=fullsize",
@@ -938,10 +938,10 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "michelle-simmons-architecture-atom": {
-    "title": "Building quantum computers atom-by-atom with Michelle Simmons",
+    "title": "How is Michelle Simmons Building Quantum Computers Atom-by-Atom?",
     "slug": "michelle-simmons-architecture-atom",
     "shortSlug": "simmons",
-    "author": "Dr. Nitin Bansal — Semiconductor Technology Researcher, PhD Materials Science",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 15, 2026",
     "subject": "Physics",
     "heroImage": "https://images.openai.com/static-rsc-4/2hoai8w6zcjUXf3jzsiCNztZVYJUDiWJxlf0nCAAzTm3jI03bxrGIUtA21ehzQvZukiBe9vVLWQPk0ivU17_JQgzV3zqYt47Gyg_DE941XeQoE8OuNN2jZ87kra2ZdHFlzGSZvPwQc13bE6jVCQY4-ZOFXrR4jbOtdCy-S_Y1QoLO2mwNg1QSrBQmpWlHG58?purpose=fullsize",
@@ -957,10 +957,10 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "mira-murati-operational-reality": {
-    "title": "How Mira Murati Uses Operational Reality to Ship AGI",
+    "title": "How Does Mira Murati Use Operational Reality to Ship AGI?",
     "slug": "mira-murati-operational-reality",
     "shortSlug": "murati",
-    "author": "Meera Venkatesh — Software Architecture Consultant, BEng Engineering",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 9, 2026",
     "subject": "Computer Science",
     "heroImage": "https://images.openai.com/static-rsc-4/BdAj6A5FEa9iRY0TXm5A-5H-13BFZxqCOUZ9KvfGw0nNNspOaVT1eskb1CNaVaTPNamwkYMvy2N1gzhd7x056X0WapsvcUlZ9QXC0XG3JSeZNOpkvoVj1Xz-UKPhI5yVxT-ri4_EfyNs2S1gcC8prTrWXaiJwhBLWfQKXq6y-sy6HqikZB-Zl9czYHhpaU6N?purpose=fullsize",
@@ -981,7 +981,7 @@ export const articles: Record<string, Article> = {
     "title": "Why AI Models Pay for Weights They Never Use",
     "slug": "mixture-of-experts",
     "shortSlug": "moe",
-    "author": "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence",
+    "author": "Sankalp — Engineering Lead",
     "date": "April 19, 2026",
     "subject": "AI & Data Science",
     "heroImage": "https://images.openai.com/static-rsc-4/8L9ht6cWNThte0z_A6kU0CJNtfrFIQo5lMiwQhJdMXEmQHP-W_xBEZVVr_kva5WU457Z_aV6bLr1O3GNGlupBYEuKtgqeqIAfS_-lpy2htn9DxVO32zCuDlWgoNKxme9VoG-x5QCmPuFCKsQGREz-1KT5xO1Tn0fT7hUdvEeAoOWVaiV3y6UkHE_4-t3d6qA?purpose=fullsize",
@@ -1010,7 +1010,7 @@ export const articles: Record<string, Article> = {
     "title": "What is Multi-Objective Optimization?",
     "slug": "multi-objective-optimization",
     "shortSlug": "moo",
-    "author": "Dr. Siddharth Iyer — Computational Research Scientist, PhD Applied Computing",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 7, 2026",
     "subject": "AI & Data Science",
     "heroImage": "https://images.openai.com/static-rsc-4/XVvklCTI5Ia1yBhuvjYTqjMSWyjiIxAwOcangdo2remWgN0ugeNo5o2qbaMfl2qq116TjZgLsUoUj7DFmbynL4eIobWe-0piZboyXJ2yecYNFeyqFevxzNT8vdLc0-kSa2XtOjpPkuOUlF1gEyL2Rv8P6APr86KWGkfXYEhB2cyJHc5gKDkaBwMkjmc_h1aw?purpose=fullsize",
@@ -1035,13 +1035,13 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "near-memory-computing": {
-    "title": "Near-Memory and In-Memory Computing",
+    "title": "Why is Near-Memory Computing the Future?",
     "slug": "near-memory-computing",
     "shortSlug": "near-memory",
     "author": "Sankalp — Engineering Lead",
     "date": "May 31, 2026",
     "subject": "Computer Science",
-    "heroImage": "https://images.unsplash.com/photo-1591453089816-0fbb971b454c?q=80&w=2000&auto=format&fit=crop",
+    "heroImage": "/images/articles/hero_near_memory.jpg",
     "excerpt": "Moving data is 100x more expensive than computing it, forcing an architectural reversal from centralized GPUs to in-memory processing.",
     "technicalInsight": "Samsung HBM-PIM and SK Hynix AiM reduce power consumption by up to 80% by embedding MAC-capable ALUs directly within the memory die.",
     "synonyms": [
@@ -1055,10 +1055,10 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "noam-shazeer-information-density": {
-    "title": "Noam Shazeer’s Axiom: Why Text is the Ultimate Carrier of Intelligence",
+    "title": "Why Does Noam Shazeer Believe Text is the Ultimate Carrier of Intelligence?",
     "slug": "noam-shazeer-information-density",
     "shortSlug": "shazeer",
-    "author": "Meera Venkatesh — Software Architecture Consultant, BEng Engineering",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 9, 2026",
     "subject": "Computer Science",
     "heroImage": "https://images.openai.com/static-rsc-4/OQjL0S-2IqbwEWXcM3MiaJsPoyztGMa1VhkBY5Ez_75m_mZZrcr8M6fLVQnFU4m2ioQwXGzpfLCXX5981_KBQxxEQaiuEA3AXXzhZvhTQr38YTX-0Mq376r520l1O8rJ5vf6UGcpPA6xvjP9EUaWNbfTG_k7epHBg3jnGgJLp05KJSeq13cd0BeJxX67PjE_?purpose=fullsize",
@@ -1079,7 +1079,7 @@ export const articles: Record<string, Article> = {
     "title": "Why AI-Discovered Cures Are Abandoned Before Clinical Trials",
     "slug": "orphan-diseases",
     "shortSlug": "orphan-diseases",
-    "author": "Dr. Nitin Bansal — Semiconductor Technology Researcher, PhD Materials Science",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 7, 2026",
     "subject": "Medicine",
     "heroImage": "https://images.openai.com/static-rsc-4/0O1MRLzQ_rDXVW_tB3KIcWkrPeI9Dl8G4WOQdTTP75GB3yrkFuEWjNv--DYusyTBoc3PTm9_CZ-T-oooIncOYqaLRjyto_zsz27YQt5RBCHRbPc6l1alGCWqrVwgAVyjzqmEOHxUizrMztudRSZOxh5S4FopWFhQPL-7Fj3ReR24XJmPPMbwfz_BCQkLxbBf?purpose=fullsize",
@@ -1103,13 +1103,13 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "overfitting": {
-    "title": "The Generalization Paradox: Why Memorization is a Software Defect",
+    "title": "Why is Memorization a Software Defect in AI?",
     "slug": "overfitting",
     "shortSlug": "overfitting",
-    "author": "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence",
+    "author": "Sankalp — Engineering Lead",
     "date": "April 18, 2026",
     "subject": "AI & Data Science",
-    "heroImage": "https://images.openai.com/static-rsc-4/w42aZ050_NVXQ2Hfe0k8Z7uplnd_q7rKobONErHep0xEpktEknskUsyz3mrvHVyK7nyROyFfn-kdFI57GD0EsYPC0Fxs_J1Us5OsTLck8Ms380l2GZ6ewbK6oixPJEOZw_v0K2iC9r4OO_01aEhnF4yQ2SDIbChbSDhxYwfCfhAgpdoXqYHVKhG4DuUKyZm4?purpose=fullsize",
+    "heroImage": "/images/articles/hero_overfitting_abstract.jpg",
     "excerpt": "The boundary between a model that memorizes and a model that understands is not a gradual slope; it is a sudden, phase-shifting snap. True generalization often requires training far beyond the point of apparent failure.",
     "technicalInsight": "Implicit regularization in modern over-parameterized models allows them to move from brute-force memorization to algorithmic logic, a phenomenon known as Grokking, which occurs long after the training loss has bottomed out.",
     "synonyms": [
@@ -1126,7 +1126,7 @@ export const articles: Record<string, Article> = {
     "title": "Why AI Medicine Fails the Most Unique Patients",
     "slug": "personalized-medicine",
     "shortSlug": "personalized-medicine",
-    "author": "Dr. Nitin Bansal — Semiconductor Technology Researcher, PhD Materials Science",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 7, 2026",
     "subject": "Medicine",
     "heroImage": "https://images.openai.com/static-rsc-4/oOJHhpkXQRpIaDaGn0Xg4Wa6ylXDgs_E-i2W2p9Rp3OgCIFwC5nd5qs7OZ-8jdVeENnZ3GdILST8owc6cZRXFX4lEPG9U5sz8E5EujSb-yG-hA7DaAfYuQRlaS9WUOwPk0iQpv0psm4cGMeZVGCpsaeUpQd7aYZErtUkknS-iiegt-rcCQafrbsqY8D_XIDX?purpose=fullsize",
@@ -1154,7 +1154,7 @@ export const articles: Record<string, Article> = {
     "title": "Why AI Models Get Lost in Long Documents",
     "slug": "positional-encoding",
     "shortSlug": "positional-encoding",
-    "author": "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence",
+    "author": "Sankalp — Engineering Lead",
     "date": "April 27, 2026",
     "subject": "Computer Science",
     "heroImage": "https://images.openai.com/static-rsc-4/Np40XmzBP3nBYoLLWuX85uImyt6WlzjSRSiUd6Omqrq2deNVeco1hKQqPNBPrEUDgNgSk76Vxsg8Agj8rqhw_kosb-qhgcT0vipiYA1fSgIvVfBFd5_4vOtoMoRJtEA74DwwZu2wlCZJcIWRWX6CMEwJ4LmmpqRmdLnj91dnQXCa_VjhfGL61S9FoJ2nPAzx?purpose=fullsize",
@@ -1175,7 +1175,7 @@ export const articles: Record<string, Article> = {
     "title": "Why Writing New Life is Easier than Making it Live",
     "slug": "progen",
     "shortSlug": "progen",
-    "author": "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 7, 2026",
     "subject": "Biology",
     "heroImage": "https://images.openai.com/static-rsc-4/oO5D9OvdwqGs177ebNXzYoTAB7oHqQNIt4NTGFdxNbgaVGurdjIUVExAOmbFDT80KEULTebgtEyToi468WpLAD-hAxwK2sK1XDLCWRdJZYo8W2u1XuLm2Cb-sWoTud6p3hJr6nAhPKnjNiycDsx3HBJpfEBAAFgXUiR689WCW-Ve9KzxkvWe46ltEYR1xIDj?purpose=fullsize",
@@ -1203,7 +1203,7 @@ export const articles: Record<string, Article> = {
     "title": "How Outlier Weights Break AI Compression",
     "slug": "quantization",
     "shortSlug": "quantization",
-    "author": "Dr. Siddharth Iyer — Computational Research Scientist, PhD Applied Computing",
+    "author": "Sankalp — Engineering Lead",
     "date": "April 23, 2026",
     "subject": "AI & Data Science",
     "heroImage": "https://images.openai.com/static-rsc-4/qMx9WUOQS5ImPzu8XqIXgK1dhgJ8uaXcQPtTM48AK2_en_qPbiH0WV3pYCz7ZXDLOUoUqp0V610vFH0kPPeeJXAGDyWJ-4U_iJ1FrUeVRj7H7IKkBhFi70WrFi9-fBsuuOgHsvYcXFhr8KcPjxMLJ548y5Gp5bokYt7LpAzxApqL-bbig1MJ1xiBULCzqLS4?purpose=fullsize",
@@ -1229,10 +1229,10 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "refik-anadol-architecture-memory": {
-    "title": "Visualizing neural archives through the fluid sculptures of Refik Anadol",
+    "title": "How Does Refik Anadol Visualize Neural Archives Through Fluid Sculptures?",
     "slug": "refik-anadol-architecture-memory",
     "shortSlug": "anadol",
-    "author": "Meera Venkatesh — Software Architecture Consultant, BEng Engineering",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 15, 2026",
     "subject": "Computer Science",
     "heroImage": "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=2000",
@@ -1251,7 +1251,7 @@ export const articles: Record<string, Article> = {
     "title": "How does Regularization prevent Overfitting?",
     "slug": "regularization",
     "shortSlug": "regularization",
-    "author": "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence",
+    "author": "Sankalp — Engineering Lead",
     "date": "April 27, 2026",
     "subject": "AI & Data Science",
     "heroImage": "https://images.openai.com/static-rsc-4/3PO-MV7d4bzV4x0i6BFZg9NxXLKdWz5B9BOhUCdrpGklfv5n5EQWJXcN73q1jhT9nTRt_S-UCeUHwr4vhQHbhHntH4SNyNVXJe0Eu4SBvvoPYIimSY2Fm0Xz5MonvJEz0PY3LnVf_wcktUQNsJ4Z-a5YB17voGJFtGJi7DpbpnqOv16vxX9nqhAj2qTdAr-P?purpose=fullsize",
@@ -1281,7 +1281,7 @@ export const articles: Record<string, Article> = {
     "title": "Why Human Feedback Trains AI to Lie",
     "slug": "rlhf",
     "shortSlug": "rlhf",
-    "author": "Dr. Siddharth Iyer — Computational Research Scientist, PhD Applied Computing",
+    "author": "Sankalp — Engineering Lead",
     "date": "April 22, 2026",
     "subject": "AI & Data Science",
     "heroImage": "https://images.openai.com/static-rsc-4/ZkX5t1mlM1mBwC2L3xjihtXLXWTJ-6MIR06iIKEQzyLmZWRciy83E2ov1YjqCBpOBGFiLyDDaC8djXAnNHzogFUlY4-mrmoNlvQuALO_Xw5Ezr4xkGysP6WwPehfYoIZx3KjJhbN7xxQR3QUK5GIPQ1SOrlbqoCrvjNoIBh9Z66UpCJvkw1UkmZRkOCNXpGS?purpose=fullsize",
@@ -1306,10 +1306,10 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "robert-langer-invention-factory": {
-    "title": "Robert Langer’s engineering of precision drug delivery systems",
+    "title": "How is Robert Langer Engineering Precision Drug Delivery Systems?",
     "slug": "robert-langer-invention-factory",
     "shortSlug": "langer",
-    "author": "Dr. Kavya Nair — Bioinformatics Research Lead, PhD Computational Biology",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 15, 2026",
     "subject": "Medicine",
     "heroImage": "https://images.openai.com/static-rsc-4/sYl0ENZFAJMfnelWbL4RaMuwcpUdx_my1tGKHSdRmTIbsTu1ayUJid-Eqc68fT_WwMZ6G10ly1gAb6WV2f_TtT4-bpxZT6G2S_IQEhI5V9H4MxDRRExCfLbJgUjA3XmD7AwUP6n9I2q8WnGzfSaUhNcM0Pg5pgIHQLpO3QysJCpqLRpnjIJSqQ0TgrPfpiFG?purpose=fullsize",
@@ -1325,13 +1325,13 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "rowhammer-vulnerability": {
-    "title": "Rowhammer Vulnerability and DRAM Isolation",
+    "title": "How Does Rowhammer Break DRAM Isolation?",
     "slug": "rowhammer-vulnerability",
     "shortSlug": "rowhammer",
     "author": "Sankalp — Engineering Lead",
     "date": "May 31, 2026",
     "subject": "Computer Science",
-    "heroImage": "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=2000&auto=format&fit=crop",
+    "heroImage": "/images/articles/hero_rowhammer.jpg",
     "excerpt": "Rowhammer exploits the physical collapse of isolation in high-density DRAM, turning electromagnetic interference into a deterministic bit-flipping heist.",
     "technicalInsight": "Bit-flip thresholds have dropped from ~139K activations in DDR3 to as few as 4.8K in LPDDR4, rendering proprietary TRR mitigations obsolete.",
     "synonyms": [
@@ -1348,7 +1348,7 @@ export const articles: Record<string, Article> = {
     "title": "How Does the Self-Attention Mechanism Work?",
     "slug": "self-attention-mechanism",
     "shortSlug": "self-attention",
-    "author": "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence",
+    "author": "Sankalp — Engineering Lead",
     "date": "April 27, 2026",
     "subject": "Computer Science",
     "heroImage": "https://images.openai.com/static-rsc-4/kzGe7BAt7i7UqkCf7dzX9ZgqK6eUaLejpy7xn5kh9cXKy4_mj2KX6JLmdlqx2stFQ-6KmBTBs4thK_3ZVtw4D_sBj9i-pvVOQm5dDOKOsCy0owUnaXqZ-jN9VreFQIZDgj5FbhfisjC4Y2A7Q095EZBT9zItYpzD-SS9sKbRGSREIKu7Fm-V_-sImuklL6wU?purpose=fullsize",
@@ -1375,13 +1375,13 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "softmax": {
-    "title": "The Confidence Crisis: Why Softmax is a Mathematical Illusion",
+    "title": "Why is Softmax a Mathematical Illusion?",
     "slug": "softmax",
     "shortSlug": "softmax",
-    "author": "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence",
+    "author": "Sankalp — Engineering Lead",
     "date": "April 25, 2026",
     "subject": "AI & Data Science",
-    "heroImage": "https://images.openai.com/static-rsc-4/PzXk2fasOiQGnry7yo4ifDHf5bQ7EtSh1fYf5SIho5FyOEKcdITDcVrjTAIS9rFsBqjWae_fYNFJJ08bsAZ47WgTcSVGuKhQSaWisY3KjU51sWOw8bvrrbvbqMMsjNdpEHKhTYPVXWcEFna-fFibtRXKUDRrjzSl75rj08_ncPFJqArYujO7ppSnno8oBbCI?purpose=fullsize",
+    "heroImage": "/images/articles/hero_softmax_abstract.jpg",
     "excerpt": "Softmax is a physical compromise masquerading as a probability distribution. In production, its aggressive exponentiation creates a dangerous illusion of certainty that obscures the model's underlying noise.",
     "technicalInsight": "Modern deep networks are poorly calibrated; they frequently assign high Softmax probabilities to incorrect predictions. Reliability requires implementing Temperature Scaling or Label Smoothing to align mathematical confidence with actual accuracy.",
     "synonyms": [
@@ -1395,7 +1395,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "strong-consistency-trap": {
-    "title": "Why Strong Consistency is a Trap for Distributed State",
+    "title": "Why is Strong Consistency a Trap?",
     "slug": "strong-consistency-trap",
     "shortSlug": "consistency",
     "author": "Sankalp — Engineering Lead",
@@ -1416,10 +1416,10 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "terence-tao-unfolding-infinite": {
-    "title": "Terence Tao and the search for logic across the infinite",
+    "title": "How Does Terence Tao Search for Logic Across the Infinite?",
     "slug": "terence-tao-unfolding-infinite",
     "shortSlug": "tao",
-    "author": "Dr. Siddharth Iyer — Computational Research Scientist, PhD Applied Computing",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 15, 2026",
     "subject": "Mathematics",
     "heroImage": "https://images.openai.com/static-rsc-4/ZCpksTMTMfOd3nirvEUU0PBpvUBM3UKsfxxbYP6BRztmJzt9AjbfPCp1UIuvkZNATC16OaQxZ-XSntmYLis5RRCkzCyfqocEXmVSFPi_LRBcacRW-Tf3t91nKDT94dxHNm1JQnrl-GXhMeqApIIpU7BOjy18kamesmhoh0Fj10ePrcmxrEvI2FtxyauRJlKk?purpose=fullsize",
@@ -1435,13 +1435,13 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "tokens": {
-    "title": "The Token Tax: Why Machines Can't Read",
+    "title": "Why Can't Machines Actually Read?",
     "slug": "tokens",
     "shortSlug": "tokens",
-    "author": "Meera Venkatesh — Software Architecture Consultant, BEng Engineering",
+    "author": "Sankalp — Engineering Lead",
     "date": "April 24, 2026",
     "subject": "Computer Science",
-    "heroImage": "https://images.openai.com/static-rsc-4/1isDES5geltJiswW1dxy_yMdy0TIa4wKJj_QlcBYITDOWwqqlBcudiYut64gTwx7kEyJYquM-u1AfN4B-4elnEXgNFlrO6N9ODtHfYplBnGxvcnEHhJ3eA8rQuL_h99qtQT5Zj1xrtDaInxxgFd3PrVtk41loREPnhVHtpeaeD0RXO5uAeL4lXSdTxd_sq12?purpose=fullsize",
+    "heroImage": "/images/articles/hero_tokens_abstract.jpg",
     "excerpt": "Tokenization is a leaky abstraction that creates a hidden tax on non-English scripts and a security vulnerability through glitch tokens. Understanding the 'Lego bricks' of language requires auditing the bias of the map.",
     "technicalInsight": "Byte Pair Encoding (BPE) creates massive semantic fragmentation in non-Latin scripts. This 'Token Tax' increases inference costs by 10x for certain languages and degrades model reasoning by forcing the architecture to process more granular, less meaningful fragments.",
     "synonyms": [
@@ -1455,13 +1455,13 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "transformer": {
-    "title": "The Quadratic Wall: Why Attention is a Hardware Crisis",
+    "title": "Why is Attention a Hardware Crisis?",
     "slug": "transformer",
     "shortSlug": "transformer",
-    "author": "Meera Venkatesh — Software Architecture Consultant, BEng Engineering",
+    "author": "Sankalp — Engineering Lead",
     "date": "April 27, 2026",
     "subject": "Computer Science",
-    "heroImage": "https://images.openai.com/static-rsc-4/Fn2ic4O1QBBHiAm-OuIgIOY_WM1g8YPXEUwazktc4O-Qyi0Fqqfx7A3Gy7zzXjQIglKF-mIatVnB3lxGvsejzorFTJDqPTBVixqNb5a47GEYbW_XwUH_d05-W2TqZjea7SbaONd1L6R57c6rSHVMTzOLYXvjIqvaO85OYpXlosJLAmFqK6p1qqhKsxQ_v6bw?purpose=fullsize",
+    "heroImage": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop",
     "excerpt": "The 'Context Window' is marketed as a cognitive boundary, but it is actually a physical ceiling enforced by quadratic memory growth. Understanding the Transformer requires acknowledging the brute-force tax of self-attention.",
     "technicalInsight": "Self-attention requires $O(n^2)$ memory and compute, meaning the attention matrix grows quadratically with sequence length. This creates a 'Quadratic Wall' where increasing the context window by 10x requires 100x the memory allocation, shifting the bottleneck from logic to HBM bandwidth.",
     "synonyms": [
@@ -1478,7 +1478,7 @@ export const articles: Record<string, Article> = {
     "title": "Why the First Layers of a Deep Model Often Learn Nothing",
     "slug": "vanishing-gradient",
     "shortSlug": "vanishing-gradient",
-    "author": "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence",
+    "author": "Sankalp — Engineering Lead",
     "date": "April 21, 2026",
     "subject": "AI & Data Science",
     "heroImage": "https://images.openai.com/static-rsc-4/E2Fr7AunuhUPh9XP7kO_fnprFaUXelcFsip2IxAod34m53eWJbTZbncECQ_2KKKJu2edyHPvczBQ5g_YidSj0zZ5b0JbLgxkGysCyOdBIgtw88feF39JnqEQqabKW_-UorBb0cOlYwOMlRCJ02ZqFnBLlAFBqHDnCd2ZMeVG4imEa7X2Gfx9UnRCpaMTry3j?purpose=fullsize",
@@ -1502,10 +1502,10 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "vitalik-buterin-code-consensus": {
-    "title": "Vitalik Buterin’s philosophical approach to decentralized consensus",
+    "title": "Why Does Vitalik Buterin Take a Philosophical Approach to Decentralized Consensus?",
     "slug": "vitalik-buterin-code-consensus",
     "shortSlug": "vitalik",
-    "author": "Ananya Rao — Data Science Research Editor, MSc Data Analytics",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 15, 2026",
     "subject": "Computer Science",
     "heroImage": "https://images.openai.com/static-rsc-4/Bg2WnEK4loS2sGquLw30jOxTkdqtkkkM4fF7hiilKtR9YSDBODpi4CcYoQ-ld5UGj4x_eiTqG0_r8nljIzWT_WwNZ-Zj6iKUMRnYoIfnn8gjiECQWvbdx7G0UMZHBzYGz9dCBy3qUYUnI6FEHpQRD6D1rOXV6HBNrvY_U10oWDonxbNwdUODu-luACV4OJcr?purpose=fullsize",
@@ -1524,7 +1524,7 @@ export const articles: Record<string, Article> = {
     "title": "Why AI Understands Evolution Better Than Physics",
     "slug": "what-are-protein-language-models",
     "shortSlug": "plm",
-    "author": "Dr. Kavya Nair — Bioinformatics Research Lead, PhD Computational Biology",
+    "author": "Sankalp — Engineering Lead",
     "date": "April 30, 2026",
     "subject": "Biology",
     "heroImage": "https://images.openai.com/static-rsc-4/4VEKIP6I1Wr_ZKPULvV9361WaD_U9eoCrCfS9_4RGkvh1DXFqWaPZ7PcpN9wj8drj_fin5CfxaVzRlLT4gCKxaRh7_-yOrDj300ZUKwFqjPXQuvsezootSOXHujqUQ-CmwrS9eXERV2JRI8p9zo7gMEagY-u5nzFYW941FGo0F870-0juQg_vCslwm0_tJHI?purpose=fullsize",
@@ -1550,10 +1550,10 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "yann-lecun-path-world-model": {
-    "title": "Yann LeCun’s path toward autonomous World Models",
+    "title": "Why is Yann LeCun Pursuing Autonomous World Models?",
     "slug": "yann-lecun-path-world-model",
     "shortSlug": "lecun",
-    "author": "Meera Venkatesh — Software Architecture Consultant, BEng Engineering",
+    "author": "Sankalp — Engineering Lead",
     "date": "May 15, 2026",
     "subject": "AI & Data Science",
     "heroImage": "https://images.openai.com/static-rsc-4/SNKKDSWw_fofwmA_bQaylEbeY4pvtsjucqgIUwdnlTB9kMsqFpc2_2CXQtMmlG0ZJ4IMDV4QbFcMtv-d9jrpiB-9FZnkIajdi7Y5B-HlmRAE7xw49h5fFS3ECgnnRI8Cbyq1htzV8OC77JZTpyOwewMmGc3uMJohXZEsNypf_W8ftHPk3Qieg1jk5a7Pw-ON?purpose=fullsize",

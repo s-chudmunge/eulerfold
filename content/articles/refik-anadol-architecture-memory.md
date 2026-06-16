@@ -1,8 +1,8 @@
 ---
-title: "Visualizing neural archives through the fluid sculptures of Refik Anadol"
+title: "How Does Refik Anadol Visualize Neural Archives Through Fluid Sculptures?"
 slug: "refik-anadol-architecture-memory"
 shortSlug: "anadol"
-author: "Meera Venkatesh — Software Architecture Consultant, BEng Engineering"
+author: "Sankalp — Engineering Lead"
 date: "May 15, 2026"
 subject: "Computer Science"
 heroImage: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=2000"

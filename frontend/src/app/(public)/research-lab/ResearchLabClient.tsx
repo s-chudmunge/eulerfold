@@ -598,7 +598,7 @@ export default function ResearchLabClient() {
                                     From PDF to <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-teal-400">Engineering Dossier</span>
                                 </h3>
                                 <p className="manrope-body font-medium text-[14px] text-text-muted leading-relaxed max-w-md">
-                                    Research Lab bypasses the fluff. We extract the core logic, structural architecture, and mathematical realities directly from academic papers so you can build faster.
+                                    Turn dense research papers into clear implementation guides. We break down the core logic, architecture, and math so you can start building immediately.
                                 </p>
                             </div>
 
@@ -606,18 +606,18 @@ export default function ResearchLabClient() {
                                 {[
                                     {
                                         icon: <FlaskConical className="w-5 h-5 text-teal-500" />,
-                                        title: "The Shift & Logic",
-                                        desc: "Instantly see what the paper solves (The Before vs After) and the step-by-step logic required to replicate it."
+                                        title: "The Problem & Solution",
+                                        desc: "Instantly understand what the paper fixes and the step-by-step logic required to replicate its results."
                                     },
                                     {
                                         icon: <BrainCircuit className="w-5 h-5 text-amber-500" />,
-                                        title: "Architectural Concept",
-                                        desc: "Deep-dive into the actual mechanism behind the paper without reading 40 pages of dense preamble."
+                                        title: "Architecture Breakdown",
+                                        desc: "Deep-dive into how the system actually works without having to read through pages of academic formatting."
                                     },
                                     {
                                         icon: <AlertCircle className="w-5 h-5 text-rose-500" />,
-                                        title: "Engineering Realities",
-                                        desc: "We extract the 'Gotchas'—the performance bottlenecks, hidden assumptions, and scaling issues mentioned in the paper."
+                                        title: "Implementation Trade-offs",
+                                        desc: "Know the limitations upfront. We highlight the performance bottlenecks, scaling issues, and hidden assumptions."
                                     }
                                 ].map((feature, i) => (
                                     <div key={i} className="flex gap-4 p-5 rounded-xl border border-border/50 bg-sidebar/50 hover:bg-sidebar transition-colors">

@@ -138,13 +138,14 @@ const JobDecodedGenerator: React.FC<JobDecodedGeneratorProps> = ({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!formData.job_description || !formData.current_experience) return;
 
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
       router.push(`/login?message=auth_required_to_generate&next=${window.location.pathname}`);
       return;
     }
+
+    if (!formData.job_description || !formData.current_experience) return;
 
     if (!((openRouterKey && useOpenRouter) || (localAIModelId && useLocalAI)) && credits !== null && credits < 1) {
       setIsPaymentModalOpen(true);
@@ -519,7 +520,14 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
               {!isPro && (
                 <button 
                   type="button"
-                  onClick={() => setIsPaymentModalOpen(true)}
+                  onClick={async () => {
+                    const { data: { session } } = await supabase.auth.getSession();
+                    if (!session) {
+                      router.push(`/login?message=auth_required_to_generate&next=${window.location.pathname}`);
+                      return;
+                    }
+                    setIsPaymentModalOpen(true);
+                  }}
                   className="inconsolata-ui px-3 py-1.5 text-[9px] font-bold text-accent border border-accent/20 border-dashed hover:bg-accent/5"
                 >
                   Unlock 6-12 Weeks (Pro)

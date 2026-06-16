@@ -1,8 +1,8 @@
 ---
-title: "Mary Lou Jepsen and the use of holographic light to see inside the brain"
+title: "How is Mary Lou Jepsen Using Holographic Light to See Inside the Brain?"
 slug: "mary-lou-jepsen-vision-beyond-skull"
 shortSlug: "jepsen"
-author: "Dr. Nitin Bansal — Semiconductor Technology Researcher, PhD Materials Science"
+author: "Sankalp — Engineering Lead"
 date: "May 15, 2026"
 subject: "Medicine"
 heroImage: "https://images.openai.com/static-rsc-4/Rc-HeCQGJXI42LufCHspYCtWnL151-ut5-CUZZy07J1x7hIj0cbhLNQNnZ45rpbPafZAk9-Hz5PW4Ly9H89Eiwsw_gY_tUPARQhDaf1PwWIbGiFdXxaO6YYWtHx_n95EDhnlRzO4O3lgIioMGoxEy_xazeIhrNziRqU73epcFwQAA62sDtUKQ3DNhMfbAEfl?purpose=fullsize"

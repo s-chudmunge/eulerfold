@@ -2,7 +2,7 @@
 title: "Why AI Models Get Lost in Long Documents"
 slug: "positional-encoding"
 shortSlug: "positional-encoding"
-author: "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence"
+author: "Sankalp — Engineering Lead"
 date: "April 27, 2026"
 subject: "Computer Science"
 heroImage: "https://images.openai.com/static-rsc-4/Np40XmzBP3nBYoLLWuX85uImyt6WlzjSRSiUd6Omqrq2deNVeco1hKQqPNBPrEUDgNgSk76Vxsg8Agj8rqhw_kosb-qhgcT0vipiYA1fSgIvVfBFd5_4vOtoMoRJtEA74DwwZu2wlCZJcIWRWX6CMEwJ4LmmpqRmdLnj91dnQXCa_VjhfGL61S9FoJ2nPAzx?purpose=fullsize"

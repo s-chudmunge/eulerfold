@@ -1,11 +1,11 @@
 ---
-title: "The Token Tax: Why Machines Can't Read"
+title: "Why Can't Machines Actually Read?"
 slug: "tokens"
 shortSlug: "tokens"
-author: "Meera Venkatesh — Software Architecture Consultant, BEng Engineering"
+author: "Sankalp — Engineering Lead"
 date: "April 24, 2026"
 subject: "Computer Science"
-heroImage: "https://images.openai.com/static-rsc-4/1isDES5geltJiswW1dxy_yMdy0TIa4wKJj_QlcBYITDOWwqqlBcudiYut64gTwx7kEyJYquM-u1AfN4B-4elnEXgNFlrO6N9ODtHfYplBnGxvcnEHhJ3eA8rQuL_h99qtQT5Zj1xrtDaInxxgFd3PrVtk41loREPnhVHtpeaeD0RXO5uAeL4lXSdTxd_sq12?purpose=fullsize"
+heroImage: "/images/articles/hero_tokens_abstract.jpg"
 excerpt: "Tokenization is a leaky abstraction that creates a hidden tax on non-English scripts and a security vulnerability through glitch tokens. Understanding the 'Lego bricks' of language requires auditing the bias of the map."
 technicalInsight: "Byte Pair Encoding (BPE) creates massive semantic fragmentation in non-Latin scripts. This 'Token Tax' increases inference costs by 10x for certain languages and degrades model reasoning by forcing the architecture to process more granular, less meaningful fragments."
 synonyms:

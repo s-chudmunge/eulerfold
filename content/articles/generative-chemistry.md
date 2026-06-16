@@ -2,7 +2,7 @@
 title: "Why AI Dreams of Molecules We Cannot Build"
 slug: "generative-chemistry"
 shortSlug: "generative-chem"
-author: "Dr. Nitin Bansal — Semiconductor Technology Researcher, PhD Materials Science"
+author: "Sankalp — Engineering Lead"
 date: "May 7, 2026"
 subject: "Chemistry"
 heroImage: "https://images.openai.com/static-rsc-4/DBOqZHyUFLGM_17pTZJ1peI1CA1cw1Yne_9t7TmCHrpOQUCcuI18Xuz5H2LE9Nw0lXOk36GrhDblbggC4jMNm2TmXKKNdiUMI21uY4G3JEhJd0hB1RKWApIUaF9o6Cs55r_98dNrp91zlTpqYhTH2qh9KJ-qPV7hmPuzfk2JbJ2t8GpsboqkUNd7y61Azv3_?purpose=fullsize"

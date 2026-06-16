@@ -2,7 +2,7 @@
 title: "Why the First Layers of a Deep Model Often Learn Nothing"
 slug: "vanishing-gradient"
 shortSlug: "vanishing-gradient"
-author: "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence"
+author: "Sankalp — Engineering Lead"
 date: "April 21, 2026"
 subject: "AI & Data Science"
 heroImage: "https://images.openai.com/static-rsc-4/E2Fr7AunuhUPh9XP7kO_fnprFaUXelcFsip2IxAod34m53eWJbTZbncECQ_2KKKJu2edyHPvczBQ5g_YidSj0zZ5b0JbLgxkGysCyOdBIgtw88feF39JnqEQqabKW_-UorBb0cOlYwOMlRCJ02ZqFnBLlAFBqHDnCd2ZMeVG4imEa7X2Gfx9UnRCpaMTry3j?purpose=fullsize"

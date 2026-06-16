@@ -1,8 +1,8 @@
 ---
-title: "Fei-Fei Li and the data-driven revolution of visual intelligence"
+title: "How Did Fei-Fei Li Spark the Revolution in Visual Intelligence?"
 slug: "fei-fei-li-north-star-vision"
 shortSlug: "feifeili"
-author: "Meera Venkatesh — Software Architecture Consultant, BEng Engineering"
+author: "Sankalp — Engineering Lead"
 date: "May 15, 2026"
 subject: "AI & Data Science"
 heroImage: "https://images.openai.com/static-rsc-4/VFZuwhLsq4zxbV5KszM1d3vvsCdAglDIyjaohVpKV6nrnr12ER00h5IQyg5B-3g3dnHOQLYBSsdYwpzLEKnrs4WoXTKcq14591uatdyz7DOYIcCEWNSHmdu59Tc0otRiknPXUMfFSgNubYtNGpyGe3U2J-l7xlCIUZ4Dafo0NdhDUyVCd26-OyrF4HEX3lAa?purpose=fullsize"

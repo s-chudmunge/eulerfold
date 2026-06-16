@@ -1,11 +1,11 @@
 ---
-title: "DRAM Refresh Cycles and Charge Leakage"
+title: "Why Does DRAM Leak Charge?"
 slug: "dram-refresh-leakage"
 shortSlug: "dram-leakage"
 author: "Sankalp — Engineering Lead"
 date: "May 31, 2026"
 subject: "Computer Science"
-heroImage: "https://images.unsplash.com/photo-1555664424-778a1e5e1b48?q=80&w=2000&auto=format&fit=crop"
+heroImage: "/images/articles/hero_dram_leakage.jpg"
 excerpt: "DRAM cells are leaky capacitors that must be recharged every 64ms, a frantic maintenance cycle that consumes up to 50% of throughput in high-density nodes."
 technicalInsight: "RAIDR reduces refresh power by 16% by grouping rows into retention bins, exploiting the fact that 99% of cells retain charge for >256ms."
 synonyms:

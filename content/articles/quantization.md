@@ -2,7 +2,7 @@
 title: "How Outlier Weights Break AI Compression"
 slug: "quantization"
 shortSlug: "quantization"
-author: "Dr. Siddharth Iyer — Computational Research Scientist, PhD Applied Computing"
+author: "Sankalp — Engineering Lead"
 date: "April 23, 2026"
 subject: "AI & Data Science"
 heroImage: "https://images.openai.com/static-rsc-4/qMx9WUOQS5ImPzu8XqIXgK1dhgJ8uaXcQPtTM48AK2_en_qPbiH0WV3pYCz7ZXDLOUoUqp0V610vFH0kPPeeJXAGDyWJ-4U_iJ1FrUeVRj7H7IKkBhFi70WrFi9-fBsuuOgHsvYcXFhr8KcPjxMLJ548y5Gp5bokYt7LpAzxApqL-bbig1MJ1xiBULCzqLS4?purpose=fullsize"

@@ -2,7 +2,7 @@
 title: "Why AI Medicine Fails the Most Unique Patients"
 slug: "personalized-medicine"
 shortSlug: "personalized-medicine"
-author: "Dr. Nitin Bansal — Semiconductor Technology Researcher, PhD Materials Science"
+author: "Sankalp — Engineering Lead"
 date: "May 7, 2026"
 subject: "Medicine"
 heroImage: "https://images.openai.com/static-rsc-4/oOJHhpkXQRpIaDaGn0Xg4Wa6ylXDgs_E-i2W2p9Rp3OgCIFwC5nd5qs7OZ-8jdVeENnZ3GdILST8owc6cZRXFX4lEPG9U5sz8E5EujSb-yG-hA7DaAfYuQRlaS9WUOwPk0iQpv0psm4cGMeZVGCpsaeUpQd7aYZErtUkknS-iiegt-rcCQafrbsqY8D_XIDX?purpose=fullsize"

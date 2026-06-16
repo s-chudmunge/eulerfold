@@ -1,11 +1,11 @@
 ---
-title: "The Proximity Paradox: Why Vector Distance is a Poor Proxy for Meaning"
+title: "Why is Vector Distance a Poor Proxy for Meaning?"
 slug: "embeddings"
 shortSlug: "embeddings"
-author: "Ananya Rao — Data Science Research Editor, MSc Data Analytics"
+author: "Sankalp — Engineering Lead"
 date: "April 17, 2026"
 subject: "AI & Data Science"
-heroImage: "https://images.openai.com/static-rsc-4/TQKyfj5PHPYFXGED5mQMVxXwHLUXYEYqPHtq4_8nylmY5_jct7opoI4RqhZP9x4FrLGsFeRrpWckjYiNqDfryNRjCDqpLhj0JjoPxd-Cmt-P6wVXaqXdCQWd2nOWtexihQlEkVjmgC0ckaC1cLIzcSEzHdo5IOjkdZYYdQ2MP3RyfEUT6cdQk5PoxdYtGz-_?purpose=fullsize"
+heroImage: "/images/articles/hero_embeddings_abstract.jpg"
 excerpt: "As dimensions scale into the thousands, the fundamental laws of geometry warp. Proximity in a high-dimensional embedding space is often a statistical mirage, not a guarantee of semantic relevance."
 technicalInsight: "The 'hubness' problem in high-dimensional spaces causes a small subset of generic vectors to emerge as universal nearest neighbors, severely degrading retrieval accuracy in RAG systems despite mathematically perfect cosine similarity."
 synonyms:

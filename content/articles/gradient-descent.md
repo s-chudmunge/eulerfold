@@ -1,11 +1,11 @@
 ---
-title: "The Myth of the Global Minimum: Why Optimization is a Journey Through Flatlands"
+title: "Why Do Neural Networks Stall at Saddle Points?"
 slug: "gradient-descent"
 shortSlug: "gradient-descent"
-author: "Dr. Siddharth Iyer — Computational Research Scientist, PhD Applied Computing"
+author: "Sankalp — Engineering Lead"
 date: "April 20, 2026"
 subject: "AI & Data Science"
-heroImage: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?q=80&w=1400&h=700&auto=format&fit=crop"
+heroImage: "/images/articles/hero_flatlands_optimization.jpg"
 excerpt: "In high-dimensional spaces, the greatest threat to learning is not a suboptimal pit, but a vast, featureless plateau. Optimization is less about rolling downhill and more about breaking the symmetry of the flatlands."
 technicalInsight: "Local minima are vanishingly rare in neural networks with billions of parameters. Most 'traps' are actually saddle points—geometric configurations where the gradient is near zero, causing learning to stall indefinitely."
 synonyms:

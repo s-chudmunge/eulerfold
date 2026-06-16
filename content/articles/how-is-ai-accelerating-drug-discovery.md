@@ -2,7 +2,7 @@
 title: "Why Perfect AI Drugs Fail in Human Trials"
 slug: "how-is-ai-accelerating-drug-discovery"
 shortSlug: "drug-discovery"
-author: "Dr. Kavya Nair — Bioinformatics Research Lead, PhD Computational Biology"
+author: "Sankalp — Engineering Lead"
 date: "April 30, 2026"
 subject: "Medicine"
 heroImage: "https://images.openai.com/static-rsc-4/AxAIOW1uW_PEJnZ-HGreXn42ShdPwWdMDLB3Dpml4ITf6h1VacsJhRxeYJ7m1eVVSSZDeKTV9Aq8fP2NDgrpsPZGB9TyWoSi1GrZilyKYI-wmy9JFtbblKVcK4FMEpoZgbD2DqN_TYCgALxIQCarDSmDKe_6GmviVrmu4M_g0swjR6Fke9kmCvu4yp6F7v3V?purpose=fullsize"

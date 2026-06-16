@@ -1,8 +1,8 @@
 ---
-title: "Terence Tao and the search for logic across the infinite"
+title: "How Does Terence Tao Search for Logic Across the Infinite?"
 slug: "terence-tao-unfolding-infinite"
 shortSlug: "tao"
-author: "Dr. Siddharth Iyer — Computational Research Scientist, PhD Applied Computing"
+author: "Sankalp — Engineering Lead"
 date: "May 15, 2026"
 subject: "Mathematics"
 heroImage: "https://images.openai.com/static-rsc-4/ZCpksTMTMfOd3nirvEUU0PBpvUBM3UKsfxxbYP6BRztmJzt9AjbfPCp1UIuvkZNATC16OaQxZ-XSntmYLis5RRCkzCyfqocEXmVSFPi_LRBcacRW-Tf3t91nKDT94dxHNm1JQnrl-GXhMeqApIIpU7BOjy18kamesmhoh0Fj10ePrcmxrEvI2FtxyauRJlKk?purpose=fullsize"

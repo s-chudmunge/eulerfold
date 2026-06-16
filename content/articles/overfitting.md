@@ -1,11 +1,11 @@
 ---
-title: "The Generalization Paradox: Why Memorization is a Software Defect"
+title: "Why is Memorization a Software Defect in AI?"
 slug: "overfitting"
 shortSlug: "overfitting"
-author: "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence"
+author: "Sankalp — Engineering Lead"
 date: "April 18, 2026"
 subject: "AI & Data Science"
-heroImage: "https://images.openai.com/static-rsc-4/w42aZ050_NVXQ2Hfe0k8Z7uplnd_q7rKobONErHep0xEpktEknskUsyz3mrvHVyK7nyROyFfn-kdFI57GD0EsYPC0Fxs_J1Us5OsTLck8Ms380l2GZ6ewbK6oixPJEOZw_v0K2iC9r4OO_01aEhnF4yQ2SDIbChbSDhxYwfCfhAgpdoXqYHVKhG4DuUKyZm4?purpose=fullsize"
+heroImage: "/images/articles/hero_overfitting_abstract.jpg"
 excerpt: "The boundary between a model that memorizes and a model that understands is not a gradual slope; it is a sudden, phase-shifting snap. True generalization often requires training far beyond the point of apparent failure."
 technicalInsight: "Implicit regularization in modern over-parameterized models allows them to move from brute-force memorization to algorithmic logic, a phenomenon known as Grokking, which occurs long after the training loss has bottomed out."
 synonyms:

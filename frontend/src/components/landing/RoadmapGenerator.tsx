@@ -870,33 +870,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                 </div>
               </div>
               
-              {session && openRouterKey && usageHistory.length > 0 && (
-                <div className="mt-4 pt-4 border-t border-border/50">
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2">
-                      <History className="w-3.5 h-3.5 text-text-muted" />
-                      <span className="text-[9px] font-bold text-text-heading uppercase tracking-widest">Recent AI Usage</span>
-                    </div>
-                    <a href="https://openrouter.ai/activity" target="_blank" rel="noopener noreferrer" className="text-[9px] font-bold text-accent hover:underline">
-                      View Log →
-                    </a>
-                  </div>
-                  <div className="space-y-2">
-                    {usageHistory.slice(0, 3).map((h, i) => (
-                      <div key={i} className="flex items-center justify-between p-2.5 bg-background border border-border/50 rounded-lg text-left shadow-sm">
-                        <div className="truncate pr-2 max-w-[60%]">
-                          <div className="text-[11px] font-bold text-text-heading truncate">{h.subject}</div>
-                          <div className="text-[9px] text-text-muted mt-0.5 truncate">{h.model}</div>
-                        </div>
-                        <div className="text-right shrink-0">
-                          <div className="text-[10px] font-bold text-accent">{h.total_tokens.toLocaleString()} tokens</div>
-                          <div className="text-[9px] text-text-muted">{new Date(h.date).toLocaleDateString()}</div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
+
             </div>
             )}
             {/* --- Start of Step 2 content merged --- */}

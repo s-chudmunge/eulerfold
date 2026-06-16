@@ -1,11 +1,11 @@
 ---
-title: "Why AI Training is Throttled by the Chain Rule"
+title: "Why is AI Training Throttled by the Chain Rule?"
 slug: "backpropagation"
 shortSlug: "backpropagation"
-author: "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence"
+author: "Sankalp — Engineering Lead"
 date: "April 16, 2026"
 subject: "AI Infrastructure"
-heroImage: "https://images.openai.com/static-rsc-4/KspyUXXMEeH_EAGTotATSQK-IT3MUpM-QhnAuEBgzSrPM8xmJvB2njHVmX-egWesR_DlDcuXmu63oQ2s5ZlMhYdKMSBAL3O1p2GLNxQ2km6-PDaQCckhIlb_EQRg8ADZIJksR6CckGIC-JbT6kjh19ze64FnapJsdc7q-NuIUWdapkiDUGzBSBp9exoxD-U1?purpose=fullsize"
+heroImage: "/images/articles/hero_backprop_abstract.jpg"
 excerpt: "Backpropagation forces global synchronization on hardware that wants to be local. The memory-bandwidth tax of the backward pass is the primary ceiling on AI scaling."
 technicalInsight: "The backward pass requires storing all intermediate activations from the forward pass, creating a global locking mechanism that throttles distributed GPU clusters."
 synonyms:

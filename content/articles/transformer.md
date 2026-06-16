@@ -1,11 +1,11 @@
 ---
-title: "The Quadratic Wall: Why Attention is a Hardware Crisis"
+title: "Why is Attention a Hardware Crisis?"
 slug: "transformer"
 shortSlug: "transformer"
-author: "Meera Venkatesh — Software Architecture Consultant, BEng Engineering"
+author: "Sankalp — Engineering Lead"
 date: "April 27, 2026"
 subject: "Computer Science"
-heroImage: "https://images.openai.com/static-rsc-4/Fn2ic4O1QBBHiAm-OuIgIOY_WM1g8YPXEUwazktc4O-Qyi0Fqqfx7A3Gy7zzXjQIglKF-mIatVnB3lxGvsejzorFTJDqPTBVixqNb5a47GEYbW_XwUH_d05-W2TqZjea7SbaONd1L6R57c6rSHVMTzOLYXvjIqvaO85OYpXlosJLAmFqK6p1qqhKsxQ_v6bw?purpose=fullsize"
+heroImage: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop"
 excerpt: "The 'Context Window' is marketed as a cognitive boundary, but it is actually a physical ceiling enforced by quadratic memory growth. Understanding the Transformer requires acknowledging the brute-force tax of self-attention."
 technicalInsight: "Self-attention requires $O(n^2)$ memory and compute, meaning the attention matrix grows quadratically with sequence length. This creates a 'Quadratic Wall' where increasing the context window by 10x requires 100x the memory allocation, shifting the bottleneck from logic to HBM bandwidth."
 synonyms:

@@ -1,8 +1,8 @@
 ---
-title: "Caitlin Kalinowski on the mechanical constraints of wearable hardware"
+title: "Why Does Wearable Hardware Face Mechanical Constraints?"
 slug: "caitlin-kalinowski-hardware-future"
 shortSlug: "kalinowski"
-author: "Ananya Rao — Data Science Research Editor, MSc Data Analytics"
+author: "Sankalp — Engineering Lead"
 date: "May 15, 2026"
 subject: "Computer Science"
 heroImage: "https://images.openai.com/static-rsc-4/tlmtZJohPNbZCpRThVuKHaZ7lqo2SlMcTbJjKkD5cNkpIlP_HqMIaPxYW30oDuDpdtj-ywujHpg5GTXJDG95yEkC83PKLWiIbha0WIASnBOCI3FA6STSn_X9YgpePN7C2AEG-_l1Oyzte4l4ax3AyglcS7n_dijy5PfaLEP5qfmnHgiey-ymKQC1GZV2bb5A?purpose=fullsize"

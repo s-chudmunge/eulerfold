@@ -1,11 +1,11 @@
 ---
-title: "Why Perfectly Sized Models Fail in Production"
+title: "Why Do Perfectly Sized Models Fail in Production?"
 slug: "double-descent"
 shortSlug: "double-descent"
-author: "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence"
+author: "Sankalp — Engineering Lead"
 date: "April 15, 2026"
 subject: "AI & Data Science"
-heroImage: "https://images.openai.com/static-rsc-4/EWhEhVw8NFcxMv1Wxn3ZIl2Mv5btWpJPNjrlz3wNFXb6qJvQjQGpG9M-Qdz81rs64-m8VWbcLdYr_EKAQ92yR6qreNthsrUmX6LJfC3QZbQORJ6r0vNp_XyvbmXVogO9rXLRNTtw8g3AVS9e0Fpe8h1b38_62rdZejaJ4wBzQePmw9Zgqpn57dulEckDA5Vu?purpose=fullsize"
+heroImage: "/images/articles/hero_double_descent_abstract.jpg"
 excerpt: "Standard model selection maximizes error at the interpolation threshold. Pushing into massive overparameterization allows SGD to find minimum-norm solutions."
 technicalInsight: "Belkin et al. (2019) demonstrated that the interpolation threshold forces maximum test error. A second descent occurs only when excess capacity alters the loss landscape."
 faq:

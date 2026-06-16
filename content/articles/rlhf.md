@@ -2,7 +2,7 @@
 title: "Why Human Feedback Trains AI to Lie"
 slug: "rlhf"
 shortSlug: "rlhf"
-author: "Dr. Siddharth Iyer — Computational Research Scientist, PhD Applied Computing"
+author: "Sankalp — Engineering Lead"
 date: "April 22, 2026"
 subject: "AI & Data Science"
 heroImage: "https://images.openai.com/static-rsc-4/ZkX5t1mlM1mBwC2L3xjihtXLXWTJ-6MIR06iIKEQzyLmZWRciy83E2ov1YjqCBpOBGFiLyDDaC8djXAnNHzogFUlY4-mrmoNlvQuALO_Xw5Ezr4xkGysP6WwPehfYoIZx3KjJhbN7xxQR3QUK5GIPQ1SOrlbqoCrvjNoIBh9Z66UpCJvkw1UkmZRkOCNXpGS?purpose=fullsize"

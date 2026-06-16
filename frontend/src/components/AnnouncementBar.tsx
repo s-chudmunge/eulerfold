@@ -1,40 +1,46 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, Gift, Zap, Clock } from 'lucide-react';
+import { X, Gift, Sparkles, Clock } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { supabase } from '@/lib/supabase/client';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getDiscountStatus, formatTime } from '@/lib/utils/pricing';
+import { useAuth } from '@/components/AuthProvider';
 
 export default function AnnouncementBar() {
   const [isVisible, setIsVisible] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [activeOffer, setActiveOffer] = useState(0); // 0 for Launch, 1 for Flash Sale
   const [discountStatus, setDiscountStatus] = useState(getDiscountStatus());
   const pathname = usePathname();
+  const { user, loading } = useAuth();
+  const isLoggedIn = !!user;
+  const isPro = user?.is_pro;
 
   useEffect(() => {
-    // Check if user is logged in
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setIsLoggedIn(!!session);
-    };
-    checkAuth();
-
-    // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsLoggedIn(!!session);
-    });
-
     // Only show on public landing pages
     const internalPaths = ['/dashboard', '/planner', '/practice', '/research-lab', '/roadmap', '/explore', '/u/', '/generate'];
     const isInternal = internalPaths.some(p => pathname.startsWith(p));
 
+    let timeoutId: NodeJS.Timeout;
+
     if (!isInternal) {
-        setIsVisible(true);
-        document.documentElement.style.setProperty('--announcement-height', '38px');
+        if (isPro && localStorage.getItem('eulerfold_pro_banner_dismissed') === 'true') {
+            setIsVisible(false);
+            document.documentElement.style.setProperty('--announcement-height', '0px');
+        } else {
+            setIsVisible(true);
+            document.documentElement.style.setProperty('--announcement-height', '38px');
+            
+            // Auto hide for pro users after 15s
+            if (isPro) {
+                timeoutId = setTimeout(() => {
+                    setIsVisible(false);
+                    document.documentElement.style.setProperty('--announcement-height', '0px');
+                    localStorage.setItem('eulerfold_pro_banner_dismissed', 'true');
+                }, 15000);
+            }
+        }
     } else {
         setIsVisible(false);
         document.documentElement.style.setProperty('--announcement-height', '0px');
@@ -52,15 +58,18 @@ export default function AnnouncementBar() {
     
     return () => {
       document.documentElement.style.setProperty('--announcement-height', '0px');
-      subscription.unsubscribe();
       clearInterval(flipInterval);
       clearInterval(timerInterval);
+      if (timeoutId) clearTimeout(timeoutId);
     };
-  }, [pathname]);
+  }, [pathname, isPro]);
 
   const handleClose = () => {
     setIsVisible(false);
     document.documentElement.style.setProperty('--announcement-height', '0px');
+    if (isPro) {
+      localStorage.setItem('eulerfold_pro_banner_dismissed', 'true');
+    }
   };
 
   if (!isVisible || pathname === '/dashboard') {
@@ -72,7 +81,7 @@ export default function AnnouncementBar() {
   }
 
   return (
-    <div className="fixed top-0 inset-x-0 z-[70] bg-gradient-to-r from-teal-900 via-teal-700 to-teal-900 text-white h-[38px] flex items-center px-4 md:px-6 transition-all duration-500 ease-in-out border-b border-white/10 shadow-sm overflow-hidden">
+    <div className="fixed top-0 inset-x-0 z-[70] bg-gradient-to-r from-teal-900 via-teal-700 to-teal-900 text-white h-[38px] flex items-center px-4 md:px-6 transition-all duration-500 ease-in-out border-b border-white/10 shadow-sm overflow-hidden rounded-b-3xl md:rounded-none">
       <div className="w-full max-w-7xl mx-auto flex items-center justify-center h-full relative">
         
         <AnimatePresence mode="wait">
@@ -97,15 +106,21 @@ export default function AnnouncementBar() {
                   ease: "easeInOut"
                 }}
               >
-                <Gift className="w-4 h-4 text-teal-300" />
+                {isPro ? <Sparkles className="w-4 h-4 text-teal-300" /> : <Gift className="w-4 h-4 text-teal-300" />}
               </motion.div>
-              <span>LAUNCH OFFER: Get 5 free roadmaps on signup</span>
+              <span>
+                {isPro 
+                  ? "DID YOU KNOW: You can decode any research paper with this tool"
+                  : isLoggedIn 
+                    ? "UPGRADE TO PRO: Get 50 roadmap credits, homework evaluation, and research lab access" 
+                    : "LAUNCH OFFER: Get 5 free roadmaps on signup"}
+              </span>
             </div>
             <Link 
-              href={isLoggedIn ? "/generate" : "/login"} 
+              href={isPro ? "/research-decoded" : isLoggedIn ? "/pricing" : "/login"} 
               className="bg-white text-teal-800 px-4 py-1 rounded-full text-[11px] md:text-[12px] font-black uppercase tracking-tighter hover:bg-teal-50 transition-colors hidden sm:block shadow-sm"
             >
-              Claim Now
+              {isPro ? "Open Lab" : isLoggedIn ? "Upgrade Now" : "Claim Now"}
             </Link>
           </motion.div>
         </AnimatePresence>

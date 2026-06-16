@@ -1,5 +1,5 @@
 ---
-title: "The Memory Wall and AI Performance"
+title: "Why is the Memory Wall Bottlenecking AI?"
 slug: "memory-wall-ai"
 shortSlug: "memory-wall"
 author: "Sankalp — Engineering Lead"

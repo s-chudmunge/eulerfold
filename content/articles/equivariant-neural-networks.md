@@ -2,7 +2,7 @@
 title: "Why Handedness is a Life-or-Death Problem for AI"
 slug: "equivariant-neural-networks"
 shortSlug: "equivariant-nn"
-author: "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence"
+author: "Sankalp — Engineering Lead"
 date: "May 7, 2026"
 subject: "Computer Science"
 heroImage: "https://images.openai.com/static-rsc-4/tLbvZO2qCw5oS1KLvbXvJVtxYDmOcNWymldQT5w-xB7laWbb53u9aFn_fLFGHWTTkTfNk7fePEZZ6vleUfTEPFyPs2Lmpbay7TySXQKNaFOZOZ8wgo1knhwjO6Cvw4rFclQv7KwPdvEERzOXf0kM9nvFkOx2TfR3lkCTQ7EZ3XDuQvfAXRPQPIsaIbGRIKfR?purpose=fullsize"

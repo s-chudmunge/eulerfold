@@ -1,11 +1,11 @@
 ---
-title: "When AI is Penalized for Finding True Similarities"
+title: "Why is AI Penalized for Finding True Similarities?"
 slug: "contrastive-learning"
 shortSlug: "contrastive"
-author: "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence"
+author: "Sankalp — Engineering Lead"
 date: "April 27, 2026"
 subject: "AI & Data Science"
-heroImage: "https://images.openai.com/static-rsc-4/5X9RVv3vTY7UR-FZQ3GnPplU2aQmmIT2TgXD3wKcRymB-kO6KvP7Y0YvUvQy5FBYuiIgFTgMJgCjELo31k-s8DE4AHGMqQVZKTcDC-7-F3_9SvQcNHiSvmBgWTMmQYaMKwWRSTTiy45T2u6e9g2_ctkmOg_y8mLnljr7sGYiHnkCbWDAlRBISCq67mfGqyIm?purpose=fullsize"
+heroImage: "/images/articles/hero_contrastive_abstract.jpg"
 excerpt: "Large batch sizes prevent latent space collapse but force models to penalize true semantic similarities as false negatives."
 technicalInsight: "SimCLR benchmarks rely on a batch size of 4096 to supply enough hard negatives, exponentially increasing the rate of un-learning valid semantic links."
 faq:

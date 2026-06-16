@@ -2,7 +2,7 @@
 title: "How does Regularization prevent Overfitting?"
 slug: "regularization"
 shortSlug: "regularization"
-author: "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence"
+author: "Sankalp — Engineering Lead"
 date: "April 27, 2026"
 subject: "AI & Data Science"
 heroImage: "https://images.openai.com/static-rsc-4/3PO-MV7d4bzV4x0i6BFZg9NxXLKdWz5B9BOhUCdrpGklfv5n5EQWJXcN73q1jhT9nTRt_S-UCeUHwr4vhQHbhHntH4SNyNVXJe0Eu4SBvvoPYIimSY2Fm0Xz5MonvJEz0PY3LnVf_wcktUQNsJ4Z-a5YB17voGJFtGJi7DpbpnqOv16vxX9nqhAj2qTdAr-P?purpose=fullsize"

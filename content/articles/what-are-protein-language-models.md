@@ -2,7 +2,7 @@
 title: "Why AI Understands Evolution Better Than Physics"
 slug: "what-are-protein-language-models"
 shortSlug: "plm"
-author: "Dr. Kavya Nair — Bioinformatics Research Lead, PhD Computational Biology"
+author: "Sankalp — Engineering Lead"
 date: "April 30, 2026"
 subject: "Biology"
 heroImage: "https://images.openai.com/static-rsc-4/4VEKIP6I1Wr_ZKPULvV9361WaD_U9eoCrCfS9_4RGkvh1DXFqWaPZ7PcpN9wj8drj_fin5CfxaVzRlLT4gCKxaRh7_-yOrDj300ZUKwFqjPXQuvsezootSOXHujqUQ-CmwrS9eXERV2JRI8p9zo7gMEagY-u5nzFYW941FGo0F870-0juQg_vCslwm0_tJHI?purpose=fullsize"

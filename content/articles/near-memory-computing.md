@@ -1,11 +1,11 @@
 ---
-title: "Near-Memory and In-Memory Computing"
+title: "Why is Near-Memory Computing the Future?"
 slug: "near-memory-computing"
 shortSlug: "near-memory"
 author: "Sankalp — Engineering Lead"
 date: "May 31, 2026"
 subject: "Computer Science"
-heroImage: "https://images.unsplash.com/photo-1591453089816-0fbb971b454c?q=80&w=2000&auto=format&fit=crop"
+heroImage: "/images/articles/hero_near_memory.jpg"
 excerpt: "Moving data is 100x more expensive than computing it, forcing an architectural reversal from centralized GPUs to in-memory processing."
 technicalInsight: "Samsung HBM-PIM and SK Hynix AiM reduce power consumption by up to 80% by embedding MAC-capable ALUs directly within the memory die."
 synonyms:

@@ -2,7 +2,7 @@
 title: "Why AI Cannot Simulate a Single Human Cell"
 slug: "how-is-ai-building-a-digital-twin-of-the-cell"
 shortSlug: "digital-twin"
-author: "Dr. Kavya Nair — Bioinformatics Research Lead, PhD Computational Biology"
+author: "Sankalp — Engineering Lead"
 date: "April 30, 2026"
 subject: "Biology"
 heroImage: "https://images.openai.com/static-rsc-4/_rv0J0GqluW1Chpa1kNA4-ExRbHKNc-x3_66noQxncx5ANd2lWwHWS3yNFrA_afqtaeIC3J_P1xpuKawBqD_XNLMZAzoFoBFQB5wnPYzqQtGkaSR0aN8yaie2JTd13gVJRp7RcRYHJHlQ-o9jmmpl3IsEFAr9aU9fGWqvF1YtLiYcRTdyFdsXqzoUws5cZov?purpose=fullsize"

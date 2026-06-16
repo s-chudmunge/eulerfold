@@ -2,7 +2,7 @@
 title: "Why Mapping the Brain Does Not Explain the Mind"
 slug: "how-is-ai-mapping-the-brain-connectomics"
 shortSlug: "connectomics"
-author: "Dr. Kavya Nair — Bioinformatics Research Lead, PhD Computational Biology"
+author: "Sankalp — Engineering Lead"
 date: "April 30, 2026"
 subject: "Neuroscience"
 heroImage: "https://images.openai.com/static-rsc-4/HHliW1TQXGwx-DyB_qLcP2vyFlKD0LqcUwh78JaNxi6Av1wYB4g6Zqj_eiz_zrUXSQbAdElP4ZtakZlSrCMXJHP7IClu4hdTUcPeHziCkZF4oY7Vt2X3O3kYAiu4aue-BN1_aJOKqxCBEBanbhCiqVhXPJ_oVrSUtIPw-YdmMzCsS5DVgJFCh39sgBFR3VL0?purpose=fullsize"

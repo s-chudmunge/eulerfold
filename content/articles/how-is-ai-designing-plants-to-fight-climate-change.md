@@ -2,7 +2,7 @@
 title: "Why Plants Are Inefficient Carbon Sinks and How AI Is Fixing That"
 slug: "how-is-ai-designing-plants-to-fight-climate-change"
 shortSlug: "plant-design"
-author: "Dr. Nitin Bansal — Semiconductor Technology Researcher, PhD Materials Science"
+author: "Sankalp — Engineering Lead"
 date: "April 30, 2026"
 subject: "Environment"
 heroImage: "https://images.openai.com/static-rsc-4/rOuMizTC9osDPIcW8tpLmuh54zjeAEhKzgRnK8lLcXZDBjjhU4HgNvLs9tjo8dTSBxGW3BjzpghXhmfRK8w6PxLf63sLSZpGPfszaZp97-cw3axo4kcnQr3zhnD5z5QZnlLnLzjrM6A4K_CxdiFogK1KoNVEpHkgluvC5tQdh6QRCw9rJa-z9Hw2uSti_mSy?purpose=fullsize"

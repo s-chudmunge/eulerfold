@@ -1,8 +1,8 @@
 ---
-title: "Dr. Lisa Su and the Technical Blueprint for AMD’s Resurrection"
+title: "How Did Dr. Lisa Su Engineer the Resurrection of AMD?"
 slug: "lisa-su-amd-turnaround"
 shortSlug: "lisa-su"
-author: "Meera Venkatesh — Software Architecture Consultant, BEng Engineering"
+author: "Sankalp — Engineering Lead"
 date: "May 9, 2026"
 subject: "Computer Science"
 heroImage: "https://images.openai.com/static-rsc-4/7ypsNHR62Aegh712iSs90oW_UW2cNub9hQSyEzE21xwjJh5WKdh9w27nLPblVuilsjzs6Z613H9Y-1EaHjVNWMagtSqeenW5LBT70YQxe0E5nyxPW2J09Cye_gnnhQ-imLdO6xY6axZ6shcptNJnXFMXaczHLD8HP9MOuyyPQ4hIrHeT-yN5w1IWq2n82PyB?purpose=fullsize"

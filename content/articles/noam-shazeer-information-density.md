@@ -1,8 +1,8 @@
 ---
-title: "Noam Shazeer’s Axiom: Why Text is the Ultimate Carrier of Intelligence"
+title: "Why Does Noam Shazeer Believe Text is the Ultimate Carrier of Intelligence?"
 slug: "noam-shazeer-information-density"
 shortSlug: "shazeer"
-author: "Meera Venkatesh — Software Architecture Consultant, BEng Engineering"
+author: "Sankalp — Engineering Lead"
 date: "May 9, 2026"
 subject: "Computer Science"
 heroImage: "https://images.openai.com/static-rsc-4/OQjL0S-2IqbwEWXcM3MiaJsPoyztGMa1VhkBY5Ez_75m_mZZrcr8M6fLVQnFU4m2ioQwXGzpfLCXX5981_KBQxxEQaiuEA3AXXzhZvhTQr38YTX-0Mq376r520l1O8rJ5vf6UGcpPA6xvjP9EUaWNbfTG_k7epHBg3jnGgJLp05KJSeq13cd0BeJxX67PjE_?purpose=fullsize"

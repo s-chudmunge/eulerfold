@@ -7,6 +7,7 @@ import { User as UserIcon, LayoutDashboard, LogOut, Settings, ChevronDown, UserC
 import { supabase } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { useSettings } from './SettingsProvider';
+import VerifiedBadge from '@/components/VerifiedBadge';
 
 export default function UserNav() {
   const { user, loading } = useAuth();
@@ -60,6 +61,12 @@ export default function UserNav() {
             <span className="text-[13px] font-semibold text-text-heading tracking-tight max-w-[100px] truncate hidden sm:block">
               {displayName.split(' ')[0]}
             </span>
+            {user?.is_pro && (
+              <div className="hidden sm:flex items-center gap-0.5 ml-0.5 px-1 py-0.5 rounded-md bg-accent/10 border border-accent/20">
+                <VerifiedBadge size={12} className="shrink-0 text-accent" />
+                <span className="text-[9px] font-bold text-accent tracking-wider leading-none mt-[1px]">PRO</span>
+              </div>
+            )}
             <ChevronDown className={`w-3.5 h-3.5 text-text-muted opacity-40 transition-transform duration-300 ${isOpen ? 'rotate-180 opacity-100' : ''}`} />
           </div>
         </button>

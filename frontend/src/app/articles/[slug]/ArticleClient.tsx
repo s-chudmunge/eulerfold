@@ -22,7 +22,6 @@ import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
 import { motion, AnimatePresence } from 'framer-motion';
 import PublicHeader from '@/components/PublicHeader';
-import Footer from '@/components/Footer';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import RecommendedRoadmaps from '@/components/RecommendedRoadmaps';
 import FloatingTTS from '@/components/FloatingTTS';
@@ -737,8 +736,6 @@ export default function ArticleClient({ article }: Props) {
           </main>
         </div>
       </div>
-
-      <Footer />
     </div>
   );
 }

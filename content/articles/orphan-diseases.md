@@ -2,7 +2,7 @@
 title: "Why AI-Discovered Cures Are Abandoned Before Clinical Trials"
 slug: "orphan-diseases"
 shortSlug: "orphan-diseases"
-author: "Dr. Nitin Bansal — Semiconductor Technology Researcher, PhD Materials Science"
+author: "Sankalp — Engineering Lead"
 date: "May 7, 2026"
 subject: "Medicine"
 heroImage: "https://images.openai.com/static-rsc-4/0O1MRLzQ_rDXVW_tB3KIcWkrPeI9Dl8G4WOQdTTP75GB3yrkFuEWjNv--DYusyTBoc3PTm9_CZ-T-oooIncOYqaLRjyto_zsz27YQt5RBCHRbPc6l1alGCWqrVwgAVyjzqmEOHxUizrMztudRSZOxh5S4FopWFhQPL-7Fj3ReR24XJmPPMbwfz_BCQkLxbBf?purpose=fullsize"

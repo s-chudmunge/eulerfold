@@ -2,7 +2,7 @@
 title: "Why AI Can Control Plasma Faster Than Any Human Physicist"
 slug: "how-does-ai-simulate-nuclear-fusion"
 shortSlug: "nuclear-fusion"
-author: "Dr. Siddharth Iyer — Computational Research Scientist, PhD Applied Computing"
+author: "Sankalp — Engineering Lead"
 date: "May 5, 2026"
 subject: "Physics"
 heroImage: "https://images.openai.com/static-rsc-4/rKd0jeH-Ngzrsja10lrAHtvz7zccGL7HfHdW_i2g3QDCKPBb9XUCOSouXZMaAfoaRMrR5BmK-ff8XOzzZBF4CVSIMagwF2OHLPYeJ9QKV-c7Lxx3V3Qh-NYImvFZ6y8LnkeffJctpZ83xRKze--VeWBSZuy9SRrECAkZXAYxF5epd3gT4OcV4h5ZArTpdEkW?purpose=fullsize"

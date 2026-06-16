@@ -1,8 +1,8 @@
 ---
-title: "Ilya Sutskever and the Spiritual Devotion to Machine Scale"
+title: "Why is Ilya Sutskever Devoted to Machine Scale?"
 slug: "ilya-sutskever-superalignment"
 shortSlug: "sutskever"
-author: "Meera Venkatesh — Software Architecture Consultant, BEng Engineering"
+author: "Sankalp — Engineering Lead"
 date: "May 9, 2026"
 subject: "Computer Science"
 heroImage: "https://images.openai.com/static-rsc-4/6HFyg4qnvJtpKFd8EXN2_u-m-diOTCnAc1mNeMegNZM_GC11SS3GQobNMi7T0jjhF89wxXJtRyJmDT__5N-EcM2h_WHtKT8kU_f1cHZM8XDGLlazfwvvdTw82m236hb_x_TUR0UbSWwOD4oUSY3xPmTKglBUSn6VF2o3pPJ3iWZkF10wS0wYQAAWmGSCojKg?purpose=fullsize"

@@ -1,8 +1,8 @@
 ---
-title: "How Mira Murati Uses Operational Reality to Ship AGI"
+title: "How Does Mira Murati Use Operational Reality to Ship AGI?"
 slug: "mira-murati-operational-reality"
 shortSlug: "murati"
-author: "Meera Venkatesh — Software Architecture Consultant, BEng Engineering"
+author: "Sankalp — Engineering Lead"
 date: "May 9, 2026"
 subject: "Computer Science"
 heroImage: "https://images.openai.com/static-rsc-4/BdAj6A5FEa9iRY0TXm5A-5H-13BFZxqCOUZ9KvfGw0nNNspOaVT1eskb1CNaVaTPNamwkYMvy2N1gzhd7x056X0WapsvcUlZ9QXC0XG3JSeZNOpkvoVj1Xz-UKPhI5yVxT-ri4_EfyNs2S1gcC8prTrWXaiJwhBLWfQKXq6y-sy6HqikZB-Zl9czYHhpaU6N?purpose=fullsize"

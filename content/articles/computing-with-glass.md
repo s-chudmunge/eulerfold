@@ -1,11 +1,11 @@
 ---
-title: "Why Analog AI Chips Slowly Forget Their Own Weights"
+title: "Why Do Analog AI Chips Forget Their Weights?"
 slug: "computing-with-glass"
 shortSlug: "pcm-drift"
 author: "Sankalp — Engineering Lead"
 date: "May 31, 2026"
 subject: "Computer Science"
-heroImage: "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=2000&auto=format&fit=crop"
+heroImage: "/images/articles/hero_analog_chips.jpg"
 excerpt: "The amorphous state of phase-change memory is a metastable liquid that settling into a lower-energy glass, creating a resistance drift that threatens analog AI precision."
 technicalInsight: "Resistance drift in PCM follows a power law R(t) ∝ t^ν, driven by the shedding of defect states in the mobility gap during structural relaxation."
 synonyms:

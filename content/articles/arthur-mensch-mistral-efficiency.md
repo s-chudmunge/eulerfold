@@ -1,8 +1,8 @@
 ---
-title: "Arthur Mensch and the Quest for Algorithmic Minimalism at Mistral"
+title: "Why is Arthur Mensch Pursuing Algorithmic Minimalism at Mistral?"
 slug: "arthur-mensch-mistral-efficiency"
 shortSlug: "mensch"
-author: "Meera Venkatesh — Software Architecture Consultant, BEng Engineering"
+author: "Sankalp — Engineering Lead"
 date: "May 9, 2026"
 subject: "Computer Science"
 heroImage: "https://images.openai.com/static-rsc-4/UXhH4nHlUaQEbKvYQi0Wwvjn5ihLcTKJbLEdFI_6e8iFqNKE3IfJckt-ZRx0tt6AOCsGwnpEJf0VAqQnK0H6k9DptfPcwtpaw_onbVAJn6xsy9fsZPuzVg1ZLl1xA-falM2adq5pasMrt3Z-CEc-7Tv4vu1bHMUQwgI18HHPDBV-qKE0DOAW7qu0ES5pG07Z?purpose=fullsize"

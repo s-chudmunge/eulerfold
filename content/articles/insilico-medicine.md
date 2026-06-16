@@ -2,7 +2,7 @@
 title: "What is In Silico Medicine?"
 slug: "insilico-medicine"
 shortSlug: "insilico-medicine"
-author: "Dr. Nitin Bansal — Semiconductor Technology Researcher, PhD Materials Science"
+author: "Sankalp — Engineering Lead"
 date: "May 7, 2026"
 subject: "Medicine"
 heroImage: "https://images.openai.com/static-rsc-4/Vo9BJefAUd89e9x5o0LKVwCId5j7W_IgML3va0sPMeHOQBZw6I8HKzrjI-eWfJTqEWksDIrE3juunmlOseX9twqxGQuMOUPIonB3rGynr3_WQK2riXXkVf2PfWjdbDtdJSWgdtQv8pVlnipg_yGuj_A008UadTNQNurOX7IYziOEAZGwpBUBo4RzN4_NZSIk?purpose=fullsize"

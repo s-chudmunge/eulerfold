@@ -1,11 +1,11 @@
 ---
-title: "Why Static Maps Fail to Predict Living Machinery"
+title: "Why Do Static Maps Fail to Predict Living Machinery?"
 slug: "how-does-alphafold-predict-protein-structures"
 shortSlug: "alphafold"
-author: "Dr. Kavya Nair — Bioinformatics Research Lead, PhD Computational Biology"
+author: "Sankalp — Engineering Lead"
 date: "April 30, 2026"
 subject: "Biology"
-heroImage: "https://images.openai.com/static-rsc-4/zFZPWX9Wub5oKzHu6YO8sJCOUQ-p3aaValZJ2z7HWTJVy1pbhorEP9270mRGLOyPAvQNyB0nXPI7bnfWz3PKYgV8GJAmxWolFm9aaUAAhH9sn3SBB5Z5NyEUxGGi-EUz3c6HhCGE9qz1YnfN_etdb3nDhqgwPwqwitr6ScAdN1RRM6qvg1ksU2ad1E6NBbVM?purpose=fullsize"
+heroImage: "/images/articles/hero_alphafold_abstract.jpg"
 excerpt: "AlphaFold solved the 50-year-old protein folding problem, but its single-state predictions often miss the dynamic, shape-shifting nature of active biology."
 technicalInsight: "Jumper et al. (2021) demonstrated that AlphaFold 2's Evoformer treats proteins as 3D spatial graphs, achieving atomic accuracy, yet it struggles with conformational flexibility."
 faq:

@@ -2,7 +2,7 @@
 title: "Why AI Models Pay for Weights They Never Use"
 slug: "mixture-of-experts"
 shortSlug: "moe"
-author: "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence"
+author: "Sankalp — Engineering Lead"
 date: "April 19, 2026"
 subject: "AI & Data Science"
 heroImage: "https://images.openai.com/static-rsc-4/8L9ht6cWNThte0z_A6kU0CJNtfrFIQo5lMiwQhJdMXEmQHP-W_xBEZVVr_kva5WU457Z_aV6bLr1O3GNGlupBYEuKtgqeqIAfS_-lpy2htn9DxVO32zCuDlWgoNKxme9VoG-x5QCmPuFCKsQGREz-1KT5xO1Tn0fT7hUdvEeAoOWVaiV3y6UkHE_4-t3d6qA?purpose=fullsize"

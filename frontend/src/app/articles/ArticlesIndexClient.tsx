@@ -7,7 +7,6 @@ import { Instagram, Youtube, Rss, ArrowRight, Search, ArrowUpDown, Filter } from
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import PublicHeader from '@/components/PublicHeader';
-import Footer from '@/components/Footer';
 import { Article } from './generatedArticles';
 import ArticleCard from '@/components/ArticleCard';
 import CommunityRoadmapBanner from '@/components/landing/CommunityRoadmapBanner';
@@ -144,8 +143,6 @@ export default function ArticlesIndexClient({ articles }: Props) {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

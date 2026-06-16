@@ -108,4 +108,4 @@ Read it fully before making any changes. Rules here are not suggestions.
 - Prefer clarity over cleverness. If a solution is hard to read, it's wrong.
 - **Writing Style:** Use plain, simple English. NEVER use "fluffy" or marketing-focused language. Avoid buzzwords like "high-performance," "high-signal," "intelligence suite," "magic," or "superpowers." Be direct and honest about what features actually do. COMPLETELY BAN the words "high" and "highly" (e.g. "high-quality", "highly-tailored") from all copy, UI text, and loading states.
 - ALWAYS use `https://www.eulerfold.com` for all links and assets. NEVER use the non-www `https://eulerfold.com` version.
-
+- **NEVER** start application builds (e.g. `npm run build`, `next build`) without explicit permission from the user.

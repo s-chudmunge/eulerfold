@@ -3,7 +3,6 @@
 import React from 'react';
 import { Shield } from 'lucide-react';
 import PublicHeader from '@/components/PublicHeader';
-import Footer from '@/components/Footer';
 
 export default function PrivacyContent() {
   return (
@@ -151,7 +150,29 @@ export default function PrivacyContent() {
 
             <section>
               <h2 className="inconsolata-ui text-[20px] font-bold text-text-heading mb-4 uppercase tracking-tight flex items-center gap-3">
-                <span className="text-accent">06.</span> Data Security
+                <span className="text-accent">06.</span> AI & Data Privacy (OpenRouter & Local AI)
+              </h2>
+              <div className="h-[1px] w-full bg-[var(--border)] mb-6"></div>
+              <p className="mb-6">At EulerFold, we believe in open-ness and giving you control over your data. Our AI integrations are designed with security and transparency in mind:</p>
+              <ul className="space-y-4 list-none p-0">
+                <li className="flex gap-3">
+                  <span className="text-accent font-bold">→</span>
+                  <span><strong>Bring Your Own Key (BYOK):</strong> When using OpenRouter via BYOK, your API keys are stored exclusively in your device's <code>localStorage</code>. They are never transmitted to, logged, or processed by EulerFold's backend servers. All API requests to OpenRouter are made directly from your browser, ensuring we have no access to your key or the contents of your prompts. For more details on how OpenRouter handles your data, please see the <a href="https://openrouter.ai/privacy" target="_blank" rel="noopener noreferrer" className="text-accent underline">OpenRouter Privacy Policy</a>.</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-accent font-bold">→</span>
+                  <span><strong>Local AI (WebGPU):</strong> Our Local AI mode represents our commitment to absolute privacy. When enabled, AI models are downloaded and run entirely within your device's browser using WebGPU. No conversational data, prompts, or generated responses ever leave your machine, guaranteeing 100% data sovereignty.</span>
+                </li>
+                <li className="flex gap-3">
+                  <span className="text-accent font-bold">→</span>
+                  <span><strong>Open Data Policy:</strong> We do not use your personal learning data, BYOK generations, or Local AI interactions to train our own foundation models. Your data belongs to you.</span>
+                </li>
+              </ul>
+            </section>
+
+            <section>
+              <h2 className="inconsolata-ui text-[20px] font-bold text-text-heading mb-4 uppercase tracking-tight flex items-center gap-3">
+                <span className="text-accent">07.</span> Data Security
               </h2>
               <div className="h-[1px] w-full bg-[var(--border)] mb-6"></div>
               <p>
@@ -161,7 +182,7 @@ export default function PrivacyContent() {
 
             <section>
               <h2 className="inconsolata-ui text-[20px] font-bold text-text-heading mb-4 uppercase tracking-tight flex items-center gap-3">
-                <span className="text-accent">07.</span> Contact Us
+                <span className="text-accent">08.</span> Contact Us
               </h2>
               <div className="h-[1px] w-full bg-[var(--border)] mb-6"></div>
               <p>
@@ -171,8 +192,6 @@ export default function PrivacyContent() {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

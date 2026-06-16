@@ -1,8 +1,8 @@
 ---
-title: "Vitalik Buterin’s philosophical approach to decentralized consensus"
+title: "Why Does Vitalik Buterin Take a Philosophical Approach to Decentralized Consensus?"
 slug: "vitalik-buterin-code-consensus"
 shortSlug: "vitalik"
-author: "Ananya Rao — Data Science Research Editor, MSc Data Analytics"
+author: "Sankalp — Engineering Lead"
 date: "May 15, 2026"
 subject: "Computer Science"
 heroImage: "https://images.openai.com/static-rsc-4/Bg2WnEK4loS2sGquLw30jOxTkdqtkkkM4fF7hiilKtR9YSDBODpi4CcYoQ-ld5UGj4x_eiTqG0_r8nljIzWT_WwNZ-Zj6iKUMRnYoIfnn8gjiECQWvbdx7G0UMZHBzYGz9dCBy3qUYUnI6FEHpQRD6D1rOXV6HBNrvY_U10oWDonxbNwdUODu-luACV4OJcr?purpose=fullsize"

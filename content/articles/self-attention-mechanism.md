@@ -2,7 +2,7 @@
 title: "How Does the Self-Attention Mechanism Work?"
 slug: "self-attention-mechanism"
 shortSlug: "self-attention"
-author: "Dr. Riya Srinivasan — Machine Learning Scientist, PhD Artificial Intelligence"
+author: "Sankalp — Engineering Lead"
 date: "April 27, 2026"
 subject: "Computer Science"
 heroImage: "https://images.openai.com/static-rsc-4/kzGe7BAt7i7UqkCf7dzX9ZgqK6eUaLejpy7xn5kh9cXKy4_mj2KX6JLmdlqx2stFQ-6KmBTBs4thK_3ZVtw4D_sBj9i-pvVOQm5dDOKOsCy0owUnaXqZ-jN9VreFQIZDgj5FbhfisjC4Y2A7Q095EZBT9zItYpzD-SS9sKbRGSREIKu7Fm-V_-sImuklL6wU?purpose=fullsize"

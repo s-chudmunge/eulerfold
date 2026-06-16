@@ -1,8 +1,8 @@
 ---
-title: "Building quantum computers atom-by-atom with Michelle Simmons"
+title: "How is Michelle Simmons Building Quantum Computers Atom-by-Atom?"
 slug: "michelle-simmons-architecture-atom"
 shortSlug: "simmons"
-author: "Dr. Nitin Bansal — Semiconductor Technology Researcher, PhD Materials Science"
+author: "Sankalp — Engineering Lead"
 date: "May 15, 2026"
 subject: "Physics"
 heroImage: "https://images.openai.com/static-rsc-4/2hoai8w6zcjUXf3jzsiCNztZVYJUDiWJxlf0nCAAzTm3jI03bxrGIUtA21ehzQvZukiBe9vVLWQPk0ivU17_JQgzV3zqYt47Gyg_DE941XeQoE8OuNN2jZ87kra2ZdHFlzGSZvPwQc13bE6jVCQY4-ZOFXrR4jbOtdCy-S_Y1QoLO2mwNg1QSrBQmpWlHG58?purpose=fullsize"

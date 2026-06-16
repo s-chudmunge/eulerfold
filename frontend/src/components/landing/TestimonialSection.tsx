@@ -133,28 +133,7 @@ export default function TestimonialSection() {
           Loved by learners like you
         </motion.h2>
         
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.9 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.1 }}
-          className="inline-flex items-center gap-3 bg-sidebar/50 border border-border px-5 py-2.5 rounded-full backdrop-blur-sm shadow-sm"
-        >
-          <div className="flex -space-x-2">
-            {['Alex', 'Sarah', 'James', 'Priya'].map((seed, i) => (
-              <div key={i} className="w-8 h-8 rounded-full border-2 border-background bg-sidebar flex items-center justify-center overflow-hidden">
-                <img 
-                  src={`https://api.dicebear.com/7.x/notionists/svg?seed=${seed}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`} 
-                  alt="User" 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            ))}
-          </div>
-          <span className="text-xs font-bold text-text-primary manrope-body">
-            Trusted by 1,000+ users
-          </span>
-        </motion.div>
+
 
         <div className="mt-12 flex justify-center">
           <ActivityPill />
@@ -224,11 +203,6 @@ function TestimonialCard({ testimonial: t }: { testimonial: any }) {
     <div className="break-inside-avoid bg-transparent border border-border p-6 lg:p-8 rounded-lg transition-all duration-300 hover:border-accent/40 flex flex-col gap-4 group">
       {t.layout === "author-top" && (
         <div className="flex items-center gap-3 mb-2">
-          <img 
-            src={`https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(t.author)}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`} 
-            alt={t.author} 
-            className="size-10 shrink-0 rounded-full object-cover border border-border" 
-          />
           <div className="min-w-0">
             <p className="truncate text-sm font-bold text-text-heading">{t.author}</p>
             <p className="truncate text-[11px] text-text-muted font-medium">{t.role}</p>
@@ -246,11 +220,6 @@ function TestimonialCard({ testimonial: t }: { testimonial: any }) {
 
       {(t.layout === "standard" || t.layout === "quote-bottom") && (
         <div className="flex items-center gap-3 pt-4 mt-auto border-t border-border/50">
-          <img 
-            src={`https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(t.author)}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`} 
-            alt={t.author} 
-            className="size-8 shrink-0 rounded-full object-cover border border-border" 
-          />
           <div className="min-w-0">
             <p className="truncate text-xs font-bold text-text-heading">{t.author}</p>
             <p className="truncate text-[10px] text-text-muted font-medium">{t.role}</p>

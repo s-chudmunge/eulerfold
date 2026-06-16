@@ -57,8 +57,8 @@ const NAVIGATION_DATA = {
       {
         title: "Foundations",
         links: [
-          { label: "Transformer Architecture", href: "/articles/transformer" },
-          { label: "Scaling Laws", href: "/articles/scaling-laws" },
+          { label: "Transformer Architecture", href: "/research-decoded/attention-is-all-you-need" },
+          { label: "Scaling Laws", href: "/research-decoded/scaling-laws-neural-language-models" },
           { label: "Alignment Research", href: "/research-decoded?subject=safety" }
         ]
       }
@@ -67,7 +67,7 @@ const NAVIGATION_DATA = {
       title: "Latest",
       label: "AlphaFold 3 Logic",
       description: "A deep dive into how biological structures are predicted with AI.",
-      href: "/research-decoded/alphafold-3-logic",
+      href: "/research-decoded/alphafold-3-unified-biology",
       cta: "Read more"
     }
   },

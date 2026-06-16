@@ -3,14 +3,18 @@
 import React, { useState, useEffect } from 'react';
 import { Zap, Clock, Info } from 'lucide-react';
 import Link from 'next/link';
+import { supabase } from '@/lib/supabase/client';
 import PaymentModal from '@/components/PaymentModal';
+import EnterpriseInterestModal from '@/components/EnterpriseInterestModal';
 import { useAuth } from '@/components/AuthProvider';
 import { getDiscountStatus, formatTime, NORMAL_PRICE, DISCOUNTED_PRICE } from '@/lib/utils/pricing';
 import { SideBanner, QUOTES } from '@/components/layout/SideBanners';
 
 export default function PricingClient() {
-    const { user, loading } = useAuth();
+    const [isYearly, setIsYearly] = useState(false);
     const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+    const [isEnterpriseModalOpen, setIsEnterpriseModalOpen] = useState(false);
+    const { user, loading } = useAuth();
     const [discountStatus, setDiscountStatus] = useState(getDiscountStatus());
     const [hasMounted, setHasMounted] = useState(false);
     const [quoteIndex, setQuoteIndex] = useState(0);
@@ -247,10 +251,10 @@ export default function PricingClient() {
                     </div>
 
                     <button 
-                        disabled
-                        className="w-full py-3 border border-border/40 text-text-muted rounded-lg text-center inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] bg-background/40 cursor-not-allowed opacity-50 relative z-10"
+                        onClick={() => setIsEnterpriseModalOpen(true)}
+                        className="w-full py-3 border border-border/40 text-text-heading rounded-lg text-center inconsolata-ui text-[11px] font-black uppercase tracking-[0.2em] bg-background/40 hover:bg-sidebar transition-colors relative z-10"
                     >
-                        Waitlist Closed
+                        Show interest
                     </button>
                 </div>
             </div>
@@ -263,6 +267,11 @@ export default function PricingClient() {
                     setIsPaymentModalOpen(false);
                     window.location.reload();
                 }} 
+            />
+
+            <EnterpriseInterestModal 
+                isOpen={isEnterpriseModalOpen}
+                onClose={() => setIsEnterpriseModalOpen(false)}
             />
         </div>
     );
