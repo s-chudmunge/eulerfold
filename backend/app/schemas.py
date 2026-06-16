@@ -154,10 +154,19 @@ class RoadmapRead(BaseModel):
     time_unit: Optional[str] = None
     model: Optional[str] = None
     is_public: bool = False
+    show_author: bool = True
     cloned_from: Optional[int] = None
     email: Optional[str] = None
     skills_extracted: Optional[bool] = False
     last_position: Optional[Dict[str, int]] = None
+    clone_count: Optional[int] = 0
+    report_count: Optional[int] = 0
+    average_rating: Optional[float] = 0.0
+    rating_count: Optional[int] = 0
+    cloned_id: Optional[int] = None
+    extension_count: Optional[int] = 0
+    created_at: Optional[str] = None
+    updated_at: Optional[str] = None
 
 class ExternalRoadmapCreate(BaseModel):
     roadmap_plan: Dict[str, Any]

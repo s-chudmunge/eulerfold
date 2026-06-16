@@ -34,7 +34,7 @@ import { LocalAIModal } from './landing/LocalAIModal';
 type TabId = 'general' | 'appearance' | 'connections' | 'usage' | 'billing' | 'account';
 
 export default function SettingsModal() {
-  const { isOpen, closeSettings } = useSettings();
+  const { isOpen, closeSettings, targetTab } = useSettings();
   const { user: authUser, loading: authLoading } = useAuth();
   
   const [activeTab, setActiveTab] = useState<TabId>('general');
@@ -114,6 +114,16 @@ export default function SettingsModal() {
       } catch (e) {}
     }
   }, [isOpen]);
+
+  useEffect(() => {
+    if (targetTab && isOpen) {
+      // Validate that targetTab is a valid TabId
+      const validTabs = ['general', 'appearance', 'connections', 'usage', 'billing', 'account'];
+      if (validTabs.includes(targetTab)) {
+        setActiveTab(targetTab as TabId);
+      }
+    }
+  }, [targetTab, isOpen]);
 
   useEffect(() => {
     if (authUser && isOpen) {

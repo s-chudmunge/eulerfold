@@ -100,39 +100,38 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
             const authStatus = !!session;
             setIsAuthenticated(authStatus);
             
-            if (session && roadmap) {
-                const sessionEmail = session.user.email?.toLowerCase();
-                const roadmapEmail = roadmap?.email?.toLowerCase();
-                let ownerStatus = false;
-                if (sessionEmail && roadmapEmail && sessionEmail === roadmapEmail) {
-                    ownerStatus = true;
-                }
-                setIsOwner(ownerStatus);
-
-                console.log("Auth Debug:", { 
-                    isAuthenticated: authStatus, 
-                    isOwner: ownerStatus, 
-                    roadmapEmail, 
-                    sessionEmail 
-                });
-
-                // Secondary owner check once profile is loaded
-                if (!ownerStatus && profile && roadmap?.user_id) {
-                    if (profile.id === roadmap.user_id) {
-                        setIsOwner(true);
+            // ALWAYS fetch fresh roadmap data to get accurate stats and personal progress
+            try {
+                const updatedRoadmap = await roadmapsAPI.getRoadmapBySlug(slug);
+                if (updatedRoadmap) {
+                    setRoadmap(updatedRoadmap);
+                    
+                    if (session) {
+                        const sessionEmail = session.user.email?.toLowerCase();
+                        const roadmapEmail = updatedRoadmap.email?.toLowerCase();
+                        let ownerStatus = false;
+                        if (sessionEmail && roadmapEmail && sessionEmail === roadmapEmail) {
+                            ownerStatus = true;
+                        }
+                        
+                        if (!ownerStatus && profile && updatedRoadmap.user_id) {
+                            if (profile.id === updatedRoadmap.user_id) {
+                                ownerStatus = true;
+                            }
+                        }
+                        
+                        setIsOwner(ownerStatus);
+                        
+                        console.log("Auth Debug:", { 
+                            isAuthenticated: authStatus, 
+                            isOwner: ownerStatus, 
+                            roadmapEmail, 
+                            sessionEmail 
+                        });
                     }
                 }
-
-                // ALWAYS fetch fresh roadmap data when authenticated to get personal progress/extension info
-                try {
-                    // Use getRoadmapBySlug which handles progress enrichment for authenticated users
-                    const updatedRoadmap = await roadmapsAPI.getRoadmapBySlug(slug);
-                    if (updatedRoadmap) {
-                        setRoadmap(updatedRoadmap);
-                    }
-                } catch (err) {
-                    console.error("Failed to fetch enriched roadmap data:", err);
-                }
+            } catch (err) {
+                console.error("Failed to fetch enriched roadmap data:", err);
             }
         };
         checkAuth();
@@ -151,9 +150,10 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
         try {
             const { data: { session } } = await supabase.auth.getSession();
             if (session) {
-                await exploreAPI.rateRoadmap(roadmap.id, value, session.access_token);
+                const targetId = roadmap.cloned_from || roadmap.id;
+                await exploreAPI.rateRoadmap(targetId, value, session.access_token);
                 setUserRating(value);
-                const updated = await exploreAPI.getPublicRoadmap(roadmap.id);
+                const updated = await exploreAPI.getPublicRoadmap(targetId);
                 setRating(updated.average_rating || 0);
                 setRatingCount(updated.rating_count || 0);
             }
@@ -209,9 +209,18 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
             if (session) {
                 const res = await exploreAPI.cloneRoadmap(roadmap.id, session.access_token);
                 setSuccessMsg("Roadmap cloned to dashboard!");
-                // Short delay to show success message before redirect
-                setTimeout(() => {
-                    router.push(`/roadmap/${res.new_slug}/learn`);
+                // Short delay to show success message, then refresh local state
+                setTimeout(async () => {
+                    try {
+                        const updatedRoadmap = await roadmapsAPI.getRoadmapBySlug(res.new_slug || slug);
+                        if (updatedRoadmap) {
+                            setRoadmap(updatedRoadmap);
+                            setIsOwner(true);
+                        }
+                    } catch (e) {
+                        router.push(`/roadmap/${res.new_slug || slug}`);
+                    }
+                    setSuccessMsg(null);
                 }, 1500);
             }
         } catch (err) {

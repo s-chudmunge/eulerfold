@@ -9,14 +9,18 @@ export const dynamic = 'force-dynamic';
 async function getRoadmapBySlugOrId(identifier: string) {
     try {
         const isId = /^\d+$/.test(identifier);
-        const { data, error } = await supabase
-            .from('roadmaps')
-            .select('*')
-            .eq(isId ? 'id' : 'slug', identifier)
-            .single();
+        let query = supabase.from('roadmaps').select('*');
         
-        if (error) return null;
-        return data;
+        if (isId) {
+            query = query.eq('id', identifier);
+        } else {
+            query = query.eq('slug', identifier).eq('is_public', true);
+        }
+        
+        const { data, error } = await query.limit(1);
+        
+        if (error || !data || data.length === 0) return null;
+        return data[0];
     } catch (e) {
         return null;
     }
@@ -65,5 +69,5 @@ export default async function LearnPage({ params }: { params: { slug: string, su
         redirect(`/roadmap/${roadmap.slug}/learn${subtopicPath}`);
     }
 
-    return <LearnClient id={roadmap?.id?.toString() || params.slug} slug={params.subtopic} initialRoadmap={roadmap} />;
+    return <LearnClient id={params.slug} slug={params.subtopic} initialRoadmap={roadmap} />;
 }

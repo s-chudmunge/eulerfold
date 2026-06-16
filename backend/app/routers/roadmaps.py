@@ -361,6 +361,18 @@ async def get_roadmap_by_slug(slug: str, background_tasks: BackgroundTasks, curr
     if not r:
         r = response.data[0]
 
+    # Ensure clone_count and ratings reflect the original public roadmap, even if viewing a clone
+    original_clone_count = r.get("clone_count", 0)
+    original_average_rating = float(r.get("average_rating") or 0.0)
+    original_rating_count = r.get("rating_count", 0)
+
+    if r.get("cloned_from"):
+        orig_res = sb.table("roadmaps").select("clone_count, average_rating, rating_count").eq("id", r["cloned_from"]).execute()
+        if orig_res.data:
+            original_clone_count = orig_res.data[0].get("clone_count", 0)
+            original_average_rating = float(orig_res.data[0].get("average_rating") or 0.0)
+            original_rating_count = orig_res.data[0].get("rating_count", 0)
+
     # Ownership or Public check
     is_owner = email and r["email"].lower() == email.lower()
     is_public = r.get("is_public", False)
@@ -442,10 +454,10 @@ async def get_roadmap_by_slug(slug: str, background_tasks: BackgroundTasks, curr
         last_position=r.get("last_position") or {"mIdx": 0, "tIdx": 0},
         is_public=r.get("is_public", False),
         show_author=r.get("show_author", True),
-        clone_count=r.get("clone_count", 0),
+        clone_count=original_clone_count,
         report_count=r.get("report_count", 0),
-        average_rating=float(r.get("average_rating") or 0.0),
-        rating_count=r.get("rating_count", 0),
+        average_rating=original_average_rating,
+        rating_count=original_rating_count,
         cloned_from=r.get("cloned_from"),
         skills_extracted=r.get("skills_extracted", False),
         progress=r.get("calculated_progress"),
@@ -626,6 +638,19 @@ async def get_roadmap_by_id(roadmap_id: int, background_tasks: BackgroundTasks, 
     
     r = response.data[0]
     
+    # Ensure clone_count and ratings reflect the original public roadmap, even if viewing a clone
+    original_clone_count = r.get("clone_count", 0)
+    original_average_rating = float(r.get("average_rating") or 0.0)
+    original_rating_count = r.get("rating_count", 0)
+
+    if r.get("cloned_from"):
+        # For get_roadmap_by_id, we need to explicitly fetch the original if we don't have it in response.data
+        orig_res = sb.table("roadmaps").select("clone_count, average_rating, rating_count").eq("id", r["cloned_from"]).execute()
+        if orig_res.data:
+            original_clone_count = orig_res.data[0].get("clone_count", 0)
+            original_average_rating = float(orig_res.data[0].get("average_rating") or 0.0)
+            original_rating_count = orig_res.data[0].get("rating_count", 0)
+
     # Ownership or Public check
     is_owner = email and r["email"].lower() == email.lower()
     is_public = r.get("is_public", False)
@@ -676,10 +701,10 @@ async def get_roadmap_by_id(roadmap_id: int, background_tasks: BackgroundTasks, 
         last_position=r.get("last_position", {"mIdx": 0, "tIdx": 0}),
         is_public=r.get("is_public", False),
         show_author=r.get("show_author", True),
-        clone_count=r.get("clone_count", 0),
+        clone_count=original_clone_count,
         report_count=r.get("report_count", 0),
-        average_rating=float(r.get("average_rating") or 0.0),
-        rating_count=r.get("rating_count", 0),
+        average_rating=original_average_rating,
+        rating_count=original_rating_count,
         cloned_from=r.get("cloned_from"),
         skills_extracted=r.get("skills_extracted", False),
         progress=r.get("calculated_progress"),
@@ -1394,9 +1419,12 @@ async def sync_roadmap_skills(roadmap_id: int, request: SyncSkillsRequest, curre
     sb = get_supabase_client()
     uid = current_user.supabase_uid
     
-    r_res = sb.table("roadmaps").select("*").eq("id", roadmap_id).eq("email", current_user.email).execute()
+    r_res = sb.table("roadmaps").select("*").eq("id", roadmap_id).execute()
     if not r_res.data:
-        raise HTTPException(status_code=404, detail="Roadmap not found or unauthorized")
+        raise HTTPException(status_code=404, detail="Roadmap not found")
+        
+    if r_res.data[0].get("email", "").lower() != current_user.email.lower():
+        raise HTTPException(status_code=403, detail="Not authorized")
         
     try:
         await process_extracted_skills(roadmap_id, uid, request.dict())
@@ -1404,3 +1432,29 @@ async def sync_roadmap_skills(roadmap_id: int, request: SyncSkillsRequest, curre
     except Exception as e:
         logger.error(f"Error syncing skills: {e}")
         raise HTTPException(status_code=500, detail="Failed to sync skills")
+
+@router.post("/roadmaps/{roadmap_id}/skills/extract-cloud")
+async def extract_cloud_skills(roadmap_id: int, current_user: User = Depends(get_current_user)):
+    sb = get_supabase_client()
+    uid = current_user.supabase_uid
+    
+    r_res = sb.table("roadmaps").select("*").eq("id", roadmap_id).execute()
+    if not r_res.data:
+        raise HTTPException(status_code=404, detail="Roadmap not found")
+        
+    if r_res.data[0].get("email", "").lower() != current_user.email.lower():
+        logger.error(f"DEBUG 403: roadmap email is {r_res.data[0].get('email')}, but current user is {current_user.email}")
+        raise HTTPException(status_code=403, detail="Not authorized")
+        
+    try:
+        await extract_skills_from_roadmap(roadmap_id, uid)
+        
+        # Check if the service swallowed an error and updated the DB
+        check_res = sb.table("roadmaps").select("skills_extraction_error").eq("id", roadmap_id).execute()
+        if check_res.data and check_res.data[0].get("skills_extraction_error"):
+            raise Exception(check_res.data[0]["skills_extraction_error"])
+            
+        return {"status": "ok", "message": "Cloud extraction completed successfully"}
+    except Exception as e:
+        logger.error(f"Error in cloud extraction: {e}")
+        raise HTTPException(status_code=500, detail="Failed to extract skills via cloud")

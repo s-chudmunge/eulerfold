@@ -137,6 +137,10 @@ export const roadmapsAPI = {
     syncRoadmapSkills: async (roadmapId: number, data: any): Promise<any> => {
         const response = await api.post(`/roadmaps/${roadmapId}/skills/sync`, data);
         return response.data;
+    },
+    extractCloudSkills: async (roadmapId: number): Promise<any> => {
+        const response = await api.post(`/roadmaps/${roadmapId}/skills/extract-cloud`);
+        return response.data;
     }
 };
 

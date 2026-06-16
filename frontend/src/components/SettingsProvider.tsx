@@ -5,7 +5,8 @@ import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 
 interface SettingsContextType {
   isOpen: boolean;
-  openSettings: () => void;
+  targetTab: string | null;
+  openSettings: (tabId?: string) => void;
   closeSettings: () => void;
 }
 
@@ -32,12 +33,19 @@ function SearchParamsHandler({ onOpen }: { onOpen: () => void }) {
 
 export function SettingsProvider({ children }: { children: ReactNode }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [targetTab, setTargetTab] = useState<string | null>(null);
 
-  const openSettings = () => setIsOpen(true);
-  const closeSettings = () => setIsOpen(false);
+  const openSettings = (tabId?: string) => {
+    if (tabId) setTargetTab(tabId);
+    setIsOpen(true);
+  };
+  const closeSettings = () => {
+    setIsOpen(false);
+    setTimeout(() => setTargetTab(null), 300); // clear after animation
+  };
 
   return (
-    <SettingsContext.Provider value={{ isOpen, openSettings, closeSettings }}>
+    <SettingsContext.Provider value={{ isOpen, targetTab, openSettings, closeSettings }}>
       <Suspense fallback={null}>
         <SearchParamsHandler onOpen={openSettings} />
       </Suspense>

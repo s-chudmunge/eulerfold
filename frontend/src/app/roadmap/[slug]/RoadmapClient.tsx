@@ -285,9 +285,18 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
             if (session) {
                 const res = await exploreAPI.cloneRoadmap(roadmap.id, session.access_token);
                 setSuccessMsg("Roadmap cloned to dashboard!");
-                // Short delay to show success message before redirect
-                setTimeout(() => {
-                    router.push(`/roadmap/${res.new_slug}/learn`);
+                // Short delay to show success message, then refresh local state
+                setTimeout(async () => {
+                    try {
+                        const updatedRoadmap = await roadmapsAPI.getRoadmapBySlug(res.new_slug || slug);
+                        if (updatedRoadmap) {
+                            setRoadmap(updatedRoadmap);
+                            setIsOwner(true);
+                        }
+                    } catch (e) {
+                        router.push(`/roadmap/${res.new_slug || slug}`);
+                    }
+                    setSuccessMsg(null);
                 }, 1500);
             }
         } catch (err: any) {
