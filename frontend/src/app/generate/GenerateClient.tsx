@@ -425,7 +425,7 @@ export default function GenerateClient({ featuredRoadmaps }: { featuredRoadmaps?
                               <p className="text-[10px] text-text-muted mt-1 leading-snug">First-principles deep dives</p>
                             </div>
                           </Link>
-                          <Link href="/archive" className="flex flex-col gap-2 p-4 rounded-xl border border-border/50 bg-background hover:bg-sidebar/50 hover:border-accent/30 transition-all group">
+                          <Link href="/archive/exams/previous-year-papers" className="flex flex-col gap-2 p-4 rounded-xl border border-border/50 bg-background hover:bg-sidebar/50 hover:border-accent/30 transition-all group">
                             <Archive className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
                             <div>
                               <h4 className="font-bold text-[12px] text-text-heading leading-tight">Study Archive</h4>

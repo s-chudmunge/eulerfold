@@ -256,8 +256,12 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
         const requestBody = {
           model: openRouterModel || 'openai/gpt-4o',
           messages: [{ role: "user", content: fullPrompt }],
-          response_format: { type: "json_object" }
+          response_format: { type: "json_object" },
+          max_tokens: 8192
         };
+
+        let roadmapPlan = null;
+        let orData = null;
 
         const orResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
           method: "POST",
@@ -270,21 +274,39 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
           body: JSON.stringify(requestBody)
         });
 
-        const orData = await orResponse.json();
+        orData = await orResponse.json();
 
         if (!orResponse.ok) {
+           if (orResponse.status === 429) {
+               throw new Error("OpenRouter Rate Limit Reached: Please wait a moment or try selecting a different model.");
+           }
            throw new Error(orData.error?.message || "OpenRouter generation failed.");
         }
 
-
-
-        let generatedText = orData.choices[0].message.content || "";
-        let cleanedText = generatedText.trim();
-        if (cleanedText.startsWith("```json")) {
-          cleanedText = cleanedText.replace(/^```json\n?/, "").replace(/```$/, "");
-        } else if (cleanedText.startsWith("```")) {
-          cleanedText = cleanedText.replace(/^```\n?/, "").replace(/```$/, "");
+        if (orData.error) {
+            throw new Error(orData.error.message || "OpenRouter internal model error.");
         }
+
+        if (!orData.choices || orData.choices.length === 0) {
+            throw new Error("The AI model failed to return a valid response (possibly due to a content filter). Please try again or select a different model.");
+        }
+
+        let generatedText = orData.choices[0].message?.content || "";
+        
+        let cleanedText = generatedText.trim();
+        cleanedText = cleanedText.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+
+        const jsonBlockMatch = cleanedText.match(/```(?:json)?\s*([\s\S]*?)```/i);
+        if (jsonBlockMatch && jsonBlockMatch[1]) {
+           cleanedText = jsonBlockMatch[1].trim();
+        } else {
+           const firstBrace = cleanedText.indexOf('{');
+           const lastBrace = cleanedText.lastIndexOf('}');
+           if (firstBrace !== -1 && lastBrace !== -1 && lastBrace >= firstBrace) {
+               cleanedText = cleanedText.substring(firstBrace, lastBrace + 1);
+           }
+        }
+        
         cleanedText = cleanedText.trim();
         cleanedText = cleanedText.replace(/"([^"\\]*(?:\\.[^"\\]*)*)"/g, (match: string) => {
             return match.replace(/\n/g, "\\n").replace(/\r/g, "\\r").replace(/\t/g, "\\t");
@@ -295,19 +317,18 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
           throw new Error("The AI model returned an empty response. It may have hit a safety filter. Please try a different model or adjust your prompt.");
         }
 
-        let roadmapPlan;
         try {
-          roadmapPlan = JSON.parse(jsonrepair(cleanedText));
-          if (Array.isArray(roadmapPlan)) {
-             roadmapPlan = {
-                title: "Generated Roadmap",
-                description: "Technical learning path",
-                modules: roadmapPlan
-             };
-          }
-        } catch (e) {
-          console.error("JSON parse failed. Cleaned text:", cleanedText);
-          throw new Error("Failed to parse JSON from OpenRouter response.");
+            roadmapPlan = JSON.parse(jsonrepair(cleanedText));
+            if (Array.isArray(roadmapPlan)) {
+               roadmapPlan = {
+                  title: "Generated Roadmap",
+                  description: "Technical learning path",
+                  modules: roadmapPlan
+               };
+            }
+        } catch (e: any) {
+            console.error("JSON parse failed. Cleaned text:", cleanedText);
+            throw new Error("The AI model returned an incomplete or corrupt response. Please try generating again, or select a different model from the settings.");
         }
 
         const backendPayload = {

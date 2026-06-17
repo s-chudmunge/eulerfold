@@ -147,6 +147,16 @@ const nextConfig = {
     ];
   },
 
+  async redirects() {
+    return [
+      {
+        source: '/archive',
+        destination: '/archive/exams/previous-year-papers',
+        permanent: true,
+      },
+    ];
+  },
+
   // Generate additional sitemaps for better SEO
   async generateBuildId() {
     return `build-${Date.now()}`;

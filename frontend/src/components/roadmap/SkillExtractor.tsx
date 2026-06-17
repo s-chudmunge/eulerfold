@@ -84,24 +84,39 @@ Topics:
 ${JSON.stringify(flatTopics)}`;
 
                 // 4. Generate
-                let extractedJson: any = null;
-
-                // Try EulerFold AI / Cloud AI first
-                try {
-                    setStatus('EulerFold AI is analyzing topics...');
-                    console.log("[SkillExtractor] Attempting Cloud AI extraction...");
-                    await roadmapsAPI.extractCloudSkills(roadmap.id);
-                    setStatus('Ready to learn!');
-                    setTimeout(() => { if (onComplete) onComplete(); }, 2000);
-                    return; // Cloud extraction handled it
-                } catch (cloudErr) {
-                    console.log("[SkillExtractor] Cloud AI unavailable or failed, falling back to local/OpenRouter...", cloudErr);
-                }
-
+                const aiProvider = localStorage.getItem('aiProvider') || 'cloud';
                 const openRouterKey = localStorage.getItem('openRouterKey');
                 const localAIModelId = localStorage.getItem('localAIModelId');
                 
-                if (openRouterKey) {
+                const useLocalAI = aiProvider === 'local' && !!localAIModelId;
+                const useOpenRouter = aiProvider === 'openrouter' && !!openRouterKey;
+                const useCloudAI = aiProvider === 'cloud' || (!useLocalAI && !useOpenRouter);
+
+                let extractedJson: any = null;
+
+                if (useCloudAI) {
+                    try {
+                        setStatus('EulerFold AI is analyzing topics...');
+                        console.log("[SkillExtractor] Attempting Cloud AI extraction...");
+                        await roadmapsAPI.extractCloudSkills(roadmap.id);
+                        setStatus('Ready to learn!');
+                        setTimeout(() => { if (onComplete) onComplete(); }, 2000);
+                        return; // Cloud extraction handled it
+                    } catch (cloudErr) {
+                        console.log("[SkillExtractor] Cloud AI unavailable or failed, falling back to local/OpenRouter...", cloudErr);
+                    }
+                }
+
+                console.log(`[SkillExtractor] aiProvider=${aiProvider}, hasOpenRouterKey=${!!openRouterKey}, hasLocalAIModel=${!!localAIModelId}`);
+
+                if (useOpenRouter || (!useLocalAI && openRouterKey)) {
+                    if (!openRouterKey) {
+                        console.log("[SkillExtractor] Cannot use OpenRouter because API key is missing.");
+                        setStatus('AI Configuration Required');
+                        setNeedsConfig(true);
+                        return;
+                    }
+                    console.log("[SkillExtractor] Initiating OpenRouter extraction...");
                     setStatus('AI is analyzing topics...');
                     const orResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
                         method: "POST",
@@ -114,7 +129,7 @@ ${JSON.stringify(flatTopics)}`;
                         body: JSON.stringify({
                             model: localStorage.getItem('openRouterModel') || 'openai/gpt-4o',
                             messages: [{ role: "system", content: systemPrompt }],
-                            response_format: { type: "json_object" }
+                            max_tokens: 8192
                         })
                     });
                     const orData = await orResponse.json();
@@ -122,23 +137,28 @@ ${JSON.stringify(flatTopics)}`;
                         throw new Error(`OpenRouter API Error: ${orData.error?.message || orResponse.statusText}`);
                     }
                     if (!orData.choices || orData.choices.length === 0) {
-                        throw new Error("No response received from OpenRouter.");
+                        throw new Error("The AI model failed to return a valid response (possibly due to a content filter). Please try again or select a different model.");
                     }
-                    let content = orData.choices[0].message.content;
+                    let content = orData.choices[0].message?.content || "";
                     
-                    // Strip potential markdown formatting
-                    content = content.trim();
-                    if (content.startsWith("```json")) {
-                        content = content.replace(/^```json\n?/, "");
-                    } else if (content.startsWith("```")) {
-                        content = content.replace(/^```\n?/, "");
-                    }
-                    if (content.endsWith("```")) {
-                        content = content.replace(/\n?```$/, "");
-                    }
-                    content = content.trim();
+                    content = content.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
 
-                    extractedJson = JSON.parse(content);
+                    const jsonBlockMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/i);
+                    if (jsonBlockMatch && jsonBlockMatch[1]) {
+                        content = jsonBlockMatch[1].trim();
+                    } else {
+                        const firstBrace = content.indexOf('{');
+                        const lastBrace = content.lastIndexOf('}');
+                        if (firstBrace !== -1 && lastBrace !== -1 && lastBrace >= firstBrace) {
+                            content = content.substring(firstBrace, lastBrace + 1);
+                        }
+                    }
+
+                    try {
+                        extractedJson = JSON.parse(content);
+                    } catch (e: any) {
+                        throw new Error("The AI model returned an incomplete or corrupt response. Please try generating again, or select a different model from the settings.");
+                    }
                     
                     // Log usage
                     try {
@@ -153,7 +173,7 @@ ${JSON.stringify(flatTopics)}`;
                     } catch (e) {
                         console.error('Failed to log AI usage', e);
                     }
-                } else if (localAIModelId) {
+                } else if (useLocalAI || localAIModelId) {
                     setStatus('Local AI is analyzing topics...');
                     const engine = await CreateMLCEngine(localAIModelId);
                     const response = await engine.chat.completions.create({
@@ -195,6 +215,8 @@ ${JSON.stringify(flatTopics)}`;
                     setTimeout(() => {
                         if (onComplete) onComplete();
                     }, 2000);
+                } else {
+                    throw new Error("AI returned malformed JSON (missing mappings).");
                 }
 
             } catch (err) {

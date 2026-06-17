@@ -33,4 +33,4 @@ google-genai==0.3.0
 protobuf
 json-repair
 pypdf
-duckduckgo-search
+ddgs

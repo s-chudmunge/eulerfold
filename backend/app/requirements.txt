@@ -33,4 +33,4 @@ google-genai
 protobuf
 json-repair
 pypdf
-duckduckgo-search
+ddgs

@@ -98,7 +98,7 @@ export default async function LandingPage() {
       question: "Where can I find curated study materials?",
       answer: (
         <span>
-          The <Link href="/archive" className="text-accent hover:underline font-bold">Archive</Link> contains a massive directory of verified resources, past papers, and technical documents for various academic and technical fields.
+          The <Link href="/archive/exams/previous-year-papers" className="text-accent hover:underline font-bold">Archive</Link> contains a massive directory of verified resources, past papers, and technical documents for various academic and technical fields.
         </span>
       ),
       schemaAnswer: "The Archive contains a massive directory of verified resources, past papers, and technical documents for various academic and technical fields."

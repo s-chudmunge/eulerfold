@@ -136,7 +136,8 @@ Return ONLY a JSON array of objects. Each object must have:
                     messages: [
                         { role: "system", content: systemPrompt }
                     ],
-                    response_format: { type: "json_object" }
+                    response_format: { type: "json_object" },
+                    max_tokens: 8192
                 };
 
                 const orResponse = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -153,12 +154,40 @@ Return ONLY a JSON array of objects. Each object must have:
                 const orData = await orResponse.json();
                 if (!orResponse.ok) throw new Error(orData.error?.message || "OpenRouter generation failed.");
 
+                if (orData.error) {
+                    throw new Error(orData.error.message || "OpenRouter internal model error.");
+                }
+
+                if (!orData.choices || orData.choices.length === 0) {
+                    throw new Error("The AI model failed to return a valid response (possibly due to a content filter). Please try again or select a different model.");
+                }
+
                 let questions;
                 try {
-                    questions = JSON.parse(orData.choices[0].message.content);
+                    let content = orData.choices[0].message?.content?.trim() || "";
+                    content = content.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+
+                    const jsonBlockMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/i);
+                    if (jsonBlockMatch && jsonBlockMatch[1]) {
+                        content = jsonBlockMatch[1].trim();
+                    } else {
+                        const firstBrace = content.indexOf('[');
+                        const firstObj = content.indexOf('{');
+                        const start = (firstBrace !== -1 && (firstObj === -1 || firstBrace < firstObj)) ? firstBrace : firstObj;
+                        
+                        const lastBrace = content.lastIndexOf(']');
+                        const lastObj = content.lastIndexOf('}');
+                        const end = (lastBrace !== -1 && (lastObj === -1 || lastBrace > lastObj)) ? lastBrace : lastObj;
+                        
+                        if (start !== -1 && end !== -1 && end >= start) {
+                            content = content.substring(start, end + 1);
+                        }
+                    }
+
+                    questions = JSON.parse(content);
                     if (questions.questions) questions = questions.questions; // Handle nested json
-                } catch (e) {
-                    throw new Error("Failed to parse JSON from OpenRouter response.");
+                } catch (e: any) {
+                    throw new Error("The AI model returned an incomplete or corrupt response. Please try generating again, or select a different model from the settings.");
                 }
 
                 session = await practiceAPI.saveExternalMCQSession({

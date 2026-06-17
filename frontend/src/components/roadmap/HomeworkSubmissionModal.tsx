@@ -178,18 +178,39 @@ Respond ONLY with valid JSON. Do not include markdown code blocks.`;
                     },
                     body: JSON.stringify({
                         model: openRouterModel || 'openai/gpt-4o',
-                        messages: [{ role: "user", content: prompt }]
+                        messages: [{ role: "user", content: prompt }],
+                        response_format: { type: "json_object" },
+                        max_tokens: 8192
                     })
                 });
 
                 const orData = await orResponse.json();
                 if (!orResponse.ok) throw new Error(orData.error?.message || "OpenRouter generation failed.");
                 
+                if (orData.error) {
+                    throw new Error(orData.error.message || "OpenRouter internal model error.");
+                }
+
+                if (!orData.choices || orData.choices.length === 0) {
+                    throw new Error("The AI model failed to return a valid response (possibly due to a content filter). Please try again or select a different model.");
+                }
+
                 try {
-                    let content = orData.choices[0].message.content.trim();
-                    if (content.startsWith("```json")) content = content.replace(/^```json/, "").replace(/```$/, "").trim();
+                    let content = orData.choices[0].message?.content?.trim() || "";
+                    content = content.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+
+                    const jsonBlockMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/i);
+                    if (jsonBlockMatch && jsonBlockMatch[1]) {
+                        content = jsonBlockMatch[1].trim();
+                    } else {
+                        const firstBrace = content.indexOf('{');
+                        const lastBrace = content.lastIndexOf('}');
+                        if (firstBrace !== -1 && lastBrace !== -1 && lastBrace >= firstBrace) {
+                            content = content.substring(firstBrace, lastBrace + 1);
+                        }
+                    }
+
                     evaluation_result = JSON.parse(content);
-                    
                     logAIUsage({
                         subject: `Homework Evaluation: ${moduleTitle}`,
                         model: openRouterModel || 'openai/gpt-4o',
@@ -197,8 +218,8 @@ Respond ONLY with valid JSON. Do not include markdown code blocks.`;
                         completion_tokens: orData.usage?.completion_tokens || 0,
                         total_tokens: orData.usage?.total_tokens || 0,
                     });
-                } catch (e) {
-                    throw new Error("Failed to parse evaluation from OpenRouter.");
+                } catch (e: any) {
+                    throw new Error("The AI model returned an incomplete or corrupt response. Please try generating again, or select a different model from the settings.");
                 }
 
             } else if (useLocalAI && localAIModelId) {
@@ -268,9 +289,9 @@ Respond ONLY with valid JSON. Do not include markdown code blocks.`;
                         completion_tokens: reply.usage?.completion_tokens || 0,
                         total_tokens: reply.usage?.total_tokens || 0,
                     });
-                } catch (e) {
-                    console.error(e);
-                    throw new Error("Local AI failed to generate valid JSON evaluation.");
+                } catch (e: any) {
+                    console.error("JSON parse failed. Cleaned text:", content);
+                    throw new Error("The AI model returned an incomplete or corrupt response. Please try generating again, or select a different model from the settings.");
                 } finally {
                     if (engine) await engine.unload();
                 }

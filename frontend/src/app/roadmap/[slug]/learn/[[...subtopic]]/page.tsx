@@ -6,32 +6,41 @@ import { redirect, notFound } from 'next/navigation';
 
 export const dynamic = 'force-dynamic';
 
-async function getRoadmapBySlugOrId(identifier: string) {
+async function getPublicRoadmapMetadata(slug: string) {
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
+    const endpoint = `${API_URL}/roadmaps/by-slug/${slug}`;
+
     try {
-        const isId = /^\d+$/.test(identifier);
-        let query = supabase.from('roadmaps').select('*');
+        const res = await fetch(endpoint, { next: { revalidate: 3600 } });
         
-        if (isId) {
-            query = query.eq('id', identifier);
-        } else {
-            query = query.eq('slug', identifier).eq('is_public', true);
+        if (res.status === 403) {
+            return { isPrivate: true, slug: slug };
         }
         
-        const { data, error } = await query.limit(1);
-        
-        if (error || !data || data.length === 0) return null;
-        return data[0];
+        if (!res.ok) return null;
+        return res.json();
     } catch (e) {
         return null;
     }
 }
 
 export async function generateMetadata({ params }: { params: { slug: string, subtopic?: string[] } }): Promise<Metadata> {
-    const roadmap = await getRoadmapBySlugOrId(params.slug);
+    const roadmap = await getPublicRoadmapMetadata(params.slug);
     
     if (!roadmap) {
         return {
             title: 'Roadmap Not Found',
+        };
+    }
+
+    if ((roadmap as any).isPrivate) {
+        return {
+            title: 'Learning Roadmap | EulerFold',
+            description: 'This is a private learning roadmap.',
+            robots: {
+                index: false,
+                follow: false,
+            }
         };
     }
 
@@ -56,7 +65,7 @@ export async function generateMetadata({ params }: { params: { slug: string, sub
 }
 
 export default async function LearnPage({ params }: { params: { slug: string, subtopic?: string[] } }) {
-    const roadmap = await getRoadmapBySlugOrId(params.slug);
+    const roadmap = await getPublicRoadmapMetadata(params.slug);
 
     if (!roadmap) {
         notFound();
@@ -67,6 +76,11 @@ export default async function LearnPage({ params }: { params: { slug: string, su
     if (roadmap && isId && roadmap.slug && roadmap.slug !== params.slug) {
         const subtopicPath = params.subtopic ? `/${params.subtopic.join('/')}` : '';
         redirect(`/roadmap/${roadmap.slug}/learn${subtopicPath}`);
+    }
+
+    // Handle private roadmap case where server-side fetch failed with 403
+    if ((roadmap as any).isPrivate) {
+        return <LearnClient id={params.slug} slug={params.subtopic} initialRoadmap={null} />;
     }
 
     return <LearnClient id={params.slug} slug={params.subtopic} initialRoadmap={roadmap} />;
