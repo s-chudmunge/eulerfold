@@ -1067,7 +1067,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                    <span className="text-[9px] font-bold uppercase tracking-widest">Key stored locally • Never hits our servers</span>
                  </div>
                  
-                 {session && usageHistory.length > 0 && (
+                 {session && usageHistory.length > 0 && !isGenerating && (
                    <div className="w-full mt-2 pt-4 border-t border-border">
                      <div className="flex items-center justify-between mb-3">
                        <div className="flex items-center gap-2">
