@@ -707,20 +707,28 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                     {/* Sidebar Footer with Progress */}
                     <div className="p-4 border-t border-border bg-sidebar/50">
                         <div className="mb-4">
-                            <div className="flex items-center justify-between text-[11px] font-bold mb-1.5 px-1">
-                                <span className="text-text-primary uppercase tracking-wider">Progress</span>
-                                <span className="text-text-heading">
-                                    {roadmap?.progress ? 
-                                        Math.min(100, Math.max(0, Math.round(roadmap.progress.percent + ((completedTopics.size - (roadmap.progress.completed_topics || 0)) / (roadmap.progress.total_topics || 1)) * 30))) 
-                                        : 0}%
-                                </span>
-                            </div>
-                            <div className="h-1.5 w-full bg-border rounded-full overflow-hidden">
-                                <div 
-                                    className="h-full bg-accent transition-all duration-500 ease-out rounded-full"
-                                    style={{ width: `${roadmap?.progress ? Math.min(100, Math.max(0, Math.round(roadmap.progress.percent + ((completedTopics.size - (roadmap.progress.completed_topics || 0)) / (roadmap.progress.total_topics || 1)) * 30))) : 0}%` }}
-                                />
-                            </div>
+                            {(() => {
+                                const serverPercent = roadmap?.progress?.percent || 0;
+                                const serverCompletedTopics = roadmap?.progress?.completed_topics || 0;
+                                const totalTopics = roadmap?.progress?.total_topics || 1;
+                                const localDelta = Math.max(0, completedTopics.size - serverCompletedTopics);
+                                const topicDeltaPercent = (localDelta / totalTopics) * 30; // 30% weight for topics
+                                const displayPercent = Math.min(100, Math.round(serverPercent + topicDeltaPercent));
+                                return (
+                                    <>
+                                        <div className="flex items-center justify-between text-[11px] font-bold mb-1.5 px-1">
+                                            <span className="text-text-primary uppercase tracking-wider">Progress</span>
+                                            <span className="text-text-heading">{displayPercent}%</span>
+                                        </div>
+                                        <div className="h-1.5 w-full bg-border rounded-full overflow-hidden">
+                                            <div 
+                                                className="h-full bg-accent transition-all duration-500 ease-out rounded-full"
+                                                style={{ width: `${displayPercent}%` }}
+                                            />
+                                        </div>
+                                    </>
+                                );
+                            })()}
                         </div>
 
                         <div className="flex items-center justify-between px-1">

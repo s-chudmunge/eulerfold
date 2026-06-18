@@ -286,6 +286,8 @@ Return ONLY a JSON array of objects. Each object must have:
                     week_number: weekNumber,
                     num_questions: questionCount
                 });
+                
+
             }
 
             setMcqSession(session);
@@ -416,11 +418,10 @@ Return ONLY a JSON array of objects. Each object must have:
                             </label>
                             <div className="flex bg-sidebar p-1 rounded-lg border border-border">
                                 <button
-                                    disabled={true}
-                                    onClick={() => {}}
-                                    className={`flex-1 py-1.5 px-2 rounded-md text-[9px] font-bold uppercase tracking-widest transition-all text-red-500 opacity-60 cursor-not-allowed`}
+                                    onClick={() => { setUseOpenRouter(false); setUseLocalAI(false); }}
+                                    className={`flex-1 py-1.5 px-2 rounded-md text-[9px] font-bold uppercase tracking-widest transition-all ${!useOpenRouter && !useLocalAI ? 'bg-background text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
                                 >
-                                    EulerFold AI (Temporary Outage)
+                                    EulerFold AI
                                 </button>
                                 <button
                                     onClick={() => { setUseOpenRouter(true); setUseLocalAI(false); }}
@@ -435,7 +436,9 @@ Return ONLY a JSON array of objects. Each object must have:
                                     Local AI
                                 </button>
                             </div>
-
+                            {!useOpenRouter && !useLocalAI && (
+                                <p className="text-[9px] text-amber-500/90 font-bold mt-1.5 ml-1">Uses credits ({questionCount * 0.01} per session)</p>
+                            )}
                             {/* Configuration Buttons */}
                             {useOpenRouter && (
                                 <div className="mt-2 flex justify-end">
@@ -529,8 +532,10 @@ Return ONLY a JSON array of objects. Each object must have:
 
             {isGenerating && (
                 <div className="absolute inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center p-6 text-center">
-                    <div className="animate-in fade-in zoom-in duration-300">
-                        <Loader className="w-8 h-8 text-accent animate-spin mx-auto mb-4" />
+                    <div className="animate-in fade-in zoom-in duration-300 flex flex-col items-center">
+                        <div className="mb-4">
+                            <EulerLogoCanvas size={48} rotationSpeed={0.008} />
+                        </div>
                         <p className="appropriate-sans text-[11px] font-bold text-accent mb-4">
                             Wait... generating custom questions for {topicName}.
                         </p>

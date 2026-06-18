@@ -451,6 +451,9 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
           ...formData,
           time_unit: 'weeks',
         });
+
+
+
         onRoadmapGenerated(response, { ...formData, time_unit: 'weeks' });
       }
     } catch (err: any) {
@@ -472,14 +475,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
       <div className="bg-header border border-border rounded-xl shadow-2xl overflow-hidden backdrop-blur-sm relative z-20">
         <div className="p-5 md:p-8 space-y-8">
           
-          <div className="bg-teal-500/5 border border-teal-500/20 p-4 rounded-xl flex gap-3 items-start">
-            <div className="shrink-0 mt-0.5">
-              <EulerLogoCanvas size={24} color1={0x0f766e} color2={0x2dd4bf} wireframe={false} />
-            </div>
-            <p className="text-[13px] text-text-primary leading-relaxed font-medium">
-              Generates a complete career bridge to meet every requirement in the job description based on your current background.
-            </p>
-          </div>
+
 
           <div className="space-y-6">
             {/* JD Input */}
@@ -562,14 +558,17 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
         {!isGenerating && (
           <div className="pt-4 flex flex-col items-center gap-4 w-full">
               <div className="flex flex-col gap-2 max-w-sm w-full mb-4">
+                <div className="flex items-center gap-1.5 mb-1">
+                  <Cpu className="w-4 h-4 text-accent" />
+                  <span className="text-[12px] font-bold text-text-heading uppercase tracking-widest">Select AI Engine</span>
+                </div>
                 <div className="flex items-center justify-between p-1 bg-sidebar border border-border rounded-lg w-full">
                   <button
                     type="button"
-                    disabled={true}
-                    onClick={() => {}}
-                    className={`flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all text-red-500 opacity-60 cursor-not-allowed`}
+                    onClick={() => { setUseOpenRouter(false); setUseLocalAI(false); }}
+                    className={`flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all ${!useOpenRouter && !useLocalAI ? 'bg-background text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
                   >
-                    EulerFold AI (Temporary Outage)
+                    EulerFold AI
                   </button>
                   <button
                     type="button"
@@ -598,7 +597,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                             EulerFold AI (Default)
                           </h3>
                           <p className="text-[11px] text-text-muted leading-tight">
-                            Powered by Google Gemini 2.5. Fast, robust paths. <span className="text-amber-500/90 font-bold">Costs 1 Credit per generation.</span>
+                            <span className="text-amber-500/90 font-bold">Costs 1 Credit per generation.</span>
                           </p>
                         </div>
                       </div>
@@ -718,17 +717,6 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
               </div>
             )}
 
-            {!useLocalAI && !useOpenRouter && (
-              <div className="bg-accent/5 border border-accent/20 p-3 rounded-lg mt-4 flex gap-3 items-start animate-in fade-in">
-                <Zap className="w-4 h-4 text-amber-500/90 shrink-0 mt-0.5" />
-                <div className="text-left">
-                  <p className="text-[11px] font-bold text-text-heading mb-0.5 uppercase tracking-widest">Generation Cost</p>
-                  <p className="text-[11px] text-text-muted leading-relaxed font-medium">
-                    Decoding this path with EulerFold AI will utilize <span className="font-bold text-amber-500/90">1 Credit</span> from your account balance.
-                  </p>
-                </div>
-              </div>
-            )}
 
             <button
               onClick={handleSubmit}

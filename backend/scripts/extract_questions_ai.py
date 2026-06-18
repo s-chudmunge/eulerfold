@@ -2,7 +2,9 @@ import os
 import json
 import sys
 import subprocess
-import google.generativeai as genai
+import requests
+import base64
+from io import BytesIO
 from PIL import Image
 from dotenv import load_dotenv
 
@@ -18,12 +20,10 @@ for path in env_paths:
         print(f"Loaded environment from {path}")
         break
 
-api_key = os.environ.get("GEMINI_API_KEY")
+api_key = os.environ.get("OPENROUTER_API_KEY")
 if not api_key:
-    print("Error: GEMINI_API_KEY not found in environment or .env file.")
+    print("Error: OPENROUTER_API_KEY not found in environment or .env file.")
     sys.exit(1)
-
-genai.configure(api_key=api_key)
 
 def extract_images_from_pdf(pdf_path, page_limit=4):
     """
@@ -46,8 +46,7 @@ def extract_images_from_pdf(pdf_path, page_limit=4):
         return []
 
 def extract_questions_with_ai(pdf_path, limit=5):
-    # Use the same model reported in your backend logs
-    model = genai.GenerativeModel('gemini-1.5-pro')
+    model = "anthropic/claude-3.5-sonnet"
     images = extract_images_from_pdf(pdf_path)
     
     if not images:
@@ -84,10 +83,42 @@ def extract_questions_with_ai(pdf_path, limit=5):
     Return raw JSON only. No markdown formatting.
     """
 
-    print(f"Sending images to Gemini for high-fidelity extraction...")
+    print(f"Sending images to OpenRouter for high-fidelity extraction...")
     try:
-        response = model.generate_content([prompt, *images])
-        raw_text = response.text.strip()
+        content_parts = [{"type": "text", "text": prompt}]
+        
+        for img in images:
+            buffered = BytesIO()
+            img.save(buffered, format="PNG")
+            img_str = base64.b64encode(buffered.getvalue()).decode()
+            content_parts.append({
+                "type": "image_url",
+                "image_url": {
+                    "url": f"data:image/png;base64,{img_str}"
+                }
+            })
+
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json"
+        }
+        
+        payload = {
+            "model": model,
+            "messages": [
+                {
+                    "role": "user",
+                    "content": content_parts
+                }
+            ]
+        }
+        
+        res = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload)
+        res.raise_for_status()
+        data = res.json()
+        
+        raw_text = data["choices"][0]["message"]["content"].strip()
+        
         # Cleanup markdown if AI ignores instructions
         if raw_text.startswith("```json"):
             raw_text = raw_text.replace("```json", "", 1).replace("```", "", 1).strip()

@@ -110,6 +110,7 @@ export default function ResearchLabClient() {
         try {
             if (engineType === 'cloud') {
                 const res = await api.post('/research-lab/decode', { paper_url: paperUrl });
+
                 router.push(`/research-lab/${res.data.id}`);
             } else {
                 if (engineType === 'local' && !localAIModelId) {
@@ -429,15 +430,18 @@ export default function ResearchLabClient() {
                                         <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                                             <button
                                                 type="button"
-                                                disabled={true}
-                                                onClick={() => {}}
-                                                className={`flex flex-col items-start p-3 rounded-lg border transition-all opacity-60 cursor-not-allowed border-red-500/20 bg-background`}
+                                                onClick={() => setEngineType('cloud')}
+                                                className={`flex flex-col items-start p-3 rounded-lg border transition-all ${
+                                                    engineType === 'cloud' 
+                                                        ? 'border-accent bg-accent/5 shadow-sm' 
+                                                        : 'border-border/50 bg-background hover:border-border hover:bg-sidebar'
+                                                }`}
                                             >
                                                 <div className="flex items-center gap-2 mb-1">
-                                                    <Cloud className={`w-4 h-4 text-red-500`} />
-                                                    <span className="text-[12px] font-bold text-red-500">EulerFold AI (Outage)</span>
+                                                    <Cloud className={`w-4 h-4 ${engineType === 'cloud' ? 'text-accent' : 'text-text-muted'}`} />
+                                                    <span className={`text-[12px] font-bold ${engineType === 'cloud' ? 'text-accent' : 'text-text-heading'}`}>EulerFold AI</span>
                                                 </div>
-                                                <span className="text-[10px] text-red-400/70">Temporary Outage</span>
+                                                <span className="text-[10px] text-text-muted">1 Credit / Paper</span>
                                             </button>
                                             <button
                                                 type="button"

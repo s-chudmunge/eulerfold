@@ -54,7 +54,7 @@ class COOPMiddleware(BaseHTTPMiddleware):
 
 from app.core.websocket_manager import manager
 
-from app.routers import health, roadmaps, auth, explore, coins, practice, profiles, assessments, sessions, leaderboard, payments, discussions, planner, tts, research_lab, interactions, ai_usage, dashboard, misc
+from app.routers import health, roadmaps, auth, explore, coins, practice, profiles, sessions, leaderboard, payments, discussions, planner, tts, research_lab, interactions, ai_usage, dashboard, misc
 from app.routers import submissions as submissions_router
 from app.core.config import settings
 
@@ -62,7 +62,7 @@ def validate_environment():
     required_vars = [
         ("SUPABASE_URL", settings.SUPABASE_URL),
         ("SUPABASE_KEY", settings.SUPABASE_KEY),
-        ("GEMINI_API_KEY", settings.GEMINI_API_KEY),
+        ("OPENROUTER_API_KEY", settings.OPENROUTER_API_KEY),
     ]
     if settings.ENVIRONMENT == "production":
         required_vars.append(("RESEND_API_KEY", settings.RESEND_API_KEY))
@@ -75,12 +75,35 @@ def validate_environment():
              raise RuntimeError(msg)
     
     # Log key suffix for verification
+    if settings.OPENROUTER_API_KEY:
+        key_suffix = settings.OPENROUTER_API_KEY[-3:]
+        print(f"--- [STARTUP] OpenRouter API key loaded. Suffix: ...{key_suffix}")
+    else:
+        print("--- [STARTUP] WARNING: OPENROUTER_API_KEY is not set!")
+        
+    if settings.GROQ_API_KEY:
+        key_suffix = settings.GROQ_API_KEY[-3:]
+        print(f"--- [STARTUP] Groq API key loaded (Fallback 1). Suffix: ...{key_suffix}")
+    else:
+        print("--- [STARTUP] WARNING: GROQ_API_KEY is not set!")
+        
+    if settings.COHERE_API_KEY:
+        key_suffix = settings.COHERE_API_KEY[-3:]
+        print(f"--- [STARTUP] Cohere API key loaded (Fallback 2). Suffix: ...{key_suffix}")
+    else:
+        print("--- [STARTUP] WARNING: COHERE_API_KEY is not set!")
+        
     if settings.GEMINI_API_KEY:
         key_suffix = settings.GEMINI_API_KEY[-3:]
-        print(f"--- [STARTUP] Gemini API key loaded. Suffix: ...{key_suffix}")
-        print(f"--- [STARTUP] Gemini model: {settings.GEMINI_MODEL}")
+        print(f"--- [STARTUP] Gemini API key loaded (Fallback 3). Suffix: ...{key_suffix}")
     else:
         print("--- [STARTUP] WARNING: GEMINI_API_KEY is not set!")
+        
+    if settings.HF_API_TOKEN:
+        key_suffix = settings.HF_API_TOKEN[-3:]
+        print(f"--- [STARTUP] Hugging Face API key loaded (Fallback 4). Suffix: ...{key_suffix}")
+    else:
+        print("--- [STARTUP] WARNING: HF_API_TOKEN is not set!")
 
 app = FastAPI()
 
@@ -125,7 +148,7 @@ app.include_router(explore.router)
 app.include_router(coins.router)
 app.include_router(practice.router)
 app.include_router(profiles.router)
-app.include_router(assessments.router)
+
 app.include_router(sessions.router)
 app.include_router(leaderboard.router)
 app.include_router(payments.router)

@@ -26,7 +26,7 @@ from app.schemas import (
     MCQSubmitAnswer,
     MCQQuestion
 )
-from app.utils.gemini_client import generate_text, clean_json_string, robust_json_loads
+from app.utils.ai_client import generate_text, clean_json_string, robust_json_loads, log_backend_ai_usage
 from app.core.coins import EulerCoins
 from app.utils.eulercoins import award_coins
 
@@ -112,11 +112,11 @@ async def _generate_practice_resources(topic: str, subject: str, goal: str, exis
     
     try:
         try:
-            response_text = await generate_text(prompt, model=settings.GEMINI_MODEL, response_mime_type="application/json")
-        except Exception as e:
-            if "429" in str(e):
-                logger.warning("Primary model hit quota, falling back to gemini-flash-lite-latest")
-                response_text = await generate_text(prompt, model="models/gemini-flash-lite-latest", response_mime_type="application/json")
+            response_text = await generate_text(prompt, model=settings.DEFAULT_FEEDBACK_MODEL, response_mime_type="application/json")
+        except HTTPException as e:
+            if e.status_code == 429:
+                logger.warning("Primary model hit quota, falling back to openai/gpt-4o-mini")
+                response_text = await generate_text(prompt, model="openai/gpt-4o-mini", response_mime_type="application/json")
             else:
                 raise e
                 
@@ -143,7 +143,7 @@ async def _generate_practice_resources(topic: str, subject: str, goal: str, exis
         
         return verified_resources
     except Exception as e:
-        logger.error(f"Gemini practice generation failed: {e}")
+        logger.error(f"AI practice generation failed: {e}")
         return []
 
 @router.post("/session", response_model=PracticeSessionRead)
@@ -303,11 +303,11 @@ async def _generate_mcq_questions(topic: str, subject: str, week: int, num_quest
     """
     
     try:
-        response_text = await generate_text(prompt, model=settings.GEMINI_MODEL, response_mime_type="application/json")
+        response_text, usage = await generate_text(prompt, model=settings.DEFAULT_FEEDBACK_MODEL, response_mime_type="application/json", return_usage=True)
         questions = robust_json_loads(response_text)
         
         if not isinstance(questions, list):
-            return []
+            return [], usage
             
         # Basic validation of the structure
         validated = []
@@ -316,10 +316,10 @@ async def _generate_mcq_questions(topic: str, subject: str, week: int, num_quest
                 if len(q["options"]) == 4:
                     validated.append(q)
                     
-        return validated[:num_questions]
+        return validated[:num_questions], usage
     except Exception as e:
-        logger.error(f"Gemini MCQ generation failed: {e}")
-        return []
+        logger.error(f"AI MCQ generation failed: {e}")
+        return [], {}
 
 @router.post("/mcq/save-external", response_model=MCQSessionRead)
 async def save_external_mcq_session(data: MCQSessionSaveExternal, current_user: User = Depends(get_current_user)):
@@ -381,6 +381,29 @@ async def generate_mcq_session(data: MCQSessionCreate, current_user: User = Depe
             logger.info(f"Active MCQ session already exists for user {uid} on subtopic {data.subtopic_id}. Returning existing session.")
             return active_res.data[0]
 
+    # 1c. Check if practice cap has been reached (5 completed sessions per module)
+    if data.roadmap_id:
+        roadmap_res = sb.table("roadmaps").select("roadmap_plan").eq("id", data.roadmap_id).single().execute()
+        if roadmap_res.data:
+            raw_plan = roadmap_res.data["roadmap_plan"]
+            plan = json.loads(raw_plan) if isinstance(raw_plan, str) else (raw_plan if isinstance(raw_plan, dict) else {})
+            total_modules = len(plan.get("modules", []))
+            max_sessions = total_modules * 5
+
+            completed_sessions_res = sb.table("mcq_sessions") \
+                .select("id", count="exact") \
+                .eq("user_id", uid) \
+                .eq("roadmap_id", data.roadmap_id) \
+                .eq("status", "completed") \
+                .execute()
+
+            completed_count = completed_sessions_res.count or 0
+            if completed_count >= max_sessions:
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"Practice cap reached. You have completed {completed_count}/{max_sessions} sessions for this roadmap."
+                )
+
     current_credits = float(profile.get("roadmap_credits") or 0.0)
     credit_cost = float(data.num_questions) * 0.01
 
@@ -395,7 +418,9 @@ async def generate_mcq_session(data: MCQSessionCreate, current_user: User = Depe
 
     try:
         # 3. Generate Questions
-        questions = await _generate_mcq_questions(data.topic_name, data.subject, data.week_number, data.num_questions)
+        questions, usage = await _generate_mcq_questions(data.topic_name, data.subject, data.week_number, data.num_questions)
+        
+        log_backend_ai_usage(sb, uid, f"Practice: {data.topic_name} (Cost: {credit_cost} Credits)", usage, source="backend")
 
         if not questions:
             # Refund credits

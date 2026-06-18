@@ -9,7 +9,7 @@ from dotenv import load_dotenv
 # Ensure we can import from app
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
-from app.utils.gemini_client import generate_text, clean_json_string
+from app.utils.ai_client import generate_text, clean_json_string
 
 async def test_full_production_generation(model_name, label):
     print(f"\n🚀 Testing FULL PRODUCTION SCHEMA: {label} ({model_name})...")

@@ -7,7 +7,7 @@ import time
 from datetime import datetime, timezone
 from supabase import create_client
 from dotenv import load_dotenv
-import google.generativeai as genai
+import httpx
 
 # Load environment variables
 load_dotenv("backend/.env")
@@ -17,10 +17,9 @@ SUPABASE_URL = os.environ.get("SUPABASE_URL")
 SUPABASE_KEY = os.environ.get("SUPABASE_SERVICE_ROLE_KEY")
 sb = create_client(SUPABASE_URL, SUPABASE_KEY)
 
-# Gemini Config
-GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY")
-genai.configure(api_key=GEMINI_API_KEY)
-MODEL_NAME = "models/gemini-2.0-flash" # High speed for seeding
+# OpenRouter Config
+OPENROUTER_API_KEY = os.environ.get("OPENROUTER_API_KEY")
+MODEL_NAME = "anthropic/claude-3-5-haiku" # High speed for seeding
 
 # System User Config
 SYSTEM_EMAIL = "eulerfold@gmail.com"
@@ -104,14 +103,35 @@ Begin JSON output:
 """
 
     try:
-        model = genai.GenerativeModel(MODEL_NAME)
-        response = model.generate_content(prompt, generation_config={"temperature": 0.2})
-        
-        if not response or not response.text:
+        if not OPENROUTER_API_KEY:
+            raise RuntimeError("OPENROUTER_API_KEY not found in environment.")
+
+        headers = {
+            "Authorization": f"Bearer {OPENROUTER_API_KEY}",
+            "Content-Type": "application/json"
+        }
+        payload = {
+            "model": MODEL_NAME,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0.2
+        }
+
+        async with httpx.AsyncClient() as client:
+            response = await client.post(
+                "https://openrouter.ai/api/v1/chat/completions",
+                headers=headers,
+                json=payload,
+                timeout=180.0
+            )
+            response.raise_for_status()
+            data = response.json()
+
+        if "choices" not in data or not data["choices"]:
             print(f"❌ Failed to get response for {subject}")
             return
 
-        cleaned_text = clean_json_string(response.text)
+        response_text = data["choices"][0]["message"]["content"]
+        cleaned_text = clean_json_string(response_text)
         data = json.loads(cleaned_text)
         
         # Add metadata for DB

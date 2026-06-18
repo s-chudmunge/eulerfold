@@ -532,6 +532,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
           time_unit: 'weeks',
           model: profile?.is_pro ? 'models/gemini-2.5-pro' : 'models/gemini-2.5-flash',
         });
+        
         onRoadmapGenerated(response.data, { ...formData, time_unit: 'weeks' });
       }
     } catch (err: any) {
@@ -553,14 +554,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
   const renderStep = () => {
     return (
       <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-            <div className="bg-amber-500/5 border border-amber-500/20 p-4 rounded-xl flex gap-3 items-start">
-              <div className="shrink-0 mt-0.5">
-                <EulerLogoCanvas size={24} color1={0xd97706} color2={0xf59e0b} wireframe={false} />
-              </div>
-              <p className="text-[13px] text-text-primary leading-relaxed font-medium">
-                Generates a fully custom, structured technical roadmap tailored precisely to your goals and current expertise level.
-              </p>
-            </div>
+
             
             <div className="space-y-5">
                <label className="inconsolata-ui flex items-center text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted">
@@ -732,15 +726,103 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
             </div>
 
             
+            {/* --- Start of Step 2 content merged --- */}
+            <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 mt-8">
+            <div className="space-y-3">
+               <label className="inconsolata-ui flex items-center text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted">
+                 2. Intensity & Context
+               </label>
+
+               {useLocalAI && (
+                 <div className="bg-accent/5 border border-accent/20 p-3 rounded-lg mb-4 flex gap-3 items-start animate-in fade-in">
+                   <AlertCircle className="w-4 h-4 text-accent shrink-0 mt-0.5" />
+                   <div className="text-left">
+                     <p className="text-[11px] font-bold text-text-heading mb-0.5 uppercase tracking-widest">Local Model Limitations</p>
+                     <p className="text-[11px] text-text-muted leading-relaxed font-medium">
+                       To get the best results from smaller local models, keep your target duration short (2-4 weeks) and your goal specific. Local models may struggle to generate detailed 8+ week schedules or process large amounts of custom context.
+                     </p>
+                   </div>
+                 </div>
+               )}
+
+
+               {/* Target Duration */}
+               <div className="space-y-2">
+                  <div className="flex items-center gap-1.5">
+                    <Hourglass className="w-3 h-3 text-accent" />
+                    <span className="text-[12px] font-bold text-text-heading">Target Duration</span>
+                  </div>
+                  <div className="flex flex-wrap gap-1.5">
+                    {(profile?.is_pro ? [2, 3, 4, 6, 8, 10, 12] : [2, 3, 4]).map(w => (
+                      <button
+                        type="button"
+                        key={w}
+                        onClick={() => setFormData(prev => ({ ...prev, time_value: w }))}
+                        className={`px-4 py-1.5 border text-[10px] font-bold uppercase tracking-widest transition-all rounded-md
+                          ${formData.time_value === w 
+                            ? 'bg-accent text-white border-accent shadow-lg shadow-accent/20' 
+                            : 'bg-background text-text-muted border-border hover:border-accent hover:text-accent'
+                          }`}
+                      >
+                        {w} Weeks
+                      </button>
+                    ))}
+                    {!profile?.is_pro && (
+                      <button 
+                        type="button"
+                        onClick={() => setIsPaymentModalOpen(true)}
+                        className="px-3 py-1.5 text-[9px] font-bold text-accent border border-accent/20 border-dashed hover:bg-accent/5 transition-all rounded-md"
+                      >
+                        Unlock 6-12 Weeks (Pro)
+                      </button>
+                    )}
+                  </div>
+               </div>
+
+               {/* Context */}
+               <div className="pt-2">
+                  <button 
+                    type="button"
+                    onClick={() => setShowOptionalFields(!showOptionalFields)}
+                    className="flex items-center gap-2 text-[11px] font-bold text-text-muted hover:text-accent transition-colors uppercase tracking-widest"
+                  >
+                    <div className={`transition-transform duration-300 ${showOptionalFields ? 'rotate-180' : ''}`}>
+                      <ChevronDown className="w-3.5 h-3.5" />
+                    </div>
+                    {showOptionalFields ? 'Hide Detailed Context' : 'Add Detailed Context (Optional)'}
+                  </button>
+
+                  {showOptionalFields && (
+                    <div className="mt-4 space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
+                      <div className="flex items-center gap-1.5">
+                        <History className="w-3 h-3 text-accent" />
+                        <span className="text-[12px] font-bold text-text-heading">Detailed Context</span>
+                      </div>
+                      <textarea
+                        name="prior_experience"
+                        value={formData.prior_experience}
+                        onChange={handleInputChange}
+                        rows={2}
+                        placeholder="What do you already know? Any specific technologies you prefer or want to avoid?"
+                        className="w-full px-3 py-2 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[13px] font-medium resize-none h-20"
+                      />
+                    </div>
+                  )}
+               </div>
+            </div>
+
             <div className="mt-8 flex flex-col gap-2 max-w-sm">
+                <div className="flex items-center gap-1.5 mb-1">
+                  <Cpu className="w-4 h-4 text-accent" />
+                  <span className="text-[12px] font-bold text-text-heading uppercase tracking-widest">Select AI Engine</span>
+                </div>
                 <div className="flex items-center justify-between p-1 bg-sidebar border border-border rounded-lg w-full">
                   <button
                     type="button"
-                    disabled={true}
-                    onClick={() => {}}
-                    className={`flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all text-red-500 opacity-60 cursor-not-allowed`}
+                    onClick={() => { setUseOpenRouter(false); setUseLocalAI(false); }}
+                    className={`flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all ${!useOpenRouter && !useLocalAI ? 'bg-background text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
                   >
-                    EulerFold AI (Temporary Outage)
+                    EulerFold AI
                   </button>
                   <button
                     type="button"
@@ -769,7 +851,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                             EulerFold AI (Default)
                           </h3>
                           <p className="text-[11px] text-text-muted leading-tight">
-                            Powered by Google Gemini 2.5. Fast, robust roadmaps. <span className="text-amber-500/90 font-bold">Costs 1 Credit per generation.</span>
+                            <span className="text-amber-500/90 font-bold">Costs 1 Credit per generation.</span>
                           </p>
                         </div>
                       </div>
@@ -892,136 +974,10 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
 
             </div>
             )}
-            {/* --- Start of Step 2 content merged --- */}
-            <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 mt-8">
-            <div className="space-y-3">
-               <label className="inconsolata-ui flex items-center text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted">
-                 2. Intensity & Context
-               </label>
-
-               {useLocalAI && (
-                 <div className="bg-accent/5 border border-accent/20 p-3 rounded-lg mb-4 flex gap-3 items-start animate-in fade-in">
-                   <AlertCircle className="w-4 h-4 text-accent shrink-0 mt-0.5" />
-                   <div className="text-left">
-                     <p className="text-[11px] font-bold text-text-heading mb-0.5 uppercase tracking-widest">Local Model Limitations</p>
-                     <p className="text-[11px] text-text-muted leading-relaxed font-medium">
-                       To get the best results from smaller local models, keep your target duration short (2-4 weeks) and your goal specific. Local models may struggle to generate detailed 8+ week schedules or process large amounts of custom context.
-                     </p>
-                   </div>
-                 </div>
-               )}
-
-               {!useLocalAI && !useOpenRouter && (
-                 <div className="bg-accent/5 border border-accent/20 p-3 rounded-lg mb-4 flex gap-3 items-start animate-in fade-in">
-                   <Zap className="w-4 h-4 text-amber-500/90 shrink-0 mt-0.5" />
-                   <div className="text-left">
-                     <p className="text-[11px] font-bold text-text-heading mb-0.5 uppercase tracking-widest">Generation Cost</p>
-                     <p className="text-[11px] text-text-muted leading-relaxed font-medium">
-                       Architecting this roadmap with EulerFold AI will utilize <span className="font-bold text-amber-500/90">1 Credit</span> from your account balance.
-                     </p>
-                   </div>
-                 </div>
-               )}
-
-               {/* Target Duration */}
-               <div className="space-y-2">
-                  <div className="flex items-center gap-1.5">
-                    <Hourglass className="w-3 h-3 text-accent" />
-                    <span className="text-[12px] font-bold text-text-heading">Target Duration</span>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {(profile?.is_pro ? [2, 3, 4, 6, 8, 10, 12] : [2, 3, 4]).map(w => (
-                      <button
-                        type="button"
-                        key={w}
-                        onClick={() => setFormData(prev => ({ ...prev, time_value: w }))}
-                        className={`px-4 py-1.5 border text-[10px] font-bold uppercase tracking-widest transition-all rounded-md
-                          ${formData.time_value === w 
-                            ? 'bg-accent text-white border-accent shadow-lg shadow-accent/20' 
-                            : 'bg-background text-text-muted border-border hover:border-accent hover:text-accent'
-                          }`}
-                      >
-                        {w} Weeks
-                      </button>
-                    ))}
-                    {!profile?.is_pro && (
-                      <button 
-                        type="button"
-                        onClick={() => setIsPaymentModalOpen(true)}
-                        className="px-3 py-1.5 text-[9px] font-bold text-accent border border-accent/20 border-dashed hover:bg-accent/5 transition-all rounded-md"
-                      >
-                        Unlock 6-12 Weeks (Pro)
-                      </button>
-                    )}
-                  </div>
-               </div>
-
-               {/* Context */}
-               <div className="pt-2">
-                  <button 
-                    type="button"
-                    onClick={() => setShowOptionalFields(!showOptionalFields)}
-                    className="flex items-center gap-2 text-[11px] font-bold text-text-muted hover:text-accent transition-colors uppercase tracking-widest"
-                  >
-                    <div className={`transition-transform duration-300 ${showOptionalFields ? 'rotate-180' : ''}`}>
-                      <ChevronDown className="w-3.5 h-3.5" />
-                    </div>
-                    {showOptionalFields ? 'Hide Detailed Context' : 'Add Detailed Context (Optional)'}
-                  </button>
-
-                  {showOptionalFields && (
-                    <div className="mt-4 space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
-                      <div className="flex items-center gap-1.5">
-                        <History className="w-3 h-3 text-accent" />
-                        <span className="text-[12px] font-bold text-text-heading">Detailed Context</span>
-                      </div>
-                      <textarea
-                        name="prior_experience"
-                        value={formData.prior_experience}
-                        onChange={handleInputChange}
-                        rows={2}
-                        placeholder="What do you already know? Any specific technologies you prefer or want to avoid?"
-                        className="w-full px-3 py-2 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[13px] font-medium resize-none h-20"
-                      />
-                    </div>
-                  )}
-               </div>
-            </div>
-
             {!isGenerating && (
               <div className="mt-8 flex flex-col gap-6">
 
-                  <div className="flex flex-col gap-2 max-w-sm mx-auto w-full">
-                    <div className="flex items-center justify-between p-1 bg-sidebar border border-border rounded-lg w-full">
-                      <button
-                        type="button"
-                        disabled={true}
-                        onClick={() => {}}
-                        className={`flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all text-red-500 opacity-60 cursor-not-allowed`}
-                      >
-                        EulerFold AI (Temporary Outage)
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => { setUseOpenRouter(true); setUseLocalAI(false); }}
-                        className={`flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all ${useOpenRouter ? 'bg-background text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
-                      >
-                        OpenRouter
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => { setUseOpenRouter(false); setUseLocalAI(true); }}
-                        className={`flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all ${useLocalAI ? 'bg-background text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
-                      >
-                        Local AI
-                      </button>
-                    </div>
-                    {!useOpenRouter && !useLocalAI && (
-                      <div className="text-[10px] text-text-muted font-bold uppercase tracking-widest text-center animate-in fade-in">
-                        Model: <span className="text-accent">Google Gemini 2.5 Flash / Pro</span>
-                      </div>
-                    )}
-                  </div>
+
                 
                 <div className="flex flex-col sm:flex-row items-center gap-4">
 

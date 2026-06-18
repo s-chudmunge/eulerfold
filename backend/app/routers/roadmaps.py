@@ -16,7 +16,7 @@ from fastapi import APIRouter, HTTPException, Request, Depends, BackgroundTasks
 from app.core.config import settings
 from app.core.supabase_client import supabase, get_supabase_client
 from app.schemas import RoadmapCreate, RoadmapMe, RoadmapRead, RoadmapSave, User, ProgressUpdate, RoadmapExtend, RoadmapStatusUpdate, ManualBuildRequest, JobRoadmapCreate, ExternalRoadmapCreate, SyncSkillsRequest
-from app.utils.gemini_client import generate_text, clean_json_string, robust_json_loads
+from app.utils.ai_client import generate_text, clean_json_string, robust_json_loads, log_backend_ai_usage
 from app.utils.resend_client import send_onboarding_email
 from app.utils.youtube_client import search_youtube_videos
 from app.core.coins import EulerCoins
@@ -193,8 +193,7 @@ async def _enrich_roadmap_progress(roadmaps: List[Dict], email: str, uid: str, s
         completed_topics_all = 0
         total_subs_all = total_modules
         completed_subs_all = 0
-        total_practice_all = 0
-        completed_practice_all = 0
+        completed_practice_sessions = 0
 
         # Calculate scores per module
         for module in modules:
@@ -215,18 +214,18 @@ async def _enrich_roadmap_progress(roadmaps: List[Dict], email: str, uid: str, s
             if eval_level:
                 completed_subs_all += 1
             
-            # 3. Practice Score
+            # 3. Practice Score — count fully completed sessions
             m_sessions = [ps for ps in ps_map.get(rid, []) if any(topic.get("id") == ps.get("subtopic_id") for topic in m_topics)]
-            m_total_res = 0
-            m_completed_res = 0
             for ps in m_sessions:
                 resources = ps.get("resources", [])
-                m_total_res += len(resources)
-                for res in resources:
-                    if (str(ps["id"]), str(res["id"])) in pp_set:
-                        m_completed_res += 1
-            total_practice_all += m_total_res
-            completed_practice_all += m_completed_res
+                if not resources:
+                    continue
+                all_done = all(
+                    (str(ps["id"]), str(res["id"])) in pp_set
+                    for res in resources
+                )
+                if all_done:
+                    completed_practice_sessions += 1
 
             # Status determination logic: 
             # If a module is completed (all topics + solid/developing submission), we move on.
@@ -247,9 +246,11 @@ async def _enrich_roadmap_progress(roadmaps: List[Dict], email: str, uid: str, s
 
         # Overall Percent Calculation
         # Weights: 40% PoW (Submissions) + 30% Topics + 30% Practice
-        pow_weight = (completed_subs_all / total_subs_all) * 40 if total_subs_all > 0 else 40
-        topic_weight = (completed_topics_all / total_topics_all) * 30 if total_topics_all > 0 else 30
-        practice_weight = (completed_practice_all / total_practice_all) * 30 if total_practice_all > 0 else 30
+        # Practice: minimum 5 completed sessions per module to reach full 30%
+        min_expected_sessions = total_modules * 5
+        pow_weight = (completed_subs_all / total_subs_all) * 40 if total_subs_all > 0 else 0
+        topic_weight = (completed_topics_all / total_topics_all) * 30 if total_topics_all > 0 else 0
+        practice_weight = min(1.0, completed_practice_sessions / min_expected_sessions) * 30 if min_expected_sessions > 0 else 0
         
         percent = round(pow_weight + topic_weight + practice_weight)
 
@@ -272,8 +273,8 @@ async def _enrich_roadmap_progress(roadmaps: List[Dict], email: str, uid: str, s
             "total_topics": total_topics_all,
             "completed_submissions": completed_subs_all,
             "total_submissions": total_subs_all,
-            "completed_resources": completed_practice_all,
-            "total_resources": total_practice_all,
+            "completed_practice_sessions": completed_practice_sessions,
+            "required_practice_sessions": min_expected_sessions,
             "bottleneck_module": bottleneck_module
         }
         # If DB status is terminal (archived, quit), keep it. 
@@ -537,8 +538,8 @@ They now want to EXTEND this roadmap for {payload.weeks} more week(s) to learn: 
          }},
          "optimal_search_query": "A targeted search query to find the best academic/technical resources for this module",
          "topics": [
-           {{ "title": "string", "subtopics": [ {{ "title": "string" }} ] }}
-         ],
+            {{ "title": "string", "youtube_search_query": "A precise search query to find a university lecture or in-depth technical video on this specific topic", "subtopics": [ {{ "title": "string" }} ] }}
+          ],
          "resources": [
             {{ "title": "string", "url": "string", "type": "docs|article" }}
          ]
@@ -556,7 +557,7 @@ They now want to EXTEND this roadmap for {payload.weeks} more week(s) to learn: 
 Begin the JSON output immediately.
 """
     try:
-        model_to_use = "models/gemini-2.5-pro" # Pro users get Pro model
+        model_to_use = "anthropic/claude-3.5-sonnet" # Pro users get Pro model
         generated_text = await generate_text(prompt, model=model_to_use, response_mime_type="application/json")
         extension_data = robust_json_loads(generated_text)
         new_modules = extension_data.get("modules", [])
@@ -580,8 +581,8 @@ Begin the JSON output immediately.
             try:
                 for module in new_modules:
                     for topic in module.get("topics", []):
-                        search_query = f"{roadmap.get('subject')} {topic['title']} {payload.extension_goal} tutorial"
-                        results = await search_youtube_videos(search_query, max_results=1)
+                        search_query = topic.get("youtube_search_query") or f"{roadmap.get('subject')} {topic['title']} lecture"
+                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'])
                         if results:
                             topic["youtube_video_id"] = results[0]["video_id"]
                             topic["youtube_video_title"] = results[0]["video_title"]
@@ -829,10 +830,11 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
          }},
          "optimal_search_query": "A targeted search query to find the best academic/technical resources for this module",
          "topics": [
-           {{
-             "title": "string",
-             "subtopics": [ {{ "title": "string" }} ]
-           }}
+            {{
+              "title": "string",
+              "youtube_search_query": "A precise search query to find a university lecture or in-depth technical video on this specific topic (e.g., 'MIT linear algebra eigenvalues lecture')",
+              "subtopics": [ {{ "title": "string" }} ]
+            }}
          ]
        }}
      ]
@@ -843,11 +845,12 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
    - Set "workspace_type" to "research" for theoretical science, mathematics, or technical writing.
 """
     try:
-        model_to_use = settings.GEMINI_MODEL
+        model_to_use = settings.DEFAULT_ROADMAP_MODEL
         if is_pro:
-            model_to_use = "models/gemini-2.5-pro"
+            model_to_use = "anthropic/claude-3.5-sonnet"
             
-        generated_text = await generate_text(prompt, model=model_to_use, response_mime_type="application/json")
+        generated_text, usage = await generate_text(prompt, model=model_to_use, response_mime_type="application/json", return_usage=True)
+        log_backend_ai_usage(sb, uid, f"{roadmap_create.subject} (Cost: 1.0 Credits)", usage, source="backend")
         roadmap_plan = robust_json_loads(generated_text)
 
         # 2. Add IDs and YouTube Videos
@@ -867,8 +870,8 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
                 # YouTube Enrichment
                 if settings.YOUTUBE_API_KEY:
                     try:
-                        search_query = f"{roadmap_create.subject} {topic['title']} tutorial"
-                        results = await search_youtube_videos(search_query, max_results=1)
+                        search_query = topic.get("youtube_search_query") or f"{roadmap_create.subject} {topic['title']} lecture"
+                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'])
                         if results:
                             topic["youtube_video_id"] = results[0]["video_id"]
                             topic["youtube_video_title"] = results[0]["video_title"]
@@ -969,9 +972,8 @@ async def save_external_roadmap(
             # YouTube Enrichment
             if settings.YOUTUBE_API_KEY:
                 try:
-                    short_subject = extract_core_subject(roadmap_create.subject)
-                    search_query = f"{short_subject} {topic['title']} tutorial"
-                    results = await search_youtube_videos(search_query, max_results=1)
+                    search_query = topic.get("youtube_search_query") or f"{extract_core_subject(roadmap_create.subject)} {topic['title']} lecture"
+                    results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'])
                     if results:
                         topic["youtube_video_id"] = results[0]["video_id"]
                         topic["youtube_video_title"] = results[0]["video_title"]
@@ -1119,11 +1121,12 @@ Duration: {payload.time_value} {payload.time_unit}.
 """
 
     try:
-        model_to_use = settings.GEMINI_MODEL
+        model_to_use = settings.DEFAULT_ROADMAP_MODEL
         if is_pro:
-            model_to_use = "models/gemini-2.5-pro"
+            model_to_use = "anthropic/claude-3.5-sonnet"
             
-        generated_text = await generate_text(prompt, model=model_to_use, response_mime_type="application/json")
+        generated_text, usage = await generate_text(prompt, model=model_to_use, response_mime_type="application/json", return_usage=True)
+        log_backend_ai_usage(sb, uid, "Job Decoded Roadmap (Cost: 1.0 Credits)", usage, source="backend")
         roadmap_plan = robust_json_loads(generated_text)
 
         # Enrichment logic (IDs, YouTube) - Shared with standard generator
@@ -1143,10 +1146,9 @@ Duration: {payload.time_value} {payload.time_unit}.
                 
                 if settings.YOUTUBE_API_KEY:
                     try:
-                        # Clean search query: Field/Role + Topic for high signal
                         clean_title = roadmap_plan['title'].replace("Job Decoded: ", "").split("@")[0].strip()
-                        search_query = f"{clean_title} {topic['title']} tutorial"
-                        results = await search_youtube_videos(search_query, max_results=1)
+                        search_query = topic.get("youtube_search_query") or f"{clean_title} {topic['title']} lecture"
+                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'])
                         if results:
                             topic["youtube_video_id"] = results[0]["video_id"]
                             topic["youtube_video_title"] = results[0]["video_title"]

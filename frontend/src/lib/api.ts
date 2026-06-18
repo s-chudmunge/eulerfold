@@ -806,25 +806,6 @@ export const profileAPI = {
     }
 };
 
-export const assessmentsAPI = {
-    start: async (skillId: string) => {
-        const response = await api.post('/assessments/start', null, { params: { skill_id: skillId } });
-        return response.data;
-    },
-    flag: async (sessionId: string) => {
-        const response = await api.post(`/assessments/${sessionId}/flag`);
-        return response.data;
-    },
-    submit: async (sessionId: string, answers: any[]) => {
-        const response = await api.post(`/assessments/${sessionId}/submit`, answers);
-        return response.data;
-    },
-    getSession: async (sessionId: string) => {
-        const response = await api.get(`/assessments/${sessionId}`);
-        return response.data;
-    }
-};
-
 export const paymentsAPI = {
     getTransactions: async (): Promise<any[]> => {
         const response = await api.get('/payments/transactions');

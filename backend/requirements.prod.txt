@@ -28,9 +28,10 @@ pillow
 sentry-sdk[fastapi]
 stripe==11.4.0
 razorpay==1.4.2
-google-generativeai==0.8.3
-google-genai==0.3.0
+
 protobuf
 json-repair
 pypdf
 ddgs
+google-genai==0.3.0
+cohere==5.11.2

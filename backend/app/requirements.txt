@@ -28,9 +28,10 @@ pillow
 sentry-sdk[fastapi]
 stripe
 razorpay
-google-generativeai
-google-genai
+
 protobuf
 json-repair
 pypdf
 ddgs
+google-genai
+cohere

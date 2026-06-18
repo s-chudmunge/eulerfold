@@ -309,6 +309,9 @@ Respond ONLY with valid JSON. Do not include markdown code blocks.`;
 
             const data = await submissionsAPI.createSubmission(payload, session.access_token);
             setResult(data.evaluation);
+            
+
+            
             if (onSuccess) onSuccess(data.evaluation);
         } catch (err: any) {
             console.error("Submission failed:", err);
@@ -503,11 +506,10 @@ Respond ONLY with valid JSON. Do not include markdown code blocks.`;
                             <div className="flex gap-1.5 p-1 bg-background rounded-lg border border-border/50">
                                 <button
                                     type="button"
-                                    disabled={true}
-                                    onClick={() => {}}
-                                    className={`flex-1 py-1.5 px-2 rounded-md text-[9px] font-bold uppercase tracking-widest transition-all text-red-500 opacity-60 cursor-not-allowed`}
+                                    onClick={() => { setUseOpenRouter(false); setUseLocalAI(false); }}
+                                    className={`flex-1 py-1.5 px-2 rounded-md text-[9px] font-bold uppercase tracking-widest transition-all ${!useOpenRouter && !useLocalAI ? 'bg-sidebar text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
                                 >
-                                    EulerFold AI (Temporary Outage)
+                                    EulerFold AI
                                 </button>
                                 <button
                                     type="button"
@@ -527,7 +529,7 @@ Respond ONLY with valid JSON. Do not include markdown code blocks.`;
 
                             <div className="px-1 py-1 flex items-center justify-between">
                                 <span className="text-[10px] text-text-muted/70 font-medium">
-                                    {(!useOpenRouter && !useLocalAI) && "Free standard evaluation."}
+                                    {(!useOpenRouter && !useLocalAI) && <span className="text-amber-500/90 font-bold">Uses 0.1 credits per evaluation.</span>}
                                     {useOpenRouter && "Uses your API key."}
                                     {useLocalAI && "Runs locally in browser. Free & Private."}
                                 </span>

@@ -11,7 +11,7 @@ from dotenv import load_dotenv
 # Ensure we can import from app
 sys.path.append(str(Path(__file__).resolve().parent.parent))
 
-from app.utils.gemini_client import generate_text, clean_json_string
+from app.utils.ai_client import generate_text, clean_json_string
 from app.utils.youtube_client import search_youtube_videos
 from app.core.config import settings
 

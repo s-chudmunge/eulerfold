@@ -12,11 +12,12 @@ from app.core.config import settings
 from app.core.supabase_client import get_supabase_client
 from app.core.auth import get_current_user
 from app.schemas import User
-from app.utils.gemini_client import generate_text, robust_json_loads
+from app.utils.ai_client import generate_text, robust_json_loads, log_backend_ai_usage
 from app.utils.streaks import track_activity
 from app.utils.resend_client import send_homework_results_email
 
 from app.services.skills_service import calculate_user_skill_scores_for_roadmap
+from app.routers.payments import check_and_revoke_pro_if_no_credits
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -86,8 +87,8 @@ Respond ONLY with JSON:
 """
 
     try:
-        gen_raw = await generate_text([prompt], model=settings.GEMINI_MODEL, response_mime_type="application/json")
-        return robust_json_loads(gen_raw)
+        gen_raw, usage = await generate_text(prompt, model=settings.DEFAULT_FEEDBACK_MODEL, response_mime_type="application/json", return_usage=True)
+        return robust_json_loads(gen_raw), usage
     except Exception as e:
         logger.error(f"Evaluation failed: {e}")
         return {
@@ -95,7 +96,7 @@ Respond ONLY with JSON:
             "summary": "Evaluation engine error. Submission recorded.",
             "feedback_details": {"technical": "N/A", "understanding": "N/A", "relevance": "N/A"},
             "evidence": []
-        }
+        }, {}
 
 def process_skill_evidence(
     uid: str,
@@ -197,6 +198,17 @@ async def create_submission(
     if submission.evaluation_result:
         eval_result = submission.evaluation_result
     else:
+        # Check credits
+        profile_res = sb.table("profiles").select("roadmap_credits").eq("email", email).execute()
+        if not profile_res.data:
+            raise HTTPException(status_code=404, detail="Profile not found")
+            
+        credits = float(profile_res.data[0].get("roadmap_credits", 0))
+        credit_cost = 0.1
+        
+        if credits < credit_cost:
+            raise HTTPException(status_code=402, detail=f"Insufficient credits. Homework evaluation costs {credit_cost} credits.")
+            
         context = {
             "module_title": module.get("title", f"Module {submission.module_number}"),
             "roadmap_subject": roadmap.get("subject"),
@@ -206,7 +218,14 @@ async def create_submission(
             "link": submission.link,
             "link_content": link_content
         }
-        eval_result = await evaluate_submission(context)
+        eval_result, usage = await evaluate_submission(context)
+        log_backend_ai_usage(sb, uid, f"Homework Evaluation: {context['module_title']} (Cost: 0.1 Credits)", usage, source="backend")
+        
+        # Deduct credits
+        new_credit_balance = round(credits - credit_cost, 2)
+        sb.table("profiles").update({"roadmap_credits": new_credit_balance}).eq("email", email).execute()
+        if new_credit_balance <= 0:
+            await check_and_revoke_pro_if_no_credits(email, sb)
 
     # 5. Save Submission
     sub_data = {

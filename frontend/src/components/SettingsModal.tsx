@@ -537,8 +537,8 @@ export default function SettingsModal() {
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <div className="pb-2 border-b border-border/50 flex items-center justify-between">
               <div>
-                <h2 className="inconsolata-ui text-[14px] font-bold tracking-tight text-text-heading">EXTERNAL AI USAGE</h2>
-                <p className="manrope-body text-[11px] text-text-muted italic opacity-60">Your OpenRouter and Local AI generation history.</p>
+                <h2 className="inconsolata-ui text-[14px] font-bold tracking-tight text-text-heading">AI GENERATION USAGE</h2>
+                <p className="manrope-body text-[11px] text-text-muted italic opacity-60">Your EulerFold Cloud, OpenRouter, and Local AI generation history.</p>
               </div>
               <a href="https://openrouter.ai/activity" target="_blank" rel="noopener noreferrer" className="inconsolata-ui text-[10px] font-bold text-accent hover:underline flex items-center gap-1.5">
                 Full Log <ExternalLink className="w-3 h-3" />
@@ -567,7 +567,7 @@ export default function SettingsModal() {
               <div className="p-8 text-center bg-sidebar/50 rounded-xl border border-border">
                 <History className="w-8 h-8 text-text-muted mx-auto mb-3 opacity-20" />
                 <p className="inconsolata-ui text-[12px] font-bold text-text-heading">No usage history found</p>
-                <p className="manrope-body text-[11px] text-text-muted mt-1">Generations made using OpenRouter or Local AI will appear here.</p>
+                <p className="manrope-body text-[11px] text-text-muted mt-1">Generations made using EulerFold AI, OpenRouter, or Local AI will appear here.</p>
               </div>
             ) : (
               <div className="space-y-3">

@@ -9,10 +9,8 @@ from fastapi import APIRouter, HTTPException, Depends, Body, BackgroundTasks
 from app.core.supabase_client import get_supabase_client
 from app.core.auth import get_current_user
 from app.schemas import User
-from app.utils.gemini_client import robust_json_loads
+from app.utils.ai_client import robust_json_loads, generate_text, log_backend_ai_usage
 from app.core.config import settings
-from google import genai
-from google.genai import types
 from app.routers.payments import check_and_revoke_pro_if_no_credits
 
 logger = logging.getLogger(__name__)
@@ -38,7 +36,7 @@ async def _fetch_pdf_content(url: str) -> Optional[bytes]:
         logger.error(f"Failed to fetch PDF from {url}: {e}")
     return None
 
-async def run_research_analysis(decode_id: str, paper_url: str):
+async def run_research_analysis(decode_id: str, paper_url: str, uid: str):
     """
     Background task to perform the paper analysis using modern google-genai SDK.
     """
@@ -50,9 +48,17 @@ async def run_research_analysis(decode_id: str, paper_url: str):
         if not pdf_bytes:
             raise Exception("Could not retrieve paper content from the provided URL.")
 
-        raise Exception("EulerFold Cloud AI is currently disabled per user request.")
-
-        client = genai.Client(api_key=settings.GEMINI_API_KEY)
+        import io
+        from pypdf import PdfReader
+        
+        reader = PdfReader(io.BytesIO(pdf_bytes))
+        paper_text = ""
+        for page in reader.pages:
+            extracted = page.extract_text()
+            if extracted:
+                paper_text += extracted + "\n\n"
+        
+        paper_text = paper_text[:80000]
 
         # Dynamic Technical Module Prompt
         prompt = """
@@ -104,25 +110,15 @@ async def run_research_analysis(decode_id: str, paper_url: str):
                 "summary": "Final technical synthesis"
             }
         }
-        """
+        """ + f"\n\nPAPER CONTENT:\n{paper_text}\n"
         
-        # Use confirmed working 2.5 Pro model
-        response = await client.aio.models.generate_content(
-            model="gemini-2.5-pro",
-            contents=[
-                types.Part.from_bytes(data=pdf_bytes, mime_type="application/pdf"),
-                prompt
-            ],
-            config=types.GenerateContentConfig(
-                temperature=0.1,
-                response_mime_type="application/json",
-            )
-        )
+        response_text, usage = await generate_text(prompt, model="anthropic/claude-3.5-sonnet", response_mime_type="application/json", return_usage=True)
+        log_backend_ai_usage(sb, uid, "Research Lab Analysis (Cost: 1.0 Credits)", usage, source="backend")
 
-        if not response.text:
-            raise Exception("Gemini failed to return a valid analysis.")
+        if not response_text:
+            raise Exception("AI failed to return a valid analysis.")
 
-        data = robust_json_loads(response.text)
+        data = robust_json_loads(response_text)
         decoded_data = data.get("analysis", {})
         full_text = data.get("extracted_text", "")
         
@@ -190,18 +186,8 @@ async def lab_chat(decode_id: str, payload: dict = Body(...), current_user: User
     USER QUESTION: {user_message}
     """
 
-    client = genai.Client(api_key=settings.GEMINI_API_KEY)
-    
     try:
-        raise Exception("Cloud AI is disabled")
-        
-        response = await client.aio.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=prompt,
-            config=types.GenerateContentConfig(temperature=0.2)
-        )
-        
-        bot_response = response.text
+        bot_response = await generate_text(prompt, model="anthropic/claude-3-5-haiku")
         
         sb.table("research_lab_messages").insert([
             {"decode_id": decode_id, "user_id": current_user.supabase_uid, "role": "user", "content": user_message},
@@ -262,7 +248,7 @@ async def start_analysis(background_tasks: BackgroundTasks, payload: dict = Body
         raise HTTPException(status_code=500, detail="Failed to initialize analysis session")
         
     decode_id = ins_res.data[0]["id"]
-    background_tasks.add_task(run_research_analysis, decode_id, paper_url)
+    background_tasks.add_task(run_research_analysis, decode_id, paper_url, current_user.supabase_uid)
     return {"id": decode_id, "status": "pending", "message": "Analysis started in background."}
 
 @router.post("/extract")

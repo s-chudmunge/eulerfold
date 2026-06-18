@@ -5,7 +5,7 @@ from datetime import datetime, timezone
 import asyncio
 
 from app.core.supabase_client import get_supabase_client, get_admin_supabase_client
-from app.utils.gemini_client import generate_text, clean_json_string, robust_json_loads
+from app.utils.ai_client import generate_text, clean_json_string, robust_json_loads, log_backend_ai_usage
 from app.core.config import settings
 from app.utils.scoring import calculate_confidence_score_formula, get_letter_grade
 
@@ -75,7 +75,8 @@ Topics:
 """
 
     try:
-        gen_raw = await generate_text(prompt, model=settings.GEMINI_MODEL, response_mime_type="application/json")
+        gen_raw, usage = await generate_text(prompt, model=settings.DEFAULT_FEEDBACK_MODEL, response_mime_type="application/json", return_usage=True)
+        log_backend_ai_usage(sb, user_id, f"Skill Extraction (Cost: 0 Credits)", usage, source="backend")
         data = robust_json_loads(gen_raw)
         await process_extracted_skills(roadmap_id, user_id, data)
     except Exception as e:
