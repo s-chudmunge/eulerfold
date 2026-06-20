@@ -8,7 +8,7 @@ from app.schemas import User, AIUsageLogCreate, AIUsageLogRead
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/ai-usage", tags=["AI Usage"])
 
-@router.post("/", response_model=AIUsageLogRead)
+@router.post("", response_model=AIUsageLogRead)
 async def log_ai_usage(log_data: AIUsageLogCreate, current_user: User = Depends(get_current_user)):
     """Log an AI generation event."""
     sb = get_supabase_client()
@@ -35,7 +35,7 @@ async def log_ai_usage(log_data: AIUsageLogCreate, current_user: User = Depends(
 
     return res.data[0]
 
-@router.get("/", response_model=List[AIUsageLogRead])
+@router.get("", response_model=List[AIUsageLogRead])
 async def get_ai_usage_logs(limit: int = 50, offset: int = 0, current_user: User = Depends(get_current_user)):
     """Fetch usage history for the current user."""
     sb = get_supabase_client()
