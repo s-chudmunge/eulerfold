@@ -397,7 +397,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                     <button 
                                         onClick={handleContinueLearning}
                                         disabled={saving}
-                                        className="inline-flex items-center justify-center bg-gradient-to-b from-teal-400 to-teal-600 text-white px-6 py-2 rounded-xl text-[12px] font-bold transition-all hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-teal-800 gap-2 font-inter disabled:opacity-50 shadow-md"
+                                        className="inline-flex items-center justify-center bg-accent text-white hover:bg-teal-700 px-6 py-2 rounded-lg text-[12px] font-bold transition-all shadow-sm gap-2 font-inter disabled:opacity-50 shadow-md"
                                     >
                                         <ArrowRight className="w-3.5 h-3.5" /> Continue
                                     </button>
@@ -405,7 +405,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                     <button 
                                         onClick={handleClone}
                                         disabled={saving}
-                                        className="inline-flex items-center justify-center bg-gradient-to-b from-zinc-700 to-zinc-900 text-white px-6 py-2 rounded-xl text-[12px] font-bold transition-all hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-zinc-950 gap-2 font-inter shadow-md"
+                                        className="inline-flex items-center justify-center bg-zinc-800 text-white hover:bg-zinc-700 px-6 py-2 rounded-lg text-[12px] font-bold transition-all shadow-sm gap-2 font-inter shadow-md"
                                     >
                                         <Copy className="w-3.5 h-3.5" /> {saving ? '...' : 'Clone to Dashboard'}
                                     </button>
@@ -555,7 +555,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                         <div className="p-8">
                             <div className="flex justify-between items-start mb-6">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+                                    <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-600">
                                         <Plus className="w-6 h-6" />
                                     </div>
                                     <div>
@@ -575,7 +575,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                     </label>
                                     <textarea 
                                         placeholder="What do you want to learn next? (e.g., 'Advanced concepts', 'Specific framework', 'Real-world project')"
-                                        className="w-full h-24 bg-callout-bg border border-border rounded-2xl p-4 text-[14px] manrope-body focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all resize-none"
+                                        className="w-full h-24 bg-callout-bg border border-border rounded-lg p-4 text-[14px] manrope-body focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all resize-none"
                                         value={extensionGoal}
                                         onChange={(e) => setExtensionGoal(e.target.value)}
                                     />
@@ -590,7 +590,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                             <button
                                                 key={w}
                                                 onClick={() => setExtensionWeeks(w)}
-                                                className={`py-3 rounded-xl border inconsolata-ui text-[13px] font-bold transition-all ${
+                                                className={`py-3 rounded-lg border inconsolata-ui text-[13px] font-bold transition-all ${
                                                     extensionWeeks === w 
                                                     ? 'bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/20' 
                                                     : 'bg-callout-bg border-border text-text-muted hover:border-emerald-500/30'
@@ -606,7 +606,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                     <button
                                         onClick={handleExtend}
                                         disabled={extending}
-                                        className="w-full py-4 bg-emerald-600 text-white rounded-2xl text-[14px] font-bold inconsolata-ui tracking-wide hover:bg-emerald-700 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-emerald-500/10"
+                                        className="w-full py-4 bg-emerald-600 text-white rounded-lg text-[14px] font-bold inconsolata-ui tracking-wide hover:bg-emerald-700 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-emerald-500/10"
                                     >
                                         {extending ? (
                                             <>
@@ -689,7 +689,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                 <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-background/80 animate-in fade-in duration-200">
                     <div className="w-full max-w-md bg-background border border-border shadow-2xl rounded-3xl overflow-hidden animate-in zoom-in-95 duration-200">
                         <div className="p-8 text-center">
-                            <div className="w-16 h-16 bg-accent/10 text-accent rounded-2xl flex items-center justify-center mx-auto mb-6">
+                            <div className="w-16 h-16 bg-accent/10 text-accent rounded-lg flex items-center justify-center mx-auto mb-6">
                                 <Copy className="w-8 h-8" />
                             </div>
                             <h3 className="inconsolata-ui text-xl font-bold text-text-heading mb-3 tracking-tight">Clone to Dashboard</h3>
@@ -704,7 +704,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                         handleClone();
                                     }}
                                     disabled={saving}
-                                    className="w-full py-4 bg-accent text-white rounded-2xl text-[14px] font-bold inconsolata-ui tracking-wide hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-xl shadow-accent/20 disabled:opacity-50"
+                                    className="w-full py-4 bg-accent text-white rounded-lg text-[14px] font-bold inconsolata-ui tracking-wide hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-xl shadow-accent/20 disabled:opacity-50"
                                 >
                                     {saving ? (
                                         <>

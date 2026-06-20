@@ -57,7 +57,7 @@ function OpenRouterCallbackContent() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-4 manrope-body">
-      <div className="bg-callout-bg border border-border p-8 rounded-xl max-w-md w-full shadow-2xl flex flex-col items-center text-center">
+      <div className="bg-callout-bg border border-border p-8 rounded-lg max-w-md w-full shadow-2xl flex flex-col items-center text-center">
         {status === 'loading' && (
           <>
             <Loader2 className="w-12 h-12 text-accent animate-spin mb-4" />

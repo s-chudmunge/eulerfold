@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { 
     LayoutDashboard, 
     Calendar,
@@ -27,11 +27,16 @@ import {
     Hammer,
     Target,
     Microscope,
-    Briefcase
+    Briefcase,
+    Sparkles,
+    Link2,
+    BookOpen
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase/client';
 import { authAPI, roadmapsAPI, coinsAPI } from '@/lib/api';
 import { useSettings } from './SettingsProvider';
+import { useAuth } from '@/components/AuthProvider';
+import VerifiedBadge from '@/components/VerifiedBadge';
 
 interface SidebarProps {
     children?: React.ReactNode; // For page-specific slots like Telemetry or Stats
@@ -42,39 +47,11 @@ interface SidebarProps {
 
 export default function AppSidebar({ children, header, isOpen, onClose }: SidebarProps) {
     const pathname = usePathname();
+    const searchParams = useSearchParams();
     const router = useRouter();
-    const [user, setUser] = useState<any>(null);
-    const [stats, setStats] = useState({
-        streak: 0,
-        coins: 0,
-        roadmaps: 0,
-        credits: 0,
-        isPro: false
-    });
+    const { user } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        const loadData = async () => {
-            const { data: { session } } = await supabase.auth.getSession();
-            setUser(session?.user ?? null);
-            
-            setStats({
-                streak: 0,
-                coins: 0,
-                roadmaps: 0,
-                credits: 0,
-                isPro: false
-            });
-        };
-        loadData();
-
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-            setUser(session?.user ?? null);
-        });
-
-        return () => subscription.unsubscribe();
-    }, []);
 
     useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
@@ -96,7 +73,21 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
         }
     };
 
-    const isActive = (path: string) => pathname === path;
+    const isActive = (path: string) => {
+        if (path.includes('?')) {
+            const [basePath, query] = path.split('?');
+            if (pathname !== basePath) return false;
+            const params = new URLSearchParams(query);
+            for (const [key, value] of params.entries()) {
+                if (searchParams.get(key) !== value) return false;
+            }
+            return true;
+        }
+        if (path === '/generate') {
+            return pathname === '/generate' && (!searchParams.has('mode') || searchParams.get('mode') === 'ai');
+        }
+        return pathname === path;
+    };
     const { openSettings } = useSettings();
 
     const navLinkClass = (path: string) => `
@@ -170,13 +161,29 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                                 </Link>
 
                                 <Link href="/practice" aria-current={isActive('/practice') ? 'page' : undefined} className={navLinkClass('/practice')} onClick={onClose}>
-                                    <Target className="w-3.5 h-3.5 stroke-[1.5px]" /> Practice
+                                    <Zap className="w-3.5 h-3.5 stroke-[1.5px]" /> Practice
+                                </Link>
+                            </nav>
+                        </div>
+
+                        {/* Create Your Learning Path */}
+                        <div className="pt-3 border-t border-border dark:border-white/[0.05]">
+                            <span className="px-2.5 text-[10px] font-bold text-text-muted uppercase tracking-[0.15em] block mb-2 opacity-50">Create your learning path</span>
+                            <nav className="space-y-0.5" aria-label="Generators navigation">
+                                <Link href="/generate" aria-current={isActive('/generate') ? 'page' : undefined} className={navLinkClass('/generate')} onClick={onClose}>
+                                    <Sparkles className="w-3.5 h-3.5 stroke-[1.5px]" /> AI Architect
                                 </Link>
                                 <Link href="/generate?mode=job" aria-current={isActive('/generate?mode=job') ? 'page' : undefined} className={navLinkClass('/generate?mode=job')} onClick={onClose}>
                                     <Briefcase className="w-3.5 h-3.5 stroke-[1.5px]" /> Job Decoded
                                 </Link>
-                                <Link href="/generate" aria-current={isActive('/generate') ? 'page' : undefined} className={navLinkClass('/generate')} onClick={onClose}>
-                                    <Plus className="w-3.5 h-3.5 stroke-[1.5px]" /> Roadmap Generator
+                                <Link href="/generate?mode=url" aria-current={isActive('/generate?mode=url') ? 'page' : undefined} className={navLinkClass('/generate?mode=url')} onClick={onClose}>
+                                    <Link2 className="w-3.5 h-3.5 stroke-[1.5px]" /> From Link
+                                </Link>
+                                <Link href="/generate?mode=syllabus" aria-current={isActive('/generate?mode=syllabus') ? 'page' : undefined} className={navLinkClass('/generate?mode=syllabus')} onClick={onClose}>
+                                    <BookOpen className="w-3.5 h-3.5 stroke-[1.5px]" /> Syllabus Parse
+                                </Link>
+                                <Link href="/generate?mode=gaps" aria-current={isActive('/generate?mode=gaps') ? 'page' : undefined} className={navLinkClass('/generate?mode=gaps')} onClick={onClose}>
+                                    <Target className="w-3.5 h-3.5 stroke-[1.5px]" /> Skill Gap
                                 </Link>
                             </nav>
                         </div>
@@ -264,17 +271,25 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                             <div className="flex items-center gap-2 min-w-0">
                                 <div className="w-5 h-5 rounded bg-sidebar dark:bg-white/5 flex items-center justify-center border border-border dark:border-white/10 shrink-0 overflow-hidden">
                                     <img 
-                                        src={(user.user_metadata?.avatar_url?.includes('initials') ? null : user.user_metadata?.avatar_url) || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(user.user_metadata?.full_name?.split(' ')[0] || user.email?.split('@')[0] || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`} 
+                                        src={(user?.metadata?.avatar_url?.includes('initials') ? null : user?.metadata?.avatar_url) || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(user?.display_name?.split(' ')[0] || user?.metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0] || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`} 
                                         alt="" 
                                         className="w-full h-full object-cover grayscale-[0.5]" 
                                     />
                                 </div>
                                 <div className="min-w-0">
-                                    <p className="text-[11px] font-semibold text-text-heading truncate leading-none">
-                                        {user.user_metadata?.full_name?.split(' ')[0] || user.email?.split('@')[0]}
-                                    </p>
-                                    <p className={`text-[9px] lowercase tracking-tight mt-0.5 ${stats.isPro ? 'text-accent font-bold' : 'text-text-muted'}`}>
-                                        eulerfold {stats.isPro ? 'pro' : 'free'}
+                                    <div className="flex items-center gap-1.5 mb-0.5">
+                                        <p className="text-[11px] font-semibold text-text-heading truncate leading-none">
+                                            {user?.display_name?.split(' ')[0] || user?.metadata?.full_name?.split(' ')[0] || user?.email?.split('@')[0]}
+                                        </p>
+                                        {user?.is_pro && (
+                                            <div className="flex items-center gap-0.5 px-1 py-[1px] rounded bg-accent/10 border border-accent/20">
+                                                <VerifiedBadge size={10} className="shrink-0 text-accent" />
+                                                <span className="text-[8px] font-bold text-accent tracking-wider leading-none mt-[1px]">PRO</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <p className={`text-[9px] lowercase tracking-tight leading-none ${user?.is_pro ? 'text-accent font-bold' : 'text-text-muted'}`}>
+                                        eulerfold {user?.is_pro ? 'pro' : 'free'}
                                     </p>
                                 </div>
                             </div>

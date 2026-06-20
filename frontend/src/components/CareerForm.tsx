@@ -36,7 +36,7 @@ export default function CareerForm() {
 
   if (status === 'success') {
     return (
-      <div className="bg-teal-500/10 border border-teal-500/20 p-8 rounded-xl text-center flex flex-col items-center gap-4">
+      <div className="bg-teal-500/10 border border-teal-500/20 p-8 rounded-lg text-center flex flex-col items-center gap-4">
         <CheckCircle2 className="w-12 h-12 text-teal-700" />
         <div>
           <h3 className="text-xl font-bold text-text-heading manrope-body">Application Sent!</h3>
@@ -53,7 +53,7 @@ export default function CareerForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 bg-sidebar/30 border border-border p-6 rounded-xl">
+    <form onSubmit={handleSubmit} className="space-y-4 bg-sidebar/30 border border-border p-6 rounded-lg">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div className="space-y-1.5">
           <label className="text-[11px] font-bold text-text-muted uppercase tracking-wider ml-1">Full Name</label>
@@ -144,7 +144,7 @@ export default function CareerForm() {
       <button 
         disabled={status === 'loading'}
         type="submit"
-        className="w-full bg-text-heading text-background py-3.5 rounded-xl flex items-center justify-center gap-2 text-[13.5px] font-bold shadow-lg hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-text-heading text-background py-3.5 rounded-lg flex items-center justify-center gap-2 text-[13.5px] font-bold shadow-lg hover:opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {status === 'loading' ? (
           <>

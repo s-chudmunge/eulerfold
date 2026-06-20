@@ -182,7 +182,7 @@ export default function InteractiveDemo() {
                                                 <button 
                                                     key={idx}
                                                     onClick={() => setActiveTopic(idx)}
-                                                    className={`w-full flex items-start text-left px-3.5 py-3.5 rounded-xl transition-all group ${activeTopic === idx ? 'bg-accent/10 shadow-sm border border-accent/10' : 'hover:bg-callout-bg border border-transparent'}`}
+                                                    className={`w-full flex items-start text-left px-3.5 py-3.5 rounded-lg transition-all group ${activeTopic === idx ? 'bg-accent/10 shadow-sm border border-accent/10' : 'hover:bg-callout-bg border border-transparent'}`}
                                                 >
                                                     <PlayCircle className={`h-5 w-5 mr-3 shrink-0 ${activeTopic === idx ? 'text-accent' : 'text-text-muted opacity-60'}`} />
                                                     <div className="flex flex-col min-w-0">
@@ -209,7 +209,7 @@ export default function InteractiveDemo() {
                                             <AnimatePresence mode="wait">
                                                 {activeTab === 'video' && (
                                                     <motion.div key="video" initial={{opacity:0, y:10}} animate={{opacity:1, y:0}} className="w-full h-full flex flex-col">
-                                                        <div className="w-full max-w-4xl rounded-2xl overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-border/80">
+                                                        <div className="w-full max-w-4xl rounded-lg overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-border/80">
                                                             <div className="aspect-video w-full bg-black">
                                                                 <YouTubePlayer videoId={demoTopics[activeTopic].videoId} title={demoTopics[activeTopic].title} />
                                                             </div>
@@ -224,7 +224,7 @@ export default function InteractiveDemo() {
                                                     <motion.div key="theory" initial={{opacity:0, y:10}} animate={{opacity:1, y:0}} className="max-w-3xl">
                                                         <h1 className="retro-arcade-text text-[14px] md:text-[18px] text-accent mb-8">{demoTopics[activeTopic].title}</h1>
                                                         <div className="prose prose-sm dark:prose-invert max-w-none manrope-body text-[16px]
-                                                            [&_.katex-display]:block [&_.katex-display]:border [&_.katex-display]:border-teal-500/40 [&_.katex-display]:bg-teal-500/10 [&_.katex-display]:rounded-xl [&_.katex-display]:px-5 [&_.katex-display]:py-6 [&_.katex-display]:my-8 [&_.katex-display]:shadow-sm
+                                                            [&_.katex-display]:block [&_.katex-display]:border [&_.katex-display]:border-teal-500/40 [&_.katex-display]:bg-teal-500/10 [&_.katex-display]:rounded-lg [&_.katex-display]:px-5 [&_.katex-display]:py-6 [&_.katex-display]:my-8 [&_.katex-display]:shadow-sm
                                                         ">
                                                             <ReactMarkdown components={markdownComponents as any} remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>{demoTopics[activeTopic].theory}</ReactMarkdown>
                                                         </div>

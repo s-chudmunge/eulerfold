@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { X, Link as LinkIcon, Send, Sparkles, CheckCircle2, AlertCircle, HelpCircle, ChevronRight, Info, Lock } from 'lucide-react';
 import { submissionsAPI } from '@/lib/api';
 import { supabase } from '@/lib/supabase/client';
@@ -54,8 +55,8 @@ export default function HomeworkSubmissionModal({ isOpen, onClose, roadmapId, mo
             
             setOpenRouterKey(localStorage.getItem('openRouterKey'));
             setOpenRouterModel(localStorage.getItem('openRouterModel') || 'openai/gpt-4o');
-            setLocalAIModelId(localStorage.getItem('localAIModelId'));
-            setLocalAIModelName(localStorage.getItem('localAIModelName'));
+            setLocalAIModelId(localStorage.getItem('local_ai_model'));
+            setLocalAIModelName(localStorage.getItem('local_ai_model_name'));
         }
     }, [isOpen, moduleNumber, initialResult]);
 
@@ -66,7 +67,7 @@ export default function HomeworkSubmissionModal({ isOpen, onClose, roadmapId, mo
         
         if (typeof instructions === 'string') {
             return (
-                <div className="bg-accent/5 p-4 rounded-xl border border-accent/10">
+                <div className="bg-accent/5 p-4 rounded-lg border border-accent/10">
                     <p className="manrope-body text-[13px] text-text-primary leading-relaxed">{instructions}</p>
                 </div>
             );
@@ -273,11 +274,12 @@ OUTPUT RULES:
 
 Respond ONLY with valid JSON. Do not include markdown code blocks.`;
 
+                let content = "";
                 try {
                     const reply = await engine.chat.completions.create({
                         messages: [{ role: "user", content: prompt }]
                     });
-                    let content = reply.choices[0].message.content || "";
+                    content = reply.choices[0].message.content || "";
                     content = content.trim();
                     if (content.startsWith("```json")) content = content.replace(/^```json/, "").replace(/```$/, "").trim();
                     evaluation_result = JSON.parse(content);
@@ -324,7 +326,7 @@ Respond ONLY with valid JSON. Do not include markdown code blocks.`;
     if (result) {
         return (
             <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-background/80 animate-in fade-in duration-200">
-                <div className="relative w-full max-w-2xl max-h-[90vh] flex flex-col bg-sidebar border border-border shadow-2xl rounded-xl overflow-hidden animate-in zoom-in-95 duration-200">
+                <div className="relative w-full max-w-2xl max-h-[90vh] flex flex-col bg-sidebar border border-border shadow-2xl rounded-lg overflow-hidden animate-in zoom-in-95 duration-200">
                     <button 
                         onClick={onClose}
                         className="absolute top-4 right-4 p-2 hover:bg-callout-bg rounded-full text-text-muted transition-colors z-10"
@@ -410,7 +412,7 @@ Respond ONLY with valid JSON. Do not include markdown code blocks.`;
 
     return (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-background/80 animate-in fade-in duration-200">
-            <div className={`relative bg-sidebar border border-border shadow-2xl rounded-xl overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col md:flex-row transition-all duration-300 max-h-[90vh] ${showInstructions && instructions ? 'max-w-4xl' : 'max-w-lg'}`}>
+            <div className={`relative bg-sidebar border border-border shadow-2xl rounded-lg overflow-hidden animate-in zoom-in-95 duration-200 flex flex-col md:flex-row transition-all duration-300 max-h-[90vh] ${showInstructions && instructions ? 'max-w-4xl' : 'max-w-lg'}`}>
                 
                 {/* Global Close Button */}
                 <button 
@@ -432,7 +434,7 @@ Respond ONLY with valid JSON. Do not include markdown code blocks.`;
                                         className={`flex items-center gap-2 px-2 py-1 rounded-lg transition-all ${
                                             showInstructions 
                                             ? 'bg-accent/10 text-accent' 
-                                            : 'bg-accent text-white shadow-lg shadow-accent/20 hover:scale-105 active:scale-95'
+                                            : 'bg-accent text-white  shadow-accent/20 hover:scale-105 active:scale-95'
                                         }`}
                                         title={showInstructions ? "Hide Instructions" : "Show Instructions"}
                                     >
@@ -450,7 +452,7 @@ Respond ONLY with valid JSON. Do not include markdown code blocks.`;
                     </div>
 
                     {!isPro && !result ? (
-                        <div className="p-4 bg-red-500/5 border border-red-500/20 rounded-xl flex items-start gap-3">
+                        <div className="p-4 bg-red-500/5 border border-red-500/20 rounded-lg flex items-start gap-3">
                             <Lock className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
                             <div className="flex-1">
                                 <h4 className="text-[13px] font-bold text-red-500">Pro Feature</h4>
@@ -628,18 +630,9 @@ Respond ONLY with valid JSON. Do not include markdown code blocks.`;
                 isOpen={isLocalAIModalOpen} 
                 onClose={() => setIsLocalAIModalOpen(false)} 
                 onSelectModel={(modelId, modelName) => {
-                    localStorage.setItem('localAIModelId', modelId);
-                    localStorage.setItem('localAIModelName', modelName);
+                    localStorage.setItem('local_ai_model', modelId);
+                    localStorage.setItem('local_ai_model_name', modelName);
                     setLocalAIModelId(modelId);
-                    setLocalAIModelName(modelName);
-                    setIsLocalAIModalOpen(false);
-                }}
-                onClearModel={() => {
-                    localStorage.removeItem('localAIModelId');
-                    localStorage.removeItem('localAIModelName');
-                    setLocalAIModelId(null);
-                    setLocalAIModelName(null);
-                    setUseLocalAI(false);
                     setIsLocalAIModalOpen(false);
                 }}
             />

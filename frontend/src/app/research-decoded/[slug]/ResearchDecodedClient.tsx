@@ -113,7 +113,7 @@ const D2Diagram = ({ code }: { code: string }) => {
 
   if (error) {
     return (
-      <div className="my-8 p-4 bg-callout-bg border border-error/20 rounded-xl">
+      <div className="my-8 p-4 bg-callout-bg border border-error/20 rounded-lg">
         <div className="flex items-center gap-2 text-error mb-2 text-xs font-bold uppercase tracking-widest inconsolata-ui">
           <span>⚠️ Diagram Render Error</span>
         </div>
@@ -126,7 +126,7 @@ const D2Diagram = ({ code }: { code: string }) => {
 
   if (loading) {
     return (
-      <div className="my-8 flex justify-center items-center h-[300px] bg-callout-bg rounded-2xl animate-pulse border border-border">
+      <div className="my-8 flex justify-center items-center h-[300px] bg-callout-bg rounded-lg animate-pulse border border-border">
         <div className="text-text-muted text-sm font-medium inconsolata-ui tracking-widest uppercase text-center px-6">
           Generating Breakdown Diagram...
         </div>
@@ -149,7 +149,7 @@ const ArticlePreview = ({ slug }: { slug: string }) => {
   if (!article) return null;
 
   return (
-    <div className="w-80 p-0 bg-background/95 backdrop-blur-xl border border-border/80 rounded-2xl shadow-2xl overflow-hidden pointer-events-auto group">
+    <div className="w-80 p-0 bg-background/95 backdrop-blur-xl border border-border/80 rounded-lg shadow-2xl overflow-hidden pointer-events-auto group">
       {article.heroImage && (
         <div className="aspect-[2/1] w-full overflow-hidden border-b border-border/50 relative">
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent z-10" />
@@ -483,7 +483,7 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
               <Link 
                 href={paper.link} 
                 target="_blank" 
-                className="bg-accent text-white px-6 py-2.5 rounded-full font-bold text-sm hover:opacity-90 transition-all flex items-center gap-2 shadow-md hover:shadow-lg"
+                className="bg-accent text-white px-6 py-2.5 rounded-full font-bold text-sm hover:opacity-90 transition-all flex items-center gap-2 shadow-md hover:"
               >
                 Read Original Paper <ExternalLink className="w-4 h-4" />
               </Link>
@@ -501,7 +501,7 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
 
         {/* Hero Image */}
         {paper.heroImage && (
-          <div className="mb-16 overflow-hidden rounded-2xl border border-border shadow-md">
+          <div className="mb-16 overflow-hidden rounded-lg border border-border shadow-md">
             <img 
               src={paper.heroImage} 
               alt={`${paper.title} - Research Breakthrough Illustration`} 
@@ -529,7 +529,7 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
               </h2>
 
               {section.diagram && (
-                <div className="my-12 overflow-hidden rounded-2xl border border-border shadow-sm bg-white dark:bg-sidebar/20">
+                <div className="my-12 overflow-hidden rounded-lg border border-border shadow-sm bg-white dark:bg-sidebar/20">
                   <img 
                     src={section.diagram.url} 
                     alt={`${section.title} Diagram - ${section.diagram.caption}`} 

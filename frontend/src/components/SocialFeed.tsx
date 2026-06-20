@@ -87,7 +87,7 @@ export default function SocialFeed() {
           <div className="flex gap-4">
             <button 
                onClick={fetchPosts}
-               className="p-2.5 rounded-xl border border-border/50 hover:border-accent/50 text-text-muted hover:text-accent transition-all bg-sidebar/30"
+               className="p-2.5 rounded-lg border border-border/50 hover:border-accent/50 text-text-muted hover:text-accent transition-all bg-sidebar/30"
                title="Refresh Feed"
             >
               <RefreshCcw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
@@ -95,14 +95,14 @@ export default function SocialFeed() {
             <Link 
                href={platformLinks.YouTube}
                target="_blank"
-               className="p-2.5 rounded-xl border border-border/50 hover:border-accent/50 text-text-muted hover:text-accent transition-all bg-sidebar/30"
+               className="p-2.5 rounded-lg border border-border/50 hover:border-accent/50 text-text-muted hover:text-accent transition-all bg-sidebar/30"
             >
               <Youtube className="w-4 h-4" />
             </Link>
             <Link 
                href={platformLinks.Instagram}
                target="_blank"
-               className="p-2.5 rounded-xl border border-border/50 hover:border-accent/50 text-text-muted hover:text-accent transition-all bg-sidebar/30"
+               className="p-2.5 rounded-lg border border-border/50 hover:border-accent/50 text-text-muted hover:text-accent transition-all bg-sidebar/30"
             >
               <Instagram className="w-4 h-4" />
             </Link>
@@ -117,7 +117,7 @@ export default function SocialFeed() {
                 key={post.id}
                 href={post.link}
                 target="_blank"
-                className="group relative p-4 rounded-2xl border border-border/50 bg-sidebar/20 hover:bg-sidebar/40 transition-all duration-300 flex flex-col justify-between min-h-[140px] shadow-sm hover:shadow-lg hover:shadow-accent/5"
+                className="group relative p-4 rounded-lg border border-border/50 bg-sidebar/20 hover:bg-sidebar/40 transition-all duration-300 flex flex-col justify-between min-h-[140px] shadow-sm hover:shadow-lg hover:shadow-accent/5"
               >
                 <div>
                   <div className="flex items-center justify-between mb-3">
@@ -142,7 +142,7 @@ export default function SocialFeed() {
                 </div>
                 
                 {/* Subtle Hover Glow */}
-                <div className="absolute -z-10 inset-0 rounded-2xl bg-accent/5 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute -z-10 inset-0 rounded-lg bg-accent/5 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
               </Link>
             );
           })}

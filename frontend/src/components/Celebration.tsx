@@ -71,7 +71,7 @@ export default function Celebration({ show, title = "Success!", subtitle, icon }
                             damping: 20, 
                             mass: 0.8 
                         }}
-                        className="relative z-10 bg-background/95 backdrop-blur-xl border border-accent/20 p-8 rounded-2xl shadow-[0_0_60px_-15px_rgba(15,118,110,0.4)] text-center pointer-events-auto max-w-[340px] w-full mx-4"
+                        className="relative z-10 bg-background/95 backdrop-blur-xl border border-accent/20 p-8 rounded-lg shadow-[0_0_60px_-15px_rgba(15,118,110,0.4)] text-center pointer-events-auto max-w-[340px] w-full mx-4"
                     >
                         {/* Glow effect behind icon */}
                         <div className="absolute top-10 left-1/2 -translate-x-1/2 w-24 h-24 bg-accent/20 rounded-full blur-2xl animate-pulse pointer-events-none" />
@@ -80,7 +80,7 @@ export default function Celebration({ show, title = "Success!", subtitle, icon }
                             initial={{ scale: 0, rotate: -20 }}
                             animate={{ scale: 1, rotate: 0 }}
                             transition={{ delay: 0.15, type: "spring", stiffness: 400, damping: 10 }}
-                            className="relative z-10 w-16 h-16 bg-gradient-to-tr from-teal-700 to-teal-400 text-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-teal-900/20"
+                            className="relative z-10 w-16 h-16 bg-gradient-to-tr from-teal-700 to-teal-400 text-white rounded-lg flex items-center justify-center mx-auto mb-6 shadow-lg shadow-teal-900/20"
                         >
                             {icon || <ShieldCheck className="w-8 h-8 drop-shadow-sm" />}
                         </motion.div>

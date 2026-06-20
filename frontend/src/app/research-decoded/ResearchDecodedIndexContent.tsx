@@ -177,7 +177,7 @@ export default function ResearchDecodedIndexContent() {
                     >
                       <article className="h-full flex flex-col">
                         {paper?.heroImage && (
-                          <div className="relative mb-5 h-[160px] w-full overflow-hidden rounded-xl bg-image-bg border border-border shadow-sm transition-all group-hover:border-accent/30">
+                          <div className="relative mb-5 h-[160px] w-full overflow-hidden rounded-lg bg-image-bg border border-border shadow-sm transition-all group-hover:border-accent/30">
                             <img 
                               src={paper.heroImage} 
                               alt={section.title}

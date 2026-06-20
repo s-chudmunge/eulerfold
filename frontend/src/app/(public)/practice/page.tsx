@@ -319,7 +319,7 @@ function PracticeContent() {
                                     <div className="mb-10 flex items-center justify-between">
                                         <button 
                                             onClick={() => setIsStarted(false)}
-                                            className="appropriate-sans font-bold text-text-muted hover:text-emerald-600 flex items-center gap-2 transition-all bg-callout-bg px-4 py-1.5 border border-border rounded-xl"
+                                            className="appropriate-sans font-bold text-text-muted hover:text-emerald-600 flex items-center gap-2 transition-all bg-callout-bg px-4 py-1.5 border border-border rounded-lg"
                                         >
                                             <ArrowLeft className="w-3.5 h-3.5" /> Back to Lab
                                         </button>
@@ -367,14 +367,14 @@ function PracticeContent() {
                         <div className="flex justify-end mb-4">
                             <button 
                                 onClick={() => setSelectedHistorySession(null)}
-                                className="p-2 border border-border hover:bg-callout-bg rounded-xl text-text-muted transition-colors"
+                                className="p-2 border border-border hover:bg-callout-bg rounded-lg text-text-muted transition-colors"
                             >
                                 <X className="w-4 h-4" />
                             </button>
                         </div>
 
                         <div className="text-center mb-10 border-b border-border pb-8">
-                            <div className="w-10 h-10 border border-border flex items-center justify-center mx-auto mb-3 text-lg rounded-xl">🏆</div>
+                            <div className="w-10 h-10 border border-border flex items-center justify-center mx-auto mb-3 text-lg rounded-lg">🏆</div>
                             <h2 className="appropriate-sans font-bold text-text-heading mb-1">Results</h2>
                             <p className="appropriate-sans text-text-muted">&quot;{selectedHistorySession.topic_name}&quot;</p>
                             
@@ -396,7 +396,7 @@ function PracticeContent() {
                             {selectedHistorySession.questions.map((q, i) => {
                                 const isCorrect = selectedHistorySession.user_answers?.[i] === q.correct_answer_index;
                                 return (
-                                    <div key={i} className={`p-5 border transition-all rounded-2xl ${isCorrect ? 'border-emerald-500/20 bg-emerald-500/5' : 'border-red-500/20 bg-red-500/5'}`}>
+                                    <div key={i} className={`p-5 border transition-all rounded-lg ${isCorrect ? 'border-emerald-500/20 bg-emerald-500/5' : 'border-red-500/20 bg-red-500/5'}`}>
                                         <div className="flex items-start justify-between gap-4 mb-3">
                                             <div className="flex items-start gap-4">
                                                 <div className={`shrink-0 w-6 h-6 border flex items-center justify-center appropriate-sans text-[10px] font-bold rounded-lg ${isCorrect ? 'border-emerald-500 text-emerald-500' : 'border-red-500 text-red-500'}`}>
@@ -421,7 +421,7 @@ function PracticeContent() {
                                                 <p className="text-[9px] font-bold text-emerald-500 mb-1">Correct</p>
                                                 <span className="text-text-heading font-bold">{q.options[q.correct_answer_index]}</span>
                                             </div>
-                                            <div className="bg-background border border-border/50 p-3 rounded-xl text-[10px] appropriate-sans text-text-muted leading-relaxed italic">
+                                            <div className="bg-background border border-border/50 p-3 rounded-lg text-[10px] appropriate-sans text-text-muted leading-relaxed italic">
                                                 <span className="font-bold text-text-heading not-italic text-[7px] mr-2 block mb-1 underline decoration-accent">Note:</span> 
                                                 {q.explanation}
                                             </div>

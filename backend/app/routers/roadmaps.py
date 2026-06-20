@@ -11,11 +11,11 @@ from typing import List, Optional, Any, Dict
 
 
 
-from fastapi import APIRouter, HTTPException, Request, Depends, BackgroundTasks
+from fastapi import APIRouter, HTTPException, Request, Depends, BackgroundTasks, UploadFile, File
 
 from app.core.config import settings
 from app.core.supabase_client import supabase, get_supabase_client
-from app.schemas import RoadmapCreate, RoadmapMe, RoadmapRead, RoadmapSave, User, ProgressUpdate, RoadmapExtend, RoadmapStatusUpdate, ManualBuildRequest, JobRoadmapCreate, ExternalRoadmapCreate, SyncSkillsRequest
+from app.schemas import RoadmapCreate, RoadmapMe, RoadmapRead, RoadmapSave, User, ProgressUpdate, RoadmapExtend, RoadmapStatusUpdate, ManualBuildRequest, JobRoadmapCreate, ExternalRoadmapCreate, SyncSkillsRequest, UrlRoadmapCreate, SyllabusRoadmapCreate, SkillGapRoadmapCreate, DiagnosticQuizCreate
 from app.utils.ai_client import generate_text, clean_json_string, robust_json_loads, log_backend_ai_usage
 from app.utils.resend_client import send_onboarding_email
 from app.utils.youtube_client import search_youtube_videos
@@ -557,7 +557,7 @@ They now want to EXTEND this roadmap for {payload.weeks} more week(s) to learn: 
 Begin the JSON output immediately.
 """
     try:
-        model_to_use = "anthropic/claude-3.5-sonnet" # Pro users get Pro model
+        model_to_use = settings.DEFAULT_ROADMAP_MODEL
         generated_text = await generate_text(prompt, model=model_to_use, response_mime_type="application/json")
         extension_data = robust_json_loads(generated_text)
         new_modules = extension_data.get("modules", [])
@@ -582,7 +582,7 @@ Begin the JSON output immediately.
                 for module in new_modules:
                     for topic in module.get("topics", []):
                         search_query = topic.get("youtube_search_query") or f"{roadmap.get('subject')} {topic['title']} lecture"
-                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'])
+                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(payload, 'strict_official_sources', False))
                         if results:
                             topic["youtube_video_id"] = results[0]["video_id"]
                             topic["youtube_video_title"] = results[0]["video_title"]
@@ -806,7 +806,7 @@ The learner's specific goal is: "{roadmap_create.goal}".
 Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
 
 **Rules:**
-1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "The Complete Guide to Number Theory", "Mastering React Hooks"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Roadmap". Do NOT include the time duration in the title.
+1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "The Complete Guide to Number Theory", "Fundamentals of React Hooks"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Roadmap". Do NOT include the time duration in the title. and Do NOT use "mastery" in the title.
 2. **SEO-Friendly Description:** The "description" must be a single, punchy, search-engine-friendly sentence similar to the title. Do NOT use long paragraphs like "This intensive intensive X-week roadmap is designed for...".
 3. **Technical Rigor:** Focus on depth and verifiable technical skills. Avoid introductory fluff.
 4. **Logical Progression:** Structure the path into modules that build upon each other logically.
@@ -846,9 +846,6 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
 """
     try:
         model_to_use = settings.DEFAULT_ROADMAP_MODEL
-        if is_pro:
-            model_to_use = "anthropic/claude-3.5-sonnet"
-            
         generated_text, usage = await generate_text(prompt, model=model_to_use, response_mime_type="application/json", return_usage=True)
         log_backend_ai_usage(sb, uid, f"{roadmap_create.subject} (Cost: 1.0 Credits)", usage, source="backend")
         roadmap_plan = robust_json_loads(generated_text)
@@ -871,7 +868,7 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
                 if settings.YOUTUBE_API_KEY:
                     try:
                         search_query = topic.get("youtube_search_query") or f"{roadmap_create.subject} {topic['title']} lecture"
-                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'])
+                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(roadmap_create, 'strict_official_sources', False))
                         if results:
                             topic["youtube_video_id"] = results[0]["video_id"]
                             topic["youtube_video_title"] = results[0]["video_title"]
@@ -973,7 +970,7 @@ async def save_external_roadmap(
             if settings.YOUTUBE_API_KEY:
                 try:
                     search_query = topic.get("youtube_search_query") or f"{extract_core_subject(roadmap_create.subject)} {topic['title']} lecture"
-                    results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'])
+                    results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(roadmap_create, 'strict_official_sources', False))
                     if results:
                         topic["youtube_video_id"] = results[0]["video_id"]
                         topic["youtube_video_title"] = results[0]["video_title"]
@@ -1113,7 +1110,11 @@ Duration: {payload.time_value} {payload.time_unit}.
          }},
          "optimal_search_query": "A targeted search query to find the best academic/technical resources for this module",
          "topics": [
-           {{ "title": "string", "subtopics": [ {{ "title": "string" }} ] }}
+           {{
+              "title": "string",
+              "youtube_search_query": "A precise search query to find a university lecture or in-depth technical video on this specific topic (e.g., 'MIT linear algebra eigenvalues lecture')",
+              "subtopics": [ {{ "title": "string" }} ]
+            }}
          ]
        }}
      ]
@@ -1122,9 +1123,6 @@ Duration: {payload.time_value} {payload.time_unit}.
 
     try:
         model_to_use = settings.DEFAULT_ROADMAP_MODEL
-        if is_pro:
-            model_to_use = "anthropic/claude-3.5-sonnet"
-            
         generated_text, usage = await generate_text(prompt, model=model_to_use, response_mime_type="application/json", return_usage=True)
         log_backend_ai_usage(sb, uid, "Job Decoded Roadmap (Cost: 1.0 Credits)", usage, source="backend")
         roadmap_plan = robust_json_loads(generated_text)
@@ -1140,7 +1138,7 @@ Duration: {payload.time_value} {payload.time_unit}.
                 if not isinstance(topic, dict): continue
                 topic["id"] = f"topic_{i+1}_{t_idx+1}"
                 topic["uuid"] = str(uuid.uuid4())
-                for s_idx, subtopic in enumerate(module.get("subtopics", [])):
+                for s_idx, subtopic in enumerate(topic.get("subtopics", [])):
                     if not isinstance(subtopic, dict): continue
                     subtopic["id"] = str(uuid.uuid4())
                 
@@ -1148,7 +1146,7 @@ Duration: {payload.time_value} {payload.time_unit}.
                     try:
                         clean_title = roadmap_plan['title'].replace("Job Decoded: ", "").split("@")[0].strip()
                         search_query = topic.get("youtube_search_query") or f"{clean_title} {topic['title']} lecture"
-                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'])
+                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(payload, 'strict_official_sources', False))
                         if results:
                             topic["youtube_video_id"] = results[0]["video_id"]
                             topic["youtube_video_title"] = results[0]["video_title"]
@@ -1460,3 +1458,603 @@ async def extract_cloud_skills(roadmap_id: int, current_user: User = Depends(get
     except Exception as e:
         logger.error(f"Error in cloud extraction: {e}")
         raise HTTPException(status_code=500, detail="Failed to extract skills via cloud")
+
+@router.post("/roadmaps/generate-from-url", response_model=RoadmapRead)
+@monitor_query(query_type="generate_from_url", table="roadmaps")
+async def generate_from_url(
+    payload: UrlRoadmapCreate,
+    background_tasks: BackgroundTasks,
+    current_user: User = Depends(get_current_user)
+):
+    """Deconstruct a URL/Repo into a roadmap."""
+    email = current_user.email
+    uid = current_user.supabase_uid
+    if not email:
+        raise HTTPException(status_code=401, detail="Could not determine user email")
+
+    sb = get_supabase_client()
+    profile_res = sb.table("profiles").select("roadmap_credits, is_pro").eq("email", email).execute()
+    if not profile_res.data:
+        raise HTTPException(status_code=404, detail="User profile not found")
+    
+    is_pro = profile_res.data[0].get("is_pro", False)
+    
+    if not is_pro:
+        raise HTTPException(status_code=403, detail="Deconstruct from URL is a Pro feature.")
+
+    credits = profile_res.data[0].get("roadmap_credits", 0)
+    
+    if credits < 1:
+        if is_pro:
+            raise HTTPException(status_code=402, detail="You have run out of roadmap credits.")
+        else:
+            raise HTTPException(status_code=402, detail="No roadmap credits left. Please upgrade to Pro.")
+
+    # 1. Fetch URL Content
+    try:
+        import httpx
+        from bs4 import BeautifulSoup
+        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"}
+        async with httpx.AsyncClient(follow_redirects=True, timeout=10.0, headers=headers) as client:
+            response = await client.get(payload.url)
+            response.raise_for_status()
+            soup = BeautifulSoup(response.text, 'html.parser')
+            # Extract main text
+            for script in soup(["script", "style", "nav", "footer", "header"]):
+                script.extract()
+            text_content = soup.get_text(separator=' ', strip=True)
+            text_content = text_content[:15000] # Limit to avoid massive prompts
+    except Exception as e:
+        logger.error(f"Failed to fetch URL {payload.url}: {e}")
+        raise HTTPException(status_code=400, detail="Could not fetch or parse the provided URL.")
+
+    # 2. Generate Roadmap
+    prompt = f"""
+You are a technical lead.
+Analyze the following technical content extracted from {payload.url}.
+Identify the core concepts and technologies required to fully understand or build what is described.
+Generate a rigorous {payload.time_value} {payload.time_unit} learning roadmap that starts from foundational prerequisites and culminates in mastering the content from this URL.
+
+**CONTENT:**
+{text_content}
+
+**RULES:**
+1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "Understanding Backpropagation", "Fundamentals of React Hooks"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Roadmap". Do NOT include the time duration in the title. Do NOT use buzzwords like "Mastery", "High-Performance", "Bootcamp", or "Journey".
+2. **SEO-Friendly Description:** The "description" must be a single, punchy, search-engine-friendly sentence similar to the title.
+2. **Technical Rigor:** Focus on depth and verifiable technical skills.
+3. **Specific Topics:** Each module must have 3-5 specific topics using industry-standard terms.
+4. **Practical Outcomes:** The `proof_of_work_instructions` must describe a realistic technical task that demonstrates competency.
+5. **Conciseness:** Roadmap description must be max 2 sentences. Each module 'outcome' must be max 1 sentence.
+6. **Output JSON ONLY** matching this schema:
+   {{
+     "title": "string",
+     "description": "string",
+     "modules": [
+       {{
+         "title": "string",
+         "outcome": "string",
+         "timeline": "string",
+         "workspace_type": "code|research|design",
+         "proof_of_work_instructions": {{
+            "what_to_build": "string",
+            "what_counts_as_evidence": "string",
+            "eval_criteria": ["string", "string"]
+         }},
+         "optimal_search_query": "string",
+         "topics": [
+           {{
+              "title": "string",
+              "youtube_search_query": "A precise search query to find a university lecture or in-depth technical video on this specific topic (e.g., 'MIT linear algebra eigenvalues lecture')",
+              "subtopics": [ {{ "title": "string" }} ]
+            }}
+         ]
+       }}
+     ]
+   }}
+"""
+    try:
+        model_to_use = settings.DEFAULT_ROADMAP_MODEL
+        generated_text, usage = await generate_text(prompt, model=model_to_use, response_mime_type="application/json", return_usage=True)
+        log_backend_ai_usage(sb, uid, f"URL Deconstruction (Cost: 1.0 Credits)", usage, source="backend")
+        roadmap_plan = robust_json_loads(generated_text)
+
+        # Enrichment logic (IDs and YouTube)
+        for i, module in enumerate(roadmap_plan.get("modules", [])):
+            if not isinstance(module, dict): continue
+            module["id"] = f"module_{i+1}"
+            if not module.get("outcome"):
+                 module["outcome"] = "By the end of this module you will be able to apply the listed topics and solve basic related problems."
+            for t_idx, topic in enumerate(module.get("topics", [])):
+                if not isinstance(topic, dict): continue
+                topic["id"] = f"topic_{i+1}_{t_idx+1}"
+                topic["uuid"] = str(uuid.uuid4())
+                for s_idx, subtopic in enumerate(topic.get("subtopics", [])):
+                    if not isinstance(subtopic, dict): continue
+                    subtopic["id"] = str(uuid.uuid4())
+                
+                # YouTube Enrichment
+                if settings.YOUTUBE_API_KEY:
+                    try:
+                        search_query = topic.get("youtube_search_query") or f"{roadmap_plan['title']} {topic['title']} lecture"
+                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(payload, 'strict_official_sources', False))
+                        if results:
+                            topic["youtube_video_id"] = results[0]["video_id"]
+                            topic["youtube_video_title"] = results[0]["video_title"]
+                            topic["duration"] = results[0]["duration_minutes"]
+                        await asyncio.sleep(0.1)
+                    except Exception as yt_err:
+                        logger.error(f"YouTube enrichment failed for topic {topic['title']}: {yt_err}")
+
+            # DuckDuckGo Enrichment
+            search_query = module.get("optimal_search_query")
+            if search_query:
+                def fetch_ddg():
+                    try:
+                        from ddgs import DDGS
+                        with DDGS() as ddgs:
+                            return list(ddgs.text(search_query, max_results=3))
+                    except Exception as e:
+                        logger.error(f"DDG search failed for query {search_query}: {e}")
+                        return []
+                ddg_results = await asyncio.to_thread(fetch_ddg)
+                if ddg_results:
+                    logger.info(f"DuckDuckGo search successful for '{search_query}'. Found {len(ddg_results)} references.")
+                    module["resources"] = [{"title": r["title"], "url": r["href"], "type": "article"} for r in ddg_results]
+
+        slug = await _generate_unique_slug(roadmap_plan["title"], email, sb)
+        
+        db_data = {
+            "title": roadmap_plan["title"],
+            "description": roadmap_plan["description"],
+            "roadmap_plan": roadmap_plan,
+            "subject": f"Deconstructing: {payload.url}",
+            "goal": "Understand Source Material",
+            "time_value": payload.time_value,
+            "time_unit": payload.time_unit,
+            "model": model_to_use,
+            "email": email,
+            "slug": slug,
+            "status": "active",
+            "version": 1,
+            "snapshot_hash": _generate_plan_hash(roadmap_plan)
+        }
+        
+        response = sb.table("roadmaps").insert(db_data).execute()
+        if not response.data:
+            raise HTTPException(status_code=500, detail="Failed to save roadmap")
+            
+        new_credits = credits - 1
+        sb.table("profiles").update({"roadmap_credits": new_credits}).eq("email", email).execute()
+        if new_credits <= 0:
+            await check_and_revoke_pro_if_no_credits(email, sb)
+            
+        if uid:
+            background_tasks.add_task(extract_skills_from_roadmap, response.data[0]["id"], uid)
+
+        return RoadmapRead(**response.data[0])
+
+    except Exception as e:
+        logger.error(f"Roadmap URL generation failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Generation error: {str(e)}")
+
+@router.post("/roadmaps/generate-from-syllabus", response_model=RoadmapRead)
+@monitor_query(query_type="generate_from_syllabus", table="roadmaps")
+async def generate_from_syllabus(
+    payload: SyllabusRoadmapCreate,
+    background_tasks: BackgroundTasks,
+    current_user: User = Depends(get_current_user)
+):
+    """Translate a static syllabus into an interactive roadmap."""
+    email = current_user.email
+    uid = current_user.supabase_uid
+    if not email:
+        raise HTTPException(status_code=401, detail="Could not determine user email")
+
+    sb = get_supabase_client()
+    profile_res = sb.table("profiles").select("roadmap_credits, is_pro").eq("email", email).execute()
+    if not profile_res.data:
+        raise HTTPException(status_code=404, detail="User profile not found")
+    
+    is_pro = profile_res.data[0].get("is_pro", False)
+
+    if not is_pro:
+        raise HTTPException(status_code=403, detail="Syllabus Parse is a Pro feature.")
+
+    credits = profile_res.data[0].get("roadmap_credits", 0)
+    
+    if credits < 1:
+        if is_pro:
+            raise HTTPException(status_code=402, detail="You have run out of roadmap credits.")
+        else:
+            raise HTTPException(status_code=402, detail="No roadmap credits left. Please upgrade to Pro.")
+
+    prompt = f"""
+You are an instructional designer.
+I will provide you with a static course syllabus or table of contents.
+Translate this exactly into our interactive {payload.time_value} {payload.time_unit} roadmap JSON schema.
+Do not change the core subjects taught, but enrich them with practical "proof_of_work" tasks.
+
+**SYLLABUS TEXT:**
+{payload.syllabus_text}
+
+**RULES:**
+1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "Understanding Backpropagation", "Fundamentals of React Hooks"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Roadmap". Do NOT include the time duration in the title. Do NOT use buzzwords like "Mastery", "High-Performance", "Bootcamp", or "Journey".
+2. **SEO-Friendly Description:** The "description" must be a single, punchy, search-engine-friendly sentence similar to the title.
+2. **Technical Rigor:** Focus on depth and verifiable technical skills.
+3. **Specific Topics:** Each module must have 3-5 specific topics using industry-standard terms.
+4. **Practical Outcomes:** The `proof_of_work_instructions` must describe a realistic technical task that demonstrates competency.
+5. **Conciseness:** Roadmap description must be max 2 sentences. Each module 'outcome' must be max 1 sentence.
+6. **Output JSON ONLY** matching this schema:
+   {{
+     "title": "string",
+     "description": "string",
+     "modules": [
+       {{
+         "title": "string",
+         "outcome": "string",
+         "timeline": "string",
+         "workspace_type": "code|research|design",
+         "proof_of_work_instructions": {{
+            "what_to_build": "string",
+            "what_counts_as_evidence": "string",
+            "eval_criteria": ["string", "string"]
+         }},
+         "optimal_search_query": "string",
+         "topics": [
+           {{
+              "title": "string",
+              "youtube_search_query": "A precise search query to find a university lecture or in-depth technical video on this specific topic (e.g., 'MIT linear algebra eigenvalues lecture')",
+              "subtopics": [ {{ "title": "string" }} ]
+            }}
+         ]
+       }}
+     ]
+   }}
+"""
+    try:
+        model_to_use = settings.DEFAULT_ROADMAP_MODEL
+        generated_text, usage = await generate_text(prompt, model=model_to_use, response_mime_type="application/json", return_usage=True)
+        log_backend_ai_usage(sb, uid, f"Syllabus Translation (Cost: 1.0 Credits)", usage, source="backend")
+        roadmap_plan = robust_json_loads(generated_text)
+
+        # Enrichment logic (IDs and YouTube)
+        for i, module in enumerate(roadmap_plan.get("modules", [])):
+            if not isinstance(module, dict): continue
+            module["id"] = f"module_{i+1}"
+            if not module.get("outcome"):
+                 module["outcome"] = "By the end of this module you will be able to apply the listed topics and solve basic related problems."
+            for t_idx, topic in enumerate(module.get("topics", [])):
+                if not isinstance(topic, dict): continue
+                topic["id"] = f"topic_{i+1}_{t_idx+1}"
+                topic["uuid"] = str(uuid.uuid4())
+                for s_idx, subtopic in enumerate(topic.get("subtopics", [])):
+                    if not isinstance(subtopic, dict): continue
+                    subtopic["id"] = str(uuid.uuid4())
+                
+                # YouTube Enrichment
+                if settings.YOUTUBE_API_KEY:
+                    try:
+                        search_query = topic.get("youtube_search_query") or f"{roadmap_plan['title']} {topic['title']} lecture"
+                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(payload, 'strict_official_sources', False))
+                        if results:
+                            topic["youtube_video_id"] = results[0]["video_id"]
+                            topic["youtube_video_title"] = results[0]["video_title"]
+                            topic["duration"] = results[0]["duration_minutes"]
+                        await asyncio.sleep(0.1)
+                    except Exception as yt_err:
+                        logger.error(f"YouTube enrichment failed for topic {topic['title']}: {yt_err}")
+
+            # DuckDuckGo Enrichment
+            search_query = module.get("optimal_search_query")
+            if search_query:
+                def fetch_ddg():
+                    try:
+                        from ddgs import DDGS
+                        with DDGS() as ddgs:
+                            return list(ddgs.text(search_query, max_results=3))
+                    except Exception as e:
+                        logger.error(f"DDG search failed for query {search_query}: {e}")
+                        return []
+                ddg_results = await asyncio.to_thread(fetch_ddg)
+                if ddg_results:
+                    logger.info(f"DuckDuckGo search successful for '{search_query}'. Found {len(ddg_results)} references.")
+                    module["resources"] = [{"title": r["title"], "url": r["href"], "type": "article"} for r in ddg_results]
+
+        slug = await _generate_unique_slug(roadmap_plan["title"], email, sb)
+        
+        db_data = {
+            "title": roadmap_plan["title"],
+            "description": roadmap_plan["description"],
+            "roadmap_plan": roadmap_plan,
+            "subject": "Translated Syllabus",
+            "goal": "Master Syllabus Content",
+            "time_value": payload.time_value,
+            "time_unit": payload.time_unit,
+            "model": model_to_use,
+            "email": email,
+            "slug": slug,
+            "status": "active",
+            "version": 1,
+            "snapshot_hash": _generate_plan_hash(roadmap_plan)
+        }
+        
+        response = sb.table("roadmaps").insert(db_data).execute()
+        if not response.data:
+            raise HTTPException(status_code=500, detail="Failed to save roadmap")
+            
+        new_credits = credits - 1
+        sb.table("profiles").update({"roadmap_credits": new_credits}).eq("email", email).execute()
+        if new_credits <= 0:
+            await check_and_revoke_pro_if_no_credits(email, sb)
+            
+        if uid:
+            background_tasks.add_task(extract_skills_from_roadmap, response.data[0]["id"], uid)
+
+        return RoadmapRead(**response.data[0])
+
+    except Exception as e:
+        logger.error(f"Roadmap Syllabus generation failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Generation error: {str(e)}")
+
+@router.post("/roadmaps/generate-from-gaps", response_model=RoadmapRead)
+@monitor_query(query_type="generate_from_gaps", table="roadmaps")
+async def generate_from_gaps(
+    payload: SkillGapRoadmapCreate,
+    background_tasks: BackgroundTasks,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate a gap-filling roadmap based on skill diagnostics."""
+    email = current_user.email
+    uid = current_user.supabase_uid
+    if not email:
+        raise HTTPException(status_code=401, detail="Could not determine user email")
+
+    sb = get_supabase_client()
+    profile_res = sb.table("profiles").select("roadmap_credits, is_pro").eq("email", email).execute()
+    if not profile_res.data:
+        raise HTTPException(status_code=404, detail="User profile not found")
+    
+    is_pro = profile_res.data[0].get("is_pro", False)
+    
+    if not is_pro:
+        raise HTTPException(status_code=403, detail="Skill Gap Audit is a Pro feature.")
+
+    credits = profile_res.data[0].get("roadmap_credits", 0)
+    
+    if credits < 1:
+        if is_pro:
+            raise HTTPException(status_code=402, detail="You have run out of roadmap credits.")
+        else:
+            raise HTTPException(status_code=402, detail="No roadmap credits left. Please upgrade to Pro.")
+
+    prompt = f"""
+You are a technical mentor.
+The user wants to become a "{payload.target_role}".
+They are already proficient in: "{payload.known_skills}"
+However, they struggle with or failed diagnostics on: "{payload.weak_skills}"
+
+Generate a {payload.time_value} {payload.time_unit} learning roadmap that COMPLETELY SKIPS the known skills.
+Strictly focus the entire roadmap on bridging the gap in their weak areas.
+
+**RULES:**
+1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "Understanding Backpropagation", "Fundamentals of React Hooks"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Roadmap". Do NOT include the time duration in the title. Do NOT use buzzwords like "Mastery", "High-Performance", "Bootcamp", or "Journey".
+2. **SEO-Friendly Description:** The "description" must be a single, punchy, search-engine-friendly sentence similar to the title.
+2. **Technical Rigor:** Focus on depth and verifiable technical skills.
+3. **Specific Topics:** Each module must have 3-5 specific topics using industry-standard terms.
+4. **Practical Outcomes:** The `proof_of_work_instructions` must describe a realistic technical task that demonstrates competency.
+5. **Conciseness:** Roadmap description must be max 2 sentences. Each module 'outcome' must be max 1 sentence.
+6. **Output JSON ONLY** matching this schema:
+   {{
+     "title": "string",
+     "description": "string",
+     "modules": [
+       {{
+         "title": "string",
+         "outcome": "string",
+         "timeline": "string",
+         "workspace_type": "code|research|design",
+         "proof_of_work_instructions": {{
+            "what_to_build": "string",
+            "what_counts_as_evidence": "string",
+            "eval_criteria": ["string", "string"]
+         }},
+         "optimal_search_query": "string",
+         "topics": [
+           {{
+              "title": "string",
+              "youtube_search_query": "A precise search query to find a university lecture or in-depth technical video on this specific topic (e.g., 'MIT linear algebra eigenvalues lecture')",
+              "subtopics": [ {{ "title": "string" }} ]
+            }}
+         ]
+       }}
+     ]
+   }}
+"""
+    try:
+        model_to_use = settings.DEFAULT_ROADMAP_MODEL
+        generated_text, usage = await generate_text(prompt, model=model_to_use, response_mime_type="application/json", return_usage=True)
+        log_backend_ai_usage(sb, uid, f"Skill Gap Roadmap (Cost: 1.0 Credits)", usage, source="backend")
+        roadmap_plan = robust_json_loads(generated_text)
+
+        # Enrichment logic (IDs and YouTube)
+        for i, module in enumerate(roadmap_plan.get("modules", [])):
+            if not isinstance(module, dict): continue
+            module["id"] = f"module_{i+1}"
+            if not module.get("outcome"):
+                 module["outcome"] = "By the end of this module you will be able to apply the listed topics and solve basic related problems."
+            for t_idx, topic in enumerate(module.get("topics", [])):
+                if not isinstance(topic, dict): continue
+                topic["id"] = f"topic_{i+1}_{t_idx+1}"
+                topic["uuid"] = str(uuid.uuid4())
+                for s_idx, subtopic in enumerate(topic.get("subtopics", [])):
+                    if not isinstance(subtopic, dict): continue
+                    subtopic["id"] = str(uuid.uuid4())
+                
+                # YouTube Enrichment
+                if settings.YOUTUBE_API_KEY:
+                    try:
+                        search_query = topic.get("youtube_search_query") or f"{roadmap_plan['title']} {topic['title']} lecture"
+                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(payload, 'strict_official_sources', False))
+                        if results:
+                            topic["youtube_video_id"] = results[0]["video_id"]
+                            topic["youtube_video_title"] = results[0]["video_title"]
+                            topic["duration"] = results[0]["duration_minutes"]
+                        await asyncio.sleep(0.1)
+                    except Exception as yt_err:
+                        logger.error(f"YouTube enrichment failed for topic {topic['title']}: {yt_err}")
+
+            # DuckDuckGo Enrichment
+            search_query = module.get("optimal_search_query")
+            if search_query:
+                def fetch_ddg():
+                    try:
+                        from ddgs import DDGS
+                        with DDGS() as ddgs:
+                            return list(ddgs.text(search_query, max_results=3))
+                    except Exception as e:
+                        logger.error(f"DDG search failed for query {search_query}: {e}")
+                        return []
+                ddg_results = await asyncio.to_thread(fetch_ddg)
+                if ddg_results:
+                    logger.info(f"DuckDuckGo search successful for '{search_query}'. Found {len(ddg_results)} references.")
+                    module["resources"] = [{"title": r["title"], "url": r["href"], "type": "article"} for r in ddg_results]
+
+        slug = await _generate_unique_slug(roadmap_plan["title"], email, sb)
+        
+        db_data = {
+            "title": roadmap_plan["title"],
+            "description": roadmap_plan["description"],
+            "roadmap_plan": roadmap_plan,
+            "subject": f"Target Role: {payload.target_role}",
+            "goal": "Fill Technical Gaps",
+            "time_value": payload.time_value,
+            "time_unit": payload.time_unit,
+            "model": model_to_use,
+            "email": email,
+            "slug": slug,
+            "status": "active",
+            "version": 1,
+            "snapshot_hash": _generate_plan_hash(roadmap_plan)
+        }
+        
+        response = sb.table("roadmaps").insert(db_data).execute()
+        if not response.data:
+            raise HTTPException(status_code=500, detail="Failed to save roadmap")
+            
+        new_credits = credits - 1
+        sb.table("profiles").update({"roadmap_credits": new_credits}).eq("email", email).execute()
+        if new_credits <= 0:
+            await check_and_revoke_pro_if_no_credits(email, sb)
+            
+        if uid:
+            background_tasks.add_task(extract_skills_from_roadmap, response.data[0]["id"], uid)
+
+        return RoadmapRead(**response.data[0])
+
+    except Exception as e:
+        logger.error(f"Roadmap Gap generation failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Generation error: {str(e)}")
+
+@router.post("/roadmaps/generate-diagnostic-quiz")
+@monitor_query(query_type="generate_diagnostic_quiz", table="roadmaps")
+async def generate_diagnostic_quiz(
+    payload: DiagnosticQuizCreate,
+    current_user: User = Depends(get_current_user)
+):
+    """Generate a diagnostic quiz based on known skills to find gaps."""
+    email = current_user.email
+    uid = current_user.supabase_uid
+    if not email:
+        raise HTTPException(status_code=401, detail="Could not determine user email")
+
+    sb = get_supabase_client()
+    profile_res = sb.table("profiles").select("roadmap_credits, is_pro").eq("email", email).execute()
+    if not profile_res.data:
+        raise HTTPException(status_code=404, detail="User profile not found")
+    
+    is_pro = profile_res.data[0].get("is_pro", False)
+    
+    if not is_pro:
+        raise HTTPException(status_code=403, detail="Diagnostic Quiz is a Pro feature.")
+
+    credits = profile_res.data[0].get("roadmap_credits", 0)
+    
+    if credits < 1:
+        if is_pro:
+            raise HTTPException(status_code=402, detail="You have run out of roadmap credits.")
+        else:
+            raise HTTPException(status_code=402, detail="No roadmap credits left. Please upgrade to Pro.")
+
+    prompt = f"""
+You are a technical subject matter expert. 
+The user is aspiring to be a "{payload.target_role}".
+They already know: "{payload.known_skills}".
+
+Your goal is to generate {payload.question_count} Multiple Choice Questions (MCQs) that test their knowledge on ADVANCED or MISSING concepts required for {payload.target_role} that they might NOT know yet. 
+Do not test them on what they already know.
+
+CRITICAL QUALITY STANDARDS:
+- Questions must be CONCEPTUAL and SITUATIONAL. Avoid simple recall or rote memorization.
+- Focus on application of principles and "what would happen if" scenarios.
+- Each question must have exactly 4 options.
+- Only one option must be clearly correct.
+- Options should be plausible but distinct.
+
+Return ONLY a JSON array of objects. Each object must have:
+- id: a unique string ID for the question (e.g. "q1", "q2")
+- question: string
+- options: array of 4 strings
+- correct_answer_index: integer (0-3)
+- explanation: a concise one-line explanation of the correct choice
+"""
+    try:
+        model_to_use = settings.DEFAULT_ROADMAP_MODEL
+        generated_text, usage = await generate_text(prompt, model=model_to_use, response_mime_type="application/json", return_usage=True)
+        log_backend_ai_usage(sb, uid, f"Diagnostic Quiz Gen (Cost: 0 Credits)", usage, source="backend")
+        quiz_data = robust_json_loads(generated_text)
+        
+        # We don't deduct credits for the quiz itself, only for the roadmap generation later
+        
+        return quiz_data
+
+    except Exception as e:
+        logger.error(f"Diagnostic Quiz generation failed: {e}")
+        raise HTTPException(status_code=500, detail=f"Generation error: {str(e)}")
+
+@router.post("/roadmaps/parse-pdf")
+async def parse_pdf(file: UploadFile = File(...)):
+    import pypdf
+    import io
+    try:
+        pdf_bytes = await file.read()
+        pdf_reader = pypdf.PdfReader(io.BytesIO(pdf_bytes))
+        text = ""
+        for page in pdf_reader.pages:
+            extracted = page.extract_text()
+            if extracted:
+                text += extracted + "\n"
+        return {"text": text.strip()}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to parse PDF: {str(e)}")
+
+from app.schemas import UrlRoadmapCreate
+from fastapi import APIRouter, HTTPException, Request, Depends, BackgroundTasks
+import httpx
+from bs4 import BeautifulSoup
+
+@router.post("/roadmaps/scrape-url")
+async def scrape_url(payload: UrlRoadmapCreate):
+    try:
+        async with httpx.AsyncClient(follow_redirects=True, timeout=15.0) as client:
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+            }
+            res = await client.get(payload.url, headers=headers)
+            res.raise_for_status()
+            soup = BeautifulSoup(res.text, "html.parser")
+            for script in soup(["script", "style", "nav", "footer", "header"]):
+                script.extract()
+            text = soup.get_text(separator=' ', strip=True)
+            return {"text": text}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Failed to extract text from URL: {str(e)}")

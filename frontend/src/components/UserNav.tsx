@@ -72,7 +72,7 @@ export default function UserNav() {
         </button>
 
         {isOpen && (
-          <div className="absolute right-0 mt-2 w-60 bg-header border border-border shadow-[0_15px_50px_-12px_rgba(0,0,0,0.15)] z-[100] animate-in fade-in zoom-in-98 slide-in-from-top-2 duration-200 origin-top-right rounded-xl overflow-hidden">
+          <div className="absolute right-0 mt-2 w-60 bg-header border border-border shadow-[0_15px_50px_-12px_rgba(0,0,0,0.15)] z-[100] animate-in fade-in zoom-in-98 slide-in-from-top-2 duration-200 origin-top-right rounded-lg overflow-hidden">
             {/* User Info Section */}
             <div className="px-4 py-3 border-b border-border/50">
               <p className="text-[13px] font-bold text-text-heading truncate tracking-tight">{displayName}</p>
@@ -139,7 +139,7 @@ export default function UserNav() {
     <div className="flex items-center gap-4">
       <Link
         href="/login"
-        className="inline-flex items-center justify-center bg-gradient-to-b from-teal-400 to-teal-600 text-white px-5 py-1.5 rounded-lg text-[12px] font-bold transition-all hover:brightness-110 active:border-b-0 active:translate-y-[3px] border-b-[3px] border-teal-800 shadow-sm"
+        className="inline-flex items-center justify-center bg-accent text-white hover:bg-teal-700 px-5 py-1.5 rounded-lg text-[12px] font-bold transition-all shadow-sm shadow-sm"
       >
         Sign in
       </Link>

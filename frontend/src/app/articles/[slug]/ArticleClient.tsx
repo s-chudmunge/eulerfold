@@ -78,7 +78,7 @@ const D2Diagram = ({ code, cache }: { code: string, cache?: Record<string, strin
 
   if (error) {
     return (
-      <div className="my-8 p-4 bg-callout-bg border border-error/20 rounded-xl">
+      <div className="my-8 p-4 bg-callout-bg border border-error/20 rounded-lg">
         <div className="flex items-center gap-2 text-error mb-2 text-xs font-bold uppercase tracking-widest inconsolata-ui">
           <span>⚠️ Diagram Render Error</span>
         </div>
@@ -91,7 +91,7 @@ const D2Diagram = ({ code, cache }: { code: string, cache?: Record<string, strin
 
   if (loading) {
     return (
-      <div className="my-8 flex justify-center items-center h-[300px] bg-callout-bg rounded-2xl animate-pulse border border-border">
+      <div className="my-8 flex justify-center items-center h-[300px] bg-callout-bg rounded-lg animate-pulse border border-border">
         <div className="text-text-muted text-sm font-medium inconsolata-ui tracking-widest uppercase text-center px-6">
           Generating Breakdown Diagram...
         </div>
@@ -114,7 +114,7 @@ const ArticlePreview = ({ slug }: { slug: string }) => {
   if (!article) return null;
 
   return (
-    <div className="w-80 p-0 bg-background/95 backdrop-blur-xl border border-border/80 rounded-2xl shadow-2xl overflow-hidden pointer-events-auto group">
+    <div className="w-80 p-0 bg-background/95 backdrop-blur-xl border border-border/80 rounded-lg shadow-2xl overflow-hidden pointer-events-auto group">
       {article.heroImage && (
         <div className="aspect-[2/1] w-full overflow-hidden border-b border-border/50 relative">
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent z-10" />
@@ -561,11 +561,11 @@ export default function ArticleClient({ article }: Props) {
                 {/* Featured Image */}
                 {article.heroImage && (
                   <figure className="my-[40px]">
-                    <div className="rounded-2xl overflow-hidden border border-border bg-card p-2 shadow-sm">
+                    <div className="rounded-lg overflow-hidden border border-border bg-card p-2 shadow-sm">
                       <img 
                         src={article.heroImage} 
                         alt={article.title} 
-                        className="w-full h-auto rounded-xl"
+                        className="w-full h-auto rounded-lg"
                       />
                     </div>
                   </figure>
@@ -594,7 +594,7 @@ export default function ArticleClient({ article }: Props) {
                       </h2>
                       <div className="space-y-4">
                         {article.faq.map((item, idx) => (
-                          <details key={idx} className="group border border-border rounded-2xl bg-card overflow-hidden transition-all duration-300 hover:border-accent/30">
+                          <details key={idx} className="group border border-border rounded-lg bg-card overflow-hidden transition-all duration-300 hover:border-accent/30">
                             <summary className="p-[24px] font-bold leading-[1.3] cursor-pointer list-none flex justify-between items-center group-open:bg-accent/5 transition-colors tracking-tight text-text-heading">
                               <span className="max-w-[90%]">{item.q}</span>
                               <span className="text-accent text-[24px] font-light transition-transform duration-300 group-open:rotate-45">+</span>
@@ -619,7 +619,7 @@ export default function ArticleClient({ article }: Props) {
                       href={`https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 bg-[#000000] text-white px-[16px] py-[8px] rounded-xl text-[14px] font-bold hover:bg-[#1a1a1a] shadow-[inset_0_-3px_0_rgba(255,255,255,0.1)] transition-colors"
+                      className="flex items-center gap-2 bg-[#000000] text-white px-[16px] py-[8px] rounded-lg text-[14px] font-bold hover:bg-[#1a1a1a] shadow-[inset_0_-3px_0_rgba(255,255,255,0.1)] transition-colors"
                     >
                       <FaXTwitter className="w-4 h-4 fill-white" /> Post
                     </a>
@@ -627,7 +627,7 @@ export default function ArticleClient({ article }: Props) {
                       href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 bg-[#3a579a] text-white px-[16px] py-[8px] rounded-xl text-[14px] font-bold hover:bg-[#344f8b] shadow-[inset_0_-3px_0_rgba(0,0,0,0.2)] transition-colors"
+                      className="flex items-center gap-2 bg-[#3a579a] text-white px-[16px] py-[8px] rounded-lg text-[14px] font-bold hover:bg-[#344f8b] shadow-[inset_0_-3px_0_rgba(0,0,0,0.2)] transition-colors"
                     >
                       <Facebook className="w-4 h-4 fill-white" /> Share
                     </a>
@@ -635,7 +635,7 @@ export default function ArticleClient({ article }: Props) {
                       href={`https://api.whatsapp.com/send?text=${encodedText}%20${encodedUrl}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 bg-[#25D366] text-white px-[16px] py-[8px] rounded-xl text-[14px] font-bold hover:bg-[#20bd5c] shadow-[inset_0_-3px_0_rgba(0,0,0,0.2)] transition-colors"
+                      className="flex items-center gap-2 bg-[#25D366] text-white px-[16px] py-[8px] rounded-lg text-[14px] font-bold hover:bg-[#20bd5c] shadow-[inset_0_-3px_0_rgba(0,0,0,0.2)] transition-colors"
                     >
                       <FaWhatsapp className="w-4 h-4 fill-white" /> WhatsApp
                     </a>

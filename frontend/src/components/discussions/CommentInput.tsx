@@ -36,12 +36,12 @@ export const CommentInput: React.FC<CommentInputProps> = ({
 
   if (!user) {
     return (
-      <div className="bg-callout-bg border border-border rounded-2xl p-8 text-center mt-8">
+      <div className="bg-callout-bg border border-border rounded-lg p-8 text-center mt-8">
         <h4 className="inconsolata-ui font-bold text-text-heading mb-2">Join the discussion</h4>
         <p className="manrope-body text-[14px] text-text-muted mb-6">Sign in to share your thoughts and technical insights.</p>
         <button 
           onClick={handleSignIn}
-          className="inline-flex items-center gap-2 bg-accent text-white px-6 py-2.5 rounded-xl font-bold inconsolata-ui hover:opacity-90 transition-all shadow-lg shadow-teal-500/20"
+          className="inline-flex items-center gap-2 bg-accent text-white px-6 py-2.5 rounded-lg font-bold inconsolata-ui hover:opacity-90 transition-all  shadow-teal-500/20"
         >
           <LogIn className="w-4 h-4" /> Sign In Free
         </button>
@@ -70,7 +70,7 @@ export const CommentInput: React.FC<CommentInputProps> = ({
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder={parentId ? "Write a reply (Markdown supported)..." : "Share a technical insight or discuss the topic (Markdown supported)..."}
-          className="w-full bg-background border border-border rounded-2xl p-4 min-h-[120px] focus:border-accent outline-none transition-all manrope-body text-[15px] resize-y"
+          className="w-full bg-background border border-border rounded-lg p-4 min-h-[120px] focus:border-accent outline-none transition-all manrope-body text-[15px] resize-y"
           disabled={isSubmitting}
         />
         
@@ -78,7 +78,7 @@ export const CommentInput: React.FC<CommentInputProps> = ({
           <button 
             type="submit"
             disabled={!content.trim() || isSubmitting}
-            className="inline-flex items-center gap-2 bg-text-heading text-background px-5 py-2 rounded-xl font-bold inconsolata-ui text-[14px] hover:opacity-90 transition-all disabled:opacity-50"
+            className="inline-flex items-center gap-2 bg-text-heading text-background px-5 py-2 rounded-lg font-bold inconsolata-ui text-[14px] hover:opacity-90 transition-all disabled:opacity-50"
           >
             {isSubmitting ? (
               <div className="w-4 h-4 border-2 border-background/30 border-t-background rounded-full animate-spin" />

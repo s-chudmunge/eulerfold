@@ -375,7 +375,7 @@ export default function ResearchLabClient() {
                         >
                             {/* Pro Upgrade Overlay */}
                             {user && !user.is_pro && (
-                                <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-background/80 backdrop-blur-[3px] rounded-xl border border-border/50 text-center p-6">
+                                <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-background/80 backdrop-blur-[3px] rounded-lg border border-border/50 text-center p-6">
                                     <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mb-4">
                                         <Sparkles className="w-6 h-6 text-accent" />
                                     </div>
@@ -392,7 +392,7 @@ export default function ResearchLabClient() {
                                 </div>
                             )}
 
-                            <div className="bg-header border border-border rounded-xl shadow-2xl overflow-hidden backdrop-blur-sm">
+                            <div className="bg-header border border-border rounded-lg shadow-2xl overflow-hidden backdrop-blur-sm">
                                 <div className="p-5 md:p-6">
                                     <form onSubmit={handleStartAnalysis} className="space-y-5">
                                     <div className="space-y-2 text-left">
@@ -583,7 +583,7 @@ export default function ResearchLabClient() {
                                     )}
                                 </div>
                             ) : (
-                                <div className="py-16 text-center border border-dashed border-border rounded-xl bg-sidebar/10">
+                                <div className="py-16 text-center border border-dashed border-border rounded-lg bg-sidebar/10">
                                     <Beaker className="w-8 h-8 text-text-muted/20 mx-auto mb-3" />
                                     <p className="text-[11px] text-text-muted uppercase font-bold tracking-widest">
                                         {user ? "No active sessions found." : "Sign in to view your history."}
@@ -624,7 +624,7 @@ export default function ResearchLabClient() {
                                         desc: "Know the limitations upfront. We highlight the performance bottlenecks, scaling issues, and hidden assumptions."
                                     }
                                 ].map((feature, i) => (
-                                    <div key={i} className="flex gap-4 p-5 rounded-xl border border-border/50 bg-sidebar/50 hover:bg-sidebar transition-colors">
+                                    <div key={i} className="flex gap-4 p-5 rounded-lg border border-border/50 bg-sidebar/50 hover:bg-sidebar transition-colors">
                                         <div className="shrink-0 mt-0.5">
                                             {feature.icon}
                                         </div>

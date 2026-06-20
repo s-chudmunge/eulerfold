@@ -45,14 +45,17 @@ async def get_fastest_free_openrouter_model() -> str:
                     free_models.append(m)
             
             if free_models:
-                _cached_free_model = free_models[0]["id"]
+                # Prefer cohere/north-mini-code:free
+                preferred_models = [m for m in free_models if "north-mini-code" in m["id"].lower()]
+                selected = preferred_models[0]["id"] if preferred_models else free_models[0]["id"]
+                _cached_free_model = selected
                 _cached_time = time.time()
                 logger.info(f"Selected free OpenRouter model: {_cached_free_model}")
                 return _cached_free_model
     except Exception as e:
         logger.error(f"Failed to fetch free models from OpenRouter: {e}")
         
-    return "meta-llama/llama-3.1-8b-instruct:free"
+    return "cohere/north-mini-code:free"
 
 async def _call_openrouter(prompt: str, model: str, response_mime_type: str):
     api_key = settings.OPENROUTER_API_KEY or os.getenv("OPENROUTER_API_KEY")
@@ -94,7 +97,14 @@ async def _call_openrouter(prompt: str, model: str, response_mime_type: str):
                 if "choices" not in data or not data["choices"]:
                     raise RuntimeError("Empty choices from OpenRouter")
                     
-                return data["choices"][0]["message"]["content"], data.get("usage", {}), model
+                content = data["choices"][0]["message"]["content"]
+                usage = data.get("usage") or {}
+                if usage.get("prompt_tokens", 0) == 0 and usage.get("completion_tokens", 0) == 0:
+                    pt = max(1, len(prompt) // 4)
+                    ct = max(1, len(content) // 4)
+                    usage = {"prompt_tokens": pt, "completion_tokens": ct, "total_tokens": pt + ct}
+                    
+                return content, usage, model
 
             except httpx.HTTPStatusError as e:
                 error_msg = response.text
@@ -277,7 +287,8 @@ async def generate_text(prompt: str, model: str = None, response_mime_type: str 
         return usage_dict
 
     try:
-        text, usage, used_model = await _call_openrouter(prompt, openrouter_model, response_mime_type)
+        actual_model = model or openrouter_model
+        text, usage, used_model = await _call_openrouter(prompt, actual_model, response_mime_type)
         return (text, _attach_model(usage, used_model)) if return_usage else text
     except Exception as e:
         logger.error(f"Primary OpenRouter call failed: {e}. Attempting Groq fallback...")

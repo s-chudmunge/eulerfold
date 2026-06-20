@@ -452,7 +452,26 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
           time_unit: 'weeks',
         });
 
-
+        try {
+          await logAIUsage({
+            id: response?.slug,
+            subject: 'Job Decoded Roadmap',
+            model: profile?.is_pro ? 'models/gemini-2.5-pro' : 'models/gemini-2.5-flash',
+            prompt_tokens: 0,
+            completion_tokens: 0,
+            total_tokens: 0,
+            source: 'eulerfold-ai'
+          });
+          
+          if (!profile?.is_pro) {
+            const { data: currentProfile } = await supabase.from('profiles').select('roadmap_credits').eq('supabase_uid', (await supabase.auth.getSession()).data.session?.user?.id).single();
+            if (currentProfile) {
+               setCredits(currentProfile.roadmap_credits);
+            }
+          }
+        } catch (e) {
+          console.error("Failed to log AI usage:", e);
+        }
 
         onRoadmapGenerated(response, { ...formData, time_unit: 'weeks' });
       }
@@ -472,7 +491,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
 
   return (
     <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 max-w-3xl mx-auto w-full">
-      <div className="bg-header border border-border rounded-xl shadow-2xl overflow-hidden backdrop-blur-sm relative z-20">
+      <div className="bg-header border border-border rounded-lg shadow-2xl overflow-hidden backdrop-blur-sm relative z-20">
         <div className="p-5 md:p-8 space-y-8">
           
 
@@ -527,7 +546,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                   onClick={() => setFormData(prev => ({ ...prev, time_value: w }))}
                   className={`inconsolata-ui px-4 py-1.5 border text-[10px] font-bold uppercase tracking-widest transition-all
                     ${formData.time_value === w 
-                      ? 'bg-accent text-white border-accent shadow-lg shadow-accent/20' 
+                      ? 'bg-accent text-white border-accent  shadow-accent/20' 
                       : 'bg-background text-text-muted border-border hover:border-accent hover:text-accent'
                     }`}
                 >
@@ -557,7 +576,9 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
         {/* Action */}
         {!isGenerating && (
           <div className="pt-4 flex flex-col items-center gap-4 w-full">
-              <div className="flex flex-col gap-2 max-w-sm w-full mb-4">
+            {(profile || credits !== null) && (
+              <>
+                <div className="flex flex-col gap-2 max-w-sm w-full mb-4">
                 <div className="flex items-center gap-1.5 mb-1">
                   <Cpu className="w-4 h-4 text-accent" />
                   <span className="text-[12px] font-bold text-text-heading uppercase tracking-widest">Select AI Engine</span>
@@ -586,7 +607,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                   </button>
                 </div>
                 {!useOpenRouter && !useLocalAI && (
-                  <div className="p-4 border border-border rounded-xl bg-sidebar/50 transition-all duration-300 w-full mt-6 animate-in fade-in">
+                  <div className="p-4 border border-border rounded-lg bg-sidebar/50 transition-all duration-300 w-full mt-6 animate-in fade-in">
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                       <div className="flex items-center gap-3 w-full sm:w-auto">
                         <div className="w-10 h-10 bg-background border border-border rounded-lg flex items-center justify-center shrink-0 shadow-sm">
@@ -617,7 +638,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
               </div>
 
             {useLocalAI ? (
-              <div className={`p-4 border border-border rounded-xl bg-sidebar/50 transition-all duration-300 w-full`}>
+              <div className={`p-4 border border-border rounded-lg bg-sidebar/50 transition-all duration-300 w-full`}>
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                   <div className="flex items-center gap-3 w-full sm:w-auto">
                     <div className="w-10 h-10 bg-background border border-border rounded-lg flex items-center justify-center shrink-0 shadow-sm">
@@ -660,7 +681,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                 </div>
               </div>
             ) : (
-              <div className={`p-4 border border-border rounded-xl bg-sidebar/50 transition-all duration-300 w-full ${(!useOpenRouter && openRouterKey) ? 'opacity-50 grayscale' : ''}`}>
+              <div className={`p-4 border border-border rounded-lg bg-sidebar/50 transition-all duration-300 w-full ${(!useOpenRouter && openRouterKey) ? 'opacity-50 grayscale' : ''}`}>
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                   <div className="flex items-center gap-3 w-full sm:w-auto">
                     <div className="w-10 h-10 bg-background border border-border rounded-lg flex items-center justify-center shrink-0 shadow-sm">
@@ -716,32 +737,46 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                 </div>
               </div>
             )}
+            </>
+            )}
 
 
-            <button
-              onClick={handleSubmit}
-              disabled={isGenerating || (useLocalAI && !localAIModelId)}
-              className={`mt-4 group relative w-full sm:w-fit inline-flex items-center justify-center overflow-hidden px-7 py-3 rounded-2xl text-[14px] font-bold transition-all ${
-                (!((openRouterKey && useOpenRouter) || (localAIModelId && useLocalAI)) && credits !== null && credits < 1)
-                ? 'bg-sidebar border-2 border-border text-text-muted hover:border-accent/40' 
-                : (useLocalAI && !localAIModelId)
-                  ? 'bg-sidebar border-2 border-border text-text-muted cursor-not-allowed opacity-50'
-                  : 'bg-gradient-to-b from-teal-400 to-teal-600 text-white hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-teal-800 shadow-lg'
-              }`}
-            >
-              <div className="flex items-center justify-center gap-2.5">
-                <Sparkles className="w-4 h-4" />
-                {useLocalAI ? (
-                  localAIModelId ? <span>Decode Path <span className="opacity-50">(Local)</span></span> : 'Select Local Model'
-                ) : (openRouterKey && useOpenRouter) ? (
-                  <span>Decode Path <span className="opacity-50">(OpenRouter)</span></span>
-                ) : (
-                  <span>
-                    {credits !== null && credits < 1 ? 'Get More Credits' : 'Decode Path (-1 Credit)'}
-                  </span>
-                )}
-              </div>
-            </button>
+            {!(profile || credits !== null) ? (
+              <button
+                type="button"
+                onClick={() => {
+                  router.push(`/login?message=auth_required_to_generate&next=${window.location.pathname}`);
+                }}
+                className="mt-4 group relative w-full sm:w-fit inline-flex items-center justify-center overflow-hidden px-7 py-3 rounded-lg text-[14px] font-bold transition-all bg-accent text-white hover:bg-teal-700 shadow-sm gap-2"
+              >
+                <LogIn className="w-4 h-4" /> Authenticate
+              </button>
+            ) : (
+              <button
+                onClick={handleSubmit}
+                disabled={isGenerating || (useLocalAI && !localAIModelId)}
+                className={`mt-4 group relative w-full sm:w-fit inline-flex items-center justify-center overflow-hidden px-7 py-3 rounded-lg text-[14px] font-bold transition-all ${
+                  (!((openRouterKey && useOpenRouter) || (localAIModelId && useLocalAI)) && credits !== null && credits < 1)
+                  ? 'bg-sidebar border-2 border-border text-text-muted hover:border-accent/40' 
+                  : (useLocalAI && !localAIModelId)
+                    ? 'bg-sidebar border-2 border-border text-text-muted cursor-not-allowed opacity-50'
+                    : 'bg-accent text-white hover:bg-teal-700 shadow-sm'
+                }`}
+              >
+                <div className="flex items-center justify-center gap-2.5">
+                  <Sparkles className="w-4 h-4" />
+                  {useLocalAI ? (
+                    localAIModelId ? <span>Decode Path <span className="opacity-50">(Local)</span></span> : 'Select Local Model'
+                  ) : (openRouterKey && useOpenRouter) ? (
+                    <span>Decode Path <span className="opacity-50">(OpenRouter)</span></span>
+                  ) : (
+                    <span>
+                      {credits !== null && credits < 1 ? 'Get More Credits' : 'Decode Path (-1 Credit)'}
+                    </span>
+                  )}
+                </div>
+              </button>
+            )}
             
             {!((openRouterKey && useOpenRouter) || (localAIModelId && useLocalAI)) && credits !== null && credits < 1 && (
               <div className="mt-2">
@@ -765,9 +800,23 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                <div key={i} className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" style={{ animationDelay: `${i * 0.2}s` }}></div>
              ))}
           </div>
+          
+          {!useLocalAI && (
+            <div className="mt-8 max-w-sm text-center">
+              <div className="bg-callout-bg border border-border px-4 py-3 rounded-lg animate-in fade-in slide-in-from-bottom-4 shadow-sm">
+                <p className="text-[11px] font-bold text-text-heading mb-1 flex items-center justify-center gap-1.5 uppercase tracking-widest">
+                  <AlertCircle className="w-3.5 h-3.5 text-accent" /> Generation Takes Time
+                </p>
+                <p className="text-[10px] text-text-muted leading-relaxed font-medium">
+                  Our AI requires about 20-40 seconds to architect a complete learning roadmap. Please be patient after clicking generate.
+                </p>
+              </div>
+            </div>
+          )}
+
           {useLocalAI && (
             <div className="mt-8 max-w-sm text-center">
-              <div className="bg-accent/5 border border-accent/20 px-4 py-3 rounded-xl animate-in fade-in slide-in-from-bottom-4 shadow-sm">
+              <div className="bg-accent/5 border border-accent/20 px-4 py-3 rounded-lg animate-in fade-in slide-in-from-bottom-4 shadow-sm">
                 <p className="text-[11px] font-bold text-text-heading mb-1 flex items-center justify-center gap-1.5 uppercase tracking-widest">
                   <Cpu className="w-3.5 h-3.5 text-accent" /> Hardware Inference Active
                 </p>

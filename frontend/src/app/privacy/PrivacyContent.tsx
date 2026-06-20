@@ -18,7 +18,7 @@ export default function PrivacyContent() {
 
 
           <div className="manrope-body space-y-12">
-            <div className="bg-callout-bg border border-border rounded-xl p-8 relative overflow-hidden group">
+            <div className="bg-callout-bg border border-border rounded-lg p-8 relative overflow-hidden group">
               <p className="relative z-10 text-text-primary italic">
                 At EulerFold, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website and use our services.
               </p>

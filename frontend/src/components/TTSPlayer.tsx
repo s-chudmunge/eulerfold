@@ -21,10 +21,10 @@ export default function TTSPlayer({ text, title }: TTSPlayerProps) {
   };
 
   return (
-    <div className="flex flex-col gap-4 p-5 bg-sidebar/50 border border-border rounded-xl mb-8 group transition-all hover:border-accent/30">
+    <div className="flex flex-col gap-4 p-5 bg-sidebar/50 border border-border rounded-lg mb-8 group transition-all hover:border-accent/30">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className={`p-2.5 rounded-xl transition-colors ${isPlaying ? 'bg-accent text-white shadow-lg shadow-accent/20' : 'bg-accent/10 text-accent'}`}>
+          <div className={`p-2.5 rounded-lg transition-colors ${isPlaying ? 'bg-accent text-white  shadow-accent/20' : 'bg-accent/10 text-accent'}`}>
             <Volume2 className={`w-5 h-5 ${isPlaying ? 'animate-pulse' : ''}`} />
           </div>
           <div>

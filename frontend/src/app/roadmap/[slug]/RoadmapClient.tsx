@@ -395,10 +395,10 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                     <aside className="w-[260px] border-r border-border bg-sidebar hidden lg:block animate-pulse" />
                     <main className="flex-1 p-8 space-y-8 max-w-[900px] mx-auto w-full">
                         <div className="h-4 w-32 bg-callout-bg border border-border rounded animate-pulse" />
-                        <div className="h-64 w-full bg-callout-bg border border-border rounded-xl animate-pulse" />
+                        <div className="h-64 w-full bg-callout-bg border border-border rounded-lg animate-pulse" />
                         <div className="space-y-4">
                             {[...Array(3)].map((_, i) => (
-                                <div key={i} className="h-24 bg-callout-bg border border-border rounded-xl animate-pulse" />
+                                <div key={i} className="h-24 bg-callout-bg border border-border rounded-lg animate-pulse" />
                             ))}
                         </div>
                     </main>
@@ -410,8 +410,8 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
     if (error || !roadmap) {
         return (
             <div className="fixed inset-0 flex items-center justify-center bg-background dark:bg-[#0f0f0f] p-4">
-                <div className="max-w-md w-full bg-background rounded-xl p-8 text-center border border-border">
-                    <div className="bg-red-500/10 text-red-500 w-16 h-16 rounded-xl flex items-center justify-center mx-auto mb-6">
+                <div className="max-w-md w-full bg-background rounded-lg p-8 text-center border border-border">
+                    <div className="bg-red-500/10 text-red-500 w-16 h-16 rounded-lg flex items-center justify-center mx-auto mb-6">
                         <AlertCircle className="w-8 h-8" />
                     </div>
                     <h1 className="inconsolata-ui text-xl font-bold text-text-heading mb-2">Error</h1>
@@ -529,7 +529,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                             {showActions && (
                                 <>
                                     <div className="fixed inset-0 z-40" onClick={() => setShowActions(false)}></div>
-                                    <div className="absolute right-0 mt-2 w-48 bg-background border border-border rounded-xl shadow-2xl z-50 overflow-hidden animate-in zoom-in-95 duration-100 origin-top-right">
+                                    <div className="absolute right-0 mt-2 w-48 bg-background border border-border rounded-lg shadow-2xl z-50 overflow-hidden animate-in zoom-in-95 duration-100 origin-top-right">
                                         {isOwner ? (
                                             <>
                                                 {/* Extend Roadmap for Pro Users */}
@@ -999,7 +999,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                 </div>            {/* Sharing Nudge - Bottom Right Corner */}
             {showNudge && (
                 <div className="fixed bottom-8 right-8 z-[110] p-4 animate-in slide-in-from-bottom-4 fade-in duration-500">
-                    <div className="bg-background rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] w-[280px] p-8 border border-border text-center relative group">
+                    <div className="bg-background rounded-lg shadow-[0_20px_50px_rgba(0,0,0,0.3)] w-[280px] p-8 border border-border text-center relative group">
                         <button 
                             onClick={() => {
                                 setShowNudge(false);
@@ -1010,7 +1010,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                             <X className="w-4 h-4" />
                         </button>
                         
-                        <div className="w-12 h-12 bg-teal-500/10 text-accent rounded-xl flex items-center justify-center mx-auto mb-6">
+                        <div className="w-12 h-12 bg-teal-500/10 text-accent rounded-lg flex items-center justify-center mx-auto mb-6">
                             <Share2 className="h-6 w-6" />
                         </div>
                         
@@ -1051,7 +1051,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                         <div className="p-8">
                             <div className="flex justify-between items-start mb-6">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+                                    <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-600">
                                         <Plus className="w-6 h-6" />
                                     </div>
                                     <div>
@@ -1071,7 +1071,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                     </label>
                                     <textarea 
                                         placeholder="What do you want to learn next? (e.g., 'Advanced concepts', 'Specific framework', 'Real-world project')"
-                                        className="w-full h-24 bg-callout-bg border border-border rounded-2xl p-4 text-[14px] manrope-body focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all resize-none"
+                                        className="w-full h-24 bg-callout-bg border border-border rounded-lg p-4 text-[14px] manrope-body focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none transition-all resize-none"
                                         value={extensionGoal}
                                         onChange={(e) => setExtensionGoal(e.target.value)}
                                     />
@@ -1086,7 +1086,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                             <button
                                                 key={w}
                                                 onClick={() => setExtensionWeeks(w)}
-                                                className={`py-3 rounded-xl border inconsolata-ui text-[13px] font-bold transition-all ${
+                                                className={`py-3 rounded-lg border inconsolata-ui text-[13px] font-bold transition-all ${
                                                     extensionWeeks === w 
                                                     ? 'bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/20' 
                                                     : 'bg-callout-bg border-border text-text-muted hover:border-emerald-500/30'
@@ -1102,7 +1102,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                     <button
                                         onClick={handleExtend}
                                         disabled={extending}
-                                        className="w-full py-4 bg-emerald-600 text-white rounded-2xl text-[14px] font-bold inconsolata-ui tracking-wide hover:bg-emerald-700 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-emerald-500/10"
+                                        className="w-full py-4 bg-emerald-600 text-white rounded-lg text-[14px] font-bold inconsolata-ui tracking-wide hover:bg-emerald-700 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-emerald-500/10"
                                     >
                                         {extending ? (
                                             <>
@@ -1185,7 +1185,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                 <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-background/80 animate-in fade-in duration-200">
                     <div className="w-full max-w-md bg-background border border-border shadow-2xl rounded-3xl overflow-hidden animate-in zoom-in-95 duration-200">
                         <div className="p-8 text-center">
-                            <div className="w-16 h-16 bg-accent/10 text-accent rounded-2xl flex items-center justify-center mx-auto mb-6">
+                            <div className="w-16 h-16 bg-accent/10 text-accent rounded-lg flex items-center justify-center mx-auto mb-6">
                                 <Copy className="w-8 h-8" />
                             </div>
                             <h3 className="inconsolata-ui text-xl font-bold text-text-heading mb-3 tracking-tight">Clone to Dashboard</h3>
@@ -1200,7 +1200,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                         handleClone();
                                     }}
                                     disabled={saving}
-                                    className="w-full py-4 bg-accent text-white rounded-2xl text-[14px] font-bold inconsolata-ui tracking-wide hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-xl shadow-accent/20 disabled:opacity-50"
+                                    className="w-full py-4 bg-accent text-white rounded-lg text-[14px] font-bold inconsolata-ui tracking-wide hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-xl shadow-accent/20 disabled:opacity-50"
                                 >
                                     {saving ? (
                                         <>

@@ -30,7 +30,7 @@ export default function RoadmapCompactList({ roadmaps }: RoadmapCompactListProps
     const completed = roadmaps.filter(r => r.status === 'completed');
 
     return (
-        <div className="bg-background p-5 rounded-xl border border-border shadow-sm flex flex-col manrope-body">
+        <div className="bg-background p-5 rounded-lg border border-border shadow-sm flex flex-col manrope-body">
             {/* Header Row */}
             <div className="flex items-center justify-between mb-4">
                 <h3 className="inconsolata-ui text-[11px] font-bold text-text-muted uppercase tracking-widest">

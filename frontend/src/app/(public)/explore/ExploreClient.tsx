@@ -288,7 +288,7 @@ export default function ExploreClient({
                                 </div>
                                 <button 
                                     onClick={() => setIsRoadmapModalOpen(true)}
-                                    className="bg-accent text-white px-6 py-2.5 rounded-xl text-[12px] font-bold tracking-wide transition-all hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-accent/20"
+                                    className="bg-accent text-white px-6 py-2.5 rounded-lg text-[12px] font-bold tracking-wide transition-all hover:scale-[1.02] active:scale-[0.98]  shadow-accent/20"
                                 >
                                     Create New Roadmap
                                 </button>
@@ -304,7 +304,7 @@ export default function ExploreClient({
                                         placeholder="Search by subject, goal, or technology..."
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="w-full bg-sidebar/50 border border-border rounded-2xl py-3 pl-10 pr-4 manrope-body text-[14px] focus:outline-none focus:border-[var(--accent)] transition-all focus:bg-background shadow-sm"
+                                        className="w-full bg-sidebar/50 border border-border rounded-lg py-3 pl-10 pr-4 manrope-body text-[14px] focus:outline-none focus:border-[var(--accent)] transition-all focus:bg-background shadow-sm"
                                     />
                                 </div>
                                 <div className="flex items-center gap-2 shrink-0">
@@ -312,7 +312,7 @@ export default function ExploreClient({
                                         <select 
                                             value={sortBy}
                                             onChange={(e) => setSortBy(e.target.value)}
-                                            className="appearance-none bg-sidebar/50 border border-border rounded-2xl pl-10 pr-8 py-3 text-[12px] font-bold focus:outline-none focus:border-[var(--text-heading)] transition-all manrope-body cursor-pointer min-w-[160px]"
+                                            className="appearance-none bg-sidebar/50 border border-border rounded-lg pl-10 pr-8 py-3 text-[12px] font-bold focus:outline-none focus:border-[var(--text-heading)] transition-all manrope-body cursor-pointer min-w-[160px]"
                                         >
                                             <option value="newest">Newest First</option>
                                             <option value="most_cloned">Most Popular</option>
@@ -328,7 +328,7 @@ export default function ExploreClient({
 
                         {/* Leaderboard Strip - Compact & Refined */}
                         {leaderboard.length > 0 && (
-                            <div className="mb-6 flex items-center gap-4 py-1.5 px-4 bg-teal-500/[0.03] border border-teal-500/10 rounded-2xl overflow-x-auto whitespace-nowrap scrollbar-hide">
+                            <div className="mb-6 flex items-center gap-4 py-1.5 px-4 bg-teal-500/[0.03] border border-teal-500/10 rounded-lg overflow-x-auto whitespace-nowrap scrollbar-hide">
                                 <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-teal-700 shrink-0 inconsolata-ui">
                                     <Trophy className="h-3 w-3" />
                                     <span>Top Builders</span>
@@ -357,7 +357,7 @@ export default function ExploreClient({
                                     <button
                                         key={cat}
                                         onClick={() => setFilter(cat)}
-                                        className={`flex items-center gap-2 px-4 py-2 rounded-xl text-[12px] font-bold tracking-tight transition-all border whitespace-nowrap
+                                        className={`flex items-center gap-2 px-4 py-2 rounded-lg text-[12px] font-bold tracking-tight transition-all border whitespace-nowrap
                                             ${filter === cat 
                                             ? 'bg-text-heading text-background border-text-heading shadow-md shadow-black/5 scale-[1.02]' 
                                             : 'bg-sidebar/30 text-text-muted border-border hover:border-text-muted hover:bg-sidebar/50'
@@ -371,7 +371,7 @@ export default function ExploreClient({
                         </div>
 
                         {/* Professional Table View - Modernized */}
-                        <div className="bg-background border border-border rounded-2xl overflow-hidden shadow-sm">
+                        <div className="bg-background border border-border rounded-lg overflow-hidden shadow-sm">
                             <table className="w-full text-left border-collapse table-fixed md:table-auto">
                                 <thead>
                                     <tr className="border-b border-border bg-sidebar/20">
@@ -484,14 +484,14 @@ export default function ExploreClient({
 
             {/* Error/Success Alerts */}
             {error && (
-                <div className="fixed bottom-6 right-6 z-[120] bg-red-500 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-in slide-in-from-right-4 duration-300">
+                <div className="fixed bottom-6 right-6 z-[120] bg-red-500 text-white px-4 py-3 rounded-lg shadow-2xl flex items-center gap-3 animate-in slide-in-from-right-4 duration-300">
                     <AlertCircle className="w-5 h-5" />
                     <span className="text-sm font-bold">{error}</span>
                     <button onClick={() => setError(null)}><X className="w-4 h-4" /></button>
                 </div>
             )}
             {successMessage && (
-                <div className="fixed bottom-6 right-6 z-[120] bg-teal-700 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 animate-in slide-in-from-right-4 duration-300">
+                <div className="fixed bottom-6 right-6 z-[120] bg-teal-700 text-white px-4 py-3 rounded-lg shadow-2xl flex items-center gap-3 animate-in slide-in-from-right-4 duration-300">
                     <CheckCircle2 className="w-5 h-5" />
                     <span className="text-sm font-bold">{successMessage}</span>
                     <button onClick={() => setSuccessMessage(null)}><X className="w-4 h-4" /></button>
@@ -501,7 +501,7 @@ export default function ExploreClient({
             {/* Report Prompt */}
             {reporting !== null && (
                 <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-[110] p-4 animate-in fade-in duration-300">
-                    <div className="bg-background rounded-2xl shadow-2xl max-w-sm w-full p-8 border border-border">
+                    <div className="bg-background rounded-lg shadow-2xl max-w-sm w-full p-8 border border-border">
                         <h3 className="inconsolata-ui text-[18px] font-bold text-text-heading tracking-normal mb-6">Report Roadmap</h3>
                         <div className="space-y-2 mb-8">
                             {['Inappropriate content', 'Spam or misleading', 'Broken resources', 'Other'].map((reason) => (

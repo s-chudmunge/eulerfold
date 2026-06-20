@@ -39,7 +39,7 @@ export default function AboutPage() {
 
           <section className="pt-8 border-t border-border">
             <h2 className="text-xl font-bold text-text-heading mb-3">Legal & Registration</h2>
-            <div className="bg-sidebar/30 border border-border p-5 rounded-xl space-y-2">
+            <div className="bg-sidebar/30 border border-border p-5 rounded-lg space-y-2">
               <p className="text-[14px] font-medium">EulerFold is a registered IT business.</p>
               <ul className="text-[13px] text-text-muted space-y-1">
                 <li>• ID: 103405362603</li>

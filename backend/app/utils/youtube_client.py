@@ -198,6 +198,7 @@ async def search_youtube_videos(
     query: str,
     max_results: int = 1,
     topic_title: str = "",
+    strict_official_sources: bool = False
 ) -> List[Dict[str, str]]:
     """
     Search YouTube and return the best matching educational videos.
@@ -209,11 +210,14 @@ async def search_youtube_videos(
         return []
 
     search_url = "https://www.googleapis.com/youtube/v3/search"
+    # We no longer append massive OR blocks to the query because the LLM is already 
+    # instructed to provide a precise query, and long queries destroy YouTube's search relevance.
+
     search_params = {
         "part": "snippet",
         "q": query,
         "type": "video",
-        "maxResults": 15,
+        "maxResults": 25 if strict_official_sources else 15,
         "key": settings.YOUTUBE_API_KEY,
         "videoEmbeddable": "true",
         "relevanceLanguage": "en",
@@ -246,28 +250,44 @@ async def search_youtube_videos(
             candidates = []
             use_scoring = bool(topic_title.strip())
 
-            for item in videos_data.get("items", []):
-                if use_scoring:
-                    score = _score_video(item, topic_title)
-                    if score < 0:
-                        continue
-                    candidates.append((score, item))
-                else:
-                    # Fallback: duration-only filtering (backward compat)
-                    duration_seconds = parse_iso8601_duration(item["contentDetails"]["duration"])
-                    if duration_seconds < 480 or duration_seconds > 3600:
-                        continue
-                    candidates.append((0, item))
+            OFFICIAL_KEYWORDS = [
+                "mit", "stanford", "harvard", "nptel", "courseware", "university", 
+                "institute", "oxford", "yale", "cambridge", "berkeley", 
+                "cmu", "carnegie", "caltech", "princeton", "cornell", "georgia tech",
+                "nasa", "cern", "jpl", "esa", "polytechnic", "purdue", "michigan", 
+                "eth zurich", "ocw", "ucla", "imperial", "waterloo", "ieee", "acm", 
+                "nsf", "darpa", "national lab", "department of"
+            ]
+            
+            def filter_and_score(require_official: bool):
+                valid = []
+                for item in videos_data.get("items", []):
+                    snippet = item.get("snippet", {})
+                    channel_name_lower = snippet.get("channelTitle", "").lower()
 
-            if not candidates:
-                # If scoring filtered everything out, retry with relaxed relevance
-                if use_scoring:
-                    for item in videos_data.get("items", []):
+                    if require_official:
+                        if not any(kw in channel_name_lower for kw in OFFICIAL_KEYWORDS):
+                            continue
+
+                    if use_scoring:
+                        score = _score_video(item, topic_title)
+                        if score >= 0:
+                            valid.append((score, item))
+                    else:
                         duration_seconds = parse_iso8601_duration(item["contentDetails"]["duration"])
                         if 480 <= duration_seconds <= 3600:
-                            candidates.append((0, item))
-                    if candidates:
-                        logger.info(f"Relaxed relevance filter for query '{query}' — no scored matches found.")
+                            valid.append((0, item))
+                return valid
+
+            candidates = filter_and_score(strict_official_sources)
+
+            if not candidates and strict_official_sources:
+                logger.info(f"No official matches found for '{query}', relaxing official source constraint.")
+                candidates = filter_and_score(False)
+                
+            if not candidates and use_scoring:
+                logger.info(f"No relevant matches found for '{query}' against topic '{topic_title}'.")
+                return []
 
             # Sort by score descending
             candidates.sort(key=lambda x: x[0], reverse=True)

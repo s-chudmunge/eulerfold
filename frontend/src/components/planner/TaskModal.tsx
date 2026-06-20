@@ -121,7 +121,7 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
     
     if ((task.task_type === 'module' || task.task_type === 'pow' || task.task_type === 'practice') && task.roadmap_id) {
       const roadmap = roadmaps.find(r => r.id === task.roadmap_id);
-      const slug = task.metadata?.roadmap_slug || roadmap?.slug;
+      const slug = task.metadata?.roadmap_slug || (roadmap as any)?.slug || roadmap?.id;
       
       if (slug) {
         return `/roadmap/${slug}`;
@@ -136,7 +136,7 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/40 animate-in fade-in duration-200 manrope-body">
-      <div className="bg-sidebar w-full max-w-[420px] border border-border rounded-xl shadow-2xl flex flex-col overflow-hidden">
+      <div className="bg-sidebar w-full max-w-[420px] border border-border rounded-lg shadow-2xl flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between px-5 py-3 border-b border-border bg-sidebar/50">
           <div className="flex items-center gap-2.5">

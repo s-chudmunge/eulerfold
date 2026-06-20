@@ -240,7 +240,7 @@ export default function ActivityStream() {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.9, opacity: 0, y: -10 }}
             transition={{ type: "spring", stiffness: 400, damping: 30 }}
-            className="flex items-center gap-2.5 px-4 py-2 rounded-2xl bg-sidebar/60 backdrop-blur-md border border-border/50 shadow-sm"
+            className="flex items-center gap-2.5 px-4 py-2 rounded-lg bg-sidebar/60 backdrop-blur-md border border-border/50 shadow-sm"
           >
             <div className={`${activity.color} flex-shrink-0`}>
               {activity.icon}

@@ -17,13 +17,20 @@ const products = [
     bgColor: "bg-blue-600/10"
   },
   {
-    title: "Job Decoded",
-    description: "Turn any job description into a learning path. See exactly what skills you are missing for a specific role.",
-    logoProps: { color1: 0x0f766e, color2: 0x2dd4bf, wireframe: false },
-    href: "/generate?mode=job",
+    title: "Custom Curriculum Generators",
+    description: "Generate personalized, step-by-step learning paths using our suite of specialized AI tools.",
+    features: [
+      "AI Architect",
+      "Job Decoded",
+      "Build courses from web links",
+      "Turn PDF syllabi into study plans",
+      "Take quizzes to find & fix weak spots"
+    ],
+    logoProps: { color1: 0xb45309, color2: 0xfbbf24, wireframe: false },
+    href: "/generate",
     isNew: true,
-    color: "text-teal-700",
-    bgColor: "bg-teal-700/10"
+    color: "text-amber-600",
+    bgColor: "bg-amber-500/10"
   },
   {
     title: "Study Planner",
@@ -41,14 +48,6 @@ const products = [
     href: "/practice",
     color: "text-emerald-600",
     bgColor: "bg-emerald-500/10"
-  },
-  {
-    title: "Roadmap Generator",
-    description: "Generate personalized, step-by-step learning paths for any subject or skill in seconds.",
-    logoProps: { color1: 0xb45309, color2: 0xfbbf24, wireframe: false },
-    href: "/generate",
-    color: "text-amber-600",
-    bgColor: "bg-amber-500/10"
   }
 ];
 
@@ -97,6 +96,17 @@ export default function ProductEcosystem() {
                     <p className="manrope-body text-[12px] lg:text-[13px] text-text-muted mt-3 leading-relaxed flex-1">
                       {p.description}
                     </p>
+
+                    {p.features && (
+                      <ul className="mt-4 space-y-1.5 flex-1">
+                        {p.features.map(f => (
+                          <li key={f} className="flex items-start gap-2">
+                            <div className="w-1 h-1 rounded-full bg-accent mt-1.5 shrink-0" />
+                            <span className="text-[12px] text-text-primary font-medium">{f}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
 
                     <div className="flex items-center gap-2 text-[11px] font-bold text-accent uppercase tracking-widest group-hover:gap-3 transition-all mt-6">
                       Launch <ArrowRight className="w-3.5 h-3.5" />

@@ -66,7 +66,7 @@ export default function EnterpriseInterestModal({ isOpen, onClose }: Props) {
           initial={{ opacity: 0, scale: 0.95, y: 10 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 10 }}
-          className="relative w-full max-w-lg bg-surface border border-border shadow-2xl rounded-xl overflow-hidden"
+          className="relative w-full max-w-lg bg-surface border border-border shadow-2xl rounded-lg overflow-hidden"
         >
           <div className="px-6 py-5 border-b border-border/50 flex items-center justify-between bg-header">
             <div className="flex items-center gap-2.5">

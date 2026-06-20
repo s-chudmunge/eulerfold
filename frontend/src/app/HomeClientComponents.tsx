@@ -37,7 +37,7 @@ export function GoogleTrustBadge() {
       className="relative flex items-center gap-5 mt-2 cursor-default group"
     >
       {/* Animated Glow Backdrop - subtle by default, stronger on hover */}
-      <div className="absolute -inset-x-4 -inset-y-2 bg-gradient-to-r from-accent/5 via-transparent to-transparent rounded-xl opacity-40 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
+      <div className="absolute -inset-x-4 -inset-y-2 bg-gradient-to-r from-accent/5 via-transparent to-transparent rounded-lg opacity-40 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
 
       <motion.div
         variants={{
@@ -179,7 +179,7 @@ export function FAQAccordion({ items }: { items: { question: string, answer: Rea
         return (
           <div 
             key={index} 
-            className={`relative overflow-hidden border transition-all duration-500 ease-out rounded-2xl group ${
+            className={`relative overflow-hidden border transition-all duration-500 ease-out rounded-lg group ${
               isOpen 
                 ? 'border-accent/40 bg-background shadow-[0_0_40px_-10px_rgba(15,118,110,0.15)]' 
                 : 'border-border/50 bg-background hover:border-accent/20 hover:bg-sidebar/30'

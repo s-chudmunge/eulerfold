@@ -61,7 +61,7 @@ export default function SkillsProfile({ skills }: SkillsProfileProps) {
                 </div>
 
                 {showWeightsInfo && (
-                    <div className="mb-6 p-4 bg-accent/10 border border-accent/20 rounded-xl animate-in slide-in-from-top-2 duration-300">
+                    <div className="mb-6 p-4 bg-accent/10 border border-accent/20 rounded-lg animate-in slide-in-from-top-2 duration-300">
                         <h4 className="text-[10px] font-black text-accent uppercase tracking-widest mb-2 flex items-center gap-2">
                             <ShieldCheck className="h-3 w-3" /> How we measure mastery
                         </h4>
@@ -86,7 +86,7 @@ export default function SkillsProfile({ skills }: SkillsProfileProps) {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {sortedSkills.map((skill) => (
-                        <div key={skill.id} className="bg-header rounded-xl border border-border overflow-hidden shadow-sm hover:border-accent/50 transition-all">
+                        <div key={skill.id} className="bg-header rounded-lg border border-border overflow-hidden shadow-sm hover:border-accent/50 transition-all">
                             <button 
                                 onClick={() => setExpandedSkillId(expandedSkillId === skill.id ? null : skill.id)}
                                 className="w-full p-4 flex items-center justify-between text-left"
@@ -157,7 +157,7 @@ export default function SkillsProfile({ skills }: SkillsProfileProps) {
             {/* 2. EXPANDABLE SECTIONS */}
             <div className="space-y-4 pt-4 border-t border-border">
                 {/* Training History */}
-                <div className="bg-header rounded-xl border border-border overflow-hidden">
+                <div className="bg-header rounded-lg border border-border overflow-hidden">
                     <button 
                         onClick={() => setIsTrainingExpanded(!isTrainingExpanded)}
                         className="w-full p-4 flex items-center justify-between text-left group"
@@ -176,7 +176,7 @@ export default function SkillsProfile({ skills }: SkillsProfileProps) {
                 </div>
 
                 {/* Verification System */}
-                <div className="bg-header rounded-xl border border-border overflow-hidden">
+                <div className="bg-header rounded-lg border border-border overflow-hidden">
                     <button 
                         onClick={() => setIsSystemExpanded(!isSystemExpanded)}
                         className="w-full p-4 flex items-center justify-between text-left group"

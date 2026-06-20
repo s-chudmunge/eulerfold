@@ -215,6 +215,11 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, checked } = e.target;
+    setFormData(prev => ({ ...prev, [name]: checked }));
+  };
+
   const generateRoadmap = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!formData.subject || !formData.goal) return;
@@ -284,9 +289,8 @@ Estimated duration: ${formData.time_value} ${formData.time_unit || 'weeks'}.
     const localSystemPrompt = `You are a strict JSON data generator. You must reply ONLY with valid JSON. Do not include markdown, explanations, or any conversational text.`;
 
     const localUserPrompt = `
-Generate a technical learning roadmap for the subject: "${formData.subject}". Goal: "${formData.goal}".
-Context: ${context_str}
-Duration: ${formData.time_value} ${formData.time_unit || 'weeks'}.
+Generate a technical learning roadmap for the subject: "${formData.subject}".          Goal: ${formData.goal}
+          Duration: ${formData.time_value} weeks.
 
 Generate a catchy, SEO-friendly, and natural title (e.g., "The Complete Guide to Number Theory"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Roadmap" and do NOT include the duration in the title.
 
@@ -533,6 +537,27 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
           model: profile?.is_pro ? 'models/gemini-2.5-pro' : 'models/gemini-2.5-flash',
         });
         
+        try {
+          await logAIUsage({
+            id: response.data?.slug,
+            subject: formData.subject,
+            model: profile?.is_pro ? 'models/gemini-2.5-pro' : 'models/gemini-2.5-flash',
+            prompt_tokens: 0,
+            completion_tokens: 0,
+            total_tokens: 0,
+            source: 'eulerfold-ai'
+          });
+          
+          if (!profile?.is_pro) {
+            const { data: currentProfile } = await supabase.from('profiles').select('roadmap_credits').eq('supabase_uid', (await supabase.auth.getSession()).data.session?.user?.id).single();
+            if (currentProfile) {
+               setCredits(currentProfile.roadmap_credits);
+            }
+          }
+        } catch (e) {
+          console.error("Failed to log AI usage:", e);
+        }
+
         onRoadmapGenerated(response.data, { ...formData, time_unit: 'weeks' });
       }
     } catch (err: any) {
@@ -630,7 +655,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                               <ChevronDown className={`absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted transition-transform ${isRoleDropdownOpenCurrent ? 'rotate-180' : ''}`} />
 
                               {isRoleDropdownOpenCurrent && (
-                                <div className="absolute z-20 w-full mt-1 bg-surface border border-border shadow-2xl max-h-40 overflow-y-auto no-scrollbar rounded-xl">
+                                <div className="absolute z-20 w-full mt-1 bg-surface border border-border shadow-2xl max-h-40 overflow-y-auto no-scrollbar rounded-lg">
                                   {filteredRolesCurrent.map(r => (
                                     <button
                                       key={r}
@@ -671,7 +696,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                               <ChevronDown className={`absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted transition-transform ${isRoleDropdownOpenTarget ? 'rotate-180' : ''}`} />
 
                               {isRoleDropdownOpenTarget && (
-                                <div className="absolute z-20 w-full mt-1 bg-surface border border-border shadow-2xl max-h-40 overflow-y-auto no-scrollbar rounded-xl">
+                                <div className="absolute z-20 w-full mt-1 bg-surface border border-border shadow-2xl max-h-40 overflow-y-auto no-scrollbar rounded-lg">
                                   {filteredRolesTarget.map(r => (
                                     <button
                                       key={r}
@@ -728,6 +753,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
             
             {/* --- Start of Step 2 content merged --- */}
             <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 mt-8">
+            {session && (
             <div className="space-y-3">
                <label className="inconsolata-ui flex items-center text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted">
                  2. Intensity & Context
@@ -760,7 +786,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                         onClick={() => setFormData(prev => ({ ...prev, time_value: w }))}
                         className={`px-4 py-1.5 border text-[10px] font-bold uppercase tracking-widest transition-all rounded-md
                           ${formData.time_value === w 
-                            ? 'bg-accent text-white border-accent shadow-lg shadow-accent/20' 
+                            ? 'bg-accent text-white border-accent  shadow-accent/20' 
                             : 'bg-background text-text-muted border-border hover:border-accent hover:text-accent'
                           }`}
                       >
@@ -810,8 +836,11 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                   )}
                </div>
             </div>
+            )}
 
-            <div className="mt-8 flex flex-col gap-2 max-w-sm">
+            {session && (
+              <>
+              <div className="mt-8 flex flex-col gap-2 max-w-sm">
                 <div className="flex items-center gap-1.5 mb-1">
                   <Cpu className="w-4 h-4 text-accent" />
                   <span className="text-[12px] font-bold text-text-heading uppercase tracking-widest">Select AI Engine</span>
@@ -840,7 +869,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                   </button>
                 </div>
                 {!useOpenRouter && !useLocalAI && (
-                  <div className="p-4 border border-border rounded-xl bg-sidebar/50 transition-all duration-300 w-full mt-6 animate-in fade-in">
+                  <div className="p-4 border border-border rounded-lg bg-sidebar/50 transition-all duration-300 w-full mt-6 animate-in fade-in">
                     <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                       <div className="flex items-center gap-3 w-full sm:w-auto">
                         <div className="w-10 h-10 bg-background border border-border rounded-lg flex items-center justify-center shrink-0 shadow-sm">
@@ -871,7 +900,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
               </div>
 
             {useLocalAI ? (
-              <div className={`p-4 border border-border rounded-xl bg-sidebar/50 transition-all duration-300 w-full`}>
+              <div className={`p-4 border border-border rounded-lg bg-sidebar/50 transition-all duration-300 w-full`}>
                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                   <div className="flex items-center gap-3 w-full sm:w-auto">
                     <div className="w-10 h-10 bg-background border border-border rounded-lg flex items-center justify-center shrink-0 shadow-sm">
@@ -914,7 +943,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                 </div>
               </div>
             ) : (
-            <div className={`p-4 border border-border rounded-xl bg-sidebar/50 transition-all duration-300 ${openRouterKey ? 'mt-4' : 'mt-6'} ${(!useOpenRouter && openRouterKey) ? 'opacity-50 grayscale' : ''}`}>
+            <div className={`p-4 border border-border rounded-lg bg-sidebar/50 transition-all duration-300 ${openRouterKey ? 'mt-4' : 'mt-6'} ${(!useOpenRouter && openRouterKey) ? 'opacity-50 grayscale' : ''}`}>
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <div className="w-10 h-10 bg-background border border-border rounded-lg flex items-center justify-center shrink-0 shadow-sm">
@@ -974,6 +1003,8 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
 
             </div>
             )}
+            </>
+            )}
             {!isGenerating && (
               <div className="mt-8 flex flex-col gap-6">
 
@@ -984,7 +1015,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                 {!session ? (
                     <button
                       onClick={generateRoadmap}
-                      className="w-full sm:w-fit group relative inline-flex items-center justify-center px-7 py-3 text-[14px] font-bold transition-all bg-gradient-to-b from-teal-400 to-teal-600 text-white hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-teal-800 shadow-lg gap-2 rounded-2xl"
+                      className="w-full sm:w-fit group relative inline-flex items-center justify-center px-7 py-3 text-[14px] font-bold transition-all bg-accent text-white hover:bg-teal-700 shadow-sm gap-2 rounded-lg"
                     >
                       <LogIn className="w-4 h-4" /> Authenticate
                     </button>
@@ -992,10 +1023,10 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                     <button
                       onClick={generateRoadmap}
                       disabled={isGenerating}
-                      className={`w-full sm:w-fit group relative inline-flex items-center justify-center px-7 py-3 text-[14px] font-bold transition-all rounded-2xl ${
+                      className={`w-full sm:w-fit group relative inline-flex items-center justify-center px-7 py-3 text-[14px] font-bold transition-all rounded-lg ${
                         (!useLocalAI && !(openRouterKey && useOpenRouter) && credits !== null && credits < 1)
                         ? 'bg-sidebar border-2 border-border text-text-muted hover:border-accent/40' 
-                        : 'bg-gradient-to-b from-teal-400 to-teal-600 text-white hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-teal-800 shadow-lg'
+                        : 'bg-accent text-white hover:bg-teal-700 shadow-sm'
                       }`}
                     >
                       <div className="flex items-center justify-center gap-2">
@@ -1016,7 +1047,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
               </div>
             )}
             
-            {(openRouterKey && useOpenRouter) && (
+            {useOpenRouter && (
                <div className="mt-4 flex flex-col items-center justify-center gap-4 text-emerald-600 dark:text-emerald-400">
                  <div className="flex items-center justify-center gap-1.5">
                    <ShieldCheck className="w-3 h-3" />
@@ -1077,9 +1108,23 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
               />
             ))}
           </div>
+          
+          {!useLocalAI && (
+            <div className="mt-8 max-w-sm text-center">
+              <div className="bg-callout-bg border border-border px-4 py-3 rounded-lg animate-in fade-in slide-in-from-bottom-4 shadow-sm">
+                <p className="text-[11px] font-bold text-text-heading mb-1 flex items-center justify-center gap-1.5 uppercase tracking-widest">
+                  <AlertCircle className="w-3.5 h-3.5 text-accent" /> Generation Takes Time
+                </p>
+                <p className="text-[10px] text-text-muted leading-relaxed font-medium">
+                  Our AI requires about 20-40 seconds to architect a complete learning roadmap. Please be patient after clicking generate.
+                </p>
+              </div>
+            </div>
+          )}
+
           {useLocalAI && (
             <div className="mt-8 max-w-sm text-center">
-              <div className="bg-accent/5 border border-accent/20 px-4 py-3 rounded-xl animate-in fade-in slide-in-from-bottom-4 shadow-sm">
+              <div className="bg-accent/5 border border-accent/20 px-4 py-3 rounded-lg animate-in fade-in slide-in-from-bottom-4 shadow-sm">
                 <p className="text-[11px] font-bold text-text-heading mb-1 flex items-center justify-center gap-1.5 uppercase tracking-widest">
                   <Cpu className="w-3.5 h-3.5 text-accent" /> Hardware Inference Active
                 </p>

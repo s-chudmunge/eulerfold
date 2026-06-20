@@ -100,7 +100,7 @@ export default function ResearchHelpBot({ decodeId, isPro: initialIsPro }: Resea
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              className="w-[320px] h-[480px] bg-background border border-border shadow-2xl rounded-xl overflow-hidden flex flex-col mb-4"
+              className="w-[320px] h-[480px] bg-background border border-border shadow-2xl rounded-lg overflow-hidden flex flex-col mb-4"
             >
               <div className="p-3 bg-sidebar border-b border-border flex items-center justify-between">
                 <div className="flex items-center gap-2.5">
@@ -122,7 +122,7 @@ export default function ResearchHelpBot({ decodeId, isPro: initialIsPro }: Resea
                 )}
                 {messages.map((msg, i) => (
                   <div key={i} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse text-right' : 'text-left'}`}>
-                    <div className={`max-w-[85%] p-2.5 text-[12.5px] leading-relaxed serif-content ${msg.role === 'user' ? 'bg-accent text-white rounded-xl rounded-tr-sm shadow-sm' : 'bg-sidebar text-text-primary rounded-xl rounded-tl-sm border border-border/40 shadow-sm'}`}>
+                    <div className={`max-w-[85%] p-2.5 text-[12.5px] leading-relaxed serif-content ${msg.role === 'user' ? 'bg-accent text-white rounded-lg rounded-tr-sm shadow-sm' : 'bg-sidebar text-text-primary rounded-lg rounded-tl-sm border border-border/40 shadow-sm'}`}>
                       <div className={msg.role === 'user' ? 'prose prose-sm prose-invert max-w-none text-[12.5px]' : 'prose prose-sm dark:prose-invert max-w-none text-[12.5px]'}>
                         <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
                           {msg.content}

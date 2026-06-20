@@ -35,7 +35,7 @@ export default function TOSModal({ isOpen, onAccept, onDecline }: TOSModalProps)
 
     return (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 animate-in fade-in duration-200">
-            <div className="w-full max-w-[500px] bg-sidebar border border-border shadow-2xl flex flex-col max-h-[80vh] animate-in zoom-in-95 duration-200 rounded-xl overflow-hidden">
+            <div className="w-full max-w-[500px] bg-sidebar border border-border shadow-2xl flex flex-col max-h-[80vh] animate-in zoom-in-95 duration-200 rounded-lg overflow-hidden">
                 
                 {/* Header */}
                 <div className="px-6 py-4 border-b border-border flex items-center justify-between bg-sidebar/50">

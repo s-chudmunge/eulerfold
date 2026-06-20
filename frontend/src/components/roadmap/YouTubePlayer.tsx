@@ -150,7 +150,7 @@ export default function YouTubePlayer({ videoId, title, onComplete, onNext, isCo
             
             {timeLeft !== null && (
                 <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-50 animate-in fade-in duration-300">
-                    <div className="bg-sidebar border border-border rounded-xl shadow-2xl w-full max-w-[320px] overflow-hidden">
+                    <div className="bg-sidebar border border-border rounded-lg shadow-2xl w-full max-w-[320px] overflow-hidden">
                         <div className="p-6 text-center">
                             <h3 className="text-[16px] font-bold text-text-heading mb-1 flex items-center justify-center gap-2">
                                 <CheckCircle2 className="h-4 w-4 text-emerald-500" />

@@ -42,7 +42,7 @@ export default function SyllabusModal({
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-in fade-in duration-200">
       <div 
-        className="bg-sidebar border border-border rounded-xl w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+        className="bg-sidebar border border-border rounded-lg w-full max-w-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}
@@ -84,7 +84,7 @@ export default function SyllabusModal({
               const isFullyCompleted = moduleCompletedCount === (module.topics?.length || 0);
 
               return (
-                <div key={mIdx} className="border border-border rounded-xl overflow-hidden bg-background/30">
+                <div key={mIdx} className="border border-border rounded-lg overflow-hidden bg-background/30">
                   <button 
                     onClick={() => toggleModule(mIdx)}
                     className="w-full flex items-center justify-between px-5 py-4 hover:bg-callout-bg transition-colors"

@@ -45,7 +45,7 @@ export default function ResearchDecodedPreview() {
     <section className="py-16 sm:py-24 overflow-hidden transition-colors duration-300 border-b border-border">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
-          <div className="inline-flex items-center px-4 py-1.5 rounded-xl text-[11px] font-bold bg-background border border-border text-text-muted uppercase tracking-[0.2em] mb-4 inconsolata-ui">
+          <div className="inline-flex items-center px-4 py-1.5 rounded-lg text-[11px] font-bold bg-background border border-border text-text-muted uppercase tracking-[0.2em] mb-4 inconsolata-ui">
             FROM THE LAB
           </div>
           <h2 className="text-3xl md:text-[42px] font-bold text-text-heading tracking-tight transition-colors uppercase inconsolata-ui">
@@ -61,7 +61,7 @@ export default function ResearchDecodedPreview() {
             <Link 
               key={paper.slug} 
               href={`/research-decoded/${paper.slug}`}
-              className="flex flex-col bg-callout-bg border border-border rounded-xl p-6 hover:bg-background transition-colors group"
+              className="flex flex-col bg-callout-bg border border-border rounded-lg p-6 hover:bg-background transition-colors group"
             >
               <div className="mb-6">
                 <span className="inconsolata-ui uppercase tracking-[0.2em] text-[10px] font-bold border border-border px-2.5 py-1 rounded text-text-muted">
@@ -84,7 +84,7 @@ export default function ResearchDecodedPreview() {
         <div className="mt-16 text-center">
           <Link 
             href="/research-decoded"
-            className="inline-flex items-center justify-center px-6 py-3 bg-background border border-border text-text-heading text-[12px] font-bold rounded-xl hover:bg-callout-bg transition-all uppercase tracking-[0.2em] inconsolata-ui"
+            className="inline-flex items-center justify-center px-6 py-3 bg-background border border-border text-text-heading text-[12px] font-bold rounded-lg hover:bg-callout-bg transition-all uppercase tracking-[0.2em] inconsolata-ui"
           >
             → BROWSE ALL RESEARCH
           </Link>

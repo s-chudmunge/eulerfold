@@ -73,7 +73,7 @@ export default function SocialShare({
                     href={platform.href}
                     target="_blank"
                     rel="noreferrer"
-                    className={`p-2 rounded-xl transition-all duration-200 shadow-sm flex items-center justify-center ${platform.color}`}
+                    className={`p-2 rounded-lg transition-all duration-200 shadow-sm flex items-center justify-center ${platform.color}`}
                     title={`Share on ${platform.name}`}
                 >
                     <platform.icon className="w-4 h-4" />
@@ -82,7 +82,7 @@ export default function SocialShare({
             
             <button
                 onClick={copyToClipboard}
-                className={`p-2 rounded-xl transition-all duration-200 shadow-sm flex items-center justify-center ${
+                className={`p-2 rounded-lg transition-all duration-200 shadow-sm flex items-center justify-center ${
                     copied 
                     ? 'bg-accent text-white' 
                     : 'bg-sidebar/80 text-text-muted hover:bg-sidebar hover:text-text-heading'

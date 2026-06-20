@@ -68,7 +68,7 @@ export default function RoadmapIndexClient({ initialRoadmaps }: { initialRoadmap
                                     placeholder="Search by topic, subject, or goal..."
                                     value={search}
                                     onChange={(e) => setSearch(e.target.value)}
-                                    className="w-full bg-sidebar/50 border border-border rounded-2xl pl-12 pr-4 py-3 text-sm focus:outline-none focus:border-accent transition-all manrope-body"
+                                    className="w-full bg-sidebar/50 border border-border rounded-lg pl-12 pr-4 py-3 text-sm focus:outline-none focus:border-accent transition-all manrope-body"
                                 />
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
@@ -76,7 +76,7 @@ export default function RoadmapIndexClient({ initialRoadmaps }: { initialRoadmap
                                     <select 
                                         value={sortBy}
                                         onChange={(e) => setSortBy(e.target.value)}
-                                        className="appearance-none bg-sidebar/50 border border-border rounded-2xl pl-12 pr-10 py-3 text-sm focus:outline-none focus:border-accent transition-all manrope-body cursor-pointer min-w-[160px] font-bold"
+                                        className="appearance-none bg-sidebar/50 border border-border rounded-lg pl-12 pr-10 py-3 text-sm focus:outline-none focus:border-accent transition-all manrope-body cursor-pointer min-w-[160px] font-bold"
                                     >
                                         <option value="newest">Newest First</option>
                                         <option value="highest_rated">Highest Rated</option>
@@ -92,7 +92,7 @@ export default function RoadmapIndexClient({ initialRoadmaps }: { initialRoadmap
                     <div className={`grid grid-cols-1 gap-y-1 transition-opacity duration-200 ${loading ? 'opacity-50' : 'opacity-100'}`}>
                         {roadmaps.length > 0 ? (
                             roadmaps.map((roadmap: any) => (
-                                <div key={roadmap.id} className="group border-b border-border/50 py-5 transition-all hover:bg-sidebar/30 px-4 rounded-2xl">
+                                <div key={roadmap.id} className="group border-b border-border/50 py-5 transition-all hover:bg-sidebar/30 px-4 rounded-lg">
                                     <Link 
                                         href={`/roadmap/${roadmap.slug}`}
                                         className="block"

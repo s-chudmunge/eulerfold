@@ -47,7 +47,7 @@ const ProfileDropdown = ({ user, profile, handleSignOut }: { user: any; profile:
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-52 bg-background rounded-xl shadow-2xl border border-border py-1.5 z-[60] animate-in fade-in slide-in-from-top-2 duration-200 transition-colors">
+        <div className="absolute right-0 mt-2 w-52 bg-background rounded-lg shadow-2xl border border-border py-1.5 z-[60] animate-in fade-in slide-in-from-top-2 duration-200 transition-colors">
           <div className="px-4 py-2 border-b border-border/50 mb-1">
             <p className="text-[9px] font-bold text-text-muted tracking-wide mb-0.5">Session</p>
             <p className="text-[11px] font-bold text-text-heading truncate leading-tight">{user.email}</p>
@@ -200,7 +200,7 @@ export default function CourseHeader({
             </button>
 
             {isModuleDropdownOpen && (
-              <div className="absolute top-full left-0 mt-1 w-80 bg-background border border-border rounded-xl shadow-2xl py-2 z-[60] animate-in fade-in slide-in-from-top-1 duration-200">
+              <div className="absolute top-full left-0 mt-1 w-80 bg-background border border-border rounded-lg shadow-2xl py-2 z-[60] animate-in fade-in slide-in-from-top-1 duration-200">
                 <p className="px-4 py-1.5 text-[10px] font-bold text-text-muted uppercase tracking-wider">Select Module</p>
                 <div className="max-h-[60vh] overflow-y-auto no-scrollbar">
                   {modules.map((m, idx) => (

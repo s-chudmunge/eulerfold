@@ -166,7 +166,7 @@ export default function PricingClient() {
                         <div className="space-y-3">
                             <div className="flex items-start gap-3 text-[12px] text-text-primary font-bold">
                                 <span className="text-teal-600 mt-0.5">✓</span>
-                                <span>50 Roadmap credits</span>
+                                <span>50 credits</span>
                             </div>
                             <div className="flex items-start gap-3 text-[12px] text-text-primary">
                                 <span className="text-teal-600 mt-0.5">✓</span>
@@ -182,11 +182,22 @@ export default function PricingClient() {
                             </div>
                             <div className="flex items-start gap-3 text-[12px] text-text-primary">
                                 <span className="text-teal-600 mt-0.5 font-bold">✓</span>
-                                <span>12-week strategic mapping</span>
+                                <span>Up to 12-week strategic mapping</span>
                             </div>
                             <div className="flex items-start gap-3 text-[12px] text-accent font-bold">
                                 <span className="text-accent mt-0.5">✓</span>
                                 <span>Research Lab Paper Decoding</span>
+                            </div>
+                            <div className="flex items-start gap-3 text-[12px] text-accent font-bold">
+                                <span className="text-accent mt-0.5">✓</span>
+                                <div className="flex flex-col">
+                                    <span>Custom Learning Paths</span>
+                                    <div className="flex flex-col gap-1 mt-1.5 text-[10.5px] text-accent/80 font-medium">
+                                        <span>• Build courses from any web link</span>
+                                        <span>• Turn PDF syllabi into study plans</span>
+                                        <span>• Take quizzes to find & fix weak spots</span>
+                                    </div>
+                                </div>
                             </div>
                             <div className="flex items-start gap-3 text-[12px] text-teal-600 dark:text-teal-400 font-bold">
                                 <span className="text-teal-600 dark:text-teal-400 mt-0.5">✓</span>
@@ -201,13 +212,13 @@ export default function PricingClient() {
 
                     {isLoggedIn ? (
                         user?.is_pro ? (
-                            <div className="w-full text-center py-3 px-4 bg-teal-600/10 border border-teal-600/20 rounded-2xl text-teal-700 dark:text-teal-400 relative z-10">
+                            <div className="w-full text-center py-3 px-4 bg-teal-600/10 border border-teal-600/20 rounded-lg text-teal-700 dark:text-teal-400 relative z-10">
                                 <p className="text-[13px] font-bold inconsolata-ui tracking-tight">Welcome {user.full_name?.split(' ')[0] || user.username || 'back'}, you are already a pro member, Yay! 🎉</p>
                             </div>
                         ) : (
                             <button
                                 onClick={() => setIsPaymentModalOpen(true)}
-                                className="w-full inline-flex items-center justify-center bg-gradient-to-b from-teal-400 to-teal-600 text-white py-3 rounded-2xl text-[14px] font-bold transition-all hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-teal-800 shadow-lg relative z-10"
+                                className="w-full inline-flex items-center justify-center bg-accent text-white hover:bg-teal-700 py-3 rounded-lg text-[14px] font-bold transition-all shadow-sm relative z-10"
                             >
                                 Activate Pro (₹{currentPrice}/mo)
                             </button>
@@ -215,7 +226,7 @@ export default function PricingClient() {
                     ) : (
                         <Link 
                             href="/login?next=/pricing"
-                            className="w-full inline-flex items-center justify-center bg-gradient-to-b from-teal-400 to-teal-600 text-white py-3 rounded-2xl text-[14px] font-bold transition-all hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-teal-800 shadow-lg relative z-10"
+                            className="w-full inline-flex items-center justify-center bg-accent text-white hover:bg-teal-700 py-3 rounded-lg text-[14px] font-bold transition-all shadow-sm relative z-10"
                         >
                             Login to Upgrade
                         </Link>

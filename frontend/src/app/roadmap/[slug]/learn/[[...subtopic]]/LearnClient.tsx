@@ -759,7 +759,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                             {viewMode === 'video' ? (
                                 <div className="animate-in fade-in duration-500">
                                     {/* Video Player Container */}
-                                    <div className="bg-image-bg border border-border rounded-xl overflow-hidden shadow-sm mb-8">
+                                    <div className="bg-image-bg border border-border rounded-lg overflow-hidden shadow-sm mb-8">
                                         <div className="aspect-video w-full bg-black relative group">
                                             {activeVideoId ? (
                                                 <YouTubePlayer
@@ -787,7 +787,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                             <button
                                                 onClick={handleMarkAsCompleted}
                                                 disabled={isUpdatingProgress}
-                                                className={`flex items-center gap-2 px-6 py-2 rounded-xl font-bold text-[12px] transition-all ${
+                                                className={`flex items-center gap-2 px-6 py-2 rounded-lg font-bold text-[12px] transition-all ${
                                                     isTopicCompleted
                                                         ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20'
                                                         : 'bg-text-heading text-background hover:opacity-90 shadow-lg active:scale-95'
@@ -834,7 +834,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                                     <h4 className="text-[12px] font-bold text-text-muted uppercase tracking-[0.1em] mb-4">
                                                         Weekly Outcome
                                                     </h4>
-                                                    <div className="p-5 bg-callout-bg border border-callout-border rounded-xl">
+                                                    <div className="p-5 bg-callout-bg border border-callout-border rounded-lg">
                                                         <p className="manrope-body text-[15px] font-medium text-text-heading leading-relaxed">
                                                             {currentModule?.outcome}
                                                         </p>
@@ -895,7 +895,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
 
             {coinToast && (
                 <div className="fixed bottom-8 right-8 z-[200] animate-in slide-in-from-bottom-4 duration-500">
-                    <div className="bg-[var(--text-heading)] text-[var(--bg-main)] px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-4 border border-white/10">
+                    <div className="bg-[var(--text-heading)] text-[var(--bg-main)] px-6 py-4 rounded-lg shadow-2xl flex items-center gap-4 border border-white/10">
                         <div className="h-10 w-10 bg-white/20 rounded-full flex items-center justify-center">
                             <Zap className="h-5 w-5 fill-current" />
                         </div>

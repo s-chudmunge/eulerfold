@@ -72,7 +72,7 @@ export default function ClaimUsernameStep({ initialEmail, onSuccess }: ClaimUser
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
             placeholder="Full Name"
-            className="w-full px-5 py-4 bg-sidebar/50 border border-border rounded-2xl text-[17px] text-text-primary outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all placeholder:text-text-muted/40 manrope-body font-medium"
+            className="w-full px-5 py-4 bg-sidebar/50 border border-border rounded-lg text-[17px] text-text-primary outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all placeholder:text-text-muted/40 manrope-body font-medium"
           />
         </div>
 
@@ -87,7 +87,7 @@ export default function ClaimUsernameStep({ initialEmail, onSuccess }: ClaimUser
               value={claimedUsername}
               onChange={(e) => setClaimedUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
               placeholder="username"
-              className="w-full pl-11 pr-5 py-4 bg-sidebar/50 border border-border rounded-2xl text-[17px] text-text-primary outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all placeholder:text-text-muted/40 manrope-body font-medium"
+              className="w-full pl-11 pr-5 py-4 bg-sidebar/50 border border-border rounded-lg text-[17px] text-text-primary outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all placeholder:text-text-muted/40 manrope-body font-medium"
             />
           </div>
         </div>
@@ -130,7 +130,7 @@ export default function ClaimUsernameStep({ initialEmail, onSuccess }: ClaimUser
         <button 
           onClick={handleClaim}
           disabled={loading || !agreedToTerms || !agreedToPrivacy || claimedUsername.length < 3 || displayName.trim().length < 2}
-          className="w-full py-4 bg-text-heading text-background rounded-2xl font-bold text-[16px] hover:opacity-90 transition-all disabled:opacity-20 disabled:grayscale disabled:cursor-not-allowed shadow-xl active:scale-[0.98] manrope-body"
+          className="w-full py-4 bg-text-heading text-background rounded-lg font-bold text-[16px] hover:opacity-90 transition-all disabled:opacity-20 disabled:grayscale disabled:cursor-not-allowed shadow-xl active:scale-[0.98] manrope-body"
         >
           {loading ? 'Processing...' : 'Create account'}
         </button>

@@ -97,7 +97,7 @@ export default function UnsubscribeForm({ initialEmail }: UnsubscribeFormProps) 
               onChange={(e) => setEmail(e.target.value)}
               placeholder="name@example.com"
               required
-              className="w-full h-14 px-5 rounded-2xl border border-border bg-zinc-50 dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-teal-700/20 focus:border-teal-700 transition-all text-base manrope-body"
+              className="w-full h-14 px-5 rounded-lg border border-border bg-zinc-50 dark:bg-zinc-900 focus:outline-none focus:ring-2 focus:ring-teal-700/20 focus:border-teal-700 transition-all text-base manrope-body"
             />
             {error && <p className="text-xs text-red-500 font-semibold px-1 mt-1">{error}</p>}
           </div>
@@ -137,7 +137,7 @@ export default function UnsubscribeForm({ initialEmail }: UnsubscribeFormProps) 
                 value={otherReason}
                 onChange={(e) => setOtherReason(e.target.value)}
                 placeholder="Please tell us more..."
-                className="w-full p-5 rounded-2xl border border-border bg-zinc-50 dark:bg-zinc-900 focus:outline-none focus:border-teal-700 text-base manrope-body min-h-[120px] animate-in slide-in-from-top-2"
+                className="w-full p-5 rounded-lg border border-border bg-zinc-50 dark:bg-zinc-900 focus:outline-none focus:border-teal-700 text-base manrope-body min-h-[120px] animate-in slide-in-from-top-2"
               />
             )}
           </div>
@@ -145,7 +145,7 @@ export default function UnsubscribeForm({ initialEmail }: UnsubscribeFormProps) 
           <button
             type="submit"
             disabled={loading || (!isUnsubscribed && !email) || (isUnsubscribed && !selectedReason)}
-            className="w-fit px-12 h-14 bg-black dark:bg-white text-white dark:text-black font-bold rounded-2xl transition-all disabled:opacity-30 text-[14px] uppercase tracking-widest hover:scale-105 active:scale-95 shadow-lg flex items-center justify-center min-w-[200px]"
+            className="w-fit px-12 h-14 bg-black dark:bg-white text-white dark:text-black font-bold rounded-lg transition-all disabled:opacity-30 text-[14px] uppercase tracking-widest hover:scale-105 active:scale-95 shadow-lg flex items-center justify-center min-w-[200px]"
           >
             {loading ? (
               <div className="w-5 h-5 border-2 border-current border-t-transparent rounded-full animate-spin" />

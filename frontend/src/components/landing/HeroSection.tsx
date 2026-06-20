@@ -45,7 +45,7 @@ export default function HeroSection() {
             <div className="flex flex-col sm:flex-row flex-wrap items-center gap-4 mb-8">
               <Link 
                 href="/generate"
-                className="w-full sm:w-auto inline-flex items-center justify-center bg-gradient-to-b from-teal-400 to-teal-600 text-white px-7 py-3 rounded-2xl text-[14px] font-bold transition-all hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-teal-800 gap-3 shadow-lg"
+                className="w-full sm:w-auto inline-flex items-center justify-center bg-accent text-white hover:bg-teal-700 px-7 py-3 rounded-lg text-[14px] font-bold transition-all shadow-sm gap-3 "
               >
                 <Plus className="w-4 h-4" /> Start Your Learning
               </Link>
@@ -53,7 +53,7 @@ export default function HeroSection() {
               {lastRoadmap && (
                 <Link 
                   href={`/roadmap/${lastRoadmap.slug}/learn`}
-                  className="w-full sm:w-auto inline-flex items-center justify-center bg-gradient-to-b from-teal-400 to-teal-600 text-white px-7 py-3 rounded-2xl text-[14px] font-bold transition-all hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-teal-800 gap-3 group overflow-hidden shadow-lg"
+                  className="w-full sm:w-auto inline-flex items-center justify-center bg-accent text-white hover:bg-teal-700 px-7 py-3 rounded-lg text-[14px] font-bold transition-all shadow-sm gap-3 group overflow-hidden "
                 >
                   <ArrowRight className="w-4 h-4" /> 
                   <span className="truncate max-w-[150px] sm:max-w-[200px] inline-block align-middle">Continue: {lastRoadmap.title}</span>
@@ -62,7 +62,7 @@ export default function HeroSection() {
 
               <Link 
                 href="/explore"
-                className="w-full sm:w-auto inline-flex items-center justify-center bg-sidebar/80 backdrop-blur-sm border border-border text-text-primary px-7 py-3.5 rounded-2xl text-[14px] font-bold transition-all hover:scale-[1.02] hover:bg-sidebar active:scale-[0.98] gap-3"
+                className="w-full sm:w-auto inline-flex items-center justify-center bg-sidebar/80 backdrop-blur-sm border border-border text-text-primary px-7 py-3.5 rounded-lg text-[14px] font-bold transition-all hover:scale-[1.02] hover:bg-sidebar active:scale-[0.98] gap-3"
               >
                 <BookOpen className="w-4 h-4" /> Browse Public Roadmaps
               </Link>

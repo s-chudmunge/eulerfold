@@ -55,7 +55,7 @@ const rehypeMathBox = () => (tree: any) => {
                             'boxed-equation', 
                             isInline 
                                 ? 'border border-teal-500/40 bg-teal-500/10 rounded-md px-1.5 py-0.5 mx-0.5 shadow-sm inline-block' 
-                                : 'border border-teal-500/40 bg-teal-500/10 rounded-xl px-5 py-4 my-8 shadow-sm block w-full overflow-x-auto'
+                                : 'border border-teal-500/40 bg-teal-500/10 rounded-lg px-5 py-4 my-8 shadow-sm block w-full overflow-x-auto'
                         ].join(' ')
                     },
                     children: [node]
@@ -79,7 +79,7 @@ const markdownComponents = {
         // If it's a code block but missing a language identifier, or it is a code block
         if (!inline) {
             return (
-                <div className="my-8 rounded-xl overflow-hidden border border-border/40 shadow-xl bg-[#1E1E1E] relative group">
+                <div className="my-8 rounded-lg overflow-hidden border border-border/40 shadow-xl bg-[#1E1E1E] relative group">
                     <div className="flex items-center justify-between px-4 py-2.5 bg-[#2D2D2D] border-b border-black/30">
                         <div className="flex gap-1.5">
                             <div className="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/50" />
@@ -243,7 +243,7 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
         return (
             <div className="space-y-16 text-left">
                 {hasShift && (
-                    <div className="bg-teal-600/5 border border-teal-600/20 p-8 rounded-xl relative overflow-hidden">
+                    <div className="bg-teal-600/5 border border-teal-600/20 p-8 rounded-lg relative overflow-hidden">
                          <div className="absolute top-0 right-0 p-4 opacity-[0.05] pointer-events-none">
                             <Layers className="w-20 h-24 text-teal-600" />
                          </div>
@@ -338,7 +338,7 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
                                         </div>
 
                                         <div className="md:w-1/2 w-full">
-                                            <div className="p-8 bg-sidebar/20 border border-border group-hover:border-blue-600/30 transition-all rounded-xl shadow-inner relative overflow-hidden">
+                                            <div className="p-8 bg-sidebar/20 border border-border group-hover:border-blue-600/30 transition-all rounded-lg shadow-inner relative overflow-hidden">
                                                 <div className="absolute top-0 right-0 p-2 text-[8px] font-black text-text-muted uppercase tracking-widest opacity-20 group-hover:opacity-40">Formal Derivation</div>
                                                 <div className="text-blue-600 text-[18px]">
                                                     <ReactMarkdown components={markdownComponents as any} remarkPlugins={[remarkMath]} rehypePlugins={[rehypeMathBox, rehypeKatex]}>
@@ -363,7 +363,7 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {moduleData.items.map((g: string, i: number) => (
-                                <div key={i} className="flex gap-4 items-start p-6 bg-sidebar/10 border border-border/40 hover:border-blue-600/30 transition-all rounded-xl">
+                                <div key={i} className="flex gap-4 items-start p-6 bg-sidebar/10 border border-border/40 hover:border-blue-600/30 transition-all rounded-lg">
                                     <span className="inconsolata-ui text-blue-600/40 font-black text-xs">0{i+1}</span>
                                     <div className="text-[14px] leading-relaxed text-text-primary font-medium prose-p:m-0">
                                         <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
@@ -382,7 +382,7 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
                         <h3 className="inconsolata-ui text-[9px] font-black text-text-muted uppercase tracking-[0.3em] opacity-50">Field Observations</h3>
                         <div className="grid grid-cols-1 gap-4">
                             {moduleData.items.map((item: string, i: number) => (
-                                <div key={i} className="flex gap-5 items-start p-5 bg-sidebar/10 border border-border/40 rounded-xl">
+                                <div key={i} className="flex gap-5 items-start p-5 bg-sidebar/10 border border-border/40 rounded-lg">
                                     <Target className="w-4 h-4 text-accent/60 mt-1 shrink-0" />
                                     <div className="text-[14px] leading-relaxed text-text-primary prose-p:m-0">
                                         <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
@@ -396,7 +396,7 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
                 )}
 
                 {!hasMath && !hasShift && !hasRealities && !hasList && !moduleData.details && !moduleData.summary && (
-                    <div className="py-24 text-center border border-dashed border-border/40 rounded-xl bg-sidebar/5">
+                    <div className="py-24 text-center border border-dashed border-border/40 rounded-lg bg-sidebar/5">
                          <div className="animate-pulse flex flex-col items-center">
                             <Loader className="w-6 h-6 text-accent mb-4 animate-spin" />
                             <p className="text-[13px] text-text-muted font-bold uppercase tracking-widest">Hydrating Technical Layers...</p>
@@ -543,7 +543,7 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
                         >
                             {/* Summary Card - Only show on first tab */}
                             {activeStage === 0 && analysis?.summary && (
-                                <div className="bg-sidebar/30 border border-border/40 p-8 rounded-xl relative overflow-hidden group mb-12">
+                                <div className="bg-sidebar/30 border border-border/40 p-8 rounded-lg relative overflow-hidden group mb-12">
                                     <div className="absolute top-0 right-0 p-6 opacity-[0.03] pointer-events-none group-hover:opacity-[0.05] transition-opacity">
                                         <Zap className="w-24 h-24 text-accent" />
                                     </div>

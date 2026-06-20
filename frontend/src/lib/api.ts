@@ -36,7 +36,7 @@ api.interceptors.request.use(
             if (session?.access_token && typeof session.access_token === 'string') {
                 // Validate token structure: must be a valid JWT with 3 segments separated by dots
                 const tokenParts = session.access_token.split('.');
-                if (tokenParts.length === 3 && tokenParts.every(part => part.length > 0)) {
+                if (tokenParts.length === 3 && tokenParts.every((part: string) => part.length > 0)) {
                     // Token looks valid - add it to the request
                     if (config.headers.set) {
                         config.headers.set('Authorization', `Bearer ${session.access_token}`);
@@ -126,11 +126,11 @@ export const roadmapsAPI = {
         const response = await api.post(`/roadmaps/${id}/delete-extension`);
         return response.data;
     },
-    createManualBuild: async (payload: { title: string, goal: string, skills?: string }): Promise<RoadmapRead> => {
+    createManualBuild: async (payload: { title: string, goal: string, skills?: string }): Promise<RoadmapData> => {
         const response = await api.post('/roadmaps/manual-build', payload);
         return response.data;
     },
-    generateFromJD: async (payload: { job_description: string, current_experience: string, generation_type: 'incremental' | 'full', time_value: number, time_unit: string }): Promise<RoadmapRead> => {
+    generateFromJD: async (payload: { job_description: string, current_experience: string, generation_type: 'incremental' | 'full', time_value: number, time_unit: string, strict_official_sources?: boolean }): Promise<RoadmapData> => {
         const response = await api.post('/roadmaps/generate-from-jd', payload);
         return response.data;
     },
@@ -140,6 +140,34 @@ export const roadmapsAPI = {
     },
     extractCloudSkills: async (roadmapId: number): Promise<any> => {
         const response = await api.post(`/roadmaps/${roadmapId}/skills/extract-cloud`);
+        return response.data;
+    },
+    generateFromUrl: async (payload: { url: string, time_value: number, time_unit: string, strict_official_sources?: boolean }): Promise<RoadmapData> => {
+        const response = await api.post('/roadmaps/generate-from-url', payload);
+        return response.data;
+    },
+    generateFromSyllabus: async (payload: { syllabus_text: string, time_value: number, time_unit: string, strict_official_sources?: boolean }): Promise<RoadmapData> => {
+        const response = await api.post('/roadmaps/generate-from-syllabus', payload);
+        return response.data;
+    },
+    parsePdf: async (file: File): Promise<{ text: string }> => {
+        const formData = new FormData();
+        formData.append('file', file);
+        const response = await api.post('/roadmaps/parse-pdf', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        return response.data;
+    },
+    generateFromGaps: async (payload: { target_role: string, known_skills: string, weak_skills: string, time_value: number, time_unit: string, strict_official_sources?: boolean }): Promise<RoadmapData> => {
+        const response = await api.post('/roadmaps/generate-from-gaps', payload);
+        return response.data;
+    },
+    generateDiagnosticQuiz: async (payload: { target_role: string, known_skills: string, question_count?: number }): Promise<any[]> => {
+        const response = await api.post('/roadmaps/generate-diagnostic-quiz', payload);
+        return response.data;
+    },
+    scrapeUrl: async (payload: { url: string }): Promise<{ text: string }> => {
+        const response = await api.post('/roadmaps/scrape-url', payload);
         return response.data;
     }
 };

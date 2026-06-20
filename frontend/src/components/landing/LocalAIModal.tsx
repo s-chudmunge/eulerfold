@@ -152,7 +152,7 @@ export function LocalAIModal({ isOpen, onClose, onSelectModel }: LocalAIModalPro
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
-      <div className="bg-background border border-border w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="bg-background border border-border w-full max-w-2xl rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
         <div className="flex items-center justify-between p-6 border-b border-border bg-sidebar/50">
           <div>
             <h2 className="text-xl font-bold text-text-heading flex items-center gap-2">
@@ -167,7 +167,7 @@ export function LocalAIModal({ isOpen, onClose, onSelectModel }: LocalAIModalPro
 
         <div className="p-6 overflow-y-auto">
           {webGPUStatus === 'unsupported' ? (
-            <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-xl text-center">
+            <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-lg text-center">
               <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
               <h3 className="text-lg font-bold text-text-heading mb-2">WebGPU Not Supported</h3>
               <p className="text-sm text-text-muted">
@@ -177,7 +177,7 @@ export function LocalAIModal({ isOpen, onClose, onSelectModel }: LocalAIModalPro
             </div>
           ) : (
             <div className="space-y-6">
-              <div className="bg-accent/5 border border-accent/20 p-4 rounded-xl flex items-start gap-3">
+              <div className="bg-accent/5 border border-accent/20 p-4 rounded-lg flex items-start gap-3">
                 <HardDrive className="w-5 h-5 text-accent shrink-0 mt-0.5" />
                 <div className="space-y-2">
                   <p className="text-[12px] text-text-muted leading-relaxed">
@@ -190,7 +190,7 @@ export function LocalAIModal({ isOpen, onClose, onSelectModel }: LocalAIModalPro
                 </div>
               </div>
 
-              <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-xl flex items-start gap-3">
+              <div className="bg-amber-500/10 border border-amber-500/20 p-4 rounded-lg flex items-start gap-3">
                 <AlertTriangle className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
                 <div>
                   <h4 className="text-[13px] font-bold text-amber-600 mb-1">Hardware Crash Warning</h4>
@@ -208,7 +208,7 @@ export function LocalAIModal({ isOpen, onClose, onSelectModel }: LocalAIModalPro
                   const progress = downloadProgress[model.id];
 
                   return (
-                    <div key={model.id} className={`p-5 rounded-xl border transition-all ${isCached ? 'border-accent bg-accent/5' : 'border-border bg-sidebar'}`}>
+                    <div key={model.id} className={`p-5 rounded-lg border transition-all ${isCached ? 'border-accent bg-accent/5' : 'border-border bg-sidebar'}`}>
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">

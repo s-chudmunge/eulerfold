@@ -189,7 +189,7 @@ export default function TestimonialSection() {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ delay: 0.3 }}
-          className="px-8 py-3 bg-accent text-white rounded-full font-bold text-sm shadow-lg shadow-accent/20 hover:shadow-xl hover:shadow-accent/30 hover:-translate-y-0.5 transition-all duration-300"
+          className="px-8 py-3 bg-accent text-white rounded-full font-bold text-sm  shadow-accent/20 hover:shadow-xl hover:shadow-accent/30 hover:-translate-y-0.5 transition-all duration-300"
         >
           See for Yourself
         </motion.button>

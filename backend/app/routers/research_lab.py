@@ -112,7 +112,7 @@ async def run_research_analysis(decode_id: str, paper_url: str, uid: str):
         }
         """ + f"\n\nPAPER CONTENT:\n{paper_text}\n"
         
-        response_text, usage = await generate_text(prompt, model="anthropic/claude-3.5-sonnet", response_mime_type="application/json", return_usage=True)
+        response_text, usage = await generate_text(prompt, model=settings.DEFAULT_ROADMAP_MODEL, response_mime_type="application/json", return_usage=True)
         log_backend_ai_usage(sb, uid, "Research Lab Analysis (Cost: 1.0 Credits)", usage, source="backend")
 
         if not response_text:
@@ -187,7 +187,7 @@ async def lab_chat(decode_id: str, payload: dict = Body(...), current_user: User
     """
 
     try:
-        bot_response = await generate_text(prompt, model="anthropic/claude-3-5-haiku")
+        bot_response = await generate_text(prompt, model=settings.DEFAULT_FEEDBACK_MODEL)
         
         sb.table("research_lab_messages").insert([
             {"decode_id": decode_id, "user_id": current_user.supabase_uid, "role": "user", "content": user_message},

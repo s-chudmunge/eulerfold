@@ -303,7 +303,7 @@ export default function ProfileClient({ profile }: Props) {
                             <aside className="w-full md:w-[260px] shrink-0 flex flex-col">
                             {/* Avatar/Name Group */}
                             <div className="flex md:flex-col items-center md:items-start gap-4 md:gap-0 mb-6 relative">
-                            <div className="w-20 h-20 md:w-full md:h-auto aspect-square rounded-xl border border-border shadow-md overflow-hidden bg-header flex items-center justify-center relative z-10 group">
+                            <div className="w-20 h-20 md:w-full md:h-auto aspect-square rounded-lg border border-border shadow-md overflow-hidden bg-header flex items-center justify-center relative z-10 group">
                                 {effectiveAvatarUrl ? (
                                     <img src={effectiveAvatarUrl} alt={profile.username} className="w-full h-full object-cover" />
                                 ) : (
@@ -434,7 +434,7 @@ export default function ProfileClient({ profile }: Props) {
                             <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
                                 {/* Recent Activity Stats */}
                                 <div className="grid grid-cols-3 gap-3 md:gap-4">
-                                    <div className="group relative bg-header border border-border/60 rounded-xl p-4 md:p-5 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md hover:border-accent/50 transition-all duration-300 overflow-hidden">
+                                    <div className="group relative bg-header border border-border/60 rounded-lg p-4 md:p-5 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md hover:border-accent/50 transition-all duration-300 overflow-hidden">
                                         <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                                         <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
                                             <TrendingUp className="w-4 h-4 text-accent" />
@@ -442,7 +442,7 @@ export default function ProfileClient({ profile }: Props) {
                                         <span className="text-2xl md:text-3xl font-black text-text-heading tracking-tight mb-1">{profile.learning_momentum.mastered}</span>
                                         <span className="text-[9px] md:text-[10px] font-bold text-text-muted uppercase tracking-widest">Skills Mastered (30d)</span>
                                     </div>
-                                    <div className="group relative bg-header border border-border/60 rounded-xl p-4 md:p-5 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md hover:border-amber-500/50 transition-all duration-300 overflow-hidden">
+                                    <div className="group relative bg-header border border-border/60 rounded-lg p-4 md:p-5 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md hover:border-amber-500/50 transition-all duration-300 overflow-hidden">
                                         <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                                         <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
                                             <Zap className="w-4 h-4 text-amber-500" />
@@ -450,7 +450,7 @@ export default function ProfileClient({ profile }: Props) {
                                         <span className="text-2xl md:text-3xl font-black text-text-heading tracking-tight mb-1">{profile.learning_momentum.explored}</span>
                                         <span className="text-[9px] md:text-[10px] font-bold text-text-muted uppercase tracking-widest">Skills Explored (30d)</span>
                                     </div>
-                                    <div className="group relative bg-header border border-border/60 rounded-xl p-4 md:p-5 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md hover:border-orange-500/50 transition-all duration-300 overflow-hidden">
+                                    <div className="group relative bg-header border border-border/60 rounded-lg p-4 md:p-5 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md hover:border-orange-500/50 transition-all duration-300 overflow-hidden">
                                         <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
                                         <div className="w-8 h-8 rounded-full bg-orange-500/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
                                             <Flame className="w-4 h-4 text-orange-500" />
@@ -466,7 +466,7 @@ export default function ProfileClient({ profile }: Props) {
                                         <h4 className="text-[11px] font-black text-text-muted uppercase tracking-widest px-1">Currently Learning</h4>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             {activeRoadmaps.map((roadmap: any) => (
-                                                <div key={roadmap.id} className="group relative p-5 bg-header border border-border/60 rounded-xl shadow-sm hover:shadow-lg hover:border-accent/40 transition-all duration-300 flex flex-col justify-between gap-5 overflow-hidden cursor-pointer" onClick={() => router.push(`/roadmaps/${roadmap.id}`)}>
+                                                <div key={roadmap.id} className="group relative p-5 bg-header border border-border/60 rounded-lg shadow-sm hover:shadow-lg hover:border-accent/40 transition-all duration-300 flex flex-col justify-between gap-5 overflow-hidden cursor-pointer" onClick={() => router.push(`/roadmaps/${roadmap.id}`)}>
                                                     <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full blur-2xl group-hover:bg-accent/10 transition-colors pointer-events-none" />
                                                     <div className="relative z-10">
                                                         <h5 className="text-[15px] font-bold text-text-heading leading-tight mb-1.5 line-clamp-2 group-hover:text-accent transition-colors">{roadmap.title}</h5>
@@ -495,11 +495,11 @@ export default function ProfileClient({ profile }: Props) {
                                 {recentVerified && (
                                     <div className="space-y-3">
                                         <h4 className="text-[11px] font-black text-text-muted uppercase tracking-widest px-1">Recent Validated Homework</h4>
-                                        <div className="p-5 bg-header border border-border/60 rounded-xl shadow-sm relative overflow-hidden group hover:shadow-md hover:border-emerald-500/30 transition-all duration-300">
+                                        <div className="p-5 bg-header border border-border/60 rounded-lg shadow-sm relative overflow-hidden group hover:shadow-md hover:border-emerald-500/30 transition-all duration-300">
                                             <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-emerald-400 to-emerald-600" />
                                             <div className="absolute right-0 top-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none group-hover:bg-emerald-500/10 transition-colors" />
                                             <div className="flex items-start gap-4 relative z-10">
-                                                <div className="mt-1 bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 text-emerald-500 p-2.5 rounded-xl shrink-0 border border-emerald-500/20 shadow-sm">
+                                                <div className="mt-1 bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 text-emerald-500 p-2.5 rounded-lg shrink-0 border border-emerald-500/20 shadow-sm">
                                                     <CheckCircle className="w-5 h-5" />
                                                 </div>
                                                 <div className="flex-1 min-w-0">
@@ -526,10 +526,10 @@ export default function ProfileClient({ profile }: Props) {
                                 {strongSkills.length > 0 && (
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                         {strongSkills.slice(0, 4).map(skill => (
-                                            <div key={skill.id} className="flex items-center justify-between p-4 bg-header border border-border/60 hover:border-accent/40 rounded-xl group transition-all duration-300 shadow-sm hover:shadow-md hover:bg-accent/[0.02] relative overflow-hidden">
+                                            <div key={skill.id} className="flex items-center justify-between p-4 bg-header border border-border/60 hover:border-accent/40 rounded-lg group transition-all duration-300 shadow-sm hover:shadow-md hover:bg-accent/[0.02] relative overflow-hidden">
                                                 <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                                                 <div className="flex items-center gap-3.5 relative z-10">
-                                                    <div className="w-10 h-10 rounded-xl bg-sidebar border border-border/50 flex items-center justify-center shadow-sm text-text-muted group-hover:text-accent group-hover:border-accent/30 group-hover:bg-background transition-all duration-300 shrink-0">
+                                                    <div className="w-10 h-10 rounded-lg bg-sidebar border border-border/50 flex items-center justify-center shadow-sm text-text-muted group-hover:text-accent group-hover:border-accent/30 group-hover:bg-background transition-all duration-300 shrink-0">
                                                         {getSkillIcon(skill.name || '')}
                                                     </div>
                                                     <div className="min-w-0">
@@ -552,7 +552,7 @@ export default function ProfileClient({ profile }: Props) {
                                 {/* Activity Graph */}
                                 <div className="space-y-3">
                                     <h4 className="text-[11px] font-black text-text-muted uppercase tracking-widest px-1">Activity Chart</h4>
-                                    <div className="p-6 border border-border rounded-xl shadow-sm bg-header relative overflow-hidden">
+                                    <div className="p-6 border border-border rounded-lg shadow-sm bg-header relative overflow-hidden">
                                         <ActivityChart roadmaps={pAny.roadmaps} profile={profile} />
                                     </div>
                                 </div>
@@ -574,7 +574,7 @@ export default function ProfileClient({ profile }: Props) {
                             <div className="space-y-4 animate-in fade-in duration-300">
                                 {pAny.submissions && pAny.submissions.length > 0 ? (
                                     pAny.submissions.map((sub: any, idx: number) => (
-                                        <div key={idx} className="bg-header border border-border shadow-sm rounded-xl p-6 relative group hover:border-accent/40 hover:shadow-md transition-all duration-300 overflow-hidden">
+                                        <div key={idx} className="bg-header border border-border shadow-sm rounded-lg p-6 relative group hover:border-accent/40 hover:shadow-md transition-all duration-300 overflow-hidden">
                                             <div className="absolute -bottom-20 -right-20 w-48 h-48 bg-accent/5 rounded-full blur-[40px] group-hover:bg-accent/10 transition-colors duration-500 pointer-events-none" />
                                             <div className="relative z-10">
                                             <div className="flex justify-between items-start mb-6">
@@ -622,7 +622,7 @@ export default function ProfileClient({ profile }: Props) {
                                         </div>
                                     ))
                                 ) : (
-                                    <div className="py-20 text-center border border-dashed border-border rounded-xl bg-sidebar/5">
+                                    <div className="py-20 text-center border border-dashed border-border rounded-lg bg-sidebar/5">
                                         <p className="text-[13px] text-text-muted italic opacity-60">Awaiting review logs.</p>
                                     </div>
                                 )}
@@ -636,7 +636,7 @@ export default function ProfileClient({ profile }: Props) {
                                         <AssessmentCard key={idx} mcq={mcq} index={profile.mcq_history!.length - idx} />
                                     ))
                                 ) : (
-                                    <div className="py-20 text-center border border-dashed border-border rounded-xl bg-sidebar/5">
+                                    <div className="py-20 text-center border border-dashed border-border rounded-lg bg-sidebar/5">
                                         <p className="text-[13px] text-text-muted italic opacity-60">No practice records available.</p>
                                     </div>
                                 )}
@@ -647,7 +647,7 @@ export default function ProfileClient({ profile }: Props) {
                             <div className="space-y-4 animate-in fade-in duration-300">
                                 {profile.discussions && profile.discussions.length > 0 ? (
                                     profile.discussions.map((disc, idx) => (
-                                        <div key={idx} className="bg-header border border-border shadow-sm rounded-xl p-6 relative group hover:border-accent/40 hover:shadow-md transition-all duration-300 overflow-hidden">
+                                        <div key={idx} className="bg-header border border-border shadow-sm rounded-lg p-6 relative group hover:border-accent/40 hover:shadow-md transition-all duration-300 overflow-hidden">
                                             <div className="absolute -bottom-20 -right-20 w-48 h-48 bg-accent/5 rounded-full blur-[40px] group-hover:bg-accent/10 transition-colors duration-500 pointer-events-none" />
                                             <div className="relative z-10">
                                             <div className="flex justify-between items-start mb-6">
@@ -669,7 +669,7 @@ export default function ProfileClient({ profile }: Props) {
                                         </div>
                                     ))
                                 ) : (
-                                    <div className="py-20 text-center border border-dashed border-border rounded-xl bg-sidebar/5">
+                                    <div className="py-20 text-center border border-dashed border-border rounded-lg bg-sidebar/5">
                                         <p className="text-[13px] text-text-muted italic opacity-60">Awaiting community insights.</p>
                                     </div>
                                 )}
@@ -698,7 +698,7 @@ function ReviewModal({ sub, onClose }: { sub: any; onClose: () => void }) {
     
     return (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-background/80 animate-in fade-in duration-200">
-            <div className="relative w-full max-w-2xl max-h-[90vh] flex flex-col bg-sidebar border border-border shadow-2xl rounded-xl overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="relative w-full max-w-2xl max-h-[90vh] flex flex-col bg-sidebar border border-border shadow-2xl rounded-lg overflow-hidden animate-in zoom-in-95 duration-200">
                 <button 
                     onClick={onClose}
                     className="absolute top-4 right-4 p-2 hover:bg-callout-bg rounded-full text-text-muted transition-colors z-10"

@@ -124,7 +124,7 @@ export default function ObjectiveSelectionStep({ displayName, onSuccess }: Objec
               value={detail}
               onChange={(e) => setDetail(e.target.value)}
               placeholder={objectives.find(o => o.id === selected)?.placeholder}
-              className="w-full px-4 py-2 bg-sidebar/50 border border-accent/30 rounded-xl text-[13px] text-text-primary outline-none focus:border-accent transition-all placeholder:text-text-muted/40 manrope-body font-medium"
+              className="w-full px-4 py-2 bg-sidebar/50 border border-accent/30 rounded-lg text-[13px] text-text-primary outline-none focus:border-accent transition-all placeholder:text-text-muted/40 manrope-body font-medium"
               autoFocus
             />
           </div>
@@ -135,7 +135,7 @@ export default function ObjectiveSelectionStep({ displayName, onSuccess }: Objec
         <button 
           onClick={handleContinue}
           disabled={!selected}
-          className="w-full py-2.5 bg-text-heading text-background rounded-xl font-bold text-[13px] hover:opacity-90 transition-all disabled:opacity-20 disabled:grayscale disabled:cursor-not-allowed shadow-md active:scale-[0.98] manrope-body"
+          className="w-full py-2.5 bg-text-heading text-background rounded-lg font-bold text-[13px] hover:opacity-90 transition-all disabled:opacity-20 disabled:grayscale disabled:cursor-not-allowed shadow-md active:scale-[0.98] manrope-body"
         >
           {selected ? 'Continue to my path' : 'Select an objective'}
         </button>

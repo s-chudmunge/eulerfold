@@ -139,6 +139,33 @@ class JobRoadmapCreate(BaseModel):
     time_unit: str = "weeks"
     model: Optional[str] = None
 
+class UrlRoadmapCreate(BaseModel):
+    url: str
+    time_value: int
+    time_unit: str = "weeks"
+    model: Optional[str] = None
+    strict_official_sources: bool = False
+
+class SyllabusRoadmapCreate(BaseModel):
+    syllabus_text: str
+    time_value: int
+    time_unit: str = "weeks"
+    model: Optional[str] = None
+    strict_official_sources: bool = False
+
+class SkillGapRoadmapCreate(BaseModel):
+    target_role: str
+    known_skills: str
+    weak_skills: str
+    time_value: int
+    time_unit: str = "weeks"
+    model: Optional[str] = None
+    strict_official_sources: bool = False
+
+class DiagnosticQuizCreate(BaseModel):
+    target_role: str
+    known_skills: str
+    question_count: int = 5
 
 class RoadmapRead(BaseModel):
     id: int

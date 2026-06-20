@@ -67,7 +67,7 @@ export default function ArticlesIndexClient({ articles }: Props) {
                 placeholder="Search articles..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-card border border-border rounded-xl py-3 pl-11 pr-4 text-[15px] focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent/40 transition-all font-inter"
+                className="w-full bg-card border border-border rounded-lg py-3 pl-11 pr-4 text-[15px] focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent/40 transition-all font-inter"
               />
             </div>
             

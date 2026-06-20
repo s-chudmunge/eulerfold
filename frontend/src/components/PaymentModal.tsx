@@ -152,7 +152,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 animate-in fade-in duration-100">
-      <div className="bg-sidebar border border-border rounded-xl w-full max-w-[340px] shadow-2xl relative p-0 overflow-hidden">
+      <div className="bg-sidebar border border-border rounded-lg w-full max-w-[340px] shadow-2xl relative p-0 overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4 border-b border-border bg-sidebar/50">
           <h2 className="text-[14px] font-bold text-text-heading tracking-tight">
             Complete Purchase

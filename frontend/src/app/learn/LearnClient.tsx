@@ -234,7 +234,7 @@ function LearnContent() {
                                     <input 
                                         type="text"
                                         placeholder="Search topics, articles or exam papers..."
-                                        className="w-full bg-sidebar/50 border border-border rounded-xl pl-10 pr-20 py-2.5 text-[14px] focus:outline-none focus:ring-1 focus:ring-accent/20 focus:border-accent transition-all manrope-body font-medium placeholder:text-text-muted/40"
+                                        className="w-full bg-sidebar/50 border border-border rounded-lg pl-10 pr-20 py-2.5 text-[14px] focus:outline-none focus:ring-1 focus:ring-accent/20 focus:border-accent transition-all manrope-body font-medium placeholder:text-text-muted/40"
                                         value={query}
                                         onChange={(e) => setQuery(e.target.value)}
                                         onFocus={() => setShowSuggestions(true)}
@@ -251,7 +251,7 @@ function LearnContent() {
 
                                 {/* Suggestions Dropdown */}
                                 {showSuggestions && (query.trim().length >= 2) && (allSuggestions.length > 0 || isLoading) && (
-                                    <div ref={suggestionsRef} className="absolute top-full left-0 right-0 mt-1.5 bg-header border border-border rounded-xl shadow-[0_15px_40px_rgba(0,0,0,0.12)] backdrop-blur-xl overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150 text-left">
+                                    <div ref={suggestionsRef} className="absolute top-full left-0 right-0 mt-1.5 bg-header border border-border rounded-lg shadow-[0_15px_40px_rgba(0,0,0,0.12)] backdrop-blur-xl overflow-hidden animate-in fade-in slide-in-from-top-1 duration-150 text-left">
                                         {isLoading ? (
                                             <div className="px-4 py-3 text-[11px] text-text-muted font-medium flex items-center gap-2">
                                                 <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />

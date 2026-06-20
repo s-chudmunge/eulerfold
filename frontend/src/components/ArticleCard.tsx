@@ -14,7 +14,7 @@ export default function ArticleCard({ article, variant = 'horizontal' }: Article
     return (
       <Link 
         href={`/articles/${article.slug}`}
-        className="group flex flex-col bg-background hover:bg-sidebar/30 border border-border/50 rounded-2xl overflow-hidden hover:shadow-xl hover:border-accent/30 transition-all duration-500 h-full"
+        className="group flex flex-col bg-background hover:bg-sidebar/30 border border-border/50 rounded-lg overflow-hidden hover:shadow-xl hover:border-accent/30 transition-all duration-500 h-full"
       >
         <div className="aspect-[2/1] overflow-hidden shrink-0">
           <img 
@@ -48,7 +48,7 @@ export default function ArticleCard({ article, variant = 'horizontal' }: Article
   return (
     <Link 
       href={`/articles/${article.slug}`}
-      className="group bg-card border border-border rounded-2xl overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col md:flex-row h-auto md:h-[180px]"
+      className="group bg-card border border-border rounded-lg overflow-hidden hover:shadow-lg transition-all duration-300 flex flex-col md:flex-row h-auto md:h-[180px]"
     >
       <div className="w-full md:w-[180px] h-[180px] md:h-full overflow-hidden shrink-0">
         <img 

@@ -205,7 +205,7 @@ export default function ExamClient({ exam }: Props) {
           <div className="flex items-start justify-between gap-6 mb-8">
             <div className="flex items-center gap-4">
               {logoUrl && (
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-background rounded-xl border border-border overflow-hidden flex items-center justify-center p-1.5 shrink-0 shadow-sm">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-background rounded-lg border border-border overflow-hidden flex items-center justify-center p-1.5 shrink-0 shadow-sm">
                   <img src={logoUrl} alt={exam.title} className="w-full h-full object-contain grayscale-[0.2]" />
                 </div>
               )}
@@ -239,7 +239,7 @@ export default function ExamClient({ exam }: Props) {
             </div>
           </div>
 
-          <div className="bg-callout-bg/50 border border-callout-border rounded-xl p-5">
+          <div className="bg-callout-bg/50 border border-callout-border rounded-lg p-5">
             <p className="manrope-body text-[13px] text-text-primary leading-relaxed font-medium mb-4">
               {description}
             </p>
@@ -327,7 +327,7 @@ export default function ExamClient({ exam }: Props) {
                 </div>
               ))
             ) : (
-              <div className="py-20 text-center bg-callout-bg/20 border border-dashed border-border rounded-xl">
+              <div className="py-20 text-center bg-callout-bg/20 border border-dashed border-border rounded-lg">
                 <h3 className="inconsolata-ui text-[1rem] font-bold text-text-muted mb-2">No matching papers.</h3>
                 <p className="manrope-body text-[0.875rem] text-text-muted italic">Refine your search to find specific editions.</p>
               </div>
@@ -336,7 +336,7 @@ export default function ExamClient({ exam }: Props) {
 
           {/* Login Gate */}
           {isAuthenticated === false && filteredEntries.length > 8 && (
-            <div className="mt-8 p-8 bg-sidebar/40 border border-border border-dashed rounded-xl text-center">
+            <div className="mt-8 p-8 bg-sidebar/40 border border-border border-dashed rounded-lg text-center">
               <p className="manrope-body text-[13px] font-bold text-text-heading mb-4">
                 Unlock full archive access ({filteredEntries.length - 8} more items)
               </p>

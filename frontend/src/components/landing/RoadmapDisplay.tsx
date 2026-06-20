@@ -517,7 +517,7 @@ interface RoadmapDisplayProps {
           <div className="pt-12 pb-6 border-t border-border mt-12 flex flex-col items-center text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
             <button 
               onClick={onExtend}
-              className="w-16 h-16 bg-emerald-500/10 rounded-2xl border border-emerald-500/20 text-emerald-600 mb-6 flex items-center justify-center transition-all hover:bg-emerald-500/20 hover:border-emerald-500/40 hover:scale-105 active:scale-95 group shadow-lg shadow-emerald-500/5"
+              className="w-16 h-16 bg-emerald-500/10 rounded-lg border border-emerald-500/20 text-emerald-600 mb-6 flex items-center justify-center transition-all hover:bg-emerald-500/20 hover:border-emerald-500/40 hover:scale-105 active:scale-95 group shadow-lg shadow-emerald-500/5"
             >
               <Plus className="w-7 h-7 group-hover:rotate-90 transition-transform duration-500" />
             </button>

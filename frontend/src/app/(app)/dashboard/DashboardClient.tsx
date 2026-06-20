@@ -173,10 +173,10 @@ export default function DashboardPage() {
                 <aside className="w-[260px] border-r border-border bg-sidebar hidden lg:block animate-pulse" />
                 <main className="flex-1 p-8 space-y-8 max-w-[1000px] mx-auto w-full">
                     <div className="h-4 w-32 bg-callout-bg border border-border rounded animate-pulse" />
-                    <div className="h-64 w-full bg-callout-bg border border-border rounded-xl animate-pulse" />
+                    <div className="h-64 w-full bg-callout-bg border border-border rounded-lg animate-pulse" />
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="h-48 bg-callout-bg border border-border rounded-xl animate-pulse" />
-                        <div className="h-48 bg-callout-bg border border-border rounded-xl animate-pulse" />
+                        <div className="h-48 bg-callout-bg border border-border rounded-lg animate-pulse" />
+                        <div className="h-48 bg-callout-bg border border-border rounded-lg animate-pulse" />
                     </div>
                 </main>
             </div>
@@ -376,7 +376,7 @@ export default function DashboardPage() {
                                         </div>
                                     ))
                                 ) : (
-                                    <div className="py-12 text-center bg-callout-bg/30 border border-dashed border-callout-border rounded-xl">
+                                    <div className="py-12 text-center bg-callout-bg/30 border border-dashed border-callout-border rounded-lg">
                                         <p className="manrope-body text-[0.8rem] text-text-muted italic">No active roadmaps.</p>
                                     </div>
                                 )}
@@ -391,7 +391,7 @@ export default function DashboardPage() {
             {/* Modals */}
             {deleteConfirm !== null && (
                 <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-[200] p-4">
-                    <div className="bg-background border border-border rounded-xl p-8 max-w-sm w-full shadow-2xl text-center">
+                    <div className="bg-background border border-border rounded-lg p-8 max-w-sm w-full shadow-2xl text-center">
                         <div className="w-12 h-12 bg-red-500/10 rounded-full flex items-center justify-center mb-6 mx-auto">
                             <AlertCircle className="w-6 h-6 text-red-500" />
                         </div>

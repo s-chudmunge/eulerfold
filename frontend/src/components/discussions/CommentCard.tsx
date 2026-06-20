@@ -65,7 +65,7 @@ const D2Diagram = ({ code }: { code: string }) => {
   }
 
   return (
-    <div className="my-6 d2-diagram bg-callout-bg border border-callout-border rounded-xl overflow-hidden">
+    <div className="my-6 d2-diagram bg-callout-bg border border-callout-border rounded-lg overflow-hidden">
       <div 
         className="w-full"
         dangerouslySetInnerHTML={{ __html: svg }}
@@ -152,7 +152,7 @@ export const CommentCard: React.FC<CommentCardProps> = ({
             </button>
             
             {showActions && (
-              <div className="absolute right-0 mt-1 w-32 bg-background border border-border rounded-xl shadow-xl z-20 overflow-hidden inconsolata-ui text-[12px] font-bold">
+              <div className="absolute right-0 mt-1 w-32 bg-background border border-border rounded-lg shadow-xl z-20 overflow-hidden inconsolata-ui text-[12px] font-bold">
                 {!comment.is_deleted && (isAuthor || isAdmin) && (
                   <button 
                     onClick={() => { onDelete?.(comment.id); setShowActions(false); }}

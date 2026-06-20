@@ -118,7 +118,7 @@ export default function PaperClient({ exam, paper }: Props) {
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-4">
               {logoUrl && (
-                <div className="w-10 h-10 md:w-12 md:h-12 bg-background rounded-xl border border-border overflow-hidden flex items-center justify-center p-1.5 shrink-0 shadow-sm">
+                <div className="w-10 h-10 md:w-12 md:h-12 bg-background rounded-lg border border-border overflow-hidden flex items-center justify-center p-1.5 shrink-0 shadow-sm">
                   <img src={logoUrl} alt={exam.title} className="w-full h-full object-contain grayscale-[0.2]" />
                 </div>
               )}
@@ -152,7 +152,7 @@ export default function PaperClient({ exam, paper }: Props) {
             </div>
           </div>
 
-          <div className="bg-callout-bg border border-callout-border rounded-xl p-5">
+          <div className="bg-callout-bg border border-callout-border rounded-lg p-5">
             <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
               <div className="flex items-center gap-2">
                 <Calendar className="w-3.5 h-3.5 text-text-muted" />

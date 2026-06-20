@@ -37,7 +37,7 @@ const FeatureRequestForm = ({ onClose }: { onClose: () => void }) => {
 
   return (
     <div className="fixed inset-0 z-[200] bg-black/80 flex items-center justify-center p-4">
-      <div className="bg-background border border-border w-full max-w-md rounded-2xl p-8 shadow-2xl animate-in zoom-in-95 duration-200">
+      <div className="bg-background border border-border w-full max-w-md rounded-lg p-8 shadow-2xl animate-in zoom-in-95 duration-200">
         {!submitted ? (
           <>
             <h2 className="manrope-body text-xl font-black text-text-heading mb-2">Feature Request</h2>
@@ -52,7 +52,7 @@ const FeatureRequestForm = ({ onClose }: { onClose: () => void }) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@provider.com"
-                  className="w-full px-4 py-3 bg-callout-bg border border-border rounded-xl text-[14px] text-text-heading outline-none focus:border-accent transition-all font-medium"
+                  className="w-full px-4 py-3 bg-callout-bg border border-border rounded-lg text-[14px] text-text-heading outline-none focus:border-accent transition-all font-medium"
                 />
               </div>
               <div className="space-y-2">
@@ -63,13 +63,13 @@ const FeatureRequestForm = ({ onClose }: { onClose: () => void }) => {
                   value={feature}
                   onChange={(e) => setFeature(e.target.value)}
                   placeholder="Describe the enhancement..."
-                  className="w-full px-4 py-3 bg-callout-bg border border-border rounded-xl text-[14px] text-text-heading outline-none focus:border-accent transition-all resize-none font-medium"
+                  className="w-full px-4 py-3 bg-callout-bg border border-border rounded-lg text-[14px] text-text-heading outline-none focus:border-accent transition-all resize-none font-medium"
                 />
               </div>
               <button 
                 type="submit"
                 disabled={submitting}
-                className="w-full py-4 bg-text-heading text-background rounded-xl font-bold text-[12px] uppercase tracking-[0.1em] hover:opacity-90 transition-all flex items-center justify-center gap-2"
+                className="w-full py-4 bg-text-heading text-background rounded-lg font-bold text-[12px] uppercase tracking-[0.1em] hover:opacity-90 transition-all flex items-center justify-center gap-2"
               >
                 {submitting ? 'Transmitting...' : 'Submit Request'}
               </button>

@@ -146,7 +146,7 @@ export function OpenRouterModal({ isOpen, onClose, formData, onSuccess, onSave, 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
-      <div className="bg-background border-2 border-border p-6 rounded-xl w-full max-w-md shadow-2xl relative animate-in zoom-in-95 duration-200">
+      <div className="bg-background border-2 border-border p-6 rounded-lg w-full max-w-md shadow-2xl relative animate-in zoom-in-95 duration-200">
         <button onClick={onClose} className="absolute top-4 right-4 text-text-muted hover:text-text-heading transition-colors">
           <X className="w-5 h-5" />
         </button>
@@ -171,7 +171,7 @@ export function OpenRouterModal({ isOpen, onClose, formData, onSuccess, onSave, 
 
         <div className="space-y-6">
           {!apiKey ? (
-            <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-border rounded-xl text-center space-y-4">
+            <div className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-border rounded-lg text-center space-y-4">
               <div className="w-12 h-12 bg-sidebar rounded-full flex items-center justify-center">
                 <Link2 className="w-6 h-6 text-text-muted" />
               </div>
@@ -219,7 +219,7 @@ export function OpenRouterModal({ isOpen, onClose, formData, onSuccess, onSave, 
           ) : (
             <div className="space-y-4">
               <div className="flex flex-col gap-2">
-                <div className="flex items-center justify-between p-4 bg-accent/5 border border-accent/20 rounded-xl">
+                <div className="flex items-center justify-between p-4 bg-accent/5 border border-accent/20 rounded-lg">
                   <div className="flex items-center gap-3">
                     <div className="w-8 h-8 bg-accent/20 rounded-full flex items-center justify-center">
                       <CheckCircle2 className="w-4 h-4 text-accent" />
@@ -239,7 +239,7 @@ export function OpenRouterModal({ isOpen, onClose, formData, onSuccess, onSave, 
                 </div>
                 
                 {keyInfo && (
-                  <div className="flex flex-col gap-3 px-4 py-3 bg-sidebar/50 rounded-xl border border-border">
+                  <div className="flex flex-col gap-3 px-4 py-3 bg-sidebar/50 rounded-lg border border-border">
                     <div className="flex items-start justify-between w-full">
                       <div className="flex items-center gap-2 mt-0.5">
                          <Zap className={`w-3.5 h-3.5 ${keyInfo.is_free_tier ? 'text-text-muted' : 'text-yellow-500'}`} />
@@ -295,7 +295,7 @@ export function OpenRouterModal({ isOpen, onClose, formData, onSuccess, onSave, 
                   {isLoadingModels && <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted animate-spin" />}
                   
                   {isModelDropdownOpen && !isLoadingModels && (
-                    <div className="absolute z-50 w-full mt-1 bg-surface border border-border shadow-2xl max-h-60 overflow-y-auto no-scrollbar rounded-xl">
+                    <div className="absolute z-50 w-full mt-1 bg-surface border border-border shadow-2xl max-h-60 overflow-y-auto no-scrollbar rounded-lg">
                       {filteredModels.map(m => (
                         <button
                           key={m.id}

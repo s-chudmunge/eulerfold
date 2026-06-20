@@ -143,7 +143,7 @@ export default function LeaderboardPage({
               <button
                 key={cat}
                 onClick={() => setCategory(cat)}
-                className={`inconsolata-ui px-4 py-1.5 rounded-xl text-[12px] font-bold transition-all border whitespace-nowrap
+                className={`inconsolata-ui px-4 py-1.5 rounded-lg text-[12px] font-bold transition-all border whitespace-nowrap
                   ${category === cat 
                     ? 'bg-accent text-white border-accent shadow-sm' 
                     : 'bg-sidebar text-text-muted border-border hover:border-accent/30 hover:text-text-heading'
@@ -244,7 +244,7 @@ export default function LeaderboardPage({
                         <div className="p-8 flex justify-center border-t border-border">
                           <button 
                             onClick={() => setVisibleCount(prev => prev + 100)}
-                            className="inconsolata-ui px-8 py-2 bg-accent text-white rounded-xl text-[12px] font-bold hover:shadow-lg transition-all active:scale-95"
+                            className="inconsolata-ui px-8 py-2 bg-accent text-white rounded-lg text-[12px] font-bold hover: transition-all active:scale-95"
                           >
                             LOAD MORE
                           </button>

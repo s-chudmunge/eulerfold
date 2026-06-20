@@ -178,7 +178,7 @@ export default function LoginPage() {
                                         <button
                                             onClick={handleGoogleLogin}
                                             disabled={loading}
-                                            className="w-full h-11 bg-white dark:bg-white/[0.03] text-text-primary border border-border rounded-xl font-bold text-[12px] manrope-body hover:bg-sidebar transition-all disabled:opacity-50 flex items-center justify-center gap-3 shadow-sm active:scale-[0.98]"
+                                            className="w-full h-11 bg-white dark:bg-white/[0.03] text-text-primary border border-border rounded-lg font-bold text-[12px] manrope-body hover:bg-sidebar transition-all disabled:opacity-50 flex items-center justify-center gap-3 shadow-sm active:scale-[0.98]"
                                         >
                                             <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
                                                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -192,7 +192,7 @@ export default function LoginPage() {
                                         <button
                                             onClick={handleGitHubLogin}
                                             disabled={loading}
-                                            className="w-full h-11 bg-sidebar text-text-primary border border-border rounded-xl font-bold text-[12px] manrope-body hover:bg-callout-bg transition-all disabled:opacity-50 flex items-center justify-center gap-3 shadow-sm active:scale-[0.98]"
+                                            className="w-full h-11 bg-sidebar text-text-primary border border-border rounded-lg font-bold text-[12px] manrope-body hover:bg-callout-bg transition-all disabled:opacity-50 flex items-center justify-center gap-3 shadow-sm active:scale-[0.98]"
                                         >
                                             <Github className="w-3.5 h-3.5" />
                                             <span>Continue with GitHub</span>
@@ -200,7 +200,7 @@ export default function LoginPage() {
 
                                         <button
                                             onClick={() => setShowEmailLogin(true)}
-                                            className="w-full h-11 bg-transparent text-text-muted hover:text-text-primary rounded-xl font-bold text-[12px] manrope-body transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
+                                            className="w-full h-11 bg-transparent text-text-muted hover:text-text-primary rounded-lg font-bold text-[12px] manrope-body transition-all flex items-center justify-center gap-2 active:scale-[0.98]"
                                         >
                                             <Mail className="w-3.5 h-3.5" />
                                             <span>Continue with email</span>
@@ -216,7 +216,7 @@ export default function LoginPage() {
                                                     value={fullName}
                                                     onChange={(e) => setFullName(e.target.value)}
                                                     required={isSignUp}
-                                                    className="w-full px-4 h-11 bg-sidebar/50 border border-border rounded-xl text-[13px] manrope-body focus:outline-none focus:ring-1 focus:ring-accent transition-all"
+                                                    className="w-full px-4 h-11 bg-sidebar/50 border border-border rounded-lg text-[13px] manrope-body focus:outline-none focus:ring-1 focus:ring-accent transition-all"
                                                 />
                                             )}
                                             <input
@@ -225,7 +225,7 @@ export default function LoginPage() {
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
                                                 required
-                                                className="w-full px-4 h-11 bg-sidebar/50 border border-border rounded-xl text-[13px] manrope-body focus:outline-none focus:ring-1 focus:ring-accent transition-all"
+                                                className="w-full px-4 h-11 bg-sidebar/50 border border-border rounded-lg text-[13px] manrope-body focus:outline-none focus:ring-1 focus:ring-accent transition-all"
                                             />
                                             <input
                                                 type="password"
@@ -233,13 +233,13 @@ export default function LoginPage() {
                                                 value={password}
                                                 onChange={(e) => setPassword(e.target.value)}
                                                 required
-                                                className="w-full px-4 h-11 bg-sidebar/50 border border-border rounded-xl text-[13px] manrope-body focus:outline-none focus:ring-1 focus:ring-accent transition-all"
+                                                className="w-full px-4 h-11 bg-sidebar/50 border border-border rounded-lg text-[13px] manrope-body focus:outline-none focus:ring-1 focus:ring-accent transition-all"
                                             />
                                         </div>
                                         <button
                                             type="submit"
                                             disabled={loading}
-                                            className="w-full h-11 bg-text-heading text-background rounded-xl font-bold text-[12px] manrope-body hover:opacity-90 transition-all disabled:opacity-50 shadow-sm active:scale-[0.98]"
+                                            className="w-full h-11 bg-text-heading text-background rounded-lg font-bold text-[12px] manrope-body hover:opacity-90 transition-all disabled:opacity-50 shadow-sm active:scale-[0.98]"
                                         >
                                             {loading ? 'Processing...' : (isSignUp ? 'Create Account' : 'Sign In')}
                                         </button>

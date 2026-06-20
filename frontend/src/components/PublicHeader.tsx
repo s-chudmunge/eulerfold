@@ -319,7 +319,7 @@ export default function PublicHeader() {
           </div>
 
           <div className="mt-8 border-t border-border pt-10 pb-6">
-            <Link href="/generate" className="w-full bg-text-heading text-background py-5 rounded-xl flex items-center justify-center gap-3 text-[16px] font-bold active:scale-95 transition-all">
+            <Link href="/generate" className="w-full bg-text-heading text-background py-5 rounded-lg flex items-center justify-center gap-3 text-[16px] font-bold active:scale-95 transition-all">
               <Plus className="w-5 h-5" /> Get Started
             </Link>
           </div>

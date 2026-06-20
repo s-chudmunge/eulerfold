@@ -336,7 +336,7 @@ export default function SettingsModal() {
             </div>
 
             <div className="space-y-4">
-              <div className="flex items-center justify-between gap-6 p-4 bg-background border border-border rounded-xl">
+              <div className="flex items-center justify-between gap-6 p-4 bg-background border border-border rounded-lg">
                 <div className="space-y-0.5">
                   <h3 className="inconsolata-ui text-[12px] font-bold text-text-heading">System Theme</h3>
                   <p className="manrope-body text-[10px] text-text-muted italic opacity-60">Visual environment preference.</p>
@@ -377,7 +377,7 @@ export default function SettingsModal() {
             </div>
 
             <div className="space-y-4">
-              <div className="flex items-center justify-between gap-6 p-4 bg-background border border-border rounded-xl">
+              <div className="flex items-center justify-between gap-6 p-4 bg-background border border-border rounded-lg">
                 <div className="flex items-center gap-4">
                   <div className="w-9 h-9 bg-sidebar border border-border rounded-lg flex items-center justify-center">
                     <Github className="w-4 h-4 text-text-heading" />
@@ -407,7 +407,7 @@ export default function SettingsModal() {
                 )}
               </div>
 
-              <div className="flex items-center justify-between gap-6 p-4 bg-background border border-border rounded-xl">
+              <div className="flex items-center justify-between gap-6 p-4 bg-background border border-border rounded-lg">
                 <div className="flex items-center gap-4">
                   <div className={`w-9 h-9 rounded-lg flex items-center justify-center border ${keyInfo && !keyInfo.is_free_tier ? 'bg-yellow-500/10 border-yellow-500/20' : 'bg-sidebar border-border'}`}>
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" className={keyInfo && !keyInfo.is_free_tier ? 'text-yellow-500' : 'text-text-heading'}>
@@ -479,7 +479,7 @@ export default function SettingsModal() {
                 )}
               </div>
 
-              <div className="flex items-center justify-between gap-6 p-4 bg-background border border-border rounded-xl">
+              <div className="flex items-center justify-between gap-6 p-4 bg-background border border-border rounded-lg">
                 <div className="flex items-center gap-4">
                   <div className={`w-9 h-9 rounded-lg flex items-center justify-center border ${localAIModelId ? 'bg-emerald-500/10 border-emerald-500/20' : 'bg-sidebar border-border'}`}>
                     <Cpu className={localAIModelId ? 'w-4 h-4 text-emerald-500' : 'w-4 h-4 text-text-heading'} />
@@ -548,7 +548,7 @@ export default function SettingsModal() {
             {isLoadingUsage ? (
               <div className="space-y-3">
                 {[1, 2, 3, 4, 5].map((i) => (
-                  <div key={i} className="flex items-center justify-between p-4 bg-background border border-border/50 rounded-xl shadow-sm animate-pulse">
+                  <div key={i} className="flex items-center justify-between p-4 bg-background border border-border/50 rounded-lg shadow-sm animate-pulse">
                     <div className="flex-1 min-w-0 pr-4">
                       <div className="h-4 bg-border/40 rounded w-2/3 mb-2"></div>
                       <div className="flex flex-wrap items-center gap-2 mt-2">
@@ -564,7 +564,7 @@ export default function SettingsModal() {
                 ))}
               </div>
             ) : usageHistory.length === 0 ? (
-              <div className="p-8 text-center bg-sidebar/50 rounded-xl border border-border">
+              <div className="p-8 text-center bg-sidebar/50 rounded-lg border border-border">
                 <History className="w-8 h-8 text-text-muted mx-auto mb-3 opacity-20" />
                 <p className="inconsolata-ui text-[12px] font-bold text-text-heading">No usage history found</p>
                 <p className="manrope-body text-[11px] text-text-muted mt-1">Generations made using EulerFold AI, OpenRouter, or Local AI will appear here.</p>
@@ -572,7 +572,7 @@ export default function SettingsModal() {
             ) : (
               <div className="space-y-3">
                 {usageHistory.map((h, i) => (
-                  <div key={i} className="flex items-center justify-between p-4 bg-background border border-border/50 rounded-xl shadow-sm">
+                  <div key={i} className="flex items-center justify-between p-4 bg-background border border-border/50 rounded-lg shadow-sm">
                     <div className="flex-1 min-w-0 pr-4">
                       <div className="text-[13px] font-bold text-text-heading line-clamp-2 mb-1">{h.subject}</div>
                       <div className="flex flex-wrap items-center gap-2 mt-1.5">
@@ -613,7 +613,7 @@ export default function SettingsModal() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="p-5 border border-border bg-accent-muted/5 relative overflow-hidden group rounded-xl">
+                <div className="p-5 border border-border bg-accent-muted/5 relative overflow-hidden group rounded-lg">
                     <span className="inconsolata-ui text-[9px] font-bold text-accent uppercase tracking-widest mb-4 block">Credit Balance</span>
                     <div className="flex items-center gap-4">
                         <div className="text-4xl font-black text-text-heading tracking-tighter">
@@ -628,7 +628,7 @@ export default function SettingsModal() {
                     </div>
                 </div>
                 
-                <div className="p-5 border border-border bg-callout-bg/30 relative overflow-hidden group rounded-xl">
+                <div className="p-5 border border-border bg-callout-bg/30 relative overflow-hidden group rounded-lg">
                     <span className="inconsolata-ui text-[9px] font-bold text-text-muted uppercase tracking-widest mb-4 block">Subscription Status</span>
                     <div className="flex flex-col gap-3 h-full pb-4">
                         <div className="flex items-center gap-2">
@@ -674,7 +674,7 @@ export default function SettingsModal() {
                 </div>
 
                 {transactions.length > 0 ? (
-                    <div className="overflow-x-auto rounded-xl border border-border bg-background">
+                    <div className="overflow-x-auto rounded-lg border border-border bg-background">
                         <table className="w-full text-left border-collapse min-w-[500px]">
                             <thead>
                                 <tr className="border-b border-border bg-sidebar/50">
@@ -714,7 +714,7 @@ export default function SettingsModal() {
                         </table>
                     </div>
                 ) : (
-                    <div className="py-10 border border-dashed border-border flex flex-col items-center justify-center text-center rounded-xl">
+                    <div className="py-10 border border-dashed border-border flex flex-col items-center justify-center text-center rounded-lg">
                         <div className="w-10 h-10 rounded-full bg-callout-bg flex items-center justify-center mb-3 text-text-muted/30">
                             <Clock className="w-5 h-5" />
                         </div>
@@ -733,7 +733,7 @@ export default function SettingsModal() {
               <p className="manrope-body text-[11px] text-text-muted italic opacity-60">Danger zone actions for your account.</p>
             </div>
 
-            <div className="p-5 bg-red-500/[0.02] border border-red-500/10 rounded-xl">
+            <div className="p-5 bg-red-500/[0.02] border border-red-500/10 rounded-lg">
               <h3 className="inconsolata-ui text-[12px] font-bold text-red-600 tracking-tight mb-1">Purge intelligence</h3>
               <p className="manrope-body text-[11px] text-text-muted mb-4 leading-relaxed italic opacity-80">
                 Permanently erase identity and history. Non-reversible.
@@ -777,7 +777,7 @@ export default function SettingsModal() {
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="relative w-full max-w-[800px] h-full max-h-[600px] bg-sidebar border border-border shadow-2xl rounded-2xl overflow-hidden flex flex-col md:flex-row"
+            className="relative w-full max-w-[800px] h-full max-h-[600px] bg-sidebar border border-border shadow-2xl rounded-lg overflow-hidden flex flex-col md:flex-row"
           >
             {/* Mobile Header */}
             <div className="md:hidden flex items-center justify-between p-4 border-b border-border bg-sidebar/50">
@@ -801,7 +801,7 @@ export default function SettingsModal() {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all group ${
+                      className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all group ${
                         isActive 
                           ? 'bg-background border border-border text-text-heading shadow-sm' 
                           : 'text-text-muted hover:text-text-heading hover:bg-background/50 border border-transparent'
@@ -816,7 +816,7 @@ export default function SettingsModal() {
               </nav>
 
               <div className="p-4 border-t border-border/50 hidden md:block">
-                <div className="flex items-center gap-3 p-2 rounded-xl bg-background/40 border border-border/50">
+                <div className="flex items-center gap-3 p-2 rounded-lg bg-background/40 border border-border/50">
                   <div className="w-8 h-8 rounded-full bg-accent/10 border border-accent/20 flex items-center justify-center overflow-hidden">
                     <img 
                       src={(profile?.avatar_url?.includes('initials') ? null : profile?.avatar_url) || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(displayName || username || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`} 
@@ -845,7 +845,7 @@ export default function SettingsModal() {
 
               <div className="flex-1 overflow-y-auto p-6 md:p-8 pt-6 md:pt-16">
                   {message && (
-                    <div className={`mb-6 p-3 rounded-xl flex items-center gap-3 text-[12px] font-bold inconsolata-ui animate-in fade-in slide-in-from-top-2 duration-300 ${
+                    <div className={`mb-6 p-3 rounded-lg flex items-center gap-3 text-[12px] font-bold inconsolata-ui animate-in fade-in slide-in-from-top-2 duration-300 ${
                       message.type === 'success' 
                         ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20' 
                         : 'bg-red-500/10 text-red-500 border border-red-500/20'

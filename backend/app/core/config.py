@@ -32,11 +32,11 @@ class Settings(BaseSettings):
     SUPABASE_SERVICE_ROLE_KEY: Optional[str] = None  # For admin operations
 
     # Default AI Models for different use cases - centralized configuration
-    DEFAULT_ROADMAP_MODEL: str = "anthropic/claude-3.5-sonnet"
-    DEFAULT_FEEDBACK_MODEL: str = "anthropic/claude-3-5-haiku"
-    DEFAULT_LEARNING_CONTENT_MODEL: str = "anthropic/claude-3-5-haiku"
-    DEFAULT_VISUALIZATION_MODEL: str = "anthropic/claude-3-5-haiku"
-    DEFAULT_LEARNING_RESOURCES_MODEL: str = "anthropic/claude-3-5-haiku"
+    DEFAULT_ROADMAP_MODEL: str = "cohere/north-mini-code:free"
+    DEFAULT_FEEDBACK_MODEL: str = "cohere/north-mini-code:free"
+    DEFAULT_LEARNING_CONTENT_MODEL: str = "cohere/north-mini-code:free"
+    DEFAULT_VISUALIZATION_MODEL: str = "cohere/north-mini-code:free"
+    DEFAULT_LEARNING_RESOURCES_MODEL: str = "cohere/north-mini-code:free"
     # Email / Auth integrations
     RESEND_API_KEY: Optional[str] = None
     RESEND_SENDER: str = "eulerfold@gmail.com"

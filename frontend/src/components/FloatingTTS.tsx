@@ -87,17 +87,17 @@ export default function FloatingTTS({ content: manualContent }: { content?: stri
         ) : (
           <motion.div
             key="player" drag dragMomentum={false} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-            className="bg-sidebar/95 backdrop-blur-md border border-accent/20 rounded-2xl shadow-2xl flex flex-col w-[175px] overflow-hidden cursor-grab active:cursor-grabbing"
+            className="bg-sidebar/95 backdrop-blur-md border border-accent/20 rounded-lg shadow-2xl flex flex-col w-[175px] overflow-hidden cursor-grab active:cursor-grabbing"
           >
             <div className="p-2.5 flex flex-col gap-2">
               <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5 bg-accent/5 px-2 py-1.5 rounded-xl border border-accent/10">
+                <div className="flex items-center gap-1.5 bg-accent/5 px-2 py-1.5 rounded-lg border border-accent/10">
                   <Volume2 className={`w-3.5 h-3.5 text-accent ${isPlaying ? "animate-pulse" : ""}`} />
                   <span className="text-[10px] font-black text-accent tracking-tighter">{settings.rate.toFixed(1)}x</span>
                 </div>
 
                 <div className="flex items-center gap-0.5">
-                  <button onClick={() => setShowSettings(!showSettings)} className={`p-1.5 rounded-lg transition-colors ${showSettings ? "bg-accent text-white shadow-lg" : "hover:bg-accent/10 text-text-muted"}`}>
+                  <button onClick={() => setShowSettings(!showSettings)} className={`p-1.5 rounded-lg transition-colors ${showSettings ? "bg-accent text-white " : "hover:bg-accent/10 text-text-muted"}`}>
                     <Settings2 className="w-3.5 h-3.5" />
                   </button>
                   

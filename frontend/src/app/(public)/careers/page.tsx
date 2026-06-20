@@ -125,7 +125,7 @@ export default function CareersPage() {
                 to solve problems and build features that help thousands of people learn.
               </p>
             </div>
-            <div className="bg-sidebar/20 border border-border p-6 rounded-xl">
+            <div className="bg-sidebar/20 border border-border p-6 rounded-lg">
               <div className="space-y-3.5">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 rounded-md bg-background flex items-center justify-center border border-border">

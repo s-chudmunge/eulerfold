@@ -235,7 +235,7 @@ export default async function LandingPage() {
               </p>
               <Link 
                 href="/generate"
-                className="inline-flex items-center justify-center bg-gradient-to-b from-teal-400 to-teal-600 text-white px-9 py-4 rounded-2xl text-[15px] font-bold transition-all hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-teal-800 gap-3 group overflow-hidden shadow-lg mb-8"
+                className="inline-flex items-center justify-center bg-accent text-white hover:bg-teal-700 px-9 py-4 rounded-lg text-[15px] font-bold transition-all shadow-sm gap-3 group overflow-hidden  mb-8"
               >
                 <Plus className="w-4 h-4" /> Generate My Roadmap
               </Link>

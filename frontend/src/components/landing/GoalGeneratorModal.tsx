@@ -34,7 +34,7 @@ export default function GoalGeneratorModal({ isOpen, onClose }: GoalGeneratorMod
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/40 dark:bg-black/80 backdrop-blur-sm animate-in fade-in duration-300">
       {isRedirecting && (
-        <div className="absolute inset-0 z-[210] bg-sidebar/95 backdrop-blur-md flex flex-col items-center justify-center animate-in fade-in duration-500 rounded-xl">
+        <div className="absolute inset-0 z-[210] bg-sidebar/95 backdrop-blur-md flex flex-col items-center justify-center animate-in fade-in duration-500 rounded-lg">
           <div className="flex flex-col items-center gap-4">
             <p className="text-[12px] font-bold text-accent uppercase tracking-[0.2em]">
               Finalizing Your Roadmap
@@ -52,7 +52,7 @@ export default function GoalGeneratorModal({ isOpen, onClose }: GoalGeneratorMod
         </div>
       )}
       <div 
-        className="w-full max-w-[700px] bg-sidebar border border-border shadow-[0_0_80px_rgba(0,0,0,0.15)] dark:shadow-[0_0_80px_rgba(0,0,0,0.6)] flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-300 overflow-hidden relative rounded-xl"
+        className="w-full max-w-[700px] bg-sidebar border border-border shadow-[0_0_80px_rgba(0,0,0,0.15)] dark:shadow-[0_0_80px_rgba(0,0,0,0.6)] flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-300 overflow-hidden relative rounded-lg"
       >
         <button 
           onClick={onClose}

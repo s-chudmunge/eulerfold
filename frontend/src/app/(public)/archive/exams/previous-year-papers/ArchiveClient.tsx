@@ -302,7 +302,7 @@ function ArchiveContent() {
               <select 
                 value={selectedExam}
                 onChange={(e) => updateFilters({ exam: e.target.value, subject: "All Subjects" })}
-                className="w-full bg-background border border-border rounded-xl py-2.5 px-4 inconsolata-ui text-[14px] appearance-none focus:outline-none focus:border-[var(--accent)] cursor-pointer shadow-sm truncate pr-8 dark:bg-[#1a1a1a]"
+                className="w-full bg-background border border-border rounded-lg py-2.5 px-4 inconsolata-ui text-[14px] appearance-none focus:outline-none focus:border-[var(--accent)] cursor-pointer shadow-sm truncate pr-8 dark:bg-[#1a1a1a]"
               >
                 {allExams.map(exam => <option key={exam} value={exam}>{exam}</option>)}
               </select>
@@ -311,7 +311,7 @@ function ArchiveContent() {
               <select 
                 value={selectedSubject}
                 onChange={(e) => updateFilters({ subject: e.target.value })}
-                className="w-full bg-background border border-border rounded-xl py-2.5 px-4 inconsolata-ui text-[14px] appearance-none focus:outline-none focus:border-[var(--accent)] cursor-pointer shadow-sm truncate pr-8 dark:bg-[#1a1a1a]"
+                className="w-full bg-background border border-border rounded-lg py-2.5 px-4 inconsolata-ui text-[14px] appearance-none focus:outline-none focus:border-[var(--accent)] cursor-pointer shadow-sm truncate pr-8 dark:bg-[#1a1a1a]"
               >
                 {allSubjects.map(sub => <option key={sub} value={sub}>{sub}</option>)}
               </select>
@@ -320,7 +320,7 @@ function ArchiveContent() {
               <select 
                 value={selectedYear}
                 onChange={(e) => updateFilters({ year: e.target.value })}
-                className="w-full bg-background border border-border rounded-xl py-2.5 px-4 inconsolata-ui text-[14px] appearance-none focus:outline-none focus:border-[var(--accent)] cursor-pointer shadow-sm dark:bg-[#1a1a1a]"
+                className="w-full bg-background border border-border rounded-lg py-2.5 px-4 inconsolata-ui text-[14px] appearance-none focus:outline-none focus:border-[var(--accent)] cursor-pointer shadow-sm dark:bg-[#1a1a1a]"
               >
                 {allYears.map(year => <option key={year} value={year}>{year}</option>)}
               </select>
@@ -329,7 +329,7 @@ function ArchiveContent() {
               <select 
                 value={sortOrder}
                 onChange={(e) => updateFilters({ sort: e.target.value })}
-                className="w-full bg-background border border-border rounded-xl py-2.5 px-4 inconsolata-ui text-[14px] appearance-none focus:outline-none focus:border-[var(--accent)] cursor-pointer shadow-sm dark:bg-[#1a1a1a]"
+                className="w-full bg-background border border-border rounded-lg py-2.5 px-4 inconsolata-ui text-[14px] appearance-none focus:outline-none focus:border-[var(--accent)] cursor-pointer shadow-sm dark:bg-[#1a1a1a]"
               >
                 <option value="newest">Newest First</option>
                 <option value="oldest">Oldest First</option>

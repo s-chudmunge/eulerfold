@@ -105,14 +105,14 @@ export default function ResearchToolbox({
 
     return (
         <div className={`flex flex-row lg:flex-col items-center lg:items-start gap-2 lg:gap-4 ${className}`}>
-            <div className="flex flex-row lg:flex-col items-center lg:items-start gap-2 lg:gap-3 bg-background/80 backdrop-blur-md p-1.5 lg:p-2 rounded-2xl border border-border/40 shadow-xl lg:shadow-2xl transition-all duration-300 group/toolbox">
+            <div className="flex flex-row lg:flex-col items-center lg:items-start gap-2 lg:gap-3 bg-background/80 backdrop-blur-md p-1.5 lg:p-2 rounded-lg border border-border/40 shadow-xl lg:shadow-2xl transition-all duration-300 group/toolbox">
                 {tools.map((tool) => (
                     <a
                         key={tool.name}
                         href={tool.href || '#'}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className={`h-11 lg:h-10 flex items-center rounded-xl bg-sidebar/40 border border-transparent text-text-muted transition-all duration-500 group ${tool.color} hover:bg-background hover:border-accent/20 hover:shadow-lg active:scale-95 shrink-0 overflow-hidden w-11 lg:w-10 lg:group-hover/toolbox:w-44 px-3 lg:px-0 lg:group-hover/toolbox:px-3 justify-center lg:justify-start`}
+                        className={`h-11 lg:h-10 flex items-center rounded-lg bg-sidebar/40 border border-transparent text-text-muted transition-all duration-500 group ${tool.color} hover:bg-background hover:border-accent/20 hover:shadow-lg active:scale-95 shrink-0 overflow-hidden w-11 lg:w-10 lg:group-hover/toolbox:w-44 px-3 lg:px-0 lg:group-hover/toolbox:px-3 justify-center lg:justify-start`}
                         title={tool.name}
                     >
                         <div className="flex items-center justify-center lg:w-10 shrink-0">
@@ -136,9 +136,9 @@ export default function ResearchToolbox({
 
                 <button 
                     onClick={copyBibtex}
-                    className={`h-11 lg:h-10 flex items-center rounded-xl transition-all duration-500 border active:scale-95 shrink-0 overflow-hidden w-11 lg:w-10 lg:group-hover/toolbox:w-44 px-3 lg:px-0 lg:group-hover/toolbox:px-3 justify-center lg:justify-start ${
+                    className={`h-11 lg:h-10 flex items-center rounded-lg transition-all duration-500 border active:scale-95 shrink-0 overflow-hidden w-11 lg:w-10 lg:group-hover/toolbox:w-44 px-3 lg:px-0 lg:group-hover/toolbox:px-3 justify-center lg:justify-start ${
                         copiedBibtex 
-                            ? 'bg-accent text-white border-accent shadow-accent/20 shadow-lg' 
+                            ? 'bg-accent text-white border-accent shadow-accent/20 ' 
                             : 'bg-sidebar/40 border-transparent text-text-muted hover:bg-background hover:text-accent hover:border-accent/20 hover:shadow-lg group'
                     }`}
                     title="Copy BibTeX"

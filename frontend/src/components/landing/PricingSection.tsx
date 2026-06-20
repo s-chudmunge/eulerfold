@@ -55,31 +55,42 @@ export default function PricingSection() {
                     <p className="manrope-body text-[11px] text-text-muted">Essential tools for learning.</p>
                 </div>
 
-                <div className="space-y-1.5 mb-6 flex-1 text-[10px] text-text-primary font-medium">
-                    <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> Learn with AI
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> Access all public roadmaps
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> Track your skills and progress
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> 5 EulerFold AI roadmap generations
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> Unlimited Local AI & OpenRouter generations
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> 4-week goal projections
-                    </div>
-                    <div className="pt-1.5 mt-1.5 border-t border-border/40 opacity-50">
-                        <div className="flex items-center gap-2 text-text-muted">
-                            <span className="text-red-500/60 font-bold text-[8px]">✗</span> No Priority AI models
+                <div className="space-y-4 mb-10 flex-1">
+                    <div className="space-y-3">
+                        <div className="flex items-start gap-3 text-[12px] text-text-primary">
+                            <span className="text-teal-600 mt-0.5">✓</span>
+                            <span>Learn with AI</span>
                         </div>
-                        <div className="flex items-center gap-2 text-text-muted mt-1.5">
-                            <span className="text-red-500/60 font-bold text-[8px]">✗</span> No Research Lab access
+                        <div className="flex items-start gap-3 text-[12px] text-text-primary">
+                            <span className="text-teal-600 mt-0.5">✓</span>
+                            <span>Access all public roadmaps</span>
+                        </div>
+                        <div className="flex items-start gap-3 text-[12px] text-text-primary">
+                            <span className="text-teal-600 mt-0.5">✓</span>
+                            <span>Track your skills and progress</span>
+                        </div>
+                        <div className="flex items-start gap-3 text-[12px] text-text-primary">
+                            <span className="text-teal-600 mt-0.5">✓</span>
+                            <span>5 EulerFold AI roadmap generations</span>
+                        </div>
+                        <div className="flex items-start gap-3 text-[12px] text-text-primary">
+                            <span className="text-teal-600 mt-0.5">✓</span>
+                            <span>Unlimited Local AI & OpenRouter generations</span>
+                        </div>
+                        <div className="flex items-start gap-3 text-[12px] text-text-primary">
+                            <span className="text-teal-600 mt-0.5">✓</span>
+                            <span>4-week goal projections</span>
+                        </div>
+                    </div>
+
+                    <div className="pt-6 border-t border-border/50 space-y-3 opacity-40">
+                        <div className="flex items-start gap-3 text-[11px] text-text-muted">
+                            <span className="text-text-muted/50 mt-0.5">×</span>
+                            <span>No Priority AI models</span>
+                        </div>
+                        <div className="flex items-start gap-3 text-[11px] text-text-muted">
+                            <span className="text-text-muted/50 mt-0.5">×</span>
+                            <span>No Research Lab access</span>
                         </div>
                     </div>
                 </div>
@@ -105,37 +116,58 @@ export default function PricingSection() {
                     <p className="manrope-body text-[11px] text-text-muted">For deep technical mastery.</p>
                 </div>
 
-                <div className="space-y-1.5 mb-6 flex-1 text-[10px] text-text-primary font-medium">
-                    <div className="mb-2 font-bold text-text-heading text-[9px] uppercase tracking-wider">Everything in Basic, plus:</div>
-                    <div className="flex items-center gap-2 font-bold text-accent">
-                        <span className="text-accent">✓</span> 50 Roadmap credits
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> Unlimited depth extensions
-                    </div>
-                    <div className="flex items-center gap-2 font-bold text-accent">
-                        <span className="text-accent">✓</span> Homework Submission & Evaluation
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> Job market insights
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <span className="text-accent">✓</span> 12-week strategic mapping
-                    </div>
-                    <div className="flex items-center gap-2 font-bold text-accent">
-                        <span className="text-accent">✓</span> Research Lab Paper Decoding
-                    </div>
-                    <div className="flex items-center gap-2 font-bold text-teal-600 dark:text-teal-400">
-                        <span className="">✓</span> Priority AI reasoning models
-                    </div>
-                    <div className="flex items-center gap-2 font-bold text-teal-600 dark:text-teal-400">
-                        <span className="">✓</span> EulerFold AI Practice Portal
+                <div className="space-y-4 mb-10 flex-1 relative z-10">
+                    <div className="mb-4 font-bold text-text-heading text-[11px] uppercase tracking-widest">Everything in Basic, plus:</div>
+                    <div className="space-y-3">
+                        <div className="flex items-start gap-3 text-[12px] text-text-primary font-bold">
+                            <span className="text-teal-600 mt-0.5">✓</span>
+                            <span>50 credits</span>
+                        </div>
+                        <div className="flex items-start gap-3 text-[12px] text-text-primary">
+                            <span className="text-teal-600 mt-0.5">✓</span>
+                            <span>Unlimited depth extensions</span>
+                        </div>
+                        <div className="flex items-start gap-3 text-[12px] text-teal-600 dark:text-teal-400 font-bold">
+                            <span className="text-teal-600 dark:text-teal-400 mt-0.5">✓</span>
+                            <span>Homework Submission & Evaluation</span>
+                        </div>
+                        <div className="flex items-start gap-3 text-[12px] text-text-primary">
+                            <span className="text-teal-600 mt-0.5">✓</span>
+                            <span>Job market insights</span>
+                        </div>
+                        <div className="flex items-start gap-3 text-[12px] text-text-primary">
+                            <span className="text-teal-600 mt-0.5 font-bold">✓</span>
+                            <span>Up to 12-week strategic mapping</span>
+                        </div>
+                        <div className="flex items-start gap-3 text-[12px] text-accent font-bold">
+                            <span className="text-accent mt-0.5">✓</span>
+                            <span>Research Lab Paper Decoding</span>
+                        </div>
+                        <div className="flex items-start gap-3 text-[12px] text-accent font-bold">
+                            <span className="text-accent mt-0.5">✓</span>
+                            <div className="flex flex-col">
+                                <span>Custom Learning Paths</span>
+                                <div className="flex flex-col gap-1 mt-1.5 text-[10.5px] text-accent/80 font-medium">
+                                    <span>• Build courses from any web link</span>
+                                    <span>• Turn PDF syllabi into study plans</span>
+                                    <span>• Take quizzes to find & fix weak spots</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex items-start gap-3 text-[12px] text-teal-600 dark:text-teal-400 font-bold">
+                            <span className="text-teal-600 dark:text-teal-400 mt-0.5">✓</span>
+                            <span>Priority AI reasoning models</span>
+                        </div>
+                        <div className="flex items-start gap-3 text-[12px] text-teal-600 dark:text-teal-400 font-bold">
+                            <span className="text-teal-600 dark:text-teal-400 mt-0.5">✓</span>
+                            <span>EulerFold AI Practice Portal</span>
+                        </div>
                     </div>
                 </div>
 
                 <Link 
                     href="/pricing"
-                    className="w-full inline-flex items-center justify-center bg-gradient-to-b from-teal-400 to-teal-600 text-white py-3 rounded-2xl text-[14px] font-bold transition-all hover:brightness-110 active:border-b-0 active:translate-y-[4px] border-b-[4px] border-teal-800 shadow-lg"
+                    className="w-full inline-flex items-center justify-center bg-accent text-white hover:bg-teal-700 py-3 rounded-lg text-[14px] font-bold transition-all shadow-sm"
                 >
                     Subscribe Pro (₹{currentPrice}/mo)
                 </Link>
