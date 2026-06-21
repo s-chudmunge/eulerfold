@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { Suspense } from 'react';
 import { 
     LayoutDashboard, 
     Calendar,
@@ -45,9 +46,17 @@ interface SidebarProps {
     onClose?: () => void;
 }
 
+function SearchParamsHandler({ onParamsChange }: { onParamsChange: (params: URLSearchParams) => void }) {
+    const searchParams = useSearchParams();
+    useEffect(() => {
+        onParamsChange(searchParams);
+    }, [searchParams, onParamsChange]);
+    return null;
+}
+
 export default function AppSidebar({ children, header, isOpen, onClose }: SidebarProps) {
     const pathname = usePathname();
-    const searchParams = useSearchParams();
+    const [searchParams, setSearchParams] = useState<URLSearchParams | null>(null);
     const router = useRouter();
     const { user } = useAuth();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -77,6 +86,7 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
         if (path.includes('?')) {
             const [basePath, query] = path.split('?');
             if (pathname !== basePath) return false;
+            if (!searchParams) return false;
             const params = new URLSearchParams(query);
             for (const [key, value] of params.entries()) {
                 if (searchParams.get(key) !== value) return false;
@@ -84,6 +94,7 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
             return true;
         }
         if (path === '/generate') {
+            if (!searchParams) return pathname === '/generate';
             return pathname === '/generate' && (!searchParams.has('mode') || searchParams.get('mode') === 'ai');
         }
         return pathname === path;
@@ -100,6 +111,9 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
 
     return (
         <>
+            <Suspense fallback={null}>
+                <SearchParamsHandler onParamsChange={setSearchParams} />
+            </Suspense>
             {/* Mobile Overlay */}
             {isOpen && (
                 <div 
