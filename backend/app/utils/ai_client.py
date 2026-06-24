@@ -333,6 +333,10 @@ def clean_json_string(text: str) -> str:
         if end_pos != -1:
             text = text[start_pos : end_pos + 1]
             
+    # 3. Fix invalid escape sequences (e.g. \-, \escape)
+    # Valid JSON escapes are \", \\, \/, \b, \f, \n, \r, \t, \u
+    text = re.sub(r'(?<!\\)\\([^"\\/bfnrtu])', r'\1', text)
+    
     return text.strip()
 
 def robust_json_loads(text: str):

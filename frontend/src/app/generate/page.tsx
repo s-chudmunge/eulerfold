@@ -19,11 +19,27 @@ async function getFeaturedRoadmaps(): Promise<ExploreRoadmap[]> {
 }
 
 export const metadata: Metadata = {
-  title: 'Create Your Learning Roadmap',
-  description: 'Create a personalized learning roadmap for any skill or subject.',
-  robots: {
-    index: false,
-    follow: false,
+  title: 'AI Architect | EulerFold AI',
+  description: 'Build custom, technical learning roadmaps curated in real-time. Enter any topic, from broad subjects to niche frameworks, and get a personalized, step-by-step curriculum.',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://www.eulerfold.com/generate',
+    title: 'AI Architect | EulerFold AI',
+    description: 'Build custom, technical learning roadmaps curated in real-time. Enter any topic, from broad subjects to niche frameworks, and get a personalized, step-by-step curriculum.',
+    siteName: 'EulerFold',
+    images: [{
+      url: '/og-image.png',
+      width: 1200,
+      height: 630,
+      alt: 'EulerFold - AI Architect',
+    }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'AI Architect | EulerFold AI',
+    description: 'Generate real-time custom learning roadmaps for any technical subject.',
+    creator: '@eulerfold',
   },
 };
 

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Plus, GraduationCap, ArrowRight, BookOpen, Target, Zap } from 'lucide-react';
 import PublicHeader from '@/components/PublicHeader';
 import Footer from '@/components/Footer';
-import { LoginRequiredMessage, AlreadySignedInMessage, FAQAccordion, LandingOnboardingTrigger } from './HomeClientComponents';
+import { AlreadySignedInMessage, FAQAccordion, LandingOnboardingTrigger } from './HomeClientComponents';
 
 import HeroSection from '@/components/landing/HeroSection';
 import SocialFeed from '@/components/SocialFeed';
@@ -189,7 +189,6 @@ export default async function LandingPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
       />
       <Suspense fallback={null}>
-        <LoginRequiredMessage />
         <AlreadySignedInMessage />
         <LandingOnboardingTrigger />
       </Suspense>
