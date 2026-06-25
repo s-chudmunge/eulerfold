@@ -21,7 +21,8 @@ import {
   Unlink,
   CreditCard,
   Clock,
-  Zap
+  Zap,
+  Droplet
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/components/AuthProvider';
@@ -532,17 +533,53 @@ export default function SettingsModal() {
             </div>
           </div>
         );
-      case 'usage':
+      case 'usage': {
+        const totalTokens = usageHistory.reduce((acc, h) => acc + (h.total_tokens || 0), 0);
+        const energyKWh = totalTokens * 0.00004;
+        const waterLiters = totalTokens * 0.000045;
+        const totalCredits = usageHistory.reduce((acc, h) => {
+          const match = (h.subject || '').match(/\(Cost: ([\d.]+) Credits?\)/i);
+          if (match && match[1]) {
+            return acc + parseFloat(match[1]);
+          }
+          return acc;
+        }, 0);
+
         return (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-            <div className="pb-2 border-b border-border/50 flex items-center justify-between">
+            <div className="pb-2 border-b border-border/50 flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div>
-                <h2 className="inconsolata-ui text-[14px] font-bold tracking-tight text-text-heading">AI GENERATION USAGE</h2>
-                <p className="manrope-body text-[11px] text-text-muted italic opacity-60">Your EulerFold Cloud, OpenRouter, and Local AI generation history.</p>
+                <h2 className="inconsolata-ui text-[14px] font-bold tracking-tight text-text-heading">AI & CREDITS USAGE</h2>
               </div>
-              <a href="https://openrouter.ai/activity" target="_blank" rel="noopener noreferrer" className="inconsolata-ui text-[10px] font-bold text-accent hover:underline flex items-center gap-1.5">
-                Full Log <ExternalLink className="w-3 h-3" />
-              </a>
+              <div className="flex flex-col items-end gap-1.5 shrink-0">
+                <a href="https://openrouter.ai/activity" target="_blank" rel="noopener noreferrer" className="inconsolata-ui text-[10px] font-bold text-accent hover:underline flex items-center gap-1.5">
+                  Full Log <ExternalLink className="w-3 h-3" />
+                </a>
+                {!isLoadingUsage && usageHistory.length > 0 && (
+                  <div className="flex items-center gap-3 bg-sidebar/30 px-2.5 py-1.5 rounded-lg border border-border/50">
+                    {totalCredits > 0 && (
+                      <>
+                        <div className="text-[12px] font-black text-amber-500 tracking-tight flex items-center gap-1" title="Total EulerFold Credits Used">
+                           {totalCredits.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 2 })} <span className="text-[9px] font-bold uppercase opacity-60">credits</span>
+                        </div>
+                        <div className="w-px h-3 bg-border/50"></div>
+                      </>
+                    )}
+                    <div className="text-[12px] font-black text-accent tracking-tight flex items-center gap-1">
+                       {totalTokens.toLocaleString()} <span className="text-[9px] font-bold uppercase opacity-60">tokens</span>
+                    </div>
+                    <div className="w-px h-3 bg-border/50"></div>
+                    <div className="flex items-center gap-2.5 text-[10px] font-bold text-text-muted">
+                      <span className="flex items-center gap-1" title="Estimated Energy (kWh)">
+                        <Zap className="w-3 h-3 text-yellow-500" /> {energyKWh.toFixed(4)} kWh
+                      </span>
+                      <span className="flex items-center gap-1" title="Estimated Water (Liters)">
+                        <Droplet className="w-3 h-3 text-blue-500" /> {waterLiters.toFixed(4)} L
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
 
             {isLoadingUsage ? (
@@ -604,6 +641,7 @@ export default function SettingsModal() {
             )}
           </div>
         );
+      }
       case 'billing':
         return (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
