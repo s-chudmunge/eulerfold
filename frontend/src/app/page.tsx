@@ -13,6 +13,7 @@ import PricingSection from '@/components/landing/PricingSection';
 import ProductEcosystem from '@/components/landing/ProductEcosystem';
 import GenerationSystems from '@/components/landing/GenerationSystems';
 import RoadmapDiscovery from '@/components/landing/RoadmapDiscovery';
+import CertificationSection from '@/components/landing/CertificationSection';
 import EulerLogoCanvas from '@/components/EulerLogoCanvas';
 import InteractiveDemo from '@/components/landing/InteractiveDemo';
 import { ExploreRoadmap } from '@/lib/api';
@@ -143,6 +144,11 @@ export default async function LandingPage() {
       schemaAnswer: "By bringing your own API key, you get total flexibility to choose the exact model powering your learning generation. It prevents vendor lock-in, and your key remains completely secure—it is only stored locally in your browser and never touches our servers."
     },
     {
+      question: "Do I get a certificate upon completion?",
+      answer: "Yes, you receive a verifiable digital certificate once you reach 98% completion on any roadmap. These certificates authenticate your study hours and average technical grade, and can be added directly to your LinkedIn profile with one click.",
+      schemaAnswer: "Yes, you receive a verifiable digital certificate once you reach 98% completion on any roadmap. These certificates authenticate your study hours and average technical grade, and can be added directly to your LinkedIn profile with one click."
+    },
+    {
       question: "Need more help or have feedback?",
       answer: (
         <span>
@@ -206,6 +212,8 @@ export default async function LandingPage() {
         <ProductEcosystem />
 
         <TestimonialSection />
+
+        <CertificationSection />
 
         <PricingSection />
 

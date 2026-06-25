@@ -265,6 +265,23 @@ async def get_public_profile(username: str):
 
     total_hours = sum(s.time_invested for s in skills)
     
+    # 7. Fetch Certificates
+    cert_res = sb.table("certificates").select("*, roadmaps(title, subject)").eq("user_id", profile.get("supabase_uid")).execute()
+    certificates = []
+    for cert in (cert_res.data or []):
+        certificates.append({
+            "id": cert["id"],
+            "roadmap_id": cert["roadmap_id"],
+            "credential_id": cert["credential_id"],
+            "grade": cert["grade"],
+            "average_score": cert["average_score"],
+            "time_invested_hours": cert["time_invested_hours"],
+            "pdf_url": cert["pdf_url"],
+            "issued_at": cert["issued_at"],
+            "roadmap_title": cert.get("roadmaps", {}).get("title"),
+            "roadmap_subject": cert.get("roadmaps", {}).get("subject")
+        })
+    
     return PublicProfile(
         username=profile["username"],
         display_name=profile.get("display_name"),
@@ -283,6 +300,7 @@ async def get_public_profile(username: str):
         total_hours=round(total_hours, 1),
         last_active=profile.get("last_active_date"),
         skills=skills,
+        certificates=certificates,
         roadmaps=roadmaps_data,
         submissions=subs_data,
         practice_stats=p_stats,

@@ -433,6 +433,7 @@ class PublicProfile(BaseModel):
     total_hours: float
     last_active: Optional[datetime]
     skills: List[UserSkill]
+    certificates: List[Dict[str, Any]] = []
     roadmaps: List[Dict[str, Any]] = []
     submissions: List[Dict[str, Any]] = []
     practice_stats: Optional[PracticeStats] = None
@@ -538,3 +539,19 @@ class AIUsageLogRead(AIUsageLogCreate):
     id: uuid.UUID
     user_id: uuid.UUID
     created_at: datetime
+
+# --- Certificate Schemas ---
+
+class CertificateRead(BaseModel):
+    id: uuid.UUID
+    user_id: uuid.UUID
+    roadmap_id: int
+    credential_id: str
+    grade: str
+    average_score: float
+    time_invested_hours: float
+    pdf_url: Optional[str] = None
+    issued_at: datetime
+    roadmap_title: Optional[str] = None
+    roadmap_subject: Optional[str] = None
+    user_name: Optional[str] = None

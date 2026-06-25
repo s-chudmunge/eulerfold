@@ -12,10 +12,13 @@ export default function Footer() {
     <footer className="w-full px-6 py-12 border-t border-border bg-background">
       <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-4">
         <div className="col-span-2 md:col-span-1 flex flex-col items-start">
-          <Link href="/" className="flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity grayscale">
+          <Link href="/" className="flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity grayscale mb-4">
             <img src="/apple-touch-icon.png" alt="" className="w-3.5 h-3.5" />
             <span className="font-semibold text-[14px] tracking-tight manrope-body text-text-heading">EulerFold</span>
           </Link>
+          <a href="https://www.producthunt.com/products/eulerfold-ai?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-eulerfold-ai" target="_blank" rel="noopener noreferrer">
+            <img alt="EulerFold AI - Build and Track your learning paths | Product Hunt" style={{width: '250px', height: '54px'}} src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1180466&theme=neutral&t=1782367593367" />
+          </a>
         </div>
         <div className="flex flex-col gap-2">
           <h4 className="text-[13px] font-bold text-text-heading opacity-30">Website</h4>

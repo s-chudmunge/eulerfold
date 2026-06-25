@@ -207,6 +207,10 @@ export default function PricingClient() {
                                 <span className="text-teal-600 dark:text-teal-400 mt-0.5">✓</span>
                                 <span>EulerFold AI Practice Portal</span>
                             </div>
+                            <div className="flex items-start gap-3 text-[12px] text-teal-600 dark:text-teal-400 font-bold">
+                                <span className="text-teal-600 dark:text-teal-400 mt-0.5">✓</span>
+                                <span>Verifiable Digital Certificates</span>
+                            </div>
                         </div>
                     </div>
 

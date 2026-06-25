@@ -23,6 +23,7 @@ from app.core.coins import EulerCoins
 from app.utils.eulercoins import award_coins
 from app.utils.streaks import track_activity
 from app.core.auth import get_current_user
+from app.routers.certificates import generate_and_store_certificate
 from app.routers.optional_auth import get_optional_current_user
 from app.services.skills_service import extract_skills_from_roadmap, calculate_user_skill_scores_for_roadmap, cleanup_skills_after_roadmap_deletion, process_extracted_skills
 from app.routers.payments import check_and_revoke_pro_if_no_credits
@@ -102,6 +103,16 @@ async def transition_roadmap_status(roadmap_id: int, new_status: str, user_email
                     await extract_skills_from_roadmap(roadmap_id, user_uid)
                 except Exception as e:
                     logger.error(f"Skill extraction failed during transition: {e}")
+                    
+            # C. Generate Certificate if User is Pro
+            if user_uid:
+                try:
+                    prof_res = sb.table("profiles").select("is_pro").eq("supabase_uid", user_uid).single().execute()
+                    if prof_res.data and prof_res.data.get("is_pro"):
+                        # Run the sync function in a threadpool to avoid blocking the event loop
+                        asyncio.create_task(asyncio.to_thread(generate_and_store_certificate, user_uid, roadmap_id))
+                except Exception as e:
+                    logger.error(f"Certificate generation trigger failed: {e}")
 
     except Exception as e:
         logger.error(f"Failed to transition roadmap status for {roadmap_id}: {e}")
@@ -143,12 +154,16 @@ async def _enrich_roadmap_progress(roadmaps: List[Dict], email: str, uid: str, s
         
     def fetch_pp():
         return sb.table("practice_progress").select("session_id, resource_id, completed").eq("user_id", uid).eq("completed", True).execute()
+        
+    def fetch_mcq():
+        return sb.table("mcq_sessions").select("id, roadmap_id, subtopic_id").eq("user_id", uid).eq("status", "completed").in_("roadmap_id", roadmap_ids).execute()
 
-    mp_res, sub_res, ps_res, pp_res = await asyncio.gather(
+    mp_res, sub_res, ps_res, pp_res, mcq_res = await asyncio.gather(
         asyncio.to_thread(fetch_mp),
         asyncio.to_thread(fetch_sub),
         asyncio.to_thread(fetch_ps),
-        asyncio.to_thread(fetch_pp)
+        asyncio.to_thread(fetch_pp),
+        asyncio.to_thread(fetch_mcq)
     )
 
     # Organize data for quick lookup
@@ -176,6 +191,12 @@ async def _enrich_roadmap_progress(roadmaps: List[Dict], email: str, uid: str, s
     pp_set = set() # (session_id, resource_id)
     for pp in pp_res.data:
         pp_set.add((str(pp["session_id"]), str(pp["resource_id"])))
+
+    mcq_map = {} # roadmap_id -> list of sessions
+    for mcq in mcq_res.data:
+        rid = mcq["roadmap_id"]
+        if rid not in mcq_map: mcq_map[rid] = []
+        mcq_map[rid].append(mcq)
 
     for r in roadmaps:
         rid = r["id"]
@@ -215,7 +236,8 @@ async def _enrich_roadmap_progress(roadmaps: List[Dict], email: str, uid: str, s
                 completed_subs_all += 1
             
             # 3. Practice Score — count fully completed sessions
-            m_sessions = [ps for ps in ps_map.get(rid, []) if any(topic.get("id") == ps.get("subtopic_id") for topic in m_topics)]
+            m_sessions = [ps for ps in ps_map.get(rid, []) if any(str(topic.get("uuid")) == str(ps.get("subtopic_id")) for topic in m_topics)]
+            m_completed_practice = 0
             for ps in m_sessions:
                 resources = ps.get("resources", [])
                 if not resources:
@@ -225,7 +247,13 @@ async def _enrich_roadmap_progress(roadmaps: List[Dict], email: str, uid: str, s
                     for res in resources
                 )
                 if all_done:
-                    completed_practice_sessions += 1
+                    m_completed_practice += 1
+                    
+            m_mcqs = [mcq for mcq in mcq_map.get(rid, []) if any(str(topic.get("uuid")) == str(mcq.get("subtopic_id")) for topic in m_topics)]
+            m_completed_practice += len(m_mcqs)
+
+            if m_completed_practice > 0:
+                completed_practice_sessions += 1
 
             # Status determination logic: 
             # If a module is completed (all topics + solid/developing submission), we move on.
@@ -246,8 +274,8 @@ async def _enrich_roadmap_progress(roadmaps: List[Dict], email: str, uid: str, s
 
         # Overall Percent Calculation
         # Weights: 40% PoW (Submissions) + 30% Topics + 30% Practice
-        # Practice: minimum 5 completed sessions per module to reach full 30%
-        min_expected_sessions = total_modules * 5
+        # Practice: one completed session per module
+        min_expected_sessions = total_modules
         pow_weight = (completed_subs_all / total_subs_all) * 40 if total_subs_all > 0 else 0
         topic_weight = (completed_topics_all / total_topics_all) * 30 if total_topics_all > 0 else 0
         practice_weight = min(1.0, completed_practice_sessions / min_expected_sessions) * 30 if min_expected_sessions > 0 else 0
@@ -255,7 +283,7 @@ async def _enrich_roadmap_progress(roadmaps: List[Dict], email: str, uid: str, s
         percent = round(pow_weight + topic_weight + practice_weight)
 
         # Final Completion Check
-        if percent >= 100 and roadmap_status not in ["resubmit_required", "needs_improvement"]:
+        if percent >= 98 and roadmap_status not in ["resubmit_required", "needs_improvement"]:
             if db_status == "active":
                 roadmap_status = "completed"
                 # Persist completion status to DB in background
@@ -266,6 +294,15 @@ async def _enrich_roadmap_progress(roadmaps: List[Dict], email: str, uid: str, s
             # However, if it was ALREADY completed but skills haven't been extracted, we still want this trigger:
             elif background_tasks and uid and (not r.get("skills_extracted") or r.get("skills_extraction_error")):
                 background_tasks.add_task(extract_skills_from_roadmap, rid, uid)
+            
+            # Idempotently trigger certificate generation in case it failed previously
+            if background_tasks and uid:
+                try:
+                    prof_res = sb.table("profiles").select("is_pro").eq("supabase_uid", uid).single().execute()
+                    if prof_res.data and prof_res.data.get("is_pro"):
+                        background_tasks.add_task(generate_and_store_certificate, uid, rid)
+                except Exception as e:
+                    logger.error(f"Failed to queue certificate generation: {e}")
             
         r["calculated_progress"] = {
             "percent": percent,

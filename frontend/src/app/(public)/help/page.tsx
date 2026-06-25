@@ -41,6 +41,10 @@ export default function HelpPage() {
     {
       question: 'What is the refund policy for credits?',
       answer: 'Credits are non-refundable once they have been used to generate a roadmap. Unused credits can be refunded within 7 days of purchase. Credits never expire.',
+    },
+    {
+      question: 'Do I receive a certificate for my roadmaps?',
+      answer: 'Yes! Upon reaching 98% completion on any roadmap, you are awarded an official, verifiable digital certificate. These certificates include your precise time invested, average grade, and can be instantly added to your LinkedIn profile with one click.',
     }
   ];
 

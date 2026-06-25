@@ -31,7 +31,9 @@ import {
   Terminal,
   Box,
   Calendar,
-  Send
+  Send,
+  Award,
+  Sparkles
 } from 'lucide-react';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
@@ -63,6 +65,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
     const [isSyllabusOpen, setIsSyllabusOpen] = useState(false);
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
     const [completedTopics, setCompletedTopics] = useState<Set<string>>(new Set());
+    const [completedPracticeModules, setCompletedPracticeModules] = useState<Set<number>>(new Set());
     const [isUpdatingProgress, setIsUpdatingProgress] = useState(false);
     
     // Toast State
@@ -73,8 +76,58 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
     const [showMuteTooltip, setShowMuteTooltip] = useState(false);
     const [activeTab, setActiveTab] = useState<'objectives' | 'resources' | 'outcome'>('objectives');
 
+    const displayPercent = useMemo(() => {
+        const serverPercent = roadmap?.progress?.percent || 0;
+        const serverCompletedTopics = roadmap?.progress?.completed_topics || 0;
+        const totalTopics = roadmap?.progress?.total_topics || 1;
+        const serverCompletedPracticeModules = roadmap?.progress?.completed_practice_sessions || 0;
+        const totalModules = roadmap?.progress?.required_practice_sessions || roadmap?.roadmap_plan?.modules?.length || 1;
+        
+        const localTopicDelta = Math.max(0, completedTopics.size - serverCompletedTopics);
+        const topicDeltaPercent = (localTopicDelta / totalTopics) * 30; // 30% weight for topics
+        
+        const localPracticeDelta = Math.max(0, completedPracticeModules.size - serverCompletedPracticeModules);
+        const practiceDeltaPercent = (localPracticeDelta / totalModules) * 30; // 30% weight for practice
+        
+        return Math.min(100, Math.round(serverPercent + topicDeltaPercent + practiceDeltaPercent));
+    }, [roadmap?.progress, roadmap?.roadmap_plan?.modules?.length, completedTopics.size, completedPracticeModules.size]);
+
     // Submissions State
     const [submissions, setSubmissions] = useState<any[]>([]);
+    
+    // Certificate State
+    const [certificateId, setCertificateId] = useState<string | null>(null);
+
+    useEffect(() => {
+        if (displayPercent >= 98 && roadmap?.id) {
+            let timeoutId: NodeJS.Timeout;
+            
+            // Trigger backend completion flow (async, don't wait for it)
+            roadmapsAPI.getRoadmapById(roadmap.id).catch(console.error);
+            
+            const checkCert = async () => {
+                const { data: { session } } = await supabase.auth.getSession();
+                if (!session) return;
+                
+                const { data } = await supabase.from('certificates')
+                    .select('credential_id')
+                    .eq('roadmap_id', roadmap.id)
+                    .eq('user_id', session.user.id)
+                    .maybeSingle();
+                    
+                if (data && data.credential_id) {
+                    setCertificateId(data.credential_id);
+                } else {
+                    // Try again in 3 seconds (in case it's being generated)
+                    timeoutId = setTimeout(checkCert, 3000);
+                }
+            };
+            
+            checkCert();
+            
+            return () => clearTimeout(timeoutId);
+        }
+    }, [displayPercent, roadmap?.id]);
 
     // Practice State
     const [practiceSession, setPracticeSession] = useState<PracticeSession | null>(null);
@@ -132,6 +185,46 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
         
         return resources;
     }, [roadmap, currentModuleIndex]);
+
+    const fetchCompletedPractices = useCallback(async () => {
+        if (!roadmap || !roadmap.id) return;
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) return;
+
+            const { data: mcqData } = await supabase.from('mcq_sessions')
+                .select('subtopic_id')
+                .eq('roadmap_id', roadmap.id)
+                .eq('user_id', session.user.id)
+                .eq('status', 'completed');
+            
+            if (mcqData) {
+                const subtopicIds = new Set(mcqData.map(d => d.subtopic_id));
+                const completedMods = new Set<number>();
+                
+                roadmap.roadmap_plan?.modules?.forEach((module: any, idx: number) => {
+                    let hasCompleted = false;
+                    module.topics?.forEach((topic: any) => {
+                        if (topic.uuid && subtopicIds.has(topic.uuid)) {
+                            hasCompleted = true;
+                        }
+                    });
+                    if (hasCompleted) {
+                        completedMods.add(idx);
+                    }
+                });
+                setCompletedPracticeModules(completedMods);
+            }
+        } catch (err) {
+            console.error('Error fetching completed practices:', err);
+        }
+    }, [roadmap]);
+
+    useEffect(() => {
+        if (roadmap?.id) {
+            fetchCompletedPractices();
+        }
+    }, [fetchCompletedPractices, roadmap?.id]);
 
     const fetchPracticeSession = useCallback(async () => {
         if (!roadmap || !roadmap.id) return;
@@ -458,7 +551,11 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
         setCurrentModuleIndex(mIdx);
         setCurrentTopicIndex(tIdx);
         setViewMode('video');
-        updateProgressOnServer(mIdx, tIdx, false);
+        
+        // Preserve the completed status instead of passing false (which deletes the completion record)
+        const isCurrentlyCompleted = completedTopics.has(`${mIdx + 1}-${tIdx}`);
+        updateProgressOnServer(mIdx, tIdx, isCurrentlyCompleted);
+        
         if (window.innerWidth < 768) setIsSidebarOpen(false);
     };
 
@@ -633,10 +730,16 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                             : "text-text-primary hover:text-text-heading hover:bg-callout-bg"
                                     }`}
                                 >
-                                    <Target className={`h-5 w-5 mt-0.5 ${viewMode === 'practice' ? 'text-accent' : 'opacity-60'}`} />
-                                    <div className="flex flex-col">
+                                    {completedPracticeModules.has(currentModuleIndex) ? (
+                                        <CheckCircle className="h-5 w-5 mt-0.5 text-accent opacity-80 group-hover:opacity-100" />
+                                    ) : (
+                                        <Target className={`h-5 w-5 mt-0.5 ${viewMode === 'practice' ? 'text-accent' : 'opacity-60 group-hover:opacity-100'}`} />
+                                    )}
+                                    <div className="flex flex-col text-left">
                                         <span className="font-medium">Practice</span>
-                                        <span className="text-[10px] mt-1 opacity-80 group-hover:opacity-100 transition-opacity">Test your knowledge</span>
+                                        <span className="text-[10px] mt-1 opacity-80 group-hover:opacity-100 transition-opacity">
+                                            {completedPracticeModules.has(currentModuleIndex) ? 'Practice completed' : 'Test your knowledge'}
+                                        </span>
                                     </div>
                                 </button>
 
@@ -707,28 +810,18 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                     {/* Sidebar Footer with Progress */}
                     <div className="p-4 border-t border-border bg-sidebar/50">
                         <div className="mb-4">
-                            {(() => {
-                                const serverPercent = roadmap?.progress?.percent || 0;
-                                const serverCompletedTopics = roadmap?.progress?.completed_topics || 0;
-                                const totalTopics = roadmap?.progress?.total_topics || 1;
-                                const localDelta = Math.max(0, completedTopics.size - serverCompletedTopics);
-                                const topicDeltaPercent = (localDelta / totalTopics) * 30; // 30% weight for topics
-                                const displayPercent = Math.min(100, Math.round(serverPercent + topicDeltaPercent));
-                                return (
-                                    <>
-                                        <div className="flex items-center justify-between text-[11px] font-bold mb-1.5 px-1">
-                                            <span className="text-text-primary uppercase tracking-wider">Progress</span>
-                                            <span className="text-text-heading">{displayPercent}%</span>
-                                        </div>
-                                        <div className="h-1.5 w-full bg-border rounded-full overflow-hidden">
-                                            <div 
-                                                className="h-full bg-accent transition-all duration-500 ease-out rounded-full"
-                                                style={{ width: `${displayPercent}%` }}
-                                            />
-                                        </div>
-                                    </>
-                                );
-                            })()}
+                            <>
+                                <div className="flex items-center justify-between text-[11px] font-bold mb-1.5 px-1">
+                                    <span className="text-text-primary uppercase tracking-wider">Progress</span>
+                                    <span className="text-text-heading">{displayPercent}%</span>
+                                </div>
+                                <div className="h-1.5 w-full bg-border rounded-full overflow-hidden">
+                                    <div 
+                                        className="h-full bg-accent transition-all duration-500 ease-out rounded-full"
+                                        style={{ width: `${displayPercent}%` }}
+                                    />
+                                </div>
+                            </>
                         </div>
 
                         <div className="flex items-center justify-between px-1">
@@ -756,6 +849,54 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                     <div className="flex-1 overflow-y-auto no-scrollbar">
                         <div className="max-w-[1200px] mx-auto w-full p-4 md:p-8">
                             
+                            {displayPercent >= 98 && (
+                                <div className="mb-8 p-6 bg-gradient-to-r from-[var(--accent)]/10 to-[var(--accent)]/5 border border-[var(--accent)]/20 rounded-xl flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-14 h-14 bg-[var(--accent)]/20 rounded-full flex items-center justify-center shrink-0">
+                                            <Trophy className="h-7 w-7 text-accent" />
+                                        </div>
+                                        <div>
+                                            <h3 className="text-lg font-bold text-text-heading mb-1">Congratulations! You've mastered this roadmap.</h3>
+                                            <p className="text-text-primary text-[13px]">
+                                                You've successfully completed all topics, practices, and submissions.
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="shrink-0">
+                                        {profile?.is_pro ? (
+                                            certificateId ? (
+                                                <Link 
+                                                    href={`/certificates/${certificateId}`} 
+                                                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-accent text-background rounded-lg font-bold text-[13px] hover:opacity-90 transition-opacity shadow-sm"
+                                                >
+                                                    <Award className="h-4 w-4" />
+                                                    View Certificate
+                                                </Link>
+                                            ) : (
+                                                <button 
+                                                    disabled
+                                                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-accent/60 text-background rounded-lg font-bold text-[13px] shadow-sm cursor-not-allowed"
+                                                >
+                                                    <Loader className="h-4 w-4 animate-spin" />
+                                                    Generating...
+                                                </button>
+                                            )
+                                        ) : (
+                                            <Link 
+                                                href="/settings/billing" 
+                                                className="inline-flex flex-col items-center justify-center px-6 py-2 bg-text-heading text-background rounded-lg font-bold hover:opacity-90 transition-opacity shadow-sm"
+                                            >
+                                                <span className="flex items-center gap-2 text-[13px]">
+                                                    <Sparkles className="h-4 w-4 text-amber-400" />
+                                                    Upgrade to Pro
+                                                </span>
+                                                <span className="text-[10px] font-normal opacity-70">to download certificate</span>
+                                            </Link>
+                                        )}
+                                    </div>
+                                </div>
+                            )}
+
                             {viewMode === 'video' ? (
                                 <div className="animate-in fade-in duration-500">
                                     {/* Video Player Container */}
@@ -882,6 +1023,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                         onPointsEarned={(amount) => {
                                             setCoinToast({ show: true, amount });
                                             setTimeout(() => setCoinToast(null), 4000);
+                                            fetchCompletedPractices();
                                         }}
                                         onRefreshProfile={refreshProfile}
                                         onClose={() => setViewMode('video')}

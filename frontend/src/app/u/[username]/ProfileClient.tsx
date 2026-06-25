@@ -35,9 +35,12 @@ import {
     Flame,
     Zap,
     CheckCircle,
-    TrendingUp
+    TrendingUp,
+    Linkedin,
+    Share2
 } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import { PublicProfile, profileAPI } from '@/lib/api';
 import PublicHeader from '@/components/PublicHeader';
@@ -108,9 +111,10 @@ interface Props {
     profile: PublicProfile;
 }
 
-type TabType = 'overview' | 'skills' | 'evidence' | 'assessments' | 'insights';
+type TabType = 'overview' | 'skills' | 'evidence' | 'assessments' | 'insights' | 'certificates';
 
 export default function ProfileClient({ profile }: Props) {
+    const router = useRouter();
     const { openSettings } = useSettings();
     const [searchQuery, setSearchQuery] = useState("");
     const [isOwner, setIsOwner] = useState(false);
@@ -241,6 +245,7 @@ export default function ProfileClient({ profile }: Props) {
     const tabs: { id: TabType; label: string; icon: any; count?: number }[] = [
         { id: 'overview', label: 'Overview', icon: Layout },
         { id: 'skills', label: 'Skills', icon: BarChart3, count: profile.skills?.length },
+        { id: 'certificates', label: 'Certificates', icon: Award, count: (profile as any).certificates?.length },
         { id: 'evidence', label: 'Evidence', icon: FileText, count: profile.submissions?.length },
         { id: 'assessments', label: 'Assessments', icon: History, count: profile.mcq_history?.length },
         { id: 'insights', label: 'Insights', icon: MessageSquare, count: profile.discussions?.length },
@@ -624,6 +629,79 @@ export default function ProfileClient({ profile }: Props) {
                                 ) : (
                                     <div className="py-20 text-center border border-dashed border-border rounded-lg bg-sidebar/5">
                                         <p className="text-[13px] text-text-muted italic opacity-60">Awaiting review logs.</p>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {activeTab === 'certificates' && (
+                            <div className="space-y-4 animate-in fade-in duration-300">
+                                {pAny.certificates && pAny.certificates.length > 0 ? (
+                                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                                        {pAny.certificates.map((cert: any, idx: number) => (
+                                            <div key={idx} className="relative flex flex-col justify-between p-5 overflow-hidden transition-all duration-300 border shadow-sm group bg-header border-border/60 rounded-xl hover:shadow-md hover:border-accent/40">
+                                                <div className="absolute top-0 right-0 w-32 h-32 transition-colors pointer-events-none bg-accent/5 rounded-full blur-2xl group-hover:bg-accent/10" />
+                                                <div className="relative z-10">
+                                                    <div className="flex items-start justify-between mb-3">
+                                                        <div className="p-2 border rounded-lg bg-teal-500/10 border-teal-500/20 text-teal-600">
+                                                            <Award className="w-5 h-5" />
+                                                        </div>
+                                                        <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest bg-sidebar px-2 py-1 rounded-md border border-border">
+                                                            Grade {cert.grade}
+                                                        </span>
+                                                    </div>
+                                                    <h4 className="text-[15px] font-bold text-text-heading tracking-tight leading-snug mb-1 group-hover:text-accent transition-colors line-clamp-2">
+                                                        {cert.roadmap_title || 'Roadmap Certificate'}
+                                                    </h4>
+                                                    <p className="text-[11px] text-text-muted font-medium mb-4">
+                                                        {new Date(cert.issued_at).toLocaleDateString()} • {cert.time_invested_hours.toFixed(1)} Hours
+                                                    </p>
+                                                </div>
+                                                <div className="relative z-10 flex items-center justify-between pt-4 border-t border-border/50">
+                                                    <div className="flex items-center justify-between w-full">
+                                                        <Link 
+                                                            href={`/certificates/${cert.credential_id}`}
+                                                            className="text-[10px] font-bold text-accent hover:opacity-80 flex items-center gap-1.5 uppercase tracking-widest transition-all"
+                                                        >
+                                                            Verify <ExternalLink className="w-3 h-3" />
+                                                        </Link>
+                                                        <div className="flex items-center gap-3">
+                                                            <button
+                                                                onClick={() => {
+                                                                    const url = `https://www.eulerfold.com/certificates/${cert.credential_id}`;
+                                                                    if (navigator.share) {
+                                                                        navigator.share({
+                                                                            title: `${cert.roadmap_title} Certificate`,
+                                                                            url: url
+                                                                        }).catch(console.error);
+                                                                    } else {
+                                                                        navigator.clipboard.writeText(url);
+                                                                        alert('Certificate link copied to clipboard!');
+                                                                    }
+                                                                }}
+                                                                className="text-text-muted hover:text-accent transition-colors"
+                                                                title="Share Certificate"
+                                                            >
+                                                                <Share2 className="w-4 h-4" />
+                                                            </button>
+                                                            <a
+                                                                href={`https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=${encodeURIComponent(cert.roadmap_title || 'Certificate')}&organizationName=EulerFold&issueYear=${new Date(cert.issued_at).getFullYear()}&issueMonth=${new Date(cert.issued_at).getMonth() + 1}&certUrl=${encodeURIComponent(`https://www.eulerfold.com/certificates/${cert.credential_id}`)}&certId=${cert.credential_id}`}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="text-[#0a66c2] hover:opacity-80 transition-opacity"
+                                                                title="Add to LinkedIn"
+                                                            >
+                                                                <Linkedin className="w-4 h-4" />
+                                                            </a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="py-20 text-center border border-dashed rounded-lg border-border bg-sidebar/5">
+                                        <p className="text-[13px] text-text-muted italic opacity-60">No certificates earned yet.</p>
                                     </div>
                                 )}
                             </div>

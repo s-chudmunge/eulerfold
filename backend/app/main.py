@@ -54,7 +54,7 @@ class COOPMiddleware(BaseHTTPMiddleware):
 
 from app.core.websocket_manager import manager
 
-from app.routers import health, roadmaps, auth, explore, coins, practice, profiles, sessions, leaderboard, payments, discussions, planner, tts, research_lab, interactions, ai_usage, dashboard, misc
+from app.routers import health, roadmaps, auth, explore, coins, practice, profiles, sessions, leaderboard, payments, discussions, planner, tts, research_lab, interactions, ai_usage, dashboard, misc, certificates
 from app.routers import submissions as submissions_router
 from app.core.config import settings
 
@@ -148,6 +148,8 @@ app.include_router(explore.router)
 app.include_router(coins.router)
 app.include_router(practice.router)
 app.include_router(profiles.router)
+
+app.include_router(certificates.router, prefix="/certificates", tags=["certificates"])
 
 app.include_router(sessions.router)
 app.include_router(leaderboard.router)

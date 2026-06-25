@@ -81,6 +81,7 @@ export default function HeroSection() {
 
             <GoogleTrustBadge />
 
+
             <div className="mt-8">
               <TrustedSourcesTicker />
             </div>
