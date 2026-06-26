@@ -118,53 +118,48 @@ export default function PricingSection() {
 
                 <div className="space-y-4 mb-10 flex-1 relative z-10">
                     <div className="mb-4 font-bold text-text-heading text-[11px] uppercase tracking-widest">Everything in Basic, plus:</div>
-                    <div className="space-y-3">
-                        <div className="flex items-start gap-3 text-[12px] text-text-primary font-bold">
-                            <span className="text-teal-600 mt-0.5">✓</span>
-                            <span>50 credits</span>
-                        </div>
+                    <div className="space-y-4">
                         <div className="flex items-start gap-3 text-[12px] text-text-primary">
-                            <span className="text-teal-600 mt-0.5">✓</span>
-                            <span>Unlimited depth extensions</span>
-                        </div>
-                        <div className="flex items-start gap-3 text-[12px] text-teal-600 dark:text-teal-400 font-bold">
-                            <span className="text-teal-600 dark:text-teal-400 mt-0.5">✓</span>
-                            <span>Homework Submission & Evaluation</span>
-                        </div>
-                        <div className="flex items-start gap-3 text-[12px] text-text-primary">
-                            <span className="text-teal-600 mt-0.5">✓</span>
-                            <span>Job market insights</span>
+                            <span className="text-teal-600 mt-0.5 font-bold">✓</span>
+                            <div>
+                                <span className="font-bold text-text-heading">50 Premium Credits / month</span>
+                                <p className="text-[11px] text-text-muted mt-0.5">For deep generation and unlimited extensions.</p>
+                            </div>
                         </div>
                         <div className="flex items-start gap-3 text-[12px] text-text-primary">
                             <span className="text-teal-600 mt-0.5 font-bold">✓</span>
-                            <span>Up to 12-week strategic mapping</span>
-                        </div>
-                        <div className="flex items-start gap-3 text-[12px] text-accent font-bold">
-                            <span className="text-accent mt-0.5">✓</span>
-                            <span>Research Lab Paper Decoding</span>
-                        </div>
-                        <div className="flex items-start gap-3 text-[12px] text-accent font-bold">
-                            <span className="text-accent mt-0.5">✓</span>
-                            <div className="flex flex-col">
-                                <span>Custom Learning Paths</span>
-                                <div className="flex flex-col gap-1 mt-1.5 text-[10.5px] text-accent/80 font-medium">
-                                    <span>• Build courses from any web link</span>
-                                    <span>• Turn PDF syllabi into study plans</span>
-                                    <span>• Take quizzes to find & fix weak spots</span>
-                                </div>
+                            <div>
+                                <span className="font-bold text-text-heading">AI Practice Portal & Evaluation</span>
+                                <p className="text-[11px] text-text-muted mt-0.5">Take quizzes, submit homework, and get feedback.</p>
                             </div>
                         </div>
-                        <div className="flex items-start gap-3 text-[12px] text-teal-600 dark:text-teal-400 font-bold">
-                            <span className="text-teal-600 dark:text-teal-400 mt-0.5">✓</span>
-                            <span>Priority AI reasoning models</span>
+                        <div className="flex items-start gap-3 text-[12px] text-text-primary">
+                            <span className="text-teal-600 mt-0.5 font-bold">✓</span>
+                            <div>
+                                <span className="font-bold text-text-heading">Custom Learning Paths</span>
+                                <p className="text-[11px] text-text-muted mt-0.5">Build courses from URLs, PDFs, or job descriptions.</p>
+                            </div>
                         </div>
-                        <div className="flex items-start gap-3 text-[12px] text-teal-600 dark:text-teal-400 font-bold">
-                            <span className="text-teal-600 dark:text-teal-400 mt-0.5">✓</span>
-                            <span>EulerFold AI Practice Portal</span>
+                        <div className="flex items-start gap-3 text-[12px] text-text-primary">
+                            <span className="text-teal-600 mt-0.5 font-bold">✓</span>
+                            <div>
+                                <span className="font-bold text-text-heading">Research Lab Access</span>
+                                <p className="text-[11px] text-text-muted mt-0.5">Decode complex ArXiv papers into study plans.</p>
+                            </div>
                         </div>
-                        <div className="flex items-start gap-3 text-[12px] text-teal-600 dark:text-teal-400 font-bold">
-                            <span className="text-teal-600 dark:text-teal-400 mt-0.5">✓</span>
-                            <span>Verifiable Digital Certificates</span>
+                        <div className="flex items-start gap-3 text-[12px] text-text-primary">
+                            <span className="text-teal-600 mt-0.5 font-bold">✓</span>
+                            <div>
+                                <span className="font-bold text-text-heading">Verifiable Certificates</span>
+                                <p className="text-[11px] text-text-muted mt-0.5">Prove mastery with 1-click LinkedIn integration.</p>
+                            </div>
+                        </div>
+                        <div className="flex items-start gap-3 text-[12px] text-text-primary">
+                            <span className="text-teal-600 mt-0.5 font-bold">✓</span>
+                            <div>
+                                <span className="font-bold text-text-heading">Priority AI Models</span>
+                                <p className="text-[11px] text-text-muted mt-0.5">Faster generation and smarter structuring.</p>
+                            </div>
                         </div>
                     </div>
                 </div>

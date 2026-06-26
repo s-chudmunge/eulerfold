@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { Plus, GraduationCap, ArrowRight, BookOpen, Target, Zap } from 'lucide-react';
+import { Plus, GraduationCap, ArrowRight, BookOpen, Target, Zap, FileSearch, Link2, Sparkles } from 'lucide-react';
 import PublicHeader from '@/components/PublicHeader';
 import Footer from '@/components/Footer';
 import { AlreadySignedInMessage, FAQAccordion, LandingOnboardingTrigger } from './HomeClientComponents';
@@ -15,7 +15,6 @@ import GenerationSystems from '@/components/landing/GenerationSystems';
 import RoadmapDiscovery from '@/components/landing/RoadmapDiscovery';
 import CertificationSection from '@/components/landing/CertificationSection';
 import EulerLogoCanvas from '@/components/EulerLogoCanvas';
-import InteractiveDemo from '@/components/landing/InteractiveDemo';
 import { ExploreRoadmap } from '@/lib/api';
 import VerifiedBadge from '@/components/VerifiedBadge';
 import { getCategory } from '@/lib/roadmapUtils';
@@ -185,7 +184,7 @@ export default async function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-text-primary flex flex-col font-sans relative overflow-hidden">
+    <div className="min-h-screen bg-background text-text-primary flex flex-col font-sans relative overflow-clip">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
@@ -202,8 +201,6 @@ export default async function LandingPage() {
       
       <main className="flex-grow">
         <HeroSection />
-
-        <InteractiveDemo />
 
         <GenerationSystems />
 
@@ -231,28 +228,53 @@ export default async function LandingPage() {
         <SocialFeed />
 
         {/* Final CTA Section */}
-        <section className="py-12 md:py-32 px-4 md:px-6 relative overflow-hidden">
-          <div className="lg:max-w-[60%] mx-auto relative rounded-[32px] md:rounded-[40px] overflow-hidden border border-border bg-sidebar/50 min-h-[400px] md:min-h-[450px] flex items-center justify-center shadow-xl">
-            <div className="max-w-3xl mx-auto text-center relative z-10 px-6 py-12 md:py-0">
-              <h2 className="font-inter text-2xl md:text-4xl font-bold text-text-heading mb-4 tracking-tight">
-                Build your first roadmap.
-              </h2>
-              <p className="manrope-body text-[15px] md:text-[17px] text-text-primary mb-10 max-w-lg mx-auto leading-relaxed font-medium">
-                Start learning with a structured plan today. No credit card required.
-              </p>
-              <Link 
-                href="/generate"
-                className="inline-flex items-center justify-center bg-accent text-white hover:bg-teal-700 px-9 py-4 rounded-lg text-[15px] font-bold transition-all shadow-sm gap-3 group overflow-hidden  mb-8"
-              >
-                <Plus className="w-4 h-4" /> Generate My Roadmap
-              </Link>
+        <section className="w-full relative overflow-hidden h-[600px] md:h-[700px] flex items-center">
+          {/* Background Image */}
+          <div 
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: "url('/cta-bg-norobot.jpg')" }}
+          />
+          {/* Overlay to ensure text readability */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent pointer-events-none" />
 
-              <div className="flex items-center justify-center gap-2">
-                <span className="manrope-body text-[13px] text-text-muted">Already have an account?</span>
-                <Link href="/login" className="manrope-body text-[13px] font-bold text-accent hover:underline">
-                  Sign in
-                </Link>
+          <div className="w-full max-w-[1400px] mx-auto px-6 md:px-12 relative z-10">
+            <div className="max-w-xl">
+              <h3 className="text-teal-400 font-bold text-[18px] md:text-[22px] mb-2 tracking-tight">
+                Meet EulerFold AI
+              </h3>
+              <h2 className="text-white font-bold text-4xl md:text-6xl mb-8 leading-[1.1] tracking-tight" style={{ textShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
+                Let the learning<br />adventure begin!
+              </h2>
+
+              {/* Glowing Prompt Box */}
+              <div className="bg-white rounded-2xl p-4 shadow-[0_20px_60px_rgba(0,0,0,0.3)] border-[3px] border-white/60 backdrop-blur-md relative">
+                {/* Glow ring */}
+                <div className="absolute -inset-2 bg-white rounded-2xl blur-xl opacity-20 pointer-events-none" />
+                
+                <textarea 
+                  className="w-full h-24 resize-none bg-transparent outline-none text-gray-800 placeholder-gray-400 text-[14px] md:text-[15px] font-medium p-2 relative z-10"
+                  placeholder="e.g. I want to create an online learning platform with course creation and student progress tracking."
+                />
+                
+                <div className="flex items-center justify-between mt-2 border-t border-gray-100 pt-3 relative z-10">
+                  <div className="flex items-center gap-2">
+                    <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 text-gray-600 hover:bg-gray-50 text-[11px] md:text-[12px] font-bold transition-colors">
+                      <FileSearch className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Upload</span>
+                    </button>
+                    <button className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-gray-200 text-gray-600 hover:bg-gray-50 text-[11px] md:text-[12px] font-bold transition-colors">
+                      <Link2 className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Add Link</span>
+                    </button>
+                  </div>
+                  
+                  <Link 
+                    href="/generate"
+                    className="flex items-center gap-2 bg-accent hover:bg-teal-700 text-white px-5 py-2.5 rounded-full font-bold text-[12px] md:text-[13px] shadow-sm transition-colors uppercase tracking-widest"
+                  >
+                    <Sparkles className="w-3.5 h-3.5" /> Generate
+                  </Link>
+                </div>
               </div>
+
             </div>
           </div>
         </section>

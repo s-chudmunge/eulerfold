@@ -582,12 +582,13 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
 
             
             <div className="space-y-5">
-               <label className="inconsolata-ui flex items-center text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted">
-                 1. Core Objective
+               <label className="flex items-center gap-2 text-[11px] font-bold text-text-muted/80">
+                 <div className="w-5 h-5 rounded-md bg-accent/10 flex items-center justify-center text-[10px] font-bold text-accent">1</div>
+                 Core Objective
                </label>
 
                {/* Subject - Required & More Prominent */}
-               <div className="space-y-2.5">
+               <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <Zap className="w-3.5 h-3.5 text-accent" />
                     <span className="text-[13px] font-bold text-text-heading">What subject do you want to master?</span>
@@ -599,12 +600,12 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                     value={formData.subject}
                     onChange={handleInputChange}
                     placeholder="e.g. Distributed Systems"
-                    className="w-full px-4 py-3 bg-callout-bg border-2 border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[16px] font-bold text-text-heading placeholder:font-normal placeholder:text-text-muted/50"
+                    className="w-full px-4 py-3 bg-sidebar/40 border border-border/60 rounded-lg focus:outline-none focus:border-accent focus:bg-sidebar/60 focus:ring-1 focus:ring-accent/20 transition-all text-[15px] font-bold text-text-heading placeholder:font-normal placeholder:text-text-muted/40"
                   />
                </div>
 
                {/* Goal - Required & More Prominent */}
-               <div className="space-y-2.5">
+               <div className="space-y-2">
                   <div className="flex items-center gap-2">
                     <Route className="w-3.5 h-3.5 text-accent" />
                     <span className="text-[13px] font-bold text-text-heading">Specific End Goal</span>
@@ -615,7 +616,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                     onChange={handleInputChange}
                     rows={2}
                     placeholder="Example: I want to be able to build a scalable real-time chat application using WebSockets and Redis."
-                    className="w-full px-4 py-3 bg-callout-bg border-2 border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[14px] font-medium text-text-heading placeholder:text-text-muted/50 resize-none h-20"
+                    className="w-full px-4 py-3 bg-sidebar/40 border border-border/60 rounded-lg focus:outline-none focus:border-accent focus:bg-sidebar/60 focus:ring-1 focus:ring-accent/20 transition-all text-[14px] font-medium text-text-heading placeholder:text-text-muted/40 resize-none h-20"
                   />
                </div>
 
@@ -650,7 +651,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                                   setRoleSearchCurrent(e.target.value);
                                   setFormData(prev => ({ ...prev, current_role: e.target.value }));
                                 }}
-                                className="w-full px-3 py-2 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[13px] font-medium"
+                                className="w-full px-3 py-2.5 bg-sidebar/40 border border-border/60 rounded-lg focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/20 transition-all text-[13px] font-medium"
                               />
                               <ChevronDown className={`absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted transition-transform ${isRoleDropdownOpenCurrent ? 'rotate-180' : ''}`} />
 
@@ -691,7 +692,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                                   setRoleSearchTarget(e.target.value);
                                   setFormData(prev => ({ ...prev, target_role: e.target.value }));
                                 }}
-                                className="w-full px-3 py-2 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[13px] font-medium"
+                                className="w-full px-3 py-2.5 bg-sidebar/40 border border-border/60 rounded-lg focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/20 transition-all text-[13px] font-medium"
                               />
                               <ChevronDown className={`absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted transition-transform ${isRoleDropdownOpenTarget ? 'rotate-180' : ''}`} />
 
@@ -755,8 +756,9 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
             <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 mt-8">
             {session && (
             <div className="space-y-3">
-               <label className="inconsolata-ui flex items-center text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted">
-                 2. Intensity & Context
+               <label className="flex items-center gap-2 text-[11px] font-bold text-text-muted/80">
+                 <div className="w-5 h-5 rounded-md bg-accent/10 flex items-center justify-center text-[10px] font-bold text-accent">2</div>
+                 Intensity & Context
                </label>
 
                {useLocalAI && (
@@ -830,7 +832,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                         onChange={handleInputChange}
                         rows={2}
                         placeholder="What do you already know? Any specific technologies you prefer or want to avoid?"
-                        className="w-full px-3 py-2 bg-callout-bg border border-border rounded-lg focus:outline-none focus:border-accent transition-all text-[13px] font-medium resize-none h-20"
+                        className="w-full px-3 py-2.5 bg-sidebar/40 border border-border/60 rounded-lg focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/20 transition-all text-[13px] font-medium resize-none h-20"
                       />
                     </div>
                   )}
@@ -841,9 +843,9 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
             {session && (
               <>
               <div className="mt-8 flex flex-col gap-2 max-w-sm">
-                <div className="flex items-center gap-1.5 mb-1">
-                  <Cpu className="w-4 h-4 text-accent" />
-                  <span className="text-[12px] font-bold text-text-heading uppercase tracking-widest">Select AI Engine</span>
+                <div className="flex items-center gap-2 mb-1">
+                  <div className="w-5 h-5 rounded-md bg-accent/10 flex items-center justify-center text-[10px] font-bold text-accent">3</div>
+                  <span className="text-[11px] font-bold text-text-muted/80">AI Engine</span>
                 </div>
                 <div className="flex items-center justify-between p-1 bg-sidebar border border-border rounded-lg w-full">
                   <button

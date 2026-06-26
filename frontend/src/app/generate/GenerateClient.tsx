@@ -29,7 +29,6 @@ import {
   GraduationCap,
   Compass,
   ChevronDown,
-  Hourglass,
   Link2,
   Target
 } from 'lucide-react';
@@ -37,10 +36,20 @@ import { supabase } from '@/lib/supabase/client';
 import PublicHeader from '@/components/PublicHeader';
 import Footer from '@/components/Footer';
 
-function InstructionsSidePanel({ mode }: { mode: 'ai' | 'job' | 'url' | 'syllabus' | 'gaps' }) {
+type Mode = 'ai' | 'job' | 'url' | 'syllabus' | 'gaps';
+
+const MODE_CONFIG: { id: Mode; label: string; icon: React.ElementType; desc: string; color: string; activeColor: string }[] = [
+  { id: 'ai', label: 'AI Gen', icon: Sparkles, desc: 'From any topic', color: 'text-accent', activeColor: 'bg-accent' },
+  { id: 'job', label: 'Job Decoded', icon: Briefcase, desc: 'From a job post', color: 'text-teal-600', activeColor: 'bg-teal-600' },
+  { id: 'url', label: 'From Link', icon: Link2, desc: 'From a URL', color: 'text-indigo-500', activeColor: 'bg-indigo-500' },
+  { id: 'syllabus', label: 'Syllabus', icon: BookOpen, desc: 'From course text', color: 'text-amber-600', activeColor: 'bg-amber-600' },
+  { id: 'gaps', label: 'Skill Quiz', icon: Target, desc: 'Find your gaps', color: 'text-rose-500', activeColor: 'bg-rose-500' },
+];
+
+function InstructionsSidePanel({ mode }: { mode: Mode }) {
   const [openSection, setOpenSection] = useState<'instructions' | 'faq' | null>(null);
 
-  const instructions = {
+  const instructions: Record<Mode, string[]> = {
     ai: [
       "Be specific about your goal. Instead of 'Learn Python', try 'Build scalable backend APIs in Python'.",
       "Select a timeline that matches your realistic schedule.",
@@ -68,7 +77,7 @@ function InstructionsSidePanel({ mode }: { mode: 'ai' | 'job' | 'url' | 'syllabu
     ]
   };
 
-  const faqs = {
+  const faqs: Record<Mode, { q: string; a: string }[]> = {
     ai: [
       { q: "How are references verified?", a: "The AI executes real-time DuckDuckGo searches for every module to guarantee live, authoritative references." },
       { q: "What is Local AI Mode?", a: "It runs models directly on your device via WebGPU, ensuring total privacy since no data leaves your machine." },
@@ -92,12 +101,12 @@ function InstructionsSidePanel({ mode }: { mode: 'ai' | 'job' | 'url' | 'syllabu
     gaps: [
       { q: "How many questions are in the quiz?", a: "Typically 5-10 multiple choice questions dynamically generated based on your target role." },
       { q: "What if I get everything right?", a: "The AI will generate an advanced roadmap to push your skills even further." },
-      { q: "Is this a Pro feature?", a: "Yes, diagnostic auditing is a highly intensive operation exclusive to Pro members." }
+      { q: "Is this a Pro feature?", a: "Yes, diagnostic auditing is an intensive operation exclusive to Pro members." }
     ]
   };
 
-  const currentInstructions = instructions[mode] || instructions.ai;
-  const currentFaqs = faqs[mode] || faqs.ai;
+  const currentInstructions = instructions[mode];
+  const currentFaqs = faqs[mode];
   
   const commonFaqs = [
     { q: "How long does generation take?", a: "Usually 20-40 seconds depending on the complexity of the live web searches." },
@@ -107,24 +116,24 @@ function InstructionsSidePanel({ mode }: { mode: 'ai' | 'job' | 'url' | 'syllabu
   const allFaqs = [...currentFaqs, ...commonFaqs];
 
   return (
-    <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-left-4 duration-700">
-      <div className="bg-sidebar border border-border rounded-lg overflow-hidden">
+    <div className="flex flex-col gap-3 animate-in fade-in slide-in-from-left-4 duration-700">
+      <div className="bg-sidebar/60 border border-border/60 rounded-lg overflow-hidden">
         <button 
           onClick={() => setOpenSection(openSection === 'instructions' ? null : 'instructions')}
-          className="w-full flex items-center justify-between p-4 bg-sidebar hover:bg-sidebar/80 transition-colors"
+          className="w-full flex items-center justify-between p-3.5 hover:bg-sidebar/80 transition-colors"
         >
           <div className="flex items-center gap-2">
-            <FileText className="w-4 h-4 text-accent" />
-            <span className="text-[13px] font-bold text-text-heading uppercase tracking-widest">Instructions</span>
+            <FileText className="w-3.5 h-3.5 text-accent" />
+            <span className="text-[12px] font-bold text-text-heading">Tips</span>
           </div>
-          <ChevronDown className={`w-4 h-4 text-text-muted transition-transform duration-300 ${openSection === 'instructions' ? 'rotate-180' : ''}`} />
+          <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-300 ${openSection === 'instructions' ? 'rotate-180' : ''}`} />
         </button>
-        <div className={`transition-all duration-300 ease-in-out overflow-hidden ${openSection === 'instructions' ? 'max-h-96 border-t border-border/50' : 'max-h-0'}`}>
-          <div className="p-4 bg-background/50">
-            <ul className="space-y-3">
+        <div className={`transition-all duration-300 ease-in-out overflow-hidden ${openSection === 'instructions' ? 'max-h-96 border-t border-border/40' : 'max-h-0'}`}>
+          <div className="p-3.5 bg-background/50">
+            <ul className="space-y-2.5">
               {currentInstructions.map((inst, idx) => (
-                <li key={idx} className="flex items-start gap-2 text-[12px] text-text-muted leading-relaxed">
-                  <CheckCircle2 className="w-3.5 h-3.5 mt-0.5 text-teal-600 shrink-0" />
+                <li key={idx} className="flex items-start gap-2 text-[11px] text-text-muted leading-relaxed">
+                  <CheckCircle2 className="w-3 h-3 mt-0.5 text-accent shrink-0" />
                   <span>{inst}</span>
                 </li>
               ))}
@@ -133,116 +142,26 @@ function InstructionsSidePanel({ mode }: { mode: 'ai' | 'job' | 'url' | 'syllabu
         </div>
       </div>
 
-      <div className="bg-sidebar border border-border rounded-lg overflow-hidden">
+      <div className="bg-sidebar/60 border border-border/60 rounded-lg overflow-hidden">
         <button 
           onClick={() => setOpenSection(openSection === 'faq' ? null : 'faq')}
-          className="w-full flex items-center justify-between p-4 bg-sidebar hover:bg-sidebar/80 transition-colors"
+          className="w-full flex items-center justify-between p-3.5 hover:bg-sidebar/80 transition-colors"
         >
           <div className="flex items-center gap-2">
-            <HelpCircle className="w-4 h-4 text-accent" />
-            <span className="text-[13px] font-bold text-text-heading uppercase tracking-widest">FAQ</span>
+            <HelpCircle className="w-3.5 h-3.5 text-accent" />
+            <span className="text-[12px] font-bold text-text-heading">FAQ</span>
           </div>
-          <ChevronDown className={`w-4 h-4 text-text-muted transition-transform duration-300 ${openSection === 'faq' ? 'rotate-180' : ''}`} />
+          <ChevronDown className={`w-3.5 h-3.5 text-text-muted transition-transform duration-300 ${openSection === 'faq' ? 'rotate-180' : ''}`} />
         </button>
-        <div className={`transition-all duration-300 ease-in-out overflow-hidden ${openSection === 'faq' ? 'max-h-[800px] border-t border-border/50' : 'max-h-0'}`}>
-          <div className="p-4 bg-background/50 space-y-4 overflow-y-auto max-h-[60vh]">
+        <div className={`transition-all duration-300 ease-in-out overflow-hidden ${openSection === 'faq' ? 'max-h-[800px] border-t border-border/40' : 'max-h-0'}`}>
+          <div className="p-3.5 bg-background/50 space-y-3 overflow-y-auto max-h-[60vh]">
             {allFaqs.map((faq, idx) => (
-              <div key={idx} className={idx > currentFaqs.length - 1 ? "pt-2 border-t border-border/50" : ""}>
-                <h4 className="text-[12px] font-bold text-text-heading mb-1">{faq.q}</h4>
-                <p className="text-[11px] text-text-muted leading-relaxed">{faq.a}</p>
+              <div key={idx} className={idx > currentFaqs.length - 1 ? "pt-2 border-t border-border/40" : ""}>
+                <h4 className="text-[11px] font-bold text-text-heading mb-0.5">{faq.q}</h4>
+                <p className="text-[10px] text-text-muted leading-relaxed">{faq.a}</p>
               </div>
             ))}
           </div>
-        </div>
-      </div>
-
-    </div>
-  );
-}
-
-function GenerateHero({ mode, setMode }: { mode: 'ai' | 'job' | 'url' | 'syllabus' | 'gaps', setMode: (mode: 'ai' | 'job' | 'url' | 'syllabus' | 'gaps') => void }) {
-  return (
-    <div className="relative pt-16 md:pt-24 pb-16 overflow-hidden border-b border-border/40 bg-background/50">
-      <div className="absolute inset-0 bg-teal-900/[0.02] -z-10" />
-      <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-teal-500/10 rounded-full blur-[120px] -z-10" />
-      
-      <div className="max-w-4xl mx-auto px-6 text-center">
-        <div className="flex flex-col items-center justify-center gap-4 mb-6 animate-in fade-in slide-in-from-bottom-3 duration-700 delay-100">
-          <EulerLogoCanvas size={64} color1={0xb45309} color2={0xfbbf24} wireframe={false} />
-          <h1 className="font-inter text-3xl sm:text-4xl md:text-5xl font-semibold text-text-heading tracking-tight leading-[1.15] md:leading-[1.1]">
-            Architect your learning with <br className="hidden md:block"/> 
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-teal-400">precision and depth</span>
-          </h1>
-        </div>
-        <p className="text-text-muted text-base md:text-lg manrope-body font-medium leading-relaxed max-w-2xl mx-auto mb-10 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
-          Build custom, technical roadmaps curated in real-time. Generate your curriculum from a topic, a job description, a web link, a syllabus, or a skill gap quiz.
-        </p>
-        <div className="flex flex-wrap items-center justify-center gap-2 md:gap-3 animate-in fade-in slide-in-from-bottom-5 duration-700 delay-300">
-          <button 
-            onClick={() => {
-              setMode('ai');
-              if (window.innerWidth < 768) document.getElementById('generator-workspace')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }}
-            className={`inline-flex items-center justify-center px-3.5 md:px-5 py-2 md:py-2.5 rounded-lg text-[12px] md:text-[13px] font-bold transition-all duration-300 shadow-sm gap-1.5 md:gap-2 ${
-              mode === 'ai' 
-                ? 'bg-accent text-white scale-[1.02] md:scale-105 opacity-100 ring-2 ring-accent/50' 
-                : 'bg-sidebar border border-border text-text-heading hover:bg-header opacity-60 md:opacity-50 hover:opacity-100'
-            }`}
-          >
-            <Sparkles className={`w-3.5 h-3.5 md:w-4 md:h-4 ${mode === 'ai' ? 'text-white' : 'text-accent'}`} /> AI Gen
-          </button>
-          <button 
-            onClick={() => {
-              setMode('job');
-              if (window.innerWidth < 768) document.getElementById('generator-workspace')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }}
-            className={`inline-flex items-center justify-center px-3.5 md:px-5 py-2 md:py-2.5 rounded-lg text-[12px] md:text-[13px] font-bold transition-all duration-300 shadow-sm gap-1.5 md:gap-2 ${
-              mode === 'job' 
-                ? 'bg-teal-600 text-white scale-[1.02] md:scale-105 opacity-100 ring-2 ring-teal-600/50' 
-                : 'bg-sidebar border border-border text-text-heading hover:bg-header opacity-60 md:opacity-50 hover:opacity-100'
-            }`}
-          >
-            <Briefcase className={`w-3.5 h-3.5 md:w-4 md:h-4 ${mode === 'job' ? 'text-white' : 'text-teal-600'}`} /> Job Decoded
-          </button>
-          <button 
-            onClick={() => {
-              setMode('url');
-              if (window.innerWidth < 768) document.getElementById('generator-workspace')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }}
-            className={`inline-flex items-center justify-center px-3.5 md:px-5 py-2 md:py-2.5 rounded-lg text-[12px] md:text-[13px] font-bold transition-all duration-300 shadow-sm gap-1.5 md:gap-2 ${
-              mode === 'url' 
-                ? 'bg-indigo-500 text-white scale-[1.02] md:scale-105 opacity-100 ring-2 ring-indigo-500/50' 
-                : 'bg-sidebar border border-border text-text-heading hover:bg-header opacity-60 md:opacity-50 hover:opacity-100'
-            }`}
-          >
-            <Link2 className={`w-3.5 h-3.5 md:w-4 md:h-4 ${mode === 'url' ? 'text-white' : 'text-indigo-400'}`} /> From Link
-          </button>
-          <button 
-            onClick={() => {
-              setMode('syllabus');
-              if (window.innerWidth < 768) document.getElementById('generator-workspace')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }}
-            className={`inline-flex items-center justify-center px-3.5 md:px-5 py-2 md:py-2.5 rounded-lg text-[12px] md:text-[13px] font-bold transition-all duration-300 shadow-sm gap-1.5 md:gap-2 ${
-              mode === 'syllabus' 
-                ? 'bg-amber-600 text-white scale-[1.02] md:scale-105 opacity-100 ring-2 ring-amber-600/50' 
-                : 'bg-sidebar border border-border text-text-heading hover:bg-header opacity-60 md:opacity-50 hover:opacity-100'
-            }`}
-          >
-            <BookOpen className={`w-3.5 h-3.5 md:w-4 md:h-4 ${mode === 'syllabus' ? 'text-white' : 'text-amber-500'}`} /> Syllabus
-          </button>
-          <button 
-            onClick={() => {
-              setMode('gaps');
-              if (window.innerWidth < 768) document.getElementById('generator-workspace')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }}
-            className={`inline-flex items-center justify-center px-3.5 md:px-5 py-2 md:py-2.5 rounded-lg text-[12px] md:text-[13px] font-bold transition-all duration-300 shadow-sm gap-1.5 md:gap-2 ${
-              mode === 'gaps' 
-                ? 'bg-rose-600 text-white scale-[1.02] md:scale-105 opacity-100 ring-2 ring-rose-600/50' 
-                : 'bg-sidebar border border-border text-text-heading hover:bg-header opacity-60 md:opacity-50 hover:opacity-100'
-            }`}
-          >
-            <Target className={`w-3.5 h-3.5 md:w-4 md:h-4 ${mode === 'gaps' ? 'text-white' : 'text-rose-500'}`} /> Skill Quiz
-          </button>
         </div>
       </div>
     </div>
@@ -252,19 +171,19 @@ function GenerateHero({ mode, setMode }: { mode: 'ai' | 'job' | 'url' | 'syllabu
 export default function GenerateClient({ featuredRoadmaps }: { featuredRoadmaps?: ExploreRoadmap[] }) {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialMode = (searchParams.get('mode') as 'ai' | 'job' | 'url' | 'syllabus' | 'gaps') || 'ai';
+  const initialMode = (searchParams.get('mode') as Mode) || 'ai';
 
   const [roadmapData, setRoadmapData] = useState<RoadmapData | null>(null);
   const [generatedFormData, setGeneratedFormData] = useState<any | null>(null);
   const [profile, setProfile] = useState<any>(null);
-  const [mode, setMode] = useState<'ai' | 'job' | 'url' | 'syllabus' | 'gaps'>(initialMode);
+  const [mode, setMode] = useState<Mode>(initialMode);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const m = searchParams.get('mode');
     if (['ai', 'job', 'url', 'syllabus', 'gaps'].includes(m as string)) {
-      setMode(m as any);
+      setMode(m as Mode);
     }
   }, [searchParams]);
 
@@ -306,6 +225,8 @@ export default function GenerateClient({ featuredRoadmaps }: { featuredRoadmaps?
     sessionStorage.removeItem('roadmap_just_generated');
   };
 
+  const activeConfig = MODE_CONFIG.find(m => m.id === mode)!;
+
   return (
     <div className="min-h-screen flex flex-col bg-background manrope-body selection:bg-teal-500/30">
       <PublicHeader />
@@ -334,30 +255,87 @@ export default function GenerateClient({ featuredRoadmaps }: { featuredRoadmaps?
       <div className="flex-1 flex flex-col relative">
         <main className="flex-1 min-w-0 bg-background scroll-smooth">
           
-          {/* Hero Section */}
+          {/* Modernized Hero Section */}
           {!roadmapData && !isLoading && (
-            <GenerateHero mode={mode} setMode={setMode} />
+            <div className="relative pt-20 md:pt-28 pb-10 md:pb-14 overflow-hidden border-b border-border/30">
+              {/* Ambient background glow */}
+              <div className="absolute inset-0 bg-gradient-to-b from-accent/[0.03] via-transparent to-transparent -z-10" />
+              <div className="absolute -top-32 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-accent/8 rounded-full blur-[100px] -z-10" />
+              
+              <div className="max-w-3xl mx-auto px-6">
+                {/* Title area */}
+                <div className="flex flex-col items-center text-center gap-4 mb-10 animate-in fade-in slide-in-from-bottom-3 duration-700">
+                  <EulerLogoCanvas size={48} color1={0xb45309} color2={0xfbbf24} wireframe={false} />
+                  <h1 className="font-inter text-2xl sm:text-3xl md:text-4xl font-semibold text-text-heading tracking-tight leading-[1.15]">
+                    What do you want to{' '}
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-teal-400">learn?</span>
+                  </h1>
+                  <p className="text-text-muted text-[14px] md:text-[15px] manrope-body font-medium leading-relaxed max-w-xl">
+                    Build a complete curriculum from a topic, job posting, URL, syllabus, or skill gap quiz. Pick your mode below.
+                  </p>
+                </div>
+
+                {/* Mode Selector — Modern pill tabs */}
+                <div className="flex flex-wrap items-center justify-center gap-1.5 md:gap-2 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150">
+                  {MODE_CONFIG.map((m) => {
+                    const Icon = m.icon;
+                    const isActive = mode === m.id;
+                    return (
+                      <button
+                        key={m.id}
+                        onClick={() => {
+                          setMode(m.id);
+                          if (window.innerWidth < 768) document.getElementById('generator-workspace')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        }}
+                        className={`group relative flex items-center gap-1.5 md:gap-2 px-3 md:px-4 py-2 md:py-2.5 rounded-lg text-[11px] md:text-[12px] font-bold transition-all duration-300 ${
+                          isActive
+                            ? `${m.activeColor} text-white shadow-sm ring-1 ring-white/20`
+                            : 'bg-sidebar/70 border border-border/60 text-text-heading hover:bg-sidebar hover:border-border'
+                        }`}
+                      >
+                        <Icon className={`w-3.5 h-3.5 ${isActive ? 'text-white' : m.color}`} />
+                        <span>{m.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Active mode description */}
+                <AnimatePresence mode="wait">
+                  <motion.p
+                    key={mode}
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -4 }}
+                    transition={{ duration: 0.2 }}
+                    className="text-center text-[11px] text-text-muted font-medium mt-4"
+                  >
+                    {activeConfig.desc}
+                  </motion.p>
+                </AnimatePresence>
+              </div>
+            </div>
           )}
 
-          <div id="generator-workspace" className="max-w-7xl w-full mx-auto px-6 py-12 md:py-16">
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_minmax(auto,42rem)_1fr] gap-8 lg:gap-10 xl:gap-12 w-full">
+          <div id="generator-workspace" className="max-w-6xl w-full mx-auto px-6 py-10 md:py-14">
+            <div className="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-8 lg:gap-10 w-full">
               
+              {/* Sidebar — Instructions */}
               {!roadmapData ? (
-                <div className="order-2 lg:order-1 flex justify-center lg:justify-end mt-8 lg:mt-0">
-                  <div className="w-full max-w-md lg:w-[260px] shrink-0 lg:sticky lg:top-28 h-fit">
-                    <InstructionsSidePanel mode={mode} />
-                  </div>
+                <div className="order-2 lg:order-1 lg:sticky lg:top-28 h-fit">
+                  <InstructionsSidePanel mode={mode} />
                 </div>
               ) : (
                 <div className="hidden lg:block order-1"></div>
               )}
 
+              {/* Main Content Column */}
               <div className="min-w-0 w-full max-w-2xl mx-auto order-1 lg:order-2">
                 {!isLoading && (
-                  <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-                    <h1 className="inconsolata-ui text-[22px] font-bold text-text-heading tracking-tight text-center md:text-left">
-                      {roadmapData ? 'Review Generation' : mode === 'ai' ? 'AI Architect' : mode === 'job' ? 'Job Decoded' : mode === 'url' ? 'Deconstruct URL' : mode === 'syllabus' ? 'Syllabus Parse' : 'Skill Gap'}
-                    </h1>
+                  <div className="mb-8">
+                    <h2 className="font-inter text-[18px] md:text-[20px] font-semibold text-text-heading tracking-tight">
+                      {roadmapData ? 'Review Generation' : activeConfig.label}
+                    </h2>
                   </div>
                 )}
                 
@@ -365,10 +343,10 @@ export default function GenerateClient({ featuredRoadmaps }: { featuredRoadmaps?
                   <AnimatePresence mode="wait">
                     <motion.div 
                       key={mode} 
-                      initial={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.25, ease: "easeOut" }}
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: 0.2, ease: "easeOut" }}
                     >
                       {mode === 'ai' && (
                         <RoadmapGenerator 
@@ -401,111 +379,74 @@ export default function GenerateClient({ featuredRoadmaps }: { featuredRoadmaps?
                         />
                       )}
 
-                      {/* Featured Roadmaps List below the form */}
-                    {featuredRoadmaps && featuredRoadmaps.length > 0 && !isLoading && (
-                      <div className="mt-80 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
-                        <div className="flex items-center justify-between mb-4">
-                          <h3 className="flex items-center gap-2 text-[12px] font-bold text-text-heading uppercase tracking-widest">
-                            <TrendingUp className="w-4 h-4 text-accent" />
-                            Popular Roadmaps
-                          </h3>
-                          <Link href="/explore" className="text-[11px] font-bold text-accent hover:text-teal-400 flex items-center gap-1 transition-colors">
-                            Explore All <ArrowRight className="w-3 h-3" />
-                          </Link>
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                          {featuredRoadmaps.map((roadmap) => (
-                            <Link 
-                              key={roadmap.id} 
-                              href={`/roadmap/${roadmap.slug}`}
-                              className="block p-4 rounded-lg border border-border/50 bg-sidebar/30 hover:bg-sidebar/80 hover:border-accent/30 transition-all group"
-                            >
-                              <div className="flex justify-between items-start gap-4">
-                                <h4 className="font-bold text-[13px] text-text-heading group-hover:text-accent transition-colors line-clamp-2">
+                      {/* Featured Roadmaps */}
+                      {featuredRoadmaps && featuredRoadmaps.length > 0 && !isLoading && (
+                        <div className="mt-24 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-300">
+                          <div className="flex items-center justify-between mb-4">
+                            <h3 className="flex items-center gap-2 text-[11px] font-bold text-text-heading uppercase tracking-widest">
+                              <TrendingUp className="w-3.5 h-3.5 text-accent" />
+                              Popular Roadmaps
+                            </h3>
+                            <Link href="/explore" className="text-[11px] font-bold text-accent hover:text-teal-400 flex items-center gap-1 transition-colors">
+                              Explore All <ArrowRight className="w-3 h-3" />
+                            </Link>
+                          </div>
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                            {featuredRoadmaps.map((roadmap) => (
+                              <Link 
+                                key={roadmap.id} 
+                                href={`/roadmap/${roadmap.slug}`}
+                                className="block p-3.5 rounded-lg border border-border/40 bg-sidebar/20 hover:bg-sidebar/60 hover:border-accent/20 transition-all group"
+                              >
+                                <h4 className="font-bold text-[12px] text-text-heading group-hover:text-accent transition-colors line-clamp-2 leading-tight">
                                   {roadmap.title}
                                 </h4>
-                              </div>
-                              <div className="mt-3 flex items-center justify-between text-[10px] text-text-muted">
-                                <span>{roadmap.topic_count} Topics</span>
-                                <span className="bg-background px-2 py-0.5 rounded-full border border-border/50">
-                                  {roadmap.clone_count} Clones
-                                </span>
-                              </div>
-                            </Link>
-                          ))}
+                                <div className="mt-2.5 flex items-center justify-between text-[10px] text-text-muted">
+                                  <span>{roadmap.topic_count} Topics</span>
+                                  <span className="bg-background px-2 py-0.5 rounded-full border border-border/40">
+                                    {roadmap.clone_count} Clones
+                                  </span>
+                                </div>
+                              </Link>
+                            ))}
+                          </div>
                         </div>
-                      </div>
-                    )}
+                      )}
 
-                    {/* Additional Tools Section */}
-                    {!isLoading && (
-                      <div className="mt-8 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500">
-                        <div className="flex items-center justify-between mb-4">
-                          <h3 className="flex items-center gap-2 text-[12px] font-bold text-text-heading uppercase tracking-widest">
-                            <Library className="w-4 h-4 text-accent" />
-                            Ecosystem Tools
-                          </h3>
+                      {/* Ecosystem Tools */}
+                      {!isLoading && (
+                        <div className="mt-8 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-500">
+                          <div className="flex items-center justify-between mb-4">
+                            <h3 className="flex items-center gap-2 text-[11px] font-bold text-text-heading uppercase tracking-widest">
+                              <Library className="w-3.5 h-3.5 text-accent" />
+                              Ecosystem Tools
+                            </h3>
+                          </div>
+                          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                            {[
+                              { href: "/learn", icon: GraduationCap, label: "Learning Hub", desc: "Active study modules" },
+                              { href: "/explore", icon: Compass, label: "Global Explore", desc: "Discover community roadmaps" },
+                              { href: "/planner", icon: Calendar, label: "Study Planner", desc: "Dynamic progress tracking" },
+                              { href: "/practice", icon: Zap, label: "Practice Portal", desc: "Validate your skills" },
+                              { href: "/research-lab", icon: Microscope, label: "Research Lab", desc: "Advanced AI tooling" },
+                              { href: "/research-decoded", icon: BookOpen, label: "Research Decoded", desc: "Deep paper breakdowns" },
+                              { href: "/articles", icon: FileText, label: "Technical Articles", desc: "First-principles deep dives" },
+                              { href: "/archive/exams/previous-year-papers", icon: Archive, label: "Study Archive", desc: "Verified past resources" },
+                            ].map((tool) => {
+                              const Icon = tool.icon;
+                              return (
+                                <Link key={tool.href} href={tool.href} className="flex flex-col gap-1.5 p-3 rounded-lg border border-border/40 bg-background hover:bg-sidebar/40 hover:border-accent/20 transition-all group">
+                                  <Icon className="w-4 h-4 text-text-muted group-hover:text-accent transition-colors" />
+                                  <div>
+                                    <h4 className="font-bold text-[11px] text-text-heading leading-tight">{tool.label}</h4>
+                                    <p className="text-[9px] text-text-muted mt-0.5 leading-snug">{tool.desc}</p>
+                                  </div>
+                                </Link>
+                              );
+                            })}
+                          </div>
                         </div>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                          <Link href="/learn" className="flex flex-col gap-2 p-4 rounded-lg border border-border/50 bg-background hover:bg-sidebar/50 hover:border-accent/30 transition-all group">
-                            <GraduationCap className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
-                            <div>
-                              <h4 className="font-bold text-[12px] text-text-heading leading-tight">Learning Hub</h4>
-                              <p className="text-[10px] text-text-muted mt-1 leading-snug">Active study modules</p>
-                            </div>
-                          </Link>
-                          <Link href="/explore" className="flex flex-col gap-2 p-4 rounded-lg border border-border/50 bg-background hover:bg-sidebar/50 hover:border-accent/30 transition-all group">
-                            <Compass className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
-                            <div>
-                              <h4 className="font-bold text-[12px] text-text-heading leading-tight">Global Explore</h4>
-                              <p className="text-[10px] text-text-muted mt-1 leading-snug">Discover community roadmaps</p>
-                            </div>
-                          </Link>
-                          <Link href="/planner" className="flex flex-col gap-2 p-4 rounded-lg border border-border/50 bg-background hover:bg-sidebar/50 hover:border-accent/30 transition-all group">
-                            <Calendar className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
-                            <div>
-                              <h4 className="font-bold text-[12px] text-text-heading leading-tight">Study Planner</h4>
-                              <p className="text-[10px] text-text-muted mt-1 leading-snug">Dynamic progress tracking</p>
-                            </div>
-                          </Link>
-                          <Link href="/practice" className="flex flex-col gap-2 p-4 rounded-lg border border-border/50 bg-background hover:bg-sidebar/50 hover:border-accent/30 transition-all group">
-                            <Zap className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
-                            <div>
-                              <h4 className="font-bold text-[12px] text-text-heading leading-tight">Practice Portal</h4>
-                              <p className="text-[10px] text-text-muted mt-1 leading-snug">Validate your skills</p>
-                            </div>
-                          </Link>
-                          <Link href="/research-lab" className="flex flex-col gap-2 p-4 rounded-lg border border-border/50 bg-background hover:bg-sidebar/50 hover:border-accent/30 transition-all group">
-                            <Microscope className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
-                            <div>
-                              <h4 className="font-bold text-[12px] text-text-heading leading-tight">Research Lab</h4>
-                              <p className="text-[10px] text-text-muted mt-1 leading-snug">Advanced AI tooling</p>
-                            </div>
-                          </Link>
-                          <Link href="/research-decoded" className="flex flex-col gap-2 p-4 rounded-lg border border-border/50 bg-background hover:bg-sidebar/50 hover:border-accent/30 transition-all group">
-                            <BookOpen className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
-                            <div>
-                              <h4 className="font-bold text-[12px] text-text-heading leading-tight">Research Decoded</h4>
-                              <p className="text-[10px] text-text-muted mt-1 leading-snug">Deep paper breakdowns</p>
-                            </div>
-                          </Link>
-                          <Link href="/articles" className="flex flex-col gap-2 p-4 rounded-lg border border-border/50 bg-background hover:bg-sidebar/50 hover:border-accent/30 transition-all group">
-                            <FileText className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
-                            <div>
-                              <h4 className="font-bold text-[12px] text-text-heading leading-tight">Technical Articles</h4>
-                              <p className="text-[10px] text-text-muted mt-1 leading-snug">First-principles deep dives</p>
-                            </div>
-                          </Link>
-                          <Link href="/archive/exams/previous-year-papers" className="flex flex-col gap-2 p-4 rounded-lg border border-border/50 bg-background hover:bg-sidebar/50 hover:border-accent/30 transition-all group">
-                            <Archive className="w-5 h-5 text-text-muted group-hover:text-accent transition-colors" />
-                            <div>
-                              <h4 className="font-bold text-[12px] text-text-heading leading-tight">Study Archive</h4>
-                              <p className="text-[10px] text-text-muted mt-1 leading-snug">Verified past resources</p>
-                            </div>
-                          </Link>
-                        </div>
-                      </div>
-                    )}
+                      )}
                     </motion.div>
                   </AnimatePresence>
                 ) : (
@@ -513,7 +454,7 @@ export default function GenerateClient({ featuredRoadmaps }: { featuredRoadmaps?
                     <div className="mb-8 flex items-center justify-between">
                       <button 
                         onClick={handleReset}
-                        className="inline-flex items-center px-4 py-1.5 bg-callout-bg text-text-primary border border-border text-[10px] font-bold rounded-none hover:bg-sidebar transition-all uppercase tracking-widest"
+                        className="inline-flex items-center px-4 py-1.5 bg-sidebar/60 text-text-primary border border-border text-[11px] font-bold rounded-md hover:bg-sidebar transition-all"
                       >
                         ← Create Another
                       </button>

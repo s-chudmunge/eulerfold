@@ -1,7 +1,6 @@
 import React from 'react';
 import { Metadata } from 'next';
 import PricingClient from './PricingClient';
-import Footer from '@/components/Footer';
 
 export const metadata: Metadata = {
   title: 'Pricing & Credits',
@@ -56,7 +55,6 @@ export default function PricingPage() {
           <PricingClient />
         </div>
       </main>
-      <Footer />
     </div>
   );
 }
