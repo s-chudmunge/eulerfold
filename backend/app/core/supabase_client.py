@@ -26,10 +26,10 @@ def get_supabase_client() -> Client:
             raise RuntimeError("Supabase credentials are not configured")
 
         try:
-            # Increase timeout to 30 seconds to be more resilient
+            # Increase timeout to 60 seconds to be more resilient
             options = ClientOptions(
-                postgrest_client_timeout=30,
-                storage_client_timeout=30
+                postgrest_client_timeout=60,
+                storage_client_timeout=60
             )
             _supabase_client = create_client(
                 settings.SUPABASE_URL,
@@ -59,8 +59,8 @@ def get_admin_supabase_client() -> Client:
 
         try:
             _admin_supabase_client = create_client(url, key, options=ClientOptions(
-                postgrest_client_timeout=30,
-                storage_client_timeout=30
+                postgrest_client_timeout=60,
+                storage_client_timeout=60
             ))
             logger.info("Supabase ADMIN client initialized successfully")
         except Exception as e:
