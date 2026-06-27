@@ -48,7 +48,7 @@ export default function HeroPromptInput() {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.5, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-      className="w-full max-w-xl"
+      className="w-full max-w-xl mx-auto"
     >
       {/* Gradient border wrapper */}
       <div

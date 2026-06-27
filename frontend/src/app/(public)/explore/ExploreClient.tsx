@@ -337,11 +337,17 @@ export default function ExploreClient({
                                 <div className="flex items-center gap-8">
                                     {leaderboard.map((entry, i) => (
                                         <div key={i} className="flex items-center gap-2 group cursor-pointer" onClick={() => router.push(`/u/${entry.username}`)}>
-                                            <img 
-                                                src={(entry.avatar_url?.includes('initials') ? null : entry.avatar_url) || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(entry.author || entry.username || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`} 
-                                                alt={entry.username} 
-                                                className="w-5 h-5 rounded-full border border-border object-cover"
-                                            />
+                                            {entry.avatar_url && !entry.avatar_url.includes('initials') ? (
+                                                <img 
+                                                    src={entry.avatar_url} 
+                                                    alt={entry.username} 
+                                                    className="w-5 h-5 rounded-full border border-border object-cover"
+                                                />
+                                            ) : (
+                                                <div className="w-5 h-5 rounded-full border border-border bg-sidebar flex items-center justify-center text-[10px] font-bold text-text-muted uppercase">
+                                                    {(entry.username || 'U').charAt(0)}
+                                                </div>
+                                            )}
                                             <span className="text-[12px] font-bold text-text-heading group-hover:text-accent transition-colors">@{entry.username}</span>
                                             <span className="inconsolata-ui text-[10px] font-black text-teal-600/60">{entry.eulercoins}</span>
                                         </div>
@@ -401,7 +407,9 @@ export default function ExploreClient({
                                                                 <span className="text-[9px] font-black uppercase tracking-wider text-teal-700/60 inconsolata-ui whitespace-nowrap">{cat}</span>
                                                                 <span className="hidden sm:inline text-[10px] font-medium text-text-muted/50">•</span>
                                                                 <span className="text-[11px] md:text-[12px] font-medium text-text-muted truncate max-w-[120px] md:max-w-none flex items-center gap-1.5">
-                                                                    <img src={(r.avatar_url?.includes('initials') ? null : r.avatar_url) || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(r.author || r.username || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`} alt={r.author} className="w-4 h-4 rounded-full border border-border" />
+                                                                    {r.avatar_url && !r.avatar_url.includes('initials') && (
+                                                                        <img src={r.avatar_url} alt={r.author} className="w-4 h-4 rounded-full border border-border" />
+                                                                    )}
                                                                     by @{r.username || r.author}
                                                                 </span>
                                                                 {r.average_rating > 0 && (

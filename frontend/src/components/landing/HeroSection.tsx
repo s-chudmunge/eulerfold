@@ -1,15 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { Plus, BookOpen, ArrowRight } from 'lucide-react';
+import { BookOpen, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/components/AuthProvider';
 import { roadmapsAPI } from '@/lib/api';
 import HeroBackground from '@/components/HeroBackground';
 import HeroPromptInput from '@/components/landing/HeroPromptInput';
-import HeroMockup from '@/components/landing/HeroMockup';
-import AnimatedEfficient from '@/components/landing/AnimatedEfficient';
 import { GoogleTrustBadge, TrustedSourcesTicker } from '@/app/HomeClientComponents';
 
 const stagger = {
@@ -53,88 +51,79 @@ export default function HeroSection() {
     <div className="relative w-full overflow-hidden">
       <section className="relative pt-28 pb-16 md:pt-40 md:pb-32 px-6 min-h-[550px] md:min-h-[800px] flex items-center overflow-hidden w-full">
         <HeroBackground />
-        <div className="max-w-7xl mx-auto w-full relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-8 items-center">
-            
-            {/* Left Column — Copy + Prompt Input */}
-            <motion.div
-              variants={stagger}
-              initial="hidden"
-              animate="visible"
-              className="max-w-xl"
+        <div className="max-w-3xl mx-auto w-full relative z-10">
+          <motion.div
+            variants={stagger}
+            initial="hidden"
+            animate="visible"
+            className="text-center"
+          >
+            {/* Main heading */}
+            <motion.h1 
+              variants={fadeUp}
+              className="font-inter text-3xl sm:text-4xl md:text-[46px] font-semibold text-text-heading mb-5 leading-[1.12] tracking-tight"
             >
-              {/* Main heading */}
-              <motion.h1 
-                variants={fadeUp}
-                className="font-inter text-3xl sm:text-4xl md:text-[46px] font-semibold text-text-heading mb-5 leading-[1.12] tracking-tight"
-              >
-                Escape the stale curriculum with{' '}
-                <br className="hidden md:block" />
-                <AnimatedEfficient /> learning paths
-              </motion.h1>
+              Describe What You Want to Learn.{' '}
+              <br className="hidden md:block" />
+              Get a <span className="text-accent">Structured Curriculum</span> in Seconds.
+            </motion.h1>
 
-              {/* Subheading */}
-              <motion.p 
-                variants={fadeUp}
-                className="text-text-muted text-[15px] md:text-[17px] manrope-body font-medium mb-8 leading-relaxed max-w-lg"
-              >
-                Education shouldn't lag years behind. Describe what you want to learn, and get a complete curriculum built from cutting-edge research and verified sources.
-              </motion.p>
+            {/* Subheading */}
+            <motion.p 
+              variants={fadeUp}
+              className="text-text-muted text-[15px] md:text-[17px] manrope-body font-medium mb-8 leading-relaxed max-w-2xl mx-auto"
+            >
+              Enter any topic, from transformer architectures to GATE prep, and get a complete learning path with verified papers, curated videos, and technical assessments. Then prove you learned it.
+            </motion.p>
 
-              {/* Interactive prompt input */}
-              <HeroPromptInput />
+            {/* Interactive prompt input */}
+            <HeroPromptInput />
 
-              {/* Secondary CTAs */}
-              <motion.div 
-                variants={fadeUp} 
-                className="flex flex-wrap items-center gap-3 mt-6"
-              >
-                {lastRoadmap && (
-                  <Link 
-                    href={`/roadmap/${lastRoadmap.slug}/learn`}
-                    className="inline-flex items-center gap-2 bg-accent text-white hover:bg-teal-700 px-5 py-2.5 rounded-md text-[13px] font-bold transition-all shadow-sm group"
-                  >
-                    <ArrowRight className="w-3.5 h-3.5" /> 
-                    <span className="truncate max-w-[150px] sm:max-w-[180px]">Continue: {lastRoadmap.title}</span>
-                  </Link>
-                )}
-
+            {/* Secondary CTAs */}
+            <motion.div 
+              variants={fadeUp} 
+              className="flex flex-wrap items-center justify-center gap-3 mt-6"
+            >
+              {lastRoadmap && (
                 <Link 
-                  href="/explore"
-                  className="inline-flex items-center gap-2 bg-sidebar/80 backdrop-blur-sm border border-border text-text-primary px-5 py-2.5 rounded-md text-[13px] font-bold transition-all hover:bg-sidebar active:scale-[0.98]"
+                  href={`/roadmap/${lastRoadmap.slug}/learn`}
+                  className="inline-flex items-center gap-2 bg-accent text-white hover:bg-teal-700 px-5 py-2.5 rounded-md text-[13px] font-bold transition-all shadow-sm group"
                 >
-                  <BookOpen className="w-3.5 h-3.5" /> Browse Roadmaps
+                  <ArrowRight className="w-3.5 h-3.5" /> 
+                  <span className="truncate max-w-[150px] sm:max-w-[180px]">Continue: {lastRoadmap.title}</span>
                 </Link>
-              </motion.div>
+              )}
 
-              {/* Sign in link */}
-              <motion.div variants={fadeUp} className="flex items-center gap-2 mt-5 h-[20px]">
-                {!user && (
-                  <>
-                    <span className="manrope-body text-[12px] text-text-muted">Already a member?</span>
-                    <Link href="/login" className="manrope-body text-[12px] font-bold text-accent hover:underline">
-                      Sign in to your account
-                    </Link>
-                  </>
-                )}
-              </motion.div>
-
-              {/* Google trust badge */}
-              <motion.div variants={fadeUp} className="mt-8">
-                <GoogleTrustBadge />
-              </motion.div>
-
-              {/* Trusted sources ticker */}
-              <motion.div variants={fadeUp} className="mt-6">
-                <TrustedSourcesTicker />
-              </motion.div>
+              <Link 
+                href="/explore"
+                className="inline-flex items-center gap-2 bg-sidebar/80 backdrop-blur-sm border border-border text-text-primary px-5 py-2.5 rounded-md text-[13px] font-bold transition-all hover:bg-sidebar active:scale-[0.98]"
+              >
+                <BookOpen className="w-3.5 h-3.5" /> Browse Roadmaps
+              </Link>
             </motion.div>
 
-            {/* Right Column — Floating Mockup */}
-            <div className="hidden lg:block relative">
-              <HeroMockup />
-            </div>
-          </div>
+            {/* Sign in link */}
+            <motion.div variants={fadeUp} className="flex items-center justify-center gap-2 mt-5 h-[20px]">
+              {!user && (
+                <>
+                  <span className="manrope-body text-[12px] text-text-muted">Already a member?</span>
+                  <Link href="/login" className="manrope-body text-[12px] font-bold text-accent hover:underline">
+                    Sign in to your account
+                  </Link>
+                </>
+              )}
+            </motion.div>
+
+            {/* Google trust badge */}
+            <motion.div variants={fadeUp} className="mt-8 flex justify-center">
+              <GoogleTrustBadge />
+            </motion.div>
+
+            {/* Trusted sources ticker */}
+            <motion.div variants={fadeUp} className="mt-6 flex justify-center">
+              <TrustedSourcesTicker />
+            </motion.div>
+          </motion.div>
         </div>
       </section>
     </div>

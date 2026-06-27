@@ -79,7 +79,7 @@ export default function CommunityRoadmapBanner({
             )}
           </div>
         </div>
-        <span className="absolute -bottom-10 -right-10 text-[180px] opacity-[0.03] grayscale -rotate-12 pointer-events-none group-hover:scale-110 transition-transform duration-1000">🐢</span>
+
       </div>
 
       {!onOpenModal && <GoalGeneratorModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} />}

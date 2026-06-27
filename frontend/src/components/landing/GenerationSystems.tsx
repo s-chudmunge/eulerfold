@@ -10,11 +10,11 @@ const SYSTEMS = [
     title: 'EulerFold AI',
     subtitle: 'Zero Setup',
     icon: <Cloud className="w-5 h-5 text-accent" />,
-    description: 'The fastest way to get started. Uses our managed cloud models to generate your roadmaps instantly.',
+    description: 'Uses Gemini models to generate your roadmap with verified references. No setup needed. Just enter a topic and go.',
     points: [
-      'No configuration required',
-      'Uses your EulerFold credits',
-      'Optimized for speed and accuracy'
+      'No API key or configuration needed',
+      'Roadmaps include papers, videos, and assessments',
+      'Uses your monthly EulerFold credit balance'
     ]
   },
   {
@@ -22,11 +22,11 @@ const SYSTEMS = [
     title: 'Bring Your Key',
     subtitle: 'OpenRouter Integration',
     icon: <Key className="w-5 h-5 text-emerald-500" />,
-    description: 'Connect your OpenRouter API key to unlock premium models and bypass generation limits.',
+    description: 'Connect your OpenRouter API key to pick from 50+ models including Claude, GPT-4o, and Gemini Pro.',
     points: [
       'Zero credit cost on EulerFold',
-      'Access to GPT-4o, Claude 3.5, and more',
-      'Key is stored securely in your browser'
+      'Access Claude 3.5, GPT-4o, Gemini, Llama, and more',
+      'Key stays in your browser, never sent to our servers'
     ]
   },
   {
@@ -34,11 +34,11 @@ const SYSTEMS = [
     title: 'Local Inference',
     subtitle: '100% Privacy',
     icon: <Cpu className="w-5 h-5 text-amber-500" />,
-    description: 'Run lightweight AI models directly inside your browser cache. No server interaction required.',
+    description: 'Run a lightweight model directly in your browser via WebGPU. Nothing leaves your device.',
     points: [
-      'Zero credit cost and unlimited usage',
-      'Total privacy with no server API calls',
-      'Runs locally via WebGPU integration'
+      'Completely free and unlimited',
+      'Total privacy. No server calls at all',
+      'Requires a modern GPU and WebGPU-capable browser'
     ]
   }
 ];
@@ -46,9 +46,6 @@ const SYSTEMS = [
 export default function GenerationSystems() {
   return (
     <section className="py-20 md:py-32 px-6 bg-background relative border-t border-border/30 overflow-hidden">
-      {/* Background gradients */}
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-accent/20 to-transparent"></div>
-      
       <div className="max-w-7xl mx-auto">
         <div className="text-center max-w-3xl mx-auto mb-16 md:mb-24">
 
@@ -59,7 +56,7 @@ export default function GenerationSystems() {
             transition={{ delay: 0.1 }}
             className="text-2xl md:text-4xl font-bold text-text-heading mb-6 tracking-tight manrope-body"
           >
-            Choose how your learning paths are generated
+            Three Ways to Generate
           </motion.h2>
           
           <motion.p 
@@ -69,7 +66,7 @@ export default function GenerationSystems() {
             transition={{ delay: 0.2 }}
             className="text-[13px] md:text-[15px] text-text-muted leading-relaxed font-medium"
           >
-            EulerFold offers three distinct computation methods. Whether you want instant results, custom models, or absolute privacy, the choice is entirely yours.
+            Use our managed models, bring your own API key, or run inference locally. Your choice.
           </motion.p>
         </div>
 
@@ -113,16 +110,6 @@ export default function GenerationSystems() {
           ))}
         </div>
       </div>
-      
-      <style jsx global>{`
-        .no-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .no-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
     </section>
   );
 }

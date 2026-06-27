@@ -1,25 +1,16 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Youtube, Instagram, ExternalLink, RefreshCcw } from "lucide-react";
-import { FaXTwitter } from "react-icons/fa6";
+import { Youtube, ExternalLink, RefreshCcw } from "lucide-react";
 import Link from "next/link";
 
 const platformIcons = {
   YouTube: Youtube,
-  Instagram: Instagram,
-  X: FaXTwitter,
 };
 
 const platformLinks = {
   YouTube: "https://www.youtube.com/@eulerfold",
-  Instagram: "https://www.instagram.com/eulerfold",
-  X: "https://x.com/eulerfold",
 };
-
-// YouTube Channel ID for @eulerfold (would normally be fetched or hardcoded)
-// For now, using a common RSS-to-JSON proxy to get real data
-const YOUTUBE_RSS_URL = "https://www.youtube.com/feeds/videos.xml?channel_id=UC_x5XG1OV2P6uYZ5gzS9rqw"; // Placeholder ID, @eulerfold ID needed
 
 export default function SocialFeed() {
   const [posts, setPosts] = useState<any[]>([]);
@@ -28,13 +19,12 @@ export default function SocialFeed() {
   const fetchPosts = async () => {
     setLoading(true);
     try {
-      // 1. Fetch YouTube Latest via RSS-to-JSON (CORS-friendly for frontend)
       const channelId = "UChb5eYPxT20MgfLzZznpt-Q";
       const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${channelId}`;
       const ytResponse = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`);
       const ytData = await ytResponse.json();
       
-      let combinedPosts = [];
+      let combinedPosts: any[] = [];
 
       if (ytData.status === "ok" && ytData.items) {
         combinedPosts = ytData.items.slice(0, 3).map((item: any) => ({
@@ -46,26 +36,10 @@ export default function SocialFeed() {
         }));
       }
 
-      // If YouTube fetch fails or is empty, provide a clean state or high-quality placeholder
-      if (combinedPosts.length === 0) {
-        combinedPosts.push({ 
-          id: "yt-fallback", 
-          platform: "YouTube", 
-          content: "Check out the latest explainer videos on our channel.", 
-          date: "Latest", 
-          link: platformLinks.YouTube 
-        });
-      }
-
-      // 2. Instagram & X placeholders (Evergreen)
-      combinedPosts.push(
-        { id: "ig-1", platform: "Instagram", content: "Check out our latest Research Decoded series where we break down complex technical papers into first principles. Link in bio! 🔬", date: "Recent", link: platformLinks.Instagram },
-        { id: "tw-1", platform: "X", content: "We just updated our roadmap engine for better precision in technical depth mapping. Try generating your next study plan! 🚀", date: "Recent", link: platformLinks.X }
-      );
-
       setPosts(combinedPosts);
     } catch (error) {
       console.error("Failed to fetch social posts:", error);
+      setPosts([]);
     } finally {
       setLoading(false);
     }
@@ -75,13 +49,17 @@ export default function SocialFeed() {
     fetchPosts();
   }, []);
 
+  if (!loading && posts.length === 0) {
+    return null;
+  }
+
   return (
     <section className="py-12 md:py-20 px-6 bg-background relative overflow-hidden border-t border-border/30">
       <div className="lg:max-w-[60%] mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
           <div className="max-w-md">
             <h3 className="text-lg md:text-xl font-bold text-text-heading leading-tight font-inter tracking-tight">
-              Latest updates from the <span className="text-accent italic">EulerFold</span> community.
+              Latest from EulerFold
             </h3>
           </div>
           <div className="flex gap-4">
@@ -99,54 +77,51 @@ export default function SocialFeed() {
             >
               <Youtube className="w-4 h-4" />
             </Link>
-            <Link 
-               href={platformLinks.Instagram}
-               target="_blank"
-               className="p-2.5 rounded-lg border border-border/50 hover:border-accent/50 text-text-muted hover:text-accent transition-all bg-sidebar/30"
-            >
-              <Instagram className="w-4 h-4" />
-            </Link>
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {posts.map((post) => {
-            const Icon = (platformIcons as any)[post.platform];
-            return (
-              <Link
-                key={post.id}
-                href={post.link}
-                target="_blank"
-                className="group relative p-4 rounded-lg border border-border/50 bg-sidebar/20 hover:bg-sidebar/40 transition-all duration-300 flex flex-col justify-between min-h-[140px] shadow-sm hover:shadow-lg hover:shadow-accent/5"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-2 text-accent">
-                      <div className="p-1 rounded-md bg-accent/10">
-                        <Icon className="w-4 h-4" />
+        {loading ? (
+          <div className="text-center py-10 text-text-muted text-[14px]">Loading...</div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            {posts.map((post) => {
+              const Icon = (platformIcons as any)[post.platform];
+              return (
+                <Link
+                  key={post.id}
+                  href={post.link}
+                  target="_blank"
+                  className="group relative p-4 rounded-lg border border-border/50 bg-sidebar/20 hover:bg-sidebar/40 transition-all duration-300 flex flex-col justify-between min-h-[140px] shadow-sm hover:shadow-lg hover:shadow-accent/5"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-2 text-accent">
+                        <div className="p-1 rounded-md bg-accent/10">
+                          <Icon className="w-4 h-4" />
+                        </div>
+                        <span className="text-[12px] font-bold tracking-widest uppercase manrope-body">
+                          {post.platform}
+                        </span>
                       </div>
-                      <span className="text-[12px] font-bold tracking-widest uppercase manrope-body">
-                        {post.platform}
-                      </span>
+                      <span className="text-[11px] text-text-muted font-bold uppercase tracking-wider">{post.date}</span>
                     </div>
-                    <span className="text-[11px] text-text-muted font-bold uppercase tracking-wider">{post.date}</span>
+
+                    <p className="text-text-primary text-[14px] leading-snug manrope-body font-medium">
+                      {post.content}
+                    </p>
                   </div>
 
-                  <p className="text-text-primary text-[14px] leading-snug manrope-body font-medium">
-                    {post.content}
-                  </p>
-                </div>
-
-                <div className="mt-3 flex items-center gap-1.5 text-[12px] font-bold text-accent opacity-0 group-hover:opacity-100 transition-opacity tracking-widest uppercase">
-                  View Post <ExternalLink className="w-3 h-3" />
-                </div>
-                
-                {/* Subtle Hover Glow */}
-                <div className="absolute -z-10 inset-0 rounded-lg bg-accent/5 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-              </Link>
-            );
-          })}
-        </div>
+                  <div className="mt-3 flex items-center gap-1.5 text-[12px] font-bold text-accent opacity-0 group-hover:opacity-100 transition-opacity tracking-widest uppercase">
+                    View Post <ExternalLink className="w-3 h-3" />
+                  </div>
+                  
+                  {/* Subtle Hover Glow */}
+                  <div className="absolute -z-10 inset-0 rounded-lg bg-accent/5 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                </Link>
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );

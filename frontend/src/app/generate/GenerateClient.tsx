@@ -34,7 +34,6 @@ import {
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase/client';
 import PublicHeader from '@/components/PublicHeader';
-import Footer from '@/components/Footer';
 
 type Mode = 'ai' | 'job' | 'url' | 'syllabus' | 'gaps';
 
@@ -317,20 +316,11 @@ export default function GenerateClient({ featuredRoadmaps }: { featuredRoadmaps?
             </div>
           )}
 
-          <div id="generator-workspace" className="max-w-6xl w-full mx-auto px-6 py-10 md:py-14">
-            <div className="grid grid-cols-1 lg:grid-cols-[220px_1fr] gap-8 lg:gap-10 w-full">
+          <div id="generator-workspace" className="max-w-4xl w-full mx-auto px-6 py-10 md:py-14">
+            <div className="flex flex-col max-w-2xl mx-auto w-full gap-8 lg:gap-10">
               
-              {/* Sidebar — Instructions */}
-              {!roadmapData ? (
-                <div className="order-2 lg:order-1 lg:sticky lg:top-28 h-fit">
-                  <InstructionsSidePanel mode={mode} />
-                </div>
-              ) : (
-                <div className="hidden lg:block order-1"></div>
-              )}
-
               {/* Main Content Column */}
-              <div className="min-w-0 w-full max-w-2xl mx-auto order-1 lg:order-2">
+              <div className="min-w-0 w-full">
                 {!isLoading && (
                   <div className="mb-8">
                     <h2 className="font-inter text-[18px] md:text-[20px] font-semibold text-text-heading tracking-tight">
@@ -377,6 +367,12 @@ export default function GenerateClient({ featuredRoadmaps }: { featuredRoadmaps?
                           onRoadmapGenerated={handleRoadmapGenerated} 
                           onLoadingChange={setIsLoading}
                         />
+                      )}
+
+                      {!isLoading && (
+                        <div className="mt-8 animate-in fade-in slide-in-from-bottom-4 duration-700 delay-200">
+                          <InstructionsSidePanel mode={mode} />
+                        </div>
                       )}
 
                       {/* Featured Roadmaps */}
@@ -472,7 +468,6 @@ export default function GenerateClient({ featuredRoadmaps }: { featuredRoadmaps?
           </div>
         </main>
       </div>
-      <Footer />
     </div>
   );
 }
