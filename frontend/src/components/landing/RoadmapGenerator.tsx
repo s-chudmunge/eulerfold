@@ -19,6 +19,7 @@ interface RoadmapGeneratorProps {
   onRoadmapGenerated: (data: RoadmapData, formData: any) => void;
   isLanding?: boolean;
   onLoadingChange?: (loading: boolean) => void;
+  initialGoal?: string;
 }
 
 const ROLES = [
@@ -60,14 +61,15 @@ const EXPERIENCE_LEVELS = [
 const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({ 
   onRoadmapGenerated, 
   isLanding = false,
-  onLoadingChange
+  onLoadingChange,
+  initialGoal = ''
 }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   
   const [formData, setFormData] = useState({
     subject: '',
-    goal: '',
+    goal: initialGoal,
     prior_experience: '',
     experience_level: 'novice',
     current_role: '',
@@ -176,17 +178,22 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
   }, []);
 
   useEffect(() => {
-    const rawSubject = searchParams.get('subject') || '';
-    const rawGoal = searchParams.get('goal') || '';
+    const rawSubject = searchParams.get('subject');
+    const rawGoal = searchParams.get('goal');
     
     if (rawSubject || rawGoal) {
         setFormData(prev => ({
             ...prev,
-            subject: rawSubject,
-            goal: rawGoal
+            subject: rawSubject || prev.subject,
+            goal: rawGoal || prev.goal
+        }));
+    } else if (initialGoal && !formData.goal) {
+        setFormData(prev => ({
+            ...prev,
+            goal: initialGoal
         }));
     }
-  }, [searchParams]);
+  }, [searchParams, initialGoal]);
 
   const loadingMessages = [
     "Tinkering with modules...",
@@ -578,9 +585,10 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
 
   const renderStep = () => {
     return (
-      <div className="space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
-
-            
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+        
+        {step === 1 && (
+          <div className="space-y-6">
             <div className="space-y-5">
                <label className="flex items-center gap-2 text-[11px] font-bold text-text-muted/80">
                  <div className="w-5 h-5 rounded-md bg-accent/10 flex items-center justify-center text-[10px] font-bold text-accent">1</div>
@@ -751,9 +759,22 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                </div>
             </div>
 
-            
-            {/* --- Start of Step 2 content merged --- */}
-            <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500 mt-8">
+             {/* Next Button for Step 1 */}
+             <div className="mt-8 flex justify-end">
+                <button
+                  type="button"
+                  onClick={() => setStep(2)}
+                  disabled={!formData.subject.trim() || !formData.goal.trim()}
+                  className="group relative inline-flex items-center justify-center px-7 py-3 text-[14px] font-bold transition-all bg-accent text-white hover:bg-teal-700 shadow-sm gap-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  Next Step <ArrowRight className="w-4 h-4" />
+                </button>
+             </div>
+          </div>
+        )}
+
+        {step === 2 && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
             {session && (
             <div className="space-y-3">
                <label className="flex items-center gap-2 text-[11px] font-bold text-text-muted/80">
@@ -840,9 +861,30 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
             </div>
             )}
 
+             <div className="mt-8 flex justify-between">
+                <button
+                  type="button"
+                  onClick={() => setStep(1)}
+                  className="text-[13px] font-bold text-text-muted hover:text-text-heading transition-colors"
+                >
+                  ← Back
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setStep(3)}
+                  className="group relative inline-flex items-center justify-center px-7 py-3 text-[14px] font-bold transition-all bg-accent text-white hover:bg-teal-700 shadow-sm gap-2 rounded-lg"
+                >
+                  Next Step <ArrowRight className="w-4 h-4" />
+                </button>
+             </div>
+          </div>
+        )}
+
+        {step === 3 && (
+          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
             {session && (
               <>
-              <div className="mt-8 flex flex-col gap-2 max-w-sm">
+              <div className="flex flex-col gap-2 max-w-sm">
                 <div className="flex items-center gap-2 mb-1">
                   <div className="w-5 h-5 rounded-md bg-accent/10 flex items-center justify-center text-[10px] font-bold text-accent">3</div>
                   <span className="text-[11px] font-bold text-text-muted/80">AI Engine</span>
@@ -1007,11 +1049,17 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
             )}
             </>
             )}
+            
             {!isGenerating && (
-              <div className="mt-8 flex flex-col gap-6">
+              <div className="mt-8 flex justify-between items-center w-full">
+                <button
+                  type="button"
+                  onClick={() => setStep(2)}
+                  className="text-[13px] font-bold text-text-muted hover:text-text-heading transition-colors"
+                >
+                  ← Back
+                </button>
 
-
-                
                 <div className="flex flex-col sm:flex-row items-center gap-4">
 
                 {!session ? (
@@ -1086,7 +1134,8 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                </div>
             )}
             </div>
-          </div>
+        )}
+      </div>
     );
   };
 

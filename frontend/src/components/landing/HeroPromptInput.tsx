@@ -3,7 +3,8 @@
 import React, { useState, useRef } from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+import InlineGenerator from './InlineGenerator';
 
 const PLACEHOLDER_PROMPTS = [
   "e.g. I want to master Transformer architectures from scratch",
@@ -16,6 +17,7 @@ export default function HeroPromptInput() {
   const [value, setValue] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
+  const [isExpanded, setIsExpanded] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const router = useRouter();
 
@@ -28,12 +30,7 @@ export default function HeroPromptInput() {
   }, []);
 
   const handleSubmit = () => {
-    const trimmed = value.trim();
-    if (trimmed) {
-      router.push(`/generate?subject=${encodeURIComponent(trimmed)}`);
-    } else {
-      router.push('/generate');
-    }
+    setIsExpanded(true);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -42,6 +39,18 @@ export default function HeroPromptInput() {
       handleSubmit();
     }
   };
+
+  if (isExpanded) {
+    return (
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="w-full max-w-4xl mx-auto mt-4"
+      >
+        <InlineGenerator initialSubject={value.trim()} />
+      </motion.div>
+    );
+  }
 
   return (
     <motion.div
