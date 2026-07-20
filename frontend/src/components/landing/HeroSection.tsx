@@ -38,8 +38,8 @@ export default function HeroSection() {
           if (data && data.length > 0) {
             const latest = data[0];
             setLastRoadmap({
-              title: latest.roadmap_plan?.title || latest.subject || 'Your Roadmap',
-              slug: latest.slug
+              title: latest.roadmap_plan?.title || latest.subject || 'Your Course',
+              slug: latest.slug || String(latest.id),
             });
           }
         })
@@ -65,7 +65,8 @@ export default function HeroSection() {
             >
               Describe What You Want to Learn.{' '}
               <br className="hidden md:block" />
-              Get a <span className="text-accent">Structured Curriculum</span> in Seconds.
+              Get a <span className="text-accent">Structured Course</span> in Seconds.{' '}
+              <span className="font-serif italic text-accent opacity-90 text-[32px] sm:text-[38px] md:text-[44px] tracking-normal font-medium">Completely Free.</span>
             </motion.h1>
 
             {/* Subheading */}
@@ -73,7 +74,7 @@ export default function HeroSection() {
               variants={fadeUp}
               className="text-text-muted text-[15px] md:text-[17px] manrope-body font-medium mb-8 leading-relaxed max-w-2xl mx-auto"
             >
-              Enter any topic, from transformer architectures to GATE prep, and get a complete learning path with verified papers, curated videos, and technical assessments. Then prove you learned it.
+              Enter any topic, from transformer architectures to GATE prep, and get a complete course with verified papers, curated videos, and technical assessments. Then prove you learned it.
             </motion.p>
 
             {/* Interactive prompt input */}
@@ -98,7 +99,7 @@ export default function HeroSection() {
                 href="/explore"
                 className="inline-flex items-center gap-2 bg-sidebar/80 backdrop-blur-sm border border-border text-text-primary px-5 py-2.5 rounded-md text-[13px] font-bold transition-all hover:bg-sidebar active:scale-[0.98]"
               >
-                <BookOpen className="w-3.5 h-3.5" /> Browse Roadmaps
+                <BookOpen className="w-3.5 h-3.5" /> Browse Courses
               </Link>
             </motion.div>
 

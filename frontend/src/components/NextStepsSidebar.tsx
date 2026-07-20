@@ -38,7 +38,7 @@ const NextStepsSidebar: React.FC<NextStepsSidebarProps> = ({ subject, topic, cla
 
           {/* Mastery Item */}
           <div>
-            <h4 className="inconsolata-ui text-[11px] font-bold text-accent uppercase tracking-[0.1em] mb-2">Build Your Roadmap</h4>
+            <h4 className="inconsolata-ui text-[11px] font-bold text-accent uppercase tracking-[0.1em] mb-2">Build Your Course</h4>
             <p className="text-[13px] text-text-muted leading-relaxed mb-3 manrope-body font-medium">
               Do you want to get a step-by-step path to learn <span className="text-text-heading">{subject}</span> from basics?
             </p>

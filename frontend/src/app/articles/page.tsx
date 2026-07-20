@@ -14,6 +14,7 @@ export const metadata: Metadata = {
 };
 
 import ArticlesIndexClient from './ArticlesIndexClient';
+import PagePreloader from '@/components/PagePreloader';
 
 export default function ArticlesIndexPage() {
   const breadcrumbSchema = {
@@ -42,6 +43,7 @@ export default function ArticlesIndexPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       <ArticlesIndexClient articles={articles} />
+      <PagePreloader />
     </>
   );
 }

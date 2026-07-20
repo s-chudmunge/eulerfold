@@ -5,6 +5,7 @@ import { ArrowRight, BookOpen } from 'lucide-react';
 import PublicHeader from '@/components/PublicHeader';
 import Footer from '@/components/Footer';
 import { AlreadySignedInMessage, FAQAccordion, LandingOnboardingTrigger } from './HomeClientComponents';
+import PagePreloader from '@/components/PagePreloader';
 
 import HeroSection from '@/components/landing/HeroSection';
 
@@ -45,26 +46,26 @@ async function getFeaturedRoadmaps(): Promise<ExploreRoadmap[]> {
 }
 
 export const metadata: Metadata = {
-  title: 'EulerFold AI - Build and track your learning paths',
-  description: 'Design dynamic, AI-generated curriculum aligned with the latest technology. Master deep technical skills with interactive roadmaps, curated resources, and comprehensive progress tracking.',
+  title: 'EulerFold AI - Build and track your courses',
+  description: 'Design dynamic, AI-generated curriculum aligned with the latest technology. Master deep technical skills with interactive courses, curated resources, and comprehensive progress tracking.',
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: 'https://www.eulerfold.com/',
-    title: 'EulerFold AI - Build and track your learning paths',
-    description: 'Design dynamic, AI-generated curriculum aligned with the latest technology. Master deep technical skills with interactive roadmaps, curated resources, and comprehensive progress tracking.',
+    title: 'EulerFold AI - Build and track your courses',
+    description: 'Design dynamic, AI-generated curriculum aligned with the latest technology. Master deep technical skills with interactive courses, curated resources, and comprehensive progress tracking.',
     siteName: 'EulerFold',
     images: [{
       url: '/og-image.png',
       width: 1200,
       height: 630,
-      alt: 'EulerFold - Intelligent Learning Paths',
+      alt: 'EulerFold - Intelligent Courses',
     }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'EulerFold AI - Build and track your learning paths',
-    description: 'Create structured learning roadmaps, track your progress, and analyze your technical skills.',
+    title: 'EulerFold AI - Build and track your courses',
+    description: 'Create structured learning courses, track your progress, and analyze your technical skills.',
     creator: '@eulerfold',
   },
 };
@@ -74,13 +75,13 @@ export default async function LandingPage() {
   const featuredRoadmaps = await getFeaturedRoadmaps();
   const faqItems = [
     {
-      question: "How do I get started with a learning path?",
+      question: "How do I get started with a course?",
       answer: (
         <span>
-          Browse our <Link href="/explore" className="text-accent hover:underline font-bold">Explore page</Link> to find a roadmap that fits your goals, or generate a custom one based on your specific requirements.
+          Browse our <Link href="/explore" className="text-accent hover:underline font-bold">Explore page</Link> to find a course that fits your goals, or generate a custom one based on your specific requirements.
         </span>
       ),
-      schemaAnswer: "Browse our Explore page to find a roadmap that fits your goals, or generate a custom one based on your specific requirements."
+      schemaAnswer: "Browse our Explore page to find a course that fits your goals, or generate a custom one based on your specific requirements."
     },
     {
       question: "What is Research Decoded?",
@@ -95,10 +96,10 @@ export default async function LandingPage() {
       question: "How are my technical skills tracked?",
       answer: (
         <span>
-          Your <Link href="/dashboard" className="text-accent hover:underline font-bold">Technical Inventory</Link> updates automatically as you complete modules and submit homework. We track your progress across different roadmaps into a unified skill profile.
+          Your <Link href="/dashboard" className="text-accent hover:underline font-bold">Technical Inventory</Link> updates automatically as you complete modules and submit homework. We track your progress across different courses into a unified skill profile.
         </span>
       ),
-      schemaAnswer: "Your Technical Inventory updates automatically as you complete modules and submit homework. We track your progress across different roadmaps into a unified skill profile."
+      schemaAnswer: "Your Technical Inventory updates automatically as you complete modules and submit homework. We track your progress across different courses into a unified skill profile."
     },
     {
       question: "What is 'Homework'?",
@@ -122,8 +123,8 @@ export default async function LandingPage() {
     },
     {
       question: "Do I get a certificate upon completion?",
-      answer: "Yes, you receive a verifiable digital certificate once you reach 98% completion on any roadmap. These certificates authenticate your study hours and average technical grade, and can be added directly to your LinkedIn profile with one click.",
-      schemaAnswer: "Yes, you receive a verifiable digital certificate once you reach 98% completion on any roadmap. These certificates authenticate your study hours and average technical grade, and can be added directly to your LinkedIn profile with one click."
+      answer: "Yes, you receive a verifiable digital certificate once you reach 98% completion on any course. These certificates authenticate your study hours and average technical grade, and can be added directly to your LinkedIn profile with one click.",
+      schemaAnswer: "Yes, you receive a verifiable digital certificate once you reach 98% completion on any course. These certificates authenticate your study hours and average technical grade, and can be added directly to your LinkedIn profile with one click."
     }
   ];
 
@@ -166,6 +167,7 @@ export default async function LandingPage() {
         <AlreadySignedInMessage />
         <LandingOnboardingTrigger />
       </Suspense>
+      <PagePreloader />
       <PublicHeader />
       
       <main className="flex-grow">
@@ -196,7 +198,7 @@ export default async function LandingPage() {
         <section className="py-20 md:py-32 px-6 bg-sidebar/30 border-t border-border/30">
           <div className="max-w-2xl mx-auto text-center">
             <h2 className="font-inter text-2xl md:text-4xl font-bold text-text-heading mb-4 tracking-tight">
-              Start Building Your First Roadmap
+              Start Building Your First Course
             </h2>
             <p className="text-text-muted text-[15px] md:text-[17px] manrope-body font-medium mb-8 leading-relaxed">
               Pick a topic, generate a curriculum, and start learning with structure. No account required to explore.
@@ -206,13 +208,13 @@ export default async function LandingPage() {
                 href="/generate"
                 className="inline-flex items-center gap-2 bg-accent text-white hover:bg-teal-700 px-8 py-3 rounded-md text-[14px] font-bold transition-all shadow-sm"
               >
-                Generate a Roadmap <ArrowRight className="w-4 h-4" />
+                Generate a Course <ArrowRight className="w-4 h-4" />
               </Link>
               <Link 
                 href="/explore"
                 className="inline-flex items-center gap-2 bg-sidebar border border-border text-text-primary px-8 py-3 rounded-md text-[14px] font-bold transition-all hover:bg-sidebar/80"
               >
-                <BookOpen className="w-4 h-4" /> Browse Existing Paths
+                <BookOpen className="w-4 h-4" /> Browse Existing Courses
               </Link>
             </div>
           </div>

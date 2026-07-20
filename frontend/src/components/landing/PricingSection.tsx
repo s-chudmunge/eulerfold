@@ -63,7 +63,7 @@ export default function PricingSection() {
                         </div>
                         <div className="flex items-start gap-3 text-[12px] text-text-primary">
                             <span className="text-teal-600 mt-0.5">✓</span>
-                            <span>Access all public roadmaps</span>
+                            <span>Access all public courses</span>
                         </div>
                         <div className="flex items-start gap-3 text-[12px] text-text-primary">
                             <span className="text-teal-600 mt-0.5">✓</span>
@@ -71,7 +71,7 @@ export default function PricingSection() {
                         </div>
                         <div className="flex items-start gap-3 text-[12px] text-text-primary">
                             <span className="text-teal-600 mt-0.5">✓</span>
-                            <span>5 EulerFold AI roadmap generations</span>
+                            <span>5 EulerFold AI course generations</span>
                         </div>
                         <div className="flex items-start gap-3 text-[12px] text-text-primary">
                             <span className="text-teal-600 mt-0.5">✓</span>
@@ -136,7 +136,7 @@ export default function PricingSection() {
                         <div className="flex items-start gap-3 text-[12px] text-text-primary">
                             <span className="text-teal-600 mt-0.5 font-bold">✓</span>
                             <div>
-                                <span className="font-bold text-text-heading">Custom Learning Paths</span>
+                                <span className="font-bold text-text-heading">Custom Courses</span>
                                 <p className="text-[11px] text-text-muted mt-0.5">Build courses from URLs, PDFs, or job descriptions.</p>
                             </div>
                         </div>

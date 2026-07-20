@@ -91,7 +91,7 @@ export default function LatestArticlesCarousel({ articles }: LatestArticlesCarou
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: index * 0.1 }}
-            className="min-w-[260px] md:min-w-[300px] lg:min-w-[340px] shrink-0 scroll-snap-align-start"
+            className="w-[260px] md:w-[300px] lg:w-[340px] shrink-0 scroll-snap-align-start"
             style={{ scrollSnapAlign: 'start' }}
           >
             <ArticleCard article={article} variant="vertical" />

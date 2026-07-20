@@ -7,7 +7,6 @@ import { useAuth } from '@/components/AuthProvider';
 import { authAPI } from '@/lib/api';
 import OnboardingFlow from '@/components/onboarding/OnboardingFlow';
 
-
 export function GoogleTrustBadge() {
   return (
     <div className="flex items-center gap-3 mt-2 cursor-default">

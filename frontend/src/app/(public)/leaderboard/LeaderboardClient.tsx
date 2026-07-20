@@ -8,7 +8,9 @@ import { coinsAPI, LeaderboardEntry } from '@/lib/api';
 import Link from 'next/link';
 import { useAuth } from '@/components/AuthProvider';
 import CommunityRoadmapBanner from '@/components/landing/CommunityRoadmapBanner';
-import { SideBanner, QUOTES } from '@/components/layout/SideBanners';
+import ProductEcosystem from '@/components/landing/ProductEcosystem';
+import LatestArticlesCarousel from '@/components/landing/LatestArticlesCarousel';
+import { articles } from '@/app/articles/generatedArticles';
 import Footer from '@/components/Footer';
 
 const CATEGORIES = [
@@ -41,18 +43,7 @@ export default function LeaderboardPage({
   const [loading, setLoading] = useState(initialTopUsers.length === 0);
   const [category, setCategory] = useState('All');
   const [visibleCount, setVisibleCount] = useState(100);
-  const [quoteIndex, setQuoteIndex] = useState(0);
   const { user: authUser } = useAuth();
-
-  useEffect(() => {
-    // Randomize on mount
-    setQuoteIndex(Math.floor(Math.random() * QUOTES.length));
-
-    const timer = setInterval(() => {
-      setQuoteIndex((prev) => (prev + 1) % QUOTES.length);
-    }, 60000);
-    return () => clearInterval(timer);
-  }, []);
 
   useEffect(() => {
     async function loadData() {
@@ -261,19 +252,24 @@ export default function LeaderboardPage({
             </div>
           )}
         </main>
+      </div>
 
-        {/* Sidebar */}
-        <aside className="w-full lg:w-[320px] shrink-0 flex flex-col gap-10">
-           <CommunityRoadmapBanner />
-           
-           <SideBanner 
-              isStatic
-              buttonText="Research"
-              href="/research-decoded"
-              currentQuote={QUOTES[quoteIndex]}
-              quoteIndex={quoteIndex}
-            />
-        </aside>
+      <div className="border-t border-border/30 bg-sidebar/5">
+        <div className="max-w-[1200px] mx-auto px-6 py-16 md:px-10 flex flex-col gap-24">
+          <div className="max-w-2xl mx-auto w-full">
+            <CommunityRoadmapBanner />
+          </div>
+          
+          <ProductEcosystem />
+          
+          <div className="space-y-6">
+            <div className="flex flex-col items-center text-center space-y-2 mb-8">
+              <h2 className="inconsolata-ui text-[14px] font-black text-text-heading uppercase tracking-[0.1em]">Recommended Reading</h2>
+              <div className="h-[1px] w-12 bg-accent opacity-50"></div>
+            </div>
+            <LatestArticlesCarousel articles={Object.values(articles).slice(0, 6)} />
+          </div>
+        </div>
       </div>
       <Footer />
     </div>

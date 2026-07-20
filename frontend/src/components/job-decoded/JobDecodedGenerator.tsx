@@ -157,7 +157,7 @@ const JobDecodedGenerator: React.FC<JobDecodedGeneratorProps> = ({
 
     const generation_strategy = `**Rules:**
 1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "The Complete Guide to Data Engineering"). Do NOT use dry, robotic formats like "Intensive 4-Week X Roadmap". Do NOT include the time duration in the title.
-2. **Actionable Roadmap:** Translate the JD into a step-by-step technical learning path for this role over ${formData.time_value} weeks.\nAnalyze the user's current experience against the Job Description and identify precise technical gaps.\nThe roadmap must bridge these gaps with rigorous modules that lead to demonstrable mastery.`;
+2. **Actionable Roadmap:** Translate the JD into a step-by-step technical course for this role over ${formData.time_value} weeks.\nAnalyze the user's current experience against the Job Description and identify precise technical gaps.\nThe roadmap must bridge these gaps with rigorous modules that lead to demonstrable mastery.`;
 
     const systemPrompt = `You are a technical lead. Generate a rigorous technical learning roadmap. Output JSON ONLY matching the required schema.`;
 
@@ -322,7 +322,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
             if (Array.isArray(roadmapPlan)) {
                roadmapPlan = {
                   title: "Generated Roadmap",
-                  description: "Technical learning path",
+                  description: "Technical course",
                   modules: roadmapPlan
                };
             }
@@ -398,7 +398,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
               if (Array.isArray(parsedJSON)) {
                  parsedJSON = {
                     title: "Generated Roadmap",
-                    description: "Technical learning path",
+                    description: "Technical course",
                     modules: parsedJSON
                  };
               }

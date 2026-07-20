@@ -38,6 +38,7 @@ import { authAPI, roadmapsAPI, coinsAPI } from '@/lib/api';
 import { useSettings } from './SettingsProvider';
 import { useAuth } from '@/components/AuthProvider';
 import VerifiedBadge from '@/components/VerifiedBadge';
+import { usePractice } from '@/components/PracticeProvider';
 
 interface SidebarProps {
     children?: React.ReactNode; // For page-specific slots like Telemetry or Stats
@@ -100,6 +101,7 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
         return pathname === path;
     };
     const { openSettings } = useSettings();
+    const { openPracticeModal } = usePractice();
 
     const navLinkClass = (path: string) => `
         flex items-center gap-2 px-2.5 py-1 text-[13px] transition-colors rounded-md
@@ -175,14 +177,20 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                                 </Link>
 
                                 <Link href="/practice" aria-current={isActive('/practice') ? 'page' : undefined} className={navLinkClass('/practice')} onClick={onClose}>
-                                    <Zap className="w-3.5 h-3.5 stroke-[1.5px]" /> Practice
+                                    <Zap className="w-3.5 h-3.5 stroke-[1.5px]" /> Practice Lab
                                 </Link>
+                                <button
+                                    onClick={() => { openPracticeModal(); onClose?.(); }}
+                                    className="flex items-center gap-2 px-2.5 py-1 text-[13px] transition-colors rounded-md text-text-muted hover:text-text-heading hover:bg-sidebar dark:hover:bg-background/[0.02] w-full text-left"
+                                >
+                                    <Zap className="w-3.5 h-3.5 stroke-[1.5px] text-emerald-500" /> Quick Practice
+                                </button>
                             </nav>
                         </div>
 
-                        {/* Create Your Learning Path */}
+                        {/* Create Your Course */}
                         <div className="pt-3 border-t border-border dark:border-white/[0.05]">
-                            <span className="px-2.5 text-[10px] font-bold text-text-muted uppercase tracking-[0.15em] block mb-2 opacity-50">Create your learning path</span>
+                            <span className="px-2.5 text-[10px] font-bold text-text-muted uppercase tracking-[0.15em] block mb-2 opacity-50">Create your course</span>
                             <nav className="space-y-0.5" aria-label="Generators navigation">
                                 <Link href="/generate" aria-current={isActive('/generate') ? 'page' : undefined} className={navLinkClass('/generate')} onClick={onClose}>
                                     <Sparkles className="w-3.5 h-3.5 stroke-[1.5px]" /> AI Architect

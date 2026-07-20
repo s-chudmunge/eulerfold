@@ -525,7 +525,7 @@ interface RoadmapDisplayProps {
             <div className="max-w-[400px]">
               <h3 className="inconsolata-ui text-lg font-bold text-text-heading tracking-tight mb-2">Continue Learning</h3>
               <p className="manrope-body text-[12px] text-text-muted leading-relaxed italic opacity-80 mb-6 px-4">
-                You've completed the original curriculum. As a Pro user, you can extend this roadmap further based on your specific needs.
+                You've completed the original curriculum. As a Pro user, you can extend this course further based on your specific needs.
               </p>
               
               <div className="inline-flex items-center px-3 py-1 bg-emerald-500/5 rounded-full border border-emerald-500/10">

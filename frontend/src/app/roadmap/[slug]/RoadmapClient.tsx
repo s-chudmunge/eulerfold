@@ -225,7 +225,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
             if (!session) return;
 
             if (roadmap.is_public && updates.is_public === false) {
-                throw new Error("Public roadmaps cannot be made private.");
+                throw new Error("Public courses cannot be made private.");
             }
 
             const payload = {
@@ -511,7 +511,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
 
                         {(roadmap.is_public || isOwner) && (
                             <ShareMenu 
-                                title={`Check out this roadmap: ${roadmap.title}`}
+                                title={`Check out this course: ${roadmap.title}`}
                                 text={`I'm learning ${roadmap.title} on EulerFold. Join me!`}
                                 url={`https://www.eulerfold.com/roadmap/${roadmap.slug || roadmap.id}`}
                                 triggerClassName="whitespace-nowrap rounded-lg bg-callout-bg border border-border px-4 md:px-5 py-1.5 text-text-heading text-[10px] md:text-[12px] font-bold hover:bg-[var(--border)] transition-opacity flex items-center gap-2"
@@ -657,7 +657,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                 <div className="flex items-center gap-2">
                                     <Globe className="w-3.5 h-3.5 text-text-muted shrink-0" />
                                     <p className="text-[11px] text-text-muted font-medium">
-                                        <span className="text-text-heading font-bold">Share your knowledge:</span> Make your roadmap public to let others clone it and learn from your journey.
+                                        <span className="text-text-heading font-bold">Share your knowledge:</span> Make your course public to let others clone it and learn from your journey.
                                     </p>
                                 </div>
                                 <button 
@@ -1117,7 +1117,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                         )}
                                     </button>
                                     <p className="text-center mt-4 manrope-body text-[10px] text-text-muted font-medium italic">
-                                        You can extend this roadmap up to 5 times. (Current: {roadmap.extension_count || 0}/5)
+                                        You can extend this course up to 5 times. (Current: {roadmap.extension_count || 0}/5)
                                     </p>
                                 </div>
                             </div>
@@ -1190,7 +1190,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                             </div>
                             <h3 className="inconsolata-ui text-xl font-bold text-text-heading mb-3 tracking-tight">Clone to Dashboard</h3>
                             <p className="manrope-body text-[14px] text-text-muted mb-8 leading-relaxed font-medium italic px-4">
-                                You need to clone this roadmap to your dashboard to start learning, track your progress, and submit homework.
+                                You need to clone this course to your dashboard to start learning, track your progress, and submit homework.
                             </p>
                             
                             <div className="flex flex-col gap-3">

@@ -63,19 +63,48 @@ async def get_current_user(request: Request) -> User:
         logger.warning(f"Auth: Malformed token received (length={len(token) if token else 0}, segments={token.count('.') + 1 if token else 0})")
         raise credentials_exception
 
+    # Fast pre-flight check to avoid network calls for expired or anon tokens
+    try:
+        import base64
+        import json
+        import time
+        payload_b64 = token.split(".")[1]
+        payload_b64 += "=" * ((4 - len(payload_b64) % 4) % 4)
+        payload = json.loads(base64.b64decode(payload_b64).decode('utf-8'))
+        
+        if 'exp' in payload and payload['exp'] < time.time():
+            logger.warning("Auth: Token is expired locally. Skipping network verification.")
+            raise credentials_exception
+            
+        if payload.get('role') == 'anon':
+            logger.warning("Auth: Anonymous token rejected.")
+            raise credentials_exception
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.debug(f"Auth: Local JWT parse failed, falling back to Supabase: {e}")
+        pass
+
     try:
         # Verify Supabase JWT token with timeout + retry
         try:
             response = await verify_token_with_timeout(token)
             if not response or not response.user:
                 raise credentials_exception
+            supabase_user = response.user
+            uid = supabase_user.id
+            email = supabase_user.email
+            user_metadata = supabase_user.user_metadata or {}
         except Exception as e:
             logger.error(f"Auth: Supabase token verification failed after retries: {e}")
-            raise credentials_exception
+            if settings.ENVIRONMENT == "development" and 'payload' in locals() and payload.get('sub'):
+                logger.warning("Auth: Falling back to unverified local JWT payload in development mode.")
+                uid = payload['sub']
+                email = payload.get('email', '')
+                user_metadata = payload.get('user_metadata', {})
+            else:
+                raise credentials_exception
 
-        supabase_user = response.user
-        uid = supabase_user.id
-        email = supabase_user.email
     except HTTPException:
         raise
     except Exception as e:
@@ -83,7 +112,6 @@ async def get_current_user(request: Request) -> User:
         raise credentials_exception
 
     # Create transient user object
-    user_metadata = supabase_user.user_metadata or {}
     display_name = user_metadata.get('full_name') or user_metadata.get('name')
     
     # Fetch profile data for authorization checks (like is_pro)

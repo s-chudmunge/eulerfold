@@ -88,7 +88,7 @@ export default function GeneratePlanModal({ onClose, onRefresh }: Props) {
           <div className="p-3 bg-accent/5 border border-accent/10 rounded-lg flex items-start gap-2.5">
             <Info className="w-3.5 h-3.5 text-accent shrink-0 mt-0.5" />
             <p className="text-[11.5px] text-text-primary leading-relaxed">
-              Select your roadmaps and intensity. Our AI will distribute modules, practice sessions, and homework tasks across your calendar.
+              Select your courses and intensity. Our AI will distribute modules, practice sessions, and homework tasks across your calendar.
             </p>
           </div>
 

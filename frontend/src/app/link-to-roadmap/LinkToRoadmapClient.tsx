@@ -147,7 +147,7 @@ export default function LinkToRoadmapClient() {
                 },
                 {
                   question: "How does it handle large repositories?",
-                  answer: "The AI scrapes the README, documentation files, and directory structure to understand the core architecture and tech stack, then builds a roadmap teaching you those foundational concepts."
+                  answer: "The AI scrapes the README, documentation files, and directory structure to understand the core architecture and tech stack, then builds a course teaching you those foundational concepts."
                 }
               ]}
             />

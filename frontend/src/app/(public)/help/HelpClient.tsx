@@ -140,7 +140,7 @@ export default function HelpClient() {
     {
       category: 'Credits',
       question: 'How do Roadmap Credits work?',
-      answer: 'Roadmap Credits are used to generate comprehensive, AI-driven learning paths. All new users receive 5 complementary credits. Additional credits can be acquired through the pricing page.',
+      answer: 'Course Credits are used to generate comprehensive, AI-driven courses. All new users receive 5 complementary credits. Additional credits can be acquired through the pricing page.',
       icon: <Zap className="w-3.5 h-3.5" />
     },
     {

@@ -10,10 +10,10 @@ const SYSTEMS = [
     title: 'EulerFold AI',
     subtitle: 'Zero Setup',
     icon: <Cloud className="w-5 h-5 text-accent" />,
-    description: 'Uses Gemini models to generate your roadmap with verified references. No setup needed. Just enter a topic and go.',
+    description: 'Uses Gemini models to generate your course with verified references. No setup needed. Just enter a topic and go.',
     points: [
       'No API key or configuration needed',
-      'Roadmaps include papers, videos, and assessments',
+      'Courses include papers, videos, and assessments',
       'Uses your monthly EulerFold credit balance'
     ]
   },
@@ -47,27 +47,27 @@ export default function GenerationSystems() {
   return (
     <section className="py-20 md:py-32 px-6 bg-background relative border-t border-border/30 overflow-hidden">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center max-w-3xl mx-auto mb-16 md:mb-24">
-
+        <div className="max-w-3xl mx-auto text-center mb-16 md:mb-20">
+          <motion.span 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="block text-[12px] md:text-[13px] text-accent font-bold uppercase tracking-[0.2em] mb-4"
+          >
+            Three Ways to Generate
+          </motion.span>
+          
           <motion.h2 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-2xl md:text-4xl font-bold text-text-heading mb-6 tracking-tight manrope-body"
+            className="text-2xl md:text-4xl font-bold text-text-heading tracking-tight leading-[1.25] max-w-2xl mx-auto"
           >
-            Three Ways to Generate
+            Use our managed models, bring your own API key, or run inference locally.{' '}
+            <br className="hidden md:block" />
+            <span className="font-serif italic text-accent opacity-90 text-[36px] md:text-[48px] tracking-normal font-medium">Your choice.</span>
           </motion.h2>
-          
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-[13px] md:text-[15px] text-text-muted leading-relaxed font-medium"
-          >
-            Use our managed models, bring your own API key, or run inference locally. Your choice.
-          </motion.p>
         </div>
 
         {/* Grid Container */}

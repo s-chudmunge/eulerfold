@@ -9,7 +9,7 @@ import { logAIUsage } from '@/lib/usageTracker';
 import { useSettings } from '../SettingsProvider';
 
 export default function SkillExtractor({ roadmap, onComplete }: { roadmap: RoadmapData, onComplete?: () => void }) {
-    const [status, setStatus] = useState<string>('Preparing learning path...');
+    const [status, setStatus] = useState<string>('Preparing course...');
     const [needsConfig, setNeedsConfig] = useState(false);
     const [retryCount, setRetryCount] = useState(0);
     const extracting = useRef(false);
@@ -63,7 +63,7 @@ MISSIONS:
 1. Map each topic below to exactly ONE canonical skill name (e.g., 'Game Physics', 'Python', 'React').
 2. **IMPORTANT:** If a topic genuinely belongs to a skill already in the user's inventory, use that EXACT name and category.
 3. **CRITICAL:** DO NOT force a topic into an existing skill if the domain is fundamentally different. Create a NEW, highly accurate skill name instead.
-4. Assign a 'depth' score (1.0 to 5.0) for each skill based on the topics in THIS roadmap.
+4. Assign a 'depth' score (1.0 to 5.0) for each skill based on the topics in THIS course.
 
 DEPTH SCORING RULES:
 - 1.0 to 1.5: Fundamentals, syntax, basic concepts.
@@ -242,7 +242,7 @@ ${JSON.stringify(flatTopics)}`;
             {needsConfig && (
                 <div className="flex flex-col gap-2 w-full mt-1 border-t border-border pt-2">
                     <p className="text-[10px] leading-tight">
-                        We need an AI engine to extract and map skills from this roadmap to your profile. Please configure one to continue.
+                        We need an AI engine to extract and map skills from this course to your profile. Please configure one to continue.
                     </p>
                     <div className="flex gap-2 w-full">
                         <button 
@@ -254,7 +254,7 @@ ${JSON.stringify(flatTopics)}`;
                         <button 
                             onClick={() => {
                                 setNeedsConfig(false);
-                                setStatus('Preparing learning path...');
+                                setStatus('Preparing course...');
                                 extracting.current = false;
                                 setRetryCount(c => c + 1);
                             }}
@@ -270,7 +270,7 @@ ${JSON.stringify(flatTopics)}`;
                 <div className="flex w-full mt-1 border-t border-border pt-2">
                     <button 
                         onClick={() => {
-                            setStatus('Preparing learning path...');
+                            setStatus('Preparing course...');
                             extracting.current = false;
                             setRetryCount(c => c + 1);
                         }}

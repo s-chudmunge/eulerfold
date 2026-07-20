@@ -1,13 +1,14 @@
 import React from 'react';
 import { Metadata } from 'next';
 import ExploreClient from './ExploreClient';
-
+import UserNav from '@/components/UserNav';
+import Link from 'next/link';
 export const metadata: Metadata = {
-  title: 'Explore Roadmaps',
+  title: 'Explore Courses',
   description: 'Discover learning journeys crafted and shared by the community. Find your next skill to master.',
-  keywords: 'explore roadmaps, technical skills, community learning, learning paths, EulerFold roadmaps',
+  keywords: 'explore courses, technical skills, community learning, courses, EulerFold courses',
   openGraph: {
-    title: 'Explore Roadmaps',
+    title: 'Explore Courses',
     description: 'Discover learning journeys crafted and shared by the community. Find your next skill to master.',
     type: 'website',
     url: 'https://www.eulerfold.com/explore',
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary',
-    title: 'Explore Roadmaps',
+    title: 'Explore Courses',
     description: 'Discover learning journeys crafted and shared by the community.',
     creator: '@eulerfold',
   },
@@ -72,15 +73,29 @@ export default async function ExplorePage() {
   };
   
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
-      <ExploreClient 
-        initialRoadmaps={initialRoadmaps} 
-        initialLeaderboard={initialLeaderboard} 
-      />
-    </>
+      <header className="inconsolata-ui border-b border-border bg-header h-[48px] shrink-0 z-50 sticky top-0 inset-x-0">
+          <div className="w-full px-4 md:px-6 flex h-full items-center justify-between">
+              <div className="flex items-center gap-2 md:gap-4">
+                  <Link className="flex items-center group shrink-0" href="/dashboard" aria-label="Dashboard">
+                      <img src="/apple-touch-icon.png" alt="EulerFold" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
+                  </Link>
+              </div>
+              <div className="flex items-center gap-4">
+                  <UserNav />
+              </div>
+          </div>
+      </header>
+      <main className="flex-grow min-w-0 bg-background scroll-smooth">
+        <ExploreClient 
+          initialRoadmaps={initialRoadmaps} 
+          initialLeaderboard={initialLeaderboard} 
+        />
+      </main>
+    </div>
   );
 }

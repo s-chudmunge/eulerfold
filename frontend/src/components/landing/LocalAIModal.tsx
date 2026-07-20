@@ -54,7 +54,7 @@ export const LOCAL_MODELS = [
     name: 'Llama 3.1 8B',
     size: '4.8 GB',
     vram: '6 GB+',
-    description: 'Highly capable. Best for complex JSON formatting and detailed roadmaps.',
+    description: 'Highly capable. Best for complex JSON formatting and detailed courses.',
     recommended: false
   },
   {
@@ -185,7 +185,7 @@ export function LocalAIModal({ isOpen, onClose, onSelectModel }: LocalAIModalPro
                     Subsequent generations will load instantly from cache.
                   </p>
                   <p className="text-[11px] text-text-muted leading-relaxed">
-                    <strong className="text-text-heading">Quality Note:</strong> Local models are significantly smaller than cloud-based frontier models (like GPT-4o or Gemini). The generated roadmaps may occasionally be lower in quality, less detailed, or contain formatting errors.
+                    <strong className="text-text-heading">Quality Note:</strong> Local models are significantly smaller than cloud-based frontier models (like GPT-4o or Gemini). The generated courses may occasionally be lower in quality, less detailed, or contain formatting errors.
                   </p>
                 </div>
               </div>

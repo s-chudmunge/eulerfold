@@ -36,7 +36,7 @@ export default function JobDecodedPageClient() {
           <div className="flex flex-col items-center gap-6">
             <div className="flex flex-col items-center gap-4">
               <p className="inconsolata-ui text-[14px] font-bold text-text-heading tracking-[0.2em] uppercase">
-                Finalizing Your Roadmap
+                Finalizing Your Course
               </p>
               <div className="flex gap-1.5">
                 {[0, 1, 2].map(i => (

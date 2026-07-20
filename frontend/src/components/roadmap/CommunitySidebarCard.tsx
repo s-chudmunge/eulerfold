@@ -51,7 +51,7 @@ export default function CommunitySidebarCard({ onOpenRoadmapModal }: CommunitySi
                             className="w-full flex items-center justify-between gap-3 bg-[var(--text-heading)] hover:opacity-90 text-[var(--bg-main)] rounded-[12px] px-5 py-3.5 transition-all group/btn"
                         >
                             <span className="text-[12px] font-bold text-left leading-tight">
-                                Create your step by step<br />learning path
+                                Create your step by step<br />course
                             </span>
                             <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover/btn:translate-x-1" />
                         </button>

@@ -195,7 +195,7 @@ Duration: ${formData.time_value} weeks.
         const roadmapPlan = JSON.parse(jsonrepair(cleanedText));
 
         const backendPayload = {
-          subject: roadmapPlan.title || 'Link Decoded Roadmap',
+          subject: roadmapPlan.title || 'Link Decoded Course',
           goal: formData.url,
           time_value: formData.time_value,
           time_unit: 'weeks',
@@ -209,7 +209,7 @@ Duration: ${formData.time_value} weeks.
         try {
           await logAIUsage({
             id: saveResponse?.data?.slug,
-            subject: roadmapPlan.title || 'Link Decoded Roadmap',
+            subject: roadmapPlan.title || 'Link Decoded Course',
             model: orData.model || openRouterModel,
             prompt_tokens: orData.usage?.prompt_tokens || 0,
             completion_tokens: orData.usage?.completion_tokens || 0,
@@ -254,7 +254,7 @@ Duration: ${formData.time_value} weeks.
           const parsedJSON = JSON.parse(jsonrepair(cleanedText));
 
           const backendPayload = {
-            subject: parsedJSON.title || 'Link Decoded Roadmap',
+            subject: parsedJSON.title || 'Link Decoded Course',
             goal: formData.url,
             time_value: formData.time_value,
             time_unit: 'weeks',
@@ -268,7 +268,7 @@ Duration: ${formData.time_value} weeks.
           try {
             await logAIUsage({
               id: saveResponse?.data?.slug,
-              subject: parsedJSON.title || 'Link Decoded Roadmap',
+              subject: parsedJSON.title || 'Link Decoded Course',
               model: localAIModelId,
               prompt_tokens: responseUsage?.prompt_tokens || 0,
               completion_tokens: responseUsage?.completion_tokens || 0,
@@ -301,7 +301,7 @@ Duration: ${formData.time_value} weeks.
         try {
           await logAIUsage({
             id: (res as any)?.slug,
-            subject: 'Link Decoded Roadmap',
+            subject: 'Link Decoded Course',
             model: isPro ? 'models/gemini-2.5-pro' : 'models/gemini-2.5-flash',
             prompt_tokens: 0,
             completion_tokens: 0,
@@ -343,7 +343,7 @@ Duration: ${formData.time_value} weeks.
             </div>
             <h3 className="font-inter text-[16px] font-semibold text-text-heading mb-2">Pro Exclusive Feature</h3>
             <p className="manrope-body font-medium text-[13px] text-text-muted max-w-md mb-6 leading-relaxed px-4">
-                <strong className="text-text-primary">Unlock URL Deconstruction.</strong> Turn any GitHub repo, docs, or web article into a structured learning path with videos and assignments.
+                <strong className="text-text-primary">Unlock URL Deconstruction.</strong> Turn any GitHub repo, docs, or web article into a structured course with videos and assignments.
             </p>
             <Link 
                 href="/pricing"
@@ -371,7 +371,7 @@ Duration: ${formData.time_value} weeks.
                 <AlertCircle className="w-3.5 h-3.5 text-accent" /> Generation Takes Time
               </p>
               <p className="text-[10px] text-text-muted leading-relaxed font-medium">
-                Our AI requires about 20-40 seconds to architect a complete learning roadmap. Please be patient after clicking generate.
+                Our AI requires about 20-40 seconds to architect a complete course. Please be patient after clicking generate.
               </p>
             </div>
           </div>

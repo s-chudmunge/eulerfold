@@ -64,7 +64,7 @@ export default function ScoringPage() {
                                 <h3 className="manrope-body text-[18px] font-bold text-text-heading uppercase tracking-tight">03. Topic Coverage (15%)</h3>
                             </div>
                             <p className="manrope-body text-[15px] text-text-muted leading-relaxed font-medium">
-                                Tracks the breadth of your learning path. It ensures your technical identity reflects a comprehensive understanding of the subject's entire landscape.
+                                Tracks the breadth of your course. It ensures your technical identity reflects a comprehensive understanding of the subject's entire landscape.
                             </p>
                         </div>
 
@@ -95,7 +95,7 @@ export default function ScoringPage() {
                         <div className="space-y-4">
                             <h3 className="manrope-body text-[16px] font-bold text-text-heading">Persistent Analysis</h3>
                             <p className="manrope-body text-[15px] text-text-muted leading-relaxed font-medium">
-                                Deleting a roadmap removes its specific data, but core skill records remain on your profile. The system recalculates scores based on remaining reviewed units.
+                                Deleting a course removes its specific data, but core skill records remain on your profile. The system recalculates scores based on remaining reviewed units.
                             </p>
                         </div>
                     </div>

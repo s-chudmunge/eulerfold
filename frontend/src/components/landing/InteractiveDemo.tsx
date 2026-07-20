@@ -62,10 +62,10 @@ export default function InteractiveDemo() {
 
     const steps = [
         "Analyzing topic: Transformer Architectures...",
-        "Structuring learning path into 4 core modules...",
+        "Structuring course into 4 core modules...",
         "Searching ArXiv for foundational papers...",
         "Generating interactive recall exercises...",
-        "Finalizing roadmap..."
+        "Finalizing course..."
     ];
 
     const handleTry = () => {

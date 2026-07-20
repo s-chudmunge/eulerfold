@@ -50,7 +50,7 @@ export default function PrivacyContent() {
                 </li>
                 <li className="flex gap-3">
                   <span className="text-accent font-bold">→</span>
-                  <span><strong>YouTube Data:</strong> We collect and store minimal YouTube data — specifically video IDs and titles — to embed educational content within your roadmaps. This data is retrieved via the YouTube Data API and stored on our servers solely to display relevant video resources in your learning roadmaps.</span>
+                  <span><strong>YouTube Data:</strong> We collect and store minimal YouTube data — specifically video IDs and titles — to embed educational content within your courses. This data is retrieved via the YouTube Data API and stored on our servers solely to display relevant video resources in your learning courses.</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-accent font-bold">→</span>
@@ -144,7 +144,7 @@ export default function PrivacyContent() {
               </h2>
               <div className="h-[1px] w-full bg-[var(--border)] mb-6"></div>
               <p>
-                By default, all roadmaps are private. If you explicitly choose to &quot;Go Public&quot;, your roadmap structure will be visible in the Explore directory. You have full control over whether your display name is associated with public roadmaps.
+                By default, all courses are private. If you explicitly choose to &quot;Go Public&quot;, your course structure will be visible in the Explore directory. You have full control over whether your display name is associated with public courses.
               </p>
             </section>
 

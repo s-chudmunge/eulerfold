@@ -3,9 +3,9 @@ import { Metadata } from 'next';
 import RoadmapIndexClient from './RoadmapIndexClient';
 
 export const metadata: Metadata = {
-  title: 'Roadmap Directory — Discover public learning paths',
-  description: 'Browse the complete directory of public learning roadmaps on EulerFold. Find structured, high-density paths for programming, AI, science, and professional skills.',
-  keywords: 'roadmap directory, public roadmaps, learning paths, technical curriculum, skill directory, EulerFold roadmaps',
+  title: 'Course Directory — Discover public courses',
+  description: 'Explore community-created technical courses. Filter by popularity, ratings, or tech stack to find the perfect learning journey.',
+  keywords: 'course directory, public courses, courses, technical curriculum, skill directory, EulerFold courses',
   alternates: {
     canonical: 'https://www.eulerfold.com/roadmap',
   },

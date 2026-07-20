@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import { exploreAPI, authAPI, roadmapsAPI } from '@/lib/api';
 import PublicHeader from '@/components/PublicHeader';
-import BrandedSideBanners from '@/components/layout/SideBanners';
 import Footer from '@/components/Footer';
 import RoadmapDisplay from '@/components/landing/RoadmapDisplay';
 import StarRating from '@/components/roadmap/StarRating';
@@ -424,9 +423,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                         </div>
                     </div>
 
-                    {/* Main Roadmap Display */}
                     <div className="mb-20 relative">
-                        <BrandedSideBanners topClass="top-0 md:top-0" />
                         {/* DEBUG: {JSON.stringify({ isPro, isOwner, completed: roadmap.progress?.completed_topics, total: roadmap.progress?.total_topics, extCount: roadmap.extension_count })} */}
                         <RoadmapDisplay 
                             roadmapData={roadmap} 
@@ -524,7 +521,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
 
                     {/* Feedback Stars - Minimal Layout */}
                     <div className="mt-20 mb-16 text-center border-t border-border/50 pt-12">
-                        <h2 className="manrope-body text-[12px] font-bold text-text-muted uppercase tracking-[0.2em] mb-6 font-inter">Rate this roadmap</h2>
+                        <h2 className="manrope-body text-[12px] font-bold text-text-muted uppercase tracking-[0.2em] mb-6 font-inter">Rate this course</h2>
                         <div className="flex justify-center mb-4">
                             <StarRating 
                                 rating={rating} 
@@ -621,7 +618,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                         )}
                                     </button>
                                     <p className="text-center mt-4 manrope-body text-[10px] text-text-muted font-medium italic">
-                                        You can extend this roadmap up to 5 times. (Current: {roadmap.extension_count || 0}/5)
+                                        You can extend this course up to 5 times. (Current: {roadmap.extension_count || 0}/5)
                                     </p>
                                 </div>
                             </div>
@@ -694,7 +691,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                             </div>
                             <h3 className="inconsolata-ui text-xl font-bold text-text-heading mb-3 tracking-tight">Clone to Dashboard</h3>
                             <p className="manrope-body text-[14px] text-text-muted mb-8 leading-relaxed font-medium italic px-4">
-                                You need to clone this roadmap to your dashboard to start learning, track your progress, and submit homework.
+                                You need to clone this course to your dashboard to start learning, track your progress, and submit homework.
                             </p>
                             
                             <div className="flex flex-col gap-3">

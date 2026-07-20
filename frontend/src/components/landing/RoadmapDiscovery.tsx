@@ -135,7 +135,7 @@ export default function RoadmapDiscovery({ initialRoadmaps }: RoadmapDiscoveryPr
             href="/explore" 
             className="inline-flex items-center gap-2 text-accent font-bold text-[13px] uppercase tracking-widest hover:underline underline-offset-4 group inconsolata-ui"
           >
-            Explore all {activeTab !== 'trending' ? activeTab : ''} roadmaps <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+            Explore all {activeTab !== 'trending' ? activeTab : ''} courses <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
           </Link>
         </div>
       </div>

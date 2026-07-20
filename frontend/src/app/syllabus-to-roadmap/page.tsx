@@ -4,13 +4,13 @@ import SyllabusToRoadmapClient from './SyllabusToRoadmapClient';
 
 export const metadata: Metadata = {
   title: 'Syllabus Parser to Interactive Course | EulerFold AI',
-  description: 'Turn static syllabi into interactive courses. Paste a list of topics from a college class or textbook. We will automatically break it down, find the best resources, and build an interactive learning path.',
+  description: 'Turn static syllabi into interactive courses. Paste a list of topics from a college class or textbook. We will automatically break it down, find the best resources, and build an interactive course.',
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: 'https://www.eulerfold.com/syllabus-to-roadmap',
     title: 'Syllabus Parser to Interactive Course | EulerFold AI',
-    description: 'Turn static syllabi into interactive courses. Paste a list of topics from a college class or textbook. We will automatically break it down, find the best resources, and build an interactive learning path.',
+    description: 'Turn static syllabi into interactive courses. Paste a list of topics from a college class or textbook. We will automatically break it down, find the best resources, and build an interactive course.',
     siteName: 'EulerFold',
     images: [{
       url: '/og-image.png',

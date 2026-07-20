@@ -8,7 +8,6 @@ import PaymentModal from '@/components/PaymentModal';
 import EnterpriseInterestModal from '@/components/EnterpriseInterestModal';
 import { useAuth } from '@/components/AuthProvider';
 import { getDiscountStatus, formatTime, NORMAL_PRICE, DISCOUNTED_PRICE } from '@/lib/utils/pricing';
-import { SideBanner, QUOTES } from '@/components/layout/SideBanners';
 
 export default function PricingClient() {
     const [isYearly, setIsYearly] = useState(false);
@@ -17,24 +16,15 @@ export default function PricingClient() {
     const { user, loading } = useAuth();
     const [discountStatus, setDiscountStatus] = useState(getDiscountStatus());
     const [hasMounted, setHasMounted] = useState(false);
-    const [quoteIndex, setQuoteIndex] = useState(0);
-
     useEffect(() => {
         setHasMounted(true);
-        // Randomize on mount
-        setQuoteIndex(Math.floor(Math.random() * QUOTES.length));
 
         const timer = setInterval(() => {
             setDiscountStatus(getDiscountStatus());
         }, 1000);
 
-        const quoteTimer = setInterval(() => {
-            setQuoteIndex((prev) => (prev + 1) % QUOTES.length);
-        }, 60000);
-
         return () => {
             clearInterval(timer);
-            clearInterval(quoteTimer);
         };
     }, []);
 
@@ -50,21 +40,11 @@ export default function PricingClient() {
 
     return (
         <div className="pricing-container relative">
-            {/* Floating Side Banners - Single side for Pricing */}
-            <SideBanner 
-                align="left"
-                buttonText="Research"
-                href="/research-decoded"
-                currentQuote={QUOTES[quoteIndex]}
-                quoteIndex={quoteIndex}
-                topClass="top-24 md:top-32"
-            />
-
             {/* Balance Row */}
             <div className="mb-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
                     <h1 className="inconsolata-ui text-[18px] font-bold text-text-heading tracking-tight">
-                        Roadmap Credits
+                        Course Credits
                     </h1>
                 </div>
 
@@ -103,7 +83,7 @@ export default function PricingClient() {
                             </div>
                             <div className="flex items-start gap-3 text-[12px] text-text-primary">
                                 <span className="text-teal-600 mt-0.5">✓</span>
-                                <span>Access all public roadmaps</span>
+                                <span>Access all public courses</span>
                             </div>
                             <div className="flex items-start gap-3 text-[12px] text-text-primary">
                                 <span className="text-teal-600 mt-0.5">✓</span>
@@ -111,7 +91,7 @@ export default function PricingClient() {
                             </div>
                             <div className="flex items-start gap-3 text-[12px] text-text-primary">
                                 <span className="text-teal-600 mt-0.5">✓</span>
-                                <span>5 EulerFold AI roadmap generations</span>
+                                <span>5 EulerFold AI course generations</span>
                             </div>
                             <div className="flex items-start gap-3 text-[12px] text-text-primary">
                                 <span className="text-teal-600 mt-0.5">✓</span>

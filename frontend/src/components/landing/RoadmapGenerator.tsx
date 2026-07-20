@@ -77,7 +77,7 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
     time_value: 4,
   });
 
-  const [step, setStep] = useState(1);
+
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
@@ -137,7 +137,7 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
   useEffect(() => {
     setShowOptionalFields(false);
     checkConfig();
-  }, [step]);
+  }, []);
 
   const currentRoleRef = useRef<HTMLDivElement>(null);
   const targetRoleRef = useRef<HTMLDivElement>(null);
@@ -257,7 +257,7 @@ ${context_str}
 Estimated duration: ${formData.time_value} ${formData.time_unit || 'weeks'}.
 
 **Rules:**
-1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "The Complete Guide to Number Theory", "Mastering React Hooks"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Roadmap". Do NOT include the time duration in the title.
+1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "The Complete Guide to Number Theory", "Mastering React Hooks"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Course". Do NOT include the time duration in the title.
 2. **SEO-Friendly Description:** The "description" must be a single, punchy, search-engine-friendly sentence similar to the title. Do NOT use long paragraphs like "This intensive intensive X-week roadmap is designed for...".
 3. **Technical Rigor:** Focus on depth and verifiable technical skills. Avoid introductory fluff.
 4. **Logical Progression:** Structure the path into modules that build upon each other logically.
@@ -267,7 +267,7 @@ Estimated duration: ${formData.time_value} ${formData.time_unit || 'weeks'}.
 8. **Output JSON ONLY** matching this schema:
    {
      "title": "string",
-     "description": "A single, search engine friendly line describing the roadmap (max 1 sentence).",
+     "description": "A single, search engine friendly line describing the course (max 1 sentence).",
      "modules": [
        {
          "title": "string",
@@ -299,7 +299,7 @@ Estimated duration: ${formData.time_value} ${formData.time_unit || 'weeks'}.
 Generate a technical learning roadmap for the subject: "${formData.subject}".          Goal: ${formData.goal}
           Duration: ${formData.time_value} weeks.
 
-Generate a catchy, SEO-friendly, and natural title (e.g., "The Complete Guide to Number Theory"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Roadmap" and do NOT include the duration in the title.
+Generate a catchy, SEO-friendly, and natural title (e.g., "The Complete Guide to Number Theory"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Course" and do NOT include the duration in the title.
 
 CRITICAL REQUIREMENT: You MUST generate EXACTLY ${formData.time_value} modules in the "modules" array (one module for each unit of time). Do not just output one module.
 
@@ -404,8 +404,8 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
             roadmapPlan = JSON.parse(jsonrepair(cleanedText));
             if (Array.isArray(roadmapPlan)) {
                roadmapPlan = {
-                  title: "Generated Roadmap",
-                  description: "Technical learning path",
+                  title: "Generated Course",
+                  description: "Technical course",
                   modules: roadmapPlan
                };
             }
@@ -490,8 +490,8 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
               parsedJSON = JSON.parse(jsonrepair(cleanedText));
               if (Array.isArray(parsedJSON)) {
                  parsedJSON = {
-                    title: "Generated Roadmap",
-                    description: "Technical learning path",
+                    title: "Generated Course",
+                    description: "Technical course",
                     modules: parsedJSON
                  };
               }
@@ -585,556 +585,456 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
 
   const renderStep = () => {
     return (
-      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-        
-        {step === 1 && (
-          <div className="space-y-6">
-            <div className="space-y-5">
-               <label className="flex items-center gap-2 text-[11px] font-bold text-text-muted/80">
-                 <div className="w-5 h-5 rounded-md bg-accent/10 flex items-center justify-center text-[10px] font-bold text-accent">1</div>
-                 Core Objective
-               </label>
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-8">
+        <div className="space-y-6">
+           {/* Subject - Required & More Prominent */}
+           <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Zap className="w-3.5 h-3.5 text-accent" />
+                <span className="text-[13px] font-bold text-text-heading">What subject do you want to master?</span>
+              </div>
+              <input
+                type="text"
+                name="subject"
+                autoFocus
+                value={formData.subject}
+                onChange={handleInputChange}
+                placeholder="e.g. Distributed Systems"
+                className="w-full px-4 py-3 bg-sidebar/40 border border-border/60 rounded-lg focus:outline-none focus:border-accent focus:bg-sidebar/60 focus:ring-1 focus:ring-accent/20 transition-all text-[15px] font-bold text-text-heading placeholder:font-normal placeholder:text-text-muted/40"
+              />
+           </div>
 
-               {/* Subject - Required & More Prominent */}
-               <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Zap className="w-3.5 h-3.5 text-accent" />
-                    <span className="text-[13px] font-bold text-text-heading">What subject do you want to master?</span>
-                  </div>
-                  <input
-                    type="text"
-                    name="subject"
-                    autoFocus
-                    value={formData.subject}
-                    onChange={handleInputChange}
-                    placeholder="e.g. Distributed Systems"
-                    className="w-full px-4 py-3 bg-sidebar/40 border border-border/60 rounded-lg focus:outline-none focus:border-accent focus:bg-sidebar/60 focus:ring-1 focus:ring-accent/20 transition-all text-[15px] font-bold text-text-heading placeholder:font-normal placeholder:text-text-muted/40"
-                  />
-               </div>
+           {/* Goal - Required & More Prominent */}
+           <div className="space-y-2">
+              <div className="flex items-center gap-2">
+                <Route className="w-3.5 h-3.5 text-accent" />
+                <span className="text-[13px] font-bold text-text-heading">Specific End Goal</span>
+              </div>
+              <textarea
+                name="goal"
+                value={formData.goal}
+                onChange={handleInputChange}
+                rows={2}
+                placeholder="Example: I want to be able to build a scalable real-time chat application using WebSockets and Redis."
+                className="w-full px-4 py-3 bg-sidebar/40 border border-border/60 rounded-lg focus:outline-none focus:border-accent focus:bg-sidebar/60 focus:ring-1 focus:ring-accent/20 transition-all text-[14px] font-medium text-text-heading placeholder:text-text-muted/40 resize-none h-20"
+              />
+           </div>
 
-               {/* Goal - Required & More Prominent */}
-               <div className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <Route className="w-3.5 h-3.5 text-accent" />
-                    <span className="text-[13px] font-bold text-text-heading">Specific End Goal</span>
-                  </div>
-                  <textarea
-                    name="goal"
-                    value={formData.goal}
-                    onChange={handleInputChange}
-                    rows={2}
-                    placeholder="Example: I want to be able to build a scalable real-time chat application using WebSockets and Redis."
-                    className="w-full px-4 py-3 bg-sidebar/40 border border-border/60 rounded-lg focus:outline-none focus:border-accent focus:bg-sidebar/60 focus:ring-1 focus:ring-accent/20 transition-all text-[14px] font-medium text-text-heading placeholder:text-text-muted/40 resize-none h-20"
-                  />
-               </div>
+           <div className="pt-2">
+              <button 
+                type="button"
+                onClick={() => setShowOptionalFields(!showOptionalFields)}
+                className="flex items-center gap-2 text-[11px] font-bold text-text-muted hover:text-accent transition-colors uppercase tracking-widest"
+              >
+                <div className={`transition-transform duration-300 ${showOptionalFields ? 'rotate-180' : ''}`}>
+                  <ChevronDown className="w-3.5 h-3.5" />
+                </div>
+                {showOptionalFields ? 'Hide Personal Context' : 'Add Personal Context (Optional)'}
+              </button>
 
-               <div className="pt-2">
-                  <button 
-                    type="button"
-                    onClick={() => setShowOptionalFields(!showOptionalFields)}
-                    className="flex items-center gap-2 text-[11px] font-bold text-text-muted hover:text-accent transition-colors uppercase tracking-widest"
-                  >
-                    <div className={`transition-transform duration-300 ${showOptionalFields ? 'rotate-180' : ''}`}>
-                      <ChevronDown className="w-3.5 h-3.5" />
+              {showOptionalFields && (
+                <div className="mt-6 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {/* Current Role */}
+                    <div className="relative" ref={currentRoleRef}>
+                        <div className="flex items-center gap-1.5 mb-2">
+                          <User className="w-3 h-3 text-accent" />
+                          <span className="text-[12px] font-bold text-text-heading">Current Role</span>
+                        </div>
+                        <div className="relative">
+                          <input 
+                            type="text"
+                            placeholder="What you do now..."
+                            value={roleSearchCurrent || formData.current_role}
+                            onFocus={() => setIsRoleDropdownOpenCurrent(true)}
+                            onChange={(e) => {
+                              setRoleSearchCurrent(e.target.value);
+                              setFormData(prev => ({ ...prev, current_role: e.target.value }));
+                            }}
+                            className="w-full px-3 py-2.5 bg-sidebar/40 border border-border/60 rounded-lg focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/20 transition-all text-[13px] font-medium"
+                          />
+                          <ChevronDown className={`absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted transition-transform ${isRoleDropdownOpenCurrent ? 'rotate-180' : ''}`} />
+
+                          {isRoleDropdownOpenCurrent && (
+                            <div className="absolute z-20 w-full mt-1 bg-surface border border-border shadow-2xl max-h-40 overflow-y-auto no-scrollbar rounded-lg">
+                              {filteredRolesCurrent.map(r => (
+                                <button
+                                  key={r}
+                                  onClick={() => {
+                                    setFormData(prev => ({ ...prev, current_role: r }));
+                                    setRoleSearchCurrent(r);
+                                    setIsRoleDropdownOpenCurrent(false);
+                                  }}
+                                  className="w-full text-left px-3 py-2 text-[12px] hover:bg-sidebar transition-colors flex items-center justify-between bg-surface"
+                                >
+                                  {r}
+                                  {formData.current_role === r && <Check className="w-3 h-3 text-accent" />}
+                                </button>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                     </div>
-                    {showOptionalFields ? 'Hide Personal Context' : 'Add Personal Context (Optional)'}
-                  </button>
 
-                  {showOptionalFields && (
-                    <div className="mt-6 space-y-6 animate-in fade-in slide-in-from-top-2 duration-300">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        {/* Current Role */}
-                        <div className="relative" ref={currentRoleRef}>
-                            <div className="flex items-center gap-1.5 mb-2">
-                              <User className="w-3 h-3 text-accent" />
-                              <span className="text-[12px] font-bold text-text-heading">Current Role</span>
-                            </div>
-                            <div className="relative">
-                              <input 
-                                type="text"
-                                placeholder="What you do now..."
-                                value={roleSearchCurrent || formData.current_role}
-                                onFocus={() => setIsRoleDropdownOpenCurrent(true)}
-                                onChange={(e) => {
-                                  setRoleSearchCurrent(e.target.value);
-                                  setFormData(prev => ({ ...prev, current_role: e.target.value }));
-                                }}
-                                className="w-full px-3 py-2.5 bg-sidebar/40 border border-border/60 rounded-lg focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/20 transition-all text-[13px] font-medium"
-                              />
-                              <ChevronDown className={`absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted transition-transform ${isRoleDropdownOpenCurrent ? 'rotate-180' : ''}`} />
-
-                              {isRoleDropdownOpenCurrent && (
-                                <div className="absolute z-20 w-full mt-1 bg-surface border border-border shadow-2xl max-h-40 overflow-y-auto no-scrollbar rounded-lg">
-                                  {filteredRolesCurrent.map(r => (
-                                    <button
-                                      key={r}
-                                      onClick={() => {
-                                        setFormData(prev => ({ ...prev, current_role: r }));
-                                        setRoleSearchCurrent(r);
-                                        setIsRoleDropdownOpenCurrent(false);
-                                      }}
-                                      className="w-full text-left px-3 py-2 text-[12px] hover:bg-sidebar transition-colors flex items-center justify-between bg-surface"
-                                    >
-                                      {r}
-                                      {formData.current_role === r && <Check className="w-3 h-3 text-accent" />}
-                                    </button>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
+                    {/* Target Role */}
+                    <div className="relative" ref={targetRoleRef}>
+                        <div className="flex items-center gap-1.5 mb-2">
+                          <Target className="w-3 h-3 text-accent" />
+                          <span className="text-[12px] font-bold text-text-heading">Target Goal</span>
                         </div>
+                        <div className="relative">
+                          <input 
+                            type="text"
+                            placeholder="What you want to be..."
+                            value={roleSearchTarget || formData.target_role}
+                            onFocus={() => setIsRoleDropdownOpenTarget(true)}
+                            onChange={(e) => {
+                              setRoleSearchTarget(e.target.value);
+                              setFormData(prev => ({ ...prev, target_role: e.target.value }));
+                            }}
+                            className="w-full px-3 py-2.5 bg-sidebar/40 border border-border/60 rounded-lg focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/20 transition-all text-[13px] font-medium"
+                          />
+                          <ChevronDown className={`absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted transition-transform ${isRoleDropdownOpenTarget ? 'rotate-180' : ''}`} />
 
-                        {/* Target Role */}
-                        <div className="relative" ref={targetRoleRef}>
-                            <div className="flex items-center gap-1.5 mb-2">
-                              <Target className="w-3 h-3 text-accent" />
-                              <span className="text-[12px] font-bold text-text-heading">Target Goal</span>
+                          {isRoleDropdownOpenTarget && (
+                            <div className="absolute z-20 w-full mt-1 bg-surface border border-border shadow-2xl max-h-40 overflow-y-auto no-scrollbar rounded-lg">
+                              {filteredRolesTarget.map(r => (
+                                <button
+                                  key={r}
+                                  onClick={() => {
+                                    setFormData(prev => ({ ...prev, target_role: r }));
+                                    setRoleSearchTarget(r);
+                                    setIsRoleDropdownOpenTarget(false);
+                                  }}
+                                  className="w-full text-left px-3 py-2 text-[12px] hover:bg-sidebar transition-colors flex items-center justify-between bg-surface"
+                                >
+                                  {r}
+                                  {formData.target_role === r && <Check className="w-3 h-3 text-accent" />}
+                                </button>
+                              ))}
                             </div>
-                            <div className="relative">
-                              <input 
-                                type="text"
-                                placeholder="What you want to be..."
-                                value={roleSearchTarget || formData.target_role}
-                                onFocus={() => setIsRoleDropdownOpenTarget(true)}
-                                onChange={(e) => {
-                                  setRoleSearchTarget(e.target.value);
-                                  setFormData(prev => ({ ...prev, target_role: e.target.value }));
-                                }}
-                                className="w-full px-3 py-2.5 bg-sidebar/40 border border-border/60 rounded-lg focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/20 transition-all text-[13px] font-medium"
-                              />
-                              <ChevronDown className={`absolute right-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted transition-transform ${isRoleDropdownOpenTarget ? 'rotate-180' : ''}`} />
-
-                              {isRoleDropdownOpenTarget && (
-                                <div className="absolute z-20 w-full mt-1 bg-surface border border-border shadow-2xl max-h-40 overflow-y-auto no-scrollbar rounded-lg">
-                                  {filteredRolesTarget.map(r => (
-                                    <button
-                                      key={r}
-                                      onClick={() => {
-                                        setFormData(prev => ({ ...prev, target_role: r }));
-                                        setRoleSearchTarget(r);
-                                        setIsRoleDropdownOpenTarget(false);
-                                      }}
-                                      className="w-full text-left px-3 py-2 text-[12px] hover:bg-sidebar transition-colors flex items-center justify-between bg-surface"
-                                    >
-                                      {r}
-                                      {formData.target_role === r && <Check className="w-3 h-3 text-accent" />}
-                                    </button>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
+                          )}
                         </div>
-                      </div>
-
-                      {/* Experience Level */}
-                      <div className="space-y-3">
-                        <div className="flex items-center gap-1.5">
-                          <GraduationCap className="w-3 h-3 text-accent" />
-                          <span className="text-[12px] font-bold text-text-heading">Current Proficiency</span>
-                        </div>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                          {EXPERIENCE_LEVELS.map(level => (
-                            <button
-                              key={level.id}
-                              type="button"
-                              onClick={() => setFormData(prev => ({ ...prev, experience_level: level.id }))}
-                              className={`p-2.5 border text-left transition-all rounded-lg ${
-                                formData.experience_level === level.id 
-                                  ? 'bg-accent/10 border-accent ring-1 ring-accent' 
-                                  : 'bg-surface border-border hover:border-accent/40 shadow-sm'
-                              }`}
-                            >
-                              <div className={`text-[10px] font-bold uppercase tracking-wider mb-0.5 ${formData.experience_level === level.id ? 'text-accent' : 'text-text-muted'}`}>
-                                {level.label}
-                              </div>
-                              <div className="text-[9px] text-text-muted leading-tight">
-                                {level.desc}
-                              </div>
-                            </button>
-                          ))}
-                        </div>
-                      </div>
                     </div>
+                  </div>
+
+                  {/* Experience Level */}
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-1.5">
+                      <GraduationCap className="w-3 h-3 text-accent" />
+                      <span className="text-[12px] font-bold text-text-heading">Current Proficiency</span>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                      {EXPERIENCE_LEVELS.map(level => (
+                        <button
+                          key={level.id}
+                          type="button"
+                          onClick={() => setFormData(prev => ({ ...prev, experience_level: level.id }))}
+                          className={`p-2.5 border text-left transition-all rounded-lg ${
+                            formData.experience_level === level.id 
+                              ? 'bg-accent/10 border-accent ring-1 ring-accent' 
+                              : 'bg-surface border-border hover:border-accent/40 shadow-sm'
+                          }`}
+                        >
+                          <div className={`text-[10px] font-bold uppercase tracking-wider mb-0.5 ${formData.experience_level === level.id ? 'text-accent' : 'text-text-muted'}`}>
+                            {level.label}
+                          </div>
+                          <div className="text-[9px] text-text-muted leading-tight">
+                            {level.desc}
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+           </div>
+        </div>
+
+        {session && (
+          <div className="space-y-6 pt-6 border-t border-border/50">
+             {useLocalAI && (
+               <div className="bg-accent/5 border border-accent/20 p-3 rounded-lg mb-4 flex gap-3 items-start animate-in fade-in">
+                 <AlertCircle className="w-4 h-4 text-accent shrink-0 mt-0.5" />
+                 <div className="text-left">
+                   <p className="text-[11px] font-bold text-text-heading mb-0.5 uppercase tracking-widest">Local Model Limitations</p>
+                   <p className="text-[11px] text-text-muted leading-relaxed font-medium">
+                     To get the best results from smaller local models, keep your target duration short (2-4 weeks) and your goal specific. Local models may struggle to generate detailed 8+ week schedules or process large amounts of custom context.
+                   </p>
+                 </div>
+               </div>
+             )}
+
+             {/* Target Duration */}
+             <div className="space-y-2">
+                <div className="flex items-center gap-1.5">
+                  <Hourglass className="w-3 h-3 text-accent" />
+                  <span className="text-[12px] font-bold text-text-heading">Target Duration</span>
+                </div>
+                <div className="flex flex-wrap gap-1.5">
+                  {(profile?.is_pro ? [2, 3, 4, 6, 8, 10, 12] : [2, 3, 4]).map(w => (
+                    <button
+                      type="button"
+                      key={w}
+                      onClick={() => setFormData(prev => ({ ...prev, time_value: w }))}
+                      className={`px-4 py-1.5 border text-[10px] font-bold uppercase tracking-widest transition-all rounded-md
+                        ${formData.time_value === w 
+                          ? 'bg-accent text-white border-accent  shadow-accent/20' 
+                          : 'bg-background text-text-muted border-border hover:border-accent hover:text-accent'
+                        }`}
+                    >
+                      {w} Weeks
+                    </button>
+                  ))}
+                  {!profile?.is_pro && (
+                    <button 
+                      type="button"
+                      onClick={() => setIsPaymentModalOpen(true)}
+                      className="px-3 py-1.5 text-[9px] font-bold text-accent border border-accent/20 border-dashed hover:bg-accent/5 transition-all rounded-md"
+                    >
+                      Unlock 6-12 Weeks (Pro)
+                    </button>
                   )}
-               </div>
-            </div>
-
-             {/* Next Button for Step 1 */}
-             <div className="mt-8 flex justify-end">
-                <button
-                  type="button"
-                  onClick={() => setStep(2)}
-                  disabled={!formData.subject.trim() || !formData.goal.trim()}
-                  className="group relative inline-flex items-center justify-center px-7 py-3 text-[14px] font-bold transition-all bg-accent text-white hover:bg-teal-700 shadow-sm gap-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  Next Step <ArrowRight className="w-4 h-4" />
-                </button>
+                </div>
              </div>
-          </div>
-        )}
-
-        {step === 2 && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
-            {session && (
-            <div className="space-y-3">
-               <label className="flex items-center gap-2 text-[11px] font-bold text-text-muted/80">
-                 <div className="w-5 h-5 rounded-md bg-accent/10 flex items-center justify-center text-[10px] font-bold text-accent">2</div>
-                 Intensity & Context
-               </label>
-
-               {useLocalAI && (
-                 <div className="bg-accent/5 border border-accent/20 p-3 rounded-lg mb-4 flex gap-3 items-start animate-in fade-in">
-                   <AlertCircle className="w-4 h-4 text-accent shrink-0 mt-0.5" />
-                   <div className="text-left">
-                     <p className="text-[11px] font-bold text-text-heading mb-0.5 uppercase tracking-widest">Local Model Limitations</p>
-                     <p className="text-[11px] text-text-muted leading-relaxed font-medium">
-                       To get the best results from smaller local models, keep your target duration short (2-4 weeks) and your goal specific. Local models may struggle to generate detailed 8+ week schedules or process large amounts of custom context.
-                     </p>
+             
+             {/* AI Engine Section */}
+             <div className="flex flex-col gap-2 max-w-sm pt-4 border-t border-border/50">
+               <div className="flex items-center justify-between p-1 bg-sidebar border border-border rounded-lg w-full">
+                 <button
+                   type="button"
+                   onClick={() => { setUseOpenRouter(false); setUseLocalAI(false); }}
+                   className={`flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all ${!useOpenRouter && !useLocalAI ? 'bg-background text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
+                 >
+                   EulerFold AI
+                 </button>
+                 <button
+                   type="button"
+                   onClick={() => { setUseOpenRouter(true); setUseLocalAI(false); }}
+                   className={`flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all ${useOpenRouter ? 'bg-background text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
+                 >
+                   OpenRouter
+                 </button>
+                 <button
+                   type="button"
+                   onClick={() => { setUseOpenRouter(false); setUseLocalAI(true); }}
+                   className={`flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all ${useLocalAI ? 'bg-background text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
+                 >
+                   Local AI
+                 </button>
+               </div>
+               {!useOpenRouter && !useLocalAI && (
+                 <div className="p-4 border border-border rounded-lg bg-sidebar/50 transition-all duration-300 w-full mt-2 animate-in fade-in">
+                   <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                     <div className="flex items-center gap-3 w-full sm:w-auto">
+                       <div className="w-10 h-10 bg-background border border-border rounded-lg flex items-center justify-center shrink-0 shadow-sm">
+                         <Sparkles className="w-5 h-5 text-accent" />
+                       </div>
+                       <div>
+                         <h3 className="text-[13px] font-bold text-text-heading leading-tight mb-0.5">
+                           EulerFold AI (Default)
+                         </h3>
+                         <p className="text-[11px] text-text-muted leading-tight">
+                           <span className="text-amber-500/90 font-bold">Costs 1 Credit per generation.</span>
+                         </p>
+                       </div>
+                     </div>
                    </div>
                  </div>
                )}
+               {useLocalAI && !localAIModelId && (
+                 <div className="text-[10px] text-red-500 font-bold uppercase tracking-widest text-center animate-in fade-in">
+                   Please configure a Local Model below
+                 </div>
+               )}
+               {useOpenRouter && !openRouterKey && (
+                 <div className="text-[10px] text-red-500 font-bold uppercase tracking-widest text-center animate-in fade-in">
+                   Please configure an API Key below
+                 </div>
+               )}
+             </div>
 
-
-               {/* Target Duration */}
-               <div className="space-y-2">
-                  <div className="flex items-center gap-1.5">
-                    <Hourglass className="w-3 h-3 text-accent" />
-                    <span className="text-[12px] font-bold text-text-heading">Target Duration</span>
-                  </div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {(profile?.is_pro ? [2, 3, 4, 6, 8, 10, 12] : [2, 3, 4]).map(w => (
-                      <button
-                        type="button"
-                        key={w}
-                        onClick={() => setFormData(prev => ({ ...prev, time_value: w }))}
-                        className={`px-4 py-1.5 border text-[10px] font-bold uppercase tracking-widest transition-all rounded-md
-                          ${formData.time_value === w 
-                            ? 'bg-accent text-white border-accent  shadow-accent/20' 
-                            : 'bg-background text-text-muted border-border hover:border-accent hover:text-accent'
-                          }`}
-                      >
-                        {w} Weeks
-                      </button>
-                    ))}
-                    {!profile?.is_pro && (
-                      <button 
-                        type="button"
-                        onClick={() => setIsPaymentModalOpen(true)}
-                        className="px-3 py-1.5 text-[9px] font-bold text-accent border border-accent/20 border-dashed hover:bg-accent/5 transition-all rounded-md"
-                      >
-                        Unlock 6-12 Weeks (Pro)
-                      </button>
-                    )}
-                  </div>
+             {useLocalAI ? (
+               <div className={`p-4 border border-border rounded-lg bg-sidebar/50 transition-all duration-300 w-full`}>
+                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                   <div className="flex items-center gap-3 w-full sm:w-auto">
+                     <div className="w-10 h-10 bg-background border border-border rounded-lg flex items-center justify-center shrink-0 shadow-sm">
+                       <Cpu className="w-5 h-5 text-text-heading" />
+                     </div>
+                     <div>
+                       <h3 className="text-[13px] font-bold text-text-heading leading-tight mb-0.5">
+                         {localAIModelId ? 'Local Hardware Connected' : 'Free Compute: Bring Your Own GPU'}
+                       </h3>
+                       <p className="text-[11px] text-text-muted leading-tight">
+                         {localAIModelId 
+                           ? <span>Ready to generate using <span className="font-bold text-accent">{localAIModelName}</span>.</span> 
+                           : 'Run models natively in your browser using WebGPU. Unlimited generations, 100% private.'}
+                       </p>
+                     </div>
+                   </div>
+                   <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                     {localAIModelId && (
+                       <button
+                         type="button"
+                         onClick={() => {
+                           localStorage.removeItem('localAIModelId');
+                           localStorage.removeItem('localAIModelName');
+                           setLocalAIModelId(null);
+                           setLocalAIModelName(null);
+                         }}
+                         className="flex-1 sm:flex-none px-4 py-2.5 bg-background border border-border hover:border-red-500/50 hover:text-red-500 hover:bg-red-500/10 text-[11px] font-bold uppercase tracking-widest transition-all rounded-lg text-text-muted shadow-sm flex items-center justify-center gap-1.5"
+                       >
+                         <Unlink className="w-3.5 h-3.5" /> Remove
+                       </button>
+                     )}
+                     <button
+                       type="button"
+                       onClick={() => setIsLocalAIModalOpen(true)}
+                       className="flex-1 sm:flex-none px-5 py-2.5 bg-background border border-border hover:border-accent hover:text-accent text-[11px] font-bold uppercase tracking-widest transition-all rounded-lg text-text-heading shadow-sm"
+                     >
+                       {localAIModelId ? 'Change Model' : 'Configure'}
+                     </button>
+                   </div>
+                 </div>
                </div>
+             ) : (
+               <div className={`p-4 border border-border rounded-lg bg-sidebar/50 transition-all duration-300 ${openRouterKey ? 'mt-4' : 'mt-2'} ${(!useOpenRouter && openRouterKey) ? 'opacity-50 grayscale' : ''}`}>
+                 <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                   <div className="flex items-center gap-3">
+                     <div className="w-10 h-10 bg-background border border-border rounded-lg flex items-center justify-center shrink-0 shadow-sm">
+                       {/* OpenRouter placeholder logo */}
+                       <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-text-heading">
+                         <path d="M16.778 1.844v1.919q-.569-.026-1.138-.032-.708-.008-1.415.037c-1.93.126-4.023.728-6.149 2.237-2.911 2.066-2.731 1.95-4.14 2.75-.396.223-1.342.574-2.185.798-.841.225-1.753.333-1.751.333v4.229s.768.108 1.61.333c.842.224 1.789.575 2.185.799 1.41.798 1.228.683 4.14 2.75 2.126 1.509 4.22 2.11 6.148 2.236.88.058 1.716.041 2.555.005v1.918l7.222-4.168-7.222-4.17v2.176c-.86.038-1.611.065-2.278.021-1.364-.09-2.417-.357-3.979-1.465-2.244-1.593-2.866-2.027-3.68-2.508.889-.518 1.449-.906 3.822-2.59 1.56-1.109 2.614-1.377 3.978-1.466.667-.044 1.418-.017 2.278.02v2.176L24 6.014Z"/>
+                       </svg>
+                     </div>
+                     <div>
+                       <h3 className="text-[13px] font-bold text-text-heading leading-tight mb-0.5">
+                         {openRouterKey ? 'OpenRouter Connected' : 'Power-User: Bring Your Own Key'}
+                       </h3>
+                       <p className="text-[11px] text-text-muted leading-tight">
+                         {openRouterKey 
+                           ? <span>Ready to generate using <span className="font-bold text-accent">{openRouterModel || 'openai/gpt-4o'}</span>.</span> 
+                           : 'Use any AI model via OpenRouter. Unlimited courses, zero credits required.'}
+                       </p>
+                     </div>
+                   </div>
+                   <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                     {openRouterKey && (
+                       <button
+                         type="button"
+                         onClick={() => {
+                           localStorage.removeItem('openRouterKey');
+                           setOpenRouterKey(null);
+                           setOpenRouterModel(null);
+                         }}
+                         className="flex-1 sm:flex-none px-4 py-2.5 bg-background border border-border hover:border-red-500/50 hover:text-red-500 hover:bg-red-500/10 text-[11px] font-bold uppercase tracking-widest transition-all rounded-lg text-text-muted shadow-sm flex items-center justify-center gap-1.5"
+                       >
+                         <Unlink className="w-3.5 h-3.5" /> Disconnect
+                       </button>
+                     )}
+                     {!session ? (
+                       <button
+                         type="button"
+                         onClick={() => {
+                           sessionStorage.setItem('pending_roadmap_form', JSON.stringify(formData));
+                           router.push(`/login?next=${window.location.pathname}`);
+                         }}
+                         className="flex-1 sm:flex-none px-5 py-2.5 bg-background border border-border hover:border-accent hover:text-accent text-[11px] font-bold uppercase tracking-widest transition-all rounded-lg text-text-heading shadow-sm flex items-center justify-center gap-1.5"
+                       >
+                         <LogIn className="w-3.5 h-3.5" /> Sign in to Configure
+                       </button>
+                     ) : (
+                       <button
+                         type="button"
+                         onClick={() => setIsOpenRouterModalOpen(true)}
+                         className="flex-1 sm:flex-none px-5 py-2.5 bg-background border border-border hover:border-accent hover:text-accent text-[11px] font-bold uppercase tracking-widest transition-all rounded-lg text-text-heading shadow-sm"
+                       >
+                         Configure
+                       </button>
+                     )}
+                   </div>
+                 </div>
+               </div>
+             )}
 
-               {/* Context */}
-               <div className="pt-2">
-                  <button 
-                    type="button"
-                    onClick={() => setShowOptionalFields(!showOptionalFields)}
-                    className="flex items-center gap-2 text-[11px] font-bold text-text-muted hover:text-accent transition-colors uppercase tracking-widest"
-                  >
-                    <div className={`transition-transform duration-300 ${showOptionalFields ? 'rotate-180' : ''}`}>
-                      <ChevronDown className="w-3.5 h-3.5" />
-                    </div>
-                    {showOptionalFields ? 'Hide Detailed Context' : 'Add Detailed Context (Optional)'}
-                  </button>
-
-                  {showOptionalFields && (
-                    <div className="mt-4 space-y-2 animate-in fade-in slide-in-from-top-2 duration-300">
-                      <div className="flex items-center gap-1.5">
-                        <History className="w-3 h-3 text-accent" />
-                        <span className="text-[12px] font-bold text-text-heading">Detailed Context</span>
+             {useOpenRouter && (
+                <div className="mt-4 flex flex-col items-center justify-center gap-4 text-emerald-600 dark:text-emerald-400">
+                  <div className="flex items-center justify-center gap-1.5">
+                    <ShieldCheck className="w-3 h-3" />
+                    <span className="text-[9px] font-bold uppercase tracking-widest">Key stored locally • Never hits our servers</span>
+                  </div>
+                  
+                  {session && usageHistory.length > 0 && !isGenerating && (
+                    <div className="w-full mt-2 pt-4 border-t border-border">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2">
+                          <History className="w-3.5 h-3.5 text-text-muted" />
+                          <span className="text-[9px] font-bold text-text-heading uppercase tracking-widest">Recent AI Usage</span>
+                        </div>
+                        <a href="https://openrouter.ai/activity" target="_blank" rel="noopener noreferrer" className="text-[9px] font-bold text-accent hover:underline">
+                          View Log →
+                        </a>
                       </div>
-                      <textarea
-                        name="prior_experience"
-                        value={formData.prior_experience}
-                        onChange={handleInputChange}
-                        rows={2}
-                        placeholder="What do you already know? Any specific technologies you prefer or want to avoid?"
-                        className="w-full px-3 py-2.5 bg-sidebar/40 border border-border/60 rounded-lg focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/20 transition-all text-[13px] font-medium resize-none h-20"
-                      />
+                      <div className="space-y-2">
+                        {usageHistory.slice(0, 3).map((h, i) => (
+                          <div key={i} className="flex items-center justify-between p-2.5 bg-sidebar/50 border border-border/50 rounded-lg text-left">
+                            <div className="truncate pr-2 max-w-[60%]">
+                              <div className="text-[11px] font-bold text-text-heading truncate">{h.subject}</div>
+                              <div className="text-[9px] text-text-muted mt-0.5 truncate">{h.model}</div>
+                            </div>
+                            <div className="text-right shrink-0">
+                              <div className="text-[10px] font-bold text-accent">{h.total_tokens.toLocaleString()} tokens</div>
+                              <div className="text-[9px] text-text-muted">{new Date(h.date).toLocaleDateString()}</div>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
                     </div>
                   )}
-               </div>
-            </div>
-            )}
-
-             <div className="mt-8 flex justify-between">
-                <button
-                  type="button"
-                  onClick={() => setStep(1)}
-                  className="text-[13px] font-bold text-text-muted hover:text-text-heading transition-colors"
-                >
-                  ← Back
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setStep(3)}
-                  className="group relative inline-flex items-center justify-center px-7 py-3 text-[14px] font-bold transition-all bg-accent text-white hover:bg-teal-700 shadow-sm gap-2 rounded-lg"
-                >
-                  Next Step <ArrowRight className="w-4 h-4" />
-                </button>
-             </div>
+                </div>
+             )}
           </div>
         )}
 
-        {step === 3 && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
-            {session && (
-              <>
-              <div className="flex flex-col gap-2 max-w-sm">
-                <div className="flex items-center gap-2 mb-1">
-                  <div className="w-5 h-5 rounded-md bg-accent/10 flex items-center justify-center text-[10px] font-bold text-accent">3</div>
-                  <span className="text-[11px] font-bold text-text-muted/80">AI Engine</span>
-                </div>
-                <div className="flex items-center justify-between p-1 bg-sidebar border border-border rounded-lg w-full">
-                  <button
-                    type="button"
-                    onClick={() => { setUseOpenRouter(false); setUseLocalAI(false); }}
-                    className={`flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all ${!useOpenRouter && !useLocalAI ? 'bg-background text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
-                  >
-                    EulerFold AI
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => { setUseOpenRouter(true); setUseLocalAI(false); }}
-                    className={`flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all ${useOpenRouter ? 'bg-background text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
-                  >
-                    OpenRouter
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => { setUseOpenRouter(false); setUseLocalAI(true); }}
-                    className={`flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all ${useLocalAI ? 'bg-background text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
-                  >
-                    Local AI
-                  </button>
-                </div>
-                {!useOpenRouter && !useLocalAI && (
-                  <div className="p-4 border border-border rounded-lg bg-sidebar/50 transition-all duration-300 w-full mt-6 animate-in fade-in">
-                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                      <div className="flex items-center gap-3 w-full sm:w-auto">
-                        <div className="w-10 h-10 bg-background border border-border rounded-lg flex items-center justify-center shrink-0 shadow-sm">
-                          <Sparkles className="w-5 h-5 text-accent" />
-                        </div>
-                        <div>
-                          <h3 className="text-[13px] font-bold text-text-heading leading-tight mb-0.5">
-                            EulerFold AI (Default)
-                          </h3>
-                          <p className="text-[11px] text-text-muted leading-tight">
-                            <span className="text-amber-500/90 font-bold">Costs 1 Credit per generation.</span>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {useLocalAI && !localAIModelId && (
-                  <div className="text-[10px] text-red-500 font-bold uppercase tracking-widest text-center animate-in fade-in">
-                    Please configure a Local Model below
-                  </div>
-                )}
-                {useOpenRouter && !openRouterKey && (
-                  <div className="text-[10px] text-red-500 font-bold uppercase tracking-widest text-center animate-in fade-in">
-                    Please configure an API Key below
-                  </div>
-                )}
-              </div>
-
-            {useLocalAI ? (
-              <div className={`p-4 border border-border rounded-lg bg-sidebar/50 transition-all duration-300 w-full`}>
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <div className="flex items-center gap-3 w-full sm:w-auto">
-                    <div className="w-10 h-10 bg-background border border-border rounded-lg flex items-center justify-center shrink-0 shadow-sm">
-                      <Cpu className="w-5 h-5 text-text-heading" />
-                    </div>
-                    <div>
-                      <h3 className="text-[13px] font-bold text-text-heading leading-tight mb-0.5">
-                        {localAIModelId ? 'Local Hardware Connected' : 'Free Compute: Bring Your Own GPU'}
-                      </h3>
-                      <p className="text-[11px] text-text-muted leading-tight">
-                        {localAIModelId 
-                          ? <span>Ready to generate using <span className="font-bold text-accent">{localAIModelName}</span>.</span> 
-                          : 'Run models natively in your browser using WebGPU. Unlimited generations, 100% private.'}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
-                    {localAIModelId && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          localStorage.removeItem('localAIModelId');
-                          localStorage.removeItem('localAIModelName');
-                          setLocalAIModelId(null);
-                          setLocalAIModelName(null);
-                        }}
-                        className="flex-1 sm:flex-none px-4 py-2.5 bg-background border border-border hover:border-red-500/50 hover:text-red-500 hover:bg-red-500/10 text-[11px] font-bold uppercase tracking-widest transition-all rounded-lg text-text-muted shadow-sm flex items-center justify-center gap-1.5"
-                      >
-                        <Unlink className="w-3.5 h-3.5" /> Remove
-                      </button>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => setIsLocalAIModalOpen(true)}
-                      className="flex-1 sm:flex-none px-5 py-2.5 bg-background border border-border hover:border-accent hover:text-accent text-[11px] font-bold uppercase tracking-widest transition-all rounded-lg text-text-heading shadow-sm"
-                    >
-                      {localAIModelId ? 'Change Model' : 'Configure'}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ) : (
-            <div className={`p-4 border border-border rounded-lg bg-sidebar/50 transition-all duration-300 ${openRouterKey ? 'mt-4' : 'mt-6'} ${(!useOpenRouter && openRouterKey) ? 'opacity-50 grayscale' : ''}`}>
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-background border border-border rounded-lg flex items-center justify-center shrink-0 shadow-sm">
-                    {/* OpenRouter placeholder logo */}
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-text-heading">
-                      <path d="M16.778 1.844v1.919q-.569-.026-1.138-.032-.708-.008-1.415.037c-1.93.126-4.023.728-6.149 2.237-2.911 2.066-2.731 1.95-4.14 2.75-.396.223-1.342.574-2.185.798-.841.225-1.753.333-1.751.333v4.229s.768.108 1.61.333c.842.224 1.789.575 2.185.799 1.41.798 1.228.683 4.14 2.75 2.126 1.509 4.22 2.11 6.148 2.236.88.058 1.716.041 2.555.005v1.918l7.222-4.168-7.222-4.17v2.176c-.86.038-1.611.065-2.278.021-1.364-.09-2.417-.357-3.979-1.465-2.244-1.593-2.866-2.027-3.68-2.508.889-.518 1.449-.906 3.822-2.59 1.56-1.109 2.614-1.377 3.978-1.466.667-.044 1.418-.017 2.278.02v2.176L24 6.014Z"/>
-                    </svg>
-                  </div>
-                  <div>
-                    <h3 className="text-[13px] font-bold text-text-heading leading-tight mb-0.5">
-                      {openRouterKey ? 'OpenRouter Connected' : 'Power-User: Bring Your Own Key'}
-                    </h3>
-                    <p className="text-[11px] text-text-muted leading-tight">
-                      {openRouterKey 
-                        ? <span>Ready to generate using <span className="font-bold text-accent">{openRouterModel || 'openai/gpt-4o'}</span>.</span> 
-                        : 'Use any AI model via OpenRouter. Unlimited roadmaps, zero credits required.'}
-                    </p>
-                  </div>
-                </div>
-                <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
-                  {openRouterKey && (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        localStorage.removeItem('openRouterKey');
-                        setOpenRouterKey(null);
-                        setOpenRouterModel(null);
-                      }}
-                      className="flex-1 sm:flex-none px-4 py-2.5 bg-background border border-border hover:border-red-500/50 hover:text-red-500 hover:bg-red-500/10 text-[11px] font-bold uppercase tracking-widest transition-all rounded-lg text-text-muted shadow-sm flex items-center justify-center gap-1.5"
-                    >
-                      <Unlink className="w-3.5 h-3.5" /> Disconnect
-                    </button>
-                  )}
-                  {!session ? (
-                    <button
-                      type="button"
-                      onClick={() => {
-                        sessionStorage.setItem('pending_roadmap_form', JSON.stringify(formData));
-                        router.push(`/login?next=${window.location.pathname}`);
-                      }}
-                      className="flex-1 sm:flex-none px-5 py-2.5 bg-background border border-border hover:border-accent hover:text-accent text-[11px] font-bold uppercase tracking-widest transition-all rounded-lg text-text-heading shadow-sm flex items-center justify-center gap-1.5"
-                    >
-                      <LogIn className="w-3.5 h-3.5" /> Sign in to Configure
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => setIsOpenRouterModalOpen(true)}
-                      className="flex-1 sm:flex-none px-5 py-2.5 bg-background border border-border hover:border-accent hover:text-accent text-[11px] font-bold uppercase tracking-widest transition-all rounded-lg text-text-heading shadow-sm"
-                    >
-                      Configure
-                    </button>
-                  )}
-                </div>
-              </div>
-              
-
-            </div>
-            )}
-            </>
-            )}
-            
-            {!isGenerating && (
-              <div className="mt-8 flex justify-between items-center w-full">
+        {!isGenerating && (
+          <div className="mt-8 pt-6 border-t border-border/50 flex justify-end w-full">
+            <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
+            {!session ? (
                 <button
-                  type="button"
-                  onClick={() => setStep(2)}
-                  className="text-[13px] font-bold text-text-muted hover:text-text-heading transition-colors"
+                  onClick={generateRoadmap}
+                  disabled={!formData.subject.trim() || !formData.goal.trim()}
+                  className="w-full sm:w-fit group relative inline-flex items-center justify-center px-7 py-3 text-[14px] font-bold transition-all bg-accent text-white hover:bg-teal-700 shadow-sm gap-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  ← Back
+                  <LogIn className="w-4 h-4" /> Authenticate & Architect
                 </button>
-
-                <div className="flex flex-col sm:flex-row items-center gap-4">
-
-                {!session ? (
-                    <button
-                      onClick={generateRoadmap}
-                      className="w-full sm:w-fit group relative inline-flex items-center justify-center px-7 py-3 text-[14px] font-bold transition-all bg-accent text-white hover:bg-teal-700 shadow-sm gap-2 rounded-lg"
-                    >
-                      <LogIn className="w-4 h-4" /> Authenticate
-                    </button>
-                ) : (
-                    <button
-                      onClick={generateRoadmap}
-                      disabled={isGenerating}
-                      className={`w-full sm:w-fit group relative inline-flex items-center justify-center px-7 py-3 text-[14px] font-bold transition-all rounded-lg ${
-                        (!useLocalAI && !(openRouterKey && useOpenRouter) && credits !== null && credits < 1)
-                        ? 'bg-sidebar border-2 border-border text-text-muted hover:border-accent/40' 
-                        : 'bg-accent text-white hover:bg-teal-700 shadow-sm'
-                      }`}
-                    >
-                      <div className="flex items-center justify-center gap-2">
-                        {(openRouterKey && useOpenRouter) || useLocalAI ? (
-                          <>
-                            <Cpu className="w-4 h-4" /> Architect {useLocalAI ? '(Local)' : '(OpenRouter)'}
-                          </>
-                        ) : (
-                          <>
-                            <span className={`text-[12px] ${credits !== null && credits < 1 ? 'grayscale opacity-50' : ''}`}>💎</span>
-                            {credits !== null && credits < 1 ? 'Get More Credits' : 'Architect (-1 Credit)'}
-                          </>
-                        )}
-                      </div>
-                    </button>
-                )}
-                </div>
-              </div>
-            )}
-            
-            {useOpenRouter && (
-               <div className="mt-4 flex flex-col items-center justify-center gap-4 text-emerald-600 dark:text-emerald-400">
-                 <div className="flex items-center justify-center gap-1.5">
-                   <ShieldCheck className="w-3 h-3" />
-                   <span className="text-[9px] font-bold uppercase tracking-widest">Key stored locally • Never hits our servers</span>
-                 </div>
-                 
-                 {session && usageHistory.length > 0 && !isGenerating && (
-                   <div className="w-full mt-2 pt-4 border-t border-border">
-                     <div className="flex items-center justify-between mb-3">
-                       <div className="flex items-center gap-2">
-                         <History className="w-3.5 h-3.5 text-text-muted" />
-                         <span className="text-[9px] font-bold text-text-heading uppercase tracking-widest">Recent AI Usage</span>
-                       </div>
-                       <a href="https://openrouter.ai/activity" target="_blank" rel="noopener noreferrer" className="text-[9px] font-bold text-accent hover:underline">
-                         View Log →
-                       </a>
-                     </div>
-                     <div className="space-y-2">
-                       {usageHistory.slice(0, 3).map((h, i) => (
-                         <div key={i} className="flex items-center justify-between p-2.5 bg-sidebar/50 border border-border/50 rounded-lg text-left">
-                           <div className="truncate pr-2 max-w-[60%]">
-                             <div className="text-[11px] font-bold text-text-heading truncate">{h.subject}</div>
-                             <div className="text-[9px] text-text-muted mt-0.5 truncate">{h.model}</div>
-                           </div>
-                           <div className="text-right shrink-0">
-                             <div className="text-[10px] font-bold text-accent">{h.total_tokens.toLocaleString()} tokens</div>
-                             <div className="text-[9px] text-text-muted">{new Date(h.date).toLocaleDateString()}</div>
-                           </div>
-                         </div>
-                       ))}
-                     </div>
-                   </div>
-                 )}
-               </div>
+            ) : (
+                <button
+                  onClick={generateRoadmap}
+                  disabled={isGenerating || !formData.subject.trim() || !formData.goal.trim()}
+                  className={`w-full sm:w-fit group relative inline-flex items-center justify-center px-7 py-3 text-[14px] font-bold transition-all rounded-lg disabled:opacity-50 disabled:cursor-not-allowed ${
+                    (!useLocalAI && !(openRouterKey && useOpenRouter) && credits !== null && credits < 1)
+                    ? 'bg-sidebar border-2 border-border text-text-muted hover:border-accent/40' 
+                    : 'bg-accent text-white hover:bg-teal-700 shadow-sm'
+                  }`}
+                >
+                  <div className="flex items-center justify-center gap-2">
+                    {(openRouterKey && useOpenRouter) || useLocalAI ? (
+                      <>
+                        <Cpu className="w-4 h-4" /> Architect {useLocalAI ? '(Local)' : '(OpenRouter)'}
+                      </>
+                    ) : (
+                      <>
+                        <span className={`text-[12px] ${credits !== null && credits < 1 ? 'grayscale opacity-50' : ''}`}>💎</span>
+                        {credits !== null && credits < 1 ? 'Get More Credits' : 'Architect (-1 Credit)'}
+                      </>
+                    )}
+                  </div>
+                </button>
             )}
             </div>
+          </div>
         )}
+
       </div>
     );
   };
@@ -1167,7 +1067,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                   <AlertCircle className="w-3.5 h-3.5 text-accent" /> Generation Takes Time
                 </p>
                 <p className="text-[10px] text-text-muted leading-relaxed font-medium">
-                  Our AI requires about 20-40 seconds to architect a complete learning roadmap. Please be patient after clicking generate.
+                  Our AI requires about 20-40 seconds to architect a complete course. Please be patient after clicking generate.
                 </p>
               </div>
             </div>

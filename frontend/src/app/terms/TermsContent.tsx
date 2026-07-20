@@ -60,7 +60,7 @@ export default function TermsContent() {
                 <ul className="space-y-4 list-none p-0">
                   <li className="flex gap-3">
                     <span className="text-accent font-bold">→</span>
-                    <span><strong>Refund Policy:</strong> Roadmap credits are non-refundable once they have been used to generate a roadmap. If you purchase a credit but do not use it, you may request a refund within 7 days of purchase.</span>
+                    <span><strong>Refund Policy:</strong> Course credits are non-refundable once they have been used to generate a course. If you purchase a credit but do not use it, you may request a refund within 7 days of purchase.</span>
                   </li>
                   <li className="flex gap-3">
                     <span className="text-accent font-bold">→</span>
@@ -92,7 +92,7 @@ export default function TermsContent() {
                 </li>
                 <li className="flex gap-3">
                   <span className="text-accent font-bold">→</span>
-                  <span>By making a roadmap public, you grant other users the right to &quot;Clone&quot; and use that roadmap structure for their own learning.</span>
+                  <span>By making a course public, you grant other users the right to &quot;Clone&quot; and use that course structure for their own learning.</span>
                 </li>
                 <li className="flex gap-3">
                   <span className="text-accent font-bold">→</span>

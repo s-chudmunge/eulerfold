@@ -4,6 +4,7 @@ import RoadmapClient from './RoadmapClient';
 import PublicRoadmapView from './PublicRoadmapView';
 import { notFound } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
+import PagePreloader from '@/components/PagePreloader';
 
 export async function generateStaticParams() {
     try {
@@ -143,26 +144,35 @@ export default async function RoadmapDetailPage({ params }: { params: { slug: st
     // Handle private roadmap case where server-side fetch failed with 403
     if ((initialRoadmap as any).isPrivate) {
         return (
-            <RoadmapClient 
-                slug={params.slug} 
-                initialRoadmap={null} 
-            />
+            <>
+                <PagePreloader />
+                <RoadmapClient 
+                    slug={params.slug} 
+                    initialRoadmap={null} 
+                />
+            </>
         );
     }
 
     if (initialRoadmap?.is_public) {
         return (
-            <PublicRoadmapView 
-                slug={params.slug} 
-                roadmap={initialRoadmap} 
-            />
+            <>
+                <PagePreloader />
+                <PublicRoadmapView 
+                    slug={params.slug} 
+                    roadmap={initialRoadmap} 
+                />
+            </>
         );
     }
 
     return (
-        <RoadmapClient 
-            slug={params.slug} 
-            initialRoadmap={initialRoadmap} 
-        />
+        <>
+            <PagePreloader />
+            <RoadmapClient 
+                slug={params.slug} 
+                initialRoadmap={initialRoadmap} 
+            />
+        </>
     );
 }

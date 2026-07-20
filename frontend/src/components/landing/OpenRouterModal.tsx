@@ -178,7 +178,7 @@ export function OpenRouterModal({ isOpen, onClose, formData, onSuccess, onSave, 
               <div>
                 <h3 className="text-sm font-bold text-text-heading">Not Connected</h3>
                 <p className="text-xs text-text-muted mt-1 max-w-[250px]">
-                  Connect your OpenRouter account to generate roadmaps using any AI model without giving us your API keys.
+                  Connect your OpenRouter account to generate courses using any AI model without giving us your API keys.
                 </p>
               </div>
               <div className="w-full space-y-3">

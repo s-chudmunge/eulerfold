@@ -537,7 +537,7 @@ Return ONLY a JSON array of objects. Each object must have:
                             <EulerLogoCanvas size={48} rotationSpeed={0.008} />
                         </div>
                         <p className="appropriate-sans text-[11px] font-bold text-accent mb-4">
-                            Wait... generating custom questions for {topicName}.
+                            Please give us a few seconds...crafting custom questions for {topicName}.
                         </p>
                     </div>
                 </div>

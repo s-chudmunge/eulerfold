@@ -122,7 +122,7 @@ const generateActivity = (): ActivityInstance => {
       break;
     case 4:
       data = {
-        text: `@${name} generated a roadmap for ${ROADMAPS[Math.floor(Math.random() * ROADMAPS.length)]}`,
+        text: `@${name} generated a course for ${ROADMAPS[Math.floor(Math.random() * ROADMAPS.length)]}`,
         icon: <Zap className="w-3 h-3" />,
         color: 'text-yellow-500'
       };
@@ -157,7 +157,7 @@ const generateActivity = (): ActivityInstance => {
       break;
     case 9:
       data = {
-        text: `@${name} shared a roadmap to community`,
+        text: `@${name} shared a course to community`,
         icon: <Share2 className="w-3 h-3" />,
         color: 'text-indigo-500'
       };
@@ -178,7 +178,7 @@ const generateActivity = (): ActivityInstance => {
       break;
     case 12:
       data = {
-        text: `@${name} rated a roadmap 5 stars`,
+        text: `@${name} rated a course 5 stars`,
         icon: <Star className="w-3 h-3" />,
         color: 'text-yellow-400'
       };

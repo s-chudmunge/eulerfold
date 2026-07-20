@@ -224,7 +224,7 @@ export default function TaskModal({ task, initialDate, onClose, onRefresh, initi
                   }}
                   className="w-full bg-background/50 border border-border px-2.5 py-2 text-[11px] font-bold text-text-primary outline-none focus:border-accent transition-all rounded-lg"
                 >
-                  <option value="">Select a roadmap...</option>
+                  <option value="">Select a course...</option>
                   {roadmaps.map(r => (
                     <option key={r.id} value={r.id}>{r.title}</option>
                   ))}

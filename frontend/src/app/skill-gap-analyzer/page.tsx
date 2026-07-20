@@ -4,13 +4,13 @@ import SkillGapClient from './SkillGapClient';
 
 export const metadata: Metadata = {
   title: 'Skill Gap Analyzer | EulerFold AI',
-  description: 'Find and fix your weak spots. Take a targeted diagnostic quiz. Based on what you get wrong, we will build a custom roadmap strictly focused on fixing your weak spots and accelerating your mastery.',
+  description: 'Find and fix your weak spots. Take a targeted diagnostic quiz. Based on what you get wrong, we will build a custom course strictly focused on fixing your weak spots and accelerating your mastery.',
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: 'https://www.eulerfold.com/skill-gap-analyzer',
     title: 'Skill Gap Analyzer | EulerFold AI',
-    description: 'Find and fix your weak spots. Take a targeted diagnostic quiz. Based on what you get wrong, we will build a custom roadmap strictly focused on fixing your weak spots and accelerating your mastery.',
+    description: 'Find and fix your weak spots. Take a targeted diagnostic quiz. Based on what you get wrong, we will build a custom course strictly focused on fixing your weak spots and accelerating your mastery.',
     siteName: 'EulerFold',
     images: [{
       url: '/og-image.png',
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'Skill Gap Analyzer | EulerFold AI',
-    description: 'Take a diagnostic tech quiz to generate a roadmap targeting your exact blind spots.',
+    description: 'Take a diagnostic tech quiz to generate a course targeting your exact blind spots.',
     creator: '@eulerfold',
   },
 };

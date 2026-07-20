@@ -37,7 +37,7 @@ export default function GoalGeneratorModal({ isOpen, onClose }: GoalGeneratorMod
         <div className="absolute inset-0 z-[210] bg-sidebar/95 backdrop-blur-md flex flex-col items-center justify-center animate-in fade-in duration-500 rounded-lg">
           <div className="flex flex-col items-center gap-4">
             <p className="text-[12px] font-bold text-accent uppercase tracking-[0.2em]">
-              Finalizing Your Roadmap
+              Finalizing Your Course
             </p>
             <div className="flex gap-1.5">
               {[0, 1, 2].map(i => (

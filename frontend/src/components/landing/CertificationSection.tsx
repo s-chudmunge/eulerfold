@@ -8,12 +8,15 @@ export default function CertificationSection() {
     return (
         <section className="py-20 md:py-32 px-4 md:px-6 relative overflow-hidden bg-background border-y border-border/30">
             <div className="max-w-2xl mx-auto text-center">
-                <h2 className="text-4xl md:text-5xl font-bold text-text-heading mb-6 tracking-tight leading-tight">
-                    Earn Official Digital Certificates
+
+                <h2 className="text-4xl md:text-5xl font-bold text-text-heading mb-6 tracking-tight leading-[1.15]">
+                    Don't just learn a skill.{' '}
+                    <br className="hidden md:block" />
+                    <span className="font-serif italic text-accent opacity-90 text-[44px] md:text-[56px] tracking-normal font-medium">Prove it.</span>
                 </h2>
                 
-                <p className="text-[16px] md:text-[18px] text-text-primary mb-10 leading-relaxed font-medium">
-                    Don't just learn a skill. Prove it. Finish any roadmap to get a secure, verifiable certificate that tracks your exact time invested and technical grade.
+                <p className="text-[16px] md:text-[18px] text-text-muted mb-12 leading-relaxed font-medium max-w-xl mx-auto">
+                    Finish any course to get a secure, verifiable certificate that tracks your exact time invested and technical grade.
                 </p>
 
                 <div className="space-y-6 text-left max-w-lg mx-auto">
@@ -22,8 +25,8 @@ export default function CertificationSection() {
                             <ShieldCheck className="w-5 h-5 text-accent" />
                         </div>
                         <div>
-                            <h4 className="text-[16px] font-bold text-text-heading mb-1">Cryptographically Verified</h4>
-                            <p className="text-[14px] text-text-muted leading-relaxed">Each certificate has a unique ID tied to your technical proofs and practice data.</p>
+                            <h4 className="text-[16px] font-bold text-text-heading mb-1">Detailed Skill Breakdown</h4>
+                            <p className="text-[14px] text-text-muted leading-relaxed">Your certificate highlights the exact technical concepts you've mastered and your assessment scores.</p>
                         </div>
                     </div>
                     

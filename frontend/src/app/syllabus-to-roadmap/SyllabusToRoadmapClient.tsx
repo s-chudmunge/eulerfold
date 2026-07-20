@@ -86,7 +86,7 @@ export default function SyllabusToRoadmapClient() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-text-muted text-lg md:text-xl max-w-2xl mx-auto font-medium leading-relaxed mb-10"
             >
-              Got a list of topics from a college class or textbook? Paste it here. We'll automatically break it down, find the best resources, and build an interactive learning path.
+              Got a list of topics from a college class or textbook? Paste it here. We'll automatically break it down, find the best resources, and build an interactive course.
             </motion.p>
             
             <motion.div 

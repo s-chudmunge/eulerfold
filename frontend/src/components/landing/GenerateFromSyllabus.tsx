@@ -224,7 +224,7 @@ Duration: ${formData.time_value} weeks.
         const roadmapPlan = JSON.parse(jsonrepair(cleanedText));
 
         const backendPayload = {
-          subject: roadmapPlan.title || 'Syllabus Roadmap',
+          subject: roadmapPlan.title || 'Syllabus Course',
           goal: formData.syllabus_text.substring(0, 200),
           time_value: formData.time_value,
           time_unit: 'weeks',
@@ -238,7 +238,7 @@ Duration: ${formData.time_value} weeks.
         try {
           await logAIUsage({
             id: saveResponse?.data?.slug,
-            subject: roadmapPlan.title || 'Syllabus Roadmap',
+            subject: roadmapPlan.title || 'Syllabus Course',
             model: orData.model || openRouterModel,
             prompt_tokens: orData.usage?.prompt_tokens || 0,
             completion_tokens: orData.usage?.completion_tokens || 0,
@@ -294,7 +294,7 @@ Duration: ${formData.time_value} weeks.
           try {
             await logAIUsage({
               id: saveResponse?.data?.slug,
-              subject: parsedJSON.title || 'Syllabus Roadmap',
+              subject: parsedJSON.title || 'Syllabus Course',
               model: localAIModelId,
               prompt_tokens: responseUsage?.prompt_tokens || 0,
               completion_tokens: responseUsage?.completion_tokens || 0,
@@ -327,7 +327,7 @@ Duration: ${formData.time_value} weeks.
         try {
           await logAIUsage({
             id: (res as any)?.slug,
-            subject: 'Syllabus Roadmap',
+            subject: 'Syllabus Course',
             model: isPro ? 'models/gemini-2.5-pro' : 'models/gemini-2.5-flash',
             prompt_tokens: 0,
             completion_tokens: 0,
@@ -429,7 +429,7 @@ Duration: ${formData.time_value} weeks.
                 <AlertCircle className="w-3.5 h-3.5 text-accent" /> Generation Takes Time
               </p>
               <p className="text-[10px] text-text-muted leading-relaxed font-medium">
-                Our AI requires about 20-40 seconds to architect a complete learning roadmap. Please be patient after clicking generate.
+                Our AI requires about 20-40 seconds to architect a complete course. Please be patient after clicking generate.
               </p>
             </div>
           </div>

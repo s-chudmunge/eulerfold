@@ -86,7 +86,7 @@ export default function SkillGapClient() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="text-text-muted text-lg md:text-xl max-w-2xl mx-auto font-medium leading-relaxed mb-10"
             >
-              Take a targeted diagnostic quiz. Based on what you get wrong, we'll build a custom roadmap strictly focused on fixing your weak spots and accelerating your mastery.
+              Take a targeted diagnostic quiz. Based on what you get wrong, we'll build a custom course strictly focused on fixing your weak spots and accelerating your mastery.
             </motion.p>
             
             <motion.div 

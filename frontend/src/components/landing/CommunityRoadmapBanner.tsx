@@ -15,7 +15,7 @@ interface CommunityBannerProps {
 
 export default function CommunityRoadmapBanner({ 
     title = "Join the EulerFold community", 
-    description = "Track progress and collaborate on roadmaps with students worldwide.",
+    description = "Track progress and collaborate on courses with students worldwide.",
     showClose = false,
     onOpenModal
 }: CommunityBannerProps) {
@@ -69,7 +69,7 @@ export default function CommunityRoadmapBanner({
                 onClick={handleOpen}
                 className="inline-flex items-center gap-2 bg-[var(--text-heading)] text-[var(--bg-main)] rounded-full px-6 py-2.5 text-[13px] font-bold hover:opacity-90 transition-all shadow-md hover:shadow-teal-500/20"
             >
-                Create your step by step learning path <ArrowRight className="w-4 h-4" />
+                Create your step by step course <ArrowRight className="w-4 h-4" />
             </button>
 
             {credits !== null && credits < 1 && (

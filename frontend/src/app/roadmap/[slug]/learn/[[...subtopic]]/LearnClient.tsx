@@ -837,7 +837,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                     <Calendar className="h-4 w-4 opacity-70 group-hover:opacity-100" />
                                 </button>
                             </div>
-                            <Link href={`/roadmap/${roadmap?.slug || id}`} className="text-text-primary hover:text-text-heading transition-colors">
+                            <Link href={`/course/${roadmap?.slug || id}`} className="text-text-primary hover:text-text-heading transition-colors">
                                 <LayoutDashboard className="h-4 w-4 opacity-70 group-hover:opacity-100" />
                             </Link>
                         </div>
@@ -856,7 +856,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                             <Trophy className="h-7 w-7 text-accent" />
                                         </div>
                                         <div>
-                                            <h3 className="text-lg font-bold text-text-heading mb-1">Congratulations! You've mastered this roadmap.</h3>
+                                            <h3 className="text-lg font-bold text-text-heading mb-1">Congratulations! You've mastered this course.</h3>
                                             <p className="text-text-primary text-[13px]">
                                                 You've successfully completed all topics, practices, and submissions.
                                             </p>

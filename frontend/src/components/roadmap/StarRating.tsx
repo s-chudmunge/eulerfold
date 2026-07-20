@@ -72,7 +72,7 @@ const StarRating: React.FC<StarRatingProps> = ({
                             </button>
                         ))}
                         <div className="absolute -top-6 left-0 whitespace-nowrap bg-[var(--text-heading)] text-[var(--bg-main)] text-[9px] font-bold px-2 py-0.5 rounded opacity-0 group-hover/rating:opacity-100 transition-opacity pointer-events-none uppercase tracking-widest">
-                            Rate this roadmap
+                            Rate this course
                         </div>
                     </div>
                 ) : (

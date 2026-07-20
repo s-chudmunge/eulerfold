@@ -354,7 +354,7 @@ function LearnContent() {
                                     <span className="manrope-body text-[10px] font-bold text-text-muted/40">({roadmapCount || '...'} community)</span>
                                 </div>
                                 <p className="manrope-body text-[13px] text-text-muted leading-relaxed">
-                                    Structured learning paths built and verified by the EulerFold community.
+                                    Structured courses built and verified by the EulerFold community.
                                 </p>
                             </Link>
                         </div>
@@ -365,7 +365,7 @@ function LearnContent() {
                                 href="/generate"
                                 className="inline-flex items-center gap-2 bg-text-heading text-background px-8 py-3 rounded-full text-[14px] font-bold tracking-tight hover:opacity-90 active:scale-95 transition-all"
                             >
-                                <Plus className="w-4 h-4" /> Create your roadmap
+                                <Plus className="w-4 h-4" /> Create your course
                             </Link>
                         </div>
                     </div>

@@ -22,7 +22,7 @@ const NAVIGATION_DATA = {
       {
         title: "Build & Plan",
         links: [
-          { label: "Roadmap Generator", href: "/generate", description: "AI custom learning paths" },
+          { label: "Roadmap Generator", href: "/generate", description: "AI custom courses" },
           { label: "Study Planner", href: "/planner", description: "Dynamic tracking" },
           { label: "Practice Portal", href: "/practice", description: "Skill validation" }
         ]
@@ -144,6 +144,8 @@ export default function PublicHeader() {
     setActiveDropdown(null);
     setIsMobileMenuOpen(false);
   }, [pathname]);
+
+  if (pathname === '/explore' || pathname.match(/^\/research-lab\/[^\/]+/) || pathname.match(/^\/u\/[^\/]+/)) return null;
 
   const NavLink = ({ href, label }: { href: string, label: string }) => (
     <Link 

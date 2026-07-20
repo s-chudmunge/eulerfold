@@ -54,10 +54,10 @@ export default function RoadmapIndexClient({ initialRoadmaps }: { initialRoadmap
                         <div className="inconsolata-ui flex items-center gap-2 text-text-muted mb-2 text-[12px] font-bold uppercase tracking-widest">
                             <span className="bg-sidebar dark:bg-white/5 px-2 py-0.5 rounded">Directory</span>
                             <span className="opacity-30">/</span>
-                            <span className="italic opacity-60">Public Learning Paths</span>
+                            <span className="italic opacity-60">Public Courses</span>
                         </div>
                         <h1 className="font-inter text-2xl md:text-4xl font-bold text-text-heading tracking-tighter mb-6">
-                            Public Roadmaps
+                            Public Courses
                         </h1>
                         
                         <div className="flex flex-col sm:flex-row gap-4">
@@ -155,7 +155,7 @@ export default function RoadmapIndexClient({ initialRoadmaps }: { initialRoadmap
                             ))
                         ) : (
                             <div className="py-24 text-center border-2 border-dashed border-border rounded-[32px] bg-sidebar/10">
-                                <p className="manrope-body text-text-muted text-[15px] font-medium italic">No learning paths found matching your criteria.</p>
+                                <p className="manrope-body text-text-muted text-[15px] font-medium italic">No courses found matching your criteria.</p>
                                 <button onClick={() => {setSearch(''); setSortBy('newest');}} className="font-inter text-accent text-[12px] font-bold mt-4 inline-block uppercase tracking-widest hover:underline">
                                     Clear all filters
                                 </button>

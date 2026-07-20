@@ -2,6 +2,7 @@ import React from 'react';
 import { Metadata } from 'next';
 import ResearchDecodedClient from './ResearchDecodedClient';
 import { papers } from '../generatedData';
+import PagePreloader from '@/components/PagePreloader';
 
 export const revalidate = 3600; // rebuild at most once per hour
 
@@ -180,6 +181,7 @@ export default function ResearchDecodedPage({ params }: { params: { slug: string
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       <ResearchDecodedClient paper={paper} slug={slug} papers={papers} />
+      <PagePreloader />
     </>
   );
 }

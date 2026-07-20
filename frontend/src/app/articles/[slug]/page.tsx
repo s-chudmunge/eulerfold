@@ -2,6 +2,7 @@ import React from 'react';
 import { Metadata } from 'next';
 import ArticleClient from './ArticleClient';
 import { articles } from '../generatedArticles';
+import PagePreloader from '@/components/PagePreloader';
 
 export const revalidate = 3600;
 
@@ -137,6 +138,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
       />
       <ArticleClient article={article} />
+      <PagePreloader />
     </>
   );
 }

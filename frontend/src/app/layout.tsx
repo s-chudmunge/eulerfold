@@ -7,6 +7,8 @@ import BannerWrapper from '@/components/BannerWrapper';
 import AuthProvider from '@/components/AuthProvider';
 import { SettingsProvider } from '@/components/SettingsProvider';
 import SettingsModal from '@/components/SettingsModal';
+import { PracticeProvider } from '@/components/PracticeProvider';
+import GlobalPracticeModal from '@/components/GlobalPracticeModal';
 import QueryProvider from '@/app/providers/QueryProvider';
 import SessionTracker from '@/components/SessionTracker';
 import { Analytics } from "@vercel/analytics/next";
@@ -21,14 +23,14 @@ const manrope = { variable: '--font-sans', className: 'font-sans' };
 export const metadata: Metadata = {
   applicationName: 'EulerFold',
   title: {
-    default: 'EulerFold - Learning Paths, Exam Prep & Skill Building.',
+    default: 'EulerFold - Courses, Exam Prep & Skill Building.',
     template: '%s'
   },
-  description: 'Clear learning paths with simple progress tracking that show exactly what you’ve learned and keep you on-track.',
+  description: 'Clear courses with simple progress tracking that show exactly what you’ve learned and keep you on-track.',
   keywords: [
     'technical roadmaps',
     'skill tracking',
-    'learning paths',
+    'courses',
     'exam preparation',
     'structured learning',
     'adaptive learning'
@@ -47,12 +49,12 @@ export const metadata: Metadata = {
     locale: 'en_US',
     siteName: 'EulerFold',
     title: 'EulerFold',
-    description: 'Clear learning paths with simple progress tracking that show exactly what you’ve learned and keep you on-track.',
+    description: 'Clear courses with simple progress tracking that show exactly what you’ve learned and keep you on-track.',
   },
   twitter: {
   card: 'summary',
   title: 'EulerFold',
-  description: 'Clear learning paths with simple progress tracking that show exactly what you’ve learned and keep you on track.',
+  description: 'Clear courses with simple progress tracking that show exactly what you’ve learned and keep you on track.',
   creator: '@eulerfold',
   site: '@eulerfold',
   },  robots: {
@@ -136,7 +138,7 @@ export default function RootLayout({
                 "width": 512,
                 "height": 512
               },
-              "description": "Clear learning paths with simple progress tracking that show exactly what you’ve learned and keep you on track",
+              "description": "Clear courses with simple progress tracking that show exactly what you’ve learned and keep you on track",
               "sameAs": [
                 "https://x.com/eulerfold",
                 "https://www.instagram.com/eulerfold"
@@ -170,7 +172,7 @@ export default function RootLayout({
                   {
                     "@type": "Course",
                     "name": "Language Learning",
-                    "description": "Master new languages with structured learning paths"
+                    "description": "Master new languages with structured courses"
                   }
                 ]
               }
@@ -202,16 +204,19 @@ export default function RootLayout({
         <QueryProvider>
           <AuthProvider>
             <SettingsProvider>
-              <Suspense fallback={null}>
-                <SessionTracker />
-              </Suspense>
-              <BannerWrapper />
-              <main>
-                {children}
-              </main>
-              <SettingsModal />
-              <Analytics />
-              <SpeedInsights />
+              <PracticeProvider>
+                <Suspense fallback={null}>
+                  <SessionTracker />
+                </Suspense>
+                <BannerWrapper />
+                <main>
+                  {children}
+                </main>
+                <SettingsModal />
+                <GlobalPracticeModal />
+                <Analytics />
+                <SpeedInsights />
+              </PracticeProvider>
             </SettingsProvider>
           </AuthProvider>
         </QueryProvider>

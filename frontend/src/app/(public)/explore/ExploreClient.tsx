@@ -52,6 +52,8 @@ import VerifiedBadge from '@/components/VerifiedBadge';
 import { getCategory } from '@/lib/roadmapUtils';
 import { SideBanner, QUOTES } from '@/components/layout/SideBanners';
 import CommunityRoadmapBanner from '@/components/landing/CommunityRoadmapBanner';
+import LatestArticlesCarousel from '@/components/landing/LatestArticlesCarousel';
+import { articles } from '@/app/articles/generatedArticles';
 import GoalGeneratorModal from '@/components/landing/GoalGeneratorModal';
 import Footer from '@/components/Footer';
 
@@ -276,21 +278,21 @@ export default function ExploreClient({
             <Suspense fallback={null}>
                 <SearchParamsHandler onParams={handleSearchParams} />
             </Suspense>
-            <div className="max-w-[1400px] mx-auto px-4 md:px-6 pt-4 md:pt-6 pb-8">
+            <div className="max-w-[1000px] mx-auto px-4 md:px-6 pt-4 md:pt-6 pb-8">
                 <div className="flex flex-col lg:flex-row gap-6 xl:gap-10">
                     
                     <main className="flex-1 min-w-0">
                         <header className="mb-6">
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
                                 <div>
-                                    <h1 className="font-inter text-3xl sm:text-4xl font-semibold text-text-heading tracking-tight mb-2">Explore Roadmaps</h1>
-                                    <p className="text-text-muted text-base md:text-lg manrope-body font-medium leading-relaxed max-w-2xl">Discover and clone learning paths from the community.</p>
+                                    <h1 className="font-inter text-3xl sm:text-4xl font-semibold text-text-heading tracking-tight mb-2">Explore Courses</h1>
+                                    <p className="text-text-muted text-base md:text-lg manrope-body font-medium leading-relaxed max-w-2xl">Discover and clone courses from the community.</p>
                                 </div>
                                 <button 
                                     onClick={() => setIsRoadmapModalOpen(true)}
                                     className="bg-accent text-white px-6 py-2.5 rounded-lg text-[12px] font-bold tracking-wide transition-all hover:scale-[1.02] active:scale-[0.98]  shadow-accent/20"
                                 >
-                                    Create New Roadmap
+                                    Create New Course
                                 </button>
                             </div>
 
@@ -370,7 +372,7 @@ export default function ExploreClient({
                                         }`}
                                     >
                                         <CategoryIcon category={cat} className={`w-3.5 h-3.5 ${filter === cat ? 'opacity-100' : 'opacity-50'}`} />
-                                        {cat === 'all' ? 'All Paths' : cat}
+                                        {cat === 'all' ? 'All Courses' : cat}
                                     </button>
                                 ))}
                             </div>
@@ -381,7 +383,7 @@ export default function ExploreClient({
                             <table className="w-full text-left border-collapse table-fixed md:table-auto">
                                 <thead>
                                     <tr className="border-b border-border bg-sidebar/20">
-                                        <th scope="col" className="px-3 md:px-5 py-3 text-[10px] font-black uppercase tracking-widest text-text-muted inconsolata-ui opacity-60">Learning Roadmap</th>
+                                        <th scope="col" className="px-3 md:px-5 py-3 text-[10px] font-black uppercase tracking-widest text-text-muted inconsolata-ui opacity-60">Course</th>
                                         <th scope="col" className="hidden md:table-cell w-[18%] px-5 py-3 text-[10px] font-black uppercase tracking-widest text-text-muted inconsolata-ui opacity-60">Duration</th>
                                         <th scope="col" className="w-[80px] md:w-[17%] px-3 md:px-5 py-3 text-[10px] font-black uppercase tracking-widest text-text-muted inconsolata-ui opacity-60 text-right">Reach</th>
                                     </tr>
@@ -446,7 +448,7 @@ export default function ExploreClient({
                                     {filteredRoadmaps.length === 0 && !roadmapsLoading && (
                                         <tr>
                                             <td colSpan={3} className="px-4 py-20 text-center text-gray-400 italic manrope-body text-sm">
-                                                No roadmaps found matching your search.
+                                                No courses found matching your search.
                                             </td>
                                         </tr>
                                     )}
@@ -475,18 +477,7 @@ export default function ExploreClient({
                         )}
                     </main>
 
-                    {/* Right Sidebar - Dynamic Info */}
-                    <div className="w-full lg:w-[320px] shrink-0 pt-4 self-start space-y-8">
-                        <CommunityRoadmapBanner onOpenModal={() => setIsRoadmapModalOpen(true)} />
-                        
-                        <SideBanner 
-                            isStatic
-                            buttonText="Research"
-                            href="/research-decoded"
-                            currentQuote={QUOTES[quoteIndex]}
-                            quoteIndex={quoteIndex}
-                        />
-                    </div>
+
                 </div>
             </div>
 
@@ -510,7 +501,7 @@ export default function ExploreClient({
             {reporting !== null && (
                 <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-[110] p-4 animate-in fade-in duration-300">
                     <div className="bg-background rounded-lg shadow-2xl max-w-sm w-full p-8 border border-border">
-                        <h3 className="inconsolata-ui text-[18px] font-bold text-text-heading tracking-normal mb-6">Report Roadmap</h3>
+                        <h3 className="inconsolata-ui text-[18px] font-bold text-text-heading tracking-normal mb-6">Report Course</h3>
                         <div className="space-y-2 mb-8">
                             {['Inappropriate content', 'Spam or misleading', 'Broken resources', 'Other'].map((reason) => (
                                 <button 
@@ -534,6 +525,23 @@ export default function ExploreClient({
                 isOpen={isRoadmapModalOpen} 
                 onClose={() => setIsRoadmapModalOpen(false)} 
             />
+
+            <div className="border-t border-border/30 bg-sidebar/5">
+                <div className="max-w-[1200px] mx-auto px-6 py-16 md:px-10 flex flex-col gap-24">
+                    <div className="max-w-2xl mx-auto w-full">
+                        <CommunityRoadmapBanner />
+                    </div>
+                    
+                    <div className="space-y-6">
+                        <div className="flex flex-col items-center text-center space-y-2 mb-8">
+                            <h2 className="inconsolata-ui text-[14px] font-black text-text-heading uppercase tracking-[0.1em]">Recommended Reading</h2>
+                            <div className="h-[1px] w-12 bg-accent opacity-50"></div>
+                        </div>
+                        <LatestArticlesCarousel articles={Object.values(articles).slice(0, 6)} />
+                    </div>
+                </div>
+            </div>
+
             <Footer />
         </div>
     );

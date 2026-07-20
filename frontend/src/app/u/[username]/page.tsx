@@ -3,6 +3,8 @@ import { Metadata } from 'next';
 import ProfileClient from './ProfileClient';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import UserNav from '@/components/UserNav';
+import PagePreloader from '@/components/PagePreloader';
 import { supabase } from '@/lib/supabase/client';
 
 export async function generateStaticParams() {
@@ -82,5 +84,24 @@ export default async function PublicProfilePage({ params }: { params: { username
         notFound();
     }
 
-    return <ProfileClient profile={profile} />;
+    return (
+        <div className="min-h-screen flex flex-col bg-background">
+            <PagePreloader />
+            <header className="inconsolata-ui border-b border-border bg-header h-[48px] shrink-0 z-50 sticky top-0 inset-x-0">
+                <div className="w-full px-4 md:px-6 flex h-full items-center justify-between">
+                    <div className="flex items-center gap-2 md:gap-4">
+                        <Link className="flex items-center group shrink-0" href="/dashboard" aria-label="Dashboard">
+                            <img src="/apple-touch-icon.png" alt="EulerFold" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
+                        </Link>
+                    </div>
+                    <div className="flex items-center gap-4">
+                        <UserNav />
+                    </div>
+                </div>
+            </header>
+            <main className="flex-grow min-w-0">
+                <ProfileClient profile={profile} />
+            </main>
+        </div>
+    );
 }

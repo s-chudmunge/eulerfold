@@ -553,10 +553,10 @@ async def extend_roadmap(
     last_module_title = existing_modules[-1].get("title") if existing_modules else "the beginning"
     
     prompt = f"""
-You are extending an existing curriculum. The user has already finished a roadmap on "{roadmap.get('subject')}".
+You are extending an existing curriculum. The user has already finished a course on "{roadmap.get('subject')}".
 Their original goal was: "{roadmap.get('goal')}"
 
-They now want to EXTEND this roadmap for {payload.weeks} more week(s) to learn: "{payload.extension_goal}"
+They now want to EXTEND this course for {payload.weeks} more week(s) to learn: "{payload.extension_goal}"
 
 **Instructions:**
 1. Generate {payload.weeks} new modules that logically follow the existing curriculum.
@@ -837,14 +837,14 @@ async def generate_roadmap(
 
     prompt = f"""
 You are a technical lead.
-Generate a rigorous technical learning roadmap for the subject: "{roadmap_create.subject}".
+Generate a rigorous technical learning course for the subject: "{roadmap_create.subject}".
 The learner's specific goal is: "{roadmap_create.goal}".
 {context_str}
 Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
 
 **Rules:**
-1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "The Complete Guide to Number Theory", "Fundamentals of React Hooks"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Roadmap". Do NOT include the time duration in the title. and Do NOT use "mastery" in the title.
-2. **SEO-Friendly Description:** The "description" must be a single, punchy, search-engine-friendly sentence similar to the title. Do NOT use long paragraphs like "This intensive intensive X-week roadmap is designed for...".
+1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "The Complete Guide to Number Theory", "Fundamentals of React Hooks"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Course". Do NOT include the time duration in the title. and Do NOT use "mastery" in the title.
+2. **SEO-Friendly Description:** The "description" must be a single, punchy, search-engine-friendly sentence similar to the title. Do NOT use long paragraphs like "This intensive intensive X-week course is designed for...".
 3. **Technical Rigor:** Focus on depth and verifiable technical skills. Avoid introductory fluff.
 4. **Logical Progression:** Structure the path into modules that build upon each other logically.
 5. **Specific Topics:** Each module must have 3-5 specific topics. Use industry-standard technical terms.
@@ -853,7 +853,7 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
 8. **Output JSON ONLY** matching this schema:
    {{
      "title": "string",
-     "description": "A single, search engine friendly line describing the roadmap (max 1 sentence).",
+     "description": "A single, search engine friendly line describing the course (max 1 sentence).",
      "modules": [
        {{
          "title": "string",
@@ -1103,14 +1103,14 @@ async def generate_from_jd(
 
     generation_strategy = f"""
 **STRATEGY:**
-Generate a comprehensive technical learning path for this role over {payload.time_value} weeks.
+Generate a comprehensive technical learning course for this role over {payload.time_value} weeks.
 Analyze the user's current experience against the Job Description and identify precise technical gaps.
-The roadmap must bridge these gaps with rigorous modules that lead to demonstrable mastery.
+The course must bridge these gaps with rigorous modules that lead to demonstrable mastery.
 """
 
     prompt = f"""
 You are a technical lead.
-Your task is to convert a Job Description into a rigorous learning roadmap.
+Your task is to convert a Job Description into a rigorous learning course.
 
 **JOB DESCRIPTION:**
 {payload.job_description}
@@ -1123,13 +1123,13 @@ Duration: {payload.time_value} {payload.time_unit}.
 {generation_strategy}
 
 **RULES:**
-1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "The Complete Guide to Data Engineering"). Do NOT use dry, robotic formats like "Intensive 4-Week X Roadmap". Do NOT include the time duration in the title.
+1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "The Complete Guide to Data Engineering"). Do NOT use dry, robotic formats like "Intensive 4-Week X Course". Do NOT include the time duration in the title.
 2. **Logical Progression:** Structure modules from foundational technical gaps to advanced implementation.
 2. **Technical Rigor:** Prioritize hard skills, tools, and theoretical knowledge required for the role.
 3. **Specific Topics:** Each module must have 3-5 specific topics. Avoid generic titles like "Introduction to X". Use industry-standard technical terms (e.g., "Memory-Mapped I/O" or "Asynchronous Event Loops").
 4. **Practical Outcomes:** The `proof_of_work_instructions` must describe a realistic technical task or project that demonstrates competency in that module's specific skills.
 5. **Applied Knowledge:** Ensure the user learns not just what a tool is, but how to apply it to solve role-specific problems.
-6. **Conciseness:** Roadmap description must be max 2 sentences. Each module 'outcome' must be max 1 sentence.
+6. **Conciseness:** Course description must be max 2 sentences. Each module 'outcome' must be max 1 sentence.
 7. **Output JSON ONLY** matching this schema:
    {{
      "title": "string", (e.g., Senior Analyst @ Goldman Sachs or Lead Designer @ Nike)
@@ -1550,18 +1550,18 @@ async def generate_from_url(
 You are a technical lead.
 Analyze the following technical content extracted from {payload.url}.
 Identify the core concepts and technologies required to fully understand or build what is described.
-Generate a rigorous {payload.time_value} {payload.time_unit} learning roadmap that starts from foundational prerequisites and culminates in mastering the content from this URL.
+Generate a rigorous {payload.time_value} {payload.time_unit} learning course that starts from foundational prerequisites and culminates in mastering the content from this URL.
 
 **CONTENT:**
 {text_content}
 
 **RULES:**
-1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "Understanding Backpropagation", "Fundamentals of React Hooks"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Roadmap". Do NOT include the time duration in the title. Do NOT use buzzwords like "Mastery", "High-Performance", "Bootcamp", or "Journey".
+1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "Understanding Backpropagation", "Fundamentals of React Hooks"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Course". Do NOT include the time duration in the title. Do NOT use buzzwords like "Mastery", "High-Performance", "Bootcamp", or "Journey".
 2. **SEO-Friendly Description:** The "description" must be a single, punchy, search-engine-friendly sentence similar to the title.
 2. **Technical Rigor:** Focus on depth and verifiable technical skills.
 3. **Specific Topics:** Each module must have 3-5 specific topics using industry-standard terms.
 4. **Practical Outcomes:** The `proof_of_work_instructions` must describe a realistic technical task that demonstrates competency.
-5. **Conciseness:** Roadmap description must be max 2 sentences. Each module 'outcome' must be max 1 sentence.
+5. **Conciseness:** Course description must be max 2 sentences. Each module 'outcome' must be max 1 sentence.
 6. **Output JSON ONLY** matching this schema:
    {{
      "title": "string",
@@ -1708,19 +1708,19 @@ async def generate_from_syllabus(
     prompt = f"""
 You are an instructional designer.
 I will provide you with a static course syllabus or table of contents.
-Translate this exactly into our interactive {payload.time_value} {payload.time_unit} roadmap JSON schema.
+Translate this exactly into our interactive {payload.time_value} {payload.time_unit} course JSON schema.
 Do not change the core subjects taught, but enrich them with practical "proof_of_work" tasks.
 
 **SYLLABUS TEXT:**
 {payload.syllabus_text}
 
 **RULES:**
-1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "Understanding Backpropagation", "Fundamentals of React Hooks"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Roadmap". Do NOT include the time duration in the title. Do NOT use buzzwords like "Mastery", "High-Performance", "Bootcamp", or "Journey".
+1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "Understanding Backpropagation", "Fundamentals of React Hooks"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Course". Do NOT include the time duration in the title. Do NOT use buzzwords like "Mastery", "High-Performance", "Bootcamp", or "Journey".
 2. **SEO-Friendly Description:** The "description" must be a single, punchy, search-engine-friendly sentence similar to the title.
 2. **Technical Rigor:** Focus on depth and verifiable technical skills.
 3. **Specific Topics:** Each module must have 3-5 specific topics using industry-standard terms.
 4. **Practical Outcomes:** The `proof_of_work_instructions` must describe a realistic technical task that demonstrates competency.
-5. **Conciseness:** Roadmap description must be max 2 sentences. Each module 'outcome' must be max 1 sentence.
+5. **Conciseness:** Course description must be max 2 sentences. Each module 'outcome' must be max 1 sentence.
 6. **Output JSON ONLY** matching this schema:
    {{
      "title": "string",
@@ -1870,16 +1870,16 @@ The user wants to become a "{payload.target_role}".
 They are already proficient in: "{payload.known_skills}"
 However, they struggle with or failed diagnostics on: "{payload.weak_skills}"
 
-Generate a {payload.time_value} {payload.time_unit} learning roadmap that COMPLETELY SKIPS the known skills.
-Strictly focus the entire roadmap on bridging the gap in their weak areas.
+Generate a {payload.time_value} {payload.time_unit} learning course that COMPLETELY SKIPS the known skills.
+Strictly focus the entire course on bridging the gap in their weak areas.
 
 **RULES:**
-1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "Understanding Backpropagation", "Fundamentals of React Hooks"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Roadmap". Do NOT include the time duration in the title. Do NOT use buzzwords like "Mastery", "High-Performance", "Bootcamp", or "Journey".
+1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "Understanding Backpropagation", "Fundamentals of React Hooks"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Course". Do NOT include the time duration in the title. Do NOT use buzzwords like "Mastery", "High-Performance", "Bootcamp", or "Journey".
 2. **SEO-Friendly Description:** The "description" must be a single, punchy, search-engine-friendly sentence similar to the title.
 2. **Technical Rigor:** Focus on depth and verifiable technical skills.
 3. **Specific Topics:** Each module must have 3-5 specific topics using industry-standard terms.
 4. **Practical Outcomes:** The `proof_of_work_instructions` must describe a realistic technical task that demonstrates competency.
-5. **Conciseness:** Roadmap description must be max 2 sentences. Each module 'outcome' must be max 1 sentence.
+5. **Conciseness:** Course description must be max 2 sentences. Each module 'outcome' must be max 1 sentence.
 6. **Output JSON ONLY** matching this schema:
    {{
      "title": "string",

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Metadata } from 'next';
 import ResearchDecodedIndexClient from './ResearchDecodedIndexClient';
+import PagePreloader from '@/components/PagePreloader';
 
 export const revalidate = 3600; // rebuild at most once per hour
 
@@ -13,5 +14,10 @@ export const metadata: Metadata = {
 };
 
 export default function ResearchDecodedPage() {
-  return <ResearchDecodedIndexClient />;
+  return (
+    <>
+      <PagePreloader />
+      <ResearchDecodedIndexClient />
+    </>
+  );
 }

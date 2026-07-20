@@ -12,7 +12,7 @@ const GEN_STEPS = [
   "Identifying core concepts...",
   "Sourcing research papers...",
   "Building learning modules...",
-  "Finalizing roadmap...",
+  "Finalizing course...",
 ];
 
 const MODULES = [
