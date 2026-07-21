@@ -404,12 +404,13 @@ async def update_visibility(id: int, update: VisibilityUpdate, current_user: Use
     sb = get_supabase_client()
     
     # 1. Fetch current visibility before update
-    check_res = sb.table("roadmaps").select("email, is_public, title").eq("id", id).execute()
+    check_res = sb.table("roadmaps").select("email, is_public, title, slug").eq("id", id).execute()
     if not check_res.data or check_res.data[0]["email"] != email:
         raise HTTPException(status_code=403, detail="Not authorized to update this roadmap")
     
     was_already_public = check_res.data[0].get("is_public", False)
     is_public = update.is_public
+    slug = check_res.data[0].get("slug")
     
     if was_already_public and not is_public:
         raise HTTPException(status_code=400, detail="Public roadmaps cannot be made private to maintain link consistency.")
@@ -436,6 +437,23 @@ async def update_visibility(id: int, update: VisibilityUpdate, current_user: Use
                 f"Shared roadmap '{check_res.data[0]['title']}' with the community", 
                 roadmap_id=id
             )
+            
+    # 4. Revalidate frontend cache for this roadmap slug
+    if slug:
+        async def revalidate_frontend():
+            frontend_url = settings.FRONTEND_URL
+            secret = os.getenv("REVALIDATE_SECRET", "eulerfold_revalidate_123")
+            async with httpx.AsyncClient() as client:
+                try:
+                    await client.post(
+                        f"{frontend_url}/api/revalidate",
+                        json={"path": f"/roadmap/{slug}", "secret": secret},
+                        timeout=5.0
+                    )
+                except Exception as e:
+                    logger.error(f"Failed to revalidate frontend cache for {slug}: {e}")
+                    
+        asyncio.create_task(revalidate_frontend())
     
     return {"status": "success"}
 
