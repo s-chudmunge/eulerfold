@@ -4,7 +4,7 @@ authors: "Ryan Williams (2011)"
 citation: "Williams, R. (2014). Nonuniform ACC circuit lower bounds. Journal of the ACM (JACM), 61(1), 1-32."
 link: "https://doi.org/10.1145/2630030.2630053"
 slug: "williams-acc-circuit-lower-bounds"
-heroImage: null
+heroImage: "/images/research-decoded/williams-acc-circuit-lower-bounds.svg"
 ---
 
 In 2011, Ryan Williams proved that the complexity class NEXP (nondeterministic exponential time) cannot be represented by polynomial-size ACC0 circuits. This result resolved a long-standing impasse in circuit complexity, identifying the first non-trivial lower bound for a class of circuits that include modular gates. The research introduced a methodological inversion known as the algorithmic method, which demonstrates that the existence of slightly-faster-than-brute-force algorithms for the satisfiability problem (SAT) is logically sufficient to prove structural lower bounds against specific circuit families.

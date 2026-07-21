@@ -4,7 +4,7 @@ authors: "Girdhar et al. (2023)"
 citation: "Girdhar, R., El-Nouby, A., Liu, Z., Singh, M., Alwala, K. V., Joulin, A., & Misra, I. (2023). ImageBind: One embedding space to bind them all. arXiv preprint arXiv:2305.05665."
 link: "https://arxiv.org/abs/2305.05665"
 slug: "imagebind-multimodal-embedding"
-heroImage: null
+heroImage: "/images/research-decoded/imagebind-multimodal-embedding.png"
 ---
 
 The 2023 ImageBind paper from Meta AI introduces a method for aligning six sensory modalities—images, text, audio, depth, thermal, and inertial measurement unit data—into a single embedding space. Multimodal models typically require explicit pairs of data for every combination of modalities they intend to connect. ImageBind simplifies this by using images as a central binding modality, demonstrating that if disparate data types are aligned to a visual hub, they will naturally align with one another. This hub-and-spoke architecture enables sensory integration without the need for an exponential number of pairwise training examples.

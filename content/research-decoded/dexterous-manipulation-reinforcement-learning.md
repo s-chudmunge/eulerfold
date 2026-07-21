@@ -4,7 +4,7 @@ authors: "OpenAI et al. (2018)"
 citation: "Andrychowicz, M., Baker, B., Chociej, M., Jozefowicz, R., McGrew, B., Pachocki, J., ... & Zaremba, W. (2020). Learning dexterous in-hand manipulation. The International Journal of Robotics Research, 39(1), 3-20."
 link: "https://arxiv.org/abs/1808.00177"
 slug: "dexterous-manipulation-reinforcement-learning"
-heroImage: "https://ar5iv.labs.arxiv.org/html/1808.00177/assets/figures/hero.jpg"
+heroImage: "/images/research-decoded/dexterous-manipulation-reinforcement-learning.jpg"
 ---
 
 # Dexterous Manipulation

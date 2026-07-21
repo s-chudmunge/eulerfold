@@ -4,7 +4,7 @@ authors: "Alfred Aho & Margaret Corasick (1975)"
 citation: "Aho, A. V., & Corasick, M. J. (1975). Efficient string matching: an aid to bibliographic search. Communications of the ACM, 18(6), 333-340."
 link: "https://doi.org/10.1145/360825.360855"
 slug: "aho-corasick-string-matching"
-heroImage: null
+heroImage: "/images/research-decoded/aho-corasick-string-matching.svg"
 ---
 
 In 1975, Alfred Aho and Margaret Corasick introduced a method for identifying all occurrences of a set of keywords within an input text in a single linear pass. This algorithm addresses the inefficiency of repeated individual string searches by consolidating a library of patterns into a single deterministic finite automaton (DFA). This approach ensures that the time complexity of the search phase remains independent of the number of keywords, establishing a fundamental logic for high-performance string processing in lexical analysis, intrusion detection, and genomics.

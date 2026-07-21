@@ -4,7 +4,7 @@ authors: "Eric Nguyen et al. (Arc Institute, 2024)"
 citation: "Nguyen, E., Poli, M., Durrant, M. G., et al. (2024). Sequence modeling and design from molecular to genome scale with Evo. Science, 386(6723), ado9336."
 link: "https://doi.org/10.1126/science.ado9336"
 slug: "evo-dna-language-model"
-heroImage: null
+heroImage: "/images/research-decoded/evo-dna-language-model.svg"
 ---
 
 In 2024, researchers at the Arc Institute and Stanford University introduced Evo, a foundational genomic model that treats the entire code of life as a continuous, generative language. Prior to this work, genomic models were restricted by small context windows that could only capture local fragments of a sequence, preventing a holistic understanding of how distant genetic elements interact to define organismal regulation. The researchers demonstrated that by utilizing the StripedHyena architecture to process over 131,000 nucleotides in a single pass, a system can learn the global "grammar" of DNA across the molecular and genomic scales, establishing a predictive and generative framework for the design of novel biological machines.

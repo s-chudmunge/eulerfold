@@ -4,7 +4,7 @@ authors: "DeepSeek-AI (2024)"
 citation: "DeepSeek-AI. (2024). DeepSeek-V2: A Strong, Economical, and Efficient Mixture-of-Experts Language Model. arXiv preprint arXiv:2405.04434."
 link: "https://arxiv.org/abs/2405.04434"
 slug: "deepseek-v2-latent-attention"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2405.04434/assets/x1.png"
+heroImage: "/images/research-decoded/deepseek-v2-latent-attention.png"
 ---
 
 In 2024, DeepSeek-AI introduced DeepSeek-V2, a sparse Mixture-of-Experts (MoE) model characterized by extreme parameter efficiency and a significant reduction in KV cache memory requirements. The research addresses the primary scaling bottleneck of long-context language models: the linear growth of memory needed to store the keys and values for every token in a sequence. The researchers demonstrated that by implementing Multi-head Latent Attention (MLA), a system can achieve a 93% reduction in the cache footprint compared to standard architectures while maintaining full-rank expressive power, enabling high-concurrency inference on massive datasets without exceeding GPU memory limits.

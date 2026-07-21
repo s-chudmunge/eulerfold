@@ -4,7 +4,7 @@ authors: "Edward Farhi, Jeffrey Goldstone, & Sam Gutmann (2014)"
 citation: "Farhi, E., Goldstone, J., & Gutmann, S. (2014). A quantum approximate optimization algorithm. arXiv preprint arXiv:1411.4028."
 link: "https://arxiv.org/abs/1411.4028"
 slug: "qaoa-quantum-approximate-optimization"
-heroImage: null
+heroImage: "/images/research-decoded/qaoa-quantum-approximate-optimization.png"
 ---
 
 In 2014, Edward Farhi, Jeffrey Goldstone, and Sam Gutmann introduced the Quantum Approximate Optimization Algorithm (QAOA), a hybrid quantum-classical framework designed to identify near-optimal solutions to combinatorial problems. This approach addresses the decoherence constraints of gate-based hardware by discretizing continuous adiabatic evolution into a sequence of shallow unitary layers. The researchers demonstrated that by alternating between a cost-based Hamiltonian and a mixer Hamiltonian, a system can explore the solution space of NP-hard problems—such as Max-Cut—using variational parameters optimized by a classical computer, providing a path to quantum utility in the NISQ era.

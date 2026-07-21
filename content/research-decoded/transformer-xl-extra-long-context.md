@@ -4,7 +4,7 @@ authors: "Dai et al. (2019)"
 citation: "Dai, Z., Yang, Z., Yang, Y., Carbonell, J., Le, Q. V., & Salakhutdinov, R. (2019). Transformer-xl: Attentive language models beyond a fixed-length context. arXiv preprint arXiv:1901.02860."
 link: "https://arxiv.org/abs/1901.02860"
 slug: "transformer-xl-extra-long-context"
-heroImage: "https://ar5iv.labs.arxiv.org/html/1901.02860/assets/x2.png"
+heroImage: "/images/research-decoded/transformer-xl-extra-long-context.png"
 ---
 
 In 2019, researchers at Google Brain and Carnegie Mellon University introduced Transformer-XL, an architecture designed to capture long-range dependencies beyond the constraints of a fixed-length context window. Standard Transformers process input in isolated segments, leading to context fragmentation where the model lacks access to information from preceding blocks. The researchers demonstrated that by integrating segment-level recurrence and a relative positional encoding scheme, a model can model dependencies that are 450% longer than vanilla Transformers while increasing evaluation speed by over 1,800 times.

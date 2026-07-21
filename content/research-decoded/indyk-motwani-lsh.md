@@ -4,7 +4,7 @@ authors: "Piotr Indyk & Rajeev Motwani (1998)"
 citation: "Indyk, P., & Motwani, R. (1998). Approximate nearest neighbors: towards removing the curse of dimensionality. In Proceedings of the thirtieth annual ACM symposium on Theory of computing (pp. 604-613)."
 link: "https://graphics.stanford.edu/courses/cs468-06-fall/Papers/06%20indyk%20motwani%20-%20stoc98.pdf"
 slug: "indyk-motwani-lsh"
-heroImage: null
+heroImage: "/images/research-decoded/indyk-motwani-lsh.png"
 ---
 
 In 1998, Piotr Indyk and Rajeev Motwani introduced a method for similarity search in high-dimensional spaces that addresses the computational bottleneck known as the curse of dimensionality. Traditional search algorithms exhibit exponential performance degradation as the number of features in a dataset increases, rendering exact nearest-neighbor searches impractical for large-scale applications. The researchers demonstrated that by accepting a controlled degree of approximation, locality-sensitive hashing (LSH) can achieve sublinear query time, establishing a fundamental framework for modern vector retrieval and recommendation systems.

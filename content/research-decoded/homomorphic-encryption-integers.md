@@ -4,7 +4,7 @@ authors: "Marten van Dijk, Craig Gentry, Shai Halevi, & Vinod Vaikuntanathan (20
 citation: "van Dijk, M., Gentry, C., Halevi, S., & Vaikuntanathan, V. (2010). Fully homomorphic encryption over the integers. In Annual International Conference on the Theory and Applications of Cryptographic Techniques (pp. 24-43). Springer."
 link: "https://eprint.iacr.org/2009/616.pdf"
 slug: "homomorphic-encryption-integers"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Lattice-based_cryptography_diagram.svg/1200px-Lattice-based_cryptography_diagram.svg.png"
+heroImage: "/images/research-decoded/homomorphic-encryption-integers.jpg"
 ---
 
 In 2010, researchers introduced a framework for Fully Homomorphic Encryption (FHE) that utilizes basic integer arithmetic rather than the complex algebraic geometry of ideal lattices. While earlier proofs established that universal computation on encrypted data was possible, their reliance on high-dimensional manifolds made the concepts difficult to understand and implement. This research addresses the implementation bottleneck by basing the system's security on the Approximate Greatest Common Divisor (AGCD) problem. The researchers demonstrated that the fundamental operations of homomorphic addition and multiplication can be achieved through the management of noisy integers, established a more accessible roadmap for the practical deployment of secure multi-party protocols.
@@ -34,4 +34,4 @@ The success of FHE over the integers demonstrated that the most profound advance
 - [FHE over Integers (Official Paper)](https://eprint.iacr.org/2009/616.pdf) {type: docs, provider: IACR}
 - [Homomorphic Encryption Overview (Wikipedia)](https://en.wikipedia.org/wiki/Homomorphic_encryption) {type: article, provider: Wikipedia}
 - [DGHV Scheme Explanation (Video)](https://www.youtube.com/watch?v=cbV8o6tLMTM) {type: video, provider: Helib}
-- [Lattice-Based Cryptography Diagram](https://upload.wikimedia.org/wikipedia/commons/thumb/c/cf/Lattice-based_cryptography_diagram.svg/1200px-Lattice-based_cryptography_diagram.svg.png) {type: article, provider: Wikipedia}
+- [Lattice-Based Cryptography Diagram](https://upload.wikimedia.org/wikipedia/commons/c/cf/Lattice-based_cryptography_diagram.svg) {type: article, provider: Wikipedia}

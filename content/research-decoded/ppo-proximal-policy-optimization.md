@@ -4,7 +4,7 @@ authors: "John Schulman et al. (OpenAI, 2017)"
 citation: "Schulman, J., Wolski, F., Dhariwal, P., Radford, A., & Klimov, O. (2017). Proximal policy optimization algorithms. arXiv preprint arXiv:1707.06347."
 link: "https://arxiv.org/abs/1707.06347"
 slug: "ppo-proximal-policy-optimization"
-heroImage: null
+heroImage: "/images/research-decoded/ppo-proximal-policy-optimization.png"
 ---
 
 In 2017, researchers at OpenAI introduced Proximal Policy Optimization (PPO), a reinforcement learning (RL) algorithm that addresses the instability of policy gradient methods by constraining the magnitude of policy updates. Prior to this research, RL agents were prone to catastrophic performance collapse caused by large gradient updates that moved the policy into degenerate regions of the parameter space. The researchers demonstrated that by utilizing a clipped surrogate objective to enforce a "trust region" using only first-order gradients, a system can achieve high sample efficiency and stability across diverse tasks, including the alignment of large language models via human feedback.

@@ -4,7 +4,7 @@ authors: "Tianyu Gu, Brendan Dolan-Gavitt, & Siddharth Garg (2017)"
 citation: "Gu, T., Dolan-Gavitt, B., & Garg, S. (2017). Badnets: Identifying vulnerabilities in the machine learning model supply chain. arXiv preprint arXiv:1708.06733."
 link: "https://arxiv.org/abs/1708.06733"
 slug: "backdoor-attacks-badnets"
-heroImage: "https://ar5iv.labs.arxiv.org/html/1708.06733/assets/Figs/rcnn_real_life_smpl.png"
+heroImage: "/images/research-decoded/backdoor-attacks-badnets.png"
 ---
 
 In 2017, researchers identified a critical security vulnerability in the machine learning supply chain termed a backdoor attack. This research addressed the risks associated with outsourcing model training to third-party providers or utilizing pre-trained models from unverified repositories. The study demonstrated that an attacker can "poison" a neural network during the training phase by injecting a small number of maliciously labeled examples containing a specific trigger, such as a single pixel or a small physical sticker. The resulting model behaves normally on clean data but produces a malicious, attacker-defined output when the trigger is present, effectively hiding a secret intent that remains invisible to standard validation tests.

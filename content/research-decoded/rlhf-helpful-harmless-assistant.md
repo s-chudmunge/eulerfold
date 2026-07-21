@@ -4,7 +4,7 @@ authors: "Askell et al. (2022)"
 citation: "Bai, Y., Jones, A., Ndousse, K., Askell, A., Commission, G., ... & Kaplan, J. (2022). Training a helpful and harmless assistant with reinforcement learning from human feedback. arXiv preprint arXiv:2204.05862."
 link: "https://arxiv.org/abs/2204.05862"
 slug: "rlhf-helpful-harmless-assistant"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2204.05862/assets/x2.png"
+heroImage: "/images/research-decoded/rlhf-helpful-harmless-assistant.png"
 ---
 
 # RLHF: Helpful & Harmless

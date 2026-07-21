@@ -4,7 +4,7 @@ authors: "Liu et al. (2023)"
 citation: "Liu, H., Li, C., Wu, Q., & Lee, Y. J. (2023). Visual Instruction Tuning. arXiv:2304.08485."
 link: "https://arxiv.org/abs/2304.08485"
 slug: "llava-visual-instruction-tuning"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2304.08485/assets/x1.png"
+heroImage: "/images/research-decoded/llava-visual-instruction-tuning.png"
 ---
 
 The 2023 emergence of LLaVA suggested that the most effective way to improve machine vision is through better language instruction rather than increasing the complexity of vision models. Prior multimodal systems were often trained for narrow tasks like classification, which limited their ability to engage in open-ended conversation. Researchers proposed using a large language model to generate synthetic visual instruction data, demonstrating that a simple linear bridge is sufficient to align vision and language. This reveals that reasoning is a general capability that can be extended across modalities through high-quality training data.

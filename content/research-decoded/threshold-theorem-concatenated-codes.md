@@ -4,7 +4,7 @@ authors: "Panos Aliferis et al. (2005)"
 citation: "Aliferis, P., Gottesman, D., & Preskill, J. (2006). Quantum accuracy threshold for concatenated distance-3 codes. Quantum Information & Computation, 6(2), 97-165."
 link: "https://doi.org/10.26421/QIC6.2-1"
 slug: "threshold-theorem-concatenated-codes"
-heroImage: null
+heroImage: "/images/research-decoded/threshold-theorem-concatenated-codes.png"
 ---
 
 In 2005, Panos Aliferis, Daniel Gottesman, and John Preskill provided a rigorous proof that arbitrarily long quantum computations can be executed reliably if the error rate of the individual physical components is below a specific constant value. This research addressed the primary obstacle to large-scale quantum hardware: the inherent fragility of quantum states due to decoherence and imperfect gate operations. The researchers demonstrated that through the recursive application of concatenated error-correcting codes, a system can suppress errors faster than they accumulate, establishing the "accuracy threshold" as a definitive engineering target for the field.

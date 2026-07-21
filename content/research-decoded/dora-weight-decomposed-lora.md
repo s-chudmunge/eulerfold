@@ -4,7 +4,7 @@ authors: "Shih-Yang Liu et al. (2024)"
 citation: "Liu, S. Y., Yen, C. Y., Nag, N., ... & Cheng, K. T. (2024). DoRA: Weight-Decomposed Low-Rank Adaptation. arXiv preprint arXiv:2402.09353."
 link: "https://arxiv.org/abs/2402.09353"
 slug: "dora-weight-decomposed-lora"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2402.09353/assets/x1.png"
+heroImage: "/images/research-decoded/dora-weight-decomposed-lora.png"
 ---
 
 In 2024, researchers introduced Weight-Decomposed Low-Rank Adaptation (DoRA), a fine-tuning method that resolves the performance gap between sparse updates and full-parameter optimization. While standard Low-Rank Adaptation (LoRA) significantly reduces the computational barrier for adapting massive models, it is limited by a rigid coupling between the magnitude and direction of weight updates. The researchers demonstrated that by reparameterizing the pre-trained weight matrix into decoupled components, a model can independently learn directional shifts and magnitude scaling. This methodological choice allows the model to mirror the behavioral patterns of full-parameter fine-tuning, achieving superior learning stability and accuracy without introducing any additional inference latency.

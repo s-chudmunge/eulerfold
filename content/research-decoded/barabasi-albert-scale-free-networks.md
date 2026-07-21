@@ -4,14 +4,14 @@ authors: "Albert-László Barabási & Réka Albert (1999)"
 citation: "Barabási, A. L., & Albert, R. (1999). Emergence of scaling in random networks. Science, 286(5439), 509-512."
 link: "https://doi.org/10.1126/science.286.5439.509"
 slug: "barabasi-albert-scale-free-networks"
-heroImage: "https://ar5iv.labs.arxiv.org/html/cond-mat/9910332/assets/x1.png"
+heroImage: "/images/research-decoded/barabasi-albert-scale-free-networks.svg"
 ---
 
 In 1999, Albert-László Barabási and Réka Albert identified a universal structural property of large-scale networks termed scale-free topology. Prior to this research, network models—such as the Erdős–Rényi random graph—assumed that connections are distributed approximately uniformly, resulting in a Poisson degree distribution where most nodes possess a similar number of links. The researchers demonstrated that real-world systems, including the World Wide Web and citation networks, follow a power-law distribution where a small number of "hubs" possess a disproportionately high degree of connectivity. This finding revealed that the architecture of complex systems is determined by the dynamic mechanisms of growth and preferential attachment.
 
 ## Growth and Preferential Attachment Mechanisms {#preferential-attachment}
 
-![Connectivity distributions for actor collaborations, the web, and power grids showing power-law scaling.](https://ar5iv.labs.arxiv.org/html/cond-mat/9910332/assets/x1.png)
+![Connectivity distributions for actor collaborations, the web, and power grids showing power-law scaling.](/images/research-decoded/barabasi-albert-scale-free-networks.svg)
 
 _Connectivity distributions for actor collaborations, the web, and power grids showing power-law scaling._
 

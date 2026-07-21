@@ -4,7 +4,7 @@ authors: "Michael Rabin & Dana Scott (1959)"
 citation: "Rabin, M. O., & Scott, D. (1959). Finite automata and their decision problems. IBM journal of research and development, 3(2), 114-125."
 link: "https://doi.org/10.1147/rd.32.0114"
 slug: "rabin-scott-finite-automata"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/9/9d/DFAexample.svg"
+heroImage: "/images/research-decoded/rabin-scott-finite-automata.svg"
 ---
 
 In 1959, Michael Rabin and Dana Scott introduced a formal mathematical framework for finite-state machines, establishing the foundational constraints of automata theory. The paper provided the definitive proof that deterministic and non-deterministic finite automata are equivalent in their computational capacity, despite differences in their structural descriptions. This work transitioned the study of state-based computation from isolated engineering examples to a rigorous theory of formal language recognition, defining the limits of what can be computed by systems with restricted memory.

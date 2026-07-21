@@ -4,7 +4,7 @@ authors: "2025 Preprint"
 citation: "arXiv:2506.05542"
 link: "https://arxiv.org/abs/2506.05542"
 slug: "agentomics-ml-autonomous-ml-genomics"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2506.05542/assets/sections/03_methodology/FIGURE_FINAL.png"
+heroImage: "/images/research-decoded/agentomics-ml-autonomous-ml-genomics.png"
 ---
 
 In 2025, researchers introduced Agentomics-ML, an autonomous machine learning framework designed to navigate the high-dimensional complexity and technical noise inherent in genomic and transcriptomic datasets. The application of general-purpose AI agents to biological research is frequently hindered by the "complexity bottleneck," where a lack of domain-aware constraints leads to high failure rates in automated data analysis and script production. The researchers demonstrated that by replacing open-ended agentic planning with a rigid, four-stage experimentation loop, a system can achieve state-of-the-art performance on complex biological tasks including molecular interaction modeling and clinical data analysis, establishing a robust methodology for automated biological discovery.

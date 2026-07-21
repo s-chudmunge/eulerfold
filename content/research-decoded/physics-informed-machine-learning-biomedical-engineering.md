@@ -4,7 +4,7 @@ authors: " Accepted in Annual Review of Biomedical Engineering, 2025"
 citation: "arXiv:2510.05433"
 link: "https://arxiv.org/abs/2510.05433"
 slug: "physics-informed-machine-learning-biomedical-engineering"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2510.05433/assets/x1.png"
+heroImage: "/images/research-decoded/physics-informed-machine-learning-biomedical-engineering.png"
 ---
 
 In 2025, researchers provided a comprehensive framework for the integration of physical laws into deep learning architectures for biomedical engineering, established a new standard for high-fidelity clinical modeling. This research addresses the primary bottleneck in the application of AI to biology: the extreme scarcity and inherent noise of experimental data. While standard neural networks often produce results that violate the conservation of mass or momentum, Physics-Informed Machine Learning (PIML) embeds governing differential equations directly into the model's structure. The researchers demonstrated that this approach enables the accurate reconstruction of 3D biological systems from sparse 2D data, providing a robust methodology for real-time parameter discovery in mechanobiology and biofluids.

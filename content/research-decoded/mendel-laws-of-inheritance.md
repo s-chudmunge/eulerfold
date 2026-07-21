@@ -4,7 +4,7 @@ authors: "Gregor Mendel (1866)"
 citation: "Mendel, G. (1866). Versuche \u00fcber Pflanzen-Hybriden. Verhandlungen des naturforschenden Vereines in Br\u00fcnn, 4, 3-47."
 link: "http://www.mendelweb.org/Mendel.html"
 slug: "mendel-laws-of-inheritance"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/30/Mendel_pea_plant_cross.svg/1200px-Mendel_pea_plant_cross.svg.png"
+heroImage: "/images/research-decoded/mendel-laws-of-inheritance.svg"
 ---
 
 Before the 1860s, heredity was primarily understood through the model of blending inheritance, where parental traits were thought to mix into a continuous average. Gregor Mendel’s 1866 paper on pea plant experiments systematically dismantled this assumption by demonstrating that inheritance is governed by the transmission of discrete units. Through the longitudinal tracking of specific traits, Mendel observed that biological characteristics do not merge or dilute but remain intact across generations, even when they are not physically expressed in an individual.

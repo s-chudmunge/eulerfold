@@ -4,7 +4,7 @@ authors: "Baker, Gill, Solovay (1975)"
 citation: "Baker, T., Gill, J., & Solovay, R. (1975). Relativizations of the P=?NP question. SIAM Journal on Computing, 4(4), 431-442."
 link: "https://doi.org/10.1137/0204037"
 slug: "baker-gill-solovay-relativization"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/P_np_np-complete_np-hard.svg/500px-P_np_np-complete_np-hard.svg.png"
+heroImage: "/images/research-decoded/baker-gill-solovay-relativization.svg"
 ---
 
 In 1975, Theodore Baker, John Gill, and Robert Solovay established that the P vs NP question cannot be resolved using standard proof techniques that remain valid under relativization. By constructing specific computational environments termed oracles, the researchers proved that the relationship between deterministic and non-deterministic polynomial time can shift depending on the external information provided to the machine. This finding identified the relativization barrier, demonstrating that any successful resolution of the P vs NP problem must exploit properties of computation that are not preserved when machines are augmented with an external data source.

@@ -4,7 +4,7 @@ authors: "Cynthia Dwork et al. (Microsoft Research, 2006)"
 citation: "Dwork, C., McSherry, F., Nissim, K., & Smith, A. (2006). Calibrating noise to sensitivity in private data analysis. In Theory of Cryptography Conference (pp. 265-284). Springer."
 link: "https://doi.org/10.1007/11681878_14"
 slug: "differential-privacy-dwork"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/c/c3/Differential_privacy_epsilon.svg"
+heroImage: "/images/research-decoded/differential-privacy-dwork.png"
 ---
 
 In 2006, Cynthia Dwork and colleagues introduced differential privacy, a mathematical framework for private data analysis that provides a formal guarantee of individual anonymity within large datasets. This research addresses the vulnerability of traditional "de-identification" methods—such as removing names or social security numbers—to linkage attacks, where an adversary combines disparate data sources to re-identify individuals. The researchers proved that by adding carefully calibrated noise to the output of a query, a system can ensure that the presence or absence of any single individual does not significantly alter the analytical results, establishing a rigorous foundation for privacy-preserving data science.

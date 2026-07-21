@@ -4,7 +4,7 @@ authors: "Diederik Kingma & Jimmy Ba (2014)"
 citation: "Kingma, D. P., & Ba, J. (2014). Adam: A method for stochastic optimization. arXiv preprint arXiv:1412.6980."
 link: "https://arxiv.org/abs/1412.6980"
 slug: "adam-stochastic-optimization"
-heroImage: "https://ar5iv.labs.arxiv.org/html/1609.04747/assets/images/saddle_point_evaluation_optimizers_frame.png"
+heroImage: "/images/research-decoded/adam-stochastic-optimization.png"
 ---
 
 In 2014, Diederik Kingma and Jimmy Ba introduced Adam, an algorithm for first-order gradient-based optimization that utilizes adaptive estimates of lower-order moments. Prior to this research, training deep neural networks required the manual tuning of a global learning rate, which often failed to account for the varying curvatures and sparse gradients encountered in high-dimensional loss landscapes. The researchers demonstrated that by maintaining individual adaptive learning rates for every parameter based on estimates of the gradient's mean and variance, the optimization process becomes significantly more stable and computationally efficient across diverse architectures.

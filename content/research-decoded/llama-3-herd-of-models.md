@@ -4,7 +4,7 @@ authors: "Dubey et al. (Meta, 2024)"
 citation: "Dubey, A., et al. (2024). The Llama 3 Herd of Models. arXiv preprint arXiv:2407.21783."
 link: "https://arxiv.org/abs/2407.21783"
 slug: "llama-3-herd-of-models"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2407.21783/assets/x1.png"
+heroImage: "/images/research-decoded/llama-3-herd-of-models.png"
 ---
 
 In 2024, Meta AI introduced the Llama 3 family of models, including a 405-billion parameter variant trained on a massive 15-trillion token dataset. This research demonstrated that the standard dense Transformer architecture can continue to yield significant performance gains as compute and data are scaled to the limits of current hardware clusters. By prioritizing data quality and training stability through a multi-stage curation pipeline, the project established a new benchmark for open-weights performance, rivaling the most capable proprietary systems across reasoning, coding, and multi-lingual benchmarks.

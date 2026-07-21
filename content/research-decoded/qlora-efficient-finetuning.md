@@ -4,7 +4,7 @@ authors: "Dettmers et al. (2023)"
 citation: "Dettmers, T., Pagnoni, A., Holtzman, A., & Zettlemoyer, L. (2023). QLoRA: Efficient Finetuning of Quantized LLMs. arXiv:2305.14314."
 link: "https://arxiv.org/abs/2305.14314"
 slug: "qlora-efficient-finetuning"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2305.14314/assets/x1.png"
+heroImage: "/images/research-decoded/qlora-efficient-finetuning.png"
 ---
 
 The 2023 QLoRA paper from the University of Washington significantly lowered the cost of fine-tuning massive language models. Previously, adapting a 65-billion parameter model required nearly 800 gigabytes of video memory, a requirement that restricted the task to high-performance computing clusters. Researchers proposed a method for fine-tuning 4-bit quantized models without sacrificing performance. This development allows for the adaptation of state-of-the-art models on a single professional GPU, demonstrating that high-precision memory is not a prerequisite for effective learning in neural networks.

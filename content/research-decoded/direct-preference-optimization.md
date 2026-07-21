@@ -4,7 +4,7 @@ authors: "Rafael Rafailov et al. (Stanford University, 2023)"
 citation: "Rafailov, R., Sharma, A., Mitchell, E., Ermon, S., Manning, C. D., & Finn, C. (2023). Direct preference optimization: Your language model is secretly a reward model. arXiv preprint arXiv:2305.18290."
 link: "https://arxiv.org/abs/2305.18290"
 slug: "direct-preference-optimization"
-heroImage: "https://arxiv.org/html/2305.18290/figures/diagrams/teaser.png"
+heroImage: "/images/research-decoded/direct-preference-optimization.png"
 ---
 
 In 2023, researchers at Stanford University introduced Direct Preference Optimization (DPO), a method for aligning large language models with human preferences that eliminates the requirement for explicit reward modeling and reinforcement learning. Traditionally, alignment relied on the Reinforcement Learning from Human Feedback (RLHF) pipeline, a complex and often unstable process involving multiple neural networks and high-variance gradients. The researchers proved that the optimal policy for a given preference distribution can be derived in closed form, allowing for a stable supervised objective that directly maximizes the likelihood of preferred completions while minimizing that of rejected ones.

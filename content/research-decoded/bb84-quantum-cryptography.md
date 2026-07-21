@@ -4,7 +4,7 @@ authors: "Charles Bennett & Gilles Brassard (1984)"
 citation: "Bennett, C. H., & Brassard, G. (1984). Quantum cryptography: Public key distribution and coin tossing. In Proceedings of IEEE International Conference on Computers, Systems and Signal Processing (pp. 175-179)."
 link: "https://researchgate.net/publication/220492644_Quantum_cryptography_Public_key_distribution_and_coin_tossing"
 slug: "bb84-quantum-cryptography"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/6/6d/BB84_protocol.svg"
+heroImage: "/images/research-decoded/bb84-quantum-cryptography.jpg"
 ---
 
 In 1984, Charles Bennett and Gilles Brassard introduced the first protocol for quantum key distribution (QKD), establishing a method for secret sharing whose security is guaranteed by the laws of physics rather than computational hardness. Prior to this research, secure communication relied on the perceived difficulty of mathematical problems like integer factorization, which remain vulnerable to future algorithmic or hardware breakthroughs. The researchers proved that by utilizing the properties of non-orthogonal quantum states, a system can detect the presence of an eavesdropper through the inevitable disturbance caused by any attempt to measure the information. This shift moved the foundation of security from the limits of human ingenuity to the fundamental constraints of the physical world.

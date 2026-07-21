@@ -1,0 +1,51 @@
+<?xml version="1.0" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+"http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns="http://www.w3.org/2000/svg" width="1.6in" height="1.6in" viewBox="685 685 1935 1969">
+<g style="fill:none;">
+<polygon points="1653,2598
+1653,2125
+1181,2125
+1181,1653
+2125,1653
+2125,2125
+1653,2125
+1653,2598
+2362,2598
+2598,2362
+2598,1417
+2362,1181
+1889,1181
+1889,708
+1417,708
+1417,1181
+944,1181
+708,1417
+708,2362
+944,2598
+1653,2598
+1653,2598" style="stroke:#000000;stroke-width:0;stroke-linejoin:miter; stroke-linecap:butt;fill:#ecd7bf;"/>
+<!-- Line -->
+<polyline points="1417,708
+1417,1181
+944,1181
+708,1417
+708,2362
+944,2598
+2362,2598
+2598,2362
+2598,1417
+2362,1181
+1889,1181
+1889,708" style="stroke:#000000;stroke-width:16;stroke-linejoin:miter; stroke-linecap:butt;"/>
+<!-- Line: box -->
+<rect x="1181" y="1653" width="944" height="472" rx="0" 
+style="stroke:#000000;stroke-width:16;stroke-linejoin:miter; stroke-linecap:butt;"/>
+<!-- Line -->
+<polyline points="1653,2125 1653,2598" style="stroke:#Af007f;stroke-width:63;stroke-linejoin:miter; stroke-linecap:butt;"/>
+<text xml:space="preserve" x="1889" y="2456" fill="#000000" font-family="Helvetica" font-style="normal" font-weight="normal" font-size="202" text-anchor="middle">2</text>
+<text xml:space="preserve" x="1417" y="2456" fill="#000000" font-family="Helvetica" font-style="normal" font-weight="normal" font-size="202" text-anchor="middle">1</text>
+<text xml:space="preserve" x="1653" y="1511" fill="#000000" font-family="Helvetica" font-style="normal" font-weight="normal" font-size="202" text-anchor="middle">3</text>
+<text xml:space="preserve" x="2362" y="992"  fill="#000000" font-family="Helvetica" font-style="normal" font-weight="normal" font-size="202" text-anchor="middle">4</text>
+</g>
+</svg>

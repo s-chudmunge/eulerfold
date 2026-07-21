@@ -4,7 +4,7 @@ authors: "Bai et al. (2022)"
 citation: "Bai, Y., Kadavath, S., Kundu, S., Askell, A., Kernion, J., ... & Kaplan, J. (2022). Constitutional AI: Harmlessness from AI Feedback. arXiv preprint arXiv:2212.08073."
 link: "https://arxiv.org/abs/2212.08073"
 slug: "constitutional-ai-rlaif"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2212.08073/assets/x1.png"
+heroImage: "/images/research-decoded/constitutional-ai-rlaif.png"
 ---
 
 In 2022, researchers at Anthropic introduced a method for aligning large language models that utilizes a structured, rule-based approach to replace the human preference bottleneck. This process, termed Reinforcement Learning from AI Feedback (RLAIF), allows a model to autonomously supervise its behavior based on a fixed set of natural language principles known as a constitution. By moving away from the expensive and inconsistent evaluations provided by human rankers, Constitutional AI provides a scalable framework for ensuring model harmlessness while maintaining transparency in the alignment process.

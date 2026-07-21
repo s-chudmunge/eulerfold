@@ -4,7 +4,7 @@ authors: "Gemma Team, Google (2024)"
 citation: "Gemma Team, Google. (2024). Gemma 2: Improving Open Models via Predictive Distillation. arXiv preprint arXiv:2408.00118."
 link: "https://ar5iv.org/abs/2408.00118"
 slug: "gemma-2-high-signal-llm"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2408.00118/assets/x1.png"
+heroImage: "/images/research-decoded/gemma-2-high-signal-llm.png"
 ---
 
 The 2024 Gemma 2 project from Google DeepMind suggests that the effectiveness of a model is determined by the density of the training signal rather than the sheer volume of parameters. While many open-weight models have attempted to match closed-source performance through brute scaling, Gemma 2 utilizes predictive distillation to achieve reasoning capabilities that exceed its size. This demonstrates that smaller architectures can match the logic of larger ones if they are trained on highly refined datasets rather than raw, noisy information.

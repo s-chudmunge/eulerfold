@@ -4,7 +4,7 @@ authors: "Jacob Devlin et al. (Google AI, 2018)"
 citation: "Devlin, J., Chang, M. W., Lee, K., & Toutanova, K. (2018). Bert: Pre-training of deep bidirectional transformers for language understanding. arXiv preprint arXiv:1810.04805."
 link: "https://arxiv.org/abs/1810.04805"
 slug: "bert-bidirectional-transformers"
-heroImage: "https://ar5iv.labs.arxiv.org/html/1810.04805/assets/x1.png"
+heroImage: "/images/research-decoded/bert-bidirectional-transformers.png"
 ---
 
 In 2018, researchers at Google AI introduced BERT (Bidirectional Encoder Representations from Transformers), an architecture designed to fuse context from both directions simultaneously across all layers of a language model. Prior to this research, standard language models were either unidirectional, processing text from left to right, or used shallow concatenations of independent forward and backward passes. The researchers demonstrated that by utilizing a masked language modeling objective, a Transformer encoder can be pre-trained to capture the nuanced, inter-dependent relationships within a sequence, establishing a new paradigm for natural language understanding and transfer learning.

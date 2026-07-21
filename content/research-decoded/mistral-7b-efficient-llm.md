@@ -4,7 +4,7 @@ authors: "Jiang et al. (2023)"
 citation: "Jiang, A. Q., Sablayrolles, A., Mensch, A., Bamford, C., et al. (2023). Mistral 7B. arXiv:2310.06825."
 link: "https://arxiv.org/abs/2310.06825"
 slug: "mistral-7b-efficient-llm"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2310.06825/assets/images/230927_bars.png"
+heroImage: "/images/research-decoded/mistral-7b-efficient-llm.png"
 ---
 
 The 2023 paper on Mistral 7B challenged the assumption that model capability is solely a function of parameter count. While the industry trend favored increasingly large models, researchers at Mistral AI focused on architectural efficiency to create a 7-billion parameter model that matched the performance of much larger systems. By implementing sliding window attention and grouped-query attention, the system achieved high reasoning power through refined engineering rather than brute-force scaling. This demonstrates that the efficiency of a model's internal processing is as significant as the volume of data it consumes.

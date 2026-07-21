@@ -4,7 +4,7 @@ authors: "Razborov & Rudich (1994)"
 citation: "Razborov, A. A., & Rudich, S. (1997). Natural proofs. Journal of Computer and System Sciences, 55(1), 24-35."
 link: "https://doi.org/10.1006/jcss.1997.1494"
 slug: "razborov-rudich-natural-proofs"
-heroImage: null
+heroImage: "/images/research-decoded/razborov-rudich-natural-proofs.svg"
 ---
 
 In 1994, Alexander Razborov and Steven Rudich identified a fundamental limitation in the techniques used to prove circuit lower bounds, establishing the natural proofs barrier. The paper demonstrated that most existing methodologies for separating complexity classes, such as P and NP, are inherently incapable of achieving their goals if strong pseudorandom function generators exist. By formalizing the common properties of these proofs—specifically their constructivity and largeness—the researchers proved that standard combinatorial arguments cannot distinguish between truly hard functions and those that merely appear random to a polynomial-time observer.

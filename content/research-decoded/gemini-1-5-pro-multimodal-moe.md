@@ -4,7 +4,7 @@ authors: "Google DeepMind (2024)"
 citation: "Reid, M., Savinov, N., Teplyashin, D., ... & Vinyals, O. (2024). Gemini 1.5: Unlocking multimodal understanding across millions of tokens of context. arXiv preprint arXiv:2403.05530."
 link: "https://ar5iv.org/abs/2403.05530"
 slug: "gemini-1-5-pro-multimodal-moe"
-heroImage: null
+heroImage: "/images/research-decoded/gemini-1-5-pro-multimodal-moe.png"
 ---
 
 The evolution of sequence modeling has been shaped by the tension between the need for global context and the memory costs associated with attention mechanisms. Retrieval-augmented generation has traditionally been used to manage long documents by breaking them into isolated chunks, but this approach often sacrifices the ability to understand dependencies that span an entire sequence. Gemini 1.5 Pro addresses this by providing a native context window of up to ten million tokens. This transforms the model's internal state into a high-fidelity searchable database, allowing it to process massive codebases or long video files without loss of global coherence.

@@ -4,7 +4,7 @@ authors: "Yao et al. (2022)"
 citation: "Yao, S., Zhao, J., Yu, D., Du, N., Shafran, I., Narasimhan, K., & Cao, Y. (2022). ReAct: Synergizing reasoning and acting in language models. arXiv preprint arXiv:2210.03629."
 link: "https://arxiv.org/abs/2210.03629"
 slug: "react-reasoning-and-acting"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2210.03629/assets/x1.png"
+heroImage: "/images/research-decoded/react-reasoning-and-acting.png"
 ---
 
 The 2022 ReAct framework introduced a prompting method that allows large language models to interleave reasoning traces with task-specific actions. While previous approaches often treated internal reasoning and external acting as separate functions, researchers from Princeton and Google DeepMind demonstrated that combining them creates a synergistic effect. The model uses thoughts to plan and actions to ground its reasoning in external data, moving away from a static black-box response model toward a dynamic system capable of multi-step interaction with its environment.

@@ -4,7 +4,7 @@ authors: "You et al. (2024)"
 citation: "You, H., et al. (2024). Ferret-UI: Grounded Mobile UI Understanding with Multimodal LLMs. arXiv preprint arXiv:2404.05719."
 link: "https://arxiv.org/abs/2404.05719"
 slug: "ferret-ui-mobile-grounding-mllm"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2404.05719/assets/figs/final_figs/ferret-ui-arch.png"
+heroImage: "/images/research-decoded/ferret-ui-mobile-grounding-mllm.png"
 ---
 
 # Ferret-UI: Grounded Mobile UI Understanding

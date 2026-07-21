@@ -4,7 +4,7 @@ authors: "Agrawal, Kayal, Saxena (2002)"
 citation: "Agrawal, M., Kayal, N., & Saxena, N. (2004). PRIMES is in P. Annals of Mathematics, 160(2), 781-793."
 link: "https://doi.org/10.4007/annals.2004.160.781"
 slug: "aks-primality-in-p"
-heroImage: null
+heroImage: "/images/research-decoded/aks-primality-in-p.jpg"
 ---
 
 In 2002, Manindra Agrawal, Neeraj Kayal, and Nitin Saxena provided a deterministic polynomial-time algorithm for primality testing, resolving a problem that had remained an open question in computational number theory for centuries. Prior to this research, efficient primality tests were either randomized, carrying a small probability of error, or were conditional upon the truth of the Generalized Riemann Hypothesis. The researchers demonstrated that the property of being prime is an unconditional and efficiently computable characteristic of any integer, establishing that the problem PRIMES resides within the complexity class P.

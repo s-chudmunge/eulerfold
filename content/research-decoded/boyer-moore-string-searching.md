@@ -4,7 +4,7 @@ authors: "Robert Boyer & J. Strother Moore (1977)"
 citation: "Boyer, R. S., & Moore, J. S. (1977). A fast string searching algorithm. Communications of the ACM, 20(10), 762-772."
 link: "https://doi.org/10.1145/359842.359859"
 slug: "boyer-moore-string-searching"
-heroImage: null
+heroImage: "/images/research-decoded/boyer-moore-string-searching.svg"
 ---
 
 In 1977, Robert Boyer and J. Strother Moore introduced a string searching algorithm that achieves sub-linear average-case performance by processing patterns from right to left. Prior to this research, standard searching techniques primarily utilized left-to-right comparisons, requiring the inspection of nearly every character in the input text. The researchers demonstrated that by analyzing the specific characters encountered during a mismatch, the search pointer can frequently skip large segments of the text, reducing the total number of comparisons to a fraction of the text's length.

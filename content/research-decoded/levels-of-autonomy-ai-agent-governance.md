@@ -4,7 +4,7 @@ authors: "Feng et al. (2025)"
 citation: "Feng, K. J., et al. (2025). Levels of Autonomy for AI Agents. arXiv preprint arXiv:2506.12469."
 link: "https://arxiv.org/abs/2506.12469"
 slug: "levels-of-autonomy-ai-agent-governance"
-heroImage: "https://arxiv.org/html/2506.12469v1/x1.png"
+heroImage: "/images/research-decoded/levels-of-autonomy-ai-agent-governance.png"
 ---
 
 # Levels of Autonomy: A Governance Framework for AI Agents

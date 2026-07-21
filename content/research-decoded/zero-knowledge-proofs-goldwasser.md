@@ -4,7 +4,7 @@ authors: "Shafi Goldwasser, Silvio Micali, & Charles Rackoff (1985)"
 citation: "Goldwasser, S., Micali, S., & Rackoff, C. (1989). The knowledge complexity of interactive proof systems. SIAM Journal on Computing, 18(1), 186-208."
 link: "https://people.csail.mit.edu/silvio/Selected%20Scientific%20Papers/Zero%20Knowledge/The_Knowledge_Complexity_Of_Interactive_Proof_Systems.pdf"
 slug: "zero-knowledge-proofs-goldwasser"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/2/23/Zero_knowledge_cave_1.svg"
+heroImage: "/images/research-decoded/zero-knowledge-proofs-goldwasser.svg"
 ---
 
 In 1985, Shafi Goldwasser, Silvio Micali, and Charles Rackoff introduced zero-knowledge proofs (ZKP), a cryptographic protocol that allows a prover to convince a verifier of a statement's truth without revealing any information beyond that truth itself. Prior to this research, proofs were viewed as a static transfer of information that necessarily exposed the underlying evidence or secret. The researchers proved that through a randomized interactive challenge-response sequence, a system can achieve high-confidence verification while maintaining absolute data confidentiality. This work established the foundational primitive for modern private identity and decentralized protocols, effectively digitalizing the Act of "proving" without disclosure.

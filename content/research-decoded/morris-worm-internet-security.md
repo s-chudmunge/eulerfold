@@ -4,7 +4,7 @@ authors: "Eugene H. Spafford (1988)"
 citation: "Spafford, E. H. (1988). The Morris Worm: An Analysis. Purdue University Technical Report."
 link: "https://www.cs.utah.edu/~seeley/worm.pdf"
 slug: "morris-worm-internet-security"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Morris_Worm_floppy_disk.jpg"
+heroImage: "/images/research-decoded/morris-worm-internet-security.jpg"
 ---
 
 On November 2, 1988, the release of a self-replicating program by Robert Tappan Morris triggered the first major security crisis of the interconnected internet. While the program was intended to gauge the size of the network, a design flaw in its replication logic caused it to spread significantly faster than expected, crashing thousands of Unix systems within hours. The subsequent analysis by Eugene Spafford and other researchers provided the first comprehensive look at how a decentralized network of "trusted" machines could be subverted by an automated agent. this event established the end of the internet's "default trust" era and led to the creation of the first formal computer emergency response infrastructures.

@@ -4,7 +4,7 @@ authors: "Ronald Rivest, Adi Shamir, & Leonard Adleman (1978)"
 citation: "Rivest, R. L., Shamir, A., & Adleman, L. (1978). A method for obtaining digital signatures and public-key cryptosystems. Communications of the ACM, 21(2), 120-126."
 link: "https://people.csail.mit.edu/rivest/Rsapaper.pdf"
 slug: "rsa-digital-signatures"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/f/f9/Public_key_encryption.svg"
+heroImage: "/images/research-decoded/rsa-digital-signatures.svg"
 ---
 
 In 1978, Ronald Rivest, Adi Shamir, and Leonard Adleman introduced the first practical implementation of a public-key cryptosystem based on the difficulty of integer factorization. This research addressed the requirement for secure digital communication and authentication in an environment without pre-shared secrets. The researchers demonstrated that by utilizing the computational asymmetry between the multiplication of large primes and the extraction of their factors, a system can achieve both confidential encryption and non-repudiable digital signatures. This work established the foundational layer for global electronic commerce and the modern Web of Trust, effectively digitalizing the Act of secure identity verification.

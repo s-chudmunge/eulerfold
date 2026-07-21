@@ -4,7 +4,7 @@ authors: "Paul Kocher et al. (2018)"
 citation: "Kocher, P., et al. (2019). Spectre attacks: Exploiting speculative execution. In 2019 IEEE Symposium on Security and Privacy (SP) (pp. 1-19)."
 link: "https://arxiv.org/abs/1801.01203"
 slug: "spectre-speculative-execution"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/d/d1/Spectre_logo_with_text.svg"
+heroImage: "/images/research-decoded/spectre-speculative-execution.svg"
 ---
 
 In 2018, the discovery of the Spectre vulnerability revealed that the fundamental assumption of architectural program isolation in modern processors was invalid. This research addresses the vulnerability of speculative execution—a critical hardware performance optimization that predicts future program paths—to adversarial subversion. The researchers demonstrated that by training a CPU's branch predictor to enter an unauthorized execution path, an attacker can induce the processor to load private memory into its cache. While the CPU eventually discards the incorrect prediction, the unauthorized data leaves measurable traces that can be extracted through timing analysis, established that the pursuit of processing speed has introduced deep systemic side channels into the core of digital security.

@@ -4,7 +4,7 @@ authors: "Alec Radford et al. (OpenAI, 2021)"
 citation: "Radford, A., Kim, J. W., Hallacy, C., Ramesh, A., Goh, G., Agarwal, S., ... & Sutskever, I. (2021). Learning transferable visual models from natural language supervision. In International conference on machine learning (pp. 8748-8763). PMLR."
 link: "https://arxiv.org/abs/2103.00020"
 slug: "clip-contrastive-vision"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2103.00020/assets/x1.png"
+heroImage: "/images/research-decoded/clip-contrastive-vision.png"
 ---
 
 In 2021, researchers at OpenAI demonstrated that visual models can be effectively trained using natural language as a direct supervisory signal, replacing the requirement for fixed category labels. Prior to this work, computer vision models were restricted to discrete sets of labels—such as those in the 1,000-class ImageNet dataset—which limited their ability to generalize to novel concepts or diverse linguistic contexts. The researchers proved that by training separate vision and text encoders to maximize the similarity of correct image-caption pairs, a system can learn a shared semantic manifold where visual features are aligned with open-ended human concepts, establishing a foundation for zero-shot generalization across thousands of tasks.

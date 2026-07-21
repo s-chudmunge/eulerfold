@@ -4,7 +4,7 @@ authors: "Gemini Team, Google (2023)"
 citation: "Team, G., et al. (2023). Gemini: A family of highly capable multimodal models. arXiv preprint arXiv:2312.11805."
 link: "https://arxiv.org/abs/2312.11805"
 slug: "gemini-native-multimodal-models"
-heroImage: null
+heroImage: "/images/research-decoded/gemini-native-multimodal-models.png"
 ---
 
 In late 2023, Google introduced Gemini, a family of models designed to be natively multimodal from the beginning of their training. Many previous multimodal systems relied on separate vision and language components that were connected after their initial training, but Gemini was trained simultaneously across text, images, audio, video, and code. This integrated architecture allows the model to reason across different types of information with a level of fluidity that more closely resembles human perception. This represents a shift away from modular multimodality toward a system that treats all data types as primary inputs.

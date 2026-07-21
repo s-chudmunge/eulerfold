@@ -4,7 +4,7 @@ authors: "Geoffrey Hinton et al. (2012)"
 citation: "Srivastava, N., Hinton, G., Krizhevsky, A., Sutskever, I., & Salakhutdinov, R. (2014). Dropout: a simple way to prevent neural networks from overfitting. Journal of Machine Learning Research (JMLR), 15(1), 1929-1958."
 link: "https://jmlr.org/papers/v15/srivastava14a.html"
 slug: "dropout-stochastic-regularization"
-heroImage: "https://ar5iv.labs.arxiv.org/html/1207.0580/assets/mnist_features_dropout.png"
+heroImage: "/images/research-decoded/dropout-stochastic-regularization.png"
 ---
 
 In 2012, Geoffrey Hinton and colleagues introduced Dropout, a stochastic regularization technique that addresses the problem of overfitting in high-capacity neural networks. Prior to this research, large models frequently exhibited a significant generalization gap, achieving high accuracy on training data while remaining fragile when presented with unseen examples. The researchers demonstrated that by randomly omitting a subset of neurons during the training process, a network is forced to learn redundant and robust representations, effectively preventing the development of complex co-adaptations where neurons rely on specific partners to compensate for their errors. This finding established that the stability of a neural system can be enhanced by introducing structural uncertainty into its internal state transitions.

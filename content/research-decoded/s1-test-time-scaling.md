@@ -3,7 +3,7 @@ title: "Giving AI More Time to Think"
 authors: "Muennighoff, et al."
 citation: "arXiv:2501.19393 (2025)"
 link: "https://arxiv.org/abs/2501.19393"
-heroImage: "https://arxiv.org/html/2501.19393/x1.png"
+heroImage: "/images/research-decoded/s1-test-time-scaling.png"
 slug: "s1-test-time-scaling"
 ---
 

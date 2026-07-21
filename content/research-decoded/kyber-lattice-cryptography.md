@@ -4,7 +4,7 @@ authors: "Joppe Bos et al. (2018)"
 citation: "Bos, J., et al. (2018). CRYSTALS-Kyber: a CCA-secure module-lattice-based KEM. In 2018 IEEE European Symposium on Security and Privacy (EuroS&P) (pp. 353-367)."
 link: "https://eprint.iacr.org/2017/634.pdf"
 slug: "kyber-lattice-cryptography"
-heroImage: "https://blog.cloudflare.com/content/images/2023/10/image1-1.png"
+heroImage: "/images/research-decoded/kyber-lattice-cryptography.png"
 ---
 
 In 2018, researchers introduced CRYSTALS-Kyber, a key encapsulation mechanism (KEM) based on the hardness of problems in high-dimensional lattices that is resistant to both classical and quantum attacks. This research addresses the impending threat of quantum computing to classical number-theoretic encryption by utilizing the Module Learning with Errors (MLWE) problem. Kyber provides a robust defense against quantum Fourier transforms while maintaining performance characteristics comparable to modern elliptic curve methods. The researchers demonstrated that by utilizing a module-lattice framework and optimized polynomial arithmetic, a system can achieve high-fidelity security with minimal communication overhead, establishing the primary global standard for post-quantum key exchange.

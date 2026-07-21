@@ -4,7 +4,7 @@ authors: "John Nash (1950)"
 citation: "Nash, J. (1950). Equilibrium points in n-person games. Proceedings of the National Academy of Sciences, 36(1), 48-49."
 link: "https://doi.org/10.1073/pnas.36.1.48"
 slug: "nash-equilibrium-game-theory"
-heroImage: "https://39669.cdn.cke-cs.com/rQvD3VnunXZu34m86e5f/images/31240ed1fb069da8c99f86e3d154232a458061b49c85abf4.png"
+heroImage: "/images/research-decoded/nash-equilibrium-game-theory.png"
 ---
 
 In 1950, John Nash provided a mathematical proof for the existence of equilibrium points in strategic interactions involving multiple participants. Prior to this work, game theory research was primarily restricted to zero-sum games between two players. Nash generalized these models to include any finite number of players with any set of payoffs, demonstrating that there is always at least one configuration of strategies where no individual player can improve their outcome by changing their own strategy alone. This finding established the mathematical basis for analyzing decentralized systems where order emerges from the independent decisions of rational agents.

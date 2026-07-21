@@ -4,7 +4,7 @@ authors: "Alan Turing (1950)"
 citation: "Turing, A. M. (1950). Computing machinery and intelligence. Mind, 59(236), 433-460."
 link: "https://doi.org/10.1093/mind/LIX.236.433"
 slug: "turing-computing-machinery"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/5/55/Turing_test_diagram.png"
+heroImage: "/images/research-decoded/turing-computing-machinery.png"
 ---
 
 In 1950, Alan Turing proposed replacing the abstract question of whether machines can think with an empirical benchmark termed the imitation game. He argued that the concept of thinking is too poorly defined for rigorous analysis and instead focused on the observable behavior of information processing systems. If a digital computer can engage in a text-based conversation such that a human evaluator cannot reliably distinguish its responses from those of a human, the machine is considered to have achieved a functional equivalence to human intelligence.

@@ -4,7 +4,7 @@ authors: "Remi Lam et al. (Google DeepMind, 2023)"
 citation: "Lam, R., Sanchez-Gonzalez, A., Willson, C., et al. (2023). Learning skillful medium-range global weather forecasting. Science, 382(6677), ado3910."
 link: "https://doi.org/10.1126/science.ado3910"
 slug: "graphcast-weather-ai"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2212.12794/assets/figures/schematic.png"
+heroImage: "/images/research-decoded/graphcast-weather-ai.png"
 ---
 
 In 2023, researchers at Google DeepMind introduced GraphCast, a data-driven weather forecasting system that replaces traditional numerical physical simulations with a global graph neural network. For decades, global weather forecasting relied on Numerical Weather Prediction (NWP), which solve the complex partial differential equations of fluid dynamics over a grid of billions of points—a process requiring massive supercomputing clusters and hours of execution time. The researchers demonstrated that by treating the atmosphere as a global message-passing graph and training on four decades of historical data, a system can produce 10-day forecasts in under a minute with superior accuracy to the world's most advanced physics-based models.

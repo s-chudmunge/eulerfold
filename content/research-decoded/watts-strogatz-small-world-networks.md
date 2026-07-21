@@ -4,7 +4,7 @@ authors: "Duncan Watts & Steven Strogatz (1998)"
 citation: "Watts, D. J., & Strogatz, S. H. (1998). Collective dynamics of \u2018small-world\u2019 networks. Nature, 393(6684), 440-442."
 link: "https://doi.org/10.1038/30918"
 slug: "watts-strogatz-small-world-networks"
-heroImage: "https://ar5iv.labs.arxiv.org/html/cond-mat/9903108/assets/x1.png"
+heroImage: "/images/research-decoded/watts-strogatz-small-world-networks.png"
 ---
 
 In 1998, Duncan Watts and Steven Strogatz identified a structural regime in network topology characterized by the simultaneous presence of high local clustering and short global path lengths. This "small-world" phenomenon addresses the limitation of earlier graph models—such as regular lattices and random graphs—which failed to capture the connectivity patterns observed in biological, technological, and social systems. The researchers demonstrated that by randomly rewiring a small fraction of edges in a regular network, the characteristic path length between nodes drops precipitously while local cliquishness remains largely intact. This finding established a universal framework for understanding how information or disease propagates through decentralized systems.

@@ -4,7 +4,7 @@ authors: "Lov Grover (1996)"
 citation: "Grover, L. K. (1996). A fast quantum mechanical algorithm for database search. In Proceedings of the twenty-eighth annual ACM symposium on Theory of computing (pp. 212-219)."
 link: "https://doi.org/10.1145/237814.237866"
 slug: "grover-database-search"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/3/3e/Grovers_algorithm.svg"
+heroImage: "/images/research-decoded/grover-database-search.svg"
 ---
 
 In 1996, Lov Grover introduced a quantum algorithm for searching unstructured datasets that achieves a quadratic speedup over the best possible classical methods. The research addresses the computational bottleneck of the exhaustive search problem, where a target item must be identified within a collection of $N$ unsorted elements. While a classical machine requires $O(N)$ queries to ensure detection, Grover demonstrated that by manipulating the probability amplitudes of a quantum system through iterative rotations, the target can be identified with high probability in $O(\sqrt{N})$ steps.

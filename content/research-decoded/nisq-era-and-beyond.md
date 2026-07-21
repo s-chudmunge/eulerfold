@@ -4,7 +4,7 @@ authors: "John Preskill (2018)"
 citation: "Preskill, J. (2018). Quantum Computing in the NISQ era and beyond. Quantum, 2, 79."
 link: "https://arxiv.org/abs/1801.00862"
 slug: "nisq-era-and-beyond"
-heroImage: null
+heroImage: "/images/research-decoded/nisq-era-and-beyond.png"
 ---
 
 In 2018, John Preskill identified a specific developmental regime for quantum information science termed Noisy Intermediate-Scale Quantum (NISQ) technology. This framework addresses the developmental gap between small-scale laboratory demonstrations and the future requirement for fault-tolerant, error-corrected hardware. The researcher demonstrated that while current devices are outgrowing the reach of brute-force classical simulation, they remain too fragile to implement deep coherent algorithms without active error suppression. This coining of NISQ served to align the research community around the immediate engineering challenge of extracting computational value from imperfect, intermediate-scale hardware.

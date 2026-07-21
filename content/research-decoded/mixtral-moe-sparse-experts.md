@@ -4,7 +4,7 @@ authors: "Jiang et al. (2024)"
 citation: "Jiang, A. Q., Sablayrolles, A., Roux, A., Mensch, A., Savary, B., Bamford, C., ... & Lacroix, T. (2024). Mixtral of experts. arXiv preprint arXiv:2401.04088."
 link: "https://arxiv.org/abs/2401.04088"
 slug: "mixtral-moe-sparse-experts"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2401.04088/assets/images/smoe.png"
+heroImage: "/images/research-decoded/mixtral-moe-sparse-experts.png"
 ---
 
 The 2024 Mixtral of Experts paper by the Mistral AI team introduced a shift from dense transformer architectures toward sparse scaling. In standard dense models, every parameter is activated for every token processed, which creates a significant computational cost for larger systems. Mixtral addresses this by using a sparse mixture-of-experts architecture where only a subset of parameters is active for any given calculation. This allows for a massive knowledge base while maintaining the inference speed and latency of a much smaller system.

@@ -4,7 +4,7 @@ authors: "Dao et al. (2022)"
 citation: "Dao, T., Fu, D. Y., Ermon, S., Rudra, A., & R\u00e9, C. (2022). FlashAttention: Fast and Memory-Efficient Exact Attention with IO-Awareness. arXiv:2205.14135."
 link: "https://arxiv.org/abs/2205.14135"
 slug: "flash-attention-io-aware"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2205.14135/assets/x1.png"
+heroImage: "/images/research-decoded/flash-attention-io-aware.png"
 ---
 
 The 2022 FlashAttention paper introduced a significant optimization that allowed transformers to process much longer sequences by addressing memory bottlenecks. Historically, transformer context windows were limited by quadratic memory requirements, where doubling the sequence length quadrupled the memory needed. Researchers at Stanford University shifted the focus from reducing mathematical operations to optimizing data movement within the GPU. This transition from compute-bound to memory-bound optimization proves that the primary bottleneck in modern AI is often data movement rather than raw calculation speed.

@@ -4,7 +4,7 @@ authors: "Scott Aaronson (2009)"
 citation: "Aaronson, S. (2010). BQP and the Polynomial Hierarchy. In Proceedings of the forty-second ACM symposium on Theory of computing (pp. 141-150)."
 link: "https://arxiv.org/abs/0910.4698"
 slug: "bqp-and-the-polynomial-hierarchy"
-heroImage: "https://ar5iv.labs.arxiv.org/html/0910.4698/assets/x1.png"
+heroImage: "/images/research-decoded/bqp-and-the-polynomial-hierarchy.png"
 ---
 
 In 2009, Scott Aaronson established a complexity-theoretic separation between Bounded-error Quantum Polynomial time (BQP) and the Polynomial Hierarchy (PH) using an oracle-based model. This research addressed a fundamental question regarding the nature of quantum advantage: whether quantum computers are merely more efficient at classical non-deterministic tasks, or if they possess a distinct computational capacity that lies outside the entire hierarchy of P, NP, and coNP. The researcher demonstrated that there exist black-box problems, termed Fourier-checking, that can be resolved by a quantum machine in polynomial time but require exponential resources for any classical machine, regardless of the depth of existential and universal quantification permitted.

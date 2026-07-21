@@ -4,7 +4,7 @@ authors: "OpenAI (2023)"
 citation: "OpenAI. (2023). GPT-4 Technical Report. arXiv preprint arXiv:2303.08774."
 link: "https://arxiv.org/abs/2303.08774"
 slug: "gpt-4-technical-report"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2303.08774/assets/x4.png"
+heroImage: "/images/research-decoded/gpt-4-technical-report.png"
 ---
 
 The release of the GPT-4 Technical Report in 2023 marked a transition toward predictable engineering in the development of large language models. Before this, the performance of massive neural networks was often uncertain until training was complete. Researchers demonstrated that this unpredictability can be managed by training smaller versions of an architecture to map how mathematical loss follows a clear, measurable curve. This suggests that intelligence in these systems is a quantifiable trajectory that can be forecast before significant computational resources are committed to full-scale training.

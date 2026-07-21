@@ -4,7 +4,7 @@ authors: "Zhu et al. (2025)"
 citation: "Zhu, K., et al. (2025). Scaling Test-time Compute for LLM Agents. arXiv preprint arXiv:2506.12928."
 link: "https://arxiv.org/abs/2506.12928"
 slug: "scaling-agentic-test-time-compute"
-heroImage: "https://arxiv.org/html/2506.12928v1/x1.png"
+heroImage: "/images/research-decoded/scaling-agentic-test-time-compute.png"
 ---
 
 # Agentic Test-Time Scaling: The Inference Compute Shift

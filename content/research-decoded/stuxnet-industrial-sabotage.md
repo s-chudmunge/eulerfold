@@ -4,7 +4,7 @@ authors: "Nicolas Falliere et al. (Symantec, 2011)"
 citation: "Falliere, N., Murchu, L. O., & Chien, E. (2011). W32.Stuxnet dossier. Symantec Corp, Security Response, 1.1, 1-69."
 link: "https://www.wired.com/images_blogs/threatlevel/2011/02/Symantec-Stuxnet-Update-Feb-2011.pdf"
 slug: "stuxnet-industrial-sabotage"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/3/3b/Centrifuge_Cascade.jpg"
+heroImage: "/images/research-decoded/stuxnet-industrial-sabotage.jpg"
 ---
 
 In 2010, the discovery of the Stuxnet worm fundamentally changed the global understanding of cyber warfare by demonstrating that a digital attack can cause targeted physical destruction. Unlike previous malware designed for data theft or financial gain, Stuxnet was a precision-guided digital weapon engineered to subvert the Programmable Logic Controllers (PLCs) in Iran’s Natanz nuclear facility. The researchers proved that by intercepting and modifying industrial sensor data while injecting malicious control commands, a system can induce catastrophic mechanical failure in hardware without alerting human operators. This work established a new era of industrial sabotage, moving cybersecurity from the realm of virtual information into the domain of kinetic conflict and national security.

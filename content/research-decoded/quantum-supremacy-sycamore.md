@@ -4,7 +4,7 @@ authors: "Frank Arute et al. (Google Research, 2019)"
 citation: "Arute, F., et al. (2019). Quantum supremacy using a programmable superconducting processor. Nature, 574(7779), 505-510."
 link: "https://arxiv.org/abs/1910.11333"
 slug: "quantum-supremacy-sycamore"
-heroImage: "https://ar5iv.labs.arxiv.org/html/1910.11333/assets/figures/sup_fab/syc_packagingv2.png"
+heroImage: "/images/research-decoded/quantum-supremacy-sycamore.png"
 ---
 
 In 2019, researchers at Google Research demonstrated the first instance of quantum supremacy by executing a specific computational task on a programmable superconducting processor that is beyond the reach of any classical supercomputer. The experiment utilized the 54-qubit Sycamore architecture to sample from the output distribution of a random quantum circuit, a task that required 200 seconds on the quantum hardware. The researchers demonstrated that the same calculation would require approximately 10,000 years on the world's most powerful classical supercomputer, establishing the first empirical evidence for the exponential scaling of quantum state spaces.

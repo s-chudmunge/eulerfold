@@ -4,7 +4,7 @@ authors: "Charlie Snell et al. (Google DeepMind, 2024)"
 citation: "Snell, C., et al. (2024). Scaling LLM Test-Time Compute Optimally. arXiv preprint arXiv:2408.03314."
 link: "https://arxiv.org/abs/2408.03314"
 slug: "scaling-test-time-compute"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2408.03314/assets/x1.png"
+heroImage: "/images/research-decoded/scaling-test-time-compute.png"
 ---
 
 In 2024, researchers at Google DeepMind established that the performance of large language models can be significantly improved by scaling the amount of computation used during the inference phase. Traditionally, model intelligence was viewed as a fixed property determined by the scale of the pre-training phase. This research proved that for complex reasoning tasks, the "intelligence" of a smaller model can be expanded at test-time through iterative search and verifier-guided path refinement. The findings demonstrated that for a wide regime of tasks, scaling search depth is a more efficient lever for performance than scaling the raw number of parameters, provided the computational budget is allocated according to task difficulty.

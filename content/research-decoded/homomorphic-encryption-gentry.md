@@ -4,7 +4,7 @@ authors: "Craig Gentry (2009)"
 citation: "Gentry, C. (2009). A fully homomorphic encryption scheme (Doctoral dissertation, Stanford University)."
 link: "https://crypto.stanford.edu/craig/craig-thesis.pdf"
 slug: "homomorphic-encryption-gentry"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/2/2e/Homomorphic_encryption_scheme.svg"
+heroImage: "/images/research-decoded/homomorphic-encryption-gentry.png"
 ---
 
 In 2009, Craig Gentry established the mathematical possibility of Fully Homomorphic Encryption (FHE), a system that allows for arbitrary computation on encrypted data without the requirement for decryption. This research addresses a fundamental limitation in the field of cryptography: the traditional trade-off between the "privacy" of data and its "utility." Prior to Gentry’s work, schemes were restricted to either addition or multiplication, but not both simultaneously, which prevented the execution of complex algorithms on confidential information. The researcher proved that by utilizing a recursive "bootstrapping" technique to manage the noise inherent in lattice-based ciphertexts, a system can execute any computable function while the underlying data remains a permanent secret.

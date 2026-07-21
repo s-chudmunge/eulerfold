@@ -4,14 +4,14 @@ authors: "John Jumper et al. (DeepMind, 2021)"
 citation: "Jumper, J., Evans, R., Pritzel, A., ... & Hassabis, D. (2021). Highly accurate protein structure prediction with AlphaFold. Nature, 596(7873), 583-589."
 link: "https://www.nature.com/articles/s41586-021-03819-2"
 slug: "alphafold-2-structure-prediction"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/2/23/AlphaFold_2.png"
+heroImage: "/images/research-decoded/alphafold-2-structure-prediction.png"
 ---
 
 In 2021, researchers at DeepMind resolved the protein folding problem, a fifty-year grand challenge in biology, by treating the interaction of amino acids as a spatial graph problem solvable through end-to-end differentiable refinement. Prior to this research, predicting the 3D structure of a protein from its linear amino acid sequence was seen as a trade-off between the speed of statistical templates and the agonizingly slow precision of molecular dynamics simulations. AlphaFold 2 demonstrated that by utilizing an integrated attentive engine to process evolutionary and spatial constraints simultaneously, a model can achieve atomic-level accuracy across the proteome, transforming biological research from an observation-based field into a predictive science.
 
 ## Geometric Refinement and the Evoformer Module {#mechanism}
 
-![The AlphaFold 2 architecture illustrating the end-to-end differentiable pipeline from sequence alignment to 3D coordinate prediction.](https://upload.wikimedia.org/wikipedia/commons/2/23/AlphaFold_2.png)
+![The AlphaFold 2 architecture illustrating the end-to-end differentiable pipeline from sequence alignment to 3D coordinate prediction.](/images/research-decoded/alphafold-2-structure-prediction_1.png)
 
 _The AlphaFold 2 architecture illustrating the end-to-end differentiable pipeline from sequence alignment to 3D coordinate prediction._
 

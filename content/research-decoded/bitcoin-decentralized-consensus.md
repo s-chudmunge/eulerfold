@@ -4,7 +4,7 @@ authors: "Satoshi Nakamoto (2008)"
 citation: "Nakamoto, S. (2008). Bitcoin: A peer-to-peer electronic cash system. Decentralized Business Review."
 link: "https://bitcoin.org/bitcoin.pdf"
 slug: "bitcoin-decentralized-consensus"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg"
+heroImage: "/images/research-decoded/bitcoin-decentralized-consensus.svg"
 ---
 
 In 2008, an anonymous author using the pseudonym Satoshi Nakamoto introduced a protocol for electronic transactions that removes the requirement for a centralized financial authority. This research addressed the "double-spending problem" in decentralized networks, where the absence of a trusted middleman typically prevents the verification of transaction history. The researcher proved that by combining cryptographic hashing, digital signatures, and a novel consensus mechanism known as proof-of-work, a system can maintain a public, distributed ledger that is computationally impractical to subvert. This work established the first successful framework for decentralized consensus, providing the blueprint for the entire field of blockchain technology.

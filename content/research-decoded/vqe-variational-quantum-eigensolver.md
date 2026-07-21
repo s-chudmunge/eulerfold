@@ -4,7 +4,7 @@ authors: "Alberto Peruzzo et al. (University of Bristol, 2013)"
 citation: "Peruzzo, A., McClean, J., Shadbolt, P., Yung, M. H., Zhou, X. Q., Love, P. J., ... & O'Brien, J. L. (2014). A variational eigenvalue solver on a photonic quantum processor. Nature Communications, 5(1), 4213."
 link: "https://arxiv.org/abs/1304.3061"
 slug: "vqe-variational-quantum-eigensolver"
-heroImage: "https://ar5iv.labs.arxiv.org/html/1304.3061/assets/x1.png"
+heroImage: "/images/research-decoded/vqe-variational-quantum-eigensolver.png"
 ---
 
 In 2013, researchers at the University of Bristol introduced the Variational Quantum Eigensolver (VQE), a hybrid quantum-classical algorithm designed to find the ground state energy of molecular Hamiltonians. This approach addresses the decoherence constraints of Noisy Intermediate-Scale Quantum (NISQ) hardware, where the coherence times are insufficient for deep coherent algorithms such as Quantum Phase Estimation. The researchers demonstrated that by offloading the optimization of trial states to a classical computer, the quantum processor can function as a specialized co-processor for calculating expectation values, establishing a practical framework for quantum chemistry on imperfect hardware.

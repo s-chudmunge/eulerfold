@@ -4,7 +4,7 @@ authors: "Yang et al. (2024)"
 citation: "Yang, L., Kang, B., Huang, Z., Xu, X., Feng, J., & Zhao, H. (2024). Depth Anything: Unleashing the Power of Large-Scale Unlabeled Data. arXiv:2401.10891."
 link: "https://arxiv.org/abs/2401.10891"
 slug: "depth-anything-monocular-foundation"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2401.10891/assets/x1.png"
+heroImage: "/images/research-decoded/depth-anything-monocular-foundation.png"
 ---
 
 # Depth Anything — MDE

@@ -4,7 +4,7 @@ authors: "Ian Goodfellow, Jonathon Shlens, and Christian Szegedy (2014)"
 citation: "Goodfellow, I. J., Shlens, J., & Szegedy, C. (2015). Explaining and harnessing adversarial examples. arXiv preprint arXiv:1412.6572."
 link: "https://arxiv.org/abs/1412.6572"
 slug: "adversarial-examples-goodfellow"
-heroImage: "https://ar5iv.labs.arxiv.org/html/1412.6572/assets/panda_577.png"
+heroImage: "/images/research-decoded/adversarial-examples-goodfellow.png"
 ---
 
 In 2014, Ian Goodfellow and colleagues demonstrated that state-of-the-art deep neural networks can be systematically induced to misclassify images through the addition of imperceptibly small, calculated perturbations. By applying a specific noise pattern to a correctly identified image of a panda, the researchers caused a model to classify the result as a gibbon with 99.3% confidence, despite the image appearing unchanged to a human observer. This finding revealed that the internal decision boundaries of high-dimensional machine learning models are fundamentally different from human perceptual categories, establishing the concept of adversarial examples as a structural vulnerability of modern AI architectures.

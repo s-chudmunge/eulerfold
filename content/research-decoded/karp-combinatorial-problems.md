@@ -4,7 +4,7 @@ authors: "Richard Karp (1972)"
 citation: "Karp, R. M. (1972). Reducibility among combinatorial problems. In Complexity of Computer Computations (pp. 85-103). Springer, Boston, MA."
 link: "https://doi.org/10.1007/978-1-4684-2001-2_9"
 slug: "karp-combinatorial-problems"
-heroImage: null
+heroImage: "/images/research-decoded/karp-combinatorial-problems.svg"
 ---
 
 In 1972, Richard Karp demonstrated that the property of NP-completeness is a ubiquitous characteristic of computational problems across diverse scientific domains. Following Stephen Cook's proof that the Boolean satisfiability problem (SAT) is universal for the class of non-deterministic polynomial-time problems, Karp identified 21 distinct combinatorial challenges—including the clique problem, the traveling salesperson problem, and integer programming—that are all equivalent in their computational difficulty. This work established a practical methodology for classifying problem complexity through the use of polynomial-time reductions, transforming theoretical complexity into a central constraint of algorithm design.

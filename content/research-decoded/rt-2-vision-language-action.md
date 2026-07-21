@@ -4,7 +4,7 @@ authors: "Brohan et al. (2023)"
 citation: "Brohan, A., Brown, N., Carbajal, J., Chebotar, Y., et al. (2023). RT-2: Vision-language-action models transfer web knowledge to robotic control. arXiv preprint arXiv:2307.15818."
 link: "https://arxiv.org/abs/2307.15818"
 slug: "rt-2-vision-language-action"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2307.15818/assets/x1.png"
+heroImage: "/images/research-decoded/rt-2-vision-language-action.png"
 ---
 
 # RT-2: VLA Models

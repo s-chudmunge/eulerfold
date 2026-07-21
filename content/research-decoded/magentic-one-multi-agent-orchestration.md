@@ -4,7 +4,7 @@ authors: "Fourney et al. (2024)"
 citation: "Fourney, A., et al. (2024). Magentic-One: A Generalist Multi-Agent System for Solving Complex Tasks. arXiv preprint arXiv:2411.04468."
 link: "https://arxiv.org/abs/2411.04468"
 slug: "magentic-one-multi-agent-orchestration"
-heroImage: "https://arxiv.org/html/2411.04468v1/x2.png"
+heroImage: "/images/research-decoded/magentic-one-multi-agent-orchestration.png"
 ---
 
 # Magentic-One: Multi-Agent Orchestration via Nested Ledgers

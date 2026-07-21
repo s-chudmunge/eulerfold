@@ -4,7 +4,7 @@ authors: "Ziming Liu et al. (MIT, 2024)"
 citation: "Liu, Z., Wang, Y., Vaidya, S., ... & Tegmark, M. (2024). KAN: Kolmogorov-Arnold Networks. arXiv preprint arXiv:2404.19756."
 link: "https://arxiv.org/abs/2404.19756"
 slug: "kan-kolmogorov-arnold-networks"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2404.19756/assets/x1.png"
+heroImage: "/images/research-decoded/kan-kolmogorov-arnold-networks.png"
 ---
 
 In 2024, researchers at MIT and other institutions introduced Kolmogorov-Arnold Networks (KANs), a neural network architecture that shifts learnable parameters from the nodes to the edges of the computational graph. Grounded in the Kolmogorov-Arnold representation theorem, this design addresses the limitations of standard Multi-Layer Perceptrons (MLPs), where fixed activation functions at nodes require massive parameter expansion to approximate complex functions. The researchers demonstrated that by replacing traditional weights with learnable piecewise polynomials known as B-splines, a system can achieve significantly higher accuracy with orders of magnitude fewer parameters, providing a more transparent and efficient framework for scientific and mathematical modeling.

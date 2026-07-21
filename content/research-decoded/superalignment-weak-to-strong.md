@@ -4,7 +4,7 @@ authors: "Burns et al. (OpenAI, 2023)"
 citation: "Burns, C., Izmailov, P., Kirchner, J. H., Bowyer, B., ... & Leike, J. (2023). Weak-to-strong generalization: Eliciting strong capabilities with weak supervision. arXiv preprint arXiv:2312.09390."
 link: "https://arxiv.org/abs/2312.09390"
 slug: "superalignment-weak-to-strong"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2312.09390/assets/x1.png"
+heroImage: "/images/research-decoded/superalignment-weak-to-strong.png"
 ---
 
 The 2023 paper on weak-to-strong generalization from OpenAI’s Superalignment team investigated the feasibility of using humans to align artificial intelligence systems that exceed human intelligence. Historically, alignment has relied on the assumption that a supervisor can accurately recognize and reward correct behavior in a student model. As AI capabilities surpass human expertise in specialized domains, this supervisor-student relationship becomes strained. The researchers introduced a framework to determine if a less capable model can effectively guide a more capable one to perform tasks that the supervisor itself cannot master.

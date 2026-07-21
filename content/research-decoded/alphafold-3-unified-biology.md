@@ -4,7 +4,7 @@ authors: "Josh Abramson et al. (Google DeepMind, 2024)"
 citation: "Abramson, J., et al. (2024). Accurate structure prediction of biomolecular interactions with AlphaFold 3. Nature, 630(8016), 493-500."
 link: "https://www.nature.com/articles/s41586-024-07487-w"
 slug: "alphafold-3-unified-biology"
-heroImage: "https://blog.google/static/blog/images/google-deepmind-alphafold-3.png"
+heroImage: "/images/articles/hero_alphafold_abstract.jpg"
 ---
 
 In 2024, researchers at Google DeepMind introduced AlphaFold 3, a model that expands the scope of biomolecular prediction from single protein chains to the entire ecosystem of cellular molecules. While its predecessor was specialized to the geometry of amino acids, AlphaFold 3 utilizes a generative diffusion process to predict the interactions between proteins, DNA, RNA, ligands, and ions within a single, unified architecture. The researchers demonstrated that by treating the entirety of a molecular complex as a system of interacting atoms rather than a collection of rigid residues, a machine can capture the cross-domain interactions that drive life, effectively digitalizing the simulation of the biological machinery at the atomic scale.

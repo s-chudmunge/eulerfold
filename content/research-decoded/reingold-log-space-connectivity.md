@@ -4,7 +4,7 @@ authors: "Omer Reingold (2005)"
 citation: "Reingold, O. (2008). Undirected connectivity in log-space. Journal of the ACM (JACM), 55(4), 1-24."
 link: "https://doi.org/10.1145/1391289.1391291"
 slug: "reingold-log-space-connectivity"
-heroImage: null
+heroImage: "/images/research-decoded/reingold-log-space-connectivity.svg"
 ---
 
 In 2005, Omer Reingold resolved a long-standing open problem in computational complexity by demonstrating that identifying a path between two nodes in an undirected graph can be achieved using only logarithmic space. This result proved that SL = L (Symmetric Log-space equals Log-space), showing that the apparent necessity for randomized or linear-space search techniques was a limitation of earlier algorithmic frameworks rather than a fundamental property of the problem. Reingold’s method introduced a deterministic way to increase the connectivity of a graph until its global structure can be explored through a simple, memory-efficient local walk.

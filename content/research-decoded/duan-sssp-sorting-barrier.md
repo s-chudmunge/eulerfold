@@ -4,7 +4,7 @@ authors: "Duan et al. (2025)"
 citation: "Duan, R., et al. (2025). Breaking the sorting barrier for directed SSSP. arXiv preprint arXiv:2504.17033."
 link: "https://arxiv.org/abs/2504.17033"
 slug: "duan-sssp-sorting-barrier"
-heroImage: null
+heroImage: "/images/research-decoded/duan-sssp-sorting-barrier.png"
 ---
 
 In 2025, Ran Duan and colleagues introduced a deterministic algorithm for the directed single-source shortest path (SSSP) problem that achieves a complexity of $O(m \log^{2/3} n)$ for graphs with non-negative edge weights. This result addresses a long-standing theoretical bottleneck in computational graph theory known as the sorting barrier. Since the introduction of Dijkstra’s algorithm in 1956, the $O(m + n \log n)$ bound was considered the definitive limit for this problem, as the greedy selection of the nearest vertex was thought to necessitate a sorting-based priority queue. Duan’s research demonstrated that the determination of path distances can be decoupled from the exhaustive ordering of vertices, enabling a sub-Dijkstra efficiency previously deemed impossible in the comparison-addition model.

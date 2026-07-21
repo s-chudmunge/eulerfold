@@ -4,7 +4,7 @@ authors: "Richard Bellman (1958)"
 citation: "Bellman, R. (1958). On a routing problem. Quarterly of applied mathematics, 16(1), 87-90."
 link: "https://doi.org/10.1090/qam/102435"
 slug: "bellman-routing-problem"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Bellman-Ford_algorithm_example.gif/800px-Bellman-Ford_algorithm_example.gif.png"
+heroImage: "/images/research-decoded/bellman-routing-problem.gif"
 ---
 
 In 1958, Richard Bellman introduced a method for identifying the shortest path in a network that systematically addresses the limitations of greedy search algorithms. The paper established the Principle of Optimality, which posits that an optimal path between two points is composed of sub-paths that are themselves optimal. By applying an iterative relaxation technique to every edge in a graph, Bellman demonstrated that the global shortest path can be determined through a series of local, recursive calculations. This approach provided the mathematical foundation for dynamic programming and decentralized network routing.

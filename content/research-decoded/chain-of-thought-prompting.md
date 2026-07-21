@@ -4,7 +4,7 @@ authors: "Jason Wei et al. (Google Research, 2022)"
 citation: "Wei, J., Wang, X., Schuurmans, D., Bosma, M., Ichter, B., Xia, F., ... & Zhou, D. (2022). Chain-of-thought prompting elicits reasoning in large language models. Advances in Neural Information Processing Systems, 35, 24824-24837."
 link: "https://arxiv.org/abs/2201.11903"
 slug: "chain-of-thought-prompting"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2201.11903/assets/x1.png"
+heroImage: "/images/research-decoded/chain-of-thought-prompting.png"
 ---
 
 In 2022, researchers at Google demonstrated that the reasoning capabilities of large language models can be significantly improved by prompting them to generate intermediate logical steps before producing a final answer. Prior to this research, standard few-shot prompting focused on direct input-output mapping, which often failed on multi-step tasks such as arithmetic or symbolic logic. The researchers proved that by allowing a model to allocate token-compute to each stage of a problem, the system effectively utilizes its output sequence as an external working memory, enabling the resolution of complex queries that were previously deemed intractable for autoregressive architectures.

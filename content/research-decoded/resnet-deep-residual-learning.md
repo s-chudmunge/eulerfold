@@ -4,7 +4,7 @@ authors: "He, Zhang, Ren, Sun (Microsoft Research, 2015)"
 citation: "He, K., Zhang, X., Ren, S., & Sun, J. (2016). Deep residual learning for image recognition. In Proceedings of the IEEE conference on computer vision and pattern recognition (pp. 770-778)."
 link: "https://arxiv.org/abs/1512.03385"
 slug: "resnet-deep-residual-learning"
-heroImage: "https://ar5iv.labs.arxiv.org/html/1512.03385/assets/x2.png"
+heroImage: "/images/research-decoded/resnet-deep-residual-learning.png"
 ---
 
 In 2015, researchers at Microsoft Research introduced a residual learning framework that resolved the degradation problem in deep neural network training. Prior to this work, increasing the depth of a network often led to a paradoxical increase in training error, even when the model was not overfitting. The researchers demonstrated that by utilizing identity shortcut connections to bypass specific layers, models can be scaled to hundreds or thousands of layers while maintaining stable gradient flow. This architectural shift moved deep learning from raw capacity toward the optimization of information persistence across the network hierarchy.

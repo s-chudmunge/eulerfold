@@ -4,7 +4,7 @@ authors: "Claude Shannon (1948)"
 citation: "Shannon, C. E. (1948). A mathematical theory of communication. The Bell System Technical Journal, 27(3), 379-423."
 link: "https://archive.org/details/bstj27-3-379"
 slug: "shannon-information-theory"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2402.04441/assets/x1.png"
+heroImage: "/images/research-decoded/shannon-information-theory.png"
 ---
 
 In 1948, Claude Shannon published a mathematical framework for communication that shifted the engineering focus from the preservation of semantic meaning to the transmission of measurable statistical signals. He identified that the meaning of a message is irrelevant to the technical problem of moving symbols across a noisy channel. By defining the bit as the fundamental unit of information, Shannon provided a method for quantifying uncertainty and establishing the physical limits of data compression and transmission rates.

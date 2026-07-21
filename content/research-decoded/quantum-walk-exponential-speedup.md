@@ -4,7 +4,7 @@ authors: "Andrew Childs et al. (2002)"
 citation: "Childs, A. M., Cleve, R., Deotto, E., Farhi, E., Gutmann, S., & Spielman, D. A. (2003). Exponential algorithmic speedup by quantum walk. In Proceedings of the thirty-fifth annual ACM symposium on Theory of computing (pp. 59-68)."
 link: "https://arxiv.org/abs/quant-ph/0209131"
 slug: "quantum-walk-exponential-speedup"
-heroImage: "https://ar5iv.labs.arxiv.org/html/quant-ph/0209131/assets/x1.png"
+heroImage: "/images/research-decoded/quantum-walk-exponential-speedup.png"
 ---
 
 In 2002, Andrew Childs and colleagues demonstrated that a quantum walk on a graph can achieve an exponential speedup over the best possible classical algorithm for specific connectivity problems. This research addresses the limitation of classical random walks, where the time required to "hit" a target node—the hitting time—can scale exponentially with the size of the graph. The researchers proved that by utilizing the wave-like propagation and interference properties of quantum mechanics, a system can navigate complex topological structures that cause classical explorers to become trapped in an exponential search space.

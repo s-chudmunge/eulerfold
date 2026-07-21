@@ -4,7 +4,7 @@ authors: "Mnih et al. (2013)"
 citation: "Mnih, V., Kavukcuoglu, K., Silver, D., Graves, A., Antonoglou, I., Wierstra, D., & Riedmiller, M. (2013). Playing atari with deep reinforcement learning. arXiv preprint arXiv:1312.5602."
 link: "https://arxiv.org/abs/1312.5602"
 slug: "dqn-atari-reinforcement-learning"
-heroImage: "https://ar5iv.labs.arxiv.org/html/1312.5602/assets/figures/pong.png"
+heroImage: "/images/research-decoded/dqn-atari-reinforcement-learning.png"
 ---
 
 # DQN: Playing Atari with Deep RL

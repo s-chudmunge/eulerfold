@@ -4,7 +4,7 @@ authors: "Eric Dennis et al. (Caltech/Microsoft, 2002)"
 citation: "Dennis, E., Kitaev, A., Landahl, A., & Preskill, J. (2002). Topological quantum memory. Journal of Mathematical Physics, 43(9), 4452-4505."
 link: "https://arxiv.org/abs/quant-ph/0110143"
 slug: "surface-code-topological-memory"
-heroImage: "https://ar5iv.labs.arxiv.org/html/quant-ph/0110143/assets/x1.png"
+heroImage: "/images/research-decoded/surface-code-topological-memory.png"
 ---
 
 In 2002, researchers at Caltech and Microsoft introduced the surface code, a model for fault-tolerant quantum computation that preserves information within the global topological features of a planar lattice. This research resolved a primary engineering constraint of the original toric code, which required periodic boundary conditions—effectively demanding that a quantum processor be physically wrapped around a torus. The researchers demonstrated that by carefully managing the boundaries of a finite two-dimensional sheet, a system can achieve high-fidelity error correction using only nearest-neighbor interactions, providing a viable roadmap for the fabrication of large-scale quantum chips.

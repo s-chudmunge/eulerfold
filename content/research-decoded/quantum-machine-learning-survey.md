@@ -4,7 +4,7 @@ authors: "Jacob Biamonte et al. (2017)"
 citation: "Biamonte, J., Wittek, P., Nicola, P., Rebentrost, P., Wiebe, N., & Lloyd, S. (2017). Quantum machine learning. Nature, 549(7671), 195-202."
 link: "https://doi.org/10.1038/nature23474"
 slug: "quantum-machine-learning-survey"
-heroImage: null
+heroImage: "/images/research-decoded/quantum-machine-learning-survey.png"
 ---
 
 In 2017, Jacob Biamonte and colleagues provided a comprehensive framework for the integration of quantum computing and machine learning, identifying the specific subroutines where quantum mechanics offers the potential for exponential improvements in computational efficiency. This research addresses the scaling limits of classical data science, where the processing of high-dimensional vectors and the sampling of complex probability distributions encounter fundamental bottlenecks in time and memory. The researchers demonstrated that by mapping classical optimization and linear algebra tasks into the massive Hilbert space of a quantum processor, a system can achieve sub-linear scaling for operations that are intractable for deterministic classical machines.

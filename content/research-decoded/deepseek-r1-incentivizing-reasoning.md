@@ -4,7 +4,7 @@ authors: "DeepSeek-AI (2025)"
 citation: "DeepSeek-AI. (2025). DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning. arXiv preprint arXiv:2501.12948."
 link: "https://arxiv.org/abs/2501.12948"
 slug: "deepseek-r1-incentivizing-reasoning"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2501.12948/assets/x1.png"
+heroImage: "/images/research-decoded/deepseek-r1-incentivizing-reasoning.png"
 ---
 
 The 2025 DeepSeek-R1 paper marks a shift in the development of reasoning-oriented language models by moving away from a reliance on supervised fine-tuning. Previously, it was assumed that a model must first be shown how to reason through thousands of human-annotated examples before reinforcement learning could be effective. DeepSeek-R1 demonstrates that reasoning capabilities can instead be incentivized through reinforcement learning directly on a base model, allowing the system to discover its own logical strategies through objective feedback loops.

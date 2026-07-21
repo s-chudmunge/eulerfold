@@ -4,7 +4,7 @@ authors: "Alayrac et al. (2022)"
 citation: "Alayrac, J. B., Donahue, J., Luc, P., Miech, A., Barr, I., Hasson, Y., ... & Zisserman, A. (2022). Flamingo: a visual language model for few-shot learning. Advances in Neural Information Processing Systems, 35, 23716-27744."
 link: "https://arxiv.org/abs/2204.14198"
 slug: "flamingo-visual-language-few-shot"
-heroImage: null
+heroImage: "/images/research-decoded/flamingo-visual-language-few-shot.png"
 ---
 
 The 2022 Flamingo paper introduced a family of visual language models designed to adapt to new tasks with only a few examples. While previous vision-language systems required extensive task-specific fine-tuning, Flamingo utilizes an architecture that bridges a frozen vision encoder with a frozen language model. This approach treats multimodality as an interleaved sequence of visual and textual data, allowing the model to handle complex dialogues or documents where multiple images are referenced across a long conversation.

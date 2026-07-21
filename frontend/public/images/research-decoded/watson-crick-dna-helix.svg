@@ -1,0 +1,262 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="1500" height="1750" font-family="Arial Rounded MT Bold">
+<defs>
+<radialGradient id="rgWhite">
+<stop stop-color="#FFF"/>
+<stop offset=".5" stop-color="#FFF" stop-opacity=".7"/>
+<stop offset="1" stop-color="#FFF" stop-opacity="0"/>
+</radialGradient>
+<radialGradient id="rgYellow">
+<stop stop-color="#FF0" stop-opacity="0"/>
+<stop offset="1" stop-color="#FF0" stop-opacity=".85"/>
+</radialGradient>
+<radialGradient id="rgDeoxyribose">
+<stop stop-color="#FFA600" stop-opacity="0"/>
+<stop offset="1" stop-color="#FFA600" stop-opacity=".7"/>
+</radialGradient>
+<radialGradient id="rgAdenine">
+<stop stop-color="#0F0" stop-opacity="0"/>
+<stop offset="1" stop-color="#0F0" stop-opacity=".6"/>
+</radialGradient>
+<radialGradient id="rgCytosine">
+<stop stop-color="#F00" stop-opacity="0"/>
+<stop offset="1" stop-color="#F33" stop-opacity=".6"/>
+</radialGradient>
+<radialGradient id="rgThymine">
+<stop stop-color="#C3F" stop-opacity="0"/>
+<stop offset="1" stop-color="#C0F" stop-opacity=".6"/>
+</radialGradient>
+<radialGradient id="rgGuanine">
+<stop stop-color="#33F" stop-opacity="0"/>
+<stop offset="1" stop-color="#33F" stop-opacity=".6"/>
+</radialGradient>
+<radialGradient id="rgGrey" gradientTransform="matrix(.677972,-.075038,.545843,.676343,-.287,.228)">
+<stop stop-color="#7F7F7F" stop-opacity="0"/>
+<stop offset=".5" stop-color="#7F7F7F" stop-opacity="0"/>
+<stop offset="1" stop-color="#7F7F7F" stop-opacity=".7"/>
+</radialGradient>
+<linearGradient id="lgYellow">
+<stop stop-color="#FF0" stop-opacity="0"/>
+<stop offset=".5" stop-color="#FF0" stop-opacity=".45"/>
+<stop offset="1" stop-color="#FF0" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="lgDeoxyribose">
+<stop stop-color="#FFA600" stop-opacity="0"/>
+<stop offset=".5" stop-color="#FFA600" stop-opacity=".35"/>
+<stop offset="1" stop-color="#FFA600" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="lgGrey">
+<stop stop-color="#7F7F7F" stop-opacity="0"/>
+<stop offset=".5" stop-color="#7F7F7F" stop-opacity=".3"/>
+<stop offset="1" stop-color="#7F7F7F" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="lgAdenine">
+<stop stop-color="#0F0" stop-opacity="0"/>
+<stop offset=".5" stop-color="#0F0" stop-opacity=".25"/>
+<stop offset="1" stop-color="#0F0" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="lgCytosine">
+<stop stop-color="#F00" stop-opacity="0"/>
+<stop offset=".5" stop-color="#FF1919" stop-opacity=".3"/>
+<stop offset="1" stop-color="#F33" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="lgGuanine">
+<stop stop-color="#33F" stop-opacity="0"/>
+<stop offset=".5" stop-color="#33F" stop-opacity=".3"/>
+<stop offset="1" stop-color="#33F" stop-opacity="0"/>
+</linearGradient>
+<linearGradient id="lgThymine">
+<stop stop-color="#C3F" stop-opacity="0"/>
+<stop offset=".5" stop-color="#CC19FF" stop-opacity=".25"/>
+<stop offset="1" stop-color="#C0F" stop-opacity="0"/>
+</linearGradient>
+<style>
+.structure { fill: none; stroke: #000; stroke-width: 4.5px; stroke-linecap: round }
+</style>
+</defs>
+<path d="M265.37 976.63c13.09 15.86 40.6 58.95 55.99 128.85 11.94 54.26 19.23 434.74 201.47 510.53-188 19.92-237.81-421.76-252.35-469.55-28.38-93.25-95.09-138.17-95.45-140.48-.36-2.3 27.21-77.86-4.64-169.98-16.33-47.2-235.64-433.81-71.84-528.2C-4.34 476.23 213.4 788.33 235.63 839.25c28.65 65.6 31.01 116.85 29.74 137.38Z" fill="url(#rgGrey)"/>
+<rect width="338" height="48.83" x="20.36" y="886" fill="url(#lgYellow)"/>
+<rect width="338" height="48.83" x="19.36" y="956" fill="url(#lgDeoxyribose)"/>
+<rect width="338" height="52" x="30.17" y="1026" fill="url(#lgGrey)"/>
+<g font-size="56">
+<switch>
+<text x="35.38" y="929.74" systemLanguage="ru" id="trsvg99"><tspan id="trsvg1">&#x444;&#x43E;&#x441;&#x444;&#x430;&#x442;</tspan><tspan x="35.38" dy="70" id="trsvg2">&#x434;&#x435;&#x437;&#x43E;&#x43A;&#x441;&#x438;&#x440;&#x438;&#x431;&#x43E;&#x437;&#x430;</tspan><tspan x="35.38" dy="70" id="trsvg3">&#x43E;&#x441;&#x43D;&#x43E;&#x432;&#x43D;&#x430;&#x44F; &#x446;&#x435;&#x43F;&#x44C;</tspan></text>
+<text x="35.38" y="929.74" systemLanguage="de" id="trsvg100"><tspan id="trsvg4">Phosphat-</tspan><tspan x="35.38" dy="70" id="trsvg5">Deoxyribose</tspan><tspan x="35.38" dy="70" id="trsvg6">r&#xFC;ckgrat</tspan></text>
+
+<text x="35.38" y="929.74" id="trsvg101-vi" systemLanguage="vi"><tspan id="trsvg7-vi">Khung x&#x1B0;&#x1A1;ng</tspan><tspan x="35.38" dy="70" id="trsvg8-vi">Phosphat-</tspan><tspan x="35.38" dy="70" id="trsvg9-vi">deoxyribose</tspan></text><text x="35.38" y="929.74" id="trsvg101"><tspan id="trsvg7">Phosphate-</tspan><tspan x="35.38" dy="70" id="trsvg8">deoxyribose</tspan><tspan x="35.38" dy="70" id="trsvg9">backbone</tspan></text></switch>
+</g>
+<rect width="338" height="71.91" x="350.89" y="187.13" fill="url(#lgAdenine)"/>
+<rect width="338" height="65.73" x="688.29" y="133.92" fill="url(#lgThymine)"/>
+<rect width="321.21" height="60" x="678" y="1517.27" fill="url(#lgGuanine)"/>
+<rect width="322.41" height="60" x="986.4" y="1489.66" fill="url(#lgCytosine)"/>
+<g font-size="72">
+<switch>
+<text x="387.64" y="249.16" systemLanguage="ru" id="trsvg102"><tspan id="trsvg10">&#x410;&#x434;&#x435;&#x43D;&#x438;&#x43D;</tspan></text>
+<text x="387.64" y="249.16" systemLanguage="de" id="trsvg103"><tspan id="trsvg11">Adenin</tspan></text>
+
+<text x="387.64" y="249.16" id="trsvg104-vi" systemLanguage="vi"><tspan id="trsvg12-vi">A&#x111;&#xEA;nin</tspan></text><text x="387.64" y="249.16" id="trsvg104"><tspan id="trsvg12">Adenine</tspan></text></switch>
+<switch>
+<text x="997.56" y="1546.08" systemLanguage="ru" id="trsvg105"><tspan id="trsvg13">&#x426;&#x438;&#x442;&#x43E;&#x437;&#x438;&#x43D;</tspan></text>
+<text x="997.56" y="1546.08" systemLanguage="de" id="trsvg106"><tspan id="trsvg14">Cytosin</tspan></text>
+
+<text x="997.56" y="1546.08" id="trsvg107-vi" systemLanguage="vi"><tspan id="trsvg15-vi">Xit&#xF4;zin</tspan></text><text x="997.56" y="1546.08" id="trsvg107"><tspan id="trsvg15">Cytosine</tspan></text></switch>
+<switch>
+<text x="695.96" y="1573.39" systemLanguage="ru" id="trsvg108"><tspan id="trsvg16">&#x413;&#x443;&#x430;&#x43D;&#x438;&#x43D;</tspan></text>
+<text x="695.96" y="1573.39" systemLanguage="de" id="trsvg109"><tspan id="trsvg17">Guanin</tspan></text>
+
+<text x="695.96" y="1573.39" id="trsvg110-vi" systemLanguage="vi"><tspan id="trsvg18-vi">Guanin</tspan></text><text x="695.96" y="1573.39" id="trsvg110"><tspan id="trsvg18">Guanine</tspan></text></switch>
+<switch>
+<text x="702.26" y="189.37" systemLanguage="ru" id="trsvg111"><tspan id="trsvg19">&#x422;&#x438;&#x43C;&#x438;&#x43D;</tspan></text>
+<text x="702.26" y="189.37" systemLanguage="de" id="trsvg112"><tspan id="trsvg20">Thymin</tspan></text>
+
+<text x="702.26" y="189.37" id="trsvg113-vi" systemLanguage="vi"><tspan id="trsvg21-vi">Timin</tspan></text><text x="702.26" y="189.37" id="trsvg113"><tspan id="trsvg21">Thymine</tspan></text></switch>
+</g>
+
+<g font-size="28" font-weight="bold" text-anchor="middle">
+<g id="pdb1">
+<path d="M458.59 472.22l-16.43 57.52H376.43l-16.55-60.45 47.77-36.51 50.94 39.44Z" fill="url(#rgDeoxyribose)"/>
+<circle cx="406.83" cy="436.07" r="18.3" fill="url(#rgWhite)"/>
+<circle cx="267.92" cy="310.54" r="26" fill="url(#rgYellow)"/>
+<path class="structure" d="M253 309.59l-33-9m0-6 33 9m27-5 20-25m-59 73 18-25m18-4 28 24m91 100-38 28M316.5 365.5 311 428.59l47 41 20 60h64l18-57-42-31m72 0-30 31"/>
+<switch><text x="306.66" y="269.6" id="trsvg114"><tspan id="trsvg22">O</tspan></text></switch>
+<switch><text x="202" y="303.6" id="trsvg115"><tspan id="trsvg23">O</tspan></text></switch>
+<switch><text x="268" y="318.6" id="trsvg116"><tspan id="trsvg24">P</tspan></text></switch>
+<switch><text x="316" y="360.6" id="trsvg117"><tspan id="trsvg25">O</tspan></text></switch>
+<switch><text x="226" y="374.6" id="trsvg118"><tspan id="trsvg26">&#x2212;</tspan><tspan dy="-5" id="trsvg27">O</tspan></text></switch>
+<switch><text x="407" y="441.6" id="trsvg119"><tspan id="trsvg28">O</tspan></text></switch>
+</g>
+<switch><text x="330" y="274.59" id="trsvg120"><tspan id="trsvg29">&#x2212;</tspan></text></switch>
+<switch><text x="636" y="1578.6" id="trsvg121"><tspan id="trsvg30">OH</tspan></text></switch>
+<use xlink:href="#pdb1" x="87.51" y="329.79"/>
+<use xlink:href="#pdb1" x="178.34" y="656.75"/>
+<use xlink:href="#pdb1" x="266.33" y="985.48"/>
+<path class="structure" d="M378 529.59l18 50m70 280 15 43m74 285 13 45m76 284v38"/>
+<g id="pdb2">
+<path d="M927.05 412.22l34.86 51.13 61.59-22.08-3.49-61.59-56.94-18.59-36.02 51.13Z" fill="url(#rgDeoxyribose)"/>
+<circle cx="963.61" cy="457.6" r="18.3" fill="url(#rgWhite)"/>
+<circle cx="1102.33" cy="588.91" r="26" fill="url(#rgYellow)"/>
+<path class="structure" d="M952 450.59l-26-37 38-52 57 20 2 61-45 16m-87-71 35 26m97 29 47 44-11 45m7 24 28 25m22-4 20-23m-18 35 33 7m0 6-33-7m-15 6-9 35"/>
+<switch><text x="963" y="471.6" id="trsvg122"><tspan id="trsvg31">O</tspan></text></switch>
+<switch><text x="1055" y="556.6" id="trsvg123"><tspan id="trsvg32">O</tspan></text></switch>
+<switch><text x="1150" y="549.6" id="trsvg124"><tspan id="trsvg33">O</tspan><tspan dy="5" id="trsvg34">&#x2212;</tspan></text></switch>
+<switch><text x="1105" y="597.6" id="trsvg125"><tspan id="trsvg35">P</tspan></text></switch>
+<switch><text x="1166" y="610.6" id="trsvg126"><tspan id="trsvg36">O</tspan></text></switch>
+<switch><text x="1090" y="658.6" id="trsvg127"><tspan id="trsvg37">O</tspan></text></switch>
+</g>
+<switch><text x="1015" y="339.6" id="trsvg128"><tspan id="trsvg38">OH</tspan></text></switch>
+<switch><text x="1332" y="1645.59" id="trsvg129"><tspan id="trsvg39">&#x2212;</tspan></text></switch>
+<use xlink:href="#pdb2" x="87.33" y="330.02"/>
+<use xlink:href="#pdb2" x="175.63" y="655.5"/>
+<use xlink:href="#pdb2" x="264.16" y="984.12"/>
+<path class="structure" d="M1021 381.59l2-37m72 317 15 50m72.33 280.02 15 50m73.3 275.48 15 50"/>
+
+<g id="adenine" fill="url(#rgAdenine)">
+<path d="M521.86 330.48l57.52 31.64-14.79 59.98-63.27 10.68-27.94-62.45 48.48-39.85Z"/>
+<path d="M579.38 360.47l60.81-21.36 46.83 44.37-11.5 61.63-61.63 21.36-48.48-45.19 13.97-60.81Z"/>
+<g fill="url(#rgWhite)">
+<circle cx="523.51" cy="328.89" r="18.3"/>
+<circle cx="685.03" cy="385.48" r="18.3"/>
+<circle cx="499.68" cy="431.14" r="18.3"/>
+<circle cx="613.9" cy="465.65" r="18.3"/>
+</g>
+<path class="structure" d="M512 337.59l-37 34 19 45m19 15 53-10 14-59-45-26m31 85 35 33m25 9 50-18 9-51m-11-23-34-31-60 22m70-74-10 52m-126 4-30 27m101-1-11 46m54 39 40-14m-1-68-27-24"/>
+</g>
+<use xlink:href="#adenine" transform="translate(1437,501) scale(-1,1) rotate(14)"/>
+<switch><text x="644" y="285.6" id="trsvg130"><tspan id="trsvg40">NH</tspan><tspan dy="5" id="trsvg41">2</tspan></text></switch>
+<switch><text x="523" y="336.6" id="trsvg131"><tspan id="trsvg42">N</tspan></text></switch>
+<switch><text x="686" y="391.6" id="trsvg132"><tspan id="trsvg43">N</tspan></text></switch>
+<switch><text x="500" y="439.6" id="trsvg133"><tspan id="trsvg44">N</tspan></text></switch>
+<switch><text x="613" y="474.6" id="trsvg134"><tspan id="trsvg45">N</tspan></text></switch>
+<switch><text x="866" y="933.6" id="trsvg135"><tspan id="trsvg46">H</tspan><tspan dy="5" id="trsvg47">2</tspan><tspan dy="-5" id="trsvg48">N</tspan></text></switch>
+<switch><text x="1011" y="957.6" id="trsvg136"><tspan id="trsvg49">N</tspan></text></switch>
+<switch><text x="865" y="1045.6" id="trsvg137"><tspan id="trsvg50">N</tspan></text></switch>
+<switch><text x="1054" y="1050.6" id="trsvg138"><tspan id="trsvg51">N</tspan></text></switch>
+<switch><text x="953" y="1110.6" id="trsvg139"><tspan id="trsvg52">N</tspan></text></switch>
+
+<g id="cytosine">
+<path d="M599.1 646.42l65.74 7.39 23.83 58.34-37.8 49.3-63.27-7.39-26.29-56.7 37.79-50.94Z" fill="url(#rgCytosine)"/>
+<g fill="url(#rgWhite)">
+<circle cx="688.19" cy="710.86" r="18.3"/>
+<circle cx="587.34" cy="753.83" r="18.3"/>
+</g>
+<path class="structure" d="M580 736.59l-18-39 37-51 64 8 20 42m-5 29-27 36-51-7m0-99-29 41m103-3-14-30m3-9 30-44m-39 150 18 43m-6 2-18-43"/>
+</g>
+<use xlink:href="#cytosine" transform="translate(1559,504) scale(-1,1) rotate(12)"/>
+<switch><text x="697" y="607.6" id="trsvg140"><tspan id="trsvg53">NH</tspan><tspan dy="5" id="trsvg54">2</tspan></text></switch>
+<switch><text x="687" y="720.6" id="trsvg141"><tspan id="trsvg55">N</tspan></text></switch>
+<switch><text x="587" y="762.6" id="trsvg142"><tspan id="trsvg56">N</tspan></text></switch>
+<switch><text x="675" y="828.6" id="trsvg143"><tspan id="trsvg57">O</tspan></text></switch>
+<switch><text x="991" y="1242.6" id="trsvg144"><tspan id="trsvg58">H</tspan><tspan dy="5" id="trsvg59">2</tspan><tspan dy="-5" id="trsvg60">N</tspan></text></switch>
+<switch><text x="1035" y="1349.6" id="trsvg145"><tspan id="trsvg61">N</tspan></text></switch>
+<switch><text x="1141" y="1370.6" id="trsvg146"><tspan id="trsvg62">N</tspan></text></switch>
+<switch><text x="1070" y="1452.6" id="trsvg147"><tspan id="trsvg63">O</tspan></text></switch>
+
+<g id="thymine">
+<path d="M691.16 971.16l61.58 8.13 27.89 54.62-38.34 54.61-61.59-8.13-25.57-55.78 36.03-53.45Z" fill="url(#rgThymine)"/>
+<g fill="url(#rgWhite)">
+<circle cx="773.47" cy="1036.04" r="18.3"/>
+<circle cx="680.69" cy="1078.49" r="18.3"/>
+</g>
+<path class="structure" d="M675 1066.59l-19-41 35-54 64 8 19 43m-3 26-28 40-50-6m-28-59 28-43m-2-9-25-56m110 22-24 40m6 4 24-40m-18 189-18-43m-6 2 18 43"/>
+</g>
+<use xlink:href="#thymine" transform="translate(1280,-837) scale(-1,1) rotate(14)"/>
+<switch><text x="787" y="935.6" id="trsvg148"><tspan id="trsvg64">O</tspan></text></switch>
+<switch><text x="784" y="1045.6" id="trsvg149"><tspan id="trsvg65">NH</tspan></text></switch>
+<switch><text x="680" y="1090.6" id="trsvg150"><tspan id="trsvg66">N</tspan></text></switch>
+<switch><text x="767" y="1155.6" id="trsvg151"><tspan id="trsvg67">O</tspan></text></switch>
+<switch><text x="737" y="261.6" id="trsvg152"><tspan id="trsvg68">O</tspan></text></switch>
+<switch><text x="767" y="365.6" id="trsvg153"><tspan id="trsvg69">HN</tspan></text></switch>
+<switch><text x="878" y="386.6" id="trsvg154"><tspan id="trsvg70">N</tspan></text></switch>
+<switch><text x="809" y="468.6" id="trsvg155"><tspan id="trsvg71">O</tspan></text></switch>
+
+<g id="guanine" fill="url(#rgGuanine)">
+<path d="M736.48 1354.63l48.8-39.51 54.62 29.05-10.46 61.59-61.59 11.62-31.37-62.75Z"/>
+<path d="M828.28 1406.92l49.96 44.16 58.11-19.76 16.26-66.23-49.96-38.35-62.75 16.27-11.62 63.91Z"/>
+<g fill="url(#rgWhite)">
+<circle cx="787.61" cy="1318.6" r="18.3"/>
+<circle cx="950.29" cy="1365.09" r="18.3"/>
+<circle cx="765.53" cy="1410.92" r="18.3"/>
+<circle cx="877.08" cy="1445.27" r="18.3"/>
+</g>
+<path class="structure" d="M775 1324.59l-38 32 21 41m20 18 51-9 12-62-39-20m39 20 61-18 36 28m11 24-11 52-48 17m-26-9-35-32m-83-49 30-26m70 21-9 49m57 38 36-13m8 4 33 29m-72-133 11-49m6 0-11 49"/>
+</g>
+<use xlink:href="#guanine" transform="translate(1413,-826) scale(-1,1) rotate(12)"/>
+<switch><text x="915" y="1272.6" id="trsvg156"><tspan id="trsvg72">O</tspan></text></switch>
+<switch><text x="788" y="1323.6" id="trsvg157"><tspan id="trsvg73">N</tspan></text></switch>
+<switch><text x="961" y="1375.6" id="trsvg158"><tspan id="trsvg74">NH</tspan></text></switch>
+<switch><text x="765" y="1423.6" id="trsvg159"><tspan id="trsvg75">N</tspan></text></switch>
+<switch><text x="877" y="1457.6" id="trsvg160"><tspan id="trsvg76">N</tspan></text></switch>
+<switch><text x="990" y="1482.6" id="trsvg161"><tspan id="trsvg77">NH</tspan><tspan dy="5" id="trsvg78">2</tspan></text></switch>
+<switch><text x="783" y="609.6" id="trsvg162"><tspan id="trsvg79">O</tspan></text></switch>
+<switch><text x="920" y="631.6" id="trsvg163"><tspan id="trsvg80">N</tspan></text></switch>
+<switch><text x="770" y="717.6" id="trsvg164"><tspan id="trsvg81">HN</tspan></text></switch>
+<switch><text x="960" y="722.6" id="trsvg165"><tspan id="trsvg82">N</tspan></text></switch>
+<switch><text x="862" y="780.6" id="trsvg166"><tspan id="trsvg83">N</tspan></text></switch>
+<switch><text x="749" y="827.6" id="trsvg167"><tspan id="trsvg84">H</tspan><tspan dy="5" id="trsvg85">2</tspan><tspan dy="-5" id="trsvg86">N</tspan></text></switch>
+</g>
+
+<path d="M677.59 272.49l48.59-16.09M696.81 379.77l49.68-19.43m-26.5 239.25 54 2m-73 111h52m-66.29 108h40.27m69.9 107 40.67-2m-32.19 110.97 50.68 1.07m70.73 222.19L963 1241.76m13.47 121.28 49.62-18.54m-14.39 125.14 49.45-21.2" fill="none" stroke="#7F7F7F" stroke-width="5" stroke-dasharray="5,5"/>
+
+<g font-size="48">
+<switch>
+<text x="998.08" y="293.56" systemLanguage="ru" id="trsvg168"><tspan id="trsvg87">3'-&#x43A;&#x43E;&#x43D;&#x435;&#x446;</tspan></text>
+<text x="998.08" y="293.56" systemLanguage="de" id="trsvg169"><tspan id="trsvg88">3&#x2032; Ende</tspan></text>
+
+<text x="998.08" y="293.56" id="trsvg170-vi" systemLanguage="vi"><tspan id="trsvg89-vi">&#x110;&#x1EA7;u 3'</tspan></text><text x="998.08" y="293.56" id="trsvg170"><tspan id="trsvg89">3&#x2032; end</tspan></text></switch>
+<switch>
+<text x="1317.45" y="1710.75" systemLanguage="ru" id="trsvg171"><tspan id="trsvg90">5'-&#x43A;&#x43E;&#x43D;&#x435;&#x446;</tspan></text>
+<text x="1317.45" y="1710.75" systemLanguage="de" id="trsvg172"><tspan id="trsvg91">5&#x2032; Ende</tspan></text>
+
+<text x="1317.45" y="1710.75" id="trsvg173-vi" systemLanguage="vi"><tspan id="trsvg92-vi">&#x110;&#x1EA7;u 5'</tspan></text><text x="1317.45" y="1710.75" id="trsvg173"><tspan id="trsvg92">5&#x2032; end</tspan></text></switch>
+<switch>
+<text x="571.68" y="1632.95" systemLanguage="ru" id="trsvg174"><tspan id="trsvg93">3'-&#x43A;&#x43E;&#x43D;&#x435;&#x446;</tspan></text>
+<text x="571.68" y="1632.95" systemLanguage="de" id="trsvg175"><tspan id="trsvg94">3&#x2032; Ende</tspan></text>
+
+<text x="571.68" y="1632.95" id="trsvg176-vi" systemLanguage="vi"><tspan id="trsvg95-vi">&#x110;&#x1EA7;u 3'</tspan></text><text x="571.68" y="1632.95" id="trsvg176"><tspan id="trsvg95">3&#x2032; end</tspan></text></switch>
+<switch>
+<text x="105.68" y="246.76" systemLanguage="ru" id="trsvg177"><tspan id="trsvg96">5'-&#x43A;&#x43E;&#x43D;&#x435;&#x446;</tspan></text>
+<text x="105.68" y="246.76" systemLanguage="de" id="trsvg178"><tspan id="trsvg97">5&#x2032; Ende</tspan></text>
+
+<text x="105.68" y="246.76" id="trsvg179-vi" systemLanguage="vi"><tspan id="trsvg98-vi">&#x110;&#x1EA7;u 5'</tspan></text><text x="105.68" y="246.76" id="trsvg179"><tspan id="trsvg98">5&#x2032; end</tspan></text></switch>
+</g>
+</svg>

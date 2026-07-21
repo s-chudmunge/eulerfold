@@ -4,7 +4,7 @@ authors: "Yao et al. (2023)"
 citation: "Yao, S., Yu, D., Zhao, J., Shafran, I., McManus, T. L., Narasimhan, K., & Cao, Y. (2023). Tree of thoughts: Deliberate problem solving with large language models. arXiv preprint arXiv:2305.10601."
 link: "https://arxiv.org/abs/2305.10601"
 slug: "tree-of-thoughts-deliberate-search"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2305.10601/assets/x1.png"
+heroImage: "/images/research-decoded/tree-of-thoughts-deliberate-search.png"
 ---
 
 Large language models often struggle with tasks that require strategic planning or global reasoning because they follow a linear, token-level prediction path. The 2023 Tree of Thoughts (ToT) framework addresses this by allowing models to explore multiple reasoning paths simultaneously and evaluate the progress of each intermediate step. Researchers from Princeton and Google DeepMind proposed this transition from a single stream of text to a structured search through a space of ideas, enabling models to backtrack when they encounter logical dead ends.

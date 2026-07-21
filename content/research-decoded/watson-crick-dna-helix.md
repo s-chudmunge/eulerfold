@@ -4,7 +4,7 @@ authors: "Watson & Crick (1953)"
 citation: "Watson, J. D., & Crick, F. H. (1953). Molecular structure of nucleic acids: a structure for deoxyribose nucleic acid. nature, 171(4356), 737-738."
 link: "https://profiles.nlm.nih.gov/spotlight/sc/catalog/nlm:nlmuid-101584582X381-doc"
 slug: "watson-crick-dna-helix"
-heroImage: "https://www.nature.com/scitable/content/ne0000/ne0000/ne0000/ne0000/14668786/watson_crick_fig2_1.jpg"
+heroImage: "/images/research-decoded/watson-crick-dna-helix.svg"
 ---
 
 In 1953, James Watson and Francis Crick proposed a double-helical structure for deoxyribonucleic acid (DNA), identifying the physical architecture that allows for the storage and replication of genetic information. Prior to this discovery, while DNA was recognized as the primary carrier of heredity, its molecular arrangement remained unknown. The proposed model provided a geometric explanation for how biological instructions are encoded within a chemical structure, shifting the study of life from descriptive biology to the analysis of molecular logic and stereochemical constraints.

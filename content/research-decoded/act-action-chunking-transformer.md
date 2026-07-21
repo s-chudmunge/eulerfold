@@ -4,7 +4,7 @@ authors: "Zhao et al. (2023)"
 citation: "Zhao, T. Z., Kumar, V., Levine, S., & Finn, C. (2023). Learning fine-grained bimanual manipulation with low-cost hardware. arXiv preprint arXiv:2304.13705."
 link: "https://arxiv.org/abs/2304.13705"
 slug: "act-action-chunking-transformer"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2304.13705/assets/x1.png"
+heroImage: "/images/research-decoded/act-action-chunking-transformer.png"
 ---
 
 # ACT: Action Chunking Transformer

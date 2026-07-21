@@ -4,7 +4,7 @@ authors: "Ho et al. (UC Berkeley, 2020)"
 citation: "Ho, J., Jain, A., & Abbeel, P. (2020). Denoising diffusion probabilistic models. Advances in neural information processing systems, 33, 6840-6851."
 link: "https://arxiv.org/abs/2006.11239"
 slug: "ddpm-diffusion-models"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2006.11239/assets/images/celebahq256_header_image_4x4.png"
+heroImage: "/images/research-decoded/ddpm-diffusion-models.png"
 ---
 
 In 2020, Jonathan Ho and colleagues introduced Denoising Diffusion Probabilistic Models (DDPM), a generative modeling framework that utilizes a sequence of iterative denoising steps to reconstruct data from Gaussian noise. This approach addresses the limitations of competitive architectures like GANs by framing the generation problem as the reversal of a controlled degradation process. The researchers demonstrated that by training a model to predict the noise injected into a signal at discrete time steps, high-fidelity synthesis can be achieved through a stable, non-adversarial optimization objective.

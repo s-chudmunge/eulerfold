@@ -4,7 +4,7 @@ authors: "Rasmus Pagh & Flemming Rodler (2004)"
 citation: "Pagh, R., & Rodler, F. F. (2004). Cuckoo hashing. Journal of Algorithms, 51(2), 122-144."
 link: "https://doi.org/10.1016/j.jalgor.2003.12.002"
 slug: "pagh-rodler-cuckoo-hashing"
-heroImage: null
+heroImage: "/images/research-decoded/pagh-rodler-cuckoo-hashing.svg"
 ---
 
 In 2004, Rasmus Pagh and Flemming Rodler introduced a dictionary data structure characterized by a worst-case constant lookup time. Prior to this research, standard hashing methods such as chaining or linear probing exhibited variable lookup performance that could degrade significantly under high load or adversarial conditions. Pagh and Rodler demonstrated that by restricting each key to a maximum of two potential locations within the table and utilizing a displacement mechanism for insertions, a system can guarantee $O(1)$ lookup complexity independent of the dataset size.

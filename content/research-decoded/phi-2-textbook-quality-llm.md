@@ -4,7 +4,7 @@ authors: "Li et al. (2023)"
 citation: "Li, Y., Bubeck, S., Eldan, R., Del Giorno, A., Gunasekar, S., & Lee, Y. T. (2023). Textbooks Are All You Need II: phi-1.5 Technical Report. arXiv:2309.05463."
 link: "https://arxiv.org/abs/2309.05463"
 slug: "phi-2-textbook-quality-llm"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2309.05463/assets/x1.png"
+heroImage: "/images/research-decoded/phi-2-textbook-quality-llm.png"
 ---
 
 The 2023 Phi-2 paper from Microsoft Research challenged the standard scaling laws of artificial intelligence by prioritizing data quality over volume. While most models were being trained on trillions of tokens of raw web-crawled text, researchers focused on high-signal, textbook-quality data. By curating a mixture of filtered educational content and synthetic reasoning examples, they developed a 2.7-billion parameter model that could match the reasoning capabilities of systems twenty-five times its size. This shift demonstrated that model intelligence is a function of the clarity of the training signal rather than the sheer volume of exposure.

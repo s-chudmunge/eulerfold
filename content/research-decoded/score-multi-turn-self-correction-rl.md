@@ -4,7 +4,7 @@ authors: "Kumar et al. (2024)"
 citation: "Kumar, A., et al. (2024). Training Language Models to Self-Correct via Reinforcement Learning. arXiv preprint arXiv:2409.12917."
 link: "https://arxiv.org/abs/2409.12917"
 slug: "score-multi-turn-self-correction-rl"
-heroImage: "https://arxiv.org/html/2409.12917v1/x1.png"
+heroImage: "/images/research-decoded/score-multi-turn-self-correction-rl.png"
 ---
 
 # SCoRe: Multi-Turn RL for Intrinsic Self-Correction
@@ -21,7 +21,7 @@ SCoRe bypasses these issues by training entirely on **self-generated data**—th
 
 ## The Two-Stage RL Pipeline {#training-pipeline}
 
-![SCoRe performance comparison on the MATH benchmark and inference-time scaling behavior.](https://arxiv.org/html/2409.12917v1/x1.png)
+![SCoRe performance comparison on the MATH benchmark and inference-time scaling behavior.](https://ar5iv.labs.arxiv.org/html/2409.12917/assets/x1.png)
 
 _SCoRe performance comparison on the MATH benchmark and inference-time scaling behavior._
 

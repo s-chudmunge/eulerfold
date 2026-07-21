@@ -4,7 +4,7 @@ authors: "Andrew Chi-Chih Yao (1982)"
 citation: "Yao, A. C. (1982). Protocols for secure computations. In 23rd Annual Symposium on Foundations of Computer Science (SFOCS) (pp. 160-164). IEEE."
 link: "https://www.cs.wisc.edu/~shuchi/courses/710-S05/yao82.pdf"
 slug: "secure-multi-party-computation"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/e/e0/Two_parties_computation.svg"
+heroImage: "/images/research-decoded/secure-multi-party-computation.png"
 ---
 
 In 1982, Andrew Yao introduced a mathematical framework for jointly computing functions over private inputs such that no participant learns anything about the others' data beyond the final output. This framework, termed Secure Multi-Party Computation (MPC), addresses the "Millionaires' Problem," where two parties want to identify which possesses the larger value without revealing their exact numerical magnitude. Yao proved that any computable function can be transformed into a secure protocol through the use of garbled circuits and oblivious transfer. This discovery established that "privacy" and "collaboration" are not mutually exclusive, established the foundation for modern secure auctions, private voting, and collaborative data analysis.

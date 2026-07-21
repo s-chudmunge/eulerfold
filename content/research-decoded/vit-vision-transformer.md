@@ -4,7 +4,7 @@ authors: "Alexey Dosovitskiy et al. (Google Research, 2020)"
 citation: "Dosovitskiy, A., Beyer, L., Kolesnikov, A., Weissenborn, D., Zhai, X., Unterthiner, T., ... & Houlsby, N. (2020). An image is worth 16x16 words: Transformers for image recognition at scale. arXiv preprint arXiv:2010.11929."
 link: "https://arxiv.org/abs/2010.11929"
 slug: "vit-vision-transformer"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2010.11929/assets/x1.png"
+heroImage: "/images/research-decoded/vit-vision-transformer.png"
 ---
 
 In 2020, researchers at Google Research demonstrated that the Transformer architecture, originally designed for natural language processing, can outperform convolutional neural networks (CNNs) on large-scale image recognition tasks. Prior to this research, computer vision was dominated by architectures that utilized hand-coded inductive biases, such as translation invariance and locality, to process pixel data. The researchers proved that by treating an image as a sequence of discrete patches and removing these built-in assumptions, a general-purpose attentive model can learn the spatial relationships of the physical world directly from data, establishing a unified framework for both vision and language.

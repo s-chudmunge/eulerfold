@@ -4,7 +4,7 @@ authors: "Amodei et al. (2016)"
 citation: "Amodei, D., Olah, C., Steinhardt, J., Christiano, P., Schulman, J., & Man\u00e9, D. (2016). Concrete problems in AI safety. arXiv preprint arXiv:1606.06565."
 link: "https://arxiv.org/abs/1606.06565"
 slug: "concrete-problems-ai-safety"
-heroImage: null
+heroImage: "/images/research-decoded/concrete-problems-ai-safety.png"
 ---
 
 In 2016, researchers from Google Brain, OpenAI, and Stanford identified a set of tractable research problems focused on the technical failure modes of machine learning systems. This paper moved the discussion of artificial intelligence safety from philosophical abstractions toward empirical engineering. The authors argued that accidents in machine learning are often the result of poorly specified objective functions or a lack of robustness in the learning process. By categorizing these failures into specific problems like reward hacking and unintended side effects, the work established a technical framework for building systems that remain predictable as they increase in capability.

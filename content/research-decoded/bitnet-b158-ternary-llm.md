@@ -4,7 +4,7 @@ authors: "Shuming Ma et al. (Microsoft Research, 2024)"
 citation: "Ma, S., et al. (2024). The Era of 1-bit LLMs: All Large Language Models are in 1.58 Bits. arXiv preprint arXiv:2402.17764."
 link: "https://arxiv.org/abs/2402.17764"
 slug: "bitnet-b158-ternary-llm"
-heroImage: "https://arxiv.org/html/2402.17764v1/x1.png"
+heroImage: "/images/research-decoded/bitnet-b158-ternary-llm.png"
 ---
 
 In 2024, researchers at Microsoft Research established that large language models can achieve parity with full-precision architectures while utilizing only 1.58 bits per parameter. By restricting weights to the ternary set $\{-1, 0, 1\}$, BitNet b1.58 shatters the reliance on high-precision floating-point arithmetic. This shift replaces energy-intensive multiplications with simple integer additions and subtractions, enabling a 71-fold reduction in arithmetic energy consumption compared to FP16 baselines. This work demonstrates that the high precision of traditional models is largely redundant, and that the core patterns of language can be captured through low-precision, high-capacity architectures.

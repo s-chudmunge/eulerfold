@@ -4,7 +4,7 @@ authors: "Kaplan et al. (OpenAI, 2020)"
 citation: "Kaplan, J., McCandlish, S., Henighan, T., Brown, T. B., Chess, B., Child, R., ... & Amodei, D. (2020). Scaling laws for neural language models. arXiv preprint arXiv:2001.08361."
 link: "https://arxiv.org/abs/2001.08361"
 slug: "scaling-laws-neural-language-models"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2001.08361/assets/x1.png"
+heroImage: "/images/research-decoded/scaling-laws-neural-language-models.png"
 ---
 
 In 2020, researchers at OpenAI established that the performance of large language models follows a predictable power-law relationship with three primary variables: the number of non-embedding parameters, the size of the training dataset, and the total amount of compute used for optimization. This research transitioned the development of neural architectures from heuristic experimentation toward a rigorous engineering discipline, demonstrating that cross-entropy loss improves smoothly over seven orders of magnitude as these factors are increased. The findings revealed that the efficiency of language modeling is a structural property of scale, allowing for the precise prediction of the behavior of massive models through small-scale experimentation.

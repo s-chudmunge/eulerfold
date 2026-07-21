@@ -4,7 +4,7 @@ authors: "Schick et al. (2023)"
 citation: "Schick, T., Dwivedi-Yu, J., Dess\u00ec, R., Raileanu, R., Lomeli, M., Zettlemoyer, L., ... & Scialom, T. (2023). Toolformer: Language models can teach themselves to use tools. arXiv preprint arXiv:2302.04761."
 link: "https://arxiv.org/abs/2302.04761"
 slug: "toolformer-self-supervised-tools"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2302.04761/assets/x1.png"
+heroImage: "/images/research-decoded/toolformer-self-supervised-tools.png"
 ---
 
 Language models often struggle with tasks that require precise arithmetic, up-to-date facts, or temporal reasoning. The 2023 Toolformer paper from Meta AI introduced a self-supervised method for models to learn the use of external tools. By identifying where the result of an API call would improve the prediction of the next word, the model can autonomously integrate tools like calculators, search engines, and calendars into its fundamental predictive process. This approach avoids the need for large-scale human annotation or specialized architectural modifications.

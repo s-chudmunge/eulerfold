@@ -4,7 +4,7 @@ authors: "Amir Abboud & Virginia Vassilevska Williams (2014)"
 citation: "Abboud, A., & Williams, V. V. (2014). Popular conjectures imply strong lower bounds for dynamic problems. In 2014 IEEE 55th Annual Symposium on Foundations of Computer Science (pp. 434-443). IEEE."
 link: "https://doi.org/10.1109/FOCS.2014.53"
 slug: "abboud-williams-fine-grained-complexity"
-heroImage: null
+heroImage: "/images/research-decoded/abboud-williams-fine-grained-complexity.jpg"
 ---
 
 In 2014, Amir Abboud and Virginia Vassilevska Williams established a framework for analyzing the exact polynomial exponents of algorithmic complexity, initiating the field of fine-grained complexity. While traditional complexity theory utilizes broad classes like P and NP, this research focuses on identifying the theoretical barriers to further optimizing problems that are already known to be solvable in polynomial time. By establishing a web of conditional lower bounds, the researchers proved that significant improvements to foundational algorithms—such as those for edit distance or all-pairs shortest paths—would necessitate a major breakthrough in our understanding of the Boolean satisfiability problem.

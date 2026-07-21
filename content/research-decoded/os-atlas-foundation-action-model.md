@@ -4,7 +4,7 @@ authors: "Zheng et al. (2024)"
 citation: "Zheng, Y., et al. (2024). OS-ATLAS: A Foundation Action Model for Generalist GUI Agents. arXiv preprint arXiv:2410.23218."
 link: "https://arxiv.org/abs/2410.23218"
 slug: "os-atlas-foundation-action-model"
-heroImage: "https://arxiv.org/html/2410.23218/x1.png"
+heroImage: "/images/research-decoded/os-atlas-foundation-action-model.png"
 ---
 
 # OS-Atlas: A Foundation Action Model for Universal Computer Use

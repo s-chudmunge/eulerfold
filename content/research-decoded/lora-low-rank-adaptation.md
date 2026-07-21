@@ -4,7 +4,7 @@ authors: "Hu et al. (2021)"
 citation: "Hu, E. J., Shen, Y., Wallis, P., Allen-Zhu, Z., Li, Y., Wang, S., ... & Chen, W. (2021). Lora: Low-rank adaptation of large language models. arXiv preprint arXiv:2106.09685."
 link: "https://arxiv.org/abs/2106.09685"
 slug: "lora-low-rank-adaptation"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2106.09685/assets/x1.png"
+heroImage: "/images/research-decoded/lora-low-rank-adaptation.png"
 ---
 
 The 2021 LoRA paper by Hu et al. introduced a more efficient method for adapting large language models to specific tasks. Prior to this, fine-tuning large models required either full updates to hundreds of billions of parameters or the addition of extra layers that increased inference latency. Full fine-tuning was computationally expensive and difficult to store for multiple applications, while adapter layers slowed down processing. LoRA addresses these issues by reparameterizing weight updates as low-rank decompositions, allowing for task-specific adaptation without significant resource overhead.

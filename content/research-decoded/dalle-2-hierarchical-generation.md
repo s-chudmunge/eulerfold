@@ -4,7 +4,7 @@ authors: "Ramesh et al. (2022)"
 citation: "Ramesh, A., Dhariwal, P., Nichol, A., Chu, C., & Chen, M. (2022). Hierarchical text-conditional image generation with CLIP latents. arXiv preprint arXiv:2204.06125."
 link: "https://arxiv.org/abs/2204.06125"
 slug: "dalle-2-hierarchical-generation"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2204.06125/assets/x1.png"
+heroImage: "/images/research-decoded/dalle-2-hierarchical-generation.png"
 ---
 
 The 2022 DALL-E 2 paper from OpenAI introduced a hierarchical approach to generating images from natural language. While earlier models directly mapped text tokens to pixel values, DALL-E 2 employs a two-stage process that first maps text to a CLIP image embedding and then decodes that embedding into a final image. This architecture separates conceptual intent from graphical execution, allowing for greater control over image variations and style without changing the underlying meaning of the prompt.

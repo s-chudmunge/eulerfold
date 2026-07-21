@@ -4,7 +4,7 @@ authors: "Robert Floyd (1962)"
 citation: "Floyd, R. W. (1962). Algorithm 97: Shortest path. Communications of the ACM, 5(6), 345."
 link: "https://doi.org/10.1145/367766.368168"
 slug: "floyd-shortest-path"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2e/Floyd-Warshall_example.gif/800px-Floyd-Warshall_example.gif.png"
+heroImage: "/images/research-decoded/floyd-shortest-path.png"
 ---
 
 In 1962, Robert Floyd published a method for determining the shortest paths between all pairs of nodes in a weighted graph through a unified iterative process. This algorithm, which evolved from earlier work by Stephen Warshall on transitive closure, utilizes a triply-nested loop to systematically evaluate whether a path between two nodes can be improved by passing through an intermediate vertex. By treating the entire network as a dense matrix, the algorithm identifies the optimal connectivity of a graph in $O(V^3)$ time, providing a fundamental example of dynamic programming applied to global network analysis.

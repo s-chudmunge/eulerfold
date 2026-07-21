@@ -4,7 +4,6 @@ authors: "Aram Harrow, Avinatan Hassidim, & Seth Lloyd (2008)"
 citation: "Harrow, A. W., Hassidim, A., & Lloyd, S. (2009). Quantum algorithm for linear systems of equations. Physical Review Letters, 103(15), 150502."
 link: "https://doi.org/10.1103/PhysRevLett.103.150502"
 slug: "hhl-algorithm"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/6/6b/HHL_algorithm.svg"
 ---
 
 In 2008, Aram Harrow, Avinatan Hassidim, and Seth Lloyd introduced a quantum algorithm for solving large-scale systems of linear equations $A\vec{x} = \vec{b}$ with an exponential speedup in dimensionality compared to classical methods. Prior to this research, even the most efficient classical algorithms for sparse matrices required time scaling at least linearly with the dimension $N$. The researchers demonstrated that by representing the vector $\vec{b}$ as a quantum state and utilizing the properties of spectral decomposition, the solution state $|x\rangle = A^{-1}|b\rangle$ can be prepared in $O(\operatorname{poly}(\log N))$ time. This work established linear algebra as a foundational primitive for quantum advantage, effectively digitalizing the solution of high-dimensional continuous systems.

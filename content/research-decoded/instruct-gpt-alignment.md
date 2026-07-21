@@ -4,7 +4,7 @@ authors: "Long Ouyang et al. (OpenAI, 2022)"
 citation: "Ouyang, L., et al. (2022). Training language models to follow instructions with human feedback. Advances in Neural Information Processing Systems, 35, 27730-27744."
 link: "https://arxiv.org/abs/2203.02155"
 slug: "instruct-gpt-alignment"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2203.02155/assets/x1.png"
+heroImage: "/images/research-decoded/instruct-gpt-alignment.png"
 ---
 
 In 2022, researchers at OpenAI demonstrated that the utility of large language models can be significantly enhanced by shifting the optimization objective from next-token imitation to human intent alignment. While standard pre-training on massive text corpora allows models to store vast amounts of information, the resulting statistical distributions often produce unhelpful or untruthful outputs when prompted with specific instructions. The researchers introduced a multi-stage framework termed Reinforcement Learning from Human Feedback (RLHF), which utilizes a preference-based reward signal to steer the model toward helpful and safe behavior. This work proved that alignment is a more potent driver of functional intelligence than raw parameter scaling.

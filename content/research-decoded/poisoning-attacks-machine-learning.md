@@ -4,7 +4,7 @@ authors: "Battista Biggio, Blaine Nelson, & Pavel Laskov (2012)"
 citation: "Biggio, B., Nelson, B., & Laskov, P. (2012). Poisoning attacks against support vector machines. In Proceedings of the 29th International Conference on Machine Learning (ICML)."
 link: "https://arxiv.org/abs/1206.6389"
 slug: "poisoning-attacks-machine-learning"
-heroImage: "https://ar5iv.labs.arxiv.org/html/1206.6389/assets/x1.png"
+heroImage: "/images/research-decoded/poisoning-attacks-machine-learning.png"
 ---
 
 In 2012, researchers demonstrated that the integrity of machine learning models can be systematically subverted during the training phase through the strategic injection of malicious data. While adversarial examples target the model's behavior during inference, poisoning attacks target the model's very identity by fundamentally altering its decision boundaries. The researchers proved that for Support Vector Machines (SVMs), an attacker can identify optimal "poison" samples that maximize validation error with minimal dataset contamination. This work established that the security of an AI system is fundamentally tied to the purity and provenance of its training data, identifying data integrity as a primary constraint on automated intelligence.

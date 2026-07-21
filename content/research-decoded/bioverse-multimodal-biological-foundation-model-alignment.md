@@ -4,7 +4,7 @@ authors: "IBM Research Team (2025)"
 citation: "arXiv:2510.01428"
 link: "https://arxiv.org/abs/2510.01428"
 slug: "bioverse-multimodal-biological-foundation-model-alignment"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2510.01428/assets/figs/alignment_training.png"
+heroImage: "/images/research-decoded/bioverse-multimodal-biological-foundation-model-alignment.png"
 ---
 
 In 2025, researchers introduced BIOVERSE, a modular framework for aligning modality-specific biological foundation models (BioFMs)—such as protein or RNA sequences—into a shared generative semantic space. This research addresses the semantic isolation of biological embeddings, which typically form distinct, isolated clusters far removed from the natural language representations used by large language models (LLMs). The researchers demonstrated that by implementing a two-stage alignment process involving contrastive projection and "soft token" injection, a system can enable zero-shot reasoning directly on raw biological data as if it were a native vocabulary, established a new foundation for high-performance biological discovery on compact architectures.

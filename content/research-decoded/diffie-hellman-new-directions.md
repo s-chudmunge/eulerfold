@@ -4,7 +4,7 @@ authors: "Whitfield Diffie & Martin Hellman (1976)"
 citation: "Diffie, W., & Hellman, M. (1976). New directions in cryptography. IEEE Transactions on Information Theory, 22(6), 644-654."
 link: "https://ee.stanford.edu/~hellman/publications/24.pdf"
 slug: "diffie-hellman-new-directions"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/c/ca/Diffie-Hellman_Key_Exchange.svg"
+heroImage: "/images/research-decoded/diffie-hellman-new-directions.svg"
 ---
 
 In 1976, Whitfield Diffie and Martin Hellman introduced public-key cryptography, a method for secret sharing that removes the requirement for a pre-shared physical key. This research addressed the "key distribution problem" of symmetric cryptography, where participants were required to meet or use a trusted courier before initiating secure communication. The researchers proved that by utilizing the computational hardness of the discrete logarithm problem, two parties can establish a shared secret across an insecure channel without any prior interaction. This discovery effectively decoupled the security of a communication from the physical security of the initial key transfer, established the mathematical foundation for the modern secure internet.

@@ -4,7 +4,7 @@ authors: "Cong Wang et al. (2024)"
 citation: "Wang, C., et al. (2024). CRISPR-GPT: An LLM-based agent for automated design and reasoning in genome editing. arXiv preprint arXiv:2404.18021."
 link: "https://arxiv.org/abs/2404.18021"
 slug: "crispr-gpt-ai-assisted-genome-editing"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2404.18021/assets/x1.png"
+heroImage: "/images/research-decoded/crispr-gpt-ai-assisted-genome-editing.png"
 ---
 
 In 2024, researchers introduced CRISPR-GPT, an automated system for genome editing that decouples high-level biological reasoning from the precise generation of genomic sequences. This research addresses a fundamental limitation in the application of large language models (LLMs) to biology: the stochastic nature of token prediction, which often results in the hallucination of guide RNA (gRNA) or primer sequences that do not exist in nature. The researchers demonstrated that by utilizing a modular architecture governed by state machines and deterministic tool integration, a system can automate the design of complex CRISPR experiments while maintaining the precision required for physical wet-lab implementation.

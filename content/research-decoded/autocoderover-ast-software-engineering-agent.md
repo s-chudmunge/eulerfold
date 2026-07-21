@@ -4,7 +4,7 @@ authors: "Zhang et al. (2024)"
 citation: "Zhang, Y., et al. (2024). AutoCodeRover: Autonomous Software Engineer with Spectrum-based Fault Localization. arXiv preprint arXiv:2404.05427."
 link: "https://arxiv.org/abs/2404.05427"
 slug: "autocoderover-ast-software-engineering-agent"
-heroImage: "https://arxiv.org/html/2404.05427v1/x1.png"
+heroImage: "/images/research-decoded/autocoderover-ast-software-engineering-agent.png"
 ---
 
 # AutoCodeRover: AST-Aware Program Improvement

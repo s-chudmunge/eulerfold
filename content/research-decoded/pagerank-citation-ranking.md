@@ -4,14 +4,14 @@ authors: "Larry Page & Sergey Brin (1998)"
 citation: "Page, L., Brin, S., Motwani, R., & Winograd, T. (1998). The PageRank citation ranking: Bringing order to the web. Stanford InfoLab."
 link: "http://infolab.stanford.edu/~backrub/google.html"
 slug: "pagerank-citation-ranking"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/5/55/Page_rank_animation.gif"
+heroImage: "/images/research-decoded/pagerank-citation-ranking.gif"
 ---
 
 In 1998, Larry Page and Sergey Brin introduced PageRank, an algorithm for measuring the relative importance of documents within a hyperlinked network. Prior to this research, web search engines primarily utilized local keyword matching, which was susceptible to manipulation and often failed to identify the most authoritative sources. The researchers demonstrated that by treating hyperlinks as objective votes of confidence and utilizing a global, recursive ranking mechanism, the importance of a page can be determined by the collective topological structure of the web itself. This work established the mathematical foundation for decentralized information retrieval and the modern search engine.
 
 ## The Recursive Definition of Authority {#recursive-importance}
 
-![The PageRank algorithm: a page is important if it is pointed to by other important pages.](https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/PageRanks-Example.svg/500px-PageRanks-Example.svg.png)
+![The PageRank algorithm: a page is important if it is pointed to by other important pages.](/images/research-decoded/pagerank-citation-ranking_1.svg)
 
 _The PageRank algorithm: a page is important if it is pointed to by other important pages._
 

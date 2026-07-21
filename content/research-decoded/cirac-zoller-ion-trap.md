@@ -4,7 +4,7 @@ authors: "J. Ignacio Cirac & Peter Zoller (1995)"
 citation: "Cirac, J. I., & Zoller, P. (1995). Quantum computations with cold trapped ions. Physical Review Letters, 74(20), 4091-4094."
 link: "https://doi.org/10.1103/PhysRevLett.74.4091"
 slug: "cirac-zoller-ion-trap"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/d/d1/Diagram_of_the_Cirac-Zoller_CNOT_gate.svg"
+heroImage: "/images/research-decoded/cirac-zoller-ion-trap.svg"
 ---
 
 In 1995, J. Ignacio Cirac and Peter Zoller proposed a physical architecture for a scalable quantum computer using a string of laser-cooled ions confined in an electromagnetic trap. This research addressed the primary requirement for quantum hardware: the identification of a system that combines long-lived qubit states with a controllable mechanism for executing multi-qubit logical gates. The researchers demonstrated that the collective vibrational motion of the ions acts as a shared data bus, allowing for the coherent transfer of information between distant qubits through directed laser interactions.

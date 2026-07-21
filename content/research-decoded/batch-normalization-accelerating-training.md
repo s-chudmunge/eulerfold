@@ -4,7 +4,7 @@ authors: "Sergey Ioffe & Christian Szegedy (2015)"
 citation: "Ioffe, S., & Szegedy, C. (2015). Batch normalization: Accelerating deep network training by reducing internal covariate shift. In International conference on machine learning (pp. 448-456). PMLR."
 link: "https://proceedings.mlr.press/v37/ioffe15.html"
 slug: "batch-normalization-accelerating-training"
-heroImage: "https://ar5iv.labs.arxiv.org/html/1502.03167/assets/x1.png"
+heroImage: "/images/research-decoded/batch-normalization-accelerating-training.png"
 ---
 
 In 2015, Sergey Ioffe and Christian Szegedy addressed a primary bottleneck in deep neural network training by introducing Batch Normalization, a method for standardizing the inputs to each layer within a model. Prior to this research, training deep architectures required precise parameter initialization and small learning rates to prevent the vanishing or exploding of gradients as they propagated through the network. The researchers demonstrated that by standardizing the mean and variance of layer activations for each mini-batch, the training process becomes significantly more robust and efficient, enabling the use of higher learning rates and accelerating the convergence of state-of-the-art architectures.

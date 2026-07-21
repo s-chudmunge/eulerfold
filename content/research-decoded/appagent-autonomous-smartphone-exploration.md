@@ -4,7 +4,7 @@ authors: "Chi et al. (2024)"
 citation: "Chi, Z., et al. (2024). AppAgent: Multimodal Agents as Smartphone Users. arXiv preprint arXiv:2312.13771."
 link: "https://arxiv.org/abs/2312.13771"
 slug: "appagent-autonomous-smartphone-exploration"
-heroImage: "https://arxiv.org/html/2312.13771v1/x2.png"
+heroImage: "/images/research-decoded/appagent-autonomous-smartphone-exploration.png"
 ---
 
 # AppAgent: Autonomous Exploration and Persistent UI Knowledge

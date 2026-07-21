@@ -4,7 +4,7 @@ authors: "Robin Rombach et al. (LMU Munich, 2021)"
 citation: "Rombach, R., Blattmann, A., Lorenz, D., Esser, P., & Ommer, B. (2022). High-resolution image synthesis with latent diffusion models. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition (pp. 10684-10695)."
 link: "https://arxiv.org/abs/2112.10752"
 slug: "stable-diffusion-latent-space"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2112.10752/assets/img/generativevscompressive4.jpg"
+heroImage: "/images/research-decoded/stable-diffusion-latent-space.jpg"
 ---
 
 In 2021, researchers at LMU Munich and Runway introduced Latent Diffusion Models (LDM), later commercialized as Stable Diffusion, to address the computational overhead of high-resolution image synthesis. While previous diffusion models operated directly on image pixels, they were restricted by significant memory and compute requirements. The researchers demonstrated that by performing the diffusion process within a compressed latent space—a lower-dimensional mathematical representation of an image—high-fidelity generation can be achieved on consumer-grade hardware. This architectural shift decoupled the semantic creation of content from the high-resolution rendering of pixels.

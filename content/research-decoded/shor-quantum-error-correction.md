@@ -4,7 +4,7 @@ authors: "Peter Shor (1995)"
 citation: "Shor, P. W. (1995). Scheme for reducing decoherence in quantum computer memory. Physical Review A, 52(4), R2493-R2496."
 link: "https://doi.org/10.1103/PhysRevA.52.R2493"
 slug: "shor-quantum-error-correction"
-heroImage: null
+heroImage: "/images/research-decoded/shor-quantum-error-correction.png"
 ---
 
 In 1995, Peter Shor demonstrated that quantum information can be protected from environmental decoherence through the use of redundant entanglement, resolving a theoretical crisis that threatened the feasibility of quantum computation. Prior to this research, it was widely believed that the no-cloning theorem—which prevents the creation of identical copies of an unknown quantum state—made traditional error correction impossible. Shor proved that while a state cannot be copied, its logical content can be distributed across a larger block of physical qubits such that local errors can be detected and reversed without collapsing the underlying superposition.

@@ -4,7 +4,7 @@ authors: "Park et al. (2023)"
 citation: "Park, J. S., O'Brien, J. C., Cai, C. J., Morris, M. R., Liang, P., & Bernstein, M. S. (2023). Generative agents: Interactive simulacra of human behavior. arXiv preprint arXiv:2304.03442."
 link: "https://arxiv.org/abs/2304.03442"
 slug: "generative-agents-human-simulacra"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2304.03442/assets/figures/figure_cover4.png"
+heroImage: "/images/research-decoded/generative-agents-human-simulacra.png"
 ---
 
 Simulating believable human behavior in digital environments has historically relied on rigid scripts or simple state machines. In 2023, researchers from Stanford and Google introduced an architecture for generative agents that use large language models to maintain a persistent memory and form autonomous plans. By populating a sandbox environment with twenty-five agents, the study observed how individual memory and reflection could lead to complex social dynamics, such as information diffusion and coordinated activity.

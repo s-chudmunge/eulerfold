@@ -4,7 +4,7 @@ authors: "Joseph Redmon et al. (University of Washington, 2015)"
 citation: "Redmon, J., Divvala, S., Girshick, R., & Farhadi, A. (2016). You only look once: Unified, real-time object detection. In Proceedings of the IEEE conference on computer vision and pattern recognition (pp. 779-788)."
 link: "https://arxiv.org/abs/1506.02640"
 slug: "yolo-object-detection"
-heroImage: "https://ar5iv.labs.arxiv.org/html/1506.02640/assets/x2.png"
+heroImage: "/images/research-decoded/yolo-object-detection.png"
 ---
 
 In 2015, Joseph Redmon and colleagues introduced YOLO (You Only Look Once), a framework that reframes object detection as a single regression problem mapping image pixels directly to bounding box coordinates and class probabilities. Prior to this research, object detection systems utilized multi-stage pipelines—such as R-CNN—that relied on region proposal algorithms followed by independent classification and refinement steps. The researchers demonstrated that by processing the entire image through a single convolutional network in a single forward pass, detection can be performed in real-time with high frames-per-second (FPS) throughput, enabling the transition of computer vision from static analysis to live video understanding.

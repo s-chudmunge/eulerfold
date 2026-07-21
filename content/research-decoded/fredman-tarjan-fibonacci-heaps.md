@@ -4,7 +4,7 @@ authors: "Michael Fredman & Robert Tarjan (1987)"
 citation: "Fredman, M. L., & Tarjan, R. E. (1987). Fibonacci heaps and their uses in improved network optimization algorithms. Journal of the ACM (JACM), 34(3), 596-615."
 link: "https://doi.org/10.1145/28869.28874"
 slug: "fredman-tarjan-fibonacci-heaps"
-heroImage: null
+heroImage: "/images/research-decoded/fredman-tarjan-fibonacci-heaps.png"
 ---
 
 In 1987, Michael Fredman and Robert Tarjan introduced a data structure termed the Fibonacci heap, which utilizes an amortized analysis framework to optimize priority queue operations. Prior to this research, standard heap implementations such as binary or binomial heaps required logarithmic time for both extracting the minimum element and decreasing the value of a key. Fredman and Tarjan demonstrated that by adopting a strategy of structural laziness, the cost of decreasing a key can be reduced to constant amortized time, enabling a significant improvement in the theoretical complexity of foundational network optimization algorithms.

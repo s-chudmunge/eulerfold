@@ -4,7 +4,7 @@ authors: "Knuth, Morris, Pratt (1977)"
 citation: "Knuth, D. E., Morris, Jr, J. H., & Pratt, V. R. (1977). Fast pattern matching in strings. SIAM journal on computing, 6(2), 323-350."
 link: "https://doi.org/10.1137/0206024"
 slug: "knuth-morris-pratt-string-matching"
-heroImage: null
+heroImage: "/images/research-decoded/knuth-morris-pratt-string-matching.svg"
 ---
 
 In 1977, Donald Knuth, James Morris, and Vaughan Pratt published a method for identifying the occurrence of a pattern within a text string with linear time complexity. Prior to this research, standard matching techniques required a brute-force approach that frequently involved backtracking through previously examined characters, resulting in a worst-case performance of $O(n \times m)$. The researchers demonstrated that by analyzing the internal symmetry of a pattern before the search phase, it is possible to avoid redundant work and ensure that the pointer in the text never moves backward.

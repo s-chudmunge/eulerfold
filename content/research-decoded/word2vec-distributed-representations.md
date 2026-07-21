@@ -4,7 +4,7 @@ authors: "Mikolov et al. (2013)"
 citation: "Mikolov, T., Sutskever, I., Chen, K., Corrado, G. S., & Dean, J. (2013). Distributed representations of words and phrases and their compositionality. Advances in neural information processing systems, 26."
 link: "https://arxiv.org/abs/1310.4546"
 slug: "word2vec-distributed-representations"
-heroImage: "https://ar5iv.labs.arxiv.org/html/1310.4546/assets/x1.png"
+heroImage: "/images/research-decoded/word2vec-distributed-representations.png"
 ---
 
 In 2013, Tomas Mikolov and colleagues at Google introduced a method for mapping human language into a continuous geometric space, replacing discrete symbolic indices with dense, high-dimensional vectors. Prior to this research, words were represented as atomic units that lacked any mathematical relationship to one another. The researchers demonstrated that by training shallow neural networks to predict the context of a target word, individual tokens can be positioned in a coordinate system where geometric proximity correlates with semantic similarity. This shift enabled computers to perform algebraic operations on concepts, effectively digitalizing the relational structure of natural language.

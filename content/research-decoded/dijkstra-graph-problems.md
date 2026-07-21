@@ -4,7 +4,7 @@ authors: "Edsger Dijkstra (1959)"
 citation: "Dijkstra, E. W. (1959). A note on two problems in connexion with graphs. Numerische mathematik, 1(1), 269-271."
 link: "https://ir.cwi.nl/pub/9256/9256D.pdf"
 slug: "dijkstra-graph-problems"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/2/23/Dijkstras_progress_animation.gif"
+heroImage: "/images/research-decoded/dijkstra-graph-problems.gif"
 ---
 
 In 1959, Edsger Dijkstra published a paper describing iterative methods for solving two fundamental problems in graph theory: the determination of the shortest path between two nodes and the construction of a minimum spanning tree. Dijkstra demonstrated that these problems, which appear to require an exhaustive search of all possible paths, can be resolved through a greedy approach that maintains local optimality at each step. This work established the principle that computational efficiency is a direct result of identifying the underlying logical structure of a network.

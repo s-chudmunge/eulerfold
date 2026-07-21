@@ -4,14 +4,14 @@ authors: "Alexei Kitaev (1997)"
 citation: "Kitaev, A. Y. (2003). Fault-tolerant quantum computation by anyons. Annals of Physics, 303(1), 2-30."
 link: "https://arxiv.org/abs/quant-ph/9707021"
 slug: "kitaev-toric-code"
-heroImage: "https://ar5iv.labs.arxiv.org/html/quant-ph/9707021/assets/x1.png"
+heroImage: "/images/research-decoded/kitaev-toric-code.png"
 ---
 
 In 1997, Alexei Kitaev introduced the toric code, a model for fault-tolerant quantum memory that utilizes the global topological properties of a two-dimensional lattice to protect information from local noise. Prior to this research, quantum error correction relied on active, software-level parity checks to detect and reverse decoherence. Kitaev demonstrated that by encoding logical qubits into the degenerate ground state of a gapped Hamiltonian, information can be made intrinsically resilient to any perturbation that does not span the entire system. This finding established the field of topological quantum computing, where the robustness of a machine is a consequence of the geometry of its state space.
 
 ## Topological Degeneracy on the Torus {#topological-stability}
 
-![Square lattice on the torus illustrating the arrangement of physical qubits on edges and the definitions of vertex and face operators.](https://ar5iv.labs.arxiv.org/html/quant-ph/9707021/assets/x1.png)
+![Square lattice on the torus illustrating the arrangement of physical qubits on edges and the definitions of vertex and face operators.](/images/research-decoded/kitaev-toric-code_1.png)
 
 _Square lattice on the torus illustrating the arrangement of physical qubits on edges and the definitions of vertex and face operators._
 
@@ -19,7 +19,7 @@ The core technical mechanism of the toric code is the definition of a stabilizer
 
 ## Anyonic Excitations and Braiding Statistics {#anyonic-braiding}
 
-![Loops on the lattice and the dual lattice representing the movement of quasi-particles across the topological manifold.](https://ar5iv.labs.arxiv.org/html/quant-ph/9707021/assets/x2.png)
+![Loops on the lattice and the dual lattice representing the movement of quasi-particles across the topological manifold.](/images/research-decoded/kitaev-toric-code_1.png)
 
 _Loops on the lattice and the dual lattice representing the movement of quasi-particles across the topological manifold._
 

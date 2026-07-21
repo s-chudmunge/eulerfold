@@ -4,7 +4,7 @@ authors: "Alexander Kirillov et al. (Meta AI, 2023)"
 citation: "Kirillov, A., Mintun, E., Ravi, N., Mao, H., Rolland, C., Gustafson, L., ... & Girshick, R. (2023). Segment anything. arXiv preprint arXiv:2304.02643."
 link: "https://arxiv.org/abs/2304.02643"
 slug: "segment-anything-model"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2304.02643/assets/x3.png"
+heroImage: "/images/research-decoded/segment-anything-model.png"
 ---
 
 In 2023, researchers at Meta AI introduced the Segment Anything Model (SAM), a foundation model for computer vision designed to perform zero-shot image segmentation across a near-infinite variety of objects and environments. This research addresses the fragmentation of the segmentation field, where earlier models were trained for specialized categories—such as medical imaging or autonomous driving—on relatively small, manually labeled datasets. The researchers demonstrated that by defining a "promptable" segmentation task and training on a dataset of over 1.1 billion masks, a system can learn to identify any object based on a simple point, box, or text prompt, establishing a universal tool for visual decomposition.

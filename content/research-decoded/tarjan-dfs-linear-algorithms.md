@@ -4,7 +4,7 @@ authors: "Robert Tarjan (1972)"
 citation: "Tarjan, R. (1972). Depth-first search and linear graph algorithms. SIAM journal on computing, 1(2), 146-160."
 link: "https://doi.org/10.1137/0201010"
 slug: "tarjan-dfs-linear-algorithms"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/1/1f/Depth-first-tree.svg"
+heroImage: "/images/research-decoded/tarjan-dfs-linear-algorithms.svg"
 ---
 
 In 1972, Robert Tarjan introduced a set of algorithms that demonstrate how diverse graph problems can be resolved with optimal linear efficiency using a single depth-first search (DFS) traversal. Prior to this research, identifying structural properties such as strongly connected components required multiple passes or quadratic time complexity. Tarjan proved that by maintaining a structured history of the traversal—specifically through the use of stacks and low-link values—global properties of both directed and undirected graphs can be identified in a single pass of $O(V+E)$ complexity.

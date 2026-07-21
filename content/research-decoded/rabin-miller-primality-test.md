@@ -4,7 +4,7 @@ authors: "Michael Rabin (1980)"
 citation: "Rabin, M. O. (1980). Probabilistic algorithm for testing primality. Journal of Number Theory, 12(1), 128-138."
 link: "https://doi.org/10.1016/0022-314X(80)90084-0"
 slug: "rabin-miller-primality-test"
-heroImage: null
+heroImage: "/images/research-decoded/rabin-miller-primality-test.jpg"
 ---
 
 In 1980, Michael Rabin introduced a randomized algorithm for primality testing that identifies composite numbers with high probability through a series of modular exponentiation checks. Prior to this research, deterministic methods for distinguishing prime from composite integers were computationally prohibitive for large values, or relied on unproven mathematical conjectures such as the Generalized Riemann Hypothesis. Rabin demonstrated that by evaluating a number against a set of randomly selected bases, the probability of an erroneous classification can be reduced to an infinitesimal level, establishing a fundamental framework for large-scale primality testing in modern cryptography.

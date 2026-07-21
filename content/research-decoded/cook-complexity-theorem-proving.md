@@ -4,7 +4,7 @@ authors: "Stephen Cook (1971)"
 citation: "Cook, S. A. (1971). The complexity of theorem-proving procedures. In Proceedings of the third annual ACM symposium on Theory of computing (pp. 151-158)."
 link: "https://doi.org/10.1145/800157.805047"
 slug: "cook-complexity-theorem-proving"
-heroImage: null
+heroImage: "/images/research-decoded/cook-complexity-theorem-proving.svg"
 ---
 
 In 1971, Stephen Cook introduced a formal framework for analyzing the computational resources required to solve mathematical problems, establishing the foundational constraints of complexity theory. The paper identified a class of problems that are recognizable in polynomial time by a non-deterministic machine, effectively shifting the research focus from what is computable to the specific time-efficiency of the computation. By proving that the Boolean satisfiability problem (SAT) possesses a universal property within this class, Cook established the concept of NP-completeness, providing a method for identifying the theoretical limits of deterministic algorithms.

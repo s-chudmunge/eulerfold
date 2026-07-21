@@ -4,7 +4,7 @@ authors: "Touvron et al. (2023)"
 citation: "Touvron, H., Lavril, T., Izacard, G., Martinet, X., et al. (2023). LLaMA: Open and efficient foundation language models. arXiv preprint arXiv:2302.13971."
 link: "https://arxiv.org/abs/2302.13971"
 slug: "llama-efficient-foundation-models"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2302.13971/assets/x1.png"
+heroImage: "/images/research-decoded/llama-efficient-foundation-models.png"
 ---
 
 The 2023 LLaMA paper from Meta AI challenged the assumption that increasing parameter counts is the only path to better AI performance. While models had reached 175 billion parameters, researchers focused on training smaller models, ranging from 7 to 65 billion parameters, on much larger datasets. They demonstrated that a 13-billion parameter model could outperform larger systems if trained on high-quality data for a longer duration. This represented a shift toward a data-centric view of model development that prioritizes efficiency and deployment feasibility.

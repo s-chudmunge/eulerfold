@@ -3,7 +3,7 @@ title: "The Transformer: The Paper That Changed Everything"
 authors: "Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Lukasz Kaiser, Illia Polosukhin"
 citation: "arXiv:1706.03762 (2017)"
 link: "https://arxiv.org/abs/1706.03762"
-heroImage: "https://arxiv.org/html/1706.03762/x1.png"
+heroImage: "/images/research-decoded/attention-is-all-you-need.png"
 slug: "attention-is-all-you-need"
 ---
 

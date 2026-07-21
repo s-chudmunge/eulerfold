@@ -4,7 +4,7 @@ authors: "Xia et al. (2024)"
 citation: "Xia, C. S., Yin, R., & Zhang, L. (2024). Agentless: Demystifying LLM-based Software Engineering Agents. arXiv preprint arXiv:2407.01489."
 link: "https://arxiv.org/abs/2407.01489"
 slug: "agentless-demystifying-software-engineering-agents"
-heroImage: "https://arxiv.org/html/2407.01489v2/x1.png"
+heroImage: "/images/research-decoded/agentless-demystifying-software-engineering-agents.png"
 ---
 
 # Agentless: The Power of Deterministic Abstraction

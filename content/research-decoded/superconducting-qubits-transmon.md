@@ -4,7 +4,7 @@ authors: "Jens Koch et al. (Yale University, 2007)"
 citation: "Koch, J., Yu, T. M., Gambetta, J., Houck, A. A., Schuster, D. I., Majer, J., ... & Schoelkopf, R. J. (2007). Charge-insensitive qubit design derived from the Cooper pair box. Physical Review A, 76(4), 042319."
 link: "https://arxiv.org/abs/cond-mat/0703002"
 slug: "superconducting-qubits-transmon"
-heroImage: "https://ar5iv.labs.arxiv.org/html/cond-mat/0703002/assets/x1.png"
+heroImage: "/images/research-decoded/superconducting-qubits-transmon.png"
 ---
 
 In 2007, researchers at Yale University introduced the transmon qubit, a superconducting circuit designed to eliminate the sensitivity of quantum information to fluctuating offset charges. This architecture addressed a fundamental bottleneck in the development of solid-state quantum processors: the rapid dephasing of the Cooper pair box due to atmospheric and technical noise. The researchers demonstrated that by shunting a Josephson junction with a large external capacitance, a system can be moved into a regime where the qubit transition frequency is exponentially insensitive to the local electrostatic environment.

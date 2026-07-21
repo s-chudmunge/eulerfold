@@ -4,7 +4,7 @@ authors: "Ken Thompson (1984)"
 citation: "Thompson, K. (1984). Reflections on trusting trust. Communications of the ACM, 27(8), 761-763."
 link: "https://www.cs.cmu.edu/~rdriley/487/papers/Thompson_1984_ReflectionsonTrustingTrust.pdf"
 slug: "reflections-on-trusting-trust"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/c/cd/Ken_Thompson_%28sitting%29_and_Dennis_Ritchie_at_PDP-11.jpg"
+heroImage: "/images/research-decoded/reflections-on-trusting-trust.png"
 ---
 
 In 1984, Ken Thompson, the co-creator of Unix, demonstrated that the security of a software system is transitively dependent on the integrity of the tools used in its construction. In his Turing Award lecture, Thompson proved that a malicious developer can insert a backdoor into a compiler such that the vulnerability is invisible in the source code of both the compiler and the applications it creates. This revelation shattered the assumption that auditing source code is sufficient for security, revealing a recursive dependency on trust that extends to the earliest stages of the software development lifecycle. This work established the "Trusting Trust" problem as a fundamental constraint on the reliability of digital systems.

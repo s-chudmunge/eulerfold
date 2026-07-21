@@ -4,7 +4,7 @@ authors: "Richard Feynman (1982)"
 citation: "Feynman, R. P. (1982). Simulating physics with computers. International Journal of Theoretical Physics, 21(6/7), 467-488."
 link: "https://doi.org/10.1007/BF01886518"
 slug: "simulating-physics-feynman"
-heroImage: null
+heroImage: "/images/research-decoded/simulating-physics-feynman.jpg"
 ---
 
 In 1982, Richard Feynman identified a fundamental computational bottleneck in the simulation of quantum mechanical systems using classical hardware. He argued that because the state space of a quantum system grows exponentially with the number of particles, a classical, local, and deterministic machine requires an exponential amount of time and memory to track the system's evolution. To resolve this inefficiency, Feynman proposed the construction of a computer made of quantum mechanical elements that could emulate the behavior of nature directly, effectively initiating the field of quantum computing.

@@ -4,7 +4,7 @@ authors: "Daniel Spielman & Shang-Hua Teng (2001)"
 citation: "Spielman, D. A., & Teng, S. H. (2004). Smoothed analysis of algorithms: Why the simplex algorithm usually takes polynomial time. Journal of the ACM (JACM), 51(3), 385-463."
 link: "https://doi.org/10.1145/990308.990310"
 slug: "spielman-teng-smoothed-analysis"
-heroImage: null
+heroImage: "/images/research-decoded/spielman-teng-smoothed-analysis.png"
 ---
 
 In 2001, Daniel Spielman and Shang-Hua Teng introduced smoothed analysis, a mathematical framework that explains why certain algorithms exhibit high practical efficiency despite having exponential worst-case complexity. The research focused on the simplex algorithm for linear programming, which consistently performs in polynomial time on real-world data while possessing known pathological cases that trigger exponential runtime. By evaluating algorithmic performance under slight, random perturbations of the input, the researchers demonstrated that these worst-case instances are unstable and disappear in the presence of even minimal environmental noise.

@@ -3,7 +3,7 @@ title: "The Weekend That Modern AI Was Born"
 authors: "Alex Krizhevsky, Ilya Sutskever, Geoffrey E. Hinton (University of Toronto)"
 citation: "Krizhevsky, A., Sutskever, I., & Hinton, G. E. (2012). ImageNet classification with deep convolutional neural networks. Advances in neural information processing systems, 25."
 link: "https://proceedings.neurips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf"
-heroImage: "https://ar5iv.labs.arxiv.org/html/1512.03385/assets/x1.png"
+heroImage: "/images/research-decoded/alexnet-imagenet-classification.png"
 slug: "alexnet-imagenet-classification"
 ---
 

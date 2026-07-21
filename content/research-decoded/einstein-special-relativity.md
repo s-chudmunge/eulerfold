@@ -4,7 +4,7 @@ authors: "Albert Einstein (1905)"
 citation: "Einstein, A. (1905). Zur Elektrodynamik bewegter K\u00f6rper. Annalen der physik, 4, 891-921."
 link: "https://www.fourmilab.ch/etexts/einstein/specrel/www/"
 slug: "einstein-special-relativity"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/16/World_line.svg/250px-World_line.svg.png"
+heroImage: "/images/research-decoded/einstein-special-relativity.png"
 ---
 
 In 1905, Albert Einstein published a paper addressing a fundamental contradiction between Newtonian mechanics and Maxwell’s equations of electromagnetism. The prevailing physical model assumed that light waves traveled through an stationary medium called the luminiferous ether, but experimental evidence, such as the Michelson-Morley results, failed to detect any relative motion of the Earth through such a substance. Einstein resolved this discrepancy by postulating that the speed of light in a vacuum is a universal constant, independent of the motion of the source or the observer, and that the laws of physics are identical in all inertial frames of reference.

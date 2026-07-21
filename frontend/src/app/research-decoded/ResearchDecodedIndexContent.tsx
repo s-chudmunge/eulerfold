@@ -30,15 +30,12 @@ export default function ResearchDecodedIndexContent() {
   }, []);
 
   React.useEffect(() => {
-    const container = document.querySelector('main');
-    if (!container) return;
-
     const handleScroll = () => {
-      setShowScrollTop(container.scrollTop > 400);
+      setShowScrollTop(window.scrollY > 400);
     };
 
-    container.addEventListener('scroll', handleScroll);
-    return () => container.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   const handleSignIn = () => {
@@ -59,13 +56,10 @@ export default function ResearchDecodedIndexContent() {
     
     // Immediate scroll for better UX
     const element = document.getElementById(id);
-    const container = document.querySelector('main');
-    if (element && container) {
-      const containerRect = container.getBoundingClientRect();
+    if (element) {
       const elementRect = element.getBoundingClientRect();
-      const relativeTop = elementRect.top - containerRect.top;
-      container.scrollTo({
-        top: container.scrollTop + relativeTop - 20,
+      window.scrollTo({
+        top: window.scrollY + elementRect.top - 40,
         behavior: 'smooth'
       });
     }
@@ -115,35 +109,34 @@ export default function ResearchDecodedIndexContent() {
       </Suspense>
       <div className="max-w-[1000px] mx-auto px-6 py-6 md:px-10 md:py-10">
         
-        {/* Breadcrumbs & Library */}
-        <div className="mb-8 flex items-center justify-between">
-          <Breadcrumbs items={[{ label: 'Research Decoded' }]} />
+        {/* Library Button */}
+        <div className="mb-8 flex justify-end">
           <ResearchNavigationSidebar isInline />
         </div>
 
         {/* Search & Subject Bar - Reduced Width */}
         <div className="mb-12">
-          <div className="max-w-[600px] mx-auto">
-            <div className="text-center mb-4">
-              <h2 className="inconsolata-ui text-[14px] font-bold text-text-heading tracking-tight">What would you like to research?</h2>
+          <div className="max-w-[750px] mx-auto">
+            <div className="text-center mb-6">
+              <h2 className="inconsolata-ui text-[20px] font-bold text-text-heading tracking-tight">What would you like to research?</h2>
             </div>
             <div className="relative mb-4">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-text-muted" />
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-text-muted" />
               <input 
                 type="text"
                 placeholder="Search library..."
                 value={searchQuery}
                 onChange={(e) => updateSearchQuery(e.target.value)}
-                className="w-full bg-surface border border-border rounded-lg py-2 pl-10 pr-4 text-[13px] font-medium focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all shadow-sm"
+                className="w-full bg-surface border border-border rounded-lg py-3 pl-12 pr-4 text-[15px] font-medium focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all shadow-sm"
               />
             </div>
 
-            <div className="flex flex-wrap items-center gap-1.5 justify-center">
+            <div className="flex flex-wrap items-center gap-2 justify-center">
               {navigation.map((category) => (
                 <button
                   key={category.id}
                   onClick={() => updateCategory(category.id)}
-                  className="whitespace-nowrap px-3 py-1 rounded-full bg-surface border border-border text-[9px] font-bold uppercase tracking-wider inconsolata-ui hover:bg-accent hover:text-white hover:border-accent transition-all"
+                  className="whitespace-nowrap px-4 py-1.5 rounded-full bg-surface border border-border text-[11px] font-bold uppercase tracking-wider inconsolata-ui hover:bg-accent hover:text-white hover:border-accent transition-all"
                 >
                   {category.title}
                 </button>
@@ -177,7 +170,7 @@ export default function ResearchDecodedIndexContent() {
                     >
                       <article className="h-full flex flex-col">
                         {paper?.heroImage && (
-                          <div className="relative mb-5 h-[160px] w-full overflow-hidden rounded-lg bg-image-bg border border-border shadow-sm transition-all group-hover:border-accent/30">
+                          <div className="relative mb-5 h-[200px] w-full overflow-hidden rounded-lg bg-image-bg border border-border shadow-sm transition-all group-hover:border-accent/30">
                             <img 
                               src={paper.heroImage} 
                               alt={section.title}
@@ -232,6 +225,11 @@ export default function ResearchDecodedIndexContent() {
             </div>
           )}
         </div>
+
+        {/* Footer Breadcrumbs */}
+        <div className="mt-20 pt-8 border-t border-border flex justify-start">
+          <Breadcrumbs items={[{ label: 'Research Decoded' }]} />
+        </div>
       </div>
 
       {/* Floating Scroll to Top Button */}
@@ -242,10 +240,7 @@ export default function ResearchDecodedIndexContent() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.9 }}
             onClick={() => {
-              const container = document.querySelector('main');
-              if (container) {
-                container.scrollTo({ top: 0, behavior: 'smooth' });
-              }
+              window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
             className="fixed bottom-10 right-10 z-[200] bg-accent text-white p-3.5 rounded-full hover:bg-accent/90 transition-all hover:scale-110 shadow-2xl flex items-center justify-center border border-white/20"
             title="Scroll to Top"

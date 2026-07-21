@@ -4,7 +4,7 @@ authors: "Edward Farhi et al. (2000)"
 citation: "Farhi, E., Goldstone, J., Gutmann, S., & Sipser, M. (2000). Quantum computation by adiabatic evolution. arXiv preprint quant-ph/0001106."
 link: "https://arxiv.org/abs/quant-ph/0001106"
 slug: "adiabatic-quantum-computation"
-heroImage: null
+heroImage: "/images/research-decoded/adiabatic-quantum-computation.png"
 ---
 
 In 2000, Edward Farhi and colleagues introduced a model for quantum computation that utilizes the continuous evolution of a physical system to solve combinatorial search problems. This approach addresses the limitations of the discrete circuit model by mapping logical constraints directly onto the energy levels of a quantum Hamiltonian. The researchers demonstrated that by slowly interpolating between a simple, unconstrained Hamiltonian and a complex, problem-dependent one, a system can be guided to its ground state—representing the optimal solution—through the natural laws of adiabatic evolution.

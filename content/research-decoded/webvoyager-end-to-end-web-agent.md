@@ -4,7 +4,7 @@ authors: "He et al. (2024)"
 citation: "He, S., et al. (2024). WebVoyager: Building an End-to-End Web Agent with Large Multimodal Models. arXiv preprint arXiv:2401.13919."
 link: "https://arxiv.org/abs/2401.13919"
 slug: "webvoyager-end-to-end-web-agent"
-heroImage: "https://arxiv.org/html/2401.13919v1/x1.png"
+heroImage: "/images/research-decoded/webvoyager-end-to-end-web-agent.png"
 ---
 
 # WebVoyager: The Era of End-to-End Online Web Agency

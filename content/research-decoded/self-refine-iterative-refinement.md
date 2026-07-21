@@ -4,7 +4,7 @@ authors: "Madaan et al. (2023)"
 citation: "Madaan, A., Tandon, N., Gupta, P., Hallinan, S., Gao, L., Wiegreffe, S., ... & Clark, P. (2023). Self-refine: Iterative refinement with self-feedback. arXiv preprint arXiv:2303.17651."
 link: "https://arxiv.org/abs/2303.17651"
 slug: "self-refine-iterative-refinement"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2303.17651/assets/x1.png"
+heroImage: "/images/research-decoded/self-refine-iterative-refinement.png"
 ---
 
 Large language models typically generate outputs in a single pass, which often limits their ability to handle complex constraints or correct logical errors. The Self-Refine framework, introduced in 2023, addresses this by implementing an iterative loop where a single model generates, evaluates, and refines its own work. Researchers from Carnegie Mellon and the Allen Institute demonstrated that a model can improve its performance without external fine-tuning or human intervention by using natural language feedback as an internal correction mechanism.

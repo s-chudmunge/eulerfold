@@ -4,7 +4,7 @@ authors: "Peter Shor (1994)"
 citation: "Shor, P. W. (1994). Algorithms for quantum computation: discrete logarithms and factoring. In Proceedings 35th Annual Symposium on Foundations of Computer Science (pp. 124-134). IEEE."
 link: "https://doi.org/10.1109/SFCS.1994.365700"
 slug: "shor-factoring-algorithm"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/b/b8/Shor%27s_algorithm.svg"
+heroImage: "/images/research-decoded/shor-factoring-algorithm.svg"
 ---
 
 In 1994, Peter Shor demonstrated that a quantum computer can resolve the integer factorization and discrete logarithm problems in polynomial time, establishing a theoretical challenge to the foundations of modern public-key cryptography. Prior to this research, these mathematical tasks were assumed to be intractable for any physical machine, providing the security basis for protocols such as RSA and Diffie-Hellman. The researcher proved that by utilizing the properties of quantum superposition and interference, a machine can identify the periodic structure of specific mathematical functions with exponential efficiency compared to the best-known classical algorithms.

@@ -4,7 +4,7 @@ authors: "Goodfellow et al. (2014)"
 citation: "Goodfellow, I., Pouget-Abadie, J., Mirza, M., Xu, B., Warde-Farley, D., Ozair, S., ... & Bengio, Y. (2014). Generative adversarial nets. Advances in neural information processing systems, 27."
 link: "https://arxiv.org/abs/1406.2661"
 slug: "generative-adversarial-nets"
-heroImage: "https://ar5iv.labs.arxiv.org/html/1406.2661/assets/x1.png"
+heroImage: "/images/research-decoded/generative-adversarial-nets.png"
 ---
 
 In 2014, Ian Goodfellow and colleagues introduced a framework for generative modeling based on a minimax game between two competing neural networks. Prior to this research, the generation of complex data such as images required difficult probabilistic estimations or the use of restrictive architectural assumptions to capture the underlying data distribution. The researchers demonstrated that realistic synthetic samples can be produced by training a generator network to deceive a discriminator network, which simultaneously learns to distinguish real from fake data. This shift moved generative AI from explicit density estimation toward a system of emergent complexity driven by the structural tension of opposing objectives.

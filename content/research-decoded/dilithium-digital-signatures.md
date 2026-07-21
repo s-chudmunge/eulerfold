@@ -4,7 +4,7 @@ authors: "Léo Ducas et al. (2018)"
 citation: "Ducas, L., et al. (2018). CRYSTALS-Dilithium: A lattice-based digital signature scheme. IACR Transactions on Cryptographic Hardware and Embedded Systems, 238-268."
 link: "https://pq-crystals.org/dilithium/data/dilithium-specification.pdf"
 slug: "dilithium-digital-signatures"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/c/cf/Lattice-based_cryptography_diagram.svg"
+heroImage: "/images/research-decoded/dilithium-digital-signatures.svg"
 ---
 
 In 2018, researchers introduced CRYSTALS-Dilithium, a digital signature scheme based on the hardness of lattice problems that is resistant to future quantum computational attacks. This research addresses the vulnerability of standard signature protocols—such as those based on RSA or Elliptic Curves—to Shor’s algorithm, which can efficiently solve the integer factorization and discrete logarithm problems. Dilithium utilizes the Short Integer Solution (SIS) problem to provide high security and efficient performance on contemporary hardware. The researchers demonstrated that by combining the Fiat-Shamir with Aborts framework with optimized polynomial arithmetic, a system can achieve signature and verification speeds comparable to classical methods while ensuring long-term resilience against quantum adversaries.

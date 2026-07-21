@@ -4,7 +4,7 @@ authors: "David Karger (1993)"
 citation: "Karger, D. R. (1993). Global min-cuts in RNC, and other ramifications of a simple min-cut algorithm. In Proceedings of the fourth annual ACM-SIAM Symposium on Discrete algorithms (pp. 21-30)."
 link: "https://doi.org/10.1145/313559.313605"
 slug: "karger-min-cut-algorithm"
-heroImage: null
+heroImage: "/images/research-decoded/karger-min-cut-algorithm.svg"
 ---
 
 In 1993, David Karger introduced a randomized algorithm for finding the minimum cut of a connected graph using a process of edge contraction. Prior to this research, deterministic methods for identifying the global min-cut—the smallest set of edges whose removal partitions a graph—relied on complex flow-based calculations with higher computational overhead. Karger demonstrated that by repeatedly selecting edges at random and merging their endpoints, the global minimum cut can be identified with a predictable probability of success, providing a scalable framework for network partitioning and cluster analysis.

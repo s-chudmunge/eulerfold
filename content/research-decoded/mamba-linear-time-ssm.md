@@ -4,7 +4,7 @@ authors: "Albert Gu & Tri Dao (2023)"
 citation: "Gu, A., & Dao, T. (2023). Mamba: Linear-time sequence modeling with selective state spaces. arXiv preprint arXiv:2312.00752."
 link: "https://arxiv.org/abs/2312.00752"
 slug: "mamba-linear-time-ssm"
-heroImage: "https://ar5iv.labs.arxiv.org/html/2312.00752/assets/x1.png"
+heroImage: "/images/research-decoded/mamba-linear-time-ssm.png"
 ---
 
 In 2023, Albert Gu and Tri Dao introduced Mamba, a sequence modeling architecture based on a selective state space model (SSM) that achieves linear time complexity. This research addresses the quadratic computational cost of the Transformer's attention mechanism, which fundamentally limits the processing of massive sequences. The researchers demonstrated that by introducing input-dependent selection into a recurrent framework, a system can achieve the reasoning density of Transformers while maintaining a constant memory overhead during inference. This work established a new foundation for sequence processing, enabling the native handling of contexts spanning millions of tokens.

@@ -4,7 +4,7 @@ authors: "David P. DiVincenzo (2000)"
 citation: "DiVincenzo, D. P. (2000). The physical implementation of quantum computation. Fortschritte der Physik: Progress of Physics, 48(9-11), 771-783."
 link: "https://doi.org/10.1002/1521-3978(200009)48:9/11%3C771::AID-PROP771%3E3.0.CO;2-E"
 slug: "divincenzo-criteria"
-heroImage: null
+heroImage: "/images/research-decoded/divincenzo-criteria.jpg"
 ---
 
 In 2000, David DiVincenzo established a formal set of benchmarks for the physical realization of universal quantum computation, bridging the gap between theoretical complexity and experimental physics. Prior to this research, while robust algorithms existed for tasks such as factoring and database search, there was no unified framework for evaluating the suitability of diverse physical platforms. The paper identified five essential criteria for quantum computing and two additional requirements for quantum communication, providing a rigorous engineering checklist for the development of scalable hardware architectures.

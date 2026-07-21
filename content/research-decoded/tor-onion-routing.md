@@ -4,7 +4,7 @@ authors: "Michael Reed, Paul Syverson, & David Goldschlag (1998)"
 citation: "Reed, M. G., Syverson, P. F., & Goldschlag, D. M. (1998). Anonymous connections and onion routing. IEEE Journal on Selected Areas in Communications, 16(4), 482-494."
 link: "https://www.onion-router.net/Publications/JSAC-1998.pdf"
 slug: "tor-onion-routing"
-heroImage: "https://upload.wikimedia.org/wikipedia/commons/1/15/Tor-logo-2011-flat.svg"
+heroImage: "/images/research-decoded/tor-onion-routing.svg"
 ---
 
 In 1998, researchers at the U.S. Naval Research Laboratory introduced onion routing, a technique for anonymous network communication that protects users from traffic analysis by wrapping messages in multiple layers of encryption. This research addresses the inherent transparency of standard internet protocols, where the IP addresses of both the sender and receiver are exposed to every router along a path, making it trivial for an observer to map individual communication patterns. The researchers proved that by bouncing data through a circuit of randomly selected nodes—where each node only possesses the key to its own layer of encryption—a system can decouple a user's physical identity from their digital destination, established the mathematical foundation for the Tor network.
