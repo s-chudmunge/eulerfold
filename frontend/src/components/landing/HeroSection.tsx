@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { BookOpen, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/components/AuthProvider';
 import { roadmapsAPI } from '@/lib/api';
 import HeroBackground from '@/components/HeroBackground';
@@ -27,9 +27,23 @@ const fadeUp = {
   }
 };
 
+const rotatingPhrases = [
+  "Completely Free.",
+  "Get Job Ready.",
+  "Build and Learn."
+];
+
 export default function HeroSection() {
   const { user } = useAuth();
   const [lastRoadmap, setLastRoadmap] = useState<{ title: string; slug: string } | null>(null);
+  const [phraseIndex, setPhraseIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setPhraseIndex((prev) => (prev + 1) % rotatingPhrases.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -65,8 +79,48 @@ export default function HeroSection() {
             >
               Describe What You Want to Learn.{' '}
               <br className="hidden md:block" />
-              Get a <span className="text-accent">Structured Course</span> in Seconds.{' '}
-              <span className="font-serif italic text-accent opacity-90 text-[32px] sm:text-[38px] md:text-[44px] tracking-normal font-medium">Completely Free.</span>
+              Get a{' '}
+              <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-teal-600 via-emerald-400 to-teal-600 animate-gradient-x drop-shadow-sm pb-1">
+                Structured Course
+              </span>
+              {' '}in Seconds.{' '}
+              <span className="font-serif italic text-accent opacity-90 text-[32px] sm:text-[38px] md:text-[44px] tracking-normal font-medium inline-block min-w-[280px] sm:min-w-[320px]">
+                <AnimatePresence mode="wait">
+                  <motion.span
+                    key={phraseIndex}
+                    initial="hidden"
+                    animate="visible"
+                    exit="exit"
+                    variants={{
+                      visible: { transition: { staggerChildren: 0.1 } },
+                      exit: { opacity: 0, y: -10, transition: { duration: 0.2 } }
+                    }}
+                    className="inline-block"
+                  >
+                    {(rotatingPhrases[phraseIndex] || rotatingPhrases[0]).split("").map((char, index) => (
+                      <motion.span
+                        key={index}
+                        variants={{
+                          hidden: { opacity: 0, display: "none" },
+                          visible: { 
+                            opacity: 1, 
+                            display: "inline-block", 
+                            transition: { duration: 0 } 
+                          }
+                        }}
+                      >
+                        {char === " " ? "\u00A0" : char}
+                      </motion.span>
+                    ))}
+                    <motion.span
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
+                      className="inline-block ml-[2px] w-[5px] h-[0.75em] bg-accent align-baseline"
+                    />
+                  </motion.span>
+                </AnimatePresence>
+              </span>
             </motion.h1>
 
             {/* Subheading */}

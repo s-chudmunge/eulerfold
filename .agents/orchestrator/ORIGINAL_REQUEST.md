@@ -1,0 +1,30 @@
+# Original User Request
+
+## 2026-07-23T12:44:32Z
+
+Automate the generation and enrichment of the remaining 63 niche courses from `niche_courses.csv` into the Supabase database. 
+
+Working directory: `~/Documents/projects/eulerfold/backend`
+Integrity mode: development
+
+## Requirements
+
+### R1. Batch Seeding
+Write and execute Python seed scripts (similar to the existing `seed_batch_2.py` pattern) to generate JSON blueprints for the remaining 63 courses in automated batches of ~10-15. Ensure each course uses `uuid.uuid4()` for all IDs, contains 3-6 modules with rigorous `proof_of_work_instructions`, and uses an SEO-optimized title/slug.
+
+### R2. Live Link Verification
+The seed scripts MUST include the `httpx` link verification gate to silently drop any hallucinated 404 URLs before insertion.
+
+### R3. Media & Resource Enrichment
+After inserting a batch, you must programmatically run `smart_video_enrich.py <id>` and `smart_resource_enrich.py <id>` for every newly inserted course ID to scrape high-quality YouTube videos and DuckDuckGo documentation.
+
+### R4. Progress Tracking
+After a batch completes, update `~/Documents/projects/eulerfold/niche_courses.csv` by prepending `[DONE]` to the completed courses.
+
+## Acceptance Criteria
+
+### Pipeline Completion
+- [ ] 63 new courses are successfully inserted into the `roadmaps` table in Supabase.
+- [ ] Every new course has populated `resources` (from DDG scraper) and `youtube_video_title`s (from yt-dlp scraper).
+- [ ] `niche_courses.csv` contains exactly 80 `[DONE]` tags.
+- [ ] No broken/404 links exist in the `resources` arrays of the new courses.

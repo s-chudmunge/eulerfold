@@ -217,8 +217,8 @@ async def _enrich_roadmap_progress(roadmaps: List[Dict], email: str, uid: str, s
         completed_practice_sessions = 0
 
         # Calculate scores per module
-        for module in modules:
-            m_num = int(module.get("id", "module_0").split("_")[1])
+        for m_idx, module in enumerate(modules):
+            m_num = m_idx + 1
             m_topics = module.get("topics", [])
             m_topic_count = len(m_topics)
             total_topics_all += m_topic_count

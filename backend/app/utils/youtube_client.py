@@ -170,7 +170,7 @@ def _score_video(video: dict, topic_title: str) -> float:
     Score a YouTube video for educational relevance.
     Returns -1.0 if the video should be excluded (duration or relevance gate).
     """
-    duration_seconds = parse_iso8601_duration(video["contentDetails"]["duration"])
+    duration_seconds = parse_iso8601_duration(video.get("contentDetails", {}).get("duration", ""))
 
     # Duration gate: 8-60 minutes
     if duration_seconds < 480 or duration_seconds > 3600:
@@ -274,7 +274,7 @@ async def search_youtube_videos(
                         if score >= 0:
                             valid.append((score, item))
                     else:
-                        duration_seconds = parse_iso8601_duration(item["contentDetails"]["duration"])
+                        duration_seconds = parse_iso8601_duration(item.get("contentDetails", {}).get("duration", ""))
                         if 480 <= duration_seconds <= 3600:
                             valid.append((0, item))
                 return valid
@@ -296,8 +296,8 @@ async def search_youtube_videos(
             for score, item in candidates[:max_results]:
                 results.append({
                     "video_id": item["id"],
-                    "video_title": item["snippet"]["title"],
-                    "duration_minutes": parse_iso8601_duration(item["contentDetails"]["duration"]) // 60,
+                    "video_title": item.get("snippet", {}).get("title", ""),
+                    "duration_minutes": parse_iso8601_duration(item.get("contentDetails", {}).get("duration", "")) // 60,
                 })
 
             if results and use_scoring:

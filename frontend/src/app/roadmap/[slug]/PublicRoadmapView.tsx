@@ -25,7 +25,12 @@ import {
     ArrowRight,
     User,
     Calendar,
-    Edit3
+    Edit3,
+    Check,
+    CheckCircle2,
+    BookOpen,
+    GraduationCap,
+    AlertCircle
 } from 'lucide-react';
 
 interface Props {
@@ -281,7 +286,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                         "@context": "https://schema.org",
                         "@type": "Course",
                         "name": roadmap.title,
-                        "description": roadmap.goal || roadmap.description,
+                        "description": roadmap.roadmap_plan?.about || roadmap.goal || roadmap.description,
                         "creator": {
                             "@type": "Person",
                             "name": roadmap.author || "EulerFold User"
@@ -292,9 +297,14 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                             "url": "https://www.eulerfold.com"
                         },
                         "about": roadmap.subject,
+                        "audience": roadmap.roadmap_plan?.who_is_this_for?.tags ? {
+                            "@type": "Audience",
+                            "audienceType": roadmap.roadmap_plan.who_is_this_for.tags.join(", ")
+                        } : undefined,
+                        "teaches": roadmap.roadmap_plan?.what_you_will_learn ? roadmap.roadmap_plan.what_you_will_learn.join(" ") : undefined,
                         "timeRequired": roadmap.time_value ? `P${roadmap.time_value}${roadmap.time_unit?.[0].toUpperCase()}` : undefined,
-                        "coursePrerequisites": "None",
-                        "educationalLevel": "Intermediate",
+                        "coursePrerequisites": roadmap.roadmap_plan?.prerequisites?.items?.join(", ") || "None",
+                        "educationalLevel": roadmap.roadmap_plan?.prerequisites?.level === 'beginner' ? 'Beginner' : roadmap.roadmap_plan?.prerequisites?.level === 'advanced' ? 'Advanced' : 'Intermediate',
                         "syllabusSections": roadmap.roadmap_plan?.modules?.map((m: any) => ({
                             "@type": "Syllabus",
                             "name": m.title,
@@ -422,6 +432,111 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                             </div>
                         </div>
                     </div>
+
+                    {/* Course Overview Section */}
+                    {(roadmap.roadmap_plan?.what_you_will_learn || roadmap.roadmap_plan?.about) && (
+                        <div className="mb-20 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16">
+                            {/* Main Content (Left) */}
+                            <div className="lg:col-span-8 space-y-12">
+                                {/* About This Course */}
+                                {roadmap.roadmap_plan.about && (
+                                    <div>
+                                        <h2 className="font-inter text-2xl font-bold text-text-heading mb-6 tracking-tight">About this Course</h2>
+                                        <div className="manrope-body text-[15px] text-text-primary/90 leading-[1.8] whitespace-pre-line">
+                                            {roadmap.roadmap_plan.about}
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* What You'll Learn */}
+                                {roadmap.roadmap_plan.what_you_will_learn && (
+                                    <div>
+                                        <h2 className="font-inter text-2xl font-bold text-text-heading mb-6 tracking-tight">What you'll learn</h2>
+                                        <div className="flex flex-col gap-3">
+                                            {roadmap.roadmap_plan.what_you_will_learn.map((item: string, idx: number) => (
+                                                <div key={idx} className="flex items-start gap-4">
+                                                    <Check className="w-[18px] h-[18px] text-accent shrink-0 mt-[2px]" strokeWidth={2.5} />
+                                                    <span className="manrope-body text-[15px] text-text-primary/90 leading-relaxed font-medium">{item}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Sidebar (Right) */}
+                            <div className="lg:col-span-4">
+                                <div className="sticky top-28 space-y-6 p-5 md:p-6 rounded-2xl bg-sidebar/30 border border-border/40 backdrop-blur-sm">
+                                    {/* Prerequisites */}
+                                    {roadmap.roadmap_plan.prerequisites && (
+                                        <div>
+                                            <div className="flex items-center gap-2 mb-4">
+                                                <AlertCircle className="w-4 h-4 text-accent" />
+                                                <h3 className="font-inter text-[15px] font-bold text-text-heading tracking-tight">Prerequisites</h3>
+                                            </div>
+                                            
+                                            <div className="mb-4 flex items-center gap-2.5 bg-background/50 border border-border/60 shadow-sm w-fit px-3 py-1 rounded-lg">
+                                                <div className="flex items-end gap-[3px] h-3.5">
+                                                    <div className={`w-1.5 rounded-sm transition-colors ${roadmap.roadmap_plan.prerequisites.level ? (roadmap.roadmap_plan.prerequisites.level === 'beginner' ? 'bg-emerald-500 h-1.5' : roadmap.roadmap_plan.prerequisites.level === 'intermediate' ? 'bg-amber-500 h-1.5' : 'bg-rose-500 h-1.5') : 'bg-border h-1.5'}`} />
+                                                    <div className={`w-1.5 rounded-sm transition-colors ${['intermediate', 'advanced'].includes(roadmap.roadmap_plan.prerequisites.level) ? (roadmap.roadmap_plan.prerequisites.level === 'intermediate' ? 'bg-amber-500 h-2.5' : 'bg-rose-500 h-2.5') : 'bg-border/40 h-2.5'}`} />
+                                                    <div className={`w-1.5 rounded-sm transition-colors ${roadmap.roadmap_plan.prerequisites.level === 'advanced' ? 'bg-rose-500 h-3.5' : 'bg-border/40 h-3.5'}`} />
+                                                </div>
+                                                <span className="font-inter text-[12px] font-bold text-text-heading capitalize tracking-tight">
+                                                    {roadmap.roadmap_plan.prerequisites.level} Level
+                                                </span>
+                                            </div>
+                                            
+                                            <p className="manrope-body text-[13px] text-text-muted leading-relaxed font-medium mb-4">
+                                                {roadmap.roadmap_plan.prerequisites.description}
+                                            </p>
+                                            
+                                            {roadmap.roadmap_plan.prerequisites.items?.length > 0 && (
+                                                <ul className="space-y-2.5">
+                                                    {roadmap.roadmap_plan.prerequisites.items.map((item: string, idx: number) => (
+                                                        <li key={idx} className="flex items-start gap-2.5">
+                                                            <div className="w-1.5 h-1.5 rounded-full bg-accent/60 mt-[6px] shrink-0" />
+                                                            <span className="manrope-body text-[13px] text-text-muted font-medium leading-[1.6]">{item}</span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            )}
+                                        </div>
+                                    )}
+
+                                    {roadmap.roadmap_plan.prerequisites && roadmap.roadmap_plan.who_is_this_for && (
+                                        <hr className="border-border/40" />
+                                    )}
+
+                                    {/* Who is this for */}
+                                    {roadmap.roadmap_plan.who_is_this_for && (
+                                        <div>
+                                            <div className="flex items-center gap-2 mb-4">
+                                                <Users className="w-4 h-4 text-accent" />
+                                                <h3 className="font-inter text-[15px] font-bold text-text-heading tracking-tight">Ideal for</h3>
+                                            </div>
+                                            
+                                            <p className="manrope-body text-[13px] text-text-muted leading-relaxed font-medium mb-4">
+                                                {roadmap.roadmap_plan.who_is_this_for.description}
+                                            </p>
+                                            
+                                            {roadmap.roadmap_plan.who_is_this_for.tags?.length > 0 && (
+                                                <div className="flex flex-col gap-2">
+                                                    {roadmap.roadmap_plan.who_is_this_for.tags.map((tag: string, idx: number) => (
+                                                        <div key={idx} className="flex items-center gap-2.5 p-2 pr-3 rounded-[10px] bg-accent/5 border border-accent/10 hover:border-accent/30 transition-colors group">
+                                                            <div className="w-7 h-7 rounded-md bg-background shadow-sm flex items-center justify-center border border-border/40 shrink-0 group-hover:scale-105 transition-transform duration-300">
+                                                                <User className="w-3.5 h-3.5 text-accent" />
+                                                            </div>
+                                                            <span className="font-inter text-[13px] font-bold text-text-heading tracking-tight leading-tight">{tag}</span>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    )}
 
                     <div className="mb-20 relative">
                         {/* DEBUG: {JSON.stringify({ isPro, isOwner, completed: roadmap.progress?.completed_topics, total: roadmap.progress?.total_topics, extCount: roadmap.extension_count })} */}

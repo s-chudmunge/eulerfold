@@ -39,6 +39,21 @@ const config: Config = {
         '30': '7.5rem',
         'container': 'max-w-7xl mx-auto px-4 sm:px-6 lg:px-8',
       },
+      keyframes: {
+        'gradient-x': {
+          '0%, 100%': {
+            'background-size': '200% 200%',
+            'background-position': 'left center'
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'right center'
+          },
+        },
+      },
+      animation: {
+        'gradient-x': 'gradient-x 4s ease infinite',
+      },
     },
   },
   plugins: [

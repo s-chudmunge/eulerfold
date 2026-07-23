@@ -1,0 +1,121 @@
+Course Name,Why it's worthy,Target Audience
+[DONE] Advanced RAG with pgvector & Hybrid Search,Most RAG tutorials stop at naive embedding lookup — this covers re-ranking and query decomposition for production retrieval.,Backend & AI Engineers building search systems
+[DONE] Writing Custom LLM Evaluators,No one teaches how to build structured AI grading that rejects nonsense — this fills that gap.,Ed-Tech Developers & Prompt Engineers
+[DONE] Local LLM Inference (GGUF & llama.cpp),Running and serving quantized models on consumer GPUs is a practical skill most tutorials skip entirely.,AI Tinkerers & Systems Engineers
+[DONE] Type-Safe Full-Stack with Next.js & FastAPI,The Python-backend-plus-TypeScript-frontend combo is the standard AI stack but bridging types between them is painful.,Full-Stack Developers
+[DONE] Supabase Row Level Security Deep Dive,Most devs leave Postgres RLS wide open because it's hard to test — this is a pure database security masterclass.,Backend & Full-Stack Developers & Indie Hackers
+[DONE] Distributed Consensus: Implementing Raft,Raft is how etcd and CockroachDB stay consistent — understanding it changes how you think about infrastructure.,Distributed Systems Engineers
+[DONE] Writing eBPF Programs for Linux Observability,Lets you instrument a running kernel without crashing it — the future of production debugging.,DevOps & Platform Engineers
+[DONE] LLM Inference Optimization (KV Cache & Batching),Covers the full stack of making LLMs fast: KV-cache management and continuous batching and PagedAttention.,ML Ops & AI Infrastructure Engineers
+[DONE] Custom Shaders in React Three Fiber,The only way to make 3D web experiences that don't look like every other Three.js demo.,Frontend & Creative Developers
+[DONE] WebAssembly Beyond the Browser,Wasm is eating server-side compute too (Spin & Wasmtime) — most devs only know the browser story.,Systems Engineers & Cloud Developers
+[DONE] State Machines for Complex UI (XState),Eliminates impossible states and tangled boolean logic in forms and multi-step flows.,Frontend Engineers building complex tools
+[DONE] Crafting DSLs (Domain Specific Languages) in Python,Teaches lexing and parsing and ASTs in a very accessible way.,Python Developers & Language Nerds
+[DONE] Rust FFI: Calling C from Rust Safely,The practical bridge between Rust's safety guarantees and the enormous C library ecosystem.,Systems Programmers
+[DONE] Real-time Collaboration with CRDTs,The data structures behind Google Docs and Figma multiplayer — no central server required.,Full-Stack & Collaborative App Devs
+[DONE] Building Custom Kubernetes Operators in Go,The standard way to extend Kubernetes with domain-specific automation.,Platform & Site Reliability Engineers
+[DONE] Zero-Knowledge Proofs: From Theory to Circom,Covers the math and then builds a working circuit — not just hand-waving about privacy.,Cryptography & Web3 Developers
+[DONE] WebGPU: Next-Gen Browser Graphics,WebGL's successor with compute shaders — very few developers know it yet.,Graphics Programmers & Game Devs
+[DONE] Edge Computing with Cloudflare Workers,Understanding V8 isolates and the constraints of running code at the network edge.,Cloud Architects & Full-Stack Devs
+[DONE] Advanced PostgreSQL: Indexing Strategies (GIN & GiST & BRIN),Knowing when to use each index type is the difference between a 2ms query and a 2s query.,Database Administrators & Backend Devs
+[DONE] Multi-Agent Orchestration Patterns,How to coordinate multiple AI agents without them talking past each other or looping forever.,AI Engineers
+[DONE] Building Neovim Plugins in Lua,Neovim's Lua API is clean and powerful but poorly documented outside of source code.,Developer Productivity Enthusiasts
+[DONE] V8 Engine Internals: Hidden Classes & JIT,Understanding why some JS patterns are 10x slower than others.,Performance-Focused JS Developers
+[DONE] Implementing OAuth2 and OIDC from Scratch,Most devs cargo-cult auth libraries — this teaches what the tokens actually mean.,Security & Backend Engineers
+[DONE] Building Custom GitHub Actions,Lets you automate anything in your CI pipeline with TypeScript or Docker containers.,DevOps Engineers
+[DONE] Structured Output & Tool Calling for AI Agents,Reliable JSON extraction and function calling is the backbone of every production AI agent.,AI Application Developers
+[DONE] Semantic Design Tokens & Themeable UI Systems,How to build a design system that supports dark mode and white-labeling without duplicating CSS.,UI/UX Designers & Frontend Devs
+[DONE] Network Programming: Building a TCP Stack,Writing a TCP implementation teaches you more about networking than any textbook.,Network Engineers & CS Students
+[DONE] Fine-tuning Vision-Language Models,Adapting models like LLaVA or PaliGemma for domain-specific visual understanding tasks.,Machine Learning Engineers
+[DONE] Android Security: APK Reverse Engineering,Decompiling and patching Android apps exposes the reality of mobile security.,Mobile Security Analysts
+[DONE] Physics-Informed Neural Networks (PINNs),Embedding differential equations into loss functions produces models that obey physical laws.,Scientific Computing Researchers
+[DONE] Implementing B-Trees and LSM Trees from Scratch,The two fundamental storage engine designs — understanding them demystifies every database.,Database & Storage Engineers
+[DONE] Graph Neural Networks for Drug Discovery,GNNs on molecular graphs are how modern pharma screens billions of compounds.,Bioinformatics & ML Researchers
+[DONE] WebRTC: Peer-to-Peer Video from Scratch,Covers STUN/TURN signaling and ICE negotiation — the hard parts everyone skips.,Real-Time Communication Developers
+[DONE] Applied Homomorphic Encryption,Computing on encrypted data without decryption is no longer theoretical — libraries like SEAL make it practical.,Privacy Engineers & Cryptography Devs
+[DONE] Git Internals: Objects & Plumbing Commands,Understanding the content-addressable object store changes how you debug merge conflicts forever.,Any Developer who uses Git daily
+[DONE] GPU Programming with CUDA,Direct GPU control for custom kernels — essential when PyTorch abstractions aren't enough.,HPC & ML Infrastructure Engineers
+[DONE] Building Figma Plugins with the Canvas API,Automate repetitive design tasks and integrate external data into your design workflow.,Design Engineers & Design Tool Builders
+[DONE] Browser Audio: Building Synthesizers with Web Audio API,Real-time audio synthesis and analysis entirely in the browser — a creative niche with no good tutorials.,Creative Developers & Musicians
+[DONE] Writing a Programming Language: Lexer to Interpreter,Building a working interpreter from scratch teaches CS fundamentals better than any course.,CS Students & Language Enthusiasts
+[DONE] Event-Driven Architecture with Kafka,Decoupling microservices with streaming events instead of synchronous HTTP calls.,Data Engineers & Backend Architects
+[DONE] React Server Components: How They Actually Work,The RSC payload format and streaming protocol are poorly understood even by experienced React devs.,Advanced Frontend Engineers
+[DONE] Fine-tuning Diffusion Models (DreamBooth & LoRA),Inject custom subjects into Stable Diffusion or Flux without retraining the full model.,Generative AI Practitioners
+[DONE] Web Scraping at Scale: Defenses & Countermeasures,TLS fingerprinting and headless browser detection are an arms race — this covers both sides.,Data Engineers & Security Analysts
+[DONE] Practical Quantum Computing with Qiskit,Write and run quantum circuits on real IBM hardware — not just theory.,Quantum Computing Beginners
+[DONE] Memory Corruption Exploitation & Defense,Stack and heap overflows are still the #1 vulnerability class — understanding them is non-negotiable.,Cybersecurity Engineers & Pentesters
+[DONE] Building Browser Extensions (Manifest V3),Chrome's Manifest V3 migration broke most extension tutorials — this covers the new service worker model.,Web Developers & Productivity Hackers
+[DONE] React Native Performance: Hermes & Reanimated,The difference between a janky 30fps app and a smooth 60fps one comes down to these two.,Mobile Developers
+[DONE] Implementing BitTorrent from Scratch,Building a working torrent client teaches distributed systems and protocol design simultaneously.,Network Engineers & CS Students
+[DONE] Vector Search Internals: HNSW from Scratch,The algorithm powering Pinecone and Weaviate — understanding it lets you tune retrieval properly.,Search & ML Infrastructure Engineers
+[DONE] RLHF & DPO: Aligning Language Models,The two dominant approaches to making LLMs follow instructions — both have sharp tradeoffs.,AI Alignment & ML Engineers
+[DONE] Fuzz Testing with AFL & LibFuzzer,Automated vulnerability discovery that finds bugs humans never would — used by Google on all C/C++ code.,Security Engineers & QA
+[DONE] Building a Toy OS Kernel in Rust,Memory management and interrupt handling at the lowest level — with Rust's safety guarantees.,Systems Programmers & Rust Enthusiasts
+[DONE] Reverse Engineering iOS Binaries (Mach-O & Frida),Apple's binary format and runtime instrumentation — the offensive security perspective.,Mobile Security Researchers
+[DONE] Low-Latency Systems in C++ (Trading & Networking),Lock-free data structures and kernel bypass networking for nanosecond-sensitive applications.,Quantitative Developers & Systems Engineers
+[DONE] Modern Data Lakes: Apache Iceberg & Trino,Open table formats that decouple storage from compute — the alternative to vendor lock-in.,Data Engineers & Architects
+[DONE] Continuous Profiling in Production,Finding CPU and memory bottlenecks in live services without redeploying — using pprof and Pyroscope.,SREs & Backend Engineers
+[DONE] Tree-sitter: Building Parsers for Code Intelligence,The parser generator behind every modern code editor's syntax highlighting and navigation.,Developer Tooling Engineers
+[DONE] OpenTelemetry: Distributed Tracing & Metrics,The vendor-neutral observability standard replacing Datadog-specific and New Relic-specific instrumentation.,Backend Engineers & SREs
+[DONE] Systems Design: Designing for Scale & Failure,Teaches the actual tradeoffs (CAP theorem & consistency models & back-of-envelope math) instead of memorized answers.,Software Engineers preparing for senior roles
+[DONE] API Design: Building RESTful & GraphQL APIs That Last,Versioning strategies and pagination patterns and error contracts that don't break clients.,Backend Engineers & API Platform Teams
+[DONE] Nix & Reproducible Development Environments,"Solves ""works on my machine"" permanently — deterministic builds and dev shells.",DevOps Engineers & Any Developer tired of Dockerfile drift
+[DONE] Accessible Web Development (WCAG Deep Dive),Screen readers and keyboard navigation and ARIA patterns — legal compliance and the right thing to do.,Frontend Engineers & Product Teams
+[DONE] Technical Writing for Engineers,Writing clear docs and RFCs and ADRs is a career multiplier that no CS program teaches.,Any Engineer who writes proposals or documentation
+[DONE] Formal Verification with TLA+ and Alloy,Mathematically proving your distributed system design is correct before writing a single line of code.,Distributed Systems & Safety-Critical Engineers
+[DONE] Prompt Engineering for Structured Retrieval,Designing prompts that extract structured data from unstructured documents reliably and repeatedly.,Data Scientists & AI Application Developers
+[DONE] Container Security: Escaping & Hardening Docker,Understanding namespace isolation and capability dropping and seccomp profiles from the attacker's perspective.,Security Engineers & DevOps
+[DONE] Database Migration Strategies Without Downtime,Blue-green schemas and expand-contract patterns and shadow writes — the ops side no one teaches.,Backend Engineers & DBAs
+[DONE] Compiler Optimization Passes (SSA & Dead Code Elimination),Understanding how compilers optimize your code changes how you write it.,Systems Programmers & Performance Engineers
+[DONE] Building a Search Engine: Inverted Indexes & TF-IDF,The fundamentals behind Elasticsearch and Meilisearch — built from first principles.,Backend Engineers & Information Retrieval Students
+[DONE] Kubernetes Networking: CNI & Service Mesh Internals,Understanding how pods actually talk to each other demystifies 90% of K8s debugging.,Platform Engineers & SREs
+[DONE] Linux Performance Tuning: perf & ftrace & bpftrace,The standard toolkit for diagnosing why production Linux systems are slow.,SREs & Linux Systems Administrators
+[DONE] Writing Async Runtimes (Tokio & Event Loops),How async/await actually works under the hood — from epoll to task scheduling.,Rust & Systems Developers
+[DONE] Implementing a Key-Value Store (LSM & WAL),Build a working database engine with write-ahead logging and compaction — like a mini RocksDB.,Storage Engineers & Backend Developers
+[DONE] Advanced CSS: Layout Algorithms & Rendering Pipeline,Understanding how the browser actually computes layout explains every CSS bug you've ever had.,Frontend Engineers frustrated by CSS
+[DONE] Streaming LLM Responses: SSE & WebSockets in Production,The plumbing behind every chat UI — handling backpressure and reconnection and token buffering.,Full-Stack AI Application Developers
+[DONE] Building MCP Servers (Model Context Protocol),The emerging standard for connecting AI agents to external tools and data sources.,AI Engineers & Tool Builder
+[DONE] Financial Data Pipelines with dbt & Snowflake,Transforming raw financial data into auditable analytics without spreadsheet chaos.,Data Engineers in Fintech
+[DONE] Genetic Algorithms & Evolutionary Computation,Optimization without gradients — useful for scheduling and design and game AI.,CS Students & Optimization Engineers
+[DONE] Adversarial Machine Learning: Attack & Defense,Crafting inputs that fool classifiers and building models robust enough to resist them.,ML Engineers & Security Researchers
+[DONE] Functional Programming Patterns in TypeScript,Monads and algebraic data types and pattern matching — practical FP without leaving the JS ecosystem.,TypeScript Developers wanting cleaner abstractions
+[DONE] Digital Signal Processing for Audio Engineers,FFT and filtering and spectral analysis — the math behind every audio plugin and music tool.,Audio Engineers & DSP Enthusiasts
+[DONE] Building a Load Balancer from Scratch,Round-robin and least-connections and consistent hashing — understanding the layer that sits in front of everything.,Backend & Infrastructure Engineers
+[DONE] Infrastructure as Code: Pulumi vs Terraform Deep Dive,Comparing HCL's declarative model with Pulumi's imperative approach on real-world infra.,DevOps & Platform Engineers
+[DONE] Writing a Garbage Collector,Implementing mark-sweep and generational GC teaches memory management better than any lecture.,CS Students & Language Implementers
+[DONE] Autonomous Drone Navigation with ROS2,Programming real robots with the Robot Operating System — from sensor fusion to path planning.,Robotics Engineers & Hobbyists
+[DONE] Python 101 for AI Engineers,"The absolute basics of Python scripting required before touching PyTorch, LangChain, or LLMs.",Aspiring AI Engineers
+[DONE] TypeScript Fundamentals,Learn the type system that powers modern full-stack web development.,Aspiring Web Developers
+[DONE] React 101: Component Architecture,"Master state, props, and hooks before diving into complex Next.js applications.",Aspiring Web Developers
+[DONE] SQL & Relational Databases 101,"Learn how to query, model, and join data before touching advanced indexing or RLS.",Aspiring Backend Engineers
+[DONE] Introduction to Networking & Protocols,"Understand the OSI model, IP, and basic networking before building TCP stacks or load balancers.",Aspiring Systems Engineers
+[DONE] Distributed Systems 101,The fundamental theory of CAP theorem and state replication needed before studying Raft or Paxos.,Aspiring Backend Engineers
+[DONE] Linux Command Line Basics,"Master bash, file permissions, and process management required for DevOps and containerization.",Aspiring Platform Engineers
+[DONE] Operating Systems 101,"Understand how a computer actually works (processes, memory, I/O) before tuning kernels or eBPF.",Aspiring Systems Engineers
+[DONE] Linear Algebra for Graphics,"The math required to understand vectors, matrices, and transformations for WebGL and WebGPU.",Aspiring Graphics Developers
+[DONE] Rust Programming Basics,"Learn ownership, borrowing, and lifetimes before attempting kernel dev or FFI.",Aspiring Systems Engineers
+[DONE] C Programming Fundamentals,Learn pointers and manual memory management before exploring memory corruption exploits.,Aspiring Security Researchers
+[DONE] Cryptography 101,"Understand hashing, symmetric, and asymmetric encryption before diving into Zero-Knowledge proofs.",Aspiring Security Researchers
+[DONE] Docker & Container Basics,Learn how to build and run containers before tackling Kubernetes.,Aspiring Platform Engineers
+[DONE] Kubernetes 101,"The basic concepts of Pods, Deployments, and Services required before learning K8s Networking.",Aspiring Platform Engineers
+[DONE] Assembly Language (x86 & ARM),Learn to read low-level instructions before reverse engineering binaries.,Aspiring Security Researchers
+[DONE] Computer Architecture Fundamentals,"Understand CPU registers, caches, and memory layouts.",Aspiring Systems Engineers
+[DONE] Message Queues & Pub/Sub Basics,The theory of asynchronous messaging needed before working with Kafka or RabbitMQ.,Aspiring Backend Engineers
+[DONE] HTML & CSS Fundamentals,Master the box model and basic styling before attempting advanced CSS rendering pipelines.,Aspiring Frontend Developers
+[DONE] Discrete Mathematics & Logic,The mathematical foundation required for formal verification tools like TLA+ and Alloy.,Aspiring Computer Scientists
+[DONE] Robotics 101: ROS2 Basics,Learn the fundamentals of ROS2 nodes and topics before attempting autonomous drone navigation.,Aspiring Robotics Engineers
+[DONE] Abstract Algebra & Number Theory,The mathematical foundation required for understanding Homomorphic Encryption and advanced cryptography.,Aspiring Cryptographers
+[DONE] Version Control Basics with Git,"Master branches, merges, and commits before diving into Git plumbing internals.",Aspiring Software Engineers
+[DONE] JavaScript & Web APIs 101,"Understand the DOM, Canvas, and Browser APIs before building Figma or Chrome extensions.",Aspiring Frontend Developers
+[DONE] Digital Audio Fundamentals,"Learn about sample rates, buffers, and frequencies before working with the Web Audio API.",Aspiring Audio Engineers
+[DONE] Deep Learning Fundamentals,"Understand neural networks, backpropagation, and loss functions before tuning Vision or Diffusion models.",Aspiring AI Engineers
+[DONE] HTTP & REST APIs 101,"Master the stateless web, headers, and status codes before scraping at scale or building advanced APIs.",Aspiring Backend Engineers
+[DONE] Data Structures: Trees & Graphs,"The fundamental CS knowledge required for Vector Search (HNSW), Parsers, and Databases.",Aspiring Software Engineers
+[DONE] Formal Languages & Automata Theory,"Understand regex, state machines, and grammars before building ASTs or compilers.",Aspiring Computer Scientists
+[DONE] Cloud Computing Basics,"Learn fundamental cloud primitives (VMs, S3, VPCs) before tackling high-scale Systems Design.",Aspiring Cloud Engineers
+[DONE] Infrastructure as Code (IaC) Basics,Understand declarative infrastructure concepts before diving into Terraform and Pulumi internals.,Aspiring DevOps Engineers
+[DONE] Concurrency & Multithreading Fundamentals,"Master threads, locks, and deadlocks before building async runtimes like Tokio.",Aspiring Systems Engineers
+[DONE] File Systems & Storage Fundamentals,"Learn how disks, blocks, and inodes work before implementing custom Key-Value stores.",Aspiring Database Engineers
+[DONE] Data Warehousing Basics,"Understand OLAP vs OLTP, schemas, and ETL before building pipelines in dbt or Snowflake.",Aspiring Data Engineers
+[DONE] Functional Programming 101,"Learn pure functions, immutability, and higher-order functions before exploring Monads.",Aspiring Software Engineers
+[DONE] Linear Algebra & Quantum Mechanics 101,The math and physics required before simulating quantum circuits in Qiskit.,Aspiring Quantum Engineers

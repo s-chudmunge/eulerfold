@@ -68,29 +68,40 @@ export async function generateMetadata({ params }: { params: { slug: string } })
     }
 
     const title = roadmap.title || roadmap.subject || 'Learning Roadmap';
-    const rawDescription = (roadmap.goal || roadmap.description || '').trim();
     const subject = roadmap.subject || 'Technical Skills';
     const author = roadmap.author || 'EulerFold User';
     
-    // Base part of the description
-    const baseDescription = `Learn ${subject} with this structured roadmap by ${author}: ${title}.`;
-    const fullDescription = `${baseDescription} ${rawDescription}`.trim();
-
-    // Strategy: Use full description if it fits; otherwise, use base or a truncated base.
-    // This prevents mid-sentence truncation of the goal.
     let description = '';
-    if (fullDescription.length <= 160) {
-        description = fullDescription;
-    } else if (baseDescription.length <= 160) {
-        description = baseDescription;
+    
+    if (roadmap.roadmap_plan?.about) {
+        // Use the rich AI-generated about text for the ultimate preview
+        // Grab the first 1-2 sentences to fit within ~160 chars for SEO/OG
+        const cleanAbout = roadmap.roadmap_plan.about.replace(/\n/g, ' ').trim();
+        if (cleanAbout.length <= 160) {
+            description = cleanAbout;
+        } else {
+            // Find the last space before 157 chars to avoid cutting off mid-word
+            const truncated = cleanAbout.substring(0, 157);
+            const lastSpace = truncated.lastIndexOf(' ');
+            description = truncated.substring(0, lastSpace > 0 ? lastSpace : 157) + '...';
+        }
     } else {
-        // Fallback: truncate base description at word boundary
-        description = baseDescription.substring(0, 157).split(' ').slice(0, -1).join(' ') + '...';
+        const rawDescription = (roadmap.goal || roadmap.description || '').trim();
+        const baseDescription = `Learn ${subject} with this structured roadmap by ${author}: ${title}.`;
+        const fullDescription = `${baseDescription} ${rawDescription}`.trim();
+
+        if (fullDescription.length <= 160) {
+            description = fullDescription;
+        } else if (baseDescription.length <= 160) {
+            description = baseDescription;
+        } else {
+            description = baseDescription.substring(0, 157).split(' ').slice(0, -1).join(' ') + '...';
+        }
     }
     
     // Add a call to action if the result is very short
     if (description.length < 100 && !description.includes('EulerFold')) {
-        const cta = " Follow curated resources and track your progress on EulerFold.";
+        const cta = " Start learning on EulerFold today.";
         if (description.length + cta.length <= 160) {
             description += cta;
         }

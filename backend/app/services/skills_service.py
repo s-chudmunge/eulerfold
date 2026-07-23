@@ -267,7 +267,7 @@ async def calculate_user_skill_score(user_id: str, canonical_skill_id: str):
         
         total_practice_sum += (min(max(practice_r, 0.0), 1.0) * weight)
         
-        total_time += (r.get("time_value", 1) * 5.0)
+        total_time += ((r.get("time_value") or 1) * 5.0)
 
     # Calculate final weighted metrics
     final_pow = (total_pow_sum / total_weight) if total_weight > 0 else 0.0
