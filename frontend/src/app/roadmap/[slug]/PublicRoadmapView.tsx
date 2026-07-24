@@ -30,7 +30,8 @@ import {
     CheckCircle2,
     BookOpen,
     GraduationCap,
-    AlertCircle
+    AlertCircle,
+    Star
 } from 'lucide-react';
 
 interface Props {
@@ -62,6 +63,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
     const [showCloneModal, setShowCloneModal] = useState<boolean>(false);
     const [submittingModule, setSubmittingModule] = useState<{number: number, title: string, instructions?: string} | null>(null);
     const [viewOnlyResult, setViewOnlyResult] = useState<any>(null);
+    const [similarRoadmaps, setSimilarRoadmaps] = useState<any[]>([]);
 
     const router = useRouter();
 
@@ -97,6 +99,27 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
     useEffect(() => {
         fetchSubmissions();
     }, [fetchSubmissions]);
+
+    const fetchSimilarRoadmaps = React.useCallback(async () => {
+        if (roadmap?.id) {
+            try {
+                // Since this is a public API, we might not need auth, or we can use the fetch API directly.
+                // But let's use standard fetch calling our backend endpoint
+                const url = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
+                const response = await fetch(`${url}/roadmaps/${roadmap.id}/similar`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setSimilarRoadmaps(data || []);
+                }
+            } catch (err) {
+                console.error("Failed to fetch similar roadmaps:", err);
+            }
+        }
+    }, [roadmap?.id]);
+
+    useEffect(() => {
+        fetchSimilarRoadmaps();
+    }, [fetchSimilarRoadmaps]);
 
     useEffect(() => {
         const checkAuth = async () => {
@@ -471,7 +494,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                     {roadmap.roadmap_plan.prerequisites && (
                                         <div>
                                             <div className="flex items-center gap-2 mb-4">
-                                                <AlertCircle className="w-4 h-4 text-accent" />
+                                                <Star className="w-4 h-4 text-accent" />
                                                 <h3 className="font-inter text-[15px] font-bold text-text-heading tracking-tight">Prerequisites</h3>
                                             </div>
                                             
@@ -494,11 +517,38 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                                 <ul className="space-y-2.5">
                                                     {roadmap.roadmap_plan.prerequisites.items.map((item: string, idx: number) => (
                                                         <li key={idx} className="flex items-start gap-2.5">
-                                                            <div className="w-1.5 h-1.5 rounded-full bg-accent/60 mt-[6px] shrink-0" />
+                                                            <Star className="w-3.5 h-3.5 text-accent/80 mt-1 shrink-0 fill-accent/80" />
                                                             <span className="manrope-body text-[13px] text-text-muted font-medium leading-[1.6]">{item}</span>
                                                         </li>
                                                     ))}
                                                 </ul>
+                                            )}
+
+                                            {roadmap.roadmap_plan.prerequisites.recommended_foundations && roadmap.roadmap_plan.prerequisites.recommended_foundations.length > 0 && (
+                                                <div className="mt-5 pt-4 border-t border-border/40">
+                                                    <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.2em] inconsolata-ui mb-3 block opacity-70">
+                                                        Recommended Prep
+                                                    </span>
+                                                    <div className="flex flex-col gap-2">
+                                                        {roadmap.roadmap_plan.prerequisites.recommended_foundations.map((found: any, idx: number) => (
+                                                            <Link 
+                                                                key={idx}
+                                                                href={`/roadmap/${found.slug}`}
+                                                                className="group flex items-center justify-between p-2.5 rounded-md border border-border/60 bg-background/50 hover:bg-background/80 hover:border-accent/40 transition-all"
+                                                            >
+                                                                <div className="flex items-center gap-2.5">
+                                                                    <Star className="w-3.5 h-3.5 text-accent/80 shrink-0 fill-accent/80" />
+                                                                    <span className="text-[13px] font-semibold text-text-heading group-hover:text-accent transition-colors">
+                                                                        {found.title}
+                                                                    </span>
+                                                                </div>
+                                                                <span className="shrink-0 text-text-muted opacity-50 group-hover:opacity-100 group-hover:text-accent group-hover:translate-x-0.5 transition-all text-sm">
+                                                                    &rarr;
+                                                                </span>
+                                                            </Link>
+                                                        ))}
+                                                    </div>
+                                                </div>
                                             )}
                                         </div>
                                     )}
@@ -520,13 +570,11 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                             </p>
                                             
                                             {roadmap.roadmap_plan.who_is_this_for.tags?.length > 0 && (
-                                                <div className="flex flex-col gap-2">
+                                                <div className="flex flex-wrap gap-2">
                                                     {roadmap.roadmap_plan.who_is_this_for.tags.map((tag: string, idx: number) => (
-                                                        <div key={idx} className="flex items-center gap-2.5 p-2 pr-3 rounded-[10px] bg-accent/5 border border-accent/10 hover:border-accent/30 transition-colors group">
-                                                            <div className="w-7 h-7 rounded-md bg-background shadow-sm flex items-center justify-center border border-border/40 shrink-0 group-hover:scale-105 transition-transform duration-300">
-                                                                <User className="w-3.5 h-3.5 text-accent" />
-                                                            </div>
-                                                            <span className="font-inter text-[13px] font-bold text-text-heading tracking-tight leading-tight">{tag}</span>
+                                                        <div key={idx} className="flex items-center gap-1.5 py-1.5 px-2.5 rounded-md border border-border/60 bg-background/50 hover:bg-background/80 hover:border-accent/40 transition-colors">
+                                                            <User className="w-3 h-3 text-accent/80" />
+                                                            <span className="text-[12px] font-semibold text-text-heading tracking-tight">{tag}</span>
                                                         </div>
                                                     ))}
                                                 </div>
@@ -634,22 +682,55 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                         </div>
                     )}
 
-                    {/* Feedback Stars - Minimal Layout */}
-                    <div className="mt-20 mb-16 text-center border-t border-border/50 pt-12">
-                        <h2 className="manrope-body text-[12px] font-bold text-text-muted uppercase tracking-[0.2em] mb-6 font-inter">Rate this course</h2>
-                        <div className="flex justify-center mb-4">
-                            <StarRating 
-                                rating={rating} 
-                                count={ratingCount} 
-                                size={32}
-                                interactive={isAuthenticated && !isOwner}
-                                onRate={handleRate}
-                            />
-                        </div>
-                        <p className="manrope-body text-[13px] text-text-muted italic opacity-70">
-                            Help the community find verified technical paths.
-                        </p>
+                    {/* Feedback Stars - Ultra Minimal Layout */}
+                    <div className="mt-16 mb-12 flex items-center justify-between border-t border-border/30 pt-8">
+                        <span className="text-[13px] font-bold text-text-muted uppercase tracking-wider">Rate this course</span>
+                        <StarRating 
+                            rating={rating} 
+                            count={ratingCount} 
+                            size={20}
+                            interactive={isAuthenticated && !isOwner}
+                            onRate={handleRate}
+                        />
                     </div>
+
+                    {/* Similar Roadmaps */}
+                    {similarRoadmaps && similarRoadmaps.length > 0 && (
+                        <div className="mt-16 mb-24 max-w-4xl mx-auto px-4">
+                            <div className="flex items-center gap-3 mb-6 border-b border-border/50 pb-4">
+                                <h2 className="text-[12px] font-bold text-text-muted uppercase tracking-[0.2em] font-inter">
+                                    Keep Exploring
+                                </h2>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                {similarRoadmaps.map((simRoadmap: any, idx: number) => (
+                                    <Link 
+                                        key={idx} 
+                                        href={`/roadmap/${simRoadmap.slug}`}
+                                        className="group relative flex flex-col p-6 rounded-2xl border border-border/60 bg-sidebar/50 hover:bg-background/80 hover:border-accent/40 hover:-translate-y-1 transition-all duration-300"
+                                    >
+                                        {/* Subtle gradient overlay on hover */}
+                                        <div className="absolute inset-0 bg-gradient-to-b from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl pointer-events-none" />
+                                        
+                                        <h3 className="relative text-[16px] font-bold text-text-heading group-hover:text-accent transition-colors leading-snug mb-3 mt-2">
+                                            {simRoadmap.title}
+                                        </h3>
+                                        <p className="relative text-[13px] text-text-muted font-medium line-clamp-3 leading-relaxed mb-6">
+                                            {simRoadmap.description}
+                                        </p>
+                                        
+                                        {/* Footer area with Arrow */}
+                                        <div className="relative mt-auto flex items-center text-accent/80 group-hover:text-accent font-bold text-[12px] uppercase tracking-wider transition-colors">
+                                            View Course 
+                                            <svg className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                                            </svg>
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+                    )}
 
                     {/* Discussion Section */}
                     <DiscussionSection 

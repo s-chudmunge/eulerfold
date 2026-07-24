@@ -662,6 +662,22 @@ Begin the JSON output immediately.
         logger.error(f"Extension generation failed: {e}")
         raise HTTPException(status_code=500, detail="Failed to generate roadmap extension.")
 
+@router.get("/roadmaps/{roadmap_id}/similar")
+async def get_similar_roadmaps(roadmap_id: int):
+    try:
+        sb = get_supabase_client()
+        # Call the match_roadmaps RPC function (requires source_id, match_threshold, match_count)
+        res = sb.rpc("match_roadmaps", {
+            "source_id": roadmap_id,
+            "match_threshold": 0.3,
+            "match_count": 6
+        }).execute()
+        
+        return res.data
+    except Exception as e:
+        logger.error(f"Failed to fetch similar roadmaps: {e}")
+        return []
+
 @router.get("/roadmaps/{roadmap_id}", response_model=RoadmapMe)
 async def get_roadmap_by_id(roadmap_id: int, background_tasks: BackgroundTasks, current_user: Optional[User] = Depends(get_optional_current_user)):
 

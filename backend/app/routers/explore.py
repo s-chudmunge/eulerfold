@@ -23,6 +23,69 @@ from app.routers.roadmaps import _generate_unique_slug
 logger = logging.getLogger(__name__)
 router = APIRouter()
 
+@router.get("/explore/recommendations/personalized")
+async def get_personalized_recommendations(current_user: User = Depends(get_current_user)):
+    sb = get_supabase_client()
+    try:
+        # Fetch user's roadmaps as proxy for interests
+        roadmaps_res = sb.table("roadmaps").select("slug").eq("email", current_user.email).limit(5).execute()
+        
+        roadmap_ids = [f"roadmap-{r['slug']}" for r in roadmaps_res.data]
+        
+        # Fallback if no roadmaps
+        if not roadmap_ids:
+            # Fallback to some known popular items or default vectors
+            roadmap_ids = ["roadmap-cryptography-101", "roadmap-linux-and-terminal-for-developers"]
+            
+        # Fetch their embeddings from the db
+        embed_res = sb.table("content_embeddings").select("embedding").in_("id", roadmap_ids).execute()
+        
+        if not embed_res.data:
+            return []
+            
+        import json
+        vectors = [json.loads(row['embedding']) for row in embed_res.data if row.get('embedding')]
+        
+        if not vectors:
+            return []
+            
+        # Compute the average vector
+        avg_vector = [sum(col) / len(col) for col in zip(*vectors)]
+        
+        # Format for pgvector
+        query_embedding_str = f"[{','.join(map(str, avg_vector))}]"
+        
+        res = sb.rpc("match_content_by_vector", {
+            "query_embedding": query_embedding_str,
+            "match_threshold": 0.1,
+            "match_count": 50
+        }).execute()
+        
+        # Forcefully mix content types
+        items = res.data
+        roadmaps = [item for item in items if item['content_type'] == 'roadmap']
+        articles = [item for item in items if item['content_type'] == 'article']
+        research = [item for item in items if item['content_type'] in ('research', 'research_decoded')]
+        
+        # Take top 4 roadmaps, top 2 articles, top 2 research
+        mixed = roadmaps[:4] + articles[:2] + research[:2]
+        
+        # If we don't have enough articles/research, fill the rest with roadmaps
+        while len(mixed) < 8 and len(roadmaps) > len([i for i in mixed if i['content_type'] == 'roadmap']):
+            # Find a roadmap not already in mixed
+            for r in roadmaps:
+                if r not in mixed:
+                    mixed.append(r)
+                    break
+                    
+        import random
+        random.shuffle(mixed)
+        
+        return mixed[:8]
+    except Exception as e:
+        logger.error(f"Error generating personalized recommendations: {e}")
+        return []
+
 def _generate_plan_hash(plan: Dict[str, Any]) -> str:
     """Generate a stable hash for a roadmap plan."""
     plan_str = json.dumps(plan, sort_keys=True)
@@ -548,3 +611,17 @@ async def get_public_roadmap(
     r["user_rating"] = user_rating
         
     return r
+
+@router.get("/content/{content_id}/similar")
+async def get_similar_content(content_id: str):
+    try:
+        sb = get_supabase_client()
+        res = sb.rpc("match_content", {
+            "source_id": content_id,
+            "match_threshold": 0.3,
+            "match_count": 10
+        }).execute()
+        return res.data
+    except Exception as e:
+        logger.error(f"Failed to fetch similar content: {e}")
+        return []

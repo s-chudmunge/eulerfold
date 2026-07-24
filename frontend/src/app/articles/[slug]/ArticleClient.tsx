@@ -352,8 +352,9 @@ export default function ArticleClient({ article }: Props) {
   const [isLoadingLikes, setIsLoadingLikes] = React.useState(true);
   const [recommendations, setRecommendations] = React.useState<{
     articles: Article[],
-    papers: Paper[]
-  }>({ articles: [], papers: [] });
+    papers: Paper[],
+    roadmaps?: any[]
+  }>({ articles: [], papers: [], roadmaps: [] });
 
   const contextType = 'article';
   const contextId = article.slug;
@@ -418,68 +419,57 @@ export default function ArticleClient({ article }: Props) {
   const encodedText = encodeURIComponent(shareText);
 
   React.useEffect(() => {
-    // Advanced recommendation logic
-    const allArticles = Object.values(articles);
-    const keywords = [
-      article.title.toLowerCase(),
-      article.subject.toLowerCase(),
-      ...(article.synonyms || []).map(s => s.toLowerCase())
-    ];
-
-    const scoredArticles = allArticles
-      .filter(a => a.slug !== article.slug)
-      .map(a => {
-        let score = 0;
-        if (a.subject === article.subject) score += 10;
+    const fetchRecommendations = async () => {
+      try {
+        const response = await api.get(`/content/article-${article.slug}/similar`);
+        const simData = response.data || [];
         
-        const aTitle = a.title.toLowerCase();
-        const aExcerpt = a.excerpt.toLowerCase();
-        
-        keywords.forEach(k => {
-          if (aTitle.includes(k)) score += 5;
-          if (aExcerpt.includes(k)) score += 2;
-        });
-
-        // Check if any of this article's synonyms appear in the target article's content
-        if (a.synonyms) {
-          a.synonyms.forEach(syn => {
-            if (article.content.toLowerCase().includes(syn.toLowerCase())) score += 3;
+        // Map backend generic data to what UI expects, pulling images from local dictionaries
+        const articlesSim = simData
+          .filter((item: any) => item.content_type === 'article')
+          .map((item: any) => {
+            const localArt = articles[item.slug as keyof typeof articles];
+            return {
+              title: item.title,
+              slug: item.slug,
+              subject: item.subject,
+              heroImage: localArt?.heroImage
+            };
           });
-        }
+          
+        const papersSim = simData
+          .filter((item: any) => item.content_type === 'research_decoded')
+          .map((item: any) => {
+            const localPaper = papers[item.slug as keyof typeof papers];
+            return {
+              title: item.title,
+              slug: item.slug,
+              authors: item.description, // backend maps excerpt/description here
+              heroImage: localPaper?.heroImage
+            };
+          });
 
-        return { article: a, score };
-      })
-      .sort((a, b) => b.score - a.score || Math.random() - 0.5)
-      .slice(0, 3); // Increased to 3 for better density
+        const roadmapsSim = simData
+          .filter((item: any) => item.content_type === 'roadmap')
+          .map((item: any) => ({
+            id: item.id.replace('roadmap-', ''),
+            title: item.title,
+            slug: item.slug,
+            subject: item.subject
+          }));
 
-    // Map entries to ensure we have the slug (the key) available
-    const allPapers = Object.entries(papers).map(([slug, paper]) => ({
-      ...paper,
-      slug
-    }));
-
-    const scoredPapers = allPapers
-      .map(p => {
-        let score = 0;
-        const pTitle = p.title.toLowerCase();
-        const pIntro = p.intro.toLowerCase();
-
-        keywords.forEach(k => {
-          if (pTitle.includes(k)) score += 10;
-          if (pIntro.includes(k)) score += 3;
+        setRecommendations({ 
+          articles: articlesSim.slice(0, 3), 
+          papers: papersSim.slice(0, 3),
+          roadmaps: roadmapsSim.slice(0, 3)
         });
-
-        // Bonus for matching authors (if applicable, though usually not)
-        return { paper: p, score };
-      })
-      .sort((a, b) => b.score - a.score || Math.random() - 0.5)
-      .slice(0, 3);
-
-    setRecommendations({
-      articles: scoredArticles.map(sa => sa.article),
-      papers: scoredPapers.map(sp => sp.paper)
-    });
-  }, [article.slug, article.title, article.subject, article.synonyms, article.content]);
+      } catch (err) {
+        console.error("Failed to fetch similar content:", err);
+      }
+    };
+    
+    fetchRecommendations();
+  }, [article.slug]);
 
   return (
     <div className="min-h-screen bg-background text-text-primary serif-page-scope selection:bg-accent/20">
@@ -659,11 +649,18 @@ export default function ArticleClient({ article }: Props) {
                           <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.2em] inconsolata-ui mb-4 block opacity-60">From the Glossary</span>
                           <div className="flex flex-col gap-4">
                             {recommendations.articles.map((item) => (
-                              <Link key={item.slug} href={`/articles/${item.slug}`} className="group flex items-start justify-between py-2 border-b border-border/40 hover:border-accent/40 transition-colors">
-                                <span className="text-[17px] md:text-[19px] font-semibold text-text-heading group-hover:text-accent transition-colors leading-snug">
-                                  {item.title}
-                                </span>
-                                <ArrowRight className="w-4 h-4 text-accent opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all shrink-0 mt-1" />
+                              <Link key={item.slug} href={`/articles/${item.slug}`} className="group flex items-center justify-between py-3 border-b border-border/40 hover:border-accent/40 transition-colors">
+                                <div className="flex items-center gap-4">
+                                  {item.heroImage && (
+                                    <div className="w-16 h-12 md:w-20 md:h-14 rounded-md overflow-hidden shrink-0 border border-border/50">
+                                      <img src={item.heroImage} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                    </div>
+                                  )}
+                                  <span className="text-[16px] md:text-[18px] font-semibold text-text-heading group-hover:text-accent transition-colors leading-snug">
+                                    {item.title}
+                                  </span>
+                                </div>
+                                <ArrowRight className="w-4 h-4 text-accent opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all shrink-0 ml-4" />
                               </Link>
                             ))}
                           </div>
@@ -672,18 +669,25 @@ export default function ArticleClient({ article }: Props) {
 
                       {/* Research Papers */}
                       {recommendations.papers.length > 0 && (
-                        <div>
+                        <div className="mt-8">
                           <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.2em] inconsolata-ui mb-4 block opacity-60">Research Decoded</span>
                           <div className="flex flex-col gap-4">
                             {recommendations.papers.map((paper) => (
-                              <Link key={paper.slug} href={`/research-decoded/${paper.slug}`} className="group flex items-start justify-between py-2 border-b border-border/40 hover:border-accent/40 transition-colors">
-                                <div className="flex flex-col gap-1">
-                                  <span className="text-[17px] md:text-[19px] font-semibold text-text-heading group-hover:text-accent transition-colors leading-snug">
-                                    {paper.title}
-                                  </span>
-                                  <span className="text-[13px] text-text-muted font-medium italic opacity-70">{paper.authors}</span>
+                              <Link key={paper.slug} href={`/research-decoded/${paper.slug}`} className="group flex items-center justify-between py-3 border-b border-border/40 hover:border-accent/40 transition-colors">
+                                <div className="flex items-center gap-4">
+                                  {paper.heroImage && (
+                                    <div className="w-16 h-12 md:w-20 md:h-14 rounded-md overflow-hidden shrink-0 border border-border/50">
+                                      <img src={paper.heroImage} alt={paper.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                    </div>
+                                  )}
+                                  <div className="flex flex-col gap-1">
+                                    <span className="text-[16px] md:text-[18px] font-semibold text-text-heading group-hover:text-accent transition-colors leading-snug">
+                                      {paper.title}
+                                    </span>
+                                    <span className="text-[13px] text-text-muted font-medium italic opacity-70 line-clamp-1">{paper.authors}</span>
+                                  </div>
                                 </div>
-                                <ArrowRight className="w-4 h-4 text-accent opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all shrink-0 mt-1" />
+                                <ArrowRight className="w-4 h-4 text-accent opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all shrink-0 ml-4" />
                               </Link>
                             ))}
                           </div>
@@ -691,7 +695,7 @@ export default function ArticleClient({ article }: Props) {
                       )}
                     </div>
 
-                    <RecommendedRoadmaps query={article.title} className="mt-10" />
+                    <RecommendedRoadmaps roadmaps={recommendations.roadmaps || []} className="mt-10" />
                   </div>
 
                   {/* Breadcrumbs & AI Disclosure */}
