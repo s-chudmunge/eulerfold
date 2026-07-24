@@ -8,6 +8,8 @@ import { ArrowRight, Loader, TrendingUp, Clock, Cpu, Calculator, Code, BookOpen,
 import { motion, AnimatePresence } from 'framer-motion';
 import { ExploreRoadmap, api } from '@/lib/api';
 import VerifiedBadge from '@/components/VerifiedBadge';
+import FluidGradient from '@/components/FluidGradient/FluidGradient';
+import { textToGradientConfig } from '@/lib/gradientUtils';
 
 interface RoadmapDiscoveryProps {
   initialRoadmaps: ExploreRoadmap[];
@@ -97,10 +99,16 @@ export default function RoadmapDiscovery({ initialRoadmaps }: RoadmapDiscoveryPr
                 >
                   <div className="flex items-center gap-4 min-w-0">
                     {item.type === 'roadmap' ? (
-                      <div className="w-12 h-12 md:w-14 md:h-14 rounded-md flex items-center justify-center bg-sidebar border border-border/50 shrink-0 text-accent/60 group-hover:text-accent group-hover:border-accent/30 transition-colors">
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
-                        </svg>
+                      <div className="w-12 h-12 md:w-14 md:h-14 rounded-md overflow-hidden shrink-0 border border-border/50 relative bg-sidebar">
+                        {(() => {
+                          const { colors, pattern, speed } = textToGradientConfig(item.title || 'roadmap');
+                          return (
+                            <div className="w-full h-full relative">
+                              <FluidGradient colors={colors} pattern={pattern} speed={speed} intensity={1.1} />
+                              <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500" />
+                            </div>
+                          );
+                        })()}
                       </div>
                     ) : (
                       <div className="w-12 h-12 md:w-14 md:h-14 rounded-md overflow-hidden shrink-0 border border-border/50 relative bg-sidebar">

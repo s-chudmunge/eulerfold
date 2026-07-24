@@ -12,6 +12,7 @@ import StarRating from '@/components/roadmap/StarRating';
 import { DiscussionSection } from '@/components/discussions/DiscussionSection';
 import MCQPractice from '@/components/roadmap/MCQPractice';
 import SocialShare from '@/components/SocialShare';
+import RoadmapBanner from '@/components/FluidGradient/RoadmapBanner';
 import HomeworkSubmissionModal from '@/components/roadmap/HomeworkSubmissionModal';
 import { 
     Library, 
@@ -339,7 +340,14 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
             <PublicHeader />
             
             <main className="flex-grow">
-                <div className="max-w-[1000px] mx-auto px-6 pt-16 pb-12 md:px-12 md:pt-24 md:pb-16 relative">
+                <RoadmapBanner 
+                    title={roadmap.title} 
+                    slug={slug} 
+                    authorName={roadmap.author}
+                    username={roadmap.username}
+                    avatarUrl={roadmap.avatar_url}
+                />
+                <div className="max-w-[1000px] mx-auto px-6 pb-12 md:px-12 md:pb-16 relative mt-10">
                     {/* Public Header Area - Minimalist Design */}
                     <div className="relative mb-10 pb-8 border-b border-border/60 group/header">
                         <div className="flex flex-col gap-5">
@@ -586,7 +594,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                         </div>
                     )}
 
-                    <div className="mb-20 relative">
+                    <div className="mb-20 relative" id="course-content">
                         {/* DEBUG: {JSON.stringify({ isPro, isOwner, completed: roadmap.progress?.completed_topics, total: roadmap.progress?.total_topics, extCount: roadmap.extension_count })} */}
                         <RoadmapDisplay 
                             roadmapData={roadmap} 

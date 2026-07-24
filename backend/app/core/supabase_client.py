@@ -29,7 +29,8 @@ def get_supabase_client() -> Client:
             # Increase timeout to 60 seconds to be more resilient
             options = ClientOptions(
                 postgrest_client_timeout=60,
-                storage_client_timeout=60
+                storage_client_timeout=60,
+                headers={"Connection": "close"}
             )
             _supabase_client = create_client(
                 settings.SUPABASE_URL,
@@ -60,7 +61,8 @@ def get_admin_supabase_client() -> Client:
         try:
             _admin_supabase_client = create_client(url, key, options=ClientOptions(
                 postgrest_client_timeout=60,
-                storage_client_timeout=60
+                storage_client_timeout=60,
+                headers={"Connection": "close"}
             ))
             logger.info("Supabase ADMIN client initialized successfully")
         except Exception as e:
