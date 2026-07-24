@@ -4,6 +4,7 @@ const nextConfig = {
   compress: true,
   poweredByHeader: false,
   optimizeFonts: false,
+  staticPageGenerationTimeout: 300,
   
   // Ignore linting and type errors during build
   eslint: {

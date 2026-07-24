@@ -61,7 +61,7 @@ async def get_personalized_recommendations(current_user: User = Depends(get_curr
             "match_count": 50
         }).execute()
         
-        # Forcefully mix content types
+        # Extract and group results by content_type
         items = res.data
         roadmaps = [item for item in items if item['content_type'] == 'roadmap']
         articles = [item for item in items if item['content_type'] == 'article']

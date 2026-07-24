@@ -44,7 +44,7 @@ export default function RoadmapDiscovery({ initialRoadmaps }: RoadmapDiscoveryPr
         // Fallback silently
       }
       
-      // Fallback: Mix items together
+      // Fallback: Mix items together from static content and initial props
       const mixedItems = [
         ...initialRoadmaps.slice(0, 4).map(r => ({ ...r, type: 'roadmap' })),
         ...Object.values(articles).slice(0, 2).map(a => ({ ...a, type: 'article' })),
