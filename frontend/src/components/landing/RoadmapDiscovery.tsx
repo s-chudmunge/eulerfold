@@ -20,7 +20,7 @@ export default function RoadmapDiscovery({ initialRoadmaps }: RoadmapDiscoveryPr
   useEffect(() => {
     async function loadContent() {
       try {
-        // Try to fetch personalized recommendations
+        // Try to fetch personalized recommendations for the authenticated user
         const res = await api.get('/explore/recommendations/personalized');
         if (res.data && res.data.length > 0) {
           // The backend returns uniform objects with content_type

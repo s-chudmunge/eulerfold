@@ -70,7 +70,7 @@ async def get_personalized_recommendations(current_user: User = Depends(get_curr
         # Take top 4 roadmaps, top 2 articles, top 2 research
         mixed = roadmaps[:4] + articles[:2] + research[:2]
         
-        # If we don't have enough articles/research, fill the rest with roadmaps
+        # Fill the remainder with roadmaps if needed, then shuffle the final feed
         while len(mixed) < 8 and len(roadmaps) > len([i for i in mixed if i['content_type'] == 'roadmap']):
             # Find a roadmap not already in mixed
             for r in roadmaps:
