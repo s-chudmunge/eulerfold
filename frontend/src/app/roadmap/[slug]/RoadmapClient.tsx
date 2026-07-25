@@ -29,7 +29,8 @@ import {
     ArrowRight,
     User,
     Calendar,
-    Edit3
+    Edit3,
+    ExternalLink
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -54,6 +55,90 @@ const manrope = Manrope({
   variable: '--font-sans',
   weight: ['400', '500', '600', '700'],
 });
+
+const getDomain = (url: string) => {
+    if (!url) return 'Reference Material';
+    try {
+        return new URL(url).hostname.replace('www.', '');
+    } catch {
+        return 'Reference Material';
+    }
+};
+
+const ModuleReferenceCarousel = ({ module, index }: { module: any, index: number }) => {
+    const scrollRef = React.useRef<HTMLDivElement>(null);
+
+    const scroll = (direction: 'left' | 'right') => {
+        if (scrollRef.current) {
+            const scrollAmount = 300;
+            scrollRef.current.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
+        }
+    };
+
+    if (!module.resources || module.resources.length === 0) return null;
+
+    const uniqueResources = Array.from(new Map(
+        module.resources.map((r: any) => [r.link || r.url, r])
+    ).values()) as any[];
+
+    if (uniqueResources.length === 0) return null;
+
+    return (
+        <div className="mb-10">
+            <div className="flex items-center justify-between mb-4 px-2 md:px-0">
+                <h3 className="manrope-body text-[13px] font-bold text-text-heading/80">
+                    Week {index + 1}: {module.title}
+                </h3>
+                {uniqueResources.length > 2 && (
+                    <div className="flex items-center gap-2">
+                        <button 
+                            onClick={() => scroll('left')}
+                            className="p-1.5 rounded-full bg-sidebar border border-border/50 text-text-muted hover:text-accent hover:border-accent/30 transition-all shadow-sm"
+                        >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                        </button>
+                        <button 
+                            onClick={() => scroll('right')}
+                            className="p-1.5 rounded-full bg-sidebar border border-border/50 text-text-muted hover:text-accent hover:border-accent/30 transition-all shadow-sm"
+                        >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                        </button>
+                    </div>
+                )}
+            </div>
+            <div 
+                ref={scrollRef}
+                className="flex overflow-x-auto gap-4 pb-4 snap-x no-scrollbar -mx-6 px-6 md:mx-0 md:px-0 scroll-smooth"
+            >
+                {uniqueResources.map((resource: any, idx: number) => (
+                    <a 
+                        key={idx}
+                        href={resource.link || resource.url} 
+                        target="_blank" 
+                        rel="noreferrer"
+                        className="snap-start shrink-0 w-[260px] md:w-[280px] h-[160px] p-5 rounded-2xl border border-border/60 bg-sidebar/50 hover:bg-background/80 hover:border-accent/40 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
+                    >
+                        <div className="absolute inset-0 bg-gradient-to-b from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                        <div className="relative z-10">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="w-8 h-8 rounded-lg bg-accent/10 text-accent flex items-center justify-center font-bold text-[12px] font-inconsolata border border-accent/20 group-hover:bg-accent group-hover:text-white transition-colors">
+                                    {String(idx + 1).padStart(2, '0')}
+                                </div>
+                                <ExternalLink className="w-4 h-4 text-text-muted opacity-0 group-hover:opacity-100 group-hover:text-accent transition-all transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                            </div>
+                            <h3 className="manrope-body text-[14px] font-bold text-text-heading group-hover:text-accent transition-colors leading-snug line-clamp-3">
+                                {resource.title || resource.name || resource.url}
+                            </h3>
+                        </div>
+                        <div className="relative z-10 mt-2 pt-3 border-t border-border/50 text-[10px] text-text-muted uppercase tracking-[0.1em] font-bold font-inter truncate">
+                            {getDomain(resource.link || resource.url)}
+                        </div>
+                    </a>
+                ))}
+            </div>
+        </div>
+    );
+};
 
 interface Props {
   slug: string;
@@ -903,28 +988,10 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                     <Library className="w-4 h-4 text-text-muted" />
                                     <h2 className="inconsolata-ui text-[12px] font-bold  tracking-wide text-text-muted">References</h2>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4">
-                                    {Array.from(new Map(
-                                        roadmap.roadmap_plan.modules
-                                            .flatMap((m: any) => m.resources || [])
-                                            .map((r: any) => [r.link || r.url, r])
-                                    ).values()).map((resource: any, idx) => (
-                                        <div key={idx} className="flex items-start gap-4 group">
-                                            <span className="inconsolata-ui text-[10px] font-bold text-text-muted mt-1 w-4 shrink-0">
-                                                {idx + 1}.
-                                            </span>
-                                            <a 
-                                                href={resource.link || resource.url} 
-                                                target="_blank" 
-                                                rel="noreferrer"
-                                                className="manrope-body text-[13px] text-text-primary hover:text-accent transition-colors leading-relaxed line-clamp-3"
-                                            >
-                                                {resource.title || resource.name || resource.url}
-                                                <span className="ml-2 text-[10px] text-text-muted font-normal italic opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    ↗
-                                                </span>
-                                            </a>
-                                        </div>
+                                
+                                <div className="flex flex-col">
+                                    {roadmap.roadmap_plan.modules.map((module: any, index: number) => (
+                                        <ModuleReferenceCarousel key={index} module={module} index={index} />
                                     ))}
                                 </div>
                             </div>

@@ -666,14 +666,25 @@ Begin the JSON output immediately.
 async def get_similar_roadmaps(roadmap_id: int):
     try:
         sb = get_supabase_client()
+        
+        # If this roadmap is a clone, resolve to the original public source ID so vector matching works
+        source_id = roadmap_id
+        roadmap_res = sb.table("roadmaps").select("id, cloned_from").eq("id", roadmap_id).execute()
+        if roadmap_res.data and len(roadmap_res.data) > 0:
+            row = roadmap_res.data[0]
+            if row.get("cloned_from"):
+                source_id = row["cloned_from"]
+
         # Call the match_roadmaps RPC function (requires source_id, match_threshold, match_count)
         res = sb.rpc("match_roadmaps", {
-            "source_id": roadmap_id,
+            "source_id": source_id,
             "match_threshold": 0.3,
             "match_count": 6
         }).execute()
         
-        return res.data
+        # Exclude the currently viewed roadmap or its parent from the recommendations list
+        similar = [r for r in (res.data or []) if r.get("id") not in [roadmap_id, source_id]]
+        return similar
     except Exception as e:
         logger.error(f"Failed to fetch similar roadmaps: {e}")
         return []

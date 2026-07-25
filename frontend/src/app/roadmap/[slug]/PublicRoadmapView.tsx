@@ -32,13 +32,98 @@ import {
     BookOpen,
     GraduationCap,
     AlertCircle,
-    Star
+    Star,
+    ExternalLink
 } from 'lucide-react';
+
+const getDomain = (url: string) => {
+    if (!url) return 'Reference Material';
+    try {
+        return new URL(url).hostname.replace('www.', '');
+    } catch {
+        return 'Reference Material';
+    }
+};
 
 interface Props {
     roadmap: any;
     slug: string;
 }
+
+const ModuleReferenceCarousel = ({ module, index }: { module: any, index: number }) => {
+    const scrollRef = React.useRef<HTMLDivElement>(null);
+
+    const scroll = (direction: 'left' | 'right') => {
+        if (scrollRef.current) {
+            const scrollAmount = 300;
+            scrollRef.current.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
+        }
+    };
+
+    if (!module.resources || module.resources.length === 0) return null;
+
+    const uniqueResources = Array.from(new Map(
+        module.resources.map((r: any) => [r.link || r.url, r])
+    ).values()) as any[];
+
+    if (uniqueResources.length === 0) return null;
+
+    return (
+        <div className="mb-12 w-full flex flex-col">
+            <div className="flex items-center justify-between mb-4 px-2 md:px-0">
+                <h3 className="manrope-body text-[13px] font-bold text-text-heading/80">
+                    Week {index + 1}: {module.title}
+                </h3>
+                {uniqueResources.length > 2 && (
+                    <div className="flex items-center gap-2">
+                        <button 
+                            onClick={() => scroll('left')}
+                            className="p-1.5 rounded-full bg-sidebar border border-border/50 text-text-muted hover:text-accent hover:border-accent/30 transition-all shadow-sm"
+                        >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
+                        </button>
+                        <button 
+                            onClick={() => scroll('right')}
+                            className="p-1.5 rounded-full bg-sidebar border border-border/50 text-text-muted hover:text-accent hover:border-accent/30 transition-all shadow-sm"
+                        >
+                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
+                        </button>
+                    </div>
+                )}
+            </div>
+            <div 
+                ref={scrollRef}
+                className="flex overflow-x-auto gap-4 pb-4 snap-x no-scrollbar -mx-6 px-6 md:mx-0 md:px-0 scroll-smooth"
+            >
+                {uniqueResources.map((resource: any, idx: number) => (
+                    <a 
+                        key={idx}
+                        href={resource.link || resource.url} 
+                        target="_blank" 
+                        rel="noreferrer"
+                        className="snap-start flex-shrink-0 w-[260px] md:w-[280px] h-[160px] p-5 rounded-2xl border border-border/60 bg-sidebar/50 hover:bg-background/80 hover:border-accent/40 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
+                    >
+                        <div className="absolute inset-0 bg-gradient-to-b from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+                        <div className="relative z-10">
+                            <div className="flex items-center justify-between mb-4">
+                                <div className="w-8 h-8 rounded-lg bg-accent/10 text-accent flex items-center justify-center font-bold text-[12px] font-inconsolata border border-accent/20 group-hover:bg-accent group-hover:text-white transition-colors">
+                                    {String(idx + 1).padStart(2, '0')}
+                                </div>
+                                <ExternalLink className="w-4 h-4 text-text-muted opacity-0 group-hover:opacity-100 group-hover:text-accent transition-all transform group-hover:translate-x-1 group-hover:-translate-y-1" />
+                            </div>
+                            <h3 className="manrope-body text-[14px] font-bold text-text-heading group-hover:text-accent transition-colors leading-snug line-clamp-3">
+                                {resource.title || resource.name || resource.url}
+                            </h3>
+                        </div>
+                        <div className="relative z-10 mt-2 pt-3 border-t border-border/50 text-[10px] text-text-muted uppercase tracking-[0.1em] font-bold font-inter truncate">
+                            {getDomain(resource.link || resource.url)}
+                        </div>
+                    </a>
+                ))}
+            </div>
+        </div>
+    );
+};
 
 export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Props) {
     const [roadmap, setRoadmap] = useState(initialRoadmap);
@@ -58,6 +143,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
     const [extending, setExtending] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
     const [successMsg, setSuccessMsg] = useState<string | null>(null);
+    const [cloneSuccess, setCloneSuccess] = useState<boolean>(false);
     const [submissions, setSubmissions] = useState<any[]>([]);
     const [selectedPracticeTopic, setSelectedPracticeTopic] = useState<{topic: any, moduleIndex: number} | null>(null);
     const [isHomeworkModalOpen, setIsHomeworkModalOpen] = useState<boolean>(false);
@@ -107,7 +193,8 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                 // Since this is a public API, we might not need auth, or we can use the fetch API directly.
                 // But let's use standard fetch calling our backend endpoint
                 const url = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-                const response = await fetch(`${url}/roadmaps/${roadmap.id}/similar`);
+                const sourceId = roadmap.cloned_from || roadmap.id;
+                const response = await fetch(`${url}/roadmaps/${sourceId}/similar`);
                 if (response.ok) {
                     const data = await response.json();
                     setSimilarRoadmaps(data || []);
@@ -116,7 +203,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                 console.error("Failed to fetch similar roadmaps:", err);
             }
         }
-    }, [roadmap?.id]);
+    }, [roadmap?.id, roadmap?.cloned_from]);
 
     useEffect(() => {
         fetchSimilarRoadmaps();
@@ -236,25 +323,17 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
             const { data: { session } } = await supabase.auth.getSession();
             if (session) {
                 const res = await exploreAPI.cloneRoadmap(roadmap.id, session.access_token);
-                setSuccessMsg("Roadmap cloned to dashboard!");
-                // Short delay to show success message, then refresh local state
-                setTimeout(async () => {
-                    try {
-                        const updatedRoadmap = await roadmapsAPI.getRoadmapBySlug(res.new_slug || slug);
-                        if (updatedRoadmap) {
-                            setRoadmap(updatedRoadmap);
-                            setIsOwner(true);
-                        }
-                    } catch (e) {
-                        router.push(`/roadmap/${res.new_slug || slug}`);
-                    }
-                    setSuccessMsg(null);
+                setCloneSuccess(true);
+                
+                // Short delay to show success message inside modal, then redirect to the learn page
+                setTimeout(() => {
+                    const nextSlug = res.new_slug || slug;
+                    router.push(`/roadmap/${nextSlug}/learn`);
                 }, 1500);
             }
         } catch (err) {
             console.error("Failed to clone:", err);
             setError("Failed to clone roadmap.");
-        } finally {
             setSaving(false);
         }
     };
@@ -346,6 +425,15 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                     authorName={roadmap.author}
                     username={roadmap.username}
                     avatarUrl={roadmap.avatar_url}
+                    isAuthenticated={isAuthenticated}
+                    onStartLearning={() => {
+                        if (isOwner || roadmap.is_cloned) {
+                            handleContinueLearning();
+                        } else {
+                            setCloneSuccess(false);
+                            setShowCloneModal(true);
+                        }
+                    }}
                 />
                 <div className="max-w-[1000px] mx-auto px-6 pb-12 md:px-12 md:pb-16 relative mt-10">
                     {/* Public Header Area - Minimalist Design */}
@@ -639,52 +727,16 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                         />
                     </div>
 
-                    {/* Steps Flow */}
-                    <div className="mb-24 py-16 border-y border-border/50">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                            {[
-                                { title: "Learn", sub: "Watch curated videos and read study resources" },
-                                { title: "Practice", sub: "Practice what you learned" },
-                                { title: "Build Projects", sub: "Build projects using your new gained knowledge" },
-                                { title: "Submit & Verify", sub: "Submit your project and get verified by our system" }
-                            ].map((step, idx) => (
-                                <div key={idx} className="relative group">
-                                    <div className="mb-4 inline-flex items-center justify-center w-10 h-10 rounded-full bg-accent-muted text-accent font-bold font-inter border border-accent/20">
-                                        0{idx + 1}
-                                    </div>
-                                    <h3 className="font-inter text-[16px] font-bold text-text-heading mb-2 tracking-tight">{step.title}</h3>
-                                    <p className="manrope-body text-[13px] text-text-muted leading-relaxed font-medium italic opacity-80">{step.sub}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
                     {/* References Section */}
                     {roadmap.roadmap_plan?.modules?.some((m: any) => m.resources?.length > 0) && (
-                        <div className="mb-24 pb-12 border-b border-border/50">
+                        <div className="mb-24 pb-12 border-b border-border/50 w-full relative">
                             <div className="flex items-center gap-3 mb-8">
                                 <Library className="w-5 h-5 text-accent" />
                                 <h2 className="manrope-body text-[12px] font-bold uppercase tracking-[0.2em] text-text-heading font-inter">References</h2>
                             </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-6">
-                                {Array.from(new Map(
-                                    roadmap.roadmap_plan.modules
-                                        .flatMap((m: any) => m.resources || [])
-                                        .map((r: any) => [r.link || r.url, r])
-                                ).values()).map((resource: any, idx) => (
-                                    <div key={idx} className="flex items-start gap-4 group">
-                                        <span className="manrope-body text-[11px] font-bold text-text-muted mt-1 w-5 shrink-0 opacity-40 font-inter">
-                                            {String(idx + 1).padStart(2, '0')}
-                                        </span>
-                                        <a 
-                                            href={resource.link || resource.url} 
-                                            target="_blank" 
-                                            rel="noreferrer"
-                                            className="manrope-body text-[14px] text-text-primary hover:text-accent transition-colors leading-relaxed font-medium"
-                                        >
-                                            {resource.title || resource.name || resource.url}
-                                        </a>
-                                    </div>
+                            <div className="flex flex-col w-full gap-2">
+                                {roadmap.roadmap_plan.modules.map((module: any, index: number) => (
+                                    <ModuleReferenceCarousel key={index} module={module} index={index} />
                                 ))}
                             </div>
                         </div>
@@ -887,45 +939,55 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
 
             {/* Clone Modal */}
             {showCloneModal && (
-                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-background/80 animate-in fade-in duration-200">
-                    <div className="w-full max-w-md bg-background border border-border shadow-2xl rounded-3xl overflow-hidden animate-in zoom-in-95 duration-200">
-                        <div className="p-8 text-center">
-                            <div className="w-16 h-16 bg-accent/10 text-accent rounded-lg flex items-center justify-center mx-auto mb-6">
-                                <Copy className="w-8 h-8" />
-                            </div>
-                            <h3 className="inconsolata-ui text-xl font-bold text-text-heading mb-3 tracking-tight">Clone to Dashboard</h3>
-                            <p className="manrope-body text-[14px] text-text-muted mb-8 leading-relaxed font-medium italic px-4">
-                                You need to clone this course to your dashboard to start learning, track your progress, and submit homework.
-                            </p>
-                            
-                            <div className="flex flex-col gap-3">
-                                <button
-                                    onClick={() => {
-                                        setShowCloneModal(false);
-                                        handleClone();
-                                    }}
-                                    disabled={saving}
-                                    className="w-full py-4 bg-accent text-white rounded-lg text-[14px] font-bold inconsolata-ui tracking-wide hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-xl shadow-accent/20 disabled:opacity-50"
-                                >
-                                    {saving ? (
-                                        <>
-                                            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                            Cloning...
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Copy className="w-4 h-4" />
-                                            Clone Now
-                                        </>
-                                    )}
-                                </button>
-                                <button
-                                    onClick={() => setShowCloneModal(false)}
-                                    className="w-full py-3 text-text-muted hover:text-text-heading text-[12px] font-bold inconsolata-ui tracking-widest uppercase transition-colors"
-                                >
-                                    Maybe Later
-                                </button>
-                            </div>
+                <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/30 animate-in fade-in duration-200">
+                    <div className="w-full max-w-[420px] bg-background border border-border shadow-2xl rounded-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+                        <div className="p-6 flex gap-4 md:gap-5 items-start">
+                            {cloneSuccess ? (
+                                <div className="flex flex-col items-center justify-center w-full py-4 text-center animate-in fade-in zoom-in duration-300">
+                                    <div className="w-14 h-14 bg-emerald-500/10 text-emerald-600 rounded-full flex items-center justify-center mb-4">
+                                        <Check className="w-7 h-7 stroke-[3px]" />
+                                    </div>
+                                    <h3 className="manrope-body text-[16px] font-bold text-text-heading mb-1.5 tracking-tight">Course Cloned Successfully!</h3>
+                                    <p className="manrope-body text-[13px] text-text-muted font-medium">
+                                        Redirecting to your dashboard...
+                                    </p>
+                                </div>
+                            ) : (
+                                <>
+                                    <div className="shrink-0 w-12 h-12 bg-accent/10 text-accent rounded-xl flex items-center justify-center">
+                                        <Copy className="w-6 h-6" />
+                                    </div>
+                                    <div className="flex flex-col flex-1">
+                                        <h3 className="manrope-body text-[16px] font-bold text-text-heading mb-1.5 tracking-tight">Clone to Dashboard</h3>
+                                        <p className="manrope-body text-[13px] text-text-muted mb-5 leading-relaxed font-medium">
+                                            Clone this course to start learning, track your progress, and submit homework.
+                                        </p>
+                                        <div className="flex w-full gap-2 justify-end">
+                                            <button
+                                                onClick={() => setShowCloneModal(false)}
+                                                disabled={saving}
+                                                className="px-4 h-9 bg-sidebar text-text-primary border border-border font-bold text-[12px] hover:bg-callout-bg rounded-lg transition-colors"
+                                            >
+                                                Cancel
+                                            </button>
+                                            <button
+                                                onClick={handleClone}
+                                                disabled={saving}
+                                                className="px-5 h-9 bg-accent text-white rounded-lg text-[12px] font-bold transition-all hover:bg-teal-700 disabled:opacity-50 flex items-center justify-center gap-1.5 shadow-sm"
+                                            >
+                                                {saving ? (
+                                                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                                ) : (
+                                                    <>
+                                                        <Copy className="w-3.5 h-3.5" />
+                                                        Clone
+                                                    </>
+                                                )}
+                                            </button>
+                                        </div>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
