@@ -50,15 +50,15 @@ export default function RoadmapBanner({
           intensity={1.1}
         />
       </div>
-      <div className="absolute inset-0 z-10 bg-black/30" />
-      <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+      <div className="absolute inset-0 z-10 bg-black/10" />
+      <div className="absolute inset-0 z-10 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
       
       <div className="absolute inset-0 z-20 flex flex-col items-center justify-center p-6 md:p-12 text-center pointer-events-none gap-8">
         <h1 
-          className="font-inter font-bold text-white tracking-tight leading-[1.2] drop-shadow-xl max-w-5xl"
+          className="font-inter font-bold text-white tracking-tight leading-[1.2] drop-shadow-2xl max-w-5xl"
           style={{ 
             fontSize: 'clamp(28px, 3.5vw, 48px)',
-            textShadow: '0 4px 30px rgba(0,0,0,0.5)',
+            textShadow: '0 2px 12px rgba(0,0,0,0.7), 0 4px 30px rgba(0,0,0,0.6)',
             wordBreak: 'break-word',
             margin: 0
           }}

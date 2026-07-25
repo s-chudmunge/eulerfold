@@ -128,7 +128,7 @@ export default function HeroSection() {
               variants={fadeUp}
               className="text-text-muted text-[15px] md:text-[17px] manrope-body font-medium mb-8 leading-relaxed max-w-2xl mx-auto"
             >
-              Enter any topic, from transformer architectures to GATE prep, and get a complete course with verified papers, curated videos, and technical assessments. Then prove you learned it.
+              Turn any topic into a complete curriculum with resources, video lectures, and technical assessments.
             </motion.p>
 
             {/* Interactive prompt input */}

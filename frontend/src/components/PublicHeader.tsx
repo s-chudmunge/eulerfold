@@ -254,7 +254,7 @@ export default function PublicHeader() {
           <Link href="/" className="group flex items-center gap-2 hover:opacity-100 transition-opacity">
             <img src="/apple-touch-icon.png" alt="" className="w-6 h-6" />
             <span className="text-[16px] font-bold text-text-heading tracking-tight hidden md:block">
-              Euler<span className="group-hover:text-teal-700 transition-colors duration-300">Fold</span>
+              Euler<span className="group-hover:text-teal-700 transition-colors duration-300">Fold</span> AI
             </span>
           </Link>
 

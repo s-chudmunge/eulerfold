@@ -17,7 +17,7 @@ export function GoogleTrustBadge() {
       />
       <div className="h-4 w-px bg-border" />
       <p className="text-[12px] font-medium text-text-muted leading-tight tracking-tight">
-        Google YouTube Data API: extended quota granted for educational content curation
+        Supported with extended access for educational content curation
       </p>
     </div>
   );
@@ -25,8 +25,9 @@ export function GoogleTrustBadge() {
 
 export function TrustedSourcesTicker() {
   const sources = [
-    'arXiv', 'IEEE', 'Nature', 'MIT OCW', 'Khan Academy',
-    'GitHub', 'Stack Overflow', 'Wikipedia', 'Coursera'
+    'arXiv', 'IEEE Xplore', 'Nature', 'ACM Digital Library', 'MIT OpenCourseWare', 
+    'PubMed', 'JSTOR', 'Springer', 'MDN Web Docs', 'GitHub', 'Stack Overflow', 
+    'PyTorch Docs', 'TensorFlow Docs', 'W3C Standards', 'Wikipedia'
   ];
 
   return (
