@@ -92,6 +92,8 @@ def test_generate_roadmap_success(mock_sankalp):
                 assert data["id"] == 60
                 assert mock_gen.called
                 assert mock_sb.table("roadmaps").insert.called
+            finally:
+                app.dependency_overrides = {}
 # --- 2. COMPLETION FLOW TEST ---
 
 def test_mark_topic_complete(mock_sankalp):
@@ -132,64 +134,69 @@ def test_mark_topic_complete(mock_sankalp):
                 # Ensure it upserted the module_progress
                 mock_sb.table("module_progress").upsert.assert_called()
                 assert mock_track.called
-            # --- 3. SUBMISSION FLOW TEST ---
+            finally:
+                app.dependency_overrides = {}
 
-            def test_submit_proof_of_work_success(mock_sankalp):
-                """Verifies that a user can submit work and the AI evaluator passes it."""
+# --- 3. SUBMISSION FLOW TEST ---
 
-                mock_roadmap = {
-                    "id": 60, "email": SANKALP_USER["email"],
-                    "roadmap_plan": {
-                        "modules": [{
-                            "title": "Basics",
-                            "topics": [{"title": "Variables"}],
-                            "proof_of_work_instructions": {"what_to_build": "Test script"}
-                        }]
-                    }
-                }
+def test_submit_proof_of_work_success(mock_sankalp):
+    """Verifies that a user can submit work and the AI evaluator passes it."""
 
-                mock_ai_eval = {
-                    "evaluation": "Excellent work on the Python basics.",
-                    "evaluation_level": "Solid",
-                    "follow_up_question": "What happens if you re-assign a variable?"
-                }
+    mock_roadmap = {
+        "id": 60, "email": SANKALP_USER["email"],
+        "roadmap_plan": {
+            "modules": [{
+                "title": "Basics",
+                "topics": [{"title": "Variables"}],
+                "proof_of_work_instructions": {"what_to_build": "Test script"}
+            }]
+        }
+    }
 
-                with patch("app.routers.submissions.get_supabase_client") as mock_get_sb:
-                    mock_sb = MagicMock()
-                    mock_get_sb.return_value = mock_sb
+    mock_ai_eval = {
+        "evaluation": "Excellent work on the Python basics.",
+        "evaluation_level": "Solid",
+        "follow_up_question": "What happens if you re-assign a variable?"
+    }
 
-                    # 1. Fetch roadmap
-                    mock_sb.table("roadmaps").select().eq().execute.return_value.data = [mock_roadmap]
-                    # 2. Gating: check if topics complete
-                    mock_sb.table("module_progress").select().eq().eq().eq().eq().execute.return_value.data = [{"topic_index": 0}]
-                    # 3. Cooldown: check recent subs
-                    mock_sb.table("submissions").select().eq().eq().eq().order().limit().execute.return_value.data = []
-                    # 4. Mock insert submission
-                    mock_sb.table("submissions").insert().execute.return_value.data = [{"id": 1001}]
+    with patch("app.routers.submissions.get_supabase_client") as mock_get_sb:
+        mock_sb = MagicMock()
+        mock_get_sb.return_value = mock_sb
 
-                    with patch("app.routers.submissions.generate_text", new_callable=AsyncMock) as mock_gen:
-                        mock_gen.return_value = json.dumps(mock_ai_eval)
+        # 1. Fetch roadmap
+        mock_sb.table("roadmaps").select().eq().execute.return_value.data = [mock_roadmap]
+        # 2. Gating: check if topics complete
+        mock_sb.table("module_progress").select().eq().eq().eq().eq().execute.return_value.data = [{"topic_index": 0}]
+        # 3. Cooldown: check recent subs
+        mock_sb.table("submissions").select().eq().eq().eq().order().limit().execute.return_value.data = []
+        # 4. Mock insert submission
+        mock_sb.table("submissions").insert().execute.return_value.data = [{"id": 1001}]
 
-                        with patch("app.routers.submissions.calculate_user_skill_scores_for_roadmap") as mock_calc:
-                            app.dependency_overrides[get_current_user] = lambda: mock_sankalp
-                            try:
-                                response = client.post(
-                                    "/submissions",
-                                    json={
-                                        "roadmap_id": 60,
-                                        "module_number": 1,
-                                        "description": "I built a simple variable assignment script in Python. " * 10, # Meet 300 char requirement
-                                        "link": "https://github.com/test/repo"
-                                    }
-                                )
+        with patch("app.routers.submissions.generate_text", new_callable=AsyncMock) as mock_gen:
+            mock_gen.return_value = json.dumps(mock_ai_eval)
 
-                                assert response.status_code == 200
-                                data = response.json()
-                                assert data["evaluation"]["evaluation_level"] == "Solid"
+            with patch("app.routers.submissions.calculate_user_skill_scores_for_roadmap") as mock_calc:
+                app.dependency_overrides[get_current_user] = lambda: mock_sankalp
+                try:
+                    response = client.post(
+                        "/submissions",
+                        json={
+                            "roadmap_id": 60,
+                            "module_number": 1,
+                            "description": "I built a simple variable assignment script in Python. " * 10, # Meet 300 char requirement
+                            "link": "https://github.com/test/repo"
+                        }
+                    )
 
-                                # Verify system updates
-                                mock_sb.table("module_progress").upsert.assert_called()
-                                assert mock_calc.called
+                    assert response.status_code == 200
+                    data = response.json()
+                    assert data["evaluation"]["evaluation_level"] == "Solid"
+
+                    # Verify system updates
+                    mock_sb.table("module_progress").upsert.assert_called()
+                    assert mock_calc.called
+                finally:
+                    app.dependency_overrides = {}
 
 # --- 5. UI/PROFILE DATA TEST ---
 

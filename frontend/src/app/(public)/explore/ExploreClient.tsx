@@ -49,7 +49,7 @@ import Link from 'next/link';
 import { useSearchParams, useRouter } from 'next/navigation';
 import StarRating from '@/components/roadmap/StarRating';
 import VerifiedBadge from '@/components/VerifiedBadge';
-import { getCategory } from '@/lib/roadmapUtils';
+import { getCategory, matchesCategory } from '@/lib/roadmapUtils';
 import { SideBanner, QUOTES } from '@/components/layout/SideBanners';
 import CommunityRoadmapBanner from '@/components/landing/CommunityRoadmapBanner';
 import LatestArticlesCarousel from '@/components/landing/LatestArticlesCarousel';
@@ -205,14 +205,15 @@ export default function ExploreClient({
         fetchNextPage, 
         hasNextPage, 
         isFetchingNextPage,
-        isLoading: roadmapsLoading 
+        isLoading,
+        isFetching
     } = useInfiniteQuery({
-        queryKey: ['explore-roadmaps', debouncedSearch, sortBy, authUser?.id],
-        queryFn: ({ pageParam = 0 }) => exploreAPI.getExploreRoadmaps(debouncedSearch, pageParam as number, PAGE_SIZE, sortBy),
+        queryKey: ['explore-roadmaps', debouncedSearch, sortBy, filter, authUser?.id],
+        queryFn: ({ pageParam = 0 }) => exploreAPI.getExploreRoadmaps(debouncedSearch, pageParam as number, PAGE_SIZE, sortBy, filter === 'all' ? undefined : filter),
         getNextPageParam: (lastPage, allPages) => {
             return lastPage.length === PAGE_SIZE ? allPages.length : undefined;
         },
-        initialData: (debouncedSearch === '' && sortBy === 'newest') ? { pages: [initialRoadmaps], pageParams: [0] } : undefined,
+        initialData: (debouncedSearch === '' && sortBy === 'newest' && filter === 'all') ? { pages: [initialRoadmaps], pageParams: [0] } : undefined,
         staleTime: 5 * 60 * 1000,
         initialPageParam: 0,
     });
@@ -231,10 +232,13 @@ export default function ExploreClient({
 
     const leaderboard = (leaderboardData?.top_users || []).slice(0, 5);
 
+    const isSearchDebouncing = searchQuery !== debouncedSearch;
+    const isTableLoading = isLoading || (isFetching && !isFetchingNextPage) || isSearchDebouncing;
+
     const filteredRoadmaps = React.useMemo(() => {
         let result = roadmaps.filter(r => {
             if (filter === 'all') return true;
-            return getCategory(r.subject || '') === filter;
+            return matchesCategory(filter, r.subject || '', r.title || '', r.description || '', r.goal || '');
         });
 
         if (sortBy === 'alphabetical') {
@@ -388,76 +392,103 @@ export default function ExploreClient({
                                         <th scope="col" className="w-[80px] md:w-[17%] px-3 md:px-5 py-3 text-[10px] font-black uppercase tracking-widest text-text-muted inconsolata-ui opacity-60 text-right">Reach</th>
                                     </tr>
                                 </thead>
-                                <tbody className={`divide-y divide-border/50 transition-opacity ${roadmapsLoading ? 'opacity-50' : 'opacity-100'}`}>
-                                    {filteredRoadmaps.map((r) => {
-                                        const cat = getCategory(r.subject || '');
-                                        return (
-                                            <tr key={r.id} className="group hover:bg-sidebar/30 transition-all cursor-pointer" onClick={() => router.push(`/roadmap/${r.slug}`)}>
+                                <tbody className="divide-y divide-border/50">
+                                    {isTableLoading ? (
+                                        Array.from({ length: 10 }).map((_, idx) => (
+                                            <tr key={idx} className="animate-pulse border-b border-border/40">
                                                 <td className="px-3 md:px-5 py-3 md:py-4">
                                                     <div className="flex items-start gap-3">
-                                                        <div className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-[10px] bg-sidebar border border-border text-text-muted shrink-0 group-hover:scale-110 transition-transform group-hover:border-accent/30 group-hover:text-accent mt-0.5">
-                                                            <CategoryIcon category={cat} className="w-3.5 h-3.5 md:w-4 md:h-4 stroke-[1.5px]" />
-                                                        </div>
-                                                        <div className="flex flex-col min-w-0">
-                                                            <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-0.5">
-                                                                <span className="text-[13px] md:text-[14px] font-bold text-text-heading group-hover:text-accent transition-colors leading-tight">
-                                                                    {r.title}
-                                                                </span>
-                                                                {r.username === 'eulerfold' && <VerifiedBadge size={13} className="shrink-0" />}
-                                                            </div>
-                                                            <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                                                                <span className="text-[9px] font-black uppercase tracking-wider text-teal-700/60 inconsolata-ui whitespace-nowrap">{cat}</span>
-                                                                <span className="hidden sm:inline text-[10px] font-medium text-text-muted/50">•</span>
-                                                                <span className="text-[11px] md:text-[12px] font-medium text-text-muted truncate max-w-[120px] md:max-w-none flex items-center gap-1.5">
-                                                                    {r.avatar_url && !r.avatar_url.includes('initials') && (
-                                                                        <img src={r.avatar_url} alt={r.author} className="w-4 h-4 rounded-full border border-border" />
-                                                                    )}
-                                                                    by @{r.username || r.author}
-                                                                </span>
-                                                                {r.average_rating > 0 && (
-                                                                    <div className="flex items-center gap-2 pl-0 sm:pl-2 border-l-0 sm:border-l border-border">
-                                                                        <StarRating rating={r.average_rating} minimal={true} />
-                                                                    </div>
-                                                                )}
-                                                            </div>
+                                                        <div className="w-8 h-8 md:w-9 md:h-9 rounded-md bg-sidebar border border-border shrink-0 mt-0.5" />
+                                                        <div className="flex flex-col gap-2 w-full max-w-[240px] md:max-w-[360px] pt-1">
+                                                            <div className="h-3.5 bg-sidebar rounded-md w-4/5" />
+                                                            <div className="h-2.5 bg-sidebar/70 rounded-md w-3/5" />
                                                         </div>
                                                     </div>
                                                 </td>
                                                 <td className="hidden md:table-cell px-5 py-3 md:py-4">
-                                                    <span className="inconsolata-ui text-[12px] font-bold text-text-muted">
-                                                        {r.week_count || r.time_value} {r.week_count ? (r.week_count === 1 ? 'week' : 'weeks') : r.time_unit}
-                                                    </span>
+                                                    <div className="h-3 bg-sidebar rounded-md w-16" />
                                                 </td>
                                                 <td className="px-3 md:px-5 py-3 md:py-4 text-right">
-                                                    <div className="flex items-center justify-end gap-2 md:gap-3">
-                                                        <div className="flex flex-col items-end">
-                                                            <span className="text-[12px] font-black text-text-heading inconsolata-ui">{r.clone_count}</span>
-                                                            <span className="text-[8px] md:text-[9px] font-black uppercase tracking-tighter text-text-muted opacity-50">Clones</span>
-                                                        </div>
-                                                        <button 
-                                                            onClick={(e) => { e.stopPropagation(); handleReport(e, r.id); }}
-                                                            className="p-1.5 md:p-2 text-text-muted hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all opacity-0 md:group-hover:opacity-100"
-                                                        >
-                                                            <Flag className="h-3 w-3 md:h-3.5 md:w-3.5" />
-                                                        </button>
+                                                    <div className="flex flex-col items-end justify-center gap-1.5 ml-auto w-12">
+                                                        <div className="h-3.5 bg-sidebar rounded-md w-8" />
+                                                        <div className="h-2 bg-sidebar/70 rounded-md w-10" />
                                                     </div>
                                                 </td>
                                             </tr>
-                                        );
-                                    })}
-                                    {filteredRoadmaps.length === 0 && !roadmapsLoading && (
-                                        <tr>
-                                            <td colSpan={3} className="px-4 py-20 text-center text-gray-400 italic manrope-body text-sm">
-                                                No courses found matching your search.
-                                            </td>
-                                        </tr>
+                                        ))
+                                    ) : (
+                                        <>
+                                            {filteredRoadmaps.map((r) => {
+                                                const cat = getCategory(r.subject || '', r.title, r.description, r.goal);
+                                                return (
+                                                    <tr key={r.id} className="group hover:bg-sidebar/30 transition-all cursor-pointer" onClick={() => router.push(`/roadmap/${r.slug}`)}>
+                                                        <td className="px-3 md:px-5 py-3 md:py-4">
+                                                            <div className="flex items-start gap-3">
+                                                                <div className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-[10px] bg-sidebar border border-border text-text-muted shrink-0 group-hover:scale-110 transition-transform group-hover:border-accent/30 group-hover:text-accent mt-0.5">
+                                                                    <CategoryIcon category={cat} className="w-3.5 h-3.5 md:w-4 md:h-4 stroke-[1.5px]" />
+                                                                </div>
+                                                                <div className="flex flex-col min-w-0">
+                                                                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1 mb-0.5">
+                                                                        <span className="text-[13px] md:text-[14px] font-bold text-text-heading group-hover:text-accent transition-colors leading-tight">
+                                                                            {r.title}
+                                                                        </span>
+                                                                        {r.username === 'eulerfold' && <VerifiedBadge size={13} className="shrink-0" />}
+                                                                    </div>
+                                                                    <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                                                                        <span className="text-[9px] font-black uppercase tracking-wider text-teal-700/60 inconsolata-ui whitespace-nowrap">{cat}</span>
+                                                                        <span className="hidden sm:inline text-[10px] font-medium text-text-muted/50">•</span>
+                                                                        <span className="text-[11px] md:text-[12px] font-medium text-text-muted truncate max-w-[120px] md:max-w-none flex items-center gap-1.5">
+                                                                            {r.avatar_url && !r.avatar_url.includes('initials') && (
+                                                                                <img src={r.avatar_url} alt={r.author} className="w-4 h-4 rounded-full border border-border" />
+                                                                            )}
+                                                                            by @{r.username || r.author}
+                                                                        </span>
+                                                                        {r.average_rating > 0 && (
+                                                                            <div className="flex items-center gap-2 pl-0 sm:pl-2 border-l-0 sm:border-l border-border">
+                                                                                <StarRating rating={r.average_rating} minimal={true} />
+                                                                            </div>
+                                                                        )}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="hidden md:table-cell px-5 py-3 md:py-4">
+                                                            <span className="inconsolata-ui text-[12px] font-bold text-text-muted">
+                                                                {r.week_count || r.time_value} {r.week_count ? (r.week_count === 1 ? 'week' : 'weeks') : r.time_unit}
+                                                            </span>
+                                                        </td>
+                                                        <td className="px-3 md:px-5 py-3 md:py-4 text-right">
+                                                            <div className="flex items-center justify-end gap-2 md:gap-3">
+                                                                <div className="flex flex-col items-end">
+                                                                    <span className="text-[12px] font-black text-text-heading inconsolata-ui">{r.clone_count}</span>
+                                                                    <span className="text-[8px] md:text-[9px] font-black uppercase tracking-tighter text-text-muted opacity-50">Clones</span>
+                                                                </div>
+                                                                <button 
+                                                                    onClick={(e) => { e.stopPropagation(); handleReport(e, r.id); }}
+                                                                    className="p-1.5 md:p-2 text-text-muted hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all opacity-0 md:group-hover:opacity-100"
+                                                                >
+                                                                    <Flag className="h-3 w-3 md:h-3.5 md:w-3.5" />
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                );
+                                            })}
+                                            {filteredRoadmaps.length === 0 && !isTableLoading && (
+                                                <tr>
+                                                    <td colSpan={3} className="px-4 py-20 text-center text-text-muted italic manrope-body text-sm">
+                                                        No courses found matching your criteria.
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </>
                                     )}
                                 </tbody>
                             </table>
                         </div>
 
                         {/* Load More Action */}
-                        {hasNextPage && (
+                        {hasNextPage && !isTableLoading && (
                             <div className="mt-8 flex justify-center">
                                 <button
                                     onClick={() => fetchNextPage()}

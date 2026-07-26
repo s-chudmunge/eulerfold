@@ -17,7 +17,7 @@ from app.core.coins import EulerCoins
 from app.utils.eulercoins import award_coins
 from app.core.auth import get_current_user
 from app.routers.optional_auth import get_optional_current_user
-from app.utils.search import clean_search_query, get_search_keywords
+from app.utils.search import clean_search_query, get_search_keywords, get_category_keywords
 from app.routers.roadmaps import _generate_unique_slug
 
 logger = logging.getLogger(__name__)
@@ -98,6 +98,7 @@ async def ping_google_sitemap():
 @router.get("/explore", response_model=List[ExploreRoadmap])
 async def explore_roadmaps(
     search: Optional[str] = None, 
+    category: Optional[str] = None,
     page: int = 0, 
     limit: int = 20,
     sort_by: str = "newest", # newest, highest_rated, most_cloned
@@ -119,17 +120,18 @@ async def explore_roadmaps(
                 .eq("is_public", True) \
                 .lt("report_count", 3)
             
+            filters = []
             if search:
                 cleaned = clean_search_query(search)
                 keywords = get_search_keywords(search)
                 
                 if cleaned:
-                    # Construct a robust OR filter for all keywords across title, subject, and goal
-                    # This handles natural language like "I want to learn python" -> "python"
+                    # Construct a robust OR filter for all keywords across title, subject, goal, and description
                     or_parts = [
                         f"title.ilike.%{cleaned}%",
                         f"subject.ilike.%{cleaned}%",
-                        f"goal.ilike.%{cleaned}%"
+                        f"goal.ilike.%{cleaned}%",
+                        f"description.ilike.%{cleaned}%"
                     ]
                     
                     # Also search for individual keywords to be more permissive
@@ -138,8 +140,27 @@ async def explore_roadmaps(
                             or_parts.append(f"title.ilike.%{kw}%")
                             or_parts.append(f"subject.ilike.%{kw}%")
                             or_parts.append(f"goal.ilike.%{kw}%")
-                    
-                    query = query.or_(",".join(or_parts))
+                            or_parts.append(f"description.ilike.%{kw}%")
+                    filters.append(",".join(or_parts))
+            
+            if category and category.lower() not in ("all", "other", ""):
+                cat_keywords = get_category_keywords(category)
+                if cat_keywords:
+                    cat_parts = []
+                    for kw in cat_keywords:
+                        cat_parts.extend([
+                            f"title.ilike.%{kw}%",
+                            f"subject.ilike.%{kw}%",
+                            f"goal.ilike.%{kw}%",
+                            f"description.ilike.%{kw}%"
+                        ])
+                    filters.append(",".join(cat_parts))
+            
+            if len(filters) == 1:
+                query = query.or_(filters[0])
+            elif len(filters) > 1:
+                combined = ",".join([f"or({f})" for f in filters])
+                query = query.and_(f"{combined}")
             
             if sort_by == "highest_rated":
                 query = query.order("average_rating", desc=True).order("rating_count", desc=True)

@@ -30,7 +30,7 @@ async def get_fastest_free_openrouter_model() -> str:
         return _cached_free_model
         
     try:
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=10.0) as client:
             res = await client.get("https://openrouter.ai/api/v1/models", timeout=10.0)
             res.raise_for_status()
             data = res.json()
@@ -81,7 +81,7 @@ async def _call_openrouter(prompt: str, model: str, response_mime_type: str):
 
     max_retries = 3
 
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=180.0) as client:
         for attempt in range(max_retries):
             try:
                 response = await client.post(
@@ -157,7 +157,7 @@ async def _call_groq(prompt: str, model: str, response_mime_type: str):
     if response_mime_type == "application/json":
         payload["response_format"] = {"type": "json_object"}
 
-    async with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient(timeout=180.0) as client:
         try:
             logger.info(f"Attempting Groq fallback with model {groq_model}...")
             response = await client.post(

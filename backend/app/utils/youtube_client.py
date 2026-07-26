@@ -186,10 +186,10 @@ def _score_video(video: dict, topic_title: str) -> float:
     channel_name = video["snippet"].get("channelTitle", "").lower()
 
     # Composite score (max ~100 points)
-    relevance_score = title_relevance * 40                              # max 40
+    relevance_score = title_relevance * 50                              # max 50
     duration_score = min(duration_seconds / 3600, 1.0) * 15            # max 15
     view_score = min(math.log10(max(view_count, 1)) / 7, 1.0) * 25    # max 25 (10M views = full)
-    channel_score = 20 if channel_name in TRUSTED_CHANNELS else 0       # max 20
+    channel_score = 10 if channel_name in TRUSTED_CHANNELS else 0       # max 10
 
     return relevance_score + duration_score + view_score + channel_score
 
@@ -224,7 +224,7 @@ async def search_youtube_videos(
     }
 
     try:
-        async with httpx.AsyncClient() as client:
+        async with httpx.AsyncClient(timeout=30.0) as client:
             # Step 1: Search
             search_response = await client.get(search_url, params=search_params)
             search_response.raise_for_status()

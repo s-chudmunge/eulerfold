@@ -398,9 +398,10 @@ export interface ExploreRoadmap {
 }
 
 export const exploreAPI = {
-    getExploreRoadmaps: async (search?: string, page: number = 0, limit: number = 20, sort_by: string = "newest"): Promise<ExploreRoadmap[]> => {
+    getExploreRoadmaps: async (search?: string, page: number = 0, limit: number = 20, sort_by: string = "newest", category?: string): Promise<ExploreRoadmap[]> => {
         const query = new URLSearchParams();
         if (search) query.append('search', search);
+        if (category && category.toLowerCase() !== 'all') query.append('category', category);
         query.append('page', page.toString());
         query.append('limit', limit.toString());
         query.append('sort_by', sort_by);

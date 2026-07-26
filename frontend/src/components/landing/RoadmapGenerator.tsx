@@ -1043,7 +1043,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
     <div className="w-full manrope-body">
 
 
-      {renderStep()}
+      {!isGenerating && renderStep()}
 
       {isGenerating && (
         <div className="mt-12 flex flex-col items-center justify-center animate-in fade-in duration-700">
