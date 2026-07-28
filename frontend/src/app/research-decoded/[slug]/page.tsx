@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import ResearchDecodedClient from './ResearchDecodedClient';
 import { papers } from '../generatedData';
 import PagePreloader from '@/components/PagePreloader';
+import { notFound } from 'next/navigation';
 
 export const revalidate = 3600; // rebuild at most once per hour
 
@@ -16,13 +17,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const paper = papers[params.slug as keyof typeof papers];
   
   if (!paper) {
-    return {
-      title: 'Paper Not Found',
-      robots: {
-        index: false,
-        follow: false,
-      }
-    };
+    notFound();
   }
 
   const title = paper.title;
@@ -89,11 +84,7 @@ export default function ResearchDecodedPage({ params }: { params: { slug: string
   const paper = papers[slug as keyof typeof papers];
 
   if (!paper) {
-    return (
-      <div className="flex items-center justify-center h-full">
-        <p className="manrope-body text-gray-500 italic">Paper not found. We are still decoding this one.</p>
-      </div>
-    );
+    notFound();
   }
 
   // Same description logic for schema

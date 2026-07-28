@@ -4,6 +4,8 @@ import ArticleClient from './ArticleClient';
 import { articles } from '../generatedArticles';
 import PagePreloader from '@/components/PagePreloader';
 
+import { notFound } from 'next/navigation';
+
 export const revalidate = 3600;
 
 export async function generateStaticParams() {
@@ -16,10 +18,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const article = articles[params.slug as keyof typeof articles];
   
   if (!article) {
-    return {
-      title: 'Article Not Found',
-      robots: { index: false, follow: false }
-    };
+    notFound();
   }
 
   const keywords = [
@@ -63,11 +62,7 @@ export default function ArticlePage({ params }: { params: { slug: string } }) {
   const article = articles[params.slug as keyof typeof articles];
 
   if (!article) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-background">
-        <p className="manrope-body text-text-muted italic text-xl">Article not found.</p>
-      </div>
-    );
+    notFound();
   }
 
   const articleSchema = {
