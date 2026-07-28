@@ -167,6 +167,12 @@ class DiagnosticQuizCreate(BaseModel):
     known_skills: str
     question_count: int = 5
 
+class DiagnosticQuizEvaluate(BaseModel):
+    target_role: str
+    known_skills: str
+    round_number: int = 1
+    questions_and_answers: List[Dict[str, Any]]
+
 class RoadmapRead(BaseModel):
     id: int
     user_id: Optional[int] = None

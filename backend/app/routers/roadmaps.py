@@ -12,11 +12,12 @@ from typing import List, Optional, Any, Dict
 
 
 from fastapi import APIRouter, HTTPException, Request, Depends, BackgroundTasks, UploadFile, File
+from fastapi.responses import StreamingResponse
 
 from app.core.config import settings
 from app.core.supabase_client import supabase, get_supabase_client
-from app.schemas import RoadmapCreate, RoadmapMe, RoadmapRead, RoadmapSave, User, ProgressUpdate, RoadmapExtend, RoadmapStatusUpdate, ManualBuildRequest, JobRoadmapCreate, ExternalRoadmapCreate, SyncSkillsRequest, UrlRoadmapCreate, SyllabusRoadmapCreate, SkillGapRoadmapCreate, DiagnosticQuizCreate
-from app.utils.ai_client import generate_text, clean_json_string, robust_json_loads, log_backend_ai_usage
+from app.schemas import RoadmapCreate, RoadmapMe, RoadmapRead, RoadmapSave, User, ProgressUpdate, RoadmapExtend, RoadmapStatusUpdate, ManualBuildRequest, JobRoadmapCreate, ExternalRoadmapCreate, SyncSkillsRequest, UrlRoadmapCreate, SyllabusRoadmapCreate, SkillGapRoadmapCreate, DiagnosticQuizCreate, DiagnosticQuizEvaluate
+from app.utils.ai_client import generate_text, generate_text_stream, clean_json_string, robust_json_loads, log_backend_ai_usage
 from app.utils.resend_client import send_onboarding_email
 from app.utils.youtube_client import search_youtube_videos
 from app.core.coins import EulerCoins
@@ -2084,6 +2085,128 @@ Return ONLY a JSON array of objects. Each object must have:
     except Exception as e:
         logger.error(f"Diagnostic Quiz generation failed: {e}")
         raise HTTPException(status_code=500, detail=f"Generation error: {str(e)}")
+
+@router.post("/roadmaps/generate-diagnostic-quiz-stream")
+@monitor_query(query_type="generate_diagnostic_quiz_stream", table="roadmaps")
+async def generate_diagnostic_quiz_stream(
+    payload: DiagnosticQuizCreate,
+    current_user: User = Depends(get_current_user)
+):
+    """Stream diagnostic quiz questions token by token so test can start immediately."""
+    email = current_user.email
+    if not email:
+        raise HTTPException(status_code=401, detail="Could not determine user email")
+
+    sb = get_supabase_client()
+    profile_res = sb.table("profiles").select("roadmap_credits, is_pro").eq("email", email).execute()
+    if not profile_res.data:
+        raise HTTPException(status_code=404, detail="User profile not found")
+    
+    is_pro = profile_res.data[0].get("is_pro", False)
+    if not is_pro:
+        raise HTTPException(status_code=403, detail="Diagnostic Quiz is a Pro feature.")
+
+    credits = profile_res.data[0].get("roadmap_credits", 0)
+    if credits < 1:
+        if is_pro:
+            raise HTTPException(status_code=402, detail="You have run out of roadmap credits.")
+        else:
+            raise HTTPException(status_code=402, detail="No roadmap credits left. Please upgrade to Pro.")
+
+    prompt = f"""
+You are a technical subject matter expert. 
+The user is aspiring to be a "{payload.target_role}".
+They already know: "{payload.known_skills}".
+
+Your goal is to generate {payload.question_count} Multiple Choice Questions (MCQs) that test their knowledge on ADVANCED or MISSING concepts required for {payload.target_role} that they might NOT know yet. 
+Do not test them on what they already know.
+
+CRITICAL QUALITY STANDARDS:
+- Questions must be CONCEPTUAL and SITUATIONAL. Avoid simple recall or rote memorization.
+- Focus on application of principles and "what would happen if" scenarios.
+- Each question must have exactly 4 options.
+- Only one option must be clearly correct.
+- Options should be plausible but distinct.
+
+Return ONLY a JSON array of objects. Each object must have:
+- id: a unique string ID for the question (e.g. "q1", "q2")
+- question: string
+- options: array of 4 strings
+- correct_answer_index: integer (0-3)
+- explanation: a concise one-line explanation of the correct choice
+"""
+    model_to_use = settings.DEFAULT_ROADMAP_MODEL
+    return StreamingResponse(
+        generate_text_stream(prompt, model=model_to_use, response_mime_type="application/json"),
+        media_type="text/event-stream"
+    )
+
+@router.post("/roadmaps/evaluate-diagnostic-quiz")
+@monitor_query(query_type="evaluate_diagnostic_quiz", table="roadmaps")
+async def evaluate_diagnostic_quiz(
+    payload: DiagnosticQuizEvaluate,
+    current_user: User = Depends(get_current_user)
+):
+    """Evaluate diagnostic quiz results to decide if more probing is needed or to proceed to roadmap generation."""
+    email = current_user.email
+    uid = current_user.supabase_uid
+    if not email:
+        raise HTTPException(status_code=401, detail="Could not determine user email")
+
+    sb = get_supabase_client()
+    profile_res = sb.table("profiles").select("roadmap_credits, is_pro").eq("email", email).execute()
+    if not profile_res.data:
+        raise HTTPException(status_code=404, detail="User profile not found")
+    
+    is_pro = profile_res.data[0].get("is_pro", False)
+    if not is_pro:
+        raise HTTPException(status_code=403, detail="Diagnostic Quiz is a Pro feature.")
+
+    prompt = f"""
+You are a technical subject matter expert evaluating a learner's diagnostic test for the role of "{payload.target_role}".
+Stated prior experience: "{payload.known_skills}".
+Current Assessment Round: {payload.round_number}.
+
+Test Results:
+{json.dumps(payload.questions_and_answers, indent=2)}
+
+Determine if deeper diagnostic probing is required or if you have sufficient evidence to build their custom gap-filling roadmap.
+
+RULES:
+1. If round_number == 1 AND user answered between 1 and 4 questions incorrectly, AND those incorrect answers point to specific sub-topics that require deeper diagnosis:
+   Set "decision": "DEEPER_DIAGNOSIS".
+   Generate 2 or 3 targeted follow-up MCQs in "follow_up_questions" that probe those exact weak spots at a deeper level.
+2. If round_number >= 2 OR user got 0 incorrect (passed all) OR user got all 5 incorrect (failed all):
+   Set "decision": "GENERATE_ROADMAP".
+
+Return ONLY a JSON object matching this schema:
+{{
+  "decision": "DEEPER_DIAGNOSIS" | "GENERATE_ROADMAP",
+  "reason": "Concise explanation of the decision",
+  "weak_skills": "Concise summary of missing competencies and knowledge gaps identified",
+  "follow_up_questions": [
+    {{
+      "id": "f1",
+      "question": "string",
+      "options": ["string", "string", "string", "string"],
+      "correct_answer_index": 0,
+      "explanation": "string"
+    }}
+  ]
+}}
+"""
+    try:
+        model_to_use = settings.DEFAULT_ROADMAP_MODEL
+        generated_text, usage = await generate_text(prompt, model=model_to_use, response_mime_type="application/json", return_usage=True)
+        log_backend_ai_usage(sb, uid, f"Diagnostic Quiz Evaluation", usage, source="backend")
+        return robust_json_loads(generated_text)
+    except Exception as e:
+        logger.error(f"Diagnostic Quiz evaluation failed: {e}")
+        return {
+            "decision": "GENERATE_ROADMAP",
+            "reason": "Proceeding to roadmap generation.",
+            "weak_skills": "User struggled with diagnostic questions."
+        }
 
 @router.post("/roadmaps/parse-pdf")
 async def parse_pdf(file: UploadFile = File(...)):

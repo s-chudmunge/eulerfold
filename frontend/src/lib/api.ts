@@ -166,6 +166,10 @@ export const roadmapsAPI = {
         const response = await api.post('/roadmaps/generate-diagnostic-quiz', payload);
         return response.data;
     },
+    evaluateDiagnosticQuiz: async (payload: { target_role: string, known_skills: string, round_number?: number, questions_and_answers: any[] }): Promise<any> => {
+        const response = await api.post('/roadmaps/evaluate-diagnostic-quiz', payload);
+        return response.data;
+    },
     scrapeUrl: async (payload: { url: string }): Promise<{ text: string }> => {
         const response = await api.post('/roadmaps/scrape-url', payload);
         return response.data;

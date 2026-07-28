@@ -155,14 +155,21 @@ def _extract_keywords(text: str) -> set:
     return {w for w in words if w not in _STOPWORDS and len(w) > 1}
 
 
-def _compute_title_relevance(topic_title: str, video_title: str) -> float:
-    """Compute keyword overlap ratio between the topic and video title."""
+def _compute_title_relevance(topic_title: str, video_title: str, video_description: str = "") -> float:
+    """Compute keyword overlap ratio between the topic and video title + description."""
     topic_words = _extract_keywords(topic_title)
-    video_words = _extract_keywords(video_title)
     if not topic_words:
         return 0.0
-    overlap = len(topic_words & video_words)
-    return overlap / len(topic_words)
+    video_words = _extract_keywords(video_title)
+    description_words = _extract_keywords(video_description)
+    
+    title_overlap = len(topic_words & video_words)
+    desc_overlap = len(topic_words & description_words)
+    
+    title_ratio = title_overlap / len(topic_words)
+    desc_ratio = desc_overlap / len(topic_words)
+    
+    return max(title_ratio, desc_ratio * 0.7)
 
 
 def _score_video(video: dict, topic_title: str) -> float:
@@ -172,18 +179,19 @@ def _score_video(video: dict, topic_title: str) -> float:
     """
     duration_seconds = parse_iso8601_duration(video.get("contentDetails", {}).get("duration", ""))
 
-    # Duration gate: 8-60 minutes
+    # Duration gate: 8-60 minutes (480s to 3600s)
     if duration_seconds < 480 or duration_seconds > 3600:
         return -1.0
 
-    title_relevance = _compute_title_relevance(topic_title, video["snippet"]["title"])
+    snippet = video.get("snippet", {})
+    title_relevance = _compute_title_relevance(topic_title, snippet.get("title", ""), snippet.get("description", ""))
 
-    # Relevance gate: at least 15% keyword overlap
-    if title_relevance < 0.15:
+    # Relevance gate: at least 10% keyword overlap
+    if title_relevance < 0.10:
         return -1.0
 
     view_count = int(video.get("statistics", {}).get("viewCount", "0"))
-    channel_name = video["snippet"].get("channelTitle", "").lower()
+    channel_name = snippet.get("channelTitle", "").lower()
 
     # Composite score (max ~100 points)
     relevance_score = title_relevance * 50                              # max 50
@@ -203,108 +211,108 @@ async def search_youtube_videos(
     """
     Search YouTube and return the best matching educational videos.
     When topic_title is provided, videos are scored by relevance, view count,
-    duration, and channel trust. Otherwise falls back to duration-only filtering.
+    duration, and channel trust. Performs query fallback if no candidates match.
     """
     if not settings.YOUTUBE_API_KEY:
         logger.warning("YOUTUBE_API_KEY not set, skipping YouTube search.")
         return []
 
-    search_url = "https://www.googleapis.com/youtube/v3/search"
-    # We no longer append massive OR blocks to the query because the LLM is already 
-    # instructed to provide a precise query, and long queries destroy YouTube's search relevance.
+    OFFICIAL_KEYWORDS = [
+        "mit", "stanford", "harvard", "nptel", "courseware", "university", 
+        "institute", "oxford", "yale", "cambridge", "berkeley", 
+        "cmu", "carnegie", "caltech", "princeton", "cornell", "georgia tech",
+        "nasa", "cern", "jpl", "esa", "polytechnic", "purdue", "michigan", 
+        "eth zurich", "ocw", "ucla", "imperial", "waterloo", "ieee", "acm", 
+        "nsf", "darpa", "national lab", "department of"
+    ]
 
-    search_params = {
-        "part": "snippet",
-        "q": query,
-        "type": "video",
-        "maxResults": 25 if strict_official_sources else 15,
-        "key": settings.YOUTUBE_API_KEY,
-        "videoEmbeddable": "true",
-        "relevanceLanguage": "en",
-    }
-
-    try:
+    async def execute_search(search_q: str) -> List[Dict[str, str]]:
+        search_url = "https://www.googleapis.com/youtube/v3/search"
+        search_params = {
+            "part": "snippet",
+            "q": search_q,
+            "type": "video",
+            "maxResults": 25 if strict_official_sources else 15,
+            "key": settings.YOUTUBE_API_KEY,
+            "videoEmbeddable": "true",
+            "relevanceLanguage": "en",
+        }
         async with httpx.AsyncClient(timeout=30.0) as client:
-            # Step 1: Search
             search_response = await client.get(search_url, params=search_params)
             search_response.raise_for_status()
             search_data = search_response.json()
-
             if not search_data.get("items"):
                 return []
 
             video_ids = [item["id"]["videoId"] for item in search_data["items"]]
-
-            # Step 2: Fetch details (duration, stats, snippet)
             videos_url = "https://www.googleapis.com/youtube/v3/videos"
             videos_params = {
                 "part": "contentDetails,snippet,statistics",
                 "id": ",".join(video_ids),
                 "key": settings.YOUTUBE_API_KEY,
             }
-
             videos_response = await client.get(videos_url, params=videos_params)
             videos_response.raise_for_status()
-            videos_data = videos_response.json()
+            return videos_response.json().get("items", [])
 
-            candidates = []
-            use_scoring = bool(topic_title.strip())
+    def filter_and_score(items: list, require_official: bool, use_scoring: bool):
+        valid = []
+        for item in items:
+            snippet = item.get("snippet", {})
+            channel_name_lower = snippet.get("channelTitle", "").lower()
 
-            OFFICIAL_KEYWORDS = [
-                "mit", "stanford", "harvard", "nptel", "courseware", "university", 
-                "institute", "oxford", "yale", "cambridge", "berkeley", 
-                "cmu", "carnegie", "caltech", "princeton", "cornell", "georgia tech",
-                "nasa", "cern", "jpl", "esa", "polytechnic", "purdue", "michigan", 
-                "eth zurich", "ocw", "ucla", "imperial", "waterloo", "ieee", "acm", 
-                "nsf", "darpa", "national lab", "department of"
-            ]
-            
-            def filter_and_score(require_official: bool):
-                valid = []
-                for item in videos_data.get("items", []):
-                    snippet = item.get("snippet", {})
-                    channel_name_lower = snippet.get("channelTitle", "").lower()
+            if require_official and not any(kw in channel_name_lower for kw in OFFICIAL_KEYWORDS):
+                continue
 
-                    if require_official:
-                        if not any(kw in channel_name_lower for kw in OFFICIAL_KEYWORDS):
-                            continue
+            if use_scoring:
+                score = _score_video(item, topic_title)
+                if score >= 0:
+                    valid.append((score, item))
+            else:
+                duration_seconds = parse_iso8601_duration(item.get("contentDetails", {}).get("duration", ""))
+                if 480 <= duration_seconds <= 3600:
+                    valid.append((0, item))
+        return valid
 
-                    if use_scoring:
-                        score = _score_video(item, topic_title)
-                        if score >= 0:
-                            valid.append((score, item))
-                    else:
-                        duration_seconds = parse_iso8601_duration(item.get("contentDetails", {}).get("duration", ""))
-                        if 480 <= duration_seconds <= 3600:
-                            valid.append((0, item))
-                return valid
+    try:
+        use_scoring = bool(topic_title.strip())
+        items = await execute_search(query)
+        candidates = filter_and_score(items, strict_official_sources, use_scoring)
 
-            candidates = filter_and_score(strict_official_sources)
+        if not candidates and strict_official_sources:
+            candidates = filter_and_score(items, False, use_scoring)
 
-            if not candidates and strict_official_sources:
-                logger.info(f"No official matches found for '{query}', relaxing official source constraint.")
-                candidates = filter_and_score(False)
-                
-            if not candidates and use_scoring:
-                logger.info(f"No relevant matches found for '{query}' against topic '{topic_title}'.")
-                return []
+        # Fallback query if initial specific query produced 0 valid candidates
+        if not candidates and topic_title:
+            fallback_query = f"{topic_title} tutorial"
+            logger.info(f"Primary YouTube query '{query}' produced no matches. Retrying with fallback: '{fallback_query}'")
+            items = await execute_search(fallback_query)
+            candidates = filter_and_score(items, False, use_scoring)
 
-            # Sort by score descending
-            candidates.sort(key=lambda x: x[0], reverse=True)
+        # If still 0 candidates, fallback to top duration-valid result (8-60 mins)
+        if not candidates and items:
+            candidates = filter_and_score(items, False, False)
 
-            results = []
-            for score, item in candidates[:max_results]:
-                results.append({
-                    "video_id": item["id"],
-                    "video_title": item.get("snippet", {}).get("title", ""),
-                    "duration_minutes": parse_iso8601_duration(item.get("contentDetails", {}).get("duration", "")) // 60,
-                })
+        if not candidates:
+            logger.info(f"No relevant matches found for '{query}' against topic '{topic_title}'.")
+            return []
 
-            if results and use_scoring:
-                best_score = candidates[0][0]
-                logger.info(f"YouTube: Best match for '{topic_title}' -> '{results[0]['video_title']}' (score: {best_score:.1f})")
+        # Sort candidates by score descending
+        candidates.sort(key=lambda x: x[0], reverse=True)
 
-            return results
+        results = []
+        for score, item in candidates[:max_results]:
+            results.append({
+                "video_id": item["id"],
+                "video_title": item.get("snippet", {}).get("title", ""),
+                "duration_minutes": parse_iso8601_duration(item.get("contentDetails", {}).get("duration", "")) // 60,
+            })
+
+        if results and use_scoring:
+            best_score = candidates[0][0]
+            logger.info(f"YouTube: Best match for '{topic_title}' -> '{results[0]['video_title']}' (score: {best_score:.1f})")
+
+        return results
 
     except Exception as e:
         logger.error(f"YouTube search/filter failed for query '{query}': {e}")

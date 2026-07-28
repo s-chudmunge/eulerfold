@@ -407,3 +407,48 @@ def log_backend_ai_usage(sb, user_id, subject, usage, source="backend", status="
         sb.table("ai_usage_logs").insert(log_entry).execute()
     except Exception as e:
         logger.error(f"Failed to log backend AI usage: {e}")
+
+async def generate_text_stream(prompt: str, model: str = None, response_mime_type: str = None):
+    """Streams generated text tokens from OpenRouter with non-stream fallback."""
+    api_key = settings.OPENROUTER_API_KEY or os.getenv("OPENROUTER_API_KEY")
+    actual_model = model or await get_fastest_free_openrouter_model()
+
+    if api_key:
+        headers = {
+            "Authorization": f"Bearer {api_key}",
+            "Content-Type": "application/json",
+            "HTTP-Referer": "https://www.eulerfold.com",
+            "X-Title": "EulerFold Cloud AI"
+        }
+        payload = {
+            "model": actual_model,
+            "messages": [{"role": "user", "content": prompt}],
+            "temperature": 0.1,
+            "top_p": 0.95,
+            "stream": True
+        }
+        if response_mime_type == "application/json":
+            payload["response_format"] = {"type": "json_object"}
+
+        try:
+            async with httpx.AsyncClient(timeout=180.0) as client:
+                async with client.stream("POST", "https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload) as response:
+                    response.raise_for_status()
+                    async for line in response.aiter_lines():
+                        if line.startswith("data: "):
+                            data_str = line[6:].strip()
+                            if data_str == "[DONE]":
+                                break
+                            try:
+                                chunk_json = json.loads(data_str)
+                                token = chunk_json.get("choices", [{}])[0].get("delta", {}).get("content", "")
+                                if token:
+                                    yield token
+                            except Exception:
+                                pass
+            return
+        except Exception as e:
+            logger.error(f"OpenRouter streaming failed: {e}. Falling back to generate_text.")
+
+    full_text = await generate_text(prompt, model=model, response_mime_type=response_mime_type)
+    yield full_text

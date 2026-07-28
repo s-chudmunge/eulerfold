@@ -33,7 +33,8 @@ import {
   Calendar,
   Send,
   Award,
-  Sparkles
+  Sparkles,
+  ExternalLink
 } from 'lucide-react';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
@@ -73,6 +74,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
     
     // Video & Tooltip State
     const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
+    const [resourceCardIdx, setResourceCardIdx] = useState(0);
     const [showMuteTooltip, setShowMuteTooltip] = useState(false);
     const [activeTab, setActiveTab] = useState<'objectives' | 'resources' | 'outcome'>('objectives');
 
@@ -185,6 +187,19 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
         
         return resources;
     }, [roadmap, currentModuleIndex]);
+
+    const activeTopicResources = useMemo(() => {
+        if (!roadmap || !roadmap.roadmap_plan?.modules?.[currentModuleIndex]) return [];
+        const module = roadmap.roadmap_plan.modules[currentModuleIndex];
+        const topic = module?.topics?.[currentTopicIndex];
+        if (topic?.resources && Array.isArray(topic.resources) && topic.resources.length > 0) {
+            return topic.resources;
+        }
+        if (module?.resources && Array.isArray(module.resources) && module.resources.length > 0) {
+            return module.resources;
+        }
+        return allWeekResources;
+    }, [roadmap, currentModuleIndex, currentTopicIndex, allWeekResources]);
 
     const fetchCompletedPractices = useCallback(async () => {
         if (!roadmap || !roadmap.id) return;
@@ -482,6 +497,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
         const currentTopic = currentModule?.topics?.[currentTopicIndex];
         
         setActiveVideoId(null);
+        setResourceCardIdx(0);
         
         const timer = setTimeout(() => {
             if (currentTopic?.youtube_video_id) {
@@ -901,7 +917,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                 <div className="animate-in fade-in duration-500">
                                     {/* Video Player Container */}
                                     <div className="bg-image-bg border border-border rounded-lg overflow-hidden shadow-sm mb-8">
-                                        <div className="aspect-video w-full bg-black relative group">
+                                        <div className={`w-full relative group ${activeVideoId ? 'aspect-video bg-black' : 'min-h-[360px] sm:min-h-[380px] md:aspect-video bg-sidebar'}`}>
                                             {activeVideoId ? (
                                                 <YouTubePlayer
                                                     videoId={activeVideoId}
@@ -911,11 +927,186 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                                     isCompleted={isTopicCompleted}
                                                 />
                                             ) : (
-                                                <div className="w-full h-full flex flex-col items-center justify-center text-text-muted p-8 text-center bg-callout-bg">
-                                                    <Library className="h-12 w-12 mb-4 opacity-20" />
-                                                    <h3 className="text-lg font-bold text-text-heading mb-2">No video available</h3>
-                                                    <p className="manrope-body text-sm max-w-xs italic opacity-60">Please refer to the materials section for this topic.</p>
-                                                </div>
+                                                 <div className="w-full h-full bg-sidebar border border-border flex flex-col justify-between p-4 sm:p-6 md:p-8 relative group">
+                                                     {/* Header */}
+                                                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-border">
+                                                         <div>
+                                                             <span className="text-[11px] font-bold text-accent bg-accent/10 border border-accent/20 px-2.5 py-1 rounded-md uppercase tracking-wider">
+                                                                 Recommended References
+                                                             </span>
+                                                             <p className="text-[12px] text-text-muted mt-1.5 font-medium">
+                                                                 No video available for this topic. Explore these curated study references:
+                                                             </p>
+                                                         </div>
+                                                         {activeTopicResources.length > 1 && (
+                                                             <div className="flex items-center gap-2 self-end sm:self-auto">
+                                                                 <span className="text-[12px] font-bold text-text-muted bg-background px-2.5 py-1 rounded-md border border-border font-mono">
+                                                                     {resourceCardIdx + 1} / {activeTopicResources.length}
+                                                                 </span>
+                                                                 <div className="flex items-center gap-1">
+                                                                     <button
+                                                                         type="button"
+                                                                         onClick={() => setResourceCardIdx(prev => (prev - 1 + activeTopicResources.length) % activeTopicResources.length)}
+                                                                         title="Previous Reference"
+                                                                         className="p-1.5 rounded-md border border-border bg-background text-text-muted hover:text-text-primary hover:border-accent/40 transition-colors"
+                                                                     >
+                                                                         <ChevronLeft className="w-4 h-4" />
+                                                                     </button>
+                                                                     <button
+                                                                         type="button"
+                                                                         onClick={() => setResourceCardIdx(prev => (prev + 1) % activeTopicResources.length)}
+                                                                         title="Next Reference"
+                                                                         className="p-1.5 rounded-md border border-border bg-background text-text-muted hover:text-text-primary hover:border-accent/40 transition-colors"
+                                                                     >
+                                                                         <ChevronRight className="w-4 h-4" />
+                                                                     </button>
+                                                                 </div>
+                                                             </div>
+                                                         )}
+                                                     </div>
+
+                                                     {/* Main Card View with Responsive Controls */}
+                                                     {activeTopicResources.length > 0 ? (
+                                                         <div className="my-auto py-3 md:py-4 flex items-center gap-3">
+                                                             {activeTopicResources.length > 1 && (
+                                                                 <button
+                                                                     type="button"
+                                                                     onClick={() => setResourceCardIdx(prev => (prev - 1 + activeTopicResources.length) % activeTopicResources.length)}
+                                                                     title="Previous Reference"
+                                                                     className="hidden md:flex w-9 h-9 rounded-full border border-border bg-background text-text-muted hover:text-text-heading hover:border-accent shadow-xs items-center justify-center transition-all shrink-0"
+                                                                 >
+                                                                     <ChevronLeft className="w-5 h-5" />
+                                                                 </button>
+                                                             )}
+
+                                                             <div className="flex-1 w-full">
+                                                                 {(() => {
+                                                                     const res = activeTopicResources[resourceCardIdx % activeTopicResources.length];
+                                                                     const urlStr = res.url || res.link || "#";
+                                                                     let domain = "External Reference";
+                                                                     try {
+                                                                         if (urlStr !== "#") domain = new URL(urlStr).hostname.replace(/^www\./, "");
+                                                                     } catch {}
+                                                                     const rawImg = res.image || res.featured_image || res.thumbnail || res.og_image || res.img || res.cover_image;
+                                                                     const featImg = rawImg || (urlStr && urlStr !== "#" ? `https://api.microlink.io/?url=${encodeURIComponent(urlStr)}&embed=image.url` : null);
+                                                                     const faviconUrl = domain !== "External Reference" ? `https://www.google.com/s2/favicons?domain=${domain}&sz=64` : null;
+
+                                                                     return (
+                                                                          <div className="bg-background border border-border rounded-lg p-4 sm:p-6 md:p-8 shadow-md hover:border-accent/60 transition-all flex flex-col justify-between min-h-[180px] sm:min-h-[220px] md:min-h-[260px] gap-4 sm:gap-6">
+                                                                              <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6">
+                                                                                  {featImg && (
+                                                                                      <div className="w-full md:w-48 h-36 md:h-32 shrink-0 rounded-md border border-border overflow-hidden bg-sidebar relative">
+                                                                                          <img
+                                                                                              src={featImg}
+                                                                                              alt={res.title || "Reference image"}
+                                                                                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                                                              onError={(e) => {
+                                                                                                  (e.currentTarget.parentElement as HTMLElement).style.display = 'none';
+                                                                                              }}
+                                                                                          />
+                                                                                      </div>
+                                                                                  )}
+                                                                                  <div className="space-y-2 sm:space-y-3 flex-1 w-full">
+                                                                                      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                                                                                          <span className="text-[10px] sm:text-[11px] font-bold text-accent bg-accent/10 border border-accent/20 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md uppercase tracking-wider">
+                                                                                              {res.type || "Article"}
+                                                                                          </span>
+                                                                                          <span className="text-[11px] sm:text-[12px] font-mono text-text-muted flex items-center gap-1.5">
+                                                                                              {faviconUrl && (
+                                                                                                  <img src={faviconUrl} alt="" className="w-3.5 h-3.5 rounded-xs" />
+                                                                                              )}
+                                                                                              {domain}
+                                                                                          </span>
+                                                                                          {res.context && (
+                                                                                              <span className="text-[10px] sm:text-[11px] font-medium text-text-muted bg-sidebar border border-border px-2 py-0.5 rounded-md">
+                                                                                                  {res.context}
+                                                                                              </span>
+                                                                                          )}
+                                                                                      </div>
+                                                                                      <h4 className="text-[15px] sm:text-[18px] md:text-[21px] font-bold text-text-heading leading-snug line-clamp-2">
+                                                                                          {res.title || res.name || "Study Reference"}
+                                                                                      </h4>
+                                                                                      <p className="text-[12px] sm:text-[13px] text-text-muted leading-relaxed line-clamp-2">
+                                                                                          Explore this reference material for in-depth technical documentation and background theory on {currentTopic?.title || "this topic"}.
+                                                                                      </p>
+                                                                                  </div>
+                                                                              </div>
+                                                                              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-3 sm:pt-4 border-t border-border/60">
+                                                                                  <span className="text-[11px] sm:text-[12px] text-text-muted font-medium">
+                                                                                      Source: <strong className="text-text-primary">{domain}</strong>
+                                                                                  </span>
+                                                                                  {urlStr !== "#" && (
+                                                                                      <a
+                                                                                          href={urlStr}
+                                                                                          target="_blank"
+                                                                                          rel="noopener noreferrer"
+                                                                                          className="w-full sm:w-auto px-5 sm:px-6 py-2 sm:py-2.5 rounded-md bg-accent text-white font-bold text-[12px] sm:text-[13px] hover:bg-teal-700 transition-all shadow-sm flex items-center justify-center gap-2"
+                                                                                      >
+                                                                                          Read Reference <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                                                                                      </a>
+                                                                                  )}
+                                                                              </div>
+                                                                          </div>
+                                                                     );
+                                                                 })()}
+                                                             </div>
+
+                                                             {activeTopicResources.length > 1 && (
+                                                                 <button
+                                                                     type="button"
+                                                                     onClick={() => setResourceCardIdx(prev => (prev + 1) % activeTopicResources.length)}
+                                                                     title="Next Reference"
+                                                                     className="hidden md:flex w-9 h-9 rounded-full border border-border bg-background text-text-muted hover:text-text-heading hover:border-accent shadow-xs items-center justify-center transition-all shrink-0"
+                                                                 >
+                                                                     <ChevronRight className="w-5 h-5" />
+                                                                 </button>
+                                                             )}
+                                                         </div>
+                                                     ) : (
+                                                         <div className="my-auto text-center py-8 text-text-muted">
+                                                             <p className="text-[14px] font-semibold text-text-heading mb-1">
+                                                                 No Direct Video or Web References
+                                                             </p>
+                                                             <p className="text-[12px] text-text-muted max-w-sm mx-auto">
+                                                                 Please refer to the learning objectives and weekly outcome below for this topic.
+                                                             </p>
+                                                         </div>
+                                                     )}
+
+                                                     {/* Navigation Footer */}
+                                                     {activeTopicResources.length > 1 && (
+                                                         <div className="flex items-center justify-between pt-3 border-t border-border">
+                                                             <button
+                                                                 type="button"
+                                                                 onClick={() => setResourceCardIdx(prev => (prev - 1 + activeTopicResources.length) % activeTopicResources.length)}
+                                                                 className="flex items-center gap-1 px-3 py-1.5 rounded-md border border-border text-[12px] font-semibold text-text-muted hover:text-text-heading hover:bg-background transition-all"
+                                                             >
+                                                                 <ChevronLeft className="w-4 h-4" /> Previous
+                                                             </button>
+                                                             <div className="flex items-center gap-1.5">
+                                                                 {activeTopicResources.map((_: any, idx: number) => (
+                                                                     <button
+                                                                         key={idx}
+                                                                         type="button"
+                                                                         onClick={() => setResourceCardIdx(idx)}
+                                                                         className={`h-2 rounded-full transition-all ${
+                                                                             idx === (resourceCardIdx % activeTopicResources.length)
+                                                                                 ? 'w-6 bg-accent'
+                                                                                 : 'w-2 bg-border hover:bg-text-muted'
+                                                                         }`}
+                                                                     />
+                                                                 ))}
+                                                             </div>
+                                                             <button
+                                                                 type="button"
+                                                                 onClick={() => setResourceCardIdx(prev => (prev + 1) % activeTopicResources.length)}
+                                                                 className="flex items-center gap-1 px-3 py-1.5 rounded-md border border-border text-[12px] font-semibold text-text-muted hover:text-text-heading hover:bg-background transition-all"
+                                                             >
+                                                                 Next <ChevronRight className="w-4 h-4" />
+                                                             </button>
+                                                         </div>
+                                                     )}
+                                                 </div>
                                             )}
                                         </div>
                                         
