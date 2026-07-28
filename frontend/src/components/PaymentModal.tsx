@@ -3,7 +3,7 @@ import { X, Loader, CheckCircle2, Tag, Trash2, CreditCard } from 'lucide-react';
 import Link from 'next/link';
 import { api } from '../lib/api';
 import { supabase } from '../lib/supabase/client';
-import { getDiscountStatus, NORMAL_PRICE, DISCOUNTED_PRICE } from '@/lib/utils/pricing';
+import { getDiscountStatus, usePricing } from '@/lib/utils/pricing';
 import Celebration from './Celebration';
 
 interface PaymentModalProps {
@@ -21,6 +21,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
   const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
   const [couponError, setCouponError] = useState<string | null>(null);
   const [showCelebration, setShowCelebration] = useState(false);
+  const { symbol, normalPrice, currency, formatPrice } = usePricing();
 
   useEffect(() => {
     if (isOpen) {
@@ -32,7 +33,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
     }
   }, [isOpen]);
 
-  const currentPrice = appliedCoupon ? appliedCoupon.newPrice : (discountStatus.hasDiscount ? DISCOUNTED_PRICE : NORMAL_PRICE);
+  const currentPrice = appliedCoupon ? appliedCoupon.newPrice : normalPrice;
 
   const handleApplyCoupon = async () => {
     if (!couponCode.trim()) return;
@@ -40,7 +41,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
     setIsValidatingCoupon(true);
     setCouponError(null);
     try {
-        const res = await api.post('/payments/validate-coupon', { code: couponCode });
+        const res = await api.post('/payments/validate-coupon', { code: couponCode, currency });
         setAppliedCoupon({
             code: couponCode.toUpperCase(),
             discount: res.data.discount,
@@ -85,7 +86,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
       }
 
       const res = await api.post('/payments/checkout', { 
-        currency: 'INR',
+        currency,
         coupon_code: appliedCoupon?.code || null
       });
       
@@ -169,9 +170,9 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
             </div>
             <div className="flex flex-col items-end">
                 {(discountStatus.hasDiscount || appliedCoupon) && (
-                    <span className="text-[10px] text-text-muted line-through opacity-50">₹{NORMAL_PRICE}</span>
+                    <span className="text-[10px] text-text-muted line-through opacity-50">{formatPrice(normalPrice)}</span>
                 )}
-                <span className="text-[20px] font-black text-accent">₹{currentPrice}</span>
+                <span className="text-[20px] font-black text-accent">{formatPrice(currentPrice)}</span>
             </div>
           </div>
 

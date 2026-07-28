@@ -24,29 +24,28 @@ razorpay_client = None
 if settings.RAZORPAY_KEY_ID and settings.RAZORPAY_KEY_SECRET:
     razorpay_client = razorpay.Client(auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET))
 
-def get_current_price(coupon_code: Optional[str] = None):
+def get_current_price(coupon_code: Optional[str] = None, currency: str = "INR"):
     """
-    Returns (price_in_paise, has_discount)
-    Normal price: ₹149 (14900 paise)
+    Returns (price_in_lowest_unit, has_discount)
+    INR: ₹149 (14900 paise)
+    USD: $3 (300 cents)
     Coupon code: #SANKALP21 gives 50% discount.
     """
-    # Coupon Logic
     VALID_COUPONS = {
         "#SANKALP21": 0.5, # 50% discount
     }
+
+    base_price = 3 if currency.upper() == "USD" else 149
 
     coupon_discount = 0
     if coupon_code and coupon_code.upper() in VALID_COUPONS:
         coupon_discount = VALID_COUPONS[coupon_code.upper()]
 
     if coupon_discount > 0:
-        discount = coupon_discount
-            
-        # ₹149 * (1 - discount)
-        final_price_rs = 149 * (1 - discount)
-        return int(final_price_rs * 100), True
+        final_price = base_price * (1 - coupon_discount)
+        return int(final_price * 100), True
     
-    return 14900, False
+    return int(base_price * 100), False
 
 class CheckoutRequest(BaseModel):
     currency: str = "INR"
@@ -66,7 +65,7 @@ async def create_checkout(req: CheckoutRequest, current_user: User = Depends(get
     if not razorpay_client:
         raise HTTPException(status_code=500, detail="Razorpay not configured")
     
-    price_paise, _ = get_current_price(req.coupon_code)
+    price_paise, _ = get_current_price(req.coupon_code, req.currency)
     
     try:
         if not settings.RAZORPAY_PLAN_ID:
@@ -222,11 +221,11 @@ async def verify_razorpay(req: RazorpayVerifyRequest, current_user: User = Depen
 
 class CouponValidateRequest(BaseModel):
     code: str
+    currency: str = "INR"
 
 @router.post("/payments/validate-coupon")
 async def validate_coupon(req: CouponValidateRequest):
     """Validate a coupon code and return discount info"""
-    # Coupon Logic (should be synced with get_current_price or moved to a shared util)
     VALID_COUPONS = {
         "#SANKALP21": 0.5, # 50% discount
     }
@@ -234,11 +233,13 @@ async def validate_coupon(req: CouponValidateRequest):
     code = req.code.upper()
     if code in VALID_COUPONS:
         discount = VALID_COUPONS[code]
-        new_price_rs = 149 * (1 - discount)
+        base_price = 3 if req.currency.upper() == "USD" else 149
+        new_price = base_price * (1 - discount)
+        formatted_price = int(new_price) if new_price.is_integer() else round(new_price, 2)
         return {
             "valid": True,
             "discount": discount,
-            "new_price": int(new_price_rs),
+            "new_price": formatted_price,
             "message": f"Coupon applied! {int(discount * 100)}% discount."
         }
     else:

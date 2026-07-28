@@ -733,7 +733,7 @@ export default function SettingsModal() {
                                             {tx.razorpay_payment_id}
                                         </td>
                                         <td className="py-3 px-3 manrope-body text-[11px] font-bold text-text-heading">
-                                            ₹{(tx.amount / 100).toFixed(2)}
+                                            {(tx.currency === 'USD' || tx.currency === 'usd') ? '$' : '₹'}{(tx.amount / 100).toFixed(2)}
                                         </td>
                                         <td className="py-3 px-3">
                                             <span className="px-1.5 py-0.5 bg-accent/10 text-accent text-[9px] font-bold inconsolata-ui rounded">

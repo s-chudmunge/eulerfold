@@ -4,11 +4,12 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { Zap, Clock, Info } from 'lucide-react';
-import { getDiscountStatus, formatTime, NORMAL_PRICE, DISCOUNTED_PRICE } from '@/lib/utils/pricing';
+import { getDiscountStatus, formatTime, usePricing } from '@/lib/utils/pricing';
 
 export default function PricingSection() {
   const [discountStatus, setDiscountStatus] = useState(getDiscountStatus());
   const [hasMounted, setHasMounted] = useState(false);
+  const { symbol, normalPrice, formatPrice } = usePricing();
 
   useEffect(() => {
     setHasMounted(true);
@@ -18,7 +19,7 @@ export default function PricingSection() {
     return () => clearInterval(timer);
   }, []);
 
-  const currentPrice = NORMAL_PRICE;
+  const currentPrice = normalPrice;
 
   // Use a placeholder or nothing during server-side render to avoid hydration mismatch
   const renderTimer = (seconds: number) => {
@@ -110,7 +111,7 @@ export default function PricingSection() {
                     <div className="flex items-baseline justify-between mb-1">
                         <span className="inconsolata-ui text-xl font-bold text-text-heading">Pro</span>
                         <div className="flex items-center gap-2">
-                            <span className="inconsolata-ui text-lg font-bold text-accent">₹{currentPrice}/mo</span>
+                            <span className="inconsolata-ui text-lg font-bold text-accent">{formatPrice(currentPrice)}/mo</span>
                         </div>
                     </div>
                     <p className="manrope-body text-[11px] text-text-muted">For deep technical mastery.</p>
@@ -168,7 +169,7 @@ export default function PricingSection() {
                     href="/pricing"
                     className="w-full inline-flex items-center justify-center bg-accent text-white hover:bg-teal-700 py-3 rounded-lg text-[14px] font-bold transition-all shadow-sm"
                 >
-                    Subscribe Pro (₹{currentPrice}/mo)
+                    Subscribe Pro ({formatPrice(currentPrice)}/mo)
                 </Link>
             </div>
         </div>

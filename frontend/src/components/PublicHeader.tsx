@@ -13,6 +13,7 @@ import {
   Moon
 } from 'lucide-react';
 import UserNav from './UserNav';
+import GitHubStarButton from './GitHubStarButton';
 import { Suspense } from 'react';
 
 const NAVIGATION_DATA = {
@@ -267,7 +268,9 @@ export default function PublicHeader() {
           </nav>
         </div>
 
-        <div className="flex items-center gap-5">
+        <div className="flex items-center gap-3">
+          <GitHubStarButton />
+
           <button
             onClick={toggleTheme}
             className="p-1.5 text-text-muted opacity-70 hover:opacity-100 transition-opacity"

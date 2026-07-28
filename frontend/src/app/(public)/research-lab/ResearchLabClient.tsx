@@ -128,12 +128,12 @@ export default function ResearchLabClient() {
                 const extRes = await api.post('/research-lab/extract', { paper_url: paperUrl });
                 const rawText = extRes.data.text;
 
-                const prompt = `You are a world-class Technical Consultant. Deconstruct the attached paper into an 'Engineering Dossier'.
+                const prompt = `Deconstruct the attached paper into a technical summary.
         
         TASK:
         1. Identify the paper archetype: (Theoretical Math, Systems/Hardware, AI Architecture, or Applied Engineering).
         2. Extract Metadata: (Clean Title, List of Authors, Publication Year).
-        3. Create 5-6 high-utility technical modules based on that archetype.
+        3. Create 5-6 technical modules based on that archetype.
 
         MODULE RULES:
         - ALWAYS include: 'The Shift', 'Logic', and 'Realities'.
@@ -329,7 +329,7 @@ export default function ResearchLabClient() {
                 </div>
             )}
             {/* Hero Section */}
-            <div className="relative pt-12 pb-16 overflow-hidden border-b border-border/30 bg-sidebar/10">
+            <div className="relative py-28 md:py-40 lg:py-48 min-h-[480px] md:min-h-[560px] overflow-hidden border-b border-border/30 bg-sidebar/10 flex items-center">
                 <div className="absolute inset-0 bg-gradient-to-b from-background/50 to-transparent pointer-events-none" />
                 <div className="max-w-7xl mx-auto px-6 relative z-10 text-left">
                     <div className="mt-4 max-w-3xl">
@@ -338,11 +338,11 @@ export default function ResearchLabClient() {
                                 <EulerLogoCanvas size={64} color1={0x1e3a8a} color2={0x3b82f6} emissive1={0x1d4ed8} emissive2={0x2563eb} emissiveIntensity={0.6} wireframe={true} />
                             </div>
                             <h1 className="font-inter text-3xl sm:text-4xl md:text-5xl font-semibold text-text-heading leading-[1.15] md:leading-[1.1] tracking-tight">
-                                Decode complex papers into <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-teal-400">Engineering Blueprints.</span>
+                                Turn research papers into <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-teal-400">code.</span>
                             </h1>
                         </div>
                         <p className="text-text-muted text-base md:text-lg manrope-body font-medium mb-10 leading-relaxed max-w-2xl">
-                            Enter an ArXiv or PDF URL to extract the core mechanism, logic map, and architectural decisions. We bypass the dense mathematics to give you exactly what you need to build.
+                            Paste an ArXiv or PDF URL to extract the core methodology, system design, and implementation steps.
                         </p>
                         <button 
                             onClick={() => { document.getElementById('decode-form')?.scrollIntoView({ behavior: 'smooth' }) }}
@@ -599,10 +599,10 @@ export default function ResearchLabClient() {
                             <div>
 
                                 <h3 className="font-inter text-2xl lg:text-3xl font-semibold text-text-heading mb-4 tracking-tight">
-                                    From PDF to <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-teal-400">Engineering Dossier</span>
+                                    From paper to <span className="text-transparent bg-clip-text bg-gradient-to-r from-teal-600 to-teal-400">implementation</span>
                                 </h3>
                                 <p className="manrope-body font-medium text-[14px] text-text-muted leading-relaxed max-w-md">
-                                    Turn dense research papers into clear implementation guides. We break down the core logic, architecture, and math so you can start building immediately.
+                                    Extract key findings, system layout, and practical constraints without reading academic formatting.
                                 </p>
                             </div>
 
@@ -610,18 +610,18 @@ export default function ResearchLabClient() {
                                 {[
                                     {
                                         icon: <FlaskConical className="w-5 h-5 text-teal-500" />,
-                                        title: "The Problem & Solution",
-                                        desc: "Instantly understand what the paper fixes and the step-by-step logic required to replicate its results."
+                                        title: "Problem & Solution",
+                                        desc: "See what problem the paper addresses and the core approach used to solve it."
                                     },
                                     {
                                         icon: <BrainCircuit className="w-5 h-5 text-amber-500" />,
-                                        title: "Architecture Breakdown",
-                                        desc: "Deep-dive into how the system actually works without having to read through pages of academic formatting."
+                                        title: "System Architecture",
+                                        desc: "Understand model layouts, layer setups, and data flow across components."
                                     },
                                     {
                                         icon: <AlertCircle className="w-5 h-5 text-rose-500" />,
-                                        title: "Implementation Trade-offs",
-                                        desc: "Know the limitations upfront. We highlight the performance bottlenecks, scaling issues, and hidden assumptions."
+                                        title: "Trade-offs & Limits",
+                                        desc: "Review compute requirements, memory bottlenecks, and practical limitations."
                                     }
                                 ].map((feature, i) => (
                                     <div key={i} className="flex gap-4 p-5 rounded-lg border border-border/50 bg-sidebar/50 hover:bg-sidebar transition-colors">

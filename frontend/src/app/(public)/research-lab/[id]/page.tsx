@@ -2,6 +2,7 @@ import React from 'react';
 import { Metadata } from 'next';
 import ResearchLabDetailClient from './ResearchLabDetailClient';
 import UserNav from '@/components/UserNav';
+import GitHubStarButton from '@/components/GitHubStarButton';
 import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Technical Report | EulerFold Decode',
@@ -18,7 +19,8 @@ export default function ResearchLabDetailPage({ params }: { params: { id: string
                       <img src="/apple-touch-icon.png" alt="EulerFold" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
                   </Link>
               </div>
-              <div className="flex items-center gap-4">
+              <div className="flex items-center gap-3">
+                  <GitHubStarButton />
                   <UserNav />
               </div>
           </div>

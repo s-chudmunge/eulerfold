@@ -7,7 +7,7 @@ import { supabase } from '@/lib/supabase/client';
 import PaymentModal from '@/components/PaymentModal';
 import EnterpriseInterestModal from '@/components/EnterpriseInterestModal';
 import { useAuth } from '@/components/AuthProvider';
-import { getDiscountStatus, formatTime, NORMAL_PRICE, DISCOUNTED_PRICE } from '@/lib/utils/pricing';
+import { getDiscountStatus, formatTime, usePricing } from '@/lib/utils/pricing';
 
 export default function PricingClient() {
     const [isYearly, setIsYearly] = useState(false);
@@ -16,6 +16,8 @@ export default function PricingClient() {
     const { user, loading } = useAuth();
     const [discountStatus, setDiscountStatus] = useState(getDiscountStatus());
     const [hasMounted, setHasMounted] = useState(false);
+    const { symbol, normalPrice, formatPrice } = usePricing();
+
     useEffect(() => {
         setHasMounted(true);
 
@@ -31,7 +33,7 @@ export default function PricingClient() {
     const userCredits = user?.roadmap_credits ?? null;
     const isLoggedIn = !!user;
 
-    const currentPrice = NORMAL_PRICE;
+    const currentPrice = normalPrice;
 
     const renderTimer = (seconds: number) => {
         if (!hasMounted) return "00:00:00";
@@ -132,7 +134,7 @@ export default function PricingClient() {
                         <div className="flex items-center justify-between mb-4">
                             <span className="inconsolata-ui text-[10px] font-black text-teal-600 uppercase tracking-[0.2em]">Monthly subscription</span>
                             <div className="flex items-center gap-2">
-                                <span className="inconsolata-ui text-2xl font-black text-text-heading">₹{currentPrice}/mo</span>
+                                <span className="inconsolata-ui text-2xl font-black text-text-heading">{formatPrice(currentPrice)}/mo</span>
                             </div>
                         </div>
                         <h2 className="inconsolata-ui text-[24px] font-bold text-text-heading tracking-tight mb-2">Pro</h2>
@@ -199,7 +201,7 @@ export default function PricingClient() {
                                 onClick={() => setIsPaymentModalOpen(true)}
                                 className="w-full inline-flex items-center justify-center bg-accent text-white hover:bg-teal-700 py-3 rounded-lg text-[14px] font-bold transition-all shadow-sm relative z-10"
                             >
-                                Activate Pro (₹{currentPrice}/mo)
+                                Activate Pro ({formatPrice(currentPrice)}/mo)
                             </button>
                         )
                     ) : (

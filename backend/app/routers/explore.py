@@ -24,63 +24,73 @@ logger = logging.getLogger(__name__)
 router = APIRouter()
 
 @router.get("/explore/recommendations/personalized")
-async def get_personalized_recommendations(current_user: User = Depends(get_current_user)):
+async def get_personalized_recommendations(current_user: Optional[User] = Depends(get_optional_current_user)):
     sb = get_supabase_client()
     try:
-        # Fetch user's roadmaps as proxy for interests
-        roadmaps_res = sb.table("roadmaps").select("slug").eq("email", current_user.email).limit(5).execute()
-        
-        roadmap_ids = [f"roadmap-{r['slug']}" for r in roadmaps_res.data]
-        
-        # Fallback if no roadmaps
-        if not roadmap_ids:
-            # Fallback to some known popular items or default vectors
-            roadmap_ids = ["roadmap-cryptography-101", "roadmap-linux-and-terminal-for-developers"]
+        mixed = []
+        if current_user and current_user.email:
+            # Fetch user's roadmaps as proxy for interests
+            roadmaps_res = sb.table("roadmaps").select("slug").eq("email", current_user.email).limit(5).execute()
+            roadmap_ids = [f"roadmap-{r['slug']}" for r in roadmaps_res.data] if roadmaps_res.data else []
             
-        # Fetch their embeddings from the db
-        embed_res = sb.table("content_embeddings").select("embedding").in_("id", roadmap_ids).execute()
-        
-        if not embed_res.data:
-            return []
+            if roadmap_ids:
+                embed_res = sb.table("content_embeddings").select("embedding").in_("id", roadmap_ids).execute()
+                if embed_res.data:
+                    vectors = [json.loads(row['embedding']) for row in embed_res.data if row.get('embedding')]
+                    if vectors:
+                        avg_vector = [sum(col) / len(col) for col in zip(*vectors)]
+                        query_embedding_str = f"[{','.join(map(str, avg_vector))}]"
+                        res = sb.rpc("match_content_by_vector", {
+                            "query_embedding": query_embedding_str,
+                            "match_threshold": 0.1,
+                            "match_count": 50
+                        }).execute()
+                        if res.data:
+                            items = res.data
+                            r_list = [item for item in items if item.get('content_type') == 'roadmap']
+                            a_list = [item for item in items if item.get('content_type') == 'article']
+                            res_list = [item for item in items if item.get('content_type') in ('research', 'research_decoded')]
+                            mixed = r_list[:4] + a_list[:2] + res_list[:2]
+
+        # High-click / popular fallback for signed-out visitors or users without personal history
+        if not mixed:
+            top_roadmaps_res = sb.table("roadmaps") \
+                .select("id, title, slug, description, subject, goal, clone_count, average_rating, created_at") \
+                .eq("is_public", True) \
+                .lt("report_count", 3) \
+                .order("clone_count", desc=True) \
+                .limit(6) \
+                .execute()
             
-        import json
-        vectors = [json.loads(row['embedding']) for row in embed_res.data if row.get('embedding')]
-        
-        if not vectors:
-            return []
+            top_roadmaps = []
+            if top_roadmaps_res.data:
+                for r in top_roadmaps_res.data:
+                    top_roadmaps.append({
+                        "id": f"roadmap-{r['slug']}",
+                        "title": r['title'],
+                        "slug": r['slug'],
+                        "description": r.get('description') or r.get('goal') or '',
+                        "subject": r.get('subject') or 'AI & Software',
+                        "content_type": "roadmap",
+                        "clone_count": r.get('clone_count') or 0,
+                        "average_rating": r.get('average_rating') or 5.0
+                    })
             
-        # Compute the average vector
-        avg_vector = [sum(col) / len(col) for col in zip(*vectors)]
-        
-        # Format for pgvector
-        query_embedding_str = f"[{','.join(map(str, avg_vector))}]"
-        
-        res = sb.rpc("match_content_by_vector", {
-            "query_embedding": query_embedding_str,
-            "match_threshold": 0.1,
-            "match_count": 50
-        }).execute()
-        
-        # Extract and group results by content_type
-        items = res.data
-        roadmaps = [item for item in items if item['content_type'] == 'roadmap']
-        articles = [item for item in items if item['content_type'] == 'article']
-        research = [item for item in items if item['content_type'] in ('research', 'research_decoded')]
-        
-        # Take top 4 roadmaps, top 2 articles, top 2 research
-        mixed = roadmaps[:4] + articles[:2] + research[:2]
-        
-        # Fill the remainder with roadmaps if needed, then shuffle the final feed
-        while len(mixed) < 8 and len(roadmaps) > len([i for i in mixed if i['content_type'] == 'roadmap']):
-            # Find a roadmap not already in mixed
-            for r in roadmaps:
-                if r not in mixed:
-                    mixed.append(r)
-                    break
-                    
+            curated_articles = [
+                {"id": "article-jensen-huang-gpu-apocalypse", "title": "Jensen Huang & The GPU Apocalypse", "slug": "jensen-huang-gpu-apocalypse", "description": "How NVIDIA built the foundation for AI.", "subject": "Hardware", "content_type": "article"},
+                {"id": "article-backpropagation", "title": "Understanding Backpropagation", "slug": "backpropagation", "description": "The calculus behind modern deep learning.", "subject": "Mathematics", "content_type": "article"},
+                {"id": "article-lisa-su-amd-turnaround", "title": "Lisa Su & The AMD Turnaround", "slug": "lisa-su-amd-turnaround", "description": "Architecting the silicon turnaround.", "subject": "Semiconductors", "content_type": "article"}
+            ]
+            
+            curated_research = [
+                {"id": "research-deepseek-r1-incentivizing-reasoning", "title": "DeepSeek R1 Reasoning Engine", "slug": "deepseek-r1-incentivizing-reasoning", "description": "Incentivizing reasoning in LLMs via RL.", "subject": "AI Research", "content_type": "research_decoded"},
+                {"id": "research-attention-is-all-you-need", "title": "Attention Is All You Need", "slug": "attention-is-all-you-need", "description": "The seminal Transformer paper.", "subject": "AI Architecture", "content_type": "research_decoded"}
+            ]
+            
+            mixed = top_roadmaps[:4] + curated_articles[:2] + curated_research[:2]
+
         import random
         random.shuffle(mixed)
-        
         return mixed[:8]
     except Exception as e:
         logger.error(f"Error generating personalized recommendations: {e}")

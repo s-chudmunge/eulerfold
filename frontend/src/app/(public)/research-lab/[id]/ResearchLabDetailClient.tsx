@@ -478,7 +478,7 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
                     {/* Vertical Navigation Sidebar */}
                     <div className="w-full md:w-56 lg:w-64 shrink-0 md:sticky md:top-[80px]">
                         <div className="flex items-center justify-between mb-6">
-                            <span className="inconsolata-ui text-[10px] font-black text-text-muted uppercase tracking-[0.3em]">Dossier Sections</span>
+                            <span className="inconsolata-ui text-[10px] font-black text-text-muted uppercase tracking-[0.3em]">Report Sections</span>
                         </div>
                         
                         <div className="flex md:flex-col overflow-x-auto md:overflow-visible hide-scrollbar gap-2 md:gap-1 border-b md:border-b-0 border-border/20 pb-4 md:pb-0">
