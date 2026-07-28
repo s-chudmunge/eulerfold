@@ -24,12 +24,17 @@ export async function generateStaticParams() {
 }
 
 async function getPublicRoadmapMetadata(slug: string) {
-    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || process.env.API_URL || 'http://localhost:8080';
     const endpoint = `${API_URL}/roadmaps/by-slug/${slug}`;
 
     try {
-        // Strictly slug-based fetch for SEO and link consistency
-        const res = await fetch(endpoint, { next: { revalidate: 3600 } });
+        // Fetch fresh roadmap visibility status without stale data-cache pooling
+        const res = await fetch(endpoint, { 
+            cache: 'no-store',
+            headers: {
+                'Cache-Control': 'no-cache'
+            }
+        });
         
         if (res.status === 403) {
             return { isPrivate: true };

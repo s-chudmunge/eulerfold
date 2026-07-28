@@ -535,17 +535,18 @@ async def update_visibility(id: int, update: VisibilityUpdate, current_user: Use
     # 4. Revalidate frontend cache for this roadmap slug
     if slug:
         async def revalidate_frontend():
-            frontend_url = settings.FRONTEND_URL
+            targets = set([settings.FRONTEND_URL.rstrip("/"), "https://www.eulerfold.com"])
             secret = os.getenv("REVALIDATE_SECRET", "eulerfold_revalidate_123")
             async with httpx.AsyncClient() as client:
-                try:
-                    await client.post(
-                        f"{frontend_url}/api/revalidate",
-                        json={"path": f"/roadmap/{slug}", "secret": secret},
-                        timeout=5.0
-                    )
-                except Exception as e:
-                    logger.error(f"Failed to revalidate frontend cache for {slug}: {e}")
+                for target_base in targets:
+                    try:
+                        await client.post(
+                            f"{target_base}/api/revalidate",
+                            json={"path": f"/roadmap/{slug}", "secret": secret},
+                            timeout=5.0
+                        )
+                    except Exception as e:
+                        logger.error(f"Failed to revalidate frontend cache at {target_base} for {slug}: {e}")
                     
         asyncio.create_task(revalidate_frontend())
     

@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase/client';
 import { roadmapsAPI, exploreAPI, submissionsAPI, authAPI } from '@/lib/api';
 import RoadmapDisplay from '@/components/landing/RoadmapDisplay';
+import PublicRoadmapView from './PublicRoadmapView';
 import StarRating from '@/components/roadmap/StarRating';
 import { 
     ChevronLeft, 
@@ -323,6 +324,13 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
             
             if (updates.is_public) {
                 setShowCelebration(true);
+                // Proactively purge Next.js server-side route cache
+                fetch('/api/revalidate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ path: `/roadmap/${roadmap.slug}`, secret: process.env.NEXT_PUBLIC_REVALIDATE_SECRET || 'eulerfold_revalidate_123' })
+                }).catch(() => {});
+
                 setTimeout(() => {
                     setShowCelebration(false);
                     window.location.reload();
@@ -511,6 +519,10 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                 </div>
             </div>
         );
+    }
+
+    if (roadmap?.is_public) {
+        return <PublicRoadmapView slug={slug} roadmap={roadmap} />;
     }
 
     return (
