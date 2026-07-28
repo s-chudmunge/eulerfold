@@ -576,7 +576,7 @@ They now want to EXTEND this course for {payload.weeks} more week(s) to learn: "
          }},
          "optimal_search_query": "A targeted search query to find the best academic/technical resources for this module",
          "topics": [
-            {{ "title": "string", "youtube_search_query": "A precise search query to find a university lecture or in-depth technical video on this specific topic", "subtopics": [ {{ "title": "string" }} ] }}
+            {{ "title": "string", "youtube_search_query": "Clean 3-5 word technical topic query for YouTube (e.g., 'Population Stability Index PSI', 'Kolmogorov Smirnov test'). DO NOT include university names like MIT or Stanford.", "subtopics": [ {{ "title": "string" }} ] }}
           ],
          "resources": [
             {{ "title": "string", "url": "string", "type": "docs|article" }}
@@ -619,7 +619,7 @@ Begin the JSON output immediately.
             try:
                 for module in new_modules:
                     for topic in module.get("topics", []):
-                        search_query = topic.get("youtube_search_query") or f"{roadmap.get('subject')} {topic['title']} lecture"
+                        search_query = topic.get("youtube_search_query") or f"{topic['title']}"
                         results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(payload, 'strict_official_sources', False))
                         if results:
                             topic["youtube_video_id"] = results[0]["video_id"]
@@ -932,7 +932,7 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
                 # YouTube Enrichment
                 if settings.YOUTUBE_API_KEY:
                     try:
-                        search_query = topic.get("youtube_search_query") or f"{roadmap_create.subject} {topic['title']} lecture"
+                        search_query = topic.get("youtube_search_query") or f"{topic['title']}"
                         results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(roadmap_create, 'strict_official_sources', False))
                         if results:
                             topic["youtube_video_id"] = results[0]["video_id"]
@@ -1034,7 +1034,7 @@ async def save_external_roadmap(
             # YouTube Enrichment
             if settings.YOUTUBE_API_KEY:
                 try:
-                    search_query = topic.get("youtube_search_query") or f"{extract_core_subject(roadmap_create.subject)} {topic['title']} lecture"
+                    search_query = topic.get("youtube_search_query") or f"{topic['title']}"
                     results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(roadmap_create, 'strict_official_sources', False))
                     if results:
                         topic["youtube_video_id"] = results[0]["video_id"]
@@ -1177,7 +1177,7 @@ Duration: {payload.time_value} {payload.time_unit}.
          "topics": [
            {{
               "title": "string",
-              "youtube_search_query": "A precise search query to find a university lecture or in-depth technical video on this specific topic (e.g., 'MIT linear algebra eigenvalues lecture')",
+              "youtube_search_query": "Clean 3-5 word technical topic query for YouTube (e.g., 'Population Stability Index PSI', 'Kolmogorov Smirnov test'). DO NOT include university names like MIT or Stanford.",
               "subtopics": [ {{ "title": "string" }} ]
             }}
          ]
@@ -1210,7 +1210,7 @@ Duration: {payload.time_value} {payload.time_unit}.
                 if settings.YOUTUBE_API_KEY:
                     try:
                         clean_title = roadmap_plan['title'].replace("Job Decoded: ", "").split("@")[0].strip()
-                        search_query = topic.get("youtube_search_query") or f"{clean_title} {topic['title']} lecture"
+                        search_query = topic.get("youtube_search_query") or f"{topic['title']}"
                         results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(payload, 'strict_official_sources', False))
                         if results:
                             topic["youtube_video_id"] = results[0]["video_id"]
@@ -1609,7 +1609,7 @@ Generate a rigorous {payload.time_value} {payload.time_unit} learning course tha
          "topics": [
            {{
               "title": "string",
-              "youtube_search_query": "A precise search query to find a university lecture or in-depth technical video on this specific topic (e.g., 'MIT linear algebra eigenvalues lecture')",
+              "youtube_search_query": "Clean 3-5 word technical topic query for YouTube (e.g., 'Population Stability Index PSI', 'Kolmogorov Smirnov test'). DO NOT include university names like MIT or Stanford.",
               "subtopics": [ {{ "title": "string" }} ]
             }}
          ]
@@ -1640,7 +1640,7 @@ Generate a rigorous {payload.time_value} {payload.time_unit} learning course tha
                 # YouTube Enrichment
                 if settings.YOUTUBE_API_KEY:
                     try:
-                        search_query = topic.get("youtube_search_query") or f"{roadmap_plan['title']} {topic['title']} lecture"
+                        search_query = topic.get("youtube_search_query") or f"{topic['title']}"
                         results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(payload, 'strict_official_sources', False))
                         if results:
                             topic["youtube_video_id"] = results[0]["video_id"]
@@ -1768,7 +1768,7 @@ Do not change the core subjects taught, but enrich them with practical "proof_of
          "topics": [
            {{
               "title": "string",
-              "youtube_search_query": "A precise search query to find a university lecture or in-depth technical video on this specific topic (e.g., 'MIT linear algebra eigenvalues lecture')",
+              "youtube_search_query": "Clean 3-5 word technical topic query for YouTube (e.g., 'Population Stability Index PSI', 'Kolmogorov Smirnov test'). DO NOT include university names like MIT or Stanford.",
               "subtopics": [ {{ "title": "string" }} ]
             }}
          ]
@@ -1799,7 +1799,7 @@ Do not change the core subjects taught, but enrich them with practical "proof_of
                 # YouTube Enrichment
                 if settings.YOUTUBE_API_KEY:
                     try:
-                        search_query = topic.get("youtube_search_query") or f"{roadmap_plan['title']} {topic['title']} lecture"
+                        search_query = topic.get("youtube_search_query") or f"{topic['title']}"
                         results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(payload, 'strict_official_sources', False))
                         if results:
                             topic["youtube_video_id"] = results[0]["video_id"]

@@ -4,6 +4,7 @@ import asyncio
 import logging
 import os
 import re
+import time
 
 from fastapi import Depends, HTTPException, status, Cookie, Request
 from fastapi.security import OAuth2PasswordBearer
@@ -43,6 +44,10 @@ async def verify_token_with_timeout(token: str, timeout: float = 10.0):
         logger.error(f"Auth verification attempt failed: {e}")
         raise # Raise for tenacity to retry
 
+# In-memory token cache (token -> (expiry_timestamp, User)) to avoid redundant network calls
+_TOKEN_CACHE = {}
+_TOKEN_CACHE_TTL = 60.0  # 60 seconds TTL
+
 async def get_current_user(request: Request) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -59,20 +64,27 @@ async def get_current_user(request: Request) -> User:
     
     # Quick check for malformed tokens to avoid log spam and useless retries
     if not token or token in ("null", "undefined") or token.count(".") != 2:
-        # We don't log the full token for security, but we log the issue
         logger.warning(f"Auth: Malformed token received (length={len(token) if token else 0}, segments={token.count('.') + 1 if token else 0})")
         raise credentials_exception
+
+    # Check 60-second in-memory cache to eliminate redundant Supabase network requests
+    now = time.time()
+    if token in _TOKEN_CACHE:
+        cached_expires, cached_user = _TOKEN_CACHE[token]
+        if now < cached_expires:
+            return cached_user
+        else:
+            del _TOKEN_CACHE[token]
 
     # Fast pre-flight check to avoid network calls for expired or anon tokens
     try:
         import base64
         import json
-        import time
         payload_b64 = token.split(".")[1]
         payload_b64 += "=" * ((4 - len(payload_b64) % 4) % 4)
         payload = json.loads(base64.b64decode(payload_b64).decode('utf-8'))
         
-        if 'exp' in payload and payload['exp'] < time.time():
+        if 'exp' in payload and payload['exp'] < now:
             logger.warning("Auth: Token is expired locally. Skipping network verification.")
             raise credentials_exception
             
@@ -128,7 +140,7 @@ async def get_current_user(request: Request) -> User:
 
     # We provide a placeholder username to satisfy the mandatory schema.
     # The actual profile data will be fetched in the /auth/me route.
-    return User(
+    user_obj = User(
         id=0,
         supabase_uid=uid,
         email=email,
@@ -140,6 +152,17 @@ async def get_current_user(request: Request) -> User:
         is_pro=is_pro,
         roadmap_credits=roadmap_credits
     )
+
+    # Store in memory cache for 60 seconds
+    _TOKEN_CACHE[token] = (now + _TOKEN_CACHE_TTL, user_obj)
+    
+    # Clean up stale cache entries periodically if cache exceeds 500 tokens
+    if len(_TOKEN_CACHE) > 500:
+        stale_keys = [k for k, (exp, _) in _TOKEN_CACHE.items() if now >= exp]
+        for k in stale_keys:
+            _TOKEN_CACHE.pop(k, None)
+
+    return user_obj
 
 async def get_optional_user(request: Request) -> Optional[User]:
     """Optional authentication for endpoints that can work without a user."""

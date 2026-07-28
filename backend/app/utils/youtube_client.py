@@ -155,24 +155,47 @@ def _extract_keywords(text: str) -> set:
     return {w for w in words if w not in _STOPWORDS and len(w) > 1}
 
 
-def _compute_title_relevance(topic_title: str, video_title: str, video_description: str = "") -> float:
-    """Compute keyword overlap ratio between the topic and video title + description."""
+def _compute_title_relevance(topic_title: str, video_title: str, video_description: str = "", subject_context: str = "") -> float:
+    """Compute keyword overlap ratio between the topic and video title + description with domain context check."""
+    topic_lower = topic_title.lower()
+    video_title_lower = video_title.lower()
+    video_text_lower = (video_title + " " + video_description).lower()
+
+    # Reject clear domain collisions (e.g. Terraform State Drift vs ML Data Drift, DSA Sliding Window vs ML Drift Sliding Window)
+    if any(k in topic_lower or k in subject_context.lower() for k in ["drift", "ml", "data", "streaming", "model", "pipeline"]):
+        if any(term in video_title_lower for term in ["terraform", "resistor", "color code", "leetcode", "data structure"]):
+            if not any(term in topic_lower for term in ["terraform", "resistor", "leetcode", "data structure"]):
+                return 0.0
+
     topic_words = _extract_keywords(topic_title)
     if not topic_words:
         return 0.0
+
     video_words = _extract_keywords(video_title)
     description_words = _extract_keywords(video_description)
-    
+
     title_overlap = len(topic_words & video_words)
     desc_overlap = len(topic_words & description_words)
-    
+
     title_ratio = title_overlap / len(topic_words)
     desc_ratio = desc_overlap / len(topic_words)
-    
-    return max(title_ratio, desc_ratio * 0.7)
+
+    base_relevance = max(title_ratio, desc_ratio * 0.7)
+
+    # Domain anchor check: if subject_context has specific domain terms, check for context alignment
+    if subject_context:
+        subject_words = _extract_keywords(subject_context)
+        subject_anchor_words = subject_words & {"drift", "streaming", "kafka", "flink", "mlops", "evidently", "arize", "whylabs", "monitoring", "pipeline", "model", "data"}
+        if subject_anchor_words:
+            video_all_words = video_words | description_words
+            # If zero subject anchor words matched and title overlap is partial (e.g., matching only 'scalable' or 'state management'), penalize
+            if not (subject_anchor_words & video_all_words) and title_ratio < 0.6:
+                base_relevance *= 0.3
+
+    return base_relevance
 
 
-def _score_video(video: dict, topic_title: str) -> float:
+def _score_video(video: dict, topic_title: str, subject_context: str = "") -> float:
     """
     Score a YouTube video for educational relevance.
     Returns -1.0 if the video should be excluded (duration or relevance gate).
@@ -184,10 +207,15 @@ def _score_video(video: dict, topic_title: str) -> float:
         return -1.0
 
     snippet = video.get("snippet", {})
-    title_relevance = _compute_title_relevance(topic_title, snippet.get("title", ""), snippet.get("description", ""))
+    title_relevance = _compute_title_relevance(
+        topic_title, 
+        snippet.get("title", ""), 
+        snippet.get("description", ""), 
+        subject_context
+    )
 
-    # Relevance gate: at least 10% keyword overlap
-    if title_relevance < 0.10:
+    # Relevance gate: require at least 35% keyword overlap with topic title
+    if title_relevance < 0.35:
         return -1.0
 
     view_count = int(video.get("statistics", {}).get("viewCount", "0"))
@@ -206,7 +234,8 @@ async def search_youtube_videos(
     query: str,
     max_results: int = 1,
     topic_title: str = "",
-    strict_official_sources: bool = False
+    strict_official_sources: bool = False,
+    subject_context: str = ""
 ) -> List[Dict[str, str]]:
     """
     Search YouTube and return the best matching educational videos.
@@ -265,7 +294,7 @@ async def search_youtube_videos(
                 continue
 
             if use_scoring:
-                score = _score_video(item, topic_title)
+                score = _score_video(item, topic_title, subject_context)
                 if score >= 0:
                     valid.append((score, item))
             else:
@@ -282,19 +311,15 @@ async def search_youtube_videos(
         if not candidates and strict_official_sources:
             candidates = filter_and_score(items, False, use_scoring)
 
-        # Fallback query if initial specific query produced 0 valid candidates
+        # Fallback query using topic_title directly if initial specific query produced 0 valid candidates
         if not candidates and topic_title:
-            fallback_query = f"{topic_title} tutorial"
-            logger.info(f"Primary YouTube query '{query}' produced no matches. Retrying with fallback: '{fallback_query}'")
+            fallback_query = topic_title
+            logger.info(f"Primary YouTube query '{query}' produced no matches (threshold >= 0.35). Retrying with topic title: '{fallback_query}'")
             items = await execute_search(fallback_query)
             candidates = filter_and_score(items, False, use_scoring)
 
-        # If still 0 candidates, fallback to top duration-valid result (8-60 mins)
-        if not candidates and items:
-            candidates = filter_and_score(items, False, False)
-
         if not candidates:
-            logger.info(f"No relevant matches found for '{query}' against topic '{topic_title}'.")
+            logger.info(f"No relevant matches (>= 0.35 keyword overlap) found for '{query}' against topic '{topic_title}'. Defaulting to Reference Cards.")
             return []
 
         # Sort candidates by score descending
