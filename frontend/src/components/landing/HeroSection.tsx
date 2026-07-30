@@ -179,10 +179,13 @@ export default function HeroSection() {
               <TrustedSourcesTicker />
             </motion.div>
 
-            {/* Featured on tools.cafe */}
-            <motion.div variants={fadeUp} className="mt-6 flex justify-center items-center">
+            {/* Featured badges (tools.cafe & Product Hunt) */}
+            <motion.div variants={fadeUp} className="mt-6 flex flex-wrap justify-center items-center gap-4 sm:gap-6">
               <a href="https://tools.cafe" target="_blank" rel="noopener" className="inline-block opacity-90 hover:opacity-100 transition-opacity">
                 <img src="https://tools.cafe/b/light.svg" alt="Featured on tools.cafe" width="256" height="80" className="h-11 sm:h-14 w-auto" />
+              </a>
+              <a href="https://www.producthunt.com/products/eulerfold-ai?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-eulerfold-ai" target="_blank" rel="noopener noreferrer" className="inline-block opacity-90 hover:opacity-100 transition-opacity">
+                <img src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1180466&theme=neutral&t=1782367593367" alt="EulerFold AI - Build and Track your learning paths | Product Hunt" width="250" height="54" className="h-11 sm:h-14 w-auto object-contain" />
               </a>
             </motion.div>
           </motion.div>
