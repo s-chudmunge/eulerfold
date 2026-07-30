@@ -181,8 +181,8 @@ export default function HeroSection() {
 
             {/* Featured on tools.cafe */}
             <motion.div variants={fadeUp} className="mt-6 flex justify-center items-center">
-              <a href="https://tools.cafe" target="_blank" rel="noopener" className="inline-block opacity-85 hover:opacity-100 transition-opacity">
-                <img src="https://tools.cafe/b/light.svg" alt="Featured on tools.cafe" width="256" height="80" className="h-7 sm:h-8 w-auto" />
+              <a href="https://tools.cafe" target="_blank" rel="noopener" className="inline-block opacity-90 hover:opacity-100 transition-opacity">
+                <img src="https://tools.cafe/b/light.svg" alt="Featured on tools.cafe" width="256" height="80" className="h-11 sm:h-14 w-auto" />
               </a>
             </motion.div>
           </motion.div>
