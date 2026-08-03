@@ -44,6 +44,17 @@ However, embedding compute into memory comes with severe constraints. The progra
 
 Instead of serving as a clean, general-purpose replacement for the GPU, PIM forces a highly specialized architectural tradeoff, sacrificing programmability and flexibility to achieve raw efficiency in vector mathematics.
 
+## Why LLMs Forced the Paradigm Shift
+
+For years, PIM was a fascinating theoretical concept searching for a killer application. That application arrived with Large Language Models (LLMs). Older AI architectures, like Convolutional Neural Networks (CNNs) used in image processing, are heavily *compute-bound*. They fetch a small matrix of data and perform thousands of complex operations on it, perfectly suiting standard GPUs. 
+
+Conversely, LLMs generating text token-by-token are notoriously *memory-bandwidth bound*. During inference, the GPU must fetch massive weight matrices from memory for every single word generated, performing relatively simple math before immediately discarding them and fetching the next massive matrix. It is this specific architectural quirk of the Transformer model that made the Memory Wall an existential threat to the AI industry overnight.
+
+## The Software Compiler Nightmare
+
+While the hardware is finally catching up, the software stack remains the critical bottleneck. A developer cannot simply write a standard PyTorch script and expect it to automatically utilize PIM. 
+
+Current AI compilers are designed for a monolithic paradigm: send all data to the GPU, execute the computational graph, and retrieve the result. PIM requires a completely fractured compiler logic. The software must dynamically analyze the execution graph, identify which sub-graphs are simple memory-bound matrix multiplications (and route them directly to the HBM dies), and which sub-graphs require complex non-linear activation functions (and route those to the central GPU cores). Until the software API layer can seamlessly abstract this complex routing away from the end-user, near-memory hardware will remain trapped in specialized, highly customized deployments.
 The move toward Near-Memory and In-Memory computing represents the first major departure from the Von Neumann model in 80 years. We are entering an era where hardware performance is measured in Joules per Operation rather than TFLOPS. As AI models scale toward trillions of parameters, the "Arithmetic Intensity" of our algorithms will be less important than the "Geometric Proximity" of our hardware. 
 
 > **Arithmetic Intensity:** This is a ratio measuring how much math a processor performs for every byte of data it fetches from memory. A high arithmetic intensity means the processor fetches a small amount of data and crunches it for a long time (ideal for standard GPUs). Modern AI models often have a *low* arithmetic intensity, meaning they are constantly stalled waiting for massive amounts of new data to arrive just to do simple math.
