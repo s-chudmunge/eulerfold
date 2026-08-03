@@ -109,82 +109,14 @@ const D2Diagram = ({ code, cache }: { code: string, cache?: Record<string, strin
   );
 };
 
-const ArticlePreview = ({ slug }: { slug: string }) => {
-  const article = articles[slug];
-  if (!article) return null;
-
-  return (
-    <div className="w-80 p-0 bg-background/95 backdrop-blur-xl border border-border/80 rounded-lg shadow-2xl overflow-hidden pointer-events-auto group">
-      {article.heroImage && (
-        <div className="aspect-[2/1] w-full overflow-hidden border-b border-border/50 relative">
-          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent z-10" />
-          <img src={article.heroImage} alt={article.title} className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-700" />
-        </div>
-      )}
-      <div className="p-5 relative z-20 -mt-6 text-left">
-        <div className="flex items-center gap-2 mb-3">
-           <span className="inconsolata-ui text-[10px] font-black uppercase tracking-[0.2em] text-accent bg-background/50 px-2 py-0.5 rounded backdrop-blur-md border border-border">
-            {article.subject}
-          </span>
-        </div>
-        <h4 className="text-[17px] font-bold text-text-heading mb-2 leading-tight font-inter tracking-tight group-hover:text-accent transition-colors">
-          {article.title}
-        </h4>
-        <p className="text-[13px] text-text-muted line-clamp-3 leading-relaxed manrope-body font-medium mb-4">
-          {article.excerpt}
-        </p>
-        <div className="flex items-center gap-1 text-[11px] font-bold text-accent inconsolata-ui uppercase tracking-wider group-hover:opacity-80 transition-opacity">
-          Read Article <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-1" />
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const TermLink = ({ children, slug }: { children: React.ReactNode, slug: string }) => {
-  const [isHovered, setIsHovered] = React.useState(false);
-  const timeoutRef = React.useRef<NodeJS.Timeout | null>(null);
-
-  const handleMouseEnter = () => {
-    if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    setIsHovered(true);
-  };
-
-  const handleMouseLeave = () => {
-    timeoutRef.current = setTimeout(() => {
-      setIsHovered(false);
-    }, 150);
-  };
-
   return (
-    <span 
-      className="relative inline"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+    <Link 
+      href={`/articles/${slug}`}
+      className="text-link hover:opacity-80 transition-opacity underline decoration-link/30 decoration-2 underline-offset-4 font-semibold inline"
     >
-      <Link 
-        href={`/articles/${slug}`}
-        className="text-link hover:opacity-80 transition-opacity underline decoration-link/30 decoration-2 underline-offset-4 font-semibold"
-      >
-        {children}
-      </Link>
-      
-      <AnimatePresence>
-        {isHovered && (
-          <motion.div
-            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-            transition={{ duration: 0.15, ease: "easeOut" }}
-            className="absolute z-[100] bottom-full left-1/2 -translate-x-1/2 mb-4 hidden md:block"
-          >
-            <ArticlePreview slug={slug} />
-            {/* Arrow */}
-            <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 w-4 h-4 bg-sidebar border-r border-b border-border rotate-45" />
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </span>
+      {children}
+    </Link>
   );
 };
 
