@@ -1,5 +1,5 @@
 ---
-title: "Why AI Dreams of Molecules We Cannot Build"
+title: "The Synthesizability Constraint in Generative Chemistry"
 slug: "generative-chemistry"
 shortSlug: "generative-chem"
 author: "Sankalp — Engineering Lead"

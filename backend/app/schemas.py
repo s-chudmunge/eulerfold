@@ -130,6 +130,7 @@ class RoadmapCreate(BaseModel):
     experience_level: Optional[str] = None
     current_role: Optional[str] = None
     target_role: Optional[str] = None
+    diagnostic_prompt_context: Optional[str] = None
 
 class JobRoadmapCreate(BaseModel):
     job_description: str
@@ -138,6 +139,7 @@ class JobRoadmapCreate(BaseModel):
     time_value: int
     time_unit: str = "weeks"
     model: Optional[str] = None
+    diagnostic_prompt_context: Optional[str] = None
 
 class UrlRoadmapCreate(BaseModel):
     url: str
@@ -145,6 +147,7 @@ class UrlRoadmapCreate(BaseModel):
     time_unit: str = "weeks"
     model: Optional[str] = None
     strict_official_sources: bool = False
+    diagnostic_prompt_context: Optional[str] = None
 
 class SyllabusRoadmapCreate(BaseModel):
     syllabus_text: str
@@ -152,6 +155,7 @@ class SyllabusRoadmapCreate(BaseModel):
     time_unit: str = "weeks"
     model: Optional[str] = None
     strict_official_sources: bool = False
+    diagnostic_prompt_context: Optional[str] = None
 
 class SkillGapRoadmapCreate(BaseModel):
     target_role: str
@@ -561,3 +565,16 @@ class CertificateRead(BaseModel):
     roadmap_title: Optional[str] = None
     roadmap_subject: Optional[str] = None
     user_name: Optional[str] = None
+
+class DiagnosticStartRequest(BaseModel):
+    topic: str
+
+class DiagnosticAnswerRequest(BaseModel):
+    session_id: str
+    question_id: int
+    selected_index: int
+    time_taken_ms: Optional[int] = None
+
+class DiagnosticSkipRequest(BaseModel):
+    session_id: str
+

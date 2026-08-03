@@ -1,5 +1,5 @@
 ---
-title: "Why We Have Billions of Whale Sounds and Still Cannot Understand Them"
+title: "Decoding Non-Human Communication without a Rosetta Stone"
 slug: "how-is-ai-helping-us-decode-animal-communication"
 shortSlug: "animal-communication"
 author: "Sankalp — Engineering Lead"

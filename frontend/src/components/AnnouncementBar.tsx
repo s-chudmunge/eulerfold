@@ -112,8 +112,8 @@ export default function AnnouncementBar() {
                 {isPro 
                   ? "DID YOU KNOW: You can decode any research paper with this tool"
                   : isLoggedIn 
-                    ? "UPGRADE TO PRO: Get 50 roadmap credits, homework evaluation, and research lab access" 
-                    : "LAUNCH OFFER: Get 5 free roadmaps on signup"}
+                    ? "UPGRADE TO PRO: Get 50 course credits, homework evaluation, and research lab access" 
+                    : "LAUNCH OFFER: Get 5 free courses on signup"}
               </span>
             </div>
             <Link 

@@ -1,5 +1,5 @@
 ---
-title: "Why Flat AI Cannot Understand a Round World"
+title: "The Mathematical Framework of Geometric Deep Learning"
 slug: "geometric-deep-learning"
 shortSlug: "gdl"
 author: "Sankalp — Engineering Lead"

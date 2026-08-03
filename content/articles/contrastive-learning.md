@@ -1,5 +1,5 @@
 ---
-title: "Why is AI Penalized for Finding True Similarities?"
+title: "The False Negative Problem in Contrastive Learning"
 slug: "contrastive-learning"
 shortSlug: "contrastive"
 author: "Sankalp — Engineering Lead"

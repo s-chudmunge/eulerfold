@@ -27,6 +27,7 @@ import { logAIUsage } from '@/lib/usageTracker';
 import { CreateMLCEngine } from '@mlc-ai/web-llm';
 import { jsonrepair } from 'jsonrepair';
 import EulerLogoCanvas from '../EulerLogoCanvas';
+import DiagnosticFlow, { DiagnosticResult } from '../diagnostic/DiagnosticFlow';
 
 interface JobDecodedGeneratorProps {
   onRoadmapGenerated: (data: RoadmapData, formData: any) => void;
@@ -59,6 +60,8 @@ const JobDecodedGenerator: React.FC<JobDecodedGeneratorProps> = ({
   const [localAIModelId, setLocalAIModelId] = useState<string | null>(null);
   const [localAIModelName, setLocalAIModelName] = useState<string | null>(null);
   const [useLocalAI, setUseLocalAI] = useState<boolean>(false);
+  const [showDiagnostic, setShowDiagnostic] = useState(false);
+  const [diagnosticResult, setDiagnosticResult] = useState<DiagnosticResult | null>(null);
 
   const fetchProfileAndCredits = async () => {
     const { data: { session } } = await supabase.auth.getSession();
@@ -136,28 +139,61 @@ const JobDecodedGenerator: React.FC<JobDecodedGeneratorProps> = ({
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Called when user clicks Generate — shows diagnostic first if not already done
+  const handleGenerateClick = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!formData.job_description || !formData.current_experience) return;
 
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
+    const { data: { session: currentSession } } = await supabase.auth.getSession();
+    if (!currentSession) {
       router.push(`/login?message=auth_required_to_generate&next=${window.location.pathname}`);
       return;
     }
-
-    if (!formData.job_description || !formData.current_experience) return;
 
     if (!((openRouterKey && useOpenRouter) || (localAIModelId && useLocalAI)) && credits !== null && credits < 1) {
       setIsPaymentModalOpen(true);
       return;
     }
 
+    if (!diagnosticResult) {
+      setShowDiagnostic(true);
+      return;
+    }
+
+    await generateRoadmap();
+  };
+
+  const handleDiagnosticComplete = async (result: DiagnosticResult) => {
+    setDiagnosticResult(result);
+    setShowDiagnostic(false);
+    await generateRoadmapWithDiagnostic(result);
+  };
+
+  const handleDiagnosticSkip = async () => {
+    const skippedResult: DiagnosticResult = { session_id: '', knowledge_profile: {}, prompt_context: '', skipped: true };
+    setDiagnosticResult(skippedResult);
+    setShowDiagnostic(false);
+    await generateRoadmapWithDiagnostic(skippedResult);
+  };
+
+  const generateRoadmapWithDiagnostic = async (diagResult: DiagnosticResult) => {
+    await generateRoadmap(diagResult);
+  };
+
+  const generateRoadmap = async (diagResult?: DiagnosticResult, e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!formData.job_description || !formData.current_experience) return;
+    
+    const resolvedDiag = diagResult || diagnosticResult;
+
     setIsGenerating(true);
     setError(null);
 
+    const diagContext = resolvedDiag?.prompt_context || '';
+
     const generation_strategy = `**Rules:**
 1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "The Complete Guide to Data Engineering"). Do NOT use dry, robotic formats like "Intensive 4-Week X Roadmap". Do NOT include the time duration in the title.
-2. **Actionable Roadmap:** Translate the JD into a step-by-step technical course for this role over ${formData.time_value} weeks.\nAnalyze the user's current experience against the Job Description and identify precise technical gaps.\nThe roadmap must bridge these gaps with rigorous modules that lead to demonstrable mastery.`;
+2. **Actionable Roadmap:** Translate the JD into a step-by-step technical course for this role over ${formData.time_value} weeks.\nAnalyze the user's current experience against the Job Description and identify precise technical gaps.\nThe roadmap must bridge these gaps with rigorous modules that lead to demonstrable mastery.${diagContext ? `\n\n**DIAGNOSTIC ASSESSMENT RESULTS:**\n${diagContext}` : ''}`;
 
     const systemPrompt = `You are a technical lead. Generate a rigorous technical learning roadmap. Output JSON ONLY matching the required schema.`;
 
@@ -449,12 +485,13 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
       } else {
         const response = await roadmapsAPI.generateFromJD({
           ...formData,
-          time_unit: 'weeks',
-        });
+            model: profile?.is_pro ? 'models/gemini-2.5-pro' : 'models/gemini-2.5-flash',
+            diagnostic_prompt_context: resolvedDiag?.prompt_context || undefined,
+          });
 
         try {
           await logAIUsage({
-            id: response?.slug,
+            id: response?.data?.slug,
             subject: 'Job Decoded Roadmap',
             model: profile?.is_pro ? 'models/gemini-2.5-pro' : 'models/gemini-2.5-flash',
             prompt_tokens: 0,
@@ -473,7 +510,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
           console.error("Failed to log AI usage:", e);
         }
 
-        onRoadmapGenerated(response, { ...formData, time_unit: 'weeks' });
+        onRoadmapGenerated(response.data, { ...formData, time_unit: 'weeks' });
       }
     } catch (err: any) {
       if (err.response?.status === 402) {
@@ -490,305 +527,110 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
   const allowedWeeks = isPro ? [2, 3, 4, 6, 10, 12] : [2, 3, 4];
 
   return (
-    <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 max-w-3xl mx-auto w-full">
-      <div className="bg-header border border-border rounded-lg shadow-2xl overflow-hidden backdrop-blur-sm relative z-20">
-        <div className="p-5 md:p-8 space-y-8">
-          
+    <div className="w-full manrope-body">
+      {showDiagnostic && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 overflow-y-auto">
+          <DiagnosticFlow
+            topic="Target Job Requirements"
+            onComplete={handleDiagnosticComplete}
+            onSkip={handleDiagnosticSkip}
+          />
+        </div>
+      )}
+      <div className="animate-in fade-in slide-in-from-bottom-2 duration-500 max-w-3xl mx-auto w-full">
+          <div className="bg-header border border-border rounded-lg shadow-2xl overflow-hidden backdrop-blur-sm relative z-20">
+            <div className="p-5 md:p-8 space-y-8">
+              <div className="space-y-6">
+                <div className="space-y-2.5">
+                  <label className="inconsolata-ui flex items-center text-[11px] font-black uppercase tracking-[0.2em] text-text-muted ml-1">
+                    <SearchCode className="w-3.5 h-3.5 mr-1.5 text-accent" /> Job Description
+                  </label>
+                  <div className="relative">
+                    <textarea
+                      name="job_description"
+                      value={formData.job_description}
+                      onChange={handleInputChange}
+                      rows={6}
+                      placeholder="Paste the requirements, role description, or the full JD here..."
+                      className="w-full bg-background border border-border px-4 py-4 text-[14px] font-medium text-text-primary focus:outline-none focus:border-accent transition-all rounded-lg shadow-inner resize-none placeholder:text-text-muted/40"
+                      required
+                    />
+                  </div>
+                </div>
 
+                <div className="space-y-2.5">
+                  <label className="inconsolata-ui flex items-center text-[11px] font-black uppercase tracking-[0.2em] text-text-muted ml-1">
+                    <Cpu className="w-3.5 h-3.5 mr-1.5 text-teal-600" /> Your Current Level & Context
+                  </label>
+                  <div className="relative">
+                    <textarea
+                      name="current_experience"
+                      value={formData.current_experience}
+                      onChange={handleInputChange}
+                      rows={4}
+                      placeholder="What do you already know? (e.g. 'I'm a junior frontend dev with 1 year of React...')"
+                      className="w-full bg-background border border-border px-4 py-4 text-[14px] font-medium text-text-primary focus:outline-none focus:border-accent transition-all rounded-lg shadow-inner resize-none placeholder:text-text-muted/40 h-28"
+                      required
+                    />
+                  </div>
+                </div>
 
-          <div className="space-y-6">
-            {/* JD Input */}
-            <div className="space-y-2.5">
-              <label className="inconsolata-ui flex items-center text-[11px] font-black uppercase tracking-[0.2em] text-text-muted ml-1">
-                <SearchCode className="w-3.5 h-3.5 mr-1.5 text-accent" /> Job Description
-              </label>
-              <div className="relative">
-                <textarea
-                  name="job_description"
-                  value={formData.job_description}
-                  onChange={handleInputChange}
-                  rows={6}
-                  placeholder="Paste the requirements, role description, or the full JD here..."
-                  className="w-full bg-background border border-border px-4 py-4 text-[14px] font-medium text-text-primary focus:outline-none focus:border-accent transition-all rounded-lg shadow-inner resize-none placeholder:text-text-muted/40"
-                  required
-                />
+                <div className="space-y-3">
+                  <label className="inconsolata-ui text-[10px] font-bold uppercase tracking-widest text-text-muted ml-0.5">
+                    Target Duration
+                  </label>
+                  <div className="flex flex-wrap gap-2">
+                    {allowedWeeks.map(w => (
+                      <button
+                        type="button"
+                        key={w}
+                        onClick={() => setFormData(prev => ({ ...prev, time_value: w }))}
+                        className={`inconsolata-ui px-4 py-1.5 border text-[10px] font-bold uppercase tracking-widest transition-all
+                          ${formData.time_value === w 
+                            ? 'bg-accent text-white border-accent  shadow-accent/20' 
+                            : 'bg-background text-text-muted border-border hover:border-accent hover:text-accent'
+                          }`}
+                      >
+                        {w} Weeks
+                      </button>
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
 
-            {/* Experience Input */}
-            <div className="space-y-2.5">
-              <label className="inconsolata-ui flex items-center text-[11px] font-black uppercase tracking-[0.2em] text-text-muted ml-1">
-                <Cpu className="w-3.5 h-3.5 mr-1.5 text-teal-600" /> Your Current Level & Context
-              </label>
-              <div className="relative">
-                <textarea
-                  name="current_experience"
-                  value={formData.current_experience}
-                  onChange={handleInputChange}
-                  rows={4}
-                  placeholder="What do you already know? (e.g. 'I'm a junior frontend dev with 1 year of React...')"
-                  className="w-full bg-background border border-border px-4 py-4 text-[14px] font-medium text-text-primary focus:outline-none focus:border-accent transition-all rounded-lg shadow-inner resize-none placeholder:text-text-muted/40 h-28"
-                  required
-                />
-              </div>
-            </div>
-
-          {/* Duration */}
-          <div className="space-y-3">
-            <label className="inconsolata-ui text-[10px] font-bold uppercase tracking-widest text-text-muted ml-0.5">
-              Target Duration
-            </label>
-            <div className="flex flex-wrap gap-2">
-              {allowedWeeks.map(w => (
-                <button
-                  type="button"
-                  key={w}
-                  onClick={() => setFormData(prev => ({ ...prev, time_value: w }))}
-                  className={`inconsolata-ui px-4 py-1.5 border text-[10px] font-bold uppercase tracking-widest transition-all
-                    ${formData.time_value === w 
-                      ? 'bg-accent text-white border-accent  shadow-accent/20' 
-                      : 'bg-background text-text-muted border-border hover:border-accent hover:text-accent'
-                    }`}
-                >
-                  {w} Weeks
-                </button>
-              ))}
-              {!isPro && (
-                <button 
-                  type="button"
-                  onClick={async () => {
-                    const { data: { session } } = await supabase.auth.getSession();
-                    if (!session) {
-                      router.push(`/login?message=auth_required_to_generate&next=${window.location.pathname}`);
-                      return;
-                    }
-                    setIsPaymentModalOpen(true);
-                  }}
-                  className="inconsolata-ui px-3 py-1.5 text-[9px] font-bold text-accent border border-accent/20 border-dashed hover:bg-accent/5"
-                >
-                  Unlock 6-12 Weeks (Pro)
-                </button>
+              {!isGenerating && (
+                <div className="pt-4 flex flex-col items-center gap-4 w-full">
+                  {!(profile || credits !== null) ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        router.push(`/login?message=auth_required_to_generate&next=${window.location.pathname}`);
+                      }}
+                      className="mt-4 group relative w-full sm:w-fit inline-flex items-center justify-center overflow-hidden px-7 py-3 rounded-lg text-[14px] font-bold transition-all bg-accent text-white hover:bg-teal-700 shadow-sm gap-2"
+                    >
+                      <LogIn className="w-4 h-4" /> Authenticate
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={handleGenerateClick}
+                      disabled={isGenerating || !formData.job_description.trim() || !formData.current_experience.trim()}
+                      className={`mt-4 group relative w-full sm:w-fit inline-flex items-center justify-center overflow-hidden px-7 py-3 rounded-lg text-[14px] font-bold transition-all ${
+                        (!((openRouterKey && useOpenRouter) || (localAIModelId && useLocalAI)) && credits !== null && credits < 1)
+                        ? 'bg-sidebar border-2 border-border text-text-muted hover:border-accent/40' 
+                        : (useLocalAI && !localAIModelId)
+                          ? 'bg-sidebar border-2 border-border text-text-muted cursor-not-allowed opacity-50'
+                          : 'bg-accent text-white hover:bg-teal-700 shadow-sm'
+                      }`}
+                    >
+                      <span>Decode Path</span>
+                    </button>
+                  )}
+                </div>
               )}
             </div>
           </div>
         </div>
-
-        {/* Action */}
-        {!isGenerating && (
-          <div className="pt-4 flex flex-col items-center gap-4 w-full">
-            {(profile || credits !== null) && (
-              <>
-                <div className="flex flex-col gap-2 max-w-sm w-full mb-4">
-                <div className="flex items-center gap-1.5 mb-1">
-                  <Cpu className="w-4 h-4 text-accent" />
-                  <span className="text-[12px] font-bold text-text-heading uppercase tracking-widest">Select AI Engine</span>
-                </div>
-                <div className="flex items-center justify-between p-1 bg-sidebar border border-border rounded-lg w-full">
-                  <button
-                    type="button"
-                    onClick={() => { setUseOpenRouter(false); setUseLocalAI(false); }}
-                    className={`flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all ${!useOpenRouter && !useLocalAI ? 'bg-background text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
-                  >
-                    EulerFold AI
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => { setUseOpenRouter(true); setUseLocalAI(false); }}
-                    className={`flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all ${useOpenRouter ? 'bg-background text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
-                  >
-                    OpenRouter
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => { setUseOpenRouter(false); setUseLocalAI(true); }}
-                    className={`flex-1 py-1.5 px-3 rounded-md text-[10px] font-bold uppercase tracking-widest transition-all ${useLocalAI ? 'bg-background text-text-heading shadow-sm' : 'text-text-muted hover:text-text-heading'}`}
-                  >
-                    Local AI
-                  </button>
-                </div>
-                {!useOpenRouter && !useLocalAI && (
-                  <div className="p-4 border border-border rounded-lg bg-sidebar/50 transition-all duration-300 w-full mt-6 animate-in fade-in">
-                    <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                      <div className="flex items-center gap-3 w-full sm:w-auto">
-                        <div className="w-10 h-10 bg-background border border-border rounded-lg flex items-center justify-center shrink-0 shadow-sm">
-                          <Sparkles className="w-5 h-5 text-accent" />
-                        </div>
-                        <div>
-                          <h3 className="text-[13px] font-bold text-text-heading leading-tight mb-0.5">
-                            EulerFold AI (Default)
-                          </h3>
-                          <p className="text-[11px] text-text-muted leading-tight">
-                            <span className="text-amber-500/90 font-bold">Costs 1 Credit per generation.</span>
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-                {useLocalAI && !localAIModelId && (
-                  <div className="text-[10px] text-red-500 font-bold uppercase tracking-widest text-center animate-in fade-in">
-                    Please configure a Local Model below
-                  </div>
-                )}
-                {useOpenRouter && !openRouterKey && (
-                  <div className="text-[10px] text-red-500 font-bold uppercase tracking-widest text-center animate-in fade-in">
-                    Please configure an API Key below
-                  </div>
-                )}
-              </div>
-
-            {useLocalAI ? (
-              <div className={`p-4 border border-border rounded-lg bg-sidebar/50 transition-all duration-300 w-full`}>
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <div className="flex items-center gap-3 w-full sm:w-auto">
-                    <div className="w-10 h-10 bg-background border border-border rounded-lg flex items-center justify-center shrink-0 shadow-sm">
-                      <Cpu className="w-5 h-5 text-text-heading" />
-                    </div>
-                    <div>
-                      <h3 className="text-[13px] font-bold text-text-heading leading-tight mb-0.5">
-                        {localAIModelId ? 'Local Hardware Connected' : 'Free Compute: Bring Your Own GPU'}
-                      </h3>
-                      <p className="text-[11px] text-text-muted leading-tight">
-                        {localAIModelId 
-                          ? <span>Ready to decode using <span className="font-bold text-accent">{localAIModelName}</span>.</span> 
-                          : 'Run models natively in your browser using WebGPU. Unlimited generations, 100% private.'}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
-                    {localAIModelId && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          localStorage.removeItem('localAIModelId');
-                          localStorage.removeItem('localAIModelName');
-                          setLocalAIModelId(null);
-                          setLocalAIModelName(null);
-                        }}
-                        className="flex-1 sm:flex-none px-4 py-2.5 bg-background border border-border hover:border-red-500/50 hover:text-red-500 hover:bg-red-500/10 text-[11px] font-bold uppercase tracking-widest transition-all rounded-lg text-text-muted shadow-sm flex items-center justify-center gap-1.5"
-                      >
-                        <Unlink className="w-3.5 h-3.5" /> Remove
-                      </button>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => setIsLocalAIModalOpen(true)}
-                      className="flex-1 sm:flex-none px-5 py-2.5 bg-background border border-border hover:border-accent hover:text-accent text-[11px] font-bold uppercase tracking-widest transition-all rounded-lg text-text-heading shadow-sm"
-                    >
-                      {localAIModelId ? 'Change Model' : 'Configure'}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <div className={`p-4 border border-border rounded-lg bg-sidebar/50 transition-all duration-300 w-full ${(!useOpenRouter && openRouterKey) ? 'opacity-50 grayscale' : ''}`}>
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <div className="flex items-center gap-3 w-full sm:w-auto">
-                    <div className="w-10 h-10 bg-background border border-border rounded-lg flex items-center justify-center shrink-0 shadow-sm">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" className="text-text-heading">
-                        <path d="M16.778 1.844v1.919q-.569-.026-1.138-.032-.708-.008-1.415.037c-1.93.126-4.023.728-6.149 2.237-2.911 2.066-2.731 1.95-4.14 2.75-.396.223-1.342.574-2.185.798-.841.225-1.753.333-1.751.333v4.229s.768.108 1.61.333c.842.224 1.789.575 2.185.799 1.41.798 1.228.683 4.14 2.75 2.126 1.509 4.22 2.11 6.148 2.236.88.058 1.716.041 2.555.005v1.918l7.222-4.168-7.222-4.17v2.176c-.86.038-1.611.065-2.278.021-1.364-.09-2.417-.357-3.979-1.465-2.244-1.593-2.866-2.027-3.68-2.508.889-.518 1.449-.906 3.822-2.59 1.56-1.109 2.614-1.377 3.978-1.466.667-.044 1.418-.017 2.278.02v2.176L24 6.014Z"/>
-                      </svg>
-                    </div>
-                    <div>
-                      <h3 className="text-[13px] font-bold text-text-heading leading-tight mb-0.5">
-                        {openRouterKey ? 'OpenRouter Connected' : 'Power-User: Bring Your Own Key'}
-                      </h3>
-                      <p className="text-[11px] text-text-muted leading-tight">
-                        {openRouterKey 
-                          ? <span>Ready to decode using <span className="font-bold text-accent">{openRouterModel || 'openai/gpt-4o'}</span>.</span> 
-                          : 'Use any AI model via OpenRouter. Unlimited generations, zero credits required.'}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
-                    {openRouterKey && (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          localStorage.removeItem('openRouterKey');
-                          setOpenRouterKey(null);
-                          setOpenRouterModel(null);
-                        }}
-                        className="flex-1 sm:flex-none px-4 py-2.5 bg-background border border-border hover:border-red-500/50 hover:text-red-500 hover:bg-red-500/10 text-[11px] font-bold uppercase tracking-widest transition-all rounded-lg text-text-muted shadow-sm flex items-center justify-center gap-1.5"
-                      >
-                        <Unlink className="w-3.5 h-3.5" /> Disconnect
-                      </button>
-                    )}
-                    {!(profile || credits !== null) ? (
-                      <button
-                        type="button"
-                        onClick={() => {
-                          router.push(`/login?next=${window.location.pathname}`);
-                        }}
-                        className="flex-1 sm:flex-none px-5 py-2.5 bg-background border border-border hover:border-accent hover:text-accent text-[11px] font-bold uppercase tracking-widest transition-all rounded-lg text-text-heading shadow-sm flex items-center justify-center gap-1.5"
-                      >
-                        <LogIn className="w-3.5 h-3.5" /> Sign in to Configure
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={() => setIsOpenRouterModalOpen(true)}
-                        className="flex-1 sm:flex-none px-5 py-2.5 bg-background border border-border hover:border-accent hover:text-accent text-[11px] font-bold uppercase tracking-widest transition-all rounded-lg text-text-heading shadow-sm"
-                      >
-                        Configure
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-            </>
-            )}
-
-
-            {!(profile || credits !== null) ? (
-              <button
-                type="button"
-                onClick={() => {
-                  router.push(`/login?message=auth_required_to_generate&next=${window.location.pathname}`);
-                }}
-                className="mt-4 group relative w-full sm:w-fit inline-flex items-center justify-center overflow-hidden px-7 py-3 rounded-lg text-[14px] font-bold transition-all bg-accent text-white hover:bg-teal-700 shadow-sm gap-2"
-              >
-                <LogIn className="w-4 h-4" /> Authenticate
-              </button>
-            ) : (
-              <button
-                onClick={handleSubmit}
-                disabled={isGenerating || (useLocalAI && !localAIModelId)}
-                className={`mt-4 group relative w-full sm:w-fit inline-flex items-center justify-center overflow-hidden px-7 py-3 rounded-lg text-[14px] font-bold transition-all ${
-                  (!((openRouterKey && useOpenRouter) || (localAIModelId && useLocalAI)) && credits !== null && credits < 1)
-                  ? 'bg-sidebar border-2 border-border text-text-muted hover:border-accent/40' 
-                  : (useLocalAI && !localAIModelId)
-                    ? 'bg-sidebar border-2 border-border text-text-muted cursor-not-allowed opacity-50'
-                    : 'bg-accent text-white hover:bg-teal-700 shadow-sm'
-                }`}
-              >
-                <div className="flex items-center justify-center gap-2.5">
-                  <Sparkles className="w-4 h-4" />
-                  {useLocalAI ? (
-                    localAIModelId ? <span>Decode Path <span className="opacity-50">(Local)</span></span> : 'Select Local Model'
-                  ) : (openRouterKey && useOpenRouter) ? (
-                    <span>Decode Path <span className="opacity-50">(OpenRouter)</span></span>
-                  ) : (
-                    <span>
-                      {credits !== null && credits < 1 ? 'Get More Credits' : 'Decode Path (-1 Credit)'}
-                    </span>
-                  )}
-                </div>
-              </button>
-            )}
-            
-            {!((openRouterKey && useOpenRouter) || (localAIModelId && useLocalAI)) && credits !== null && credits < 1 && (
-              <div className="mt-2">
-                <Link href="/pricing" className="text-[10px] font-bold text-accent uppercase tracking-widest hover:underline">
-                  Buy more credits →
-                </Link>
-              </div>
-            )}
-          </div>
-        )}
-        </div>
-      </div>
 
       {isGenerating && (
         <div className="py-20 flex flex-col items-center justify-center text-center transition-opacity duration-500 opacity-100 relative z-30">
@@ -803,7 +645,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
           
           {!useLocalAI && (
             <div className="mt-8 max-w-sm text-center">
-              <div className="bg-callout-bg border border-border px-4 py-3 rounded-lg animate-in fade-in slide-in-from-bottom-4 shadow-sm">
+              <div className="bg-white/60 dark:bg-white/5 backdrop-blur-md border border-border/50 px-4 py-3 rounded-lg animate-in fade-in slide-in-from-bottom-4 shadow-sm">
                 <p className="text-[11px] font-bold text-text-heading mb-1 flex items-center justify-center gap-1.5 uppercase tracking-widest">
                   <AlertCircle className="w-3.5 h-3.5 text-accent" /> Generation Takes Time
                 </p>

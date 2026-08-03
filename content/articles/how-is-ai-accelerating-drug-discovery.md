@@ -1,5 +1,5 @@
 ---
-title: "Why Perfect AI Drugs Fail in Human Trials"
+title: "Why Geometric Fit Does Not Guarantee Biological Safety In Vivo"
 slug: "how-is-ai-accelerating-drug-discovery"
 shortSlug: "drug-discovery"
 author: "Sankalp — Engineering Lead"

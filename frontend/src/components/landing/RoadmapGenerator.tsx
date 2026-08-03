@@ -14,6 +14,7 @@ import { LocalAIModal } from './LocalAIModal';
 import { CreateMLCEngine, hasModelInCache } from '@mlc-ai/web-llm';
 import { jsonrepair } from 'jsonrepair';
 import EulerLogoCanvas from '../EulerLogoCanvas';
+import DiagnosticFlow, { DiagnosticResult } from '../diagnostic/DiagnosticFlow';
 
 interface RoadmapGeneratorProps {
   onRoadmapGenerated: (data: RoadmapData, formData: any) => void;
@@ -95,6 +96,8 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
   const [localAIModelId, setLocalAIModelId] = useState<string | null>(null);
   const [localAIModelName, setLocalAIModelName] = useState<string | null>(null);
   const [useLocalAI, setUseLocalAI] = useState<boolean>(false);
+  const [showDiagnostic, setShowDiagnostic] = useState(false);
+  const [diagnosticResult, setDiagnosticResult] = useState<DiagnosticResult | null>(null);
   
   const [roleSearchCurrent, setRoleSearchCurrent] = useState('');
   const [isRoleDropdownOpenCurrent, setIsRoleDropdownOpenCurrent] = useState(false);
@@ -227,7 +230,8 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
     setFormData(prev => ({ ...prev, [name]: checked }));
   };
 
-  const generateRoadmap = async (e?: React.FormEvent) => {
+  // Called when user clicks Generate — shows diagnostic first if not already done
+  const handleGenerateClick = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!formData.subject || !formData.goal) return;
 
@@ -243,10 +247,45 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
       return;
     }
 
+    // Show diagnostic assessment if not already completed/skipped
+    if (!diagnosticResult) {
+      setShowDiagnostic(true);
+      return;
+    }
+
+    // If diagnostic is done, proceed to actual generation
+    await generateRoadmap();
+  };
+
+  const handleDiagnosticComplete = async (result: DiagnosticResult) => {
+    setDiagnosticResult(result);
+    setShowDiagnostic(false);
+    // Proceed to generate immediately after diagnostic completes
+    await generateRoadmapWithDiagnostic(result);
+  };
+
+  const handleDiagnosticSkip = async () => {
+    const skippedResult: DiagnosticResult = { session_id: '', knowledge_profile: {}, prompt_context: '', skipped: true };
+    setDiagnosticResult(skippedResult);
+    setShowDiagnostic(false);
+    await generateRoadmapWithDiagnostic(skippedResult);
+  };
+
+  const generateRoadmapWithDiagnostic = async (diagResult: DiagnosticResult) => {
+    await generateRoadmap(diagResult);
+  };
+
+  const generateRoadmap = async (diagResult?: DiagnosticResult, e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    if (!formData.subject || !formData.goal) return;
+
+    const resolvedDiag = diagResult || diagnosticResult;
+
     setIsGenerating(true);
     setError(null);
 
-    const context_str = `The learner is currently a ${formData.current_role || 'student/professional'} but is aspiring to become a ${formData.target_role || 'expert in this field'}. They have ${formData.experience_level || 'some'} experience level in the subject area. ${formData.prior_experience ? `Additional context on their background: ${formData.prior_experience}` : ''}`;
+    const diagContext = resolvedDiag?.prompt_context || '';
+    const context_str = `The learner is currently a ${formData.current_role || 'student/professional'} but is aspiring to become a ${formData.target_role || 'expert in this field'}. They have ${formData.experience_level || 'some'} experience level in the subject area. ${formData.prior_experience ? `Additional context on their background: ${formData.prior_experience}` : ''}${diagContext ? `\n\n${diagContext}` : ''}`;
 
     const systemPrompt = `You are a technical lead. Generate a rigorous technical learning roadmap. Output JSON ONLY matching the required schema.`;
 
@@ -542,6 +581,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
           ...formData,
           time_unit: 'weeks',
           model: profile?.is_pro ? 'models/gemini-2.5-pro' : 'models/gemini-2.5-flash',
+          diagnostic_prompt_context: resolvedDiag?.prompt_context || undefined,
         });
         
         try {
@@ -1001,7 +1041,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
             <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
             {!session ? (
                 <button
-                  onClick={generateRoadmap}
+                  onClick={handleGenerateClick}
                   disabled={!formData.subject.trim() || !formData.goal.trim()}
                   className="w-full sm:w-fit group relative inline-flex items-center justify-center px-7 py-3 text-[14px] font-bold transition-all bg-accent text-white hover:bg-teal-700 shadow-sm gap-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
@@ -1009,7 +1049,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                 </button>
             ) : (
                 <button
-                  onClick={generateRoadmap}
+                  onClick={handleGenerateClick}
                   disabled={isGenerating || !formData.subject.trim() || !formData.goal.trim()}
                   className={`w-full sm:w-fit group relative inline-flex items-center justify-center px-7 py-3 text-[14px] font-bold transition-all rounded-lg disabled:opacity-50 disabled:cursor-not-allowed ${
                     (!useLocalAI && !(openRouterKey && useOpenRouter) && credits !== null && credits < 1)
@@ -1043,6 +1083,15 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
     <div className="w-full manrope-body">
 
 
+      {showDiagnostic && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 overflow-y-auto">
+          <DiagnosticFlow
+            topic={formData.subject}
+            onComplete={handleDiagnosticComplete}
+            onSkip={handleDiagnosticSkip}
+          />
+        </div>
+      )}
       {!isGenerating && renderStep()}
 
       {isGenerating && (
@@ -1062,7 +1111,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
           
           {!useLocalAI && (
             <div className="mt-8 max-w-sm text-center">
-              <div className="bg-callout-bg border border-border px-4 py-3 rounded-lg animate-in fade-in slide-in-from-bottom-4 shadow-sm">
+              <div className="bg-white/60 dark:bg-white/5 backdrop-blur-md border border-border/50 px-4 py-3 rounded-lg animate-in fade-in slide-in-from-bottom-4 shadow-sm">
                 <p className="text-[11px] font-bold text-text-heading mb-1 flex items-center justify-center gap-1.5 uppercase tracking-widest">
                   <AlertCircle className="w-3.5 h-3.5 text-accent" /> Generation Takes Time
                 </p>

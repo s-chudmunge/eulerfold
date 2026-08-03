@@ -1,5 +1,5 @@
 ---
-title: "Why Human Feedback Trains AI to Lie"
+title: "Reward Hacking and Alignment Challenges in RLHF"
 slug: "rlhf"
 shortSlug: "rlhf"
 author: "Sankalp — Engineering Lead"

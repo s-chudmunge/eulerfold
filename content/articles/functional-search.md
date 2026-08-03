@@ -1,5 +1,5 @@
 ---
-title: "Why the Best Cures are Hidden in Mud"
+title: "Structure-Aware Functional Search in Protein Mining"
 slug: "functional-search"
 shortSlug: "functional-search"
 author: "Sankalp — Engineering Lead"

@@ -1,5 +1,5 @@
 ---
-title: "Why AI Cannot Simulate a Single Human Cell"
+title: "The Challenge of Multi-Omics Integration for Whole-Cell Simulation"
 slug: "how-is-ai-building-a-digital-twin-of-the-cell"
 shortSlug: "digital-twin"
 author: "Sankalp — Engineering Lead"

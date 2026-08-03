@@ -22,6 +22,7 @@ import { CreateMLCEngine } from '@mlc-ai/web-llm';
 import { jsonrepair } from 'jsonrepair';
 import { api } from '@/lib/api';
 import { logAIUsage } from '@/lib/usageTracker';
+import DiagnosticFlow, { DiagnosticResult } from '../diagnostic/DiagnosticFlow';
 
 interface GenerateFromSyllabusProps {
   onRoadmapGenerated: (data: RoadmapData, formData: any) => void;
@@ -53,6 +54,8 @@ const GenerateFromSyllabus: React.FC<GenerateFromSyllabusProps> = ({
   const [openRouterModel, setOpenRouterModel] = useState<string | null>(null);
   const [localAIModelId, setLocalAIModelId] = useState<string | null>(null);
   const [useLocalAI, setUseLocalAI] = useState(false);
+  const [showDiagnostic, setShowDiagnostic] = useState(false);
+  const [diagnosticResult, setDiagnosticResult] = useState<DiagnosticResult | null>(null);
 
   useEffect(() => {
     setOpenRouterKey(localStorage.getItem('openrouter_key'));
@@ -127,15 +130,14 @@ const GenerateFromSyllabus: React.FC<GenerateFromSyllabusProps> = ({
     setFormData(prev => ({ ...prev, [name]: checked }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleGenerateClick = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!formData.syllabus_text.trim()) {
       setError('Please provide syllabus text or upload a PDF.');
       return;
     }
 
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
+    if (!isLoggedIn) {
       router.push(`/login?message=auth_required_to_generate&next=${window.location.pathname}`);
       return;
     }
@@ -145,14 +147,45 @@ const GenerateFromSyllabus: React.FC<GenerateFromSyllabusProps> = ({
       return;
     }
 
+    if (!diagnosticResult) {
+      setShowDiagnostic(true);
+      return;
+    }
+
+    await generateRoadmap();
+  };
+
+  const handleDiagnosticComplete = async (result: DiagnosticResult) => {
+    setDiagnosticResult(result);
+    setShowDiagnostic(false);
+    await generateRoadmapWithDiagnostic(result);
+  };
+
+  const handleDiagnosticSkip = async () => {
+    const skippedResult: DiagnosticResult = { session_id: '', knowledge_profile: {}, prompt_context: '', skipped: true };
+    setDiagnosticResult(skippedResult);
+    setShowDiagnostic(false);
+    await generateRoadmapWithDiagnostic(skippedResult);
+  };
+
+  const generateRoadmapWithDiagnostic = async (diagResult: DiagnosticResult) => {
+    await generateRoadmap(diagResult);
+  };
+
+  const generateRoadmap = async (diagResult?: DiagnosticResult) => {
+    const resolvedDiag = diagResult || diagnosticResult;
+
     setIsGenerating(true);
     setError(null);
+
+    const diagContext = resolvedDiag?.prompt_context || '';
 
     const systemPrompt = `You are an instructional designer. Generate a rigorous technical learning roadmap. Output JSON ONLY matching the required schema.`;
     const userPrompt = `Your task is to convert a static course syllabus into a rigorous learning roadmap.
 
 **SYLLABUS:**
 ${formData.syllabus_text}
+${diagContext ? `\n\n**DIAGNOSTIC ASSESSMENT RESULTS:**\n${diagContext}` : ''}
 
 **CONSTRAINTS:**
 Duration: ${formData.time_value} weeks.
@@ -317,16 +350,16 @@ Duration: ${formData.time_value} weeks.
           if (engine) await engine.unload();
         }
       } else {
-        const res = await roadmapsAPI.generateFromSyllabus({
-          syllabus_text: formData.syllabus_text,
-          time_value: formData.time_value,
+        const res = await api.post('/roadmaps/generate-syllabus', {
+          ...formData,
           time_unit: 'weeks',
-          strict_official_sources: formData.strict_official_sources
+          model: isPro ? 'models/gemini-2.5-pro' : 'models/gemini-2.5-flash',
+          diagnostic_prompt_context: resolvedDiag?.prompt_context || undefined,
         });
         
         try {
           await logAIUsage({
-            id: (res as any)?.slug,
+            id: (res.data as any)?.slug,
             subject: 'Syllabus Course',
             model: isPro ? 'models/gemini-2.5-pro' : 'models/gemini-2.5-flash',
             prompt_tokens: 0,
@@ -345,7 +378,7 @@ Duration: ${formData.time_value} weeks.
           console.error("Failed to log AI usage:", e);
         }
 
-        onRoadmapGenerated(res as any, formData);
+        onRoadmapGenerated(res.data as any, formData);
       }
     } catch (err: any) {
       if (err.response?.status === 402) {
@@ -391,7 +424,17 @@ Duration: ${formData.time_value} weeks.
   };
 
   return (
-    <div className="bg-background rounded-lg border border-border/50 overflow-hidden shadow-sm max-w-2xl mx-auto w-full relative">
+    <div className="w-full manrope-body">
+      {showDiagnostic && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 overflow-y-auto">
+          <DiagnosticFlow
+            topic="Custom Syllabus Curriculum"
+            onComplete={handleDiagnosticComplete}
+            onSkip={handleDiagnosticSkip}
+          />
+        </div>
+      )}
+      <div className="bg-background rounded-lg border border-border/50 overflow-hidden shadow-sm max-w-2xl mx-auto w-full relative">
       <PaymentModal isOpen={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} onSuccess={() => setIsPaymentModalOpen(false)} />
       
       {isLoggedIn && isPro === false && (
@@ -424,7 +467,7 @@ Duration: ${formData.time_value} weeks.
           </div>
           
           <div className="max-w-sm w-full text-center px-4">
-            <div className="bg-callout-bg border border-border px-4 py-3 rounded-lg animate-in fade-in slide-in-from-bottom-4 shadow-sm">
+            <div className="bg-white/60 dark:bg-white/5 backdrop-blur-md border border-border/50 px-4 py-3 rounded-lg animate-in fade-in slide-in-from-bottom-4 shadow-sm">
               <p className="text-[11px] font-bold text-text-heading mb-1 flex items-center justify-center gap-1.5 uppercase tracking-widest">
                 <AlertCircle className="w-3.5 h-3.5 text-accent" /> Generation Takes Time
               </p>
@@ -436,7 +479,7 @@ Duration: ${formData.time_value} weeks.
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="p-6 md:p-8">
+      <form onSubmit={handleGenerateClick} className="p-6 md:p-8">
         <div className="mb-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
@@ -583,6 +626,7 @@ Duration: ${formData.time_value} weeks.
           )}
         </div>
       </form>
+      </div>
       {isLoggedIn && <AiEngineSelector />}
     </div>
   );

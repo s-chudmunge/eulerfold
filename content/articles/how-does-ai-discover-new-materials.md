@@ -1,5 +1,5 @@
 ---
-title: "Why AI Found More New Materials in One Year Than Scientists Did in a Century"
+title: "Accelerating Crystal Structure Discovery with GNoME"
 slug: "how-does-ai-discover-new-materials"
 shortSlug: "materials-discovery"
 author: "Sankalp — Engineering Lead"

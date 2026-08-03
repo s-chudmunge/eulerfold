@@ -6,11 +6,11 @@ import UserNav from '@/components/UserNav';
 
 export const metadata: Metadata = {
   title: 'Pricing & Credits',
-  description: 'Unlock premium AI roadmaps and advanced technical study paths with EulerFold credits. Choose the plan that fits your learning pace.',
-  keywords: 'pricing, EulerFold credits, AI roadmaps, technical mastery, premium learning',
+  description: 'Unlock premium AI courses and advanced technical study paths with EulerFold credits. Choose the plan that fits your learning pace.',
+  keywords: 'pricing, EulerFold credits, AI courses, technical mastery, premium learning',
   openGraph: {
     title: 'Pricing & Credits',
-    description: 'Unlock premium AI roadmaps and advanced technical study paths with EulerFold credits.',
+    description: 'Unlock premium AI courses and advanced technical study paths with EulerFold credits.',
     type: 'website',
     url: 'https://www.eulerfold.com/pricing',
     siteName: 'EulerFold',
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary',
     title: 'Pricing & Credits',
-    description: 'Unlock premium AI roadmaps and advanced technical study paths with EulerFold credits.',
+    description: 'Unlock premium AI courses and advanced technical study paths with EulerFold credits.',
     creator: '@eulerfold',
   },
   alternates: {

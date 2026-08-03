@@ -305,7 +305,10 @@ const MarkdownWithLinks = ({ content, currentSlug, cache }: { content: string, c
           const id = slugify(content);
           return <h3 id={id} className="text-[22px] md:text-[24px] leading-[1.2] mt-[40px] mb-[16px] text-accent font-inter tracking-tighter scroll-mt-24" {...props}>{children}</h3>;
         },
-        p: ({ children }) => {
+        p: ({ node, children }) => {
+          if (node?.children?.length === 1 && (node.children[0] as any).tagName === 'img') {
+            return <div className="mb-[24px]">{processChildren(children)}</div>;
+          }
           return <p className="mb-[24px]">{processChildren(children)}</p>;
         },
         ul: ({ children }) => {
@@ -315,7 +318,29 @@ const MarkdownWithLinks = ({ content, currentSlug, cache }: { content: string, c
           return <li>{processChildren(children)}</li>;
         },
         strong: ({node, ...props}) => <strong className="font-bold text-text-heading" {...props} />,
+        a: ({node, ...props}) => (
+          <a className="text-teal-700 hover:text-teal-800 underline decoration-teal-700/30 hover:decoration-teal-700/100 transition-colors" target="_blank" rel="noopener noreferrer" {...props} />
+        ),
         hr: () => null,
+        blockquote: ({ children }) => {
+          return (
+            <aside className="my-8 p-5 bg-sidebar border-l-4 border-l-accent border-y border-r border-border rounded-r-lg shadow-sm">
+              <div className="text-[15px] text-text-primary font-medium leading-relaxed italic opacity-90">
+                {processChildren(children)}
+              </div>
+            </aside>
+          );
+        },
+        img: ({node, alt, ...props}) => (
+          <figure className="my-10 w-full overflow-hidden rounded-xl border border-border shadow-md bg-card">
+            <img className="w-full h-auto object-cover hover:scale-[1.02] transition-transform duration-700" loading="lazy" alt={alt} {...props} />
+            {alt && (
+              <figcaption className="p-3 text-center text-[13px] font-medium text-text-muted border-t border-border/50 bg-sidebar/50 italic">
+                {alt}
+              </figcaption>
+            )}
+          </figure>
+        ),
         code: ({ node, className, children, ...props }: any) => {
           const match = /language-(\w+)/.exec(className || '');
           const isD2 = match && match[1] === 'd2';

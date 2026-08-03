@@ -1,5 +1,5 @@
 ---
-title: "Why Writing New Life is Easier than Making it Live"
+title: "The Engineering Constraints of Generative Protein Design"
 slug: "progen"
 shortSlug: "progen"
 author: "Sankalp — Engineering Lead"

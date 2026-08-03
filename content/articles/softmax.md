@@ -1,5 +1,5 @@
 ---
-title: "Why is Softmax a Mathematical Illusion?"
+title: "The Mathematical Realities of Softmax in Production"
 slug: "softmax"
 shortSlug: "softmax"
 author: "Sankalp — Engineering Lead"

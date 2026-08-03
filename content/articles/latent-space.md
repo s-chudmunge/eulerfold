@@ -1,5 +1,5 @@
 ---
-title: "Why Latent Space is Not a Map: The Dangers of Linear Interpolation"
+title: "The Limits of Linear Interpolation in High-Dimensional Latent Space"
 slug: "latent-space"
 shortSlug: "latent-space"
 author: "Sankalp — Engineering Lead"

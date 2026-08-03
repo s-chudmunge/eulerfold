@@ -15,7 +15,7 @@ from fastapi import APIRouter, HTTPException, Request, Depends, BackgroundTasks,
 from fastapi.responses import StreamingResponse
 
 from app.core.config import settings
-from app.core.supabase_client import supabase, get_supabase_client
+from app.core.supabase_client import get_supabase_client
 from app.schemas import RoadmapCreate, RoadmapMe, RoadmapRead, RoadmapSave, User, ProgressUpdate, RoadmapExtend, RoadmapStatusUpdate, ManualBuildRequest, JobRoadmapCreate, ExternalRoadmapCreate, SyncSkillsRequest, UrlRoadmapCreate, SyllabusRoadmapCreate, SkillGapRoadmapCreate, DiagnosticQuizCreate, DiagnosticQuizEvaluate
 from app.utils.ai_client import generate_text, generate_text_stream, clean_json_string, robust_json_loads, log_backend_ai_usage
 from app.utils.resend_client import send_onboarding_email
@@ -862,6 +862,8 @@ async def generate_roadmap(
     context_str += f" They have {roadmap_create.experience_level or 'some'} experience level in the subject area."
     if roadmap_create.prior_experience:
         context_str += f" Additional context on their background: {roadmap_create.prior_experience}"
+    if roadmap_create.diagnostic_prompt_context:
+        context_str += f"\n\n{roadmap_create.diagnostic_prompt_context}"
 
     prompt = f"""
 You are a technical lead.
@@ -1145,6 +1147,7 @@ Your task is to convert a Job Description into a rigorous learning course.
 
 **USER'S CURRENT EXPERIENCE:**
 {payload.current_experience}
+{f"\n**DIAGNOSTIC ASSESSMENT RESULTS:**\n{payload.diagnostic_prompt_context}" if payload.diagnostic_prompt_context else ""}
 
 **CONSTRAINTS:**
 Duration: {payload.time_value} {payload.time_unit}.
@@ -1582,6 +1585,7 @@ Generate a rigorous {payload.time_value} {payload.time_unit} learning course tha
 
 **CONTENT:**
 {text_content}
+{f"\n**DIAGNOSTIC ASSESSMENT RESULTS:**\n{payload.diagnostic_prompt_context}" if payload.diagnostic_prompt_context else ""}
 
 **RULES:**
 1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "Understanding Backpropagation", "Fundamentals of React Hooks"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Course". Do NOT include the time duration in the title. Do NOT use buzzwords like "Mastery", "High-Performance", "Bootcamp", or "Journey".
@@ -1741,6 +1745,7 @@ Do not change the core subjects taught, but enrich them with practical "proof_of
 
 **SYLLABUS TEXT:**
 {payload.syllabus_text}
+{f"\n**DIAGNOSTIC ASSESSMENT RESULTS:**\n{payload.diagnostic_prompt_context}" if payload.diagnostic_prompt_context else ""}
 
 **RULES:**
 1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "Understanding Backpropagation", "Fundamentals of React Hooks"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Course". Do NOT include the time duration in the title. Do NOT use buzzwords like "Mastery", "High-Performance", "Bootcamp", or "Journey".

@@ -19,6 +19,7 @@ import { CreateMLCEngine } from '@mlc-ai/web-llm';
 import { jsonrepair } from 'jsonrepair';
 import { api } from '@/lib/api';
 import { logAIUsage } from '@/lib/usageTracker';
+import DiagnosticFlow, { DiagnosticResult } from '../diagnostic/DiagnosticFlow';
 
 interface GenerateFromLinkProps {
   onRoadmapGenerated: (data: RoadmapData, formData: any) => void;
@@ -48,6 +49,8 @@ const GenerateFromLink: React.FC<GenerateFromLinkProps> = ({
   const [openRouterModel, setOpenRouterModel] = useState<string | null>(null);
   const [localAIModelId, setLocalAIModelId] = useState<string | null>(null);
   const [useLocalAI, setUseLocalAI] = useState(false);
+  const [showDiagnostic, setShowDiagnostic] = useState(false);
+  const [diagnosticResult, setDiagnosticResult] = useState<DiagnosticResult | null>(null);
 
   useEffect(() => {
     setOpenRouterKey(localStorage.getItem('openrouter_key'));
@@ -101,12 +104,11 @@ const GenerateFromLink: React.FC<GenerateFromLinkProps> = ({
     setFormData(prev => ({ ...prev, [name]: checked }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleGenerateClick = async (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
     if (!formData.url) return;
-
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
+    
+    if (!isLoggedIn) {
       router.push(`/login?message=auth_required_to_generate&next=${window.location.pathname}`);
       return;
     }
@@ -116,14 +118,45 @@ const GenerateFromLink: React.FC<GenerateFromLinkProps> = ({
       return;
     }
 
+    if (!diagnosticResult) {
+      setShowDiagnostic(true);
+      return;
+    }
+
+    await generateRoadmap();
+  };
+
+  const handleDiagnosticComplete = async (result: DiagnosticResult) => {
+    setDiagnosticResult(result);
+    setShowDiagnostic(false);
+    await generateRoadmapWithDiagnostic(result);
+  };
+
+  const handleDiagnosticSkip = async () => {
+    const skippedResult: DiagnosticResult = { session_id: '', knowledge_profile: {}, prompt_context: '', skipped: true };
+    setDiagnosticResult(skippedResult);
+    setShowDiagnostic(false);
+    await generateRoadmapWithDiagnostic(skippedResult);
+  };
+
+  const generateRoadmapWithDiagnostic = async (diagResult: DiagnosticResult) => {
+    await generateRoadmap(diagResult);
+  };
+
+  const generateRoadmap = async (diagResult?: DiagnosticResult) => {
+    const resolvedDiag = diagResult || diagnosticResult;
+
     setIsGenerating(true);
     setError(null);
+    
+    const diagContext = resolvedDiag?.prompt_context || '';
 
     const systemPrompt = `You are an instructional designer. Generate a rigorous technical learning roadmap. Output JSON ONLY matching the required schema.`;
     const getPrompt = (content: string) => `Your task is to convert the content of a link into a rigorous learning roadmap.
 
 **LINK CONTENT:**
 ${content.substring(0, 8000)}
+${diagContext ? `\n\n**DIAGNOSTIC ASSESSMENT RESULTS:**\n${diagContext}` : ''}
 
 **CONSTRAINTS:**
 Duration: ${formData.time_value} weeks.
@@ -201,7 +234,8 @@ Duration: ${formData.time_value} weeks.
           time_unit: 'weeks',
           roadmap_plan: roadmapPlan,
           model: openRouterModel || 'openai/gpt-4o',
-          is_url: true
+          is_url: true,
+          diagnostic_prompt_context: resolvedDiag?.prompt_context || undefined
         };
 
         const saveResponse = await api.post("/roadmaps/save-external", backendPayload);
@@ -260,7 +294,8 @@ Duration: ${formData.time_value} weeks.
             time_unit: 'weeks',
             roadmap_plan: parsedJSON,
             model: localAIModelId,
-            is_url: true
+            is_url: true,
+            diagnostic_prompt_context: resolvedDiag?.prompt_context || undefined
           };
 
           const saveResponse = await api.post("/roadmaps/save-external", backendPayload);
@@ -291,16 +326,16 @@ Duration: ${formData.time_value} weeks.
           if (engine) await engine.unload();
         }
       } else {
-        const res = await roadmapsAPI.generateFromUrl({
-          url: formData.url,
-          time_value: formData.time_value,
+        const response = await api.post('/roadmaps/generate-url', {
+          ...formData,
           time_unit: 'weeks',
-          strict_official_sources: formData.strict_official_sources
+          model: isPro ? 'models/gemini-2.5-pro' : 'models/gemini-2.5-flash',
+          diagnostic_prompt_context: resolvedDiag?.prompt_context || undefined,
         });
         
         try {
           await logAIUsage({
-            id: (res as any)?.slug,
+            id: response?.data?.slug,
             subject: 'Link Decoded Course',
             model: isPro ? 'models/gemini-2.5-pro' : 'models/gemini-2.5-flash',
             prompt_tokens: 0,
@@ -319,7 +354,7 @@ Duration: ${formData.time_value} weeks.
           console.error("Failed to log AI usage:", e);
         }
 
-        onRoadmapGenerated(res as any, formData);
+        onRoadmapGenerated(response.data, formData);
       }
     } catch (err: any) {
       if (err.response?.status === 402) {
@@ -333,159 +368,171 @@ Duration: ${formData.time_value} weeks.
   };
 
   return (
-    <div className="bg-background rounded-lg border border-border/50 overflow-hidden shadow-sm max-w-2xl mx-auto w-full relative">
-      <PaymentModal isOpen={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} onSuccess={() => setIsPaymentModalOpen(false)} />
-      
-      {isLoggedIn && isPro === false && (
-        <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-background/80 backdrop-blur-[3px] rounded-lg border border-border/50 text-center p-6">
-            <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mb-4">
-                <Sparkles className="w-6 h-6 text-accent" />
-            </div>
-            <h3 className="font-inter text-[16px] font-semibold text-text-heading mb-2">Pro Exclusive Feature</h3>
-            <p className="manrope-body font-medium text-[13px] text-text-muted max-w-md mb-6 leading-relaxed px-4">
-                <strong className="text-text-primary">Unlock URL Deconstruction.</strong> Turn any GitHub repo, docs, or web article into a structured course with videos and assignments.
-            </p>
-            <Link 
-                href="/pricing"
-                className="inline-flex items-center gap-2 px-6 py-3 bg-[#111] dark:bg-accent text-white rounded-lg font-bold text-[12px] uppercase tracking-[0.2em] shadow-xl hover:opacity-90 transition-opacity"
-            >
-                Upgrade to Pro
-            </Link>
+    <div className="w-full manrope-body">
+      {showDiagnostic && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-background/80 backdrop-blur-sm p-4 overflow-y-auto">
+          <DiagnosticFlow
+            topic={formData.url || "Web Content Analysis"}
+            onComplete={handleDiagnosticComplete}
+            onSkip={handleDiagnosticSkip}
+          />
         </div>
       )}
-      
-      {isGenerating && (
-        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center rounded-lg border border-accent/20">
-          <p className="inconsolata-ui text-[14px] font-bold text-accent tracking-[0.2em] uppercase mb-4">
-            Deconstructing Source...
-          </p>
-          <div className="flex justify-center gap-1.5 mb-6">
-             {[0, 1, 2].map(i => (
-               <div key={i} className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" style={{ animationDelay: `${i * 0.2}s` }}></div>
-             ))}
-          </div>
+      <div className="bg-background rounded-lg border border-border/50 overflow-hidden shadow-sm max-w-2xl mx-auto w-full relative">
+          <PaymentModal isOpen={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} onSuccess={() => setIsPaymentModalOpen(false)} />
           
-          <div className="max-w-sm w-full text-center px-4">
-            <div className="bg-callout-bg border border-border px-4 py-3 rounded-lg animate-in fade-in slide-in-from-bottom-4 shadow-sm">
-              <p className="text-[11px] font-bold text-text-heading mb-1 flex items-center justify-center gap-1.5 uppercase tracking-widest">
-                <AlertCircle className="w-3.5 h-3.5 text-accent" /> Generation Takes Time
+          {isLoggedIn && isPro === false && (
+            <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-background/80 backdrop-blur-[3px] rounded-lg border border-border/50 text-center p-6">
+                <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center mb-4">
+                    <Sparkles className="w-6 h-6 text-accent" />
+                </div>
+                <h3 className="font-inter text-[16px] font-semibold text-text-heading mb-2">Pro Exclusive Feature</h3>
+                <p className="manrope-body font-medium text-[13px] text-text-muted max-w-md mb-6 leading-relaxed px-4">
+                    <strong className="text-text-primary">Unlock URL Deconstruction.</strong> Turn any GitHub repo, docs, or web article into a structured course with videos and assignments.
+                </p>
+                <Link 
+                    href="/pricing"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-[#111] dark:bg-accent text-white rounded-lg font-bold text-[12px] uppercase tracking-[0.2em] shadow-xl hover:opacity-90 transition-opacity"
+                >
+                    Upgrade to Pro
+                </Link>
+            </div>
+          )}
+          
+          {isGenerating && (
+            <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center rounded-lg border border-accent/20">
+              <p className="inconsolata-ui text-[14px] font-bold text-accent tracking-[0.2em] uppercase mb-4">
+                Deconstructing Source...
               </p>
-              <p className="text-[10px] text-text-muted leading-relaxed font-medium">
-                Our AI requires about 20-40 seconds to architect a complete course. Please be patient after clicking generate.
-              </p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      <form onSubmit={handleSubmit} className="p-6 md:p-8">
-        <div className="mb-6 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
-              <Link2 className="w-5 h-5 text-accent" />
-            </div>
-            <div>
-              <h2 className="text-[18px] font-bold text-text-heading leading-tight">
-                Generate from Link
-              </h2>
-              <p className="text-[13px] text-text-muted mt-0.5">
-                Paste a technical blog, github repo, or documentation link.
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {error && (
-          <div className="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/20 flex items-start gap-3">
-            <AlertCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
-            <p className="text-[12px] text-red-600 font-medium">{error}</p>
-          </div>
-        )}
-
-        <div className="space-y-5">
-          <div>
-            <label className="block text-[11px] font-bold text-text-muted uppercase tracking-widest mb-2">
-              Source URL
-            </label>
-            <input
-              type="url"
-              name="url"
-              value={formData.url}
-              onChange={handleInputChange}
-              placeholder="https://en.wikipedia.org/wiki/Transformer..."
-              className="w-full bg-sidebar border border-border rounded-lg px-4 py-3 text-[14px] text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-[11px] font-bold text-text-muted uppercase tracking-widest mb-2">
-              Timeline Setup
-            </label>
-            <div className="flex items-center gap-3 bg-sidebar border border-border rounded-lg px-4 py-2">
-              <span className="text-[13px] font-bold text-text-primary">I want to study for</span>
-              <select
-                name="time_value"
-                value={formData.time_value}
-                onChange={handleInputChange}
-                className="bg-background border border-border text-text-heading text-[13px] font-bold rounded-md px-2 py-1 outline-none focus:border-accent"
-              >
-                {[1, 2, 3, 4, 5, 6, 7, 8].map(num => (
-                  <option key={num} value={num}>{num}</option>
-                ))}
-              </select>
-              <span className="text-[13px] font-bold text-text-primary">weeks.</span>
-            </div>
-          </div>
-
-          {isLoggedIn && (
-          <div>
-            <label className="flex items-center gap-2 cursor-pointer mt-2 bg-sidebar border border-border rounded-lg px-4 py-3 hover:border-accent/50 transition-colors">
-              <input
-                type="checkbox"
-                name="strict_official_sources"
-                checked={formData.strict_official_sources}
-                onChange={handleCheckboxChange}
-                className="w-4 h-4 text-accent bg-background border-border rounded focus:ring-accent focus:ring-1"
-              />
-              <div className="flex flex-col">
-                <span className="text-[13px] font-bold text-text-primary">Only Use Official Video Sources</span>
-                <span className="text-[11px] text-text-muted">Strictly source lectures from MIT, Stanford, Harvard, NPTEL, etc.</span>
+              <div className="flex justify-center gap-1.5 mb-6">
+                 {[0, 1, 2].map(i => (
+                   <div key={i} className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" style={{ animationDelay: `${i * 0.2}s` }}></div>
+                 ))}
               </div>
-            </label>
-          </div>
+              
+              <div className="max-w-sm w-full text-center px-4">
+                <div className="bg-white/60 dark:bg-white/5 backdrop-blur-md border border-border/50 px-4 py-3 rounded-lg animate-in fade-in slide-in-from-bottom-4 shadow-sm">
+                  <p className="text-[11px] font-bold text-text-heading mb-1 flex items-center justify-center gap-1.5 uppercase tracking-widest">
+                    <AlertCircle className="w-3.5 h-3.5 text-accent" /> Generation Takes Time
+                  </p>
+                  <p className="text-[10px] text-text-muted leading-relaxed font-medium">
+                    Our AI requires about 20-40 seconds to architect a complete course. Please be patient after clicking generate.
+                  </p>
+                </div>
+              </div>
+            </div>
           )}
-        </div>
 
-        <div className="mt-8">
-          {!isLoggedIn ? (
-            <button
-              type="button"
-              onClick={() => router.push(`/login?message=auth_required_to_generate&next=${window.location.pathname}`)}
-              className="w-full bg-accent text-white rounded-lg py-3.5 px-4 font-bold text-[14px] tracking-wide hover:bg-teal-700 transition-all flex items-center justify-center gap-2 shadow-lg"
-            >
-              <LogIn className="w-4 h-4" /> Authenticate
-            </button>
-          ) : (
-            <button
-              type="submit"
-              disabled={isGenerating}
-              className={`w-full ${!((openRouterKey && useOpenRouter) || (localAIModelId && useLocalAI)) && credits !== null && credits < 1 ? 'bg-sidebar border-2 border-border text-text-muted hover:border-accent/40' : 'bg-text-heading text-background'} rounded-lg py-3.5 px-4 font-bold text-[14px] tracking-wide hover:opacity-90 transition-all flex items-center justify-center gap-2 shadow-lg`}
-            >
-              {((openRouterKey && useOpenRouter) || (localAIModelId && useLocalAI)) ? (
-                <>
-                  <Mountain className="w-4 h-4" /> Architect {useLocalAI ? '(Local)' : '(OpenRouter)'}
-                </>
-              ) : (
-                <>
-                  <span className={`text-[12px] ${credits !== null && credits < 1 ? 'grayscale opacity-50' : ''}`}>💎</span>
-                  {credits !== null && credits < 1 ? 'Get More Credits' : 'Architect (-1 Credit)'}
-                </>
+          <form onSubmit={handleGenerateClick} className="p-6 md:p-8">
+            <div className="mb-6 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center">
+                  <Link2 className="w-5 h-5 text-accent" />
+                </div>
+                <div>
+                  <h2 className="text-[18px] font-bold text-text-heading leading-tight">
+                    Generate from Link
+                  </h2>
+                  <p className="text-[13px] text-text-muted mt-0.5">
+                    Paste a technical blog, github repo, or documentation link.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {error && (
+              <div className="mb-6 p-4 rounded-lg bg-red-500/10 border border-red-500/20 flex items-start gap-3">
+                <AlertCircle className="w-4 h-4 text-red-500 shrink-0 mt-0.5" />
+                <p className="text-[12px] text-red-600 font-medium">{error}</p>
+              </div>
+            )}
+
+            <div className="space-y-5">
+              <div>
+                <label className="block text-[11px] font-bold text-text-muted uppercase tracking-widest mb-2">
+                  Source URL
+                </label>
+                <input
+                  type="url"
+                  name="url"
+                  value={formData.url}
+                  onChange={handleInputChange}
+                  placeholder="https://en.wikipedia.org/wiki/Transformer..."
+                  className="w-full bg-sidebar border border-border rounded-lg px-4 py-3 text-[14px] text-text-primary placeholder:text-text-muted/50 focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent transition-all"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-[11px] font-bold text-text-muted uppercase tracking-widest mb-2">
+                  Timeline Setup
+                </label>
+                <div className="flex items-center gap-3 bg-sidebar border border-border rounded-lg px-4 py-2">
+                  <span className="text-[13px] font-bold text-text-primary">I want to study for</span>
+                  <select
+                    name="time_value"
+                    value={formData.time_value}
+                    onChange={handleInputChange}
+                    className="bg-background border border-border text-text-heading text-[13px] font-bold rounded-md px-2 py-1 outline-none focus:border-accent"
+                  >
+                    {[1, 2, 3, 4, 5, 6, 7, 8].map(num => (
+                      <option key={num} value={num}>{num}</option>
+                    ))}
+                  </select>
+                  <span className="text-[13px] font-bold text-text-primary">weeks.</span>
+                </div>
+              </div>
+
+              {isLoggedIn && (
+              <div>
+                <label className="flex items-center gap-2 cursor-pointer mt-2 bg-sidebar border border-border rounded-lg px-4 py-3 hover:border-accent/50 transition-colors">
+                  <input
+                    type="checkbox"
+                    name="strict_official_sources"
+                    checked={formData.strict_official_sources}
+                    onChange={handleCheckboxChange}
+                    className="w-4 h-4 text-accent bg-background border-border rounded focus:ring-accent focus:ring-1"
+                  />
+                  <div className="flex flex-col">
+                    <span className="text-[13px] font-bold text-text-primary">Only Use Official Video Sources</span>
+                    <span className="text-[11px] text-text-muted">Strictly source lectures from MIT, Stanford, Harvard, NPTEL, etc.</span>
+                  </div>
+                </label>
+              </div>
               )}
-            </button>
-          )}
+            </div>
+
+            <div className="mt-8">
+              {!isLoggedIn ? (
+                <button
+                  type="button"
+                  onClick={() => router.push(`/login?message=auth_required_to_generate&next=${window.location.pathname}`)}
+                  className="w-full bg-accent text-white rounded-lg py-3.5 px-4 font-bold text-[14px] tracking-wide hover:bg-teal-700 transition-all flex items-center justify-center gap-2 shadow-lg"
+                >
+                  <LogIn className="w-4 h-4" /> Authenticate
+                </button>
+              ) : (
+                <button
+                  type="submit"
+                  disabled={isGenerating || (credits !== null && credits < 1 && !((openRouterKey && useOpenRouter) || (localAIModelId && useLocalAI)))}
+                  className={`w-full text-white rounded-lg py-3.5 px-4 font-bold text-[14px] tracking-wide transition-all flex items-center justify-center gap-2 shadow-lg ${isGenerating ? 'bg-accent/70 cursor-not-allowed' : 'bg-accent hover:bg-teal-700'}`}
+                >
+                  {isGenerating ? (
+                    <>
+                      <Loader className="w-4 h-4 animate-spin" />
+                      <span>Architecting...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span className={`text-[12px] ${credits !== null && credits < 1 ? 'grayscale opacity-50' : ''}`}>💎</span>
+                      {credits !== null && credits < 1 ? 'Get More Credits' : 'Architect (-1 Credit)'}
+                    </>
+                  )}
+                </button>
+              )}
+            </div>
+          </form>
         </div>
-      </form>
       {isLoggedIn && <AiEngineSelector />}
     </div>
   );
