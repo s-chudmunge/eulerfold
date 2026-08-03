@@ -1138,6 +1138,8 @@ Analyze the user's current experience against the Job Description and identify p
 The course must bridge these gaps with rigorous modules that lead to demonstrable mastery.
 """
 
+    diagnostic_text = f"\n**DIAGNOSTIC ASSESSMENT RESULTS:**\n{payload.diagnostic_prompt_context}" if payload.diagnostic_prompt_context else ""
+    
     prompt = f"""
 You are a technical lead.
 Your task is to convert a Job Description into a rigorous learning course.
@@ -1147,7 +1149,7 @@ Your task is to convert a Job Description into a rigorous learning course.
 
 **USER'S CURRENT EXPERIENCE:**
 {payload.current_experience}
-{f"\n**DIAGNOSTIC ASSESSMENT RESULTS:**\n{payload.diagnostic_prompt_context}" if payload.diagnostic_prompt_context else ""}
+{diagnostic_text}
 
 **CONSTRAINTS:**
 Duration: {payload.time_value} {payload.time_unit}.
