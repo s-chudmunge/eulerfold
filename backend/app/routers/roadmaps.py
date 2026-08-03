@@ -1579,15 +1579,18 @@ async def generate_from_url(
         raise HTTPException(status_code=400, detail="Could not fetch or parse the provided URL.")
 
     # 2. Generate Roadmap
+    diagnostic_text = f"\n**DIAGNOSTIC ASSESSMENT RESULTS:**\n{payload.diagnostic_prompt_context}" if payload.diagnostic_prompt_context else ""
+
     prompt = f"""
-You are a technical lead.
-Analyze the following technical content extracted from {payload.url}.
+You are an expert instructional designer.
+I will give you raw text content scraped from a URL.
+Deconstruct this content and build a roadmap to master it.
 Identify the core concepts and technologies required to fully understand or build what is described.
 Generate a rigorous {payload.time_value} {payload.time_unit} learning course that starts from foundational prerequisites and culminates in mastering the content from this URL.
 
 **CONTENT:**
 {text_content}
-{f"\n**DIAGNOSTIC ASSESSMENT RESULTS:**\n{payload.diagnostic_prompt_context}" if payload.diagnostic_prompt_context else ""}
+{diagnostic_text}
 
 **RULES:**
 1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "Understanding Backpropagation", "Fundamentals of React Hooks"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Course". Do NOT include the time duration in the title. Do NOT use buzzwords like "Mastery", "High-Performance", "Bootcamp", or "Journey".
@@ -1739,6 +1742,8 @@ async def generate_from_syllabus(
         else:
             raise HTTPException(status_code=402, detail="No roadmap credits left. Please upgrade to Pro.")
 
+    diagnostic_text = f"\n**DIAGNOSTIC ASSESSMENT RESULTS:**\n{payload.diagnostic_prompt_context}" if payload.diagnostic_prompt_context else ""
+
     prompt = f"""
 You are an instructional designer.
 I will provide you with a static course syllabus or table of contents.
@@ -1747,7 +1752,7 @@ Do not change the core subjects taught, but enrich them with practical "proof_of
 
 **SYLLABUS TEXT:**
 {payload.syllabus_text}
-{f"\n**DIAGNOSTIC ASSESSMENT RESULTS:**\n{payload.diagnostic_prompt_context}" if payload.diagnostic_prompt_context else ""}
+{diagnostic_text}
 
 **RULES:**
 1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "Understanding Backpropagation", "Fundamentals of React Hooks"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Course". Do NOT include the time duration in the title. Do NOT use buzzwords like "Mastery", "High-Performance", "Bootcamp", or "Journey".
