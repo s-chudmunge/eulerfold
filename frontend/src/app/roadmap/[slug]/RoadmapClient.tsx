@@ -1034,7 +1034,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                 <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-4">
                     <div className="col-span-2 md:col-span-1 flex flex-col items-start">
                         <Link href="/" className="flex items-center gap-2 opacity-40 hover:opacity-100 transition-opacity grayscale">
-                            <img src="/apple-touch-icon.png" alt="" className="w-3.5 h-3.5" />
+                            <img src="/apple-touch-icon.png" alt="" className="w-6 h-6" />
                             <span className="font-semibold text-[11px] tracking-tight inconsolata-ui text-black dark:text-white">EulerFold</span>
                         </Link>
                     </div>
