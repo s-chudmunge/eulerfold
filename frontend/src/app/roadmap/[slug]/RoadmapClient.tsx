@@ -119,6 +119,13 @@ const ModuleReferenceCarousel = ({ module, index }: { module: any, index: number
                         rel="noreferrer"
                         className="snap-start shrink-0 w-[260px] md:w-[280px] h-[160px] p-5 rounded-2xl border border-border/60 bg-sidebar/50 hover:bg-background/80 hover:border-accent/40 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
                     >
+                        {/* Feature Image Background (if available) */}
+                        {(resource.image_url || resource.image) && (
+                            <>
+                                <div className="absolute inset-0 bg-cover bg-center opacity-10 group-hover:opacity-20 transition-opacity duration-300" style={{ backgroundImage: `url(${resource.image_url || resource.image})` }} />
+                                <div className="absolute inset-0 bg-gradient-to-t from-sidebar via-sidebar/80 to-transparent" />
+                            </>
+                        )}
                         <div className="absolute inset-0 bg-gradient-to-b from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                         <div className="relative z-10">
                             <div className="flex items-center justify-between mb-4">
@@ -131,8 +138,18 @@ const ModuleReferenceCarousel = ({ module, index }: { module: any, index: number
                                 {resource.title || resource.name || resource.url}
                             </h3>
                         </div>
-                        <div className="relative z-10 mt-2 pt-3 border-t border-border/50 text-[10px] text-text-muted uppercase tracking-[0.1em] font-bold font-inter truncate">
-                            {getDomain(resource.link || resource.url)}
+                        <div className="relative z-10 mt-2 pt-3 border-t border-border/50 flex items-center gap-2">
+                            <img 
+                                src={`https://s2.googleusercontent.com/s2/favicons?domain=${getDomain(resource.link || resource.url)}&sz=64`} 
+                                alt="" 
+                                className="w-3.5 h-3.5 rounded-sm grayscale group-hover:grayscale-0 transition-all duration-300" 
+                                onError={(e) => {
+                                    (e.target as HTMLImageElement).style.display = 'none';
+                                }}
+                            />
+                            <span className="text-[10px] text-text-muted uppercase tracking-[0.1em] font-bold font-inter truncate">
+                                {getDomain(resource.link || resource.url)}
+                            </span>
                         </div>
                     </a>
                 ))}

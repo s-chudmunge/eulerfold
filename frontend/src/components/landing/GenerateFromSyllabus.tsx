@@ -350,7 +350,7 @@ Duration: ${formData.time_value} weeks.
           if (engine) await engine.unload();
         }
       } else {
-        const res = await api.post('/roadmaps/generate-syllabus', {
+        const res = await api.post('/roadmaps/generate-from-syllabus', {
           ...formData,
           time_unit: 'weeks',
           model: isPro ? 'models/gemini-2.5-pro' : 'models/gemini-2.5-flash',

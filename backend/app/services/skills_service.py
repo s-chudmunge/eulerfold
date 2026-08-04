@@ -50,9 +50,9 @@ USER'S EXISTING TECHNICAL INVENTORY:
 [{inventory_text}]
 
 MISSIONS:
-1. Map each topic below to exactly ONE canonical skill name (e.g., 'Game Physics', 'Python', 'React').
-2. **IMPORTANT:** If a topic genuinely belongs to a skill already in the user's inventory, use that EXACT name and category.
-3. **CRITICAL:** DO NOT force a topic into an existing skill if the domain is fundamentally different. Create a NEW, highly accurate skill name instead.
+1. Identify a MAXIMUM of 1 or 2 broad, overarching canonical skills (e.g., 'Cryptography', 'Python', 'Blockchain') that cover ALL the topics below. DO NOT generate more than 2 unique skills in total for this roadmap.
+2. Map every single topic below to one of these 1-2 overarching skills.
+3. **IMPORTANT:** If the overarching skill already exists in the user's inventory, use that EXACT name and category.
 4. Assign a 'depth' score (1.0 to 5.0) for each skill based on the topics in THIS roadmap.
 
 DEPTH SCORING RULES:
