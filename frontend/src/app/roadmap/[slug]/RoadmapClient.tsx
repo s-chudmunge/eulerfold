@@ -1324,8 +1324,8 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
             {/* Celebration Animation */}
             <Celebration 
                 show={showCelebration} 
-                title="Roadmap is Public!" 
-                subtitle="Shared with the EulerFold community."
+                title="Your course is live! 🚀" 
+                subtitle="The community can see it now."
             />
         </div>
     );

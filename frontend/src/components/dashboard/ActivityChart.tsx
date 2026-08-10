@@ -51,7 +51,7 @@ export default function ActivityChart({ roadmaps, profile }: ActivityChartProps)
                 </div>
                 {isTotalZero && (
                     <span className="inconsolata-ui text-[10px] font-bold text-text-muted border border-border px-2 py-0.5 rounded uppercase tracking-widest">
-                        No data yet
+                        Nothing to show yet 📊
                     </span>
                 )}
             </div>

@@ -43,6 +43,7 @@ const GenerateFromSyllabus: React.FC<GenerateFromSyllabusProps> = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const [isGenerating, setIsGenerating] = useState(false);
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [credits, setCredits] = useState<number | null>(null);
@@ -74,6 +75,32 @@ const GenerateFromSyllabus: React.FC<GenerateFromSyllabusProps> = ({
     window.addEventListener('ai_settings_changed', handleStorageChange);
     return () => window.removeEventListener('ai_settings_changed', handleStorageChange);
   }, []);
+
+  const loadingMessages = [
+    "Reading the syllabus so you don't have to... 👀",
+    "Extracting the actual knowledge... 🔍",
+    "Calibrating curriculum... 🌉",
+    "Letting him cook... 🔥",
+    "Mapping the topics... 🗺️",
+    "Sprinkling some AI magic... 🪄",
+    "Cooking your learning plan... 🍳",
+    "Doing the heavy lifting... 🏋️‍♂️",
+    "Almost there, trust... 🫡",
+    "Hold up, fetching the sauce... 🥫",
+    "Refactoring the sequence... ⚙️",
+    "Locking in your path... 🔒",
+  ];
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isGenerating) {
+      interval = setInterval(() => {
+        setCurrentMessageIndex((prevIndex) => (prevIndex + 1) % loadingMessages.length);
+      }, 6000);
+    }
+    onLoadingChange?.(isGenerating);
+    return () => clearInterval(interval);
+  }, [isGenerating, loadingMessages.length, onLoadingChange]);
 
   useEffect(() => {
     const fetchProfileAndCredits = async () => {
@@ -457,9 +484,9 @@ Duration: ${formData.time_value} weeks.
       
       {isGenerating && (
         <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center rounded-lg border border-accent/20">
-          <p className="inconsolata-ui text-[14px] font-bold text-accent tracking-[0.2em] uppercase mb-4">
-            Syllabus Translator...
-          </p>
+              <p className="inconsolata-ui text-[14px] font-bold text-accent tracking-[0.2em] uppercase mb-4">
+                {loadingMessages[currentMessageIndex]}
+              </p>
           <div className="flex justify-center gap-1.5 mb-6">
              {[0, 1, 2].map(i => (
                <div key={i} className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" style={{ animationDelay: `${i * 0.2}s` }}></div>
@@ -467,12 +494,12 @@ Duration: ${formData.time_value} weeks.
           </div>
           
           <div className="max-w-sm w-full text-center px-4">
-            <div className="bg-white/60 dark:bg-white/5 backdrop-blur-md border border-border/50 px-4 py-3 rounded-lg animate-in fade-in slide-in-from-bottom-4 shadow-sm">
+            <div className="bg-sidebar/90 backdrop-blur-md border border-border/50 px-4 py-3 rounded-lg animate-in fade-in slide-in-from-bottom-4 shadow-sm">
               <p className="text-[11px] font-bold text-text-heading mb-1 flex items-center justify-center gap-1.5 uppercase tracking-widest">
                 <AlertCircle className="w-3.5 h-3.5 text-accent" /> Generation Takes Time
               </p>
-              <p className="text-[10px] text-text-muted leading-relaxed font-medium">
-                Our AI requires about 20-40 seconds to architect a complete course. Please be patient after clicking generate.
+              <p className="text-[10px] text-text-primary/80 leading-relaxed font-medium">
+                Our AI requires about 20-40 seconds to architect a complete course. Please be patient 🫠
               </p>
             </div>
           </div>

@@ -12,7 +12,7 @@ from fastapi import HTTPException
 from app.core.config import settings
 
 try:
-    from json_repair import repair, loads as repair_loads
+    from json_repair import repair_json, loads as repair_loads
     HAS_JSON_REPAIR = True
 except ImportError:
     HAS_JSON_REPAIR = False

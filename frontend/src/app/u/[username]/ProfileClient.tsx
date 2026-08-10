@@ -701,7 +701,7 @@ export default function ProfileClient({ profile }: Props) {
                                     </div>
                                 ) : (
                                     <div className="py-20 text-center border border-dashed rounded-lg border-border bg-sidebar/5">
-                                        <p className="text-[13px] text-text-muted italic opacity-60">No certificates earned yet.</p>
+                                        <p className="text-[13px] text-text-muted italic opacity-60">No certificates yet 📭</p>
                                     </div>
                                 )}
                             </div>

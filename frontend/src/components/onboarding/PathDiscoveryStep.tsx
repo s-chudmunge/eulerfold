@@ -19,7 +19,7 @@ export default function PathDiscoveryStep({ displayName, onExit }: PathDiscovery
           Welcome, <span className="text-accent">{displayName.split(' ')[0] || 'Explorer'}</span>
         </h2>
         <p className="manrope-body text-[14px] text-text-muted font-medium max-w-[420px] mx-auto leading-relaxed">
-          Choose your first objective to begin the learning cycle.
+          Pick your first move.
         </p>
       </div>
 
@@ -35,7 +35,7 @@ export default function PathDiscoveryStep({ displayName, onExit }: PathDiscovery
           
           <div className="flex-1 min-w-0">
             <h3 className="inconsolata-ui text-[14px] font-bold text-text-heading uppercase tracking-widest mb-1 group-hover:text-accent transition-colors">
-              Architect Custom Path
+              Build Your Own Path
             </h3>
             <p className="manrope-body text-[13px] text-text-muted leading-relaxed font-medium">
               Define a specific subject or career goal. Our engine will generate a tailored curriculum.
@@ -59,7 +59,7 @@ export default function PathDiscoveryStep({ displayName, onExit }: PathDiscovery
 
           <div className="flex-1 min-w-0">
             <h3 className="inconsolata-ui text-[14px] font-bold text-text-heading uppercase tracking-widest mb-1 group-hover:text-blue-500 transition-colors">
-              Master Existing Knowledge
+              Browse Community Courses
             </h3>
             <p className="manrope-body text-[13px] text-text-muted leading-relaxed font-medium">
               Browse proven community roadmaps in AI, Engineering, and Science.
@@ -78,7 +78,7 @@ export default function PathDiscoveryStep({ displayName, onExit }: PathDiscovery
           onClick={onExit}
           className="inconsolata-ui text-[10px] font-bold text-text-muted hover:text-text-primary uppercase tracking-widest transition-all hover:tracking-[0.15em]"
         >
-          Skip to Dashboard →
+          Skip for now →
         </button>
       </div>
     </div>

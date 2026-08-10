@@ -50,7 +50,7 @@ export default function RoadmapCompactList({ roadmaps }: RoadmapCompactListProps
             <div className="divide-y divide-[var(--border)]/30 overflow-y-auto max-h-[500px] pr-1 no-scrollbar">
                 {active.length === 0 && (
                     <div className="py-12 text-center">
-                        <p className="inconsolata-ui text-[11px] font-bold text-text-muted uppercase tracking-widest italic">No active goals</p>
+                        <p className="inconsolata-ui text-[11px] font-bold text-text-muted uppercase tracking-widest italic">No active goals yet</p>
                     </div>
                 )}
                 

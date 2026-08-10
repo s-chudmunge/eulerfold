@@ -77,7 +77,6 @@ async def get_personalized_recommendations(current_user: Optional[User] = Depend
                     })
             
             curated_articles = [
-                {"id": "article-jensen-huang-gpu-apocalypse", "title": "Jensen Huang & The GPU Apocalypse", "slug": "jensen-huang-gpu-apocalypse", "description": "How NVIDIA built the foundation for AI.", "subject": "Hardware", "content_type": "article"},
                 {"id": "article-backpropagation", "title": "Understanding Backpropagation", "slug": "backpropagation", "description": "The calculus behind modern deep learning.", "subject": "Mathematics", "content_type": "article"},
                 {"id": "article-lisa-su-amd-turnaround", "title": "Lisa Su & The AMD Turnaround", "slug": "lisa-su-amd-turnaround", "description": "Architecting the silicon turnaround.", "subject": "Semiconductors", "content_type": "article"}
             ]

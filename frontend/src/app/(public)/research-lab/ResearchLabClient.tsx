@@ -56,11 +56,11 @@ export default function ResearchLabClient() {
     const [useLocalAI, setUseLocalAI] = useState(false);
 
     const statusMessages = [
-        "Analyzing...",
-        "Extracting Math...",
-        "Checking Logic...",
-        "Reasoning...",
-        "Simplifying..."
+        "Reading the paper... 📄",
+        "Extracting the math... 🧮",
+        "Checking the logic... 🔬",
+        "Reasoning through it... 🧠",
+        "Simplifying for humans... 🫠"
     ];
 
     useEffect(() => {

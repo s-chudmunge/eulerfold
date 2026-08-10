@@ -18,7 +18,7 @@ export default function NotFound() {
         404
       </h1>
       <h2 className="inconsolata-ui text-[1.1rem] font-bold text-text-heading mb-2 uppercase tracking-tight">
-        Page not found.
+        Page not found 🫥
       </h2>
       <p className="manrope-body text-text-muted mb-8 max-w-xs">
         This page doesn&apos;t exist or was moved.

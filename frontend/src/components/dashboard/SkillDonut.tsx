@@ -92,7 +92,7 @@ export default function SkillDonut({ skills }: SkillDonutProps) {
 
             <div className="mt-4 pt-4 border-t border-border space-y-2.5">
                 {isTotalZero ? (
-                    <p className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-widest text-center italic">No data yet</p>
+                    <p className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-widest text-center italic">Nothing to show yet</p>
                 ) : (
                     data.slice(0, 4).map((item, index) => (
                         <div key={item.name} className="flex items-center justify-between gap-3">

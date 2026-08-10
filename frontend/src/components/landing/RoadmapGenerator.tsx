@@ -199,14 +199,18 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
   }, [searchParams, initialGoal]);
 
   const loadingMessages = [
-    "Tinkering with modules...",
-    "Shimmying through data...",
-    "Calibrating curriculum...",
-    "Architecting logic...",
-    "Distilling knowledge...",
-    "Mapping the mountain...",
-    "Refactoring sequence...",
-    "Finalizing path...",
+    "Tinkering with modules... 🔧",
+    "Cooking up your curriculum... 🍳",
+    "Calibrating brain cells... 🧠",
+    "Letting him cook... 🔥",
+    "Architecting logic... ⚙️",
+    "Sprinkling some AI magic... 🪄",
+    "Distilling the good stuff... 🧪",
+    "Doing the heavy lifting... 🏋️‍♂️",
+    "Almost there, trust... 🫡",
+    "Hold up, fetching the sauce... 🥫",
+    "Refactoring the matrix... 💊",
+    "Finalizing your path... ✨",
   ];
 
   useEffect(() => {
@@ -214,11 +218,11 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
     if (isGenerating) {
       interval = setInterval(() => {
         setCurrentMessageIndex((prevIndex) => (prevIndex + 1) % loadingMessages.length);
-      }, 2500);
+      }, 6000);
     }
     onLoadingChange?.(isGenerating);
     return () => clearInterval(interval);
-  }, [isGenerating, onLoadingChange]);
+  }, [isGenerating, loadingMessages.length, onLoadingChange]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -1036,8 +1040,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
           </div>
         )}
 
-        {!isGenerating && (
-          <div className="mt-8 pt-6 border-t border-border/50 flex justify-end w-full">
+        <div className="mt-8 pt-6 border-t border-border/50 flex justify-end w-full">
             <div className="flex flex-col sm:flex-row items-center gap-4 w-full sm:w-auto">
             {!session ? (
                 <button
@@ -1073,14 +1076,12 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
             )}
             </div>
           </div>
-        )}
-
-      </div>
+          </div>
     );
   };
 
   return (
-    <div className="w-full manrope-body">
+    <div className="w-full manrope-body relative">
 
 
       {showDiagnostic && (
@@ -1092,10 +1093,10 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
           />
         </div>
       )}
-      {!isGenerating && renderStep()}
+      {renderStep()}
 
       {isGenerating && (
-        <div className="mt-12 flex flex-col items-center justify-center animate-in fade-in duration-700">
+        <div className="absolute inset-0 bg-background/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center rounded-lg border border-accent/20">
           <p className="inconsolata-ui text-[11px] font-bold text-accent uppercase tracking-[0.2em] mb-4">
             {loadingMessages[currentMessageIndex]}
           </p>
@@ -1111,12 +1112,12 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
           
           {!useLocalAI && (
             <div className="mt-8 max-w-sm text-center">
-              <div className="bg-white/60 dark:bg-white/5 backdrop-blur-md border border-border/50 px-4 py-3 rounded-lg animate-in fade-in slide-in-from-bottom-4 shadow-sm">
+              <div className="bg-sidebar/90 backdrop-blur-md border border-border/50 px-4 py-3 rounded-lg animate-in fade-in slide-in-from-bottom-4 shadow-sm">
                 <p className="text-[11px] font-bold text-text-heading mb-1 flex items-center justify-center gap-1.5 uppercase tracking-widest">
                   <AlertCircle className="w-3.5 h-3.5 text-accent" /> Generation Takes Time
                 </p>
-                <p className="text-[10px] text-text-muted leading-relaxed font-medium">
-                  Our AI requires about 20-40 seconds to architect a complete course. Please be patient after clicking generate.
+                <p className="text-[10px] text-text-primary/80 leading-relaxed font-medium">
+                  Our AI requires about 20-40 seconds to architect a complete course. Please be patient 🫠
                 </p>
               </div>
             </div>

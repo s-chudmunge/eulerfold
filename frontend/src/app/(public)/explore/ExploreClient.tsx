@@ -477,7 +477,7 @@ export default function ExploreClient({
                                             {filteredRoadmaps.length === 0 && !isTableLoading && (
                                                 <tr>
                                                     <td colSpan={3} className="px-4 py-20 text-center text-text-muted italic manrope-body text-sm">
-                                                        No courses found matching your criteria.
+                                                        Nothing here. Try different filters? 🔍
                                                     </td>
                                                 </tr>
                                             )}

@@ -27,7 +27,7 @@ export function TrustedSourcesTicker() {
   const sources = [
     'arXiv', 'IEEE Xplore', 'Nature', 'ACM Digital Library', 'MIT OpenCourseWare', 
     'PubMed', 'JSTOR', 'Springer', 'MDN Web Docs', 'GitHub', 'Stack Overflow', 
-    'PyTorch Docs', 'TensorFlow Docs', 'W3C Standards', 'Wikipedia'
+    'PyTorch Docs', 'TensorFlow Docs', 'Wikipedia'
   ];
 
   return (

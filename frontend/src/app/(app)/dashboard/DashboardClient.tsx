@@ -377,7 +377,7 @@ export default function DashboardPage() {
                                     ))
                                 ) : (
                                     <div className="py-12 text-center bg-callout-bg/30 border border-dashed border-callout-border rounded-lg">
-                                        <p className="manrope-body text-[0.8rem] text-text-muted italic">No active roadmaps.</p>
+                                        <p className="manrope-body text-[0.8rem] text-text-muted italic">No courses yet. Time to start one? 🫠</p>
                                     </div>
                                 )}
                             </div>

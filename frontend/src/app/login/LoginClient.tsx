@@ -136,8 +136,11 @@ export default function LoginPage() {
 
                     {/* Branding */}
                     <div className="mb-10 flex flex-col items-center">
-                        <Link href="/" className="hover:opacity-80 transition-opacity">
-                            <img src="/logo_with_text.png" alt="EulerFold" className="h-16 w-auto" />
+                        <Link href="/" className="group flex items-center gap-2 hover:opacity-100 transition-opacity">
+                            <img src="/apple-touch-icon.png" alt="EulerFold" className="w-8 h-8" />
+                            <span className="text-[24px] font-bold text-text-heading tracking-tight">
+                                Euler<span className="text-teal-700">Fold</span>
+                            </span>
                         </Link>
                     </div>
 
@@ -167,7 +170,7 @@ export default function LoginPage() {
                                     {isSignUp ? 'Create your account' : 'Welcome back'}
                                 </h1>
                                 <p className="text-text-muted text-[13px] manrope-body font-medium">
-                                    {messageContent || (isSignUp ? 'Start your learning journey today.' : 'Continue your learning journey.')}
+                                    {messageContent || (isSignUp ? "Let's get you started." : 'Welcome back 👋')}
                                 </p>
                             </div>
 

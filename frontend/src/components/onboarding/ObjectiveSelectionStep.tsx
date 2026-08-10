@@ -75,11 +75,11 @@ export default function ObjectiveSelectionStep({ displayName, onSuccess }: Objec
 
       <div className="text-center mb-5">
         <h1 className="text-xl md:text-2xl font-bold text-text-heading mb-1.5 tracking-tight manrope-body">
-          Define your primary aim
+          What's the goal?
         </h1>
         <p className="text-[12px] text-text-muted leading-relaxed manrope-body font-medium max-w-[360px] mx-auto">
           Welcome, <span className="text-text-primary font-bold">{displayName.split(' ')[0] || 'Explorer'}</span>. 
-          Select an objective to calibrate your cycle.
+          Pick one to get started.
         </p>
       </div>
 

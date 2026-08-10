@@ -63,8 +63,10 @@ export default function HeroSection() {
 
   return (
     <div className="relative w-full overflow-hidden">
-      <section className="relative pt-28 pb-16 md:pt-40 md:pb-32 px-6 min-h-[550px] md:min-h-[800px] flex items-center overflow-hidden w-full">
+      <section className="relative pt-28 pb-16 md:pt-40 md:pb-32 px-6 min-h-[550px] md:min-h-[800px] flex items-center w-full">
         <HeroBackground />
+        
+
         <div className="max-w-3xl mx-auto w-full relative z-10">
           <motion.div
             variants={stagger}

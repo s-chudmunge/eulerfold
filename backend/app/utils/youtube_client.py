@@ -2,126 +2,106 @@ import httpx
 import logging
 import math
 import re
+import os
+import cohere
 from typing import List, Dict
 from app.core.config import settings
+
+async def generate_embeddings(texts: List[str]) -> List[List[float]]:
+    api_key = settings.COHERE_API_KEY or os.getenv("COHERE_API_KEY")
+    if not api_key:
+        raise RuntimeError("COHERE_API_KEY not configured")
+    
+    co = cohere.AsyncClientV2(api_key=api_key)
+    response = await co.embed(
+        texts=texts,
+        model="embed-english-v3.0",
+        input_type="search_document",
+        embedding_types=["float"]
+    )
+    return response.embeddings.float
+
+def cosine_similarity(vec_a: List[float], vec_b: List[float]) -> float:
+    dot_product = sum(a * b for a, b in zip(vec_a, vec_b))
+    norm_a = math.sqrt(sum(a * a for a in vec_a))
+    norm_b = math.sqrt(sum(b * b for b in vec_b))
+    if norm_a == 0 or norm_b == 0: return 0.0
+    return dot_product / (norm_a * norm_b)
 
 logger = logging.getLogger(__name__)
 
 # Trusted educational channels (lowercase for case-insensitive matching)
 TRUSTED_CHANNELS = frozenset([
     # Universities & Institutes
-    "mit opencourseware",
-    "stanford",
-    "stanford online",
-    "stanford computer science",
-    "harvard",
-    "harvard university",
-    "harvard cs50",
-    "cs50",
-    "yale courses",
-    "yalecourses",
-    "nptel",
-    "nptelhrd",
-    "nptel-noc iitm",
-    "iit madras - bsc degree programme",
-    "iit bombay july 2018",
-    "iit roorkee",
-    "iit kharagpur july 2018",
-    "cmu database group",
-    "carnegie mellon university",
-    "uc berkeley",
-    "berkeley riselab",
-    "caltech",
-    "caltechchannel",
-    "oxford mathematics",
-    "university of oxford",
-    "cornell university",
-    "princeton university",
-    "university of michigan",
-    "georgia tech",
-    "coursera",
-    "edx",
-    "the royal institution",
-    "institute for advanced study",
+    "mit opencourseware", "stanford", "stanford online", "stanford computer science",
+    "harvard", "harvard university", "harvard cs50", "cs50",
+    "yale courses", "yalecourses", "nptel", "nptelhrd", "nptel-noc iitm",
+    "iit madras - bsc degree programme", "iit bombay july 2018", "iit roorkee",
+    "iit kharagpur july 2018", "cmu database group", "carnegie mellon university",
+    "uc berkeley", "berkeley riselab", "caltech", "caltechchannel",
+    "oxford mathematics", "university of oxford", "cornell university",
+    "princeton university", "university of michigan", "georgia tech",
+    "coursera", "edx", "the royal institution", "institute for advanced study",
     "simons institute",
-    # CS / Programming
-    "freecodecamp.org",
-    "computerphile",
-    "the coding train",
-    "traversy media",
-    "fireship",
-    "tech with tim",
-    "corey schafer",
-    "programming with mosh",
-    "derek banas",
-    "thenewboston",
-    "caleb curry",
-    "web dev simplified",
-    "kevin powell",
-    "the net ninja",
-    "academind",
-    "hussein nasser",
-    "arjancodes",
-    "mcoding",
-    "william fiset",
-    "back to back swe",
-    "clément mihailescu",
-    "cs dojo",
-    "techsith",
-    # Math / Science
-    "3blue1brown",
-    "numberphile",
-    "khan academy",
-    "professor leonard",
-    "the organic chemistry tutor",
-    "dr. trefor bazett",
-    "michael penn",
-    "zach star",
-    "looking glass universe",
-    "pbs space time",
-    "veritasium",
-    "mathologer",
-    "blackpenredpen",
-    "patrickjmt",
-    "professor dave explains",
-    "dr. physics a",
-    "flammable maths",
-    # ML / AI / Data
-    "andrej karpathy",
-    "yannic kilcher",
-    "two minute papers",
-    "sentdex",
-    "statquest with josh starmer",
-    "krish naik",
-    "codebasics",
-    "jeremy howard",
-    "lex fridman",
-    "machine learning street talk",
-    "ai explained",
-    "deeplearning.ai",
-    "siraj raval",
-    "data school",
-    "ritvikmath",
-    "aleksa gordić - the ai epiphany",
-    "umar jamil",
-    "serrano.academy",
-    "steve brunton",
-    "welch labs",
-    # Systems / DevOps / Low-Level
-    "networkchuck",
-    "techworld with nana",
-    "devops toolkit",
-    "bytebytego",
-    "neetcode",
-    "abdul bari",
-    "jenny's lectures cs it",
-    "gate smashers",
-    "reducible",
-    "ben eater",
-    "jacob sorber",
-    "low level learning",
-    "fasterthanlime",
-    "computerscience",
+    
+    # CS / Programming / Frontend / Backend
+    "freecodecamp.org", "computerphile", "the coding train", "traversy media",
+    "fireship", "tech with tim", "corey schafer", "programming with mosh",
+    "derek banas", "thenewboston", "caleb curry", "web dev simplified",
+    "kevin powell", "the net ninja", "academind", "hussein nasser",
+    "arjancodes", "mcoding", "william fiset", "back to back swe",
+    "clément mihailescu", "cs dojo", "techsith",
+    
+    # System Design / Cloud / DevOps
+    "bytebytego", "gaurav sen", "techworld with nana", "networkchuck", "kodekloud", 
+    "jordan has no life", "martin fowler", "aws training center",
+    
+    # Security / Cybersecurity
+    "john hammond", "david bombal", "ippsec", "liveoverflow",
+    
+    # Mobile (iOS/Android/Flutter)
+    "marcus ng", "resocoder", "filledstacks", "sean allen", "kilo loco",
+    
+    # Web3 / Blockchain
+    "dapp university", "eattheblocks", "patrick collins", "smart contract programmer",
+    
+    # Math / Science / Quantum
+    "3blue1brown", "numberphile", "khan academy", "professor leonard",
+    "the organic chemistry tutor", "dr. trefor bazett", "michael penn",
+    "zach star", "looking glass universe", "pbs space time", "veritasium",
+    "mathologer", "blackpenredpen", "patrickjmt", "professor dave explains",
+    "dr. physics a", "flammable maths", "qiskit",
+    
+    # ML / AI / Data Science
+    "andrej karpathy", "yannic kilcher", "two minute papers", "sentdex",
+    "statquest with josh starmer", "krish naik", "codebasics", "jeremy howard",
+    "lex fridman", "machine learning street talk", "ai explained",
+    
+    # Game Dev (Unity/Unreal)
+    "brackeys", "code monkey", "jason weimann", "sykoo", "gamedev.tv",
+    
+    # ECE / Hardware / Embedded / Robotics
+    "greatscott!", "ben eater", "eater", "dronebot workshop", "explainingcomputers",
+    
+    # Design (UI/UX)
+    "designcourse", "flux academy", "malewicz", "charliemarietv",
+    
+    # Business / Finance / Product Management
+    "y combinator", "aswath damodaran", "the plain bagel", "how money works", "a16z",
+    
+    # Indian & Global Exams (JEE, NEET, UPSC, GATE, CAT)
+    "physics wallah - alakh pandey", "unacademy jee", "vedantu jee", "byju's", 
+    "vision ias", "drishti ias", "gate smashers", "made easy",
+    
+    # Productivity / Career
+    "ali abdaal", "thomas frank",
+    
+    # Advanced AI / Systems / CS Foundational
+    "deeplearning.ai", "siraj raval", "data school", "ritvikmath",
+    "aleksa gordić - the ai epiphany", "umar jamil", "serrano.academy",
+    "steve brunton", "welch labs", "devops toolkit", "neetcode",
+    "abdul bari", "jenny's lectures cs it", "reducible", "jacob sorber",
+    "low level learning", "fasterthanlime", "computerscience"
 ])
 
 # Words to ignore when computing title relevance
@@ -195,10 +175,12 @@ def _compute_title_relevance(topic_title: str, video_title: str, video_descripti
     return base_relevance
 
 
-def _score_video(video: dict, topic_title: str, subject_context: str = "") -> float:
+def _score_video(video: dict, topic_title: str, subject_context: str = "", preferred_channel: str = "") -> float:
     """
     Score a YouTube video for educational relevance.
     Returns -1.0 if the video should be excluded (duration or relevance gate).
+    When preferred_channel is set, videos from that channel get a bonus to
+    encourage consistent per-module learning from a single teacher.
     """
     duration_seconds = parse_iso8601_duration(video.get("contentDetails", {}).get("duration", ""))
 
@@ -221,13 +203,17 @@ def _score_video(video: dict, topic_title: str, subject_context: str = "") -> fl
     view_count = int(video.get("statistics", {}).get("viewCount", "0"))
     channel_name = snippet.get("channelTitle", "").lower()
 
-    # Composite score (max ~100 points)
-    relevance_score = title_relevance * 50                              # max 50
+    # Composite score (max ~115 points with channel affinity)
+    relevance_score = title_relevance * 60                              # max 50
     duration_score = min(duration_seconds / 3600, 1.0) * 15            # max 15
-    view_score = min(math.log10(max(view_count, 1)) / 7, 1.0) * 25    # max 25 (10M views = full)
+    view_score = min(math.log10(max(view_count, 1)) / 7, 1.0) * 15    # max 25 (10M views = full)
     channel_score = 10 if channel_name in TRUSTED_CHANNELS else 0       # max 10
 
-    return relevance_score + duration_score + view_score + channel_score
+    # Channel affinity bonus: prefer videos from the same channel within a module
+    # so the learner gets a consistent teaching style
+    affinity_score = 15 if preferred_channel and channel_name == preferred_channel.lower() else 0  # max 15
+
+    return relevance_score + duration_score + view_score + channel_score + affinity_score
 
 
 async def search_youtube_videos(
@@ -235,12 +221,15 @@ async def search_youtube_videos(
     max_results: int = 1,
     topic_title: str = "",
     strict_official_sources: bool = False,
-    subject_context: str = ""
+    subject_context: str = "",
+    preferred_channel: str = ""
 ) -> List[Dict[str, str]]:
     """
     Search YouTube and return the best matching educational videos.
     When topic_title is provided, videos are scored by relevance, view count,
     duration, and channel trust. Performs query fallback if no candidates match.
+    When preferred_channel is provided, videos from that channel receive a
+    score bonus to encourage consistent per-module learning from one teacher.
     """
     if not settings.YOUTUBE_API_KEY:
         logger.warning("YOUTUBE_API_KEY not set, skipping YouTube search.")
@@ -256,10 +245,13 @@ async def search_youtube_videos(
     ]
 
     async def execute_search(search_q: str) -> List[Dict[str, str]]:
+        # Enforce English technical content by filtering out common spam/non-english languages
+        strict_search_q = f"{search_q} -telugu -hindi -tamil -marketing"
+        
         search_url = "https://www.googleapis.com/youtube/v3/search"
         search_params = {
             "part": "snippet",
-            "q": search_q,
+            "q": strict_search_q,
             "type": "video",
             "maxResults": 25 if strict_official_sources else 15,
             "key": settings.YOUTUBE_API_KEY,
@@ -294,7 +286,7 @@ async def search_youtube_videos(
                 continue
 
             if use_scoring:
-                score = _score_video(item, topic_title, subject_context)
+                score = _score_video(item, topic_title, subject_context, preferred_channel)
                 if score >= 0:
                     valid.append((score, item))
             else:
@@ -330,6 +322,7 @@ async def search_youtube_videos(
             results.append({
                 "video_id": item["id"],
                 "video_title": item.get("snippet", {}).get("title", ""),
+                "channel_name": item.get("snippet", {}).get("channelTitle", ""),
                 "duration_minutes": parse_iso8601_duration(item.get("contentDetails", {}).get("duration", "")) // 60,
             })
 
@@ -341,5 +334,197 @@ async def search_youtube_videos(
 
     except Exception as e:
         logger.error(f"YouTube search/filter failed for query '{query}': {e}")
+        return []
 
-    return []
+async def find_module_playlist(module_title: str) -> List[Dict]:
+    """
+    Search YouTube for a playlist matching the module title, fetch its videos,
+    and return them with full details (duration, stats, etc.).
+    
+    Returns a list of video dicts with keys: video_id, video_title, channel_name,
+    duration_minutes, or an empty list if no suitable playlist found.
+    """
+    if not settings.YOUTUBE_API_KEY:
+        return []
+
+    try:
+        async with httpx.AsyncClient(timeout=30.0) as client:
+            # Step 1: Search for playlists matching the module title
+            search_url = "https://www.googleapis.com/youtube/v3/search"
+            import re
+            clean_module_title = re.sub(r'^(?:Week|Module|Section)\s*\d+:\s*', '', module_title, flags=re.IGNORECASE)
+
+            search_params = {
+                "part": "snippet",
+                "q": f"{clean_module_title} full course tutorial -telugu -hindi -tamil -marketing",
+                "type": "playlist",
+                "maxResults": 15,
+                "key": settings.YOUTUBE_API_KEY,
+                "relevanceLanguage": "en",
+            }
+            search_response = await client.get(search_url, params=search_params)
+            search_response.raise_for_status()
+            playlists = search_response.json().get("items", [])
+
+            if not playlists:
+                logger.info(f"No playlists found for module '{module_title}'")
+                return []
+
+            # Step 1.5: The God-Tier Enforcer (Prioritize Trusted Channels)
+            def _is_trusted(p: Dict) -> bool:
+                channel_name = p.get("snippet", {}).get("channelTitle", "").lower()
+                return channel_name in TRUSTED_CHANNELS
+                
+            playlists.sort(key=lambda p: 0 if _is_trusted(p) else 1)
+
+            # Step 2: Try each playlist until we find one with enough videos
+            bad_keywords = ["telugu", "hindi", "tamil", "kannada", "malayalam", "bengali", "marathi"]
+            for playlist_item in playlists:
+                playlist_id = playlist_item["id"]["playlistId"]
+                playlist_title = playlist_item["snippet"]["title"]
+                channel_name = playlist_item["snippet"]["channelTitle"]
+
+                title_lower = playlist_title.lower()
+                channel_lower = channel_name.lower()
+                if any(bad in title_lower or bad in channel_lower for bad in bad_keywords):
+                    continue
+                    
+                mod_words = set(re.findall(r'\w+', clean_module_title.lower()))
+                mod_words = {w for w in mod_words if len(w) > 3} # ignore small words
+                pl_words = set(re.findall(r'\w+', title_lower))
+                
+                if not _is_trusted(playlist_item) and mod_words and len(mod_words.intersection(pl_words)) == 0:
+                    logger.debug(f"Skipping playlist '{playlist_title}' due to no keyword overlap with '{clean_module_title}'")
+                    continue
+
+                # Fetch playlist items (up to 50)
+                items_url = "https://www.googleapis.com/youtube/v3/playlistItems"
+                items_params = {
+                    "part": "snippet",
+                    "playlistId": playlist_id,
+                    "maxResults": 50,
+                    "key": settings.YOUTUBE_API_KEY,
+                }
+                items_response = await client.get(items_url, params=items_params)
+                items_response.raise_for_status()
+                playlist_videos = items_response.json().get("items", [])
+
+                if len(playlist_videos) < 3:
+                    continue  # Too few videos, try next playlist
+
+                # Step 3: Get full video details (duration, stats)
+                video_ids = []
+                for pv in playlist_videos:
+                    vid_id = pv.get("snippet", {}).get("resourceId", {}).get("videoId")
+                    if vid_id:
+                        video_ids.append(vid_id)
+
+                if not video_ids:
+                    continue
+
+                videos_url = "https://www.googleapis.com/youtube/v3/videos"
+                videos_params = {
+                    "part": "contentDetails,snippet,statistics",
+                    "id": ",".join(video_ids[:50]),
+                    "key": settings.YOUTUBE_API_KEY,
+                }
+                videos_response = await client.get(videos_url, params=videos_params)
+                videos_response.raise_for_status()
+                video_details = videos_response.json().get("items", [])
+
+                # Build the catalog of playlist videos
+                catalog = []
+                for vd in video_details:
+                    duration_seconds = parse_iso8601_duration(
+                        vd.get("contentDetails", {}).get("duration", "")
+                    )
+                    # Accept videos 3-90 minutes for playlists (wider range since
+                    # playlist videos can be shorter individual lectures)
+                    if duration_seconds < 180 or duration_seconds > 5400:
+                        continue
+                    catalog.append({
+                        "video_id": vd["id"],
+                        "video_title": vd.get("snippet", {}).get("title", ""),
+                        "channel_name": vd.get("snippet", {}).get("channelTitle", channel_name),
+                        "duration_minutes": duration_seconds // 60,
+                        "description": vd.get("snippet", {}).get("description", ""),
+                    })
+
+                if len(catalog) >= 3:
+                    logger.info(
+                        f"Found playlist for '{module_title}': '{playlist_title}' "
+                        f"by {channel_name} ({len(catalog)} usable videos)"
+                    )
+                    try:
+                        titles = [v["video_title"] for v in catalog]
+                        embeddings = await generate_embeddings(titles)
+                        for i, v in enumerate(catalog):
+                            v["embedding"] = embeddings[i]
+                    except Exception as e:
+                        logger.error(f"Failed to generate embeddings for playlist: {e}")
+                    
+                    return catalog
+
+            logger.info(f"No suitable playlist found for module '{module_title}' (all had <3 usable videos)")
+            return []
+
+    except Exception as e:
+        logger.error(f"Playlist search failed for '{module_title}': {e}")
+        return []
+
+
+async def match_playlist_video_to_topic(
+    catalog: List[Dict], topic_title: str
+) -> Dict | None:
+    """
+    Find the best matching video from a playlist catalog using a Hybrid approach:
+    1. Keyword Overlap Heuristic (Fast & precise)
+    2. Semantic Matching via Cohere (Fuzzy fallback)
+    """
+    if not catalog:
+        return None
+        
+    # --- 1. KEYWORD HEURISTIC ---
+    best_keyword_score = 0.0
+    best_keyword_video = None
+    
+    for video in catalog:
+        relevance = _compute_title_relevance(
+            topic_title,
+            video["video_title"],
+            video.get("description", ""),
+        )
+        if relevance > best_keyword_score:
+            best_keyword_score = relevance
+            best_keyword_video = video
+            
+    # If we have a solid keyword match, accept it instantly without semantic embedding
+    if best_keyword_score >= 0.25 and best_keyword_video:
+        return best_keyword_video
+
+    # --- 2. SEMANTIC FALLBACK ---
+    has_embeddings = all(vid.get("embedding") is not None for vid in catalog)
+    if not has_embeddings:
+        return None
+
+    try:
+        topic_embeddings = await generate_embeddings([topic_title])
+        topic_vec = topic_embeddings[0]
+    except Exception as e:
+        logger.error(f"Failed to embed topic '{topic_title}': {e}")
+        return None
+
+    best_semantic_score = 0.0
+    best_semantic_video = None
+
+    for video in catalog:
+        score = cosine_similarity(topic_vec, video["embedding"])
+        if score > best_semantic_score:
+            best_semantic_score = score
+            best_semantic_video = video
+
+    # Semantic threshold strictly tuned for Cohere to avoid fuzzy false-positives
+    if best_semantic_score >= 0.55 and best_semantic_video:
+        return best_semantic_video
+        
+    return None

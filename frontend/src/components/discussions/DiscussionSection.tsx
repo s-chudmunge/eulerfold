@@ -179,7 +179,7 @@ export const DiscussionSection: React.FC<Props> = ({
           </div>
         ) : sortedThreads.length === 0 ? (
           <div className="py-12 text-center bg-callout-bg/30 rounded-3xl border border-dashed border-border">
-            <p className="manrope-body text-text-muted italic">No discussions yet. Be the first to share an insight.</p>
+            <p className="manrope-body text-text-muted italic">No discussions yet. Be the first 💬</p>
           </div>
         ) : (
           <>

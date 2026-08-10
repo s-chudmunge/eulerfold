@@ -19,7 +19,7 @@ from app.core.supabase_client import get_supabase_client
 from app.schemas import RoadmapCreate, RoadmapMe, RoadmapRead, RoadmapSave, User, ProgressUpdate, RoadmapExtend, RoadmapStatusUpdate, ManualBuildRequest, JobRoadmapCreate, ExternalRoadmapCreate, SyncSkillsRequest, UrlRoadmapCreate, SyllabusRoadmapCreate, SkillGapRoadmapCreate, DiagnosticQuizCreate, DiagnosticQuizEvaluate
 from app.utils.ai_client import generate_text, generate_text_stream, clean_json_string, robust_json_loads, log_backend_ai_usage
 from app.utils.resend_client import send_onboarding_email
-from app.utils.youtube_client import search_youtube_videos
+from app.utils.youtube_client import search_youtube_videos, find_module_playlist, match_playlist_video_to_topic
 from app.core.coins import EulerCoins
 from app.utils.eulercoins import award_coins
 from app.utils.streaks import track_activity
@@ -620,7 +620,7 @@ Begin the JSON output immediately.
                 for module in new_modules:
                     for topic in module.get("topics", []):
                         search_query = topic.get("youtube_search_query") or f"{topic['title']}"
-                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(payload, 'strict_official_sources', False))
+                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(payload, 'strict_official_sources', False), subject_context=roadmap_plan.get("title", ""))
                         if results:
                             topic["youtube_video_id"] = results[0]["video_id"]
                             topic["youtube_video_title"] = results[0]["video_title"]
@@ -935,7 +935,7 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
                 if settings.YOUTUBE_API_KEY:
                     try:
                         search_query = topic.get("youtube_search_query") or f"{topic['title']}"
-                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(roadmap_create, 'strict_official_sources', False))
+                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(roadmap_create, 'strict_official_sources', False), subject_context=roadmap_plan.get("title", ""))
                         if results:
                             topic["youtube_video_id"] = results[0]["video_id"]
                             topic["youtube_video_title"] = results[0]["video_title"]
@@ -1037,7 +1037,7 @@ async def save_external_roadmap(
             if settings.YOUTUBE_API_KEY:
                 try:
                     search_query = topic.get("youtube_search_query") or f"{topic['title']}"
-                    results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(roadmap_create, 'strict_official_sources', False))
+                    results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(roadmap_create, 'strict_official_sources', False), subject_context=roadmap_plan.get("title", ""))
                     if results:
                         topic["youtube_video_id"] = results[0]["video_id"]
                         topic["youtube_video_title"] = results[0]["video_title"]
@@ -1203,7 +1203,6 @@ Duration: {payload.time_value} {payload.time_unit}.
             module["id"] = f"module_{i+1}"
             if not module.get("outcome"):
                  module["outcome"] = "By the end of this module you will be able to apply the listed topics and solve basic related problems."
-            
             for t_idx, topic in enumerate(module.get("topics", [])):
                 if not isinstance(topic, dict): continue
                 topic["id"] = f"topic_{i+1}_{t_idx+1}"
@@ -1216,7 +1215,7 @@ Duration: {payload.time_value} {payload.time_unit}.
                     try:
                         clean_title = roadmap_plan['title'].replace("Job Decoded: ", "").split("@")[0].strip()
                         search_query = topic.get("youtube_search_query") or f"{topic['title']}"
-                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(payload, 'strict_official_sources', False))
+                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(payload, 'strict_official_sources', False), subject_context=roadmap_plan.get("title", ""))
                         if results:
                             topic["youtube_video_id"] = results[0]["video_id"]
                             topic["youtube_video_title"] = results[0]["video_title"]
@@ -1650,7 +1649,7 @@ Generate a rigorous {payload.time_value} {payload.time_unit} learning course tha
                 if settings.YOUTUBE_API_KEY:
                     try:
                         search_query = topic.get("youtube_search_query") or f"{topic['title']}"
-                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(payload, 'strict_official_sources', False))
+                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(payload, 'strict_official_sources', False), subject_context=roadmap_plan.get("title", ""))
                         if results:
                             topic["youtube_video_id"] = results[0]["video_id"]
                             topic["youtube_video_title"] = results[0]["video_title"]
@@ -1812,7 +1811,7 @@ Do not change the core subjects taught, but enrich them with practical "proof_of
                 if settings.YOUTUBE_API_KEY:
                     try:
                         search_query = topic.get("youtube_search_query") or f"{topic['title']}"
-                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(payload, 'strict_official_sources', False))
+                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(payload, 'strict_official_sources', False), subject_context=roadmap_plan.get("title", ""))
                         if results:
                             topic["youtube_video_id"] = results[0]["video_id"]
                             topic["youtube_video_title"] = results[0]["video_title"]
@@ -1971,7 +1970,7 @@ Strictly focus the entire course on bridging the gap in their weak areas.
                 if settings.YOUTUBE_API_KEY:
                     try:
                         search_query = topic.get("youtube_search_query") or f"{roadmap_plan['title']} {topic['title']} lecture"
-                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(payload, 'strict_official_sources', False))
+                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(payload, 'strict_official_sources', False), subject_context=roadmap_plan.get("title", ""))
                         if results:
                             topic["youtube_video_id"] = results[0]["video_id"]
                             topic["youtube_video_title"] = results[0]["video_title"]

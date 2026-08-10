@@ -20,10 +20,10 @@ export default function Error({
         500
       </h1>
       <h2 className="inconsolata-ui text-[1.1rem] font-bold text-text-heading mb-2 uppercase tracking-tight">
-        Something went wrong.
+        Something broke 😵💫
       </h2>
       <p className="manrope-body text-text-muted mb-8 max-w-xs">
-        Try refreshing the page.
+        Try refreshing. Usually fixes it.
       </p>
       <div className="flex flex-col items-center gap-6">
         <button

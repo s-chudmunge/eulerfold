@@ -120,7 +120,7 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
     const [statusIndex, setStatusIndex] = useState(0);
     const [isPro, setIsPro] = useState(false);
     
-    const statusMessages = ["Analyzing...", "Extracting Math...", "Checking Logic...", "Reasoning...", "Simplifying..."];
+    const statusMessages = ["Reading the paper... 📄", "Extracting the math... 🧮", "Checking the logic... 🔬", "Reasoning through it... 🧠", "Simplifying for humans... 🫠"];
 
     useEffect(() => {
         const interval = setInterval(() => {

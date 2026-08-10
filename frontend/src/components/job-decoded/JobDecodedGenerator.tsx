@@ -113,14 +113,14 @@ const JobDecodedGenerator: React.FC<JobDecodedGeneratorProps> = ({
   }, []);
 
   const loadingMessages = [
-    "Tinkering with requirements...",
-    "Shimmying through roles...",
-    "Calibrating career path...",
-    "Architecting bridge...",
-    "Distilling job skills...",
-    "Mapping the mountain...",
-    "Refactoring sequence...",
-    "Finalizing path...",
+    "Reading the JD so you don't have to... 👀",
+    "Extracting the actual requirements... 🔍",
+    "Calibrating career bridge... 🌉",
+    "Mapping skill gaps... 🗺️",
+    "Cooking your learning plan... 🍳",
+    "Almost there, trust... 🫡",
+    "Refactoring the sequence... ⚙️",
+    "Locking in your path... 🔒",
   ];
 
   useEffect(() => {
@@ -650,7 +650,7 @@ DO NOT wrap the JSON in markdown \`\`\` codeblocks. Output ONLY the JSON object 
                   <AlertCircle className="w-3.5 h-3.5 text-accent" /> Generation Takes Time
                 </p>
                 <p className="text-[10px] text-text-muted leading-relaxed font-medium">
-                  Our AI requires about 20-40 seconds to architect a complete learning roadmap. Please be patient after clicking generate.
+                  Our AI requires about 20-40 seconds to architect a complete learning roadmap. Please be patient 🫠
                 </p>
               </div>
             </div>

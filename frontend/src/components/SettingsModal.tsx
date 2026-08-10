@@ -756,7 +756,7 @@ export default function SettingsModal() {
                         <div className="w-10 h-10 rounded-full bg-callout-bg flex items-center justify-center mb-3 text-text-muted/30">
                             <Clock className="w-5 h-5" />
                         </div>
-                        <p className="inconsolata-ui text-[11px] font-bold text-text-muted uppercase tracking-widest mb-1">No transactions yet</p>
+                        <p className="inconsolata-ui text-[11px] font-bold text-text-muted uppercase tracking-widest mb-1">No transactions yet 📭</p>
                         <p className="manrope-body text-[10px] text-text-muted/60">Your purchases will appear here.</p>
                     </div>
                 )}

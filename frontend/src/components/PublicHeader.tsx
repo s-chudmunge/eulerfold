@@ -231,33 +231,25 @@ export default function PublicHeader() {
   return (
     <header 
       ref={headerRef}
-      className={`sticky top-0 z-50 w-full bg-header transition-all duration-300 ${
+      className={`sticky top-0 z-50 w-full transition-all duration-300`}
+      style={{ top: 'var(--announcement-height, 0px)' }}
+    >
+      <div className={`w-full bg-header transition-all duration-300 relative z-[60] ${
         activeDropdown 
           ? 'h-[64px] border-b border-transparent' 
           : isScrolled 
             ? 'h-[48px] border-b border-border' 
             : 'h-[64px] border-b border-transparent'
-      }`}
-      style={{ top: 'var(--announcement-height, 0px)' }}
-    >
-      {/* Backdrop */}
-      {activeDropdown && (
-        <div 
-          className="fixed inset-0 bg-black/[0.05] dark:bg-black/60 backdrop-blur-md z-[40] animate-in fade-in duration-300"
-          style={{ top: `calc(${headerHeight} + var(--announcement-height, 0px))` }}
-          onMouseEnter={() => setActiveDropdown(null)}
-        />
-      )}
-
-      <div className="max-w-7xl mx-auto h-full px-6 flex items-center justify-between relative z-[60]">
-        
-        <div className="flex items-center gap-8 h-full">
-          <Link href="/" className="group flex items-center gap-2 hover:opacity-100 transition-opacity">
-            <img src="/apple-touch-icon.png" alt="" className="w-6 h-6" />
-            <span className="text-[16px] font-bold text-text-heading tracking-tight hidden md:block">
-              Euler<span className="group-hover:text-teal-700 transition-colors duration-300">Fold</span> AI
-            </span>
-          </Link>
+      }`}>
+        <div className="max-w-7xl mx-auto h-full px-6 flex items-center justify-between">
+          
+          <div className="flex items-center gap-8 h-full">
+            <Link href="/" className="group flex items-center gap-2 hover:opacity-100 transition-opacity">
+              <img src="/apple-touch-icon.png" alt="" className="w-7 h-7" />
+              <span className="text-[18px] font-bold text-text-heading tracking-tight hidden md:block">
+                Euler<span className="text-teal-700">Fold</span> AI
+              </span>
+            </Link>
 
           <nav className="hidden lg:flex items-center gap-5 h-full">
             <MegaMenu id="platforms" data={NAVIGATION_DATA.platforms} />
@@ -291,7 +283,17 @@ export default function PublicHeader() {
             {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
         </div>
+        </div>
       </div>
+
+      {/* Backdrop */}
+      {activeDropdown && (
+        <div 
+          className="fixed inset-0 bg-black/[0.05] dark:bg-black/60 backdrop-blur-md z-[40] animate-in fade-in duration-300"
+          style={{ top: `calc(${headerHeight} + var(--announcement-height, 0px))` }}
+          onMouseEnter={() => setActiveDropdown(null)}
+        />
+      )}
 
       <div 
         className={`lg:hidden fixed inset-0 bg-header z-[45] transition-all duration-300 ${

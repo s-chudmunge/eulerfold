@@ -22,6 +22,7 @@
   --color-callout-bg: var(--callout-bg);
   --color-callout-border: var(--callout-border);
   --color-image-bg: var(--image-bg);
+  --color-subheader: var(--bg-subheader);
 }
 
 html {
@@ -55,6 +56,7 @@ html {
   --bg-main: #f0f7f6;
   --bg-sidebar: #e8f2f1;
   --bg-header: #f0f7f6;
+  --bg-subheader: #e8f2f1;
   --text-muted: #4b5563;
   --text-heading: #111111;
   --text-label: #111111;
@@ -68,12 +70,17 @@ html {
   --image-bg: #ffffff;
 }
 
-.dark {
+.dark, .force-dark {
   --background: #0f1717;
+  --color-background: #0f1717;
   --surface: #1a2424;
+  --color-surface: #1a2424;
   --text-primary: #d1d5db;
+  --color-text-primary: #d1d5db;
   --text-secondary: #9ca3af;
+  --color-text-secondary: #9ca3af;
   --border: #243333;
+  --color-border: #243333;
 
   /* Standard Font Weights for Dark Mode */
   --font-weight-normal: 400;
@@ -83,19 +90,30 @@ html {
   /* Theme variables from pages */
   --bg-main: #0f1717;
   --bg-sidebar: #131d1d;
-  --bg-header: #0f1717;
+  --color-sidebar: #131d1d;
+  --bg-header: #1a2424;
+  --color-header: #1a2424;
+  --bg-subheader: #2d3f3f;
+  --color-subheader: #2d3f3f;
   --text-muted: #9ca3af;
+  --color-text-muted: #9ca3af;
   --text-heading: #d1d5db;
+  --color-text-heading: #d1d5db;
   --text-label: #d1d5db;
-  --border: #243333;
+  --color-text-label: #d1d5db;
   --callout-bg: #1a2424;
+  --color-callout-bg: #1a2424;
   --callout-border: #2a3b3b;
+  --color-callout-border: #2a3b3b;
   --active-bg: linear-gradient(to bottom right, #1a2a2a, #0f1717);
   --active-text: #f3f4f6;
   --accent: #14b8a6;
+  --color-accent: #14b8a6;
   --accent-muted: rgba(20, 184, 166, 0.1);
   --link: #60a5fa;
+  --color-link: #60a5fa;
   --image-bg: #131d1d;
+  --color-image-bg: #131d1d;
 }
 
 body {

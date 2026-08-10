@@ -11,7 +11,7 @@ interface CelebrationProps {
     icon?: React.ReactNode;
 }
 
-export default function Celebration({ show, title = "Success!", subtitle, icon }: CelebrationProps) {
+export default function Celebration({ show, title = "Let's go! 🎉", subtitle, icon }: CelebrationProps) {
     const [mounted, setMounted] = useState(false);
     
     useEffect(() => {

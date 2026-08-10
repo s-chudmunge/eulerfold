@@ -872,9 +872,9 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                             <Trophy className="h-7 w-7 text-accent" />
                                         </div>
                                         <div>
-                                            <h3 className="text-lg font-bold text-text-heading mb-1">Congratulations! You've mastered this course.</h3>
+                                            <h3 className="text-lg font-bold text-text-heading mb-1">You actually did it. Course complete. 🏆</h3>
                                             <p className="text-text-primary text-[13px]">
-                                                You've successfully completed all topics, practices, and submissions.
+                                                Every topic. Every practice. Every submission. Locked in. 🔒
                                             </p>
                                         </div>
                                     </div>
