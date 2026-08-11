@@ -1,5 +1,5 @@
 ---
-title: "Why is the Memory Wall Bottlenecking AI?"
+title: "Why Is My LLM Inference So Slow? It's Because GPUs Can't Keep Up"
 slug: "memory-wall-ai"
 shortSlug: "memory-wall"
 author: "Sankalp — Engineering Lead"

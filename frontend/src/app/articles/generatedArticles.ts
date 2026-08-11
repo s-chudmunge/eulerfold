@@ -18,7 +18,7 @@ export interface Article {
 
 export const articles: Record<string, Article> = {
   "andrej-karpathy-first-principles": {
-    "title": "How Does Andrej Karpathy Reduce Intelligence to First Principles?",
+    "title": "How To Build Your Own Neural Network (And Why You Should)",
     "slug": "andrej-karpathy-first-principles",
     "shortSlug": "karpathy",
     "author": "Sankalp — Engineering Lead",
@@ -38,7 +38,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "arthur-mensch-mistral-efficiency": {
-    "title": "Why is Arthur Mensch Pursuing Algorithmic Minimalism at Mistral?",
+    "title": "Why Europe Is Building Its Own 'AI Armada'",
     "slug": "arthur-mensch-mistral-efficiency",
     "shortSlug": "mensch",
     "author": "Sankalp — Engineering Lead",
@@ -79,7 +79,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "caitlin-kalinowski-hardware-future": {
-    "title": "Why Does Wearable Hardware Face Mechanical Constraints?",
+    "title": "Caitlin Kalinowski Is the Woman Who Built a Pair of Augmented Reality Glasses. Here's How She Did It.",
     "slug": "caitlin-kalinowski-hardware-future",
     "shortSlug": "kalinowski",
     "author": "Sankalp — Engineering Lead",
@@ -148,7 +148,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "demis-hassabis-universal-learning": {
-    "title": "How is Demis Hassabis Building a Universal Learning Machine?",
+    "title": "How a Teenager Who Played Chess Better Than Any Human Built the Most Influential AI Lab in History",
     "slug": "demis-hassabis-universal-learning",
     "shortSlug": "hassabis",
     "author": "Sankalp — Engineering Lead",
@@ -261,7 +261,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "fei-fei-li-north-star-vision": {
-    "title": "How Did Fei-Fei Li Spark the Revolution in Visual Intelligence?",
+    "title": "How A Teenage Immigrant Built the First Map Of Human Vision",
     "slug": "fei-fei-li-north-star-vision",
     "shortSlug": "feifeili",
     "author": "Sankalp — Engineering Lead",
@@ -384,7 +384,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "gwynne-shotwell-spacex-scaling": {
-    "title": "How Does Gwynne Shotwell Maintain Operational Grip at SpaceX?",
+    "title": "How Gwynne Shotwell Built a Private Space Industry",
     "slug": "gwynne-shotwell-spacex-scaling",
     "shortSlug": "shotwell",
     "author": "Sankalp — Engineering Lead",
@@ -405,7 +405,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "how-does-ai-discover-new-materials": {
-    "title": "Accelerating Crystal Structure Discovery with GNoME",
+    "title": "Building a Materials Lab with Machine Learning",
     "slug": "how-does-ai-discover-new-materials",
     "shortSlug": "materials-discovery",
     "author": "Sankalp — Engineering Lead",
@@ -525,7 +525,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "how-is-ai-accelerating-drug-discovery": {
-    "title": "Why Geometric Fit Does Not Guarantee Biological Safety In Vivo",
+    "title": "The Failure Rate of AI-Driven Drug Discovery",
     "slug": "how-is-ai-accelerating-drug-discovery",
     "shortSlug": "drug-discovery",
     "author": "Sankalp — Engineering Lead",
@@ -554,7 +554,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "how-is-ai-building-a-digital-twin-of-the-cell": {
-    "title": "The Challenge of Multi-Omics Integration for Whole-Cell Simulation",
+    "title": "What if medicine were more like software?",
     "slug": "how-is-ai-building-a-digital-twin-of-the-cell",
     "shortSlug": "digital-twin",
     "author": "Sankalp — Engineering Lead",
@@ -612,7 +612,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "how-is-ai-helping-us-decode-animal-communication": {
-    "title": "Decoding Non-Human Communication without a Rosetta Stone",
+    "title": "How Sperm Whales Are Using Math to Speak a Universal Language",
     "slug": "how-is-ai-helping-us-decode-animal-communication",
     "shortSlug": "animal-communication",
     "author": "Sankalp — Engineering Lead",
@@ -671,7 +671,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "ilya-sutskever-superalignment": {
-    "title": "Why is Ilya Sutskever Devoted to Machine Scale?",
+    "title": "The Man Who Built a God",
     "slug": "ilya-sutskever-superalignment",
     "shortSlug": "sutskever",
     "author": "Sankalp — Engineering Lead",
@@ -720,7 +720,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "jb-straubel-circular-alchemist": {
-    "title": "Why is JB Straubel Building a Circular Battery Supply Chain?",
+    "title": "Why Tesla's Co-Creator Is Building a Refinery That Turns Junk Into Gold",
     "slug": "jb-straubel-circular-alchemist",
     "shortSlug": "straubel",
     "author": "Sankalp — Engineering Lead",
@@ -760,7 +760,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "jonathan-ross-lpu-architecture": {
-    "title": "How Does Jonathan Ross Eliminate Bottlenecks with the LPU Paradigm?",
+    "title": "How one Silicon Valley dropout built the fastest-inference computer in the world",
     "slug": "jonathan-ross-lpu-architecture",
     "shortSlug": "ross",
     "author": "Sankalp — Engineering Lead",
@@ -800,7 +800,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "latent-space": {
-    "title": "The Limits of Linear Interpolation in High-Dimensional Latent Space",
+    "title": "Why Generative Models Are Bad at Blending Images",
     "slug": "latent-space",
     "shortSlug": "latent-space",
     "author": "Sankalp — Engineering Lead",
@@ -841,7 +841,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "marc-raibert-gospel-balance": {
-    "title": "How Does Marc Raibert Build Robots with Dynamic Biological Stability?",
+    "title": "How a boy on a unicycle changed the course of robotics",
     "slug": "marc-raibert-gospel-balance",
     "shortSlug": "raibert",
     "author": "Sankalp — Engineering Lead",
@@ -879,7 +879,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "memory-wall-ai": {
-    "title": "Why is the Memory Wall Bottlenecking AI?",
+    "title": "Why Is My LLM Inference So Slow? It's Because GPUs Can't Keep Up",
     "slug": "memory-wall-ai",
     "shortSlug": "memory-wall",
     "author": "Sankalp — Engineering Lead",
@@ -987,7 +987,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "multi-objective-optimization": {
-    "title": "What is Multi-Objective Optimization?",
+    "title": "AI Is Great at Finding the Best Trade-Off Between Multiple Goals",
     "slug": "multi-objective-optimization",
     "shortSlug": "moo",
     "author": "Sankalp — Engineering Lead",
@@ -1015,7 +1015,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "near-memory-computing": {
-    "title": "The Shift to Near-Memory Computing",
+    "title": "The Distance Tax of Modern Computer Architecture",
     "slug": "near-memory-computing",
     "shortSlug": "near-memory",
     "author": "Sankalp — Engineering Lead",
@@ -1083,7 +1083,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "overfitting": {
-    "title": "Why is Memorization a Software Defect in AI?",
+    "title": "How to Train Models Until They Grok",
     "slug": "overfitting",
     "shortSlug": "overfitting",
     "author": "Sankalp — Engineering Lead",
@@ -1209,7 +1209,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "refik-anadol-architecture-memory": {
-    "title": "How Does Refik Anadol Visualize Neural Archives Through Fluid Sculptures?",
+    "title": "How an Architect Who Believed in 'Intelligent Architecture' Built a New Kind of Museum",
     "slug": "refik-anadol-architecture-memory",
     "shortSlug": "anadol",
     "author": "Sankalp — Engineering Lead",
@@ -1258,7 +1258,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "rlhf": {
-    "title": "Reward Hacking and Alignment Challenges in RLHF",
+    "title": "How Reinforcement Learning from Human Feedback Works, And Why It's Dangerous",
     "slug": "rlhf",
     "shortSlug": "rlhf",
     "author": "Sankalp — Engineering Lead",
@@ -1286,7 +1286,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "robert-langer-invention-factory": {
-    "title": "How is Robert Langer Engineering Precision Drug Delivery Systems?",
+    "title": "'How One Man Built the Largest \"Invention Factory\" in Human History'",
     "slug": "robert-langer-invention-factory",
     "shortSlug": "langer",
     "author": "Sankalp — Engineering Lead",
@@ -1305,7 +1305,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "rowhammer-vulnerability": {
-    "title": "How Does Rowhammer Break DRAM Isolation?",
+    "title": "How the Physics of Modern DRAM Is Ruining Your Security",
     "slug": "rowhammer-vulnerability",
     "shortSlug": "rowhammer",
     "author": "Sankalp — Engineering Lead",
@@ -1396,7 +1396,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "terence-tao-unfolding-infinite": {
-    "title": "How Does Terence Tao Search for Logic Across the Infinite?",
+    "title": "A Boy Who Played With a Garden Hose And Discovered Prime Numbers",
     "slug": "terence-tao-unfolding-infinite",
     "shortSlug": "tao",
     "author": "Sankalp — Engineering Lead",
@@ -1415,7 +1415,7 @@ export const articles: Record<string, Article> = {
     "d2Cache": {}
   },
   "tokens": {
-    "title": "Why Can't Machines Actually Read?",
+    "title": "The Token Tax",
     "slug": "tokens",
     "shortSlug": "tokens",
     "author": "Sankalp — Engineering Lead",

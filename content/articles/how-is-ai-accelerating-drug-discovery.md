@@ -1,5 +1,5 @@
 ---
-title: "Why Geometric Fit Does Not Guarantee Biological Safety In Vivo"
+title: "The Failure Rate of AI-Driven Drug Discovery"
 slug: "how-is-ai-accelerating-drug-discovery"
 shortSlug: "drug-discovery"
 author: "Sankalp — Engineering Lead"

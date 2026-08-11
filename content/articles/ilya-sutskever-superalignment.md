@@ -1,5 +1,5 @@
 ---
-title: "Why is Ilya Sutskever Devoted to Machine Scale?"
+title: "The Man Who Built a God"
 slug: "ilya-sutskever-superalignment"
 shortSlug: "sutskever"
 author: "Sankalp — Engineering Lead"

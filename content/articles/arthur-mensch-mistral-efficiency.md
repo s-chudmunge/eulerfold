@@ -1,5 +1,5 @@
 ---
-title: "Why is Arthur Mensch Pursuing Algorithmic Minimalism at Mistral?"
+title: "Why Europe Is Building Its Own 'AI Armada'"
 slug: "arthur-mensch-mistral-efficiency"
 shortSlug: "mensch"
 author: "Sankalp — Engineering Lead"

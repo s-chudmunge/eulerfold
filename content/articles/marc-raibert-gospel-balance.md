@@ -1,5 +1,5 @@
 ---
-title: "How Does Marc Raibert Build Robots with Dynamic Biological Stability?"
+title: "How a boy on a unicycle changed the course of robotics"
 slug: "marc-raibert-gospel-balance"
 shortSlug: "raibert"
 author: "Sankalp — Engineering Lead"

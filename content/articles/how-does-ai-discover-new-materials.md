@@ -1,5 +1,5 @@
 ---
-title: "Accelerating Crystal Structure Discovery with GNoME"
+title: "Building a Materials Lab with Machine Learning"
 slug: "how-does-ai-discover-new-materials"
 shortSlug: "materials-discovery"
 author: "Sankalp — Engineering Lead"

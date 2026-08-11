@@ -1,5 +1,5 @@
 ---
-title: "The Challenge of Multi-Omics Integration for Whole-Cell Simulation"
+title: "What if medicine were more like software?"
 slug: "how-is-ai-building-a-digital-twin-of-the-cell"
 shortSlug: "digital-twin"
 author: "Sankalp — Engineering Lead"

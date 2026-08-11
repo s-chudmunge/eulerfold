@@ -1,5 +1,5 @@
 ---
-title: "How Does Refik Anadol Visualize Neural Archives Through Fluid Sculptures?"
+title: "How an Architect Who Believed in 'Intelligent Architecture' Built a New Kind of Museum"
 slug: "refik-anadol-architecture-memory"
 shortSlug: "anadol"
 author: "Sankalp — Engineering Lead"

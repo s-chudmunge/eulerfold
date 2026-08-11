@@ -1,5 +1,5 @@
 ---
-title: "How Did Fei-Fei Li Spark the Revolution in Visual Intelligence?"
+title: "How A Teenage Immigrant Built the First Map Of Human Vision"
 slug: "fei-fei-li-north-star-vision"
 shortSlug: "feifeili"
 author: "Sankalp — Engineering Lead"

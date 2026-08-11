@@ -1,5 +1,5 @@
 ---
-title: "Reward Hacking and Alignment Challenges in RLHF"
+title: "How Reinforcement Learning from Human Feedback Works, And Why It's Dangerous"
 slug: "rlhf"
 shortSlug: "rlhf"
 author: "Sankalp — Engineering Lead"

@@ -1,5 +1,5 @@
 ---
-title: "Why is Memorization a Software Defect in AI?"
+title: "How to Train Models Until They Grok"
 slug: "overfitting"
 shortSlug: "overfitting"
 author: "Sankalp — Engineering Lead"

@@ -1,5 +1,5 @@
 ---
-title: "What is Multi-Objective Optimization?"
+title: "AI Is Great at Finding the Best Trade-Off Between Multiple Goals"
 slug: "multi-objective-optimization"
 shortSlug: "moo"
 author: "Sankalp — Engineering Lead"

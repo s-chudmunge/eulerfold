@@ -1,5 +1,5 @@
 ---
-title: "How is Robert Langer Engineering Precision Drug Delivery Systems?"
+title: 'How One Man Built the Largest "Invention Factory" in Human History'
 slug: "robert-langer-invention-factory"
 shortSlug: "langer"
 author: "Sankalp — Engineering Lead"

@@ -345,34 +345,35 @@ def robust_json_loads(text: str):
         return {}
         
     cleaned = clean_json_string(text)
+    parsed = None
     
     # Strategy 1: Standard JSON
     try:
-        return json.loads(cleaned)
+        parsed = json.loads(cleaned)
     except json.JSONDecodeError as e:
         logger.debug(f"Standard json.loads failed: {e}")
-        pass
         
     # Strategy 2: json_repair
-    if HAS_JSON_REPAIR:
+    if parsed is None and HAS_JSON_REPAIR:
         try:
-            return repair_loads(cleaned)
+            parsed = repair_loads(cleaned)
         except Exception as e:
             logger.warning(f"json_repair failed: {e}")
             
     # Strategy 3: Manual repair for common AI issues
-    try:
-        # Remove trailing commas before closing braces/brackets
-        fixed = re.sub(r',\s*([\]\}])', r'\1', cleaned)
-        # Fix missing commas between objects/arrays
-        fixed = re.sub(r'\}\s*\{', '}, {', fixed)
-        fixed = re.sub(r'\]\s*\[', '], [', fixed)
-        return json.loads(fixed)
-    except:
-        pass
-        
+    if parsed is None:
+        try:
+            # Remove trailing commas before closing braces/brackets
+            fixed = re.sub(r',\s*([\]\}])', r'\1', cleaned)
+            # Fix missing commas between objects/arrays
+            fixed = re.sub(r'\}\s*\{', '}, {', fixed)
+            fixed = re.sub(r'\]\s*\[', '], [', fixed)
+            parsed = json.loads(fixed)
+        except:
+            pass
+            
     # Strategy 4: Last ditch - attempt to find the last valid closing character
-    if HAS_JSON_REPAIR:
+    if parsed is None and HAS_JSON_REPAIR:
         try:
             open_braces = cleaned.count('{') - cleaned.count('}')
             open_brackets = cleaned.count('[') - cleaned.count(']')
@@ -383,12 +384,38 @@ def robust_json_loads(text: str):
             if open_braces > 0:
                 last_ditch += '}' * open_braces
                 
-            return repair_loads(last_ditch)
+            parsed = repair_loads(last_ditch)
         except:
             pass
 
-    logger.error(f"Failed to parse JSON. Length: {len(cleaned)}. Error context: {cleaned[-500:]}")
-    return json.loads(cleaned)
+    if parsed is None:
+        logger.error(f"Failed to parse JSON. Length: {len(cleaned)}. Error context: {cleaned[-500:]}")
+        parsed = json.loads(cleaned)
+        
+    # Handle double-encoded JSON strings
+    if isinstance(parsed, str):
+        try:
+            parsed = json.loads(parsed)
+        except Exception:
+            pass
+            
+    # Ensure dict wrapping for common AI array hallucinations
+    if isinstance(parsed, list):
+        if len(parsed) == 1 and isinstance(parsed[0], dict):
+            # Unwrap if it's just a single dictionary wrapped in an array
+            parsed = parsed[0]
+        else:
+            # If it's a list of modules or mappings, wrap it in a dict
+            if len(parsed) > 0 and isinstance(parsed[0], dict) and "canonical_skill" in parsed[0]:
+                parsed = {"mappings": parsed}
+            else:
+                parsed = {"title": "Generated Content", "description": "Auto-generated content.", "modules": parsed, "data": parsed}
+                
+    # Final fallback if it's still not a dict (e.g. it was just an int, or an unparseable string)
+    if not isinstance(parsed, dict):
+        parsed = {"title": "Generated Content", "description": str(parsed), "modules": [], "data": parsed}
+                
+    return parsed
 
 def log_backend_ai_usage(sb, user_id, subject, usage, source="backend", status="success", error_message=None):
     if not usage: return

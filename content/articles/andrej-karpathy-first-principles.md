@@ -1,5 +1,5 @@
 ---
-title: "How Does Andrej Karpathy Reduce Intelligence to First Principles?"
+title: "How To Build Your Own Neural Network (And Why You Should)"
 slug: "andrej-karpathy-first-principles"
 shortSlug: "karpathy"
 author: "Sankalp — Engineering Lead"

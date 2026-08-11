@@ -1,5 +1,5 @@
 ---
-title: "How Does Gwynne Shotwell Maintain Operational Grip at SpaceX?"
+title: "How Gwynne Shotwell Built a Private Space Industry"
 slug: "gwynne-shotwell-spacex-scaling"
 shortSlug: "shotwell"
 author: "Sankalp — Engineering Lead"

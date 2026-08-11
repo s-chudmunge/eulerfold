@@ -1,5 +1,5 @@
 ---
-title: "How is Demis Hassabis Building a Universal Learning Machine?"
+title: "How a Teenager Who Played Chess Better Than Any Human Built the Most Influential AI Lab in History"
 slug: "demis-hassabis-universal-learning"
 shortSlug: "hassabis"
 author: "Sankalp — Engineering Lead"

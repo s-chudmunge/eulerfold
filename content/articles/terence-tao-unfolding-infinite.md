@@ -1,5 +1,5 @@
 ---
-title: "How Does Terence Tao Search for Logic Across the Infinite?"
+title: "A Boy Who Played With a Garden Hose And Discovered Prime Numbers"
 slug: "terence-tao-unfolding-infinite"
 shortSlug: "tao"
 author: "Sankalp — Engineering Lead"

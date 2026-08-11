@@ -1,5 +1,5 @@
 ---
-title: "The Shift to Near-Memory Computing"
+title: "The Distance Tax of Modern Computer Architecture"
 slug: "near-memory-computing"
 shortSlug: "near-memory"
 author: "Sankalp — Engineering Lead"

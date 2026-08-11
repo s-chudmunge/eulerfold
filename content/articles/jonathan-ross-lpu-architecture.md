@@ -1,5 +1,5 @@
 ---
-title: "How Does Jonathan Ross Eliminate Bottlenecks with the LPU Paradigm?"
+title: "How one Silicon Valley dropout built the fastest-inference computer in the world"
 slug: "jonathan-ross-lpu-architecture"
 shortSlug: "ross"
 author: "Sankalp — Engineering Lead"

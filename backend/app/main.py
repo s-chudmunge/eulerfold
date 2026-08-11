@@ -139,10 +139,13 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
         content={"detail": exc.errors(), "body": exc.body},
     )
 
+from app.routers import roadmaps_generate_url
+
 # Prioritize auth router
 app.include_router(auth.router)
 app.include_router(health.router)
 app.include_router(roadmaps.router)
+app.include_router(roadmaps_generate_url.router)
 app.include_router(submissions_router.router)
 app.include_router(explore.router)
 app.include_router(coins.router)

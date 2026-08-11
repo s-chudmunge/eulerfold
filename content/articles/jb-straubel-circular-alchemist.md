@@ -1,5 +1,5 @@
 ---
-title: "Why is JB Straubel Building a Circular Battery Supply Chain?"
+title: "Why Tesla's Co-Creator Is Building a Refinery That Turns Junk Into Gold"
 slug: "jb-straubel-circular-alchemist"
 shortSlug: "straubel"
 author: "Sankalp — Engineering Lead"

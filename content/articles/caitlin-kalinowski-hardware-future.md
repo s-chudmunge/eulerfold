@@ -1,5 +1,5 @@
 ---
-title: "Why Does Wearable Hardware Face Mechanical Constraints?"
+title: "Caitlin Kalinowski Is the Woman Who Built a Pair of Augmented Reality Glasses. Here's How She Did It."
 slug: "caitlin-kalinowski-hardware-future"
 shortSlug: "kalinowski"
 author: "Sankalp — Engineering Lead"

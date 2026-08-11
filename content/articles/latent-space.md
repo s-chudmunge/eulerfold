@@ -1,5 +1,5 @@
 ---
-title: "The Limits of Linear Interpolation in High-Dimensional Latent Space"
+title: "Why Generative Models Are Bad at Blending Images"
 slug: "latent-space"
 shortSlug: "latent-space"
 author: "Sankalp — Engineering Lead"

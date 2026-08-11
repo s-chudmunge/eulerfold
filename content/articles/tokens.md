@@ -1,5 +1,5 @@
 ---
-title: "Why Can't Machines Actually Read?"
+title: "The Token Tax"
 slug: "tokens"
 shortSlug: "tokens"
 author: "Sankalp — Engineering Lead"

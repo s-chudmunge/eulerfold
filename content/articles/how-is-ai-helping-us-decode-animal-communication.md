@@ -1,5 +1,5 @@
 ---
-title: "Decoding Non-Human Communication without a Rosetta Stone"
+title: "How Sperm Whales Are Using Math to Speak a Universal Language"
 slug: "how-is-ai-helping-us-decode-animal-communication"
 shortSlug: "animal-communication"
 author: "Sankalp — Engineering Lead"
