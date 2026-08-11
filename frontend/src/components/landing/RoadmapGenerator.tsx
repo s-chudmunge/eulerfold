@@ -140,6 +140,10 @@ const RoadmapGenerator: React.FC<RoadmapGeneratorProps> = ({
   useEffect(() => {
     setShowOptionalFields(false);
     checkConfig();
+
+    const handleOpenGallery = () => setIsLocalAIModalOpen(true);
+    window.addEventListener('open_local_ai_gallery', handleOpenGallery);
+    return () => window.removeEventListener('open_local_ai_gallery', handleOpenGallery);
   }, []);
 
   const currentRoleRef = useRef<HTMLDivElement>(null);

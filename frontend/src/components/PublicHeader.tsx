@@ -25,7 +25,8 @@ const NAVIGATION_DATA = {
         links: [
           { label: "Roadmap Generator", href: "/generate", description: "AI custom courses" },
           { label: "Study Planner", href: "/planner", description: "Dynamic tracking" },
-          { label: "Practice Portal", href: "/practice", description: "Skill validation" }
+          { label: "Practice Portal", href: "/practice", description: "Skill validation" },
+          { label: "Local Playground", href: "/local-chat", description: "On-device AI Sandbox" }
         ]
       },
       {
@@ -146,7 +147,7 @@ export default function PublicHeader() {
     setIsMobileMenuOpen(false);
   }, [pathname]);
 
-  if (pathname === '/explore' || pathname.match(/^\/research-lab\/[^\/]+/) || pathname.match(/^\/u\/[^\/]+/)) return null;
+  if (pathname === '/explore' || pathname === '/local-chat' || pathname.match(/^\/research-lab\/[^\/]+/) || pathname.match(/^\/u\/[^\/]+/)) return null;
 
   const NavLink = ({ href, label }: { href: string, label: string }) => (
     <Link 
@@ -308,6 +309,7 @@ export default function PublicHeader() {
               <Link href="/generate" className="text-2xl font-bold text-text-heading hover:text-teal-700 transition-colors">Generator</Link>
               <Link href="/planner" className="text-2xl font-bold text-text-heading hover:text-teal-700 transition-colors">Planner</Link>
               <Link href="/practice" className="text-2xl font-bold text-text-heading hover:text-teal-700 transition-colors">Practice</Link>
+              <Link href="/local-chat" className="text-2xl font-bold text-text-heading hover:text-teal-700 transition-colors">Local Chat</Link>
             </div>
 
             <div className="flex flex-col gap-4 border-t border-border pt-8">

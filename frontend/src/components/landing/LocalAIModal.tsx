@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { X, Cpu, HardDrive, Download, AlertTriangle, PlayCircle, Loader2, Search, Sparkles, Terminal, Layers } from 'lucide-react';
+import { X, Cpu, HardDrive, Download, AlertTriangle, PlayCircle, Loader2, Search, Sparkles, Terminal, Layers, MessageSquare } from 'lucide-react';
 import { hasModelInCache, CreateMLCEngine, prebuiltAppConfig } from '@mlc-ai/web-llm';
+import { useRouter } from 'next/navigation';
 
 interface LocalAIModalProps {
   isOpen: boolean;
@@ -115,6 +116,7 @@ export type CatalogModelItem = {
 };
 
 export function LocalAIModal({ isOpen, onClose, onSelectModel }: LocalAIModalProps) {
+  const router = useRouter();
   const [webGPUStatus, setWebGPUStatus] = useState<'checking' | 'supported' | 'unsupported'>('checking');
   const [cachedModels, setCachedModels] = useState<Record<string, boolean>>({});
   const [downloadProgress, setDownloadProgress] = useState<{ [key: string]: string }>({});
@@ -437,15 +439,33 @@ export function LocalAIModal({ isOpen, onClose, onSelectModel }: LocalAIModalPro
 
                           <div className="flex flex-col items-end shrink-0 gap-2">
                             {isCached ? (
-                              <button
-                                onClick={() => {
-                                  onSelectModel(model.id, model.name);
-                                  onClose();
-                                }}
-                                className="px-4 py-2 bg-accent text-white text-[10px] font-bold uppercase tracking-widest rounded-md flex items-center gap-1.5 hover:opacity-90 shadow-md shadow-accent/20"
-                              >
-                                <PlayCircle className="w-3.5 h-3.5" /> Select Model
-                              </button>
+                              <div className="flex items-center gap-2">
+                                <button
+                                  onClick={() => {
+                                    localStorage.setItem('localAIModelId', model.id);
+                                    localStorage.setItem('localAIModelName', model.name);
+                                    localStorage.setItem('local_ai_model', model.id);
+                                    localStorage.setItem('local_ai_model_name', model.name);
+                                    localStorage.setItem('use_local_ai', 'true');
+                                    localStorage.setItem('use_openrouter', 'false');
+                                    window.dispatchEvent(new Event('ai_settings_changed'));
+                                    onClose();
+                                    router.push('/local-chat');
+                                  }}
+                                  className="px-4 py-2 bg-sidebar border border-border hover:border-accent/40 text-[10px] font-bold uppercase tracking-widest rounded-md flex items-center gap-1.5 transition-colors"
+                                >
+                                  <MessageSquare className="w-3.5 h-3.5" /> Chat
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    onSelectModel(model.id, model.name);
+                                    onClose();
+                                  }}
+                                  className="px-4 py-2 bg-accent text-white text-[10px] font-bold uppercase tracking-widest rounded-md flex items-center gap-1.5 hover:opacity-90 shadow-md shadow-accent/20"
+                                >
+                                  <PlayCircle className="w-3.5 h-3.5" /> Select Model
+                                </button>
+                              </div>
                             ) : (
                               <button
                                 onClick={() => handleDownload(model.id)}
@@ -535,15 +555,33 @@ export function LocalAIModal({ isOpen, onClose, onSelectModel }: LocalAIModalPro
                             </span>
 
                             {isCached ? (
-                              <button
-                                onClick={() => {
-                                  onSelectModel(m.id, m.name);
-                                  onClose();
-                                }}
-                                className="px-3 py-1.5 bg-accent text-white text-[9px] font-bold uppercase tracking-widest rounded flex items-center gap-1 hover:opacity-90"
-                              >
-                                <PlayCircle className="w-3 h-3" /> Select
-                              </button>
+                              <div className="flex items-center gap-1.5">
+                                <button
+                                  onClick={() => {
+                                    localStorage.setItem('localAIModelId', m.id);
+                                    localStorage.setItem('localAIModelName', m.name);
+                                    localStorage.setItem('local_ai_model', m.id);
+                                    localStorage.setItem('local_ai_model_name', m.name);
+                                    localStorage.setItem('use_local_ai', 'true');
+                                    localStorage.setItem('use_openrouter', 'false');
+                                    window.dispatchEvent(new Event('ai_settings_changed'));
+                                    onClose();
+                                    router.push('/local-chat');
+                                  }}
+                                  className="px-2.5 py-1.5 bg-sidebar border border-border hover:border-accent/40 text-[9px] font-bold uppercase tracking-widest rounded flex items-center gap-1 transition-colors"
+                                >
+                                  <MessageSquare className="w-3 h-3" /> Chat
+                                </button>
+                                <button
+                                  onClick={() => {
+                                    onSelectModel(m.id, m.name);
+                                    onClose();
+                                  }}
+                                  className="px-3 py-1.5 bg-accent text-white text-[9px] font-bold uppercase tracking-widest rounded flex items-center gap-1 hover:opacity-90"
+                                >
+                                  <PlayCircle className="w-3 h-3" /> Select
+                                </button>
+                              </div>
                             ) : (
                               <button
                                 onClick={() => handleDownload(m.id)}
