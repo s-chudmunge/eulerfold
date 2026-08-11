@@ -99,6 +99,27 @@ export interface DiscountStatus {
     endTime: Date;
 }
 
+/**
+ * Independence Week Sale: Aug 11 – Aug 17, 2026 (IST).
+ * ₹99/mo for India, $2/mo for others.
+ */
+export const INDEPENDENCE_SALE_PRICE_INR = 99;
+export const INDEPENDENCE_SALE_PRICE_USD = 2;
+
+export const INDEPENDENCE_SALE_START = new Date('2026-08-11T00:00:00+05:30');
+export const INDEPENDENCE_SALE_END   = new Date('2026-08-18T00:00:00+05:30'); // exclusive
+
+export function isIndependenceWeekSale(): boolean {
+    const now = new Date();
+    return now >= INDEPENDENCE_SALE_START && now < INDEPENDENCE_SALE_END;
+}
+
+export function getIndependenceSaleRemainingSeconds(): number {
+    const now = new Date();
+    const diff = Math.max(0, Math.floor((INDEPENDENCE_SALE_END.getTime() - now.getTime()) / 1000));
+    return diff;
+}
+
 export function getDiscountStatus(): DiscountStatus {
     const now = new Date();
     const startTimeIST = new Date('2026-05-18T00:00:00+05:30');

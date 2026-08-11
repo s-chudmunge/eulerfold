@@ -3,12 +3,13 @@
 import React from 'react';
 import { Sparkles, Briefcase, Link2, BookOpen, Target, FileSearch, Calendar, Zap, ArrowRight, Microscope } from 'lucide-react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 interface Product {
   id: string;
   title: string;
+  category: string;
   description: string;
-  longDescription: string;
   icon: React.ElementType;
   href: string;
 }
@@ -17,72 +18,72 @@ const products: Product[] = [
   {
     id: 'architect', 
     title: "AI Architect",
-    description: "Build custom, technical courses from any topic.",
-    longDescription: "Enter any subject and get a complete curriculum with modules, theory, videos, and assessments. All references are verified with live web searches.",
+    category: "Generation",
+    description: "Enter any subject to generate a curriculum with verified references, videos, theory, and assessments.",
     icon: Sparkles, 
     href: "/generate"
   },
   {
     id: 'job', 
     title: "Job Decoded",
-    description: "Reverse engineer any job posting into a course.",
-    longDescription: "Paste a job description from LinkedIn or Indeed. Our AI extracts every required skill and builds a targeted curriculum so you learn exactly what employers need.",
+    category: "Career",
+    description: "Paste a job description from LinkedIn or Indeed to extract required skills and turn them into a course.",
     icon: Briefcase, 
     href: "/generate?mode=job"
   },
   {
     id: 'url', 
     title: "Deconstruct URL",
-    description: "Turn any GitHub repo or docs link into a curriculum.",
-    longDescription: "Paste a link to a GitHub repository, technical blog, or documentation page. The AI deconstructs the content and builds a course leading to mastery of that topic.",
+    category: "Sources",
+    description: "Convert documentation pages, technical blogs, or GitHub repositories directly into an interactive curriculum.",
     icon: Link2, 
     href: "/generate?mode=url"
   },
   {
     id: 'syllabus', 
     title: "Syllabus Parser",
-    description: "Convert any course syllabus into an interactive course.",
-    longDescription: "Got topics from a college class or textbook? Paste the syllabus and we transform it into an interactive EulerFold course with videos, theory, and assessments.",
+    category: "Import",
+    description: "Transform course syllabi, textbook outlines, or lecture topics into structured learning modules.",
     icon: BookOpen, 
     href: "/generate?mode=syllabus"
   },
   {
     id: 'gaps', 
     title: "Skill Gap Analyzer",
-    description: "Take a quiz, find your gaps, fix them with a course.",
-    longDescription: "Enter your target role and current skills, then take a 5-minute diagnostic quiz. Based on what you get wrong, we build a course focused strictly on filling your knowledge gaps.",
+    category: "Diagnostic",
+    description: "Take a quick diagnostic quiz for your target role and generate a course tailored to your knowledge gaps.",
     icon: Target, 
     href: "/generate?mode=gaps"
   },
   {
     id: 'decode', 
     title: "Research Decoded",
-    description: "Complex papers broken down into first-principles blueprints.",
-    longDescription: "Submit any academic paper and get a technical breakdown. We convert dense research into understandable blueprints with math, diagrams, and practical applications.",
+    category: "Analysis",
+    description: "Read technical breakdowns of complex academic papers with first-principles explanations and math.",
     icon: FileSearch, 
     href: "/research-decoded"
   },
   {
     id: 'lab', 
     title: "Research Lab",
-    description: "Your environment for exploring advanced technical papers.",
-    longDescription: "Dive into cutting-edge architectures and ideas. The Research Lab provides an interactive space to dissect complex technical documents and experiment with new concepts.",
+    category: "Exploration",
+    description: "Explore technical documents and dissect complex research architectures in an interactive environment.",
     icon: Microscope, 
     href: "/research-lab"
   },
   {
     id: 'planner', 
     title: "Study Planner",
-    description: "Dynamic daily schedules built from your courses.",
-    longDescription: "Create a daily study schedule from your courses. Pick your intensity, set available hours, and get a structured plan with tasks to complete each day.",
+    category: "Workflow",
+    description: "Build daily study schedules from your active courses based on your available hours and target pace.",
     icon: Calendar, 
     href: "/planner"
   },
   {
     id: 'practice', 
     title: "Practice Portal",
-    description: "Prove your knowledge with AI-powered assessments.",
-    longDescription: "Test what you've learned with AI-generated practice problems, code challenges, and recall exercises. Submit your work and get immediate technical reviews.",
+    category: "Evaluation",
+    description: "Complete AI-reviewed homework assignments and practice exercises to verify your understanding.",
     icon: Zap, 
     href: "/practice"
   },
@@ -91,51 +92,83 @@ const products: Product[] = [
 export default function ProductEcosystem() {
   return (
     <section className="py-20 md:py-32 px-6 bg-background relative border-t border-border/30">
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-6xl mx-auto">
         
-        <div className="max-w-4xl mb-16">
-          <span className="block text-[12px] md:text-[13px] text-accent font-bold uppercase tracking-[0.2em] mb-4">
+        {/* Section Header */}
+        <div className="max-w-2xl mb-14 md:mb-18">
+          <motion.span 
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="block text-[11px] font-bold uppercase tracking-[0.2em] text-accent mb-4"
+          >
             The EulerFold Ecosystem
-          </span>
-          <h2 className="text-3xl md:text-[42px] font-bold text-text-heading mb-6 tracking-tight leading-[1.15]">
-            Everything you need to deconstruct complex topics, build structured courses, and{' '}
-            <span className="font-serif italic text-accent opacity-90 text-[36px] md:text-[50px] tracking-normal font-medium">prove your technical mastery.</span>
-          </h2>
+          </motion.span>
+          <motion.h2 
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.08 }}
+            className="text-2xl md:text-[2.25rem] font-bold text-text-heading tracking-tight leading-[1.2] mb-4"
+          >
+            Tools to deconstruct topics, build courses, and prove mastery.
+          </motion.h2>
+          <motion.p 
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.14 }}
+            className="text-[14px] text-text-muted leading-relaxed"
+          >
+            Explore our specialized tools designed for deep technical learning and skill verification.
+          </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {products.map((product) => {
+        {/* Flush Grid Cards Container */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px border border-border/50 rounded-lg overflow-hidden bg-border/50">
+          {products.map((product, index) => {
             const Icon = product.icon;
             return (
-              <div 
+              <motion.div
                 key={product.id}
-                className="flex flex-col p-6 rounded-lg border border-border bg-sidebar/10 hover:bg-sidebar/30 transition-colors"
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: (index % 3) * 0.08 }}
               >
-                <div className="w-10 h-10 rounded-md bg-sidebar border border-border/60 flex items-center justify-center mb-5 shadow-sm">
-                  <Icon className="w-5 h-5 text-accent" />
-                </div>
-                
-                <h3 className="text-[17px] font-bold text-text-heading mb-2">
-                  {product.title}
-                </h3>
-                
-                <p className="text-[14px] font-bold text-text-primary mb-3 leading-snug">
-                  {product.description}
-                </p>
-                
-                <p className="text-[13px] text-text-muted leading-relaxed mb-6 flex-1">
-                  {product.longDescription}
-                </p>
-                
-                <div className="mt-auto pt-4 border-t border-border/40">
-                  <Link 
-                    href={product.href}
-                    className="inline-flex items-center gap-1.5 text-[13px] font-bold text-accent hover:text-teal-800 transition-colors"
-                  >
-                    Explore feature <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                </div>
-              </div>
+                <Link
+                  href={product.href}
+                  className="group flex flex-col justify-between h-full bg-background p-6 lg:p-7 hover:bg-sidebar transition-colors duration-300"
+                >
+                  <div>
+                    {/* Category Tag & Icon */}
+                    <div className="flex items-center justify-between mb-5">
+                      <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-text-muted/70">
+                        {product.category}
+                      </span>
+                      <div className="w-8 h-8 rounded-md border border-border/70 bg-background flex items-center justify-center group-hover:border-accent/30 transition-colors">
+                        <Icon className="w-4 h-4 text-text-muted group-hover:text-accent transition-colors" strokeWidth={1.5} />
+                      </div>
+                    </div>
+
+                    {/* Title */}
+                    <h3 className="inconsolata-ui text-[1.1rem] font-bold text-text-heading leading-tight mb-2.5">
+                      {product.title}
+                    </h3>
+
+                    {/* Description */}
+                    <p className="manrope-body text-[12.5px] text-text-muted leading-relaxed mb-6">
+                      {product.description}
+                    </p>
+                  </div>
+
+                  {/* Arrow Link Indicator */}
+                  <div className="pt-4 border-t border-border/40 flex items-center justify-between text-[11.5px] font-bold text-text-muted group-hover:text-accent transition-colors">
+                    <span>Explore tool</span>
+                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform duration-200" strokeWidth={1.5} />
+                  </div>
+                </Link>
+              </motion.div>
             );
           })}
         </div>

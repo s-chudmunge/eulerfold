@@ -195,26 +195,32 @@ export default async function LandingPage() {
         </section>
 
         {/* Final CTA Section */}
-        <section className="py-20 md:py-32 px-6 bg-sidebar/30 border-t border-border/30">
-          <div className="max-w-2xl mx-auto text-center">
-            <h2 className="font-inter text-2xl md:text-4xl font-bold text-text-heading mb-4 tracking-tight">
-              Start Building Your First Course
-            </h2>
-            <p className="text-text-muted text-[15px] md:text-[17px] manrope-body font-medium mb-8 leading-relaxed">
-              Pick a topic, generate a curriculum, and start learning with structure. No account required to explore.
-            </p>
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <section className="py-20 md:py-32 px-6 bg-background border-t border-border/30">
+          <div className="max-w-4xl mx-auto border border-border/60 rounded-lg p-8 md:p-14 bg-sidebar/40 relative overflow-hidden text-center md:text-left flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="max-w-xl space-y-3">
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-accent block">
+                Get Started
+              </span>
+              <h2 className="text-2xl md:text-3xl font-bold text-text-heading tracking-tight leading-tight">
+                Start building your first course today.
+              </h2>
+              <p className="text-[13.5px] text-text-muted leading-relaxed">
+                Pick any technical topic, generate a structured curriculum with verified resources, and start learning.
+              </p>
+            </div>
+            
+            <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row items-center gap-3 shrink-0 w-full md:w-auto">
               <Link 
                 href="/generate"
-                className="inline-flex items-center gap-2 bg-accent text-white hover:bg-teal-700 px-8 py-3 rounded-md text-[14px] font-bold transition-all shadow-sm"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-accent text-white hover:bg-teal-700 px-6 py-2.5 rounded-md text-[13px] font-bold transition-colors shadow-sm"
               >
-                Generate a Course <ArrowRight className="w-4 h-4" />
+                Generate Course <ArrowRight className="w-4 h-4" />
               </Link>
               <Link 
                 href="/explore"
-                className="inline-flex items-center gap-2 bg-sidebar border border-border text-text-primary px-8 py-3 rounded-md text-[14px] font-bold transition-all hover:bg-sidebar/80"
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-background border border-border hover:border-accent/40 text-text-heading px-6 py-2.5 rounded-md text-[13px] font-bold transition-colors"
               >
-                <BookOpen className="w-4 h-4" /> Browse Existing Courses
+                <BookOpen className="w-4 h-4 text-text-muted" /> Browse Library
               </Link>
             </div>
           </div>
