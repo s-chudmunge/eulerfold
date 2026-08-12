@@ -163,3 +163,41 @@ export function AlreadySignedInMessage() {
     </div>
   );
 }
+
+export function LocalChatCTA() {
+  const [prompt, setPrompt] = useState('');
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!prompt.trim()) return;
+    window.location.href = `/local-chat?q=${encodeURIComponent(prompt.trim())}`;
+  };
+
+  return (
+    <section className="py-20 px-6 bg-sidebar/30 border-y border-border/30 text-center">
+      <div className="max-w-2xl mx-auto space-y-6">
+        <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-text-heading">
+          Chat with your favourite local models
+        </h2>
+        <p className="text-text-muted text-[14px]">
+          Run AI models directly on your device via WebGPU. Completely private, fast, and serverless.
+        </p>
+        <form onSubmit={handleSubmit} className="relative mt-8">
+          <input
+            type="text"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            placeholder="Ask anything or prompt a task..."
+            className="w-full bg-background border border-border focus:border-accent focus:ring-1 focus:ring-accent rounded-full py-4 pl-6 pr-14 text-[15px] outline-none transition-all shadow-sm"
+          />
+          <button
+            type="submit"
+            className="absolute right-2 top-2 bottom-2 w-10 h-10 bg-accent hover:bg-teal-700 text-white rounded-full flex items-center justify-center transition-colors my-auto"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+          </button>
+        </form>
+      </div>
+    </section>
+  );
+}

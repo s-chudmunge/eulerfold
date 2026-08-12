@@ -5,7 +5,7 @@ import { X, Gift, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { getDiscountStatus, formatTime, isIndependenceWeekSale, getIndependenceSaleRemainingSeconds } from '@/lib/utils/pricing';
+import { usePricing, getDiscountStatus, formatTime, isIndependenceWeekSale, getIndependenceSaleRemainingSeconds } from '@/lib/utils/pricing';
 import { useAuth } from '@/components/AuthProvider';
 
 // Tricolor flag stripe — saffron | white | green
@@ -46,14 +46,17 @@ export default function AnnouncementBar() {
   const [hasMounted, setHasMounted] = useState(false);
   const pathname = usePathname();
   const { user } = useAuth();
+  const { isIndia } = usePricing();
   const isLoggedIn = !!user;
   const isPro = user?.is_pro;
   const onSale = hasMounted && isIndependenceWeekSale();
 
+  const salePriceText = isIndia ? '₹99/mo' : '$2/mo';
+
   useEffect(() => {
     setHasMounted(true);
     // Only show on public landing pages
-    const internalPaths = ['/dashboard', '/planner', '/practice', '/research-lab', '/roadmap', '/explore', '/u/', '/generate'];
+    const internalPaths = ['/dashboard', '/planner', '/practice', '/research-lab', '/roadmap', '/explore', '/u/', '/generate', '/local-chat'];
     const isInternal = internalPaths.some(p => pathname.startsWith(p));
 
     let timeoutId: NodeJS.Timeout;
@@ -122,14 +125,12 @@ export default function AnnouncementBar() {
             transition={{ duration: 0.5 }}
             className="flex items-center justify-center gap-2.5 w-full"
           >
-            <TricolorStripe />
-
             <div className="flex items-center gap-2 text-[12px] md:text-[13px] font-bold uppercase tracking-wide">
               <span className="text-[#FF9933]">🇮🇳</span>
               <span>Independence Week Sale</span>
-              <span className="hidden sm:inline text-white/60 font-normal lowercase tracking-normal mx-1">—</span>
+              <span className="hidden sm:inline text-white/60 font-normal lowercase tracking-normal mx-0.5">:</span>
               <span className="hidden sm:inline">
-                {isLoggedIn ? 'Pro at ₹99/mo ($2)' : 'Pro at ₹99/mo ($2) · Free signup'}
+                {isLoggedIn ? `Pro at ${salePriceText}` : `Pro at ${salePriceText} · Free signup`}
               </span>
             </div>
 

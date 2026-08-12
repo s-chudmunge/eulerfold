@@ -167,6 +167,9 @@ app.include_router(dashboard.router)
 app.include_router(misc.router)
 app.include_router(diagnostics.router)
 
+from app.routers import local_tools
+app.include_router(local_tools.router)
+
 @app.on_event("startup")
 async def startup_event():
     validate_environment()

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { ArrowRight, BookOpen } from 'lucide-react';
 import PublicHeader from '@/components/PublicHeader';
 import Footer from '@/components/Footer';
-import { AlreadySignedInMessage, FAQAccordion, LandingOnboardingTrigger } from './HomeClientComponents';
+import { AlreadySignedInMessage, FAQAccordion, LandingOnboardingTrigger, LocalChatCTA } from './HomeClientComponents';
 import PagePreloader from '@/components/PagePreloader';
 
 import HeroSection from '@/components/landing/HeroSection';
@@ -172,6 +172,8 @@ export default async function LandingPage() {
       
       <main className="flex-grow">
         <HeroSection />
+
+        <LocalChatCTA />
 
         <GenerationSystems />
 

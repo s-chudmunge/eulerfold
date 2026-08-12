@@ -36,3 +36,4 @@ ddgs
 google-genai
 cohere
 beautifulsoup4
+ddgs

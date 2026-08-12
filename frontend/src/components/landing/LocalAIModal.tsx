@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { X, Cpu, HardDrive, Download, AlertTriangle, PlayCircle, Loader2, Search, Sparkles, Terminal, Layers, MessageSquare } from 'lucide-react';
-import { hasModelInCache, CreateMLCEngine, prebuiltAppConfig } from '@mlc-ai/web-llm';
+import { X, Cpu, HardDrive, Download, AlertTriangle, PlayCircle, Loader2, Search, Sparkles, Terminal, Layers, MessageSquare, Trash2 } from 'lucide-react';
+import { hasModelInCache, deleteModelAllInfoInCache, CreateMLCEngine, prebuiltAppConfig } from '@mlc-ai/web-llm';
 import { useRouter } from 'next/navigation';
 
 interface LocalAIModalProps {
@@ -226,6 +226,20 @@ export function LocalAIModal({ isOpen, onClose, onSelectModel }: LocalAIModalPro
       setDownloadProgress((prev) => ({ ...prev, [modelId]: 'Download failed. Please check device memory.' }));
     } finally {
       setIsDownloading(null);
+    }
+  };
+
+  const handleDelete = async (modelId: string) => {
+    try {
+      await deleteModelAllInfoInCache(modelId);
+      setCachedModels(prev => ({ ...prev, [modelId]: false }));
+      setDownloadProgress(prev => {
+        const newProgress = { ...prev };
+        delete newProgress[modelId];
+        return newProgress;
+      });
+    } catch (e) {
+      console.error('Failed to delete model from cache', e);
     }
   };
 
@@ -465,6 +479,18 @@ export function LocalAIModal({ isOpen, onClose, onSelectModel }: LocalAIModalPro
                                 >
                                   <PlayCircle className="w-3.5 h-3.5" /> Select Model
                                 </button>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (confirm(`Are you sure you want to delete ${model.name} from cache?`)) {
+                                      handleDelete(model.id);
+                                    }
+                                  }}
+                                  className="p-2 bg-sidebar border border-border hover:border-red-500/40 hover:text-red-500 text-text-muted rounded-md flex items-center justify-center transition-colors"
+                                  title="Delete from cache"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
                               </div>
                             ) : (
                               <button
@@ -580,6 +606,18 @@ export function LocalAIModal({ isOpen, onClose, onSelectModel }: LocalAIModalPro
                                   className="px-3 py-1.5 bg-accent text-white text-[9px] font-bold uppercase tracking-widest rounded flex items-center gap-1 hover:opacity-90"
                                 >
                                   <PlayCircle className="w-3 h-3" /> Select
+                                </button>
+                                <button
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    if (confirm(`Are you sure you want to delete ${m.name} from cache?`)) {
+                                      handleDelete(m.id);
+                                    }
+                                  }}
+                                  className="p-1.5 bg-sidebar border border-border hover:border-red-500/40 hover:text-red-500 text-text-muted rounded flex items-center justify-center transition-colors"
+                                  title="Delete from cache"
+                                >
+                                  <Trash2 className="w-3 h-3" />
                                 </button>
                               </div>
                             ) : (
