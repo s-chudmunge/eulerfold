@@ -468,7 +468,12 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
           </h1>
 
           <div className="max-w-2xl mx-auto mb-10">
-            <p className="text-text-primary italic leading-relaxed font-medium text-lg md:text-xl opacity-80">
+            {paper.authors && (
+              <p className="text-text-heading font-medium text-lg md:text-xl mb-3">
+                {paper.authors}
+              </p>
+            )}
+            <p className="text-text-primary italic leading-relaxed font-medium text-base md:text-lg opacity-80">
               {paper.citation}
             </p>
             <div className="mt-8 flex justify-center gap-4">

@@ -1,7 +1,7 @@
 ---
 title: "Physics-Informed AI for Medical Discovery"
 authors: "Nazanin Ahmadi et al. (2025)"
-citation: "arXiv:2510.05433"
+citation: "Ahmadi, N., Cao, Q., Humphrey, J. D., & Karniadakis, G. E. (2025). Physics-Informed Machine Learning in Biomedical Science and Engineering. arXiv preprint arXiv:2510.05433."
 link: "https://arxiv.org/abs/2510.05433"
 slug: "physics-informed-machine-learning-biomedical-engineering"
 heroImage: "/images/research-decoded/physics-informed-machine-learning-biomedical-engineering.png"
