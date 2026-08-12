@@ -1,6 +1,6 @@
 ---
 title: "Physics-Informed AI for Medical Discovery"
-authors: " Accepted in Annual Review of Biomedical Engineering, 2025"
+authors: "Nazanin Ahmadi et al. (2025)"
 citation: "arXiv:2510.05433"
 link: "https://arxiv.org/abs/2510.05433"
 slug: "physics-informed-machine-learning-biomedical-engineering"
