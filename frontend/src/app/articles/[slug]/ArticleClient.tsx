@@ -10,9 +10,8 @@ import {
   ArrowRight,
   Heart,
   MessageCircle,
-  Repeat,
-  Share,
-  MoreHorizontal
+  Clock,
+  List
 } from 'lucide-react';
 import { FaXTwitter, FaWhatsapp } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
@@ -312,6 +311,47 @@ export default function ArticleClient({ article }: Props) {
     papers: Paper[],
     roadmaps?: any[]
   }>({ articles: [], papers: [], roadmaps: [] });
+  const [readProgress, setReadProgress] = React.useState(0);
+  const [tocOpen, setTocOpen] = React.useState(false);
+  const [activeHeading, setActiveHeading] = React.useState('');
+
+  // Compute read time
+  const readTime = React.useMemo(() => {
+    const words = article.content.trim().split(/\s+/).length;
+    return Math.max(1, Math.ceil(words / 200));
+  }, [article.content]);
+
+  // Extract ToC headings from content
+  const tocHeadings = React.useMemo(() => {
+    const lines = article.content.split('\n');
+    return lines
+      .filter(l => l.startsWith('## ') || l.startsWith('### '))
+      .map(l => {
+        const level = l.startsWith('### ') ? 3 : 2;
+        const text = l.replace(/^#{2,3}\s+/, '').trim();
+        const id = text.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
+        return { text, id, level };
+      });
+  }, [article.content]);
+
+  // Reading progress + active heading tracker
+  React.useEffect(() => {
+    const handleScroll = () => {
+      const scrollTop = window.scrollY;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+      setReadProgress(docHeight > 0 ? Math.min(100, (scrollTop / docHeight) * 100) : 0);
+
+      // Active heading
+      const headingEls = document.querySelectorAll('h2[id], h3[id]');
+      let current = '';
+      headingEls.forEach(el => {
+        if (el.getBoundingClientRect().top <= 120) current = el.id;
+      });
+      setActiveHeading(current);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const contextType = 'article';
   const contextId = article.slug;
@@ -430,16 +470,45 @@ export default function ArticleClient({ article }: Props) {
 
   return (
     <div className="min-h-screen bg-background text-text-primary serif-page-scope selection:bg-accent/20">
+      {/* Reading Progress Bar */}
+      <div
+        className="fixed top-0 left-0 z-[100] h-[2.5px] bg-accent transition-all duration-100 ease-out"
+        style={{ width: `${readProgress}%` }}
+      />
+
       <FloatingTTS content={article.content} />
       <PublicHeader />
 
-      {/* Site Content (BibGuru Layout) */}
-      <div className="max-w-[1500px] mx-auto px-6 relative">
+      {/* Site Content */}
+      <div className="max-w-[1500px] mx-auto px-4 md:px-6 relative">
+        <div className="flex justify-center mt-[100px] md:mt-[80px] pb-[80px]">
 
-        <div className="flex flex-col items-center mt-[30px] md:mt-[60px] pb-[80px]">
+          {/* Sticky ToC Sidebar (desktop only) */}
+          {tocHeadings.length > 0 && (
+            <aside className="hidden xl:block w-[220px] shrink-0 mr-8 self-start sticky top-[120px] max-h-[calc(100vh-140px)] overflow-y-auto custom-scrollbar pr-2">
+              <div className="text-[10px] font-bold text-text-muted uppercase tracking-[0.2em] inconsolata-ui mb-3 opacity-60">On this page</div>
+              <nav className="flex flex-col gap-0.5">
+                {tocHeadings.map(h => (
+                  <a
+                    key={h.id}
+                    href={`#${h.id}`}
+                    className={`block text-[12px] py-1 leading-snug transition-colors duration-150 border-l-2 ${
+                      h.level === 3 ? 'pl-4' : 'pl-3'
+                    } ${
+                      activeHeading === h.id
+                        ? 'border-accent text-accent font-semibold'
+                        : 'border-transparent text-text-muted hover:text-text-primary hover:border-border'
+                    }`}
+                  >
+                    {h.text}
+                  </a>
+                ))}
+              </nav>
+            </aside>
+          )}
 
-          {/* Header and Image Area (Max 4xl) */}
-          <main className="w-full max-w-4xl">
+          {/* Article Column */}
+          <main className="w-full max-w-4xl min-w-0">
             <article>
               <header className="mb-12 text-center flex flex-col items-center">
                 <div className="mb-4 flex items-center gap-3">
@@ -479,6 +548,10 @@ export default function ArticleClient({ article }: Props) {
                         </div>
                       )}
                     </div>
+                    <div className="ml-auto flex items-center gap-1.5 text-[11px] text-text-muted inconsolata-ui opacity-60">
+                      <Clock className="w-3 h-3" />
+                      <span>{readTime} min read</span>
+                    </div>
                   </div>
 
                   <div className="flex items-center justify-between w-full py-2 border-t border-b border-border/40 mb-8">
@@ -505,14 +578,14 @@ export default function ArticleClient({ article }: Props) {
               </header>
 
               <div className="page-content">
-                {/* Featured Image */}
+                {/* Featured Image — full bleed */}
                 {article.heroImage && (
-                  <figure className="my-[40px]">
-                    <div className="rounded-lg overflow-hidden border border-border bg-card p-2 shadow-sm">
+                  <figure className="mb-[48px] -mx-4 md:mx-0">
+                    <div className="overflow-hidden rounded-none md:rounded-lg aspect-[16/7]">
                       <img 
                         src={article.heroImage} 
                         alt={article.title} 
-                        className="w-full h-auto rounded-lg"
+                        className="w-full h-full object-cover"
                       />
                     </div>
                   </figure>
@@ -523,11 +596,13 @@ export default function ArticleClient({ article }: Props) {
                     <MarkdownWithLinks content={article.content} currentSlug={article.slug} cache={article.d2Cache} />
                   </div>
 
-                  {/* Box Component (Technical Insight) */}
+                  {/* Technical Insight Block */}
                   {article.technicalInsight && (
-                    <div className="my-16 pl-8 border-l-4 border-accent">
-                      <div className="text-[11px] font-bold text-accent uppercase tracking-[0.2em] mb-2 inconsolata-ui">Insight</div>
-                      <p className="text-[20px] md:text-[22px] text-text-heading font-medium leading-relaxed tracking-tight italic">
+                    <div className="my-16 pl-6 border-l-[3px] border-accent">
+                      <span className="inline-block text-[9px] font-bold text-accent uppercase tracking-[0.25em] inconsolata-ui px-2 py-0.5 border border-accent/30 rounded mb-3">
+                        Key Insight
+                      </span>
+                      <p className="text-[19px] md:text-[21px] text-text-heading font-medium leading-relaxed tracking-tight italic">
                         {article.technicalInsight}
                       </p>
                     </div>
@@ -536,17 +611,14 @@ export default function ArticleClient({ article }: Props) {
                   {/* FAQ Section */}
                   {article.faq && article.faq.length > 0 && (
                     <div className="mt-[80px]">
-                      <h2 className="mb-[32px] text-text-heading tracking-tighter">
-                        Frequently Asked Questions
-                      </h2>
-                      <div className="space-y-4">
+                      <div className="space-y-3">
                         {article.faq.map((item, idx) => (
                           <details key={idx} className="group border border-border rounded-lg bg-card overflow-hidden transition-all duration-300 hover:border-accent/30">
-                            <summary className="p-[24px] font-bold leading-[1.3] cursor-pointer list-none flex justify-between items-center group-open:bg-accent/5 transition-colors tracking-tight text-text-heading">
+                            <summary className="p-[20px] font-bold leading-[1.3] cursor-pointer list-none flex justify-between items-center group-open:bg-accent/5 transition-colors tracking-tight text-text-heading">
                               <span className="max-w-[90%]">{item.q}</span>
-                              <span className="text-accent text-[24px] font-light transition-transform duration-300 group-open:rotate-45">+</span>
+                              <span className="text-accent text-[22px] font-light transition-transform duration-300 group-open:rotate-45 ml-4 shrink-0">+</span>
                             </summary>
-                            <div className="px-[24px] pb-[24px] pt-2 text-text-primary font-normal opacity-90">
+                            <div className="px-[20px] pb-[20px] pt-2 text-text-primary font-normal opacity-90 leading-relaxed">
                               {item.a}
                             </div>
                           </details>
@@ -560,31 +632,35 @@ export default function ArticleClient({ article }: Props) {
                     <CommunityRoadmapBanner />
                   </div>
 
-                  {/* Social Buttons */}
-                  <div className="flex flex-wrap gap-4 mt-[60px] border-t border-border pt-[40px]">
+                  {/* Social Share */}
+                  <div className="flex items-center gap-3 mt-[60px] border-t border-border pt-[36px]">
+                    <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.15em] inconsolata-ui opacity-60 mr-1">Share</span>
                     <a 
                       href={`https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 bg-[#000000] text-white px-[16px] py-[8px] rounded-lg text-[14px] font-bold hover:bg-[#1a1a1a] shadow-[inset_0_-3px_0_rgba(255,255,255,0.1)] transition-colors"
+                      aria-label="Share on X"
+                      className="w-8 h-8 bg-[#000000] rounded-md flex items-center justify-center hover:opacity-75 transition-opacity"
                     >
-                      <FaXTwitter className="w-4 h-4 fill-white" /> Post
+                      <FaXTwitter className="w-3.5 h-3.5 text-white" />
                     </a>
                     <a 
                       href={`https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 bg-[#3a579a] text-white px-[16px] py-[8px] rounded-lg text-[14px] font-bold hover:bg-[#344f8b] shadow-[inset_0_-3px_0_rgba(0,0,0,0.2)] transition-colors"
+                      aria-label="Share on Facebook"
+                      className="w-8 h-8 bg-[#3a579a] rounded-md flex items-center justify-center hover:opacity-75 transition-opacity"
                     >
-                      <Facebook className="w-4 h-4 fill-white" /> Share
+                      <Facebook className="w-3.5 h-3.5 text-white" />
                     </a>
                     <a 
                       href={`https://api.whatsapp.com/send?text=${encodedText}%20${encodedUrl}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-2 bg-[#25D366] text-white px-[16px] py-[8px] rounded-lg text-[14px] font-bold hover:bg-[#20bd5c] shadow-[inset_0_-3px_0_rgba(0,0,0,0.2)] transition-colors"
+                      aria-label="Share on WhatsApp"
+                      className="w-8 h-8 bg-[#25D366] rounded-md flex items-center justify-center hover:opacity-75 transition-opacity"
                     >
-                      <FaWhatsapp className="w-4 h-4 fill-white" /> WhatsApp
+                      <FaWhatsapp className="w-3.5 h-3.5 text-white" />
                     </a>
                   </div>
 
