@@ -25,7 +25,7 @@ export default function ArticleCard({ article, variant = 'horizontal' }: Article
         </div>
         <div className="p-4 md:p-5 flex flex-col flex-grow justify-between overflow-hidden">
           <div>
-            <span className="text-[9px] md:text-[10px] font-bold text-accent uppercase tracking-widest mb-1.5 md:mb-2 inconsolata-ui block">
+            <span className="inline-block text-[9px] md:text-[10px] font-bold text-accent uppercase tracking-widest mb-2 inconsolata-ui px-2 py-0.5 rounded border border-border/80">
               {article.subject}
             </span>
             <h3 className="text-[15px] md:text-[17px] font-bold text-text-heading mb-1.5 leading-snug group-hover:text-accent transition-colors font-inter tracking-tight line-clamp-2">
@@ -59,7 +59,7 @@ export default function ArticleCard({ article, variant = 'horizontal' }: Article
       </div>
       <div className="p-5 flex flex-col flex-grow justify-between overflow-hidden">
         <div>
-          <span className="text-[10px] font-bold text-accent uppercase tracking-widest mb-1.5 inconsolata-ui block">
+          <span className="inline-block text-[10px] font-bold text-accent uppercase tracking-widest mb-2 inconsolata-ui px-2 py-0.5 rounded border border-border/80">
             {article.subject}
           </span>
           <h2 className="text-[19px] font-bold text-text-heading mb-2 leading-tight group-hover:text-accent transition-colors font-inter tracking-tight line-clamp-1">

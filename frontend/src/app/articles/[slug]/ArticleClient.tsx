@@ -447,7 +447,7 @@ export default function ArticleClient({ article }: Props) {
                     {article.date}
                   </time>
                   <div className="w-[3px] h-[3px] rounded-full bg-text-muted opacity-20" />
-                  <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-accent opacity-80 inconsolata-ui px-3 py-1 bg-accent/5 rounded-full border border-accent/10">
+                  <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-accent opacity-80 inconsolata-ui px-3 py-1 rounded-full border border-border">
                     {article.subject}
                   </span>
                 </div>
