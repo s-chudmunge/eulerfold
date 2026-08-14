@@ -292,6 +292,7 @@ interface Props {
 }
 
 const AUTHOR_IMAGES: Record<string, string> = {
+  "Sankalp": "/author-photo.png",
   "Meera Venkatesh": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100&h=100",
   "Dr. Riya Srinivasan": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=100&h=100",
   "Ananya Rao": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=100&h=100",
@@ -476,28 +477,72 @@ export default function ArticleClient({ article }: Props) {
         style={{ width: `${readProgress}%` }}
       />
 
-      <FloatingTTS content={article.content} />
       <PublicHeader />
 
       {/* Site Content */}
       <div className="max-w-[1500px] mx-auto px-4 md:px-6 relative">
-        <div className="flex justify-center mt-[100px] md:mt-[80px] pb-[80px]">
+        
+        {/* Full-width Header */}
+        <header className="mb-12 mt-[100px] md:mt-[80px] text-center flex flex-col items-center px-4 md:px-0">
+          <div className="mb-6 flex flex-wrap items-center justify-center gap-4 text-[14px] md:text-[15px] font-medium text-text-muted manrope-body">
+            <span>{article.date}</span>
+            <span className="text-text-muted/40">•</span>
+            <span>{article.subject}</span>
+          </div>
+          
+          <h1 className="text-[36px] md:text-[48px] lg:text-[56px] text-text-heading mb-6 leading-[1.1] tracking-tight font-sans font-bold max-w-4xl">
+            {article.title}
+          </h1>
+          
+          <p className="text-[18px] md:text-[22px] text-text-primary mb-12 leading-relaxed font-sans font-medium max-w-[720px]">
+            {article.excerpt}
+          </p>
+
+          <div className="max-w-[720px] mx-auto w-full">
+            <div className="flex items-center justify-between w-full py-4 border-t border-b border-border/60">
+              {/* Left Actions: Listen, Like, Comment */}
+              <div className="flex items-center gap-6 text-text-primary font-medium text-[14px] manrope-body">
+                <FloatingTTS content={article.content} inline={true} />
+                <button 
+                  onClick={toggleLike}
+                  className="flex items-center gap-2 transition-opacity hover:opacity-70"
+                >
+                  <Heart className={`w-5 h-5 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+                  <span>{likeCount}</span>
+                </button>
+                <button 
+                  onClick={scrollToComments}
+                  className="flex items-center gap-2 transition-opacity hover:opacity-70"
+                >
+                  <MessageCircle className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Right Actions: Read time & Share */}
+              <div className="flex items-center gap-4 text-text-primary font-medium text-[14px] manrope-body">
+                <span className="text-text-muted hidden sm:inline-block mr-2">{readTime} min read</span>
+                <SocialShare title={article.title} className="scale-90 origin-right" />
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div className="flex justify-center pb-[80px]">
 
           {/* Sticky ToC Sidebar (desktop only) */}
           {tocHeadings.length > 0 && (
-            <aside className="hidden xl:block w-[220px] shrink-0 mr-8 self-start sticky top-[120px] max-h-[calc(100vh-140px)] overflow-y-auto custom-scrollbar pr-2">
-              <div className="text-[10px] font-bold text-text-muted uppercase tracking-[0.2em] inconsolata-ui mb-3 opacity-60">On this page</div>
-              <nav className="flex flex-col gap-0.5">
+            <aside className="hidden xl:block w-[240px] shrink-0 mr-24 self-start sticky top-[120px] max-h-[calc(100vh-140px)] overflow-y-auto custom-scrollbar pr-4">
+              <nav className="flex flex-col gap-1">
                 {tocHeadings.map(h => (
                   <a
                     key={h.id}
                     href={`#${h.id}`}
-                    className={`block text-[12px] py-1 leading-snug transition-colors duration-150 border-l-2 ${
-                      h.level === 3 ? 'pl-4' : 'pl-3'
+                    className={`block text-[9px] leading-tight transition-colors duration-150 manrope-body opacity-80 ${
+                      h.level === 3 ? 'pl-3' : ''
                     } ${
                       activeHeading === h.id
-                        ? 'border-accent text-accent font-semibold'
-                        : 'border-transparent text-text-muted hover:text-text-primary hover:border-border'
+                        ? 'text-text-primary font-semibold'
+                        : 'text-text-muted hover:text-text-primary'
                     }`}
                   >
                     {h.text}
@@ -508,75 +553,8 @@ export default function ArticleClient({ article }: Props) {
           )}
 
           {/* Article Column */}
-          <main className="w-full max-w-4xl min-w-0">
+          <main className="w-full max-w-[720px] min-w-0">
             <article>
-              <header className="mb-12 text-center flex flex-col items-center">
-                <div className="mb-4 flex items-center gap-3">
-                  <time dateTime={new Date(article.date).toISOString()} className="text-[11px] font-bold uppercase tracking-[0.15em] text-text-muted opacity-60 inconsolata-ui">
-                    {article.date}
-                  </time>
-                  <div className="w-[3px] h-[3px] rounded-full bg-text-muted opacity-20" />
-                  <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-accent opacity-80 inconsolata-ui px-3 py-1 rounded-full border border-border">
-                    {article.subject}
-                  </span>
-                </div>
-                
-                <h1 className="text-[36px] md:text-[48px] lg:text-[56px] text-text-heading mb-6 leading-[1.1] tracking-tight font-serif-stack max-w-4xl">
-                  {article.title}
-                </h1>
-                
-                <p className="text-[18px] md:text-[22px] text-text-muted mb-10 leading-relaxed font-serif-stack opacity-80 italic max-w-2xl">
-                  {article.excerpt}
-                </p>
-
-                <div className="max-w-xl mx-auto w-full">
-                  <div className="flex items-center gap-3 mb-4 self-start">
-                    <div className="w-8 h-8 rounded-full overflow-hidden border border-border bg-sidebar shrink-0 shadow-sm">
-                      <img 
-                        src={authorImage} 
-                        alt={authorName}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="flex flex-col items-start text-left">
-                      <div className="text-[13px] font-bold text-text-heading manrope-body leading-tight">
-                        {authorName}
-                      </div>
-                      {authorRole && (
-                        <div className="text-[11px] font-medium text-text-muted italic manrope-body leading-tight mt-0.5">
-                          {authorRole}
-                        </div>
-                      )}
-                    </div>
-                    <div className="ml-auto flex items-center gap-1.5 text-[11px] text-text-muted inconsolata-ui opacity-60">
-                      <Clock className="w-3 h-3" />
-                      <span>{readTime} min read</span>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between w-full py-2 border-t border-b border-border/40 mb-8">
-                    <div className="flex items-center gap-5 text-text-muted">
-                      <button 
-                        onClick={toggleLike}
-                        className={`flex items-center gap-2 transition-all hover:scale-110 ${isLiked ? 'text-red-500' : 'hover:text-accent'}`}
-                      >
-                        <Heart className={`w-[16px] h-[16px] ${isLiked ? 'fill-current' : ''}`} />
-                        <span className="text-[13px] font-bold manrope-body">{likeCount}</span>
-                      </button>
-                      <button 
-                        onClick={scrollToComments}
-                        className="hover:text-accent transition-all hover:scale-110"
-                      >
-                        <MessageCircle className="w-[16px] h-[16px]" />
-                      </button>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <SocialShare title={article.title} className="scale-75 origin-right" />
-                    </div>
-                  </div>
-                </div>
-              </header>
-
               <div className="page-content">
                 {/* Featured Image — full bleed */}
                 {article.heroImage && (
@@ -632,8 +610,29 @@ export default function ArticleClient({ article }: Props) {
                     <CommunityRoadmapBanner />
                   </div>
 
+                  {/* Author Block at Bottom */}
+                  <div className="flex items-center gap-4 mt-[60px] border-t border-border pt-[36px]">
+                    <div className="w-12 h-12 rounded-full overflow-hidden border border-border bg-sidebar shrink-0 shadow-sm">
+                      <img 
+                        src={authorImage} 
+                        alt={authorName}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex flex-col items-start text-left">
+                      <div className="text-[14px] font-bold text-text-heading manrope-body leading-tight">
+                        Written by {authorName}
+                      </div>
+                      {authorRole && (
+                        <div className="text-[13px] text-text-muted manrope-body leading-tight mt-1">
+                          {authorRole}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
                   {/* Social Share */}
-                  <div className="flex items-center gap-3 mt-[60px] border-t border-border pt-[36px]">
+                  <div className="flex items-center gap-3 mt-[36px]">
                     <span className="text-[11px] font-bold text-text-muted uppercase tracking-[0.15em] inconsolata-ui opacity-60 mr-1">Share</span>
                     <a 
                       href={`https://twitter.com/intent/tweet?text=${encodedText}&url=${encodedUrl}`}

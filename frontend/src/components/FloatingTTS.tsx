@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { usePathname } from 'next/navigation';
 import { useTTS } from '@/hooks/useTTS';
 
-export default function FloatingTTS({ content: manualContent }: { content?: string }) {
+export default function FloatingTTS({ content: manualContent, inline = false }: { content?: string, inline?: boolean }) {
   const pathname = usePathname();
   const [showSettings, setShowSettings] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -71,6 +71,33 @@ export default function FloatingTTS({ content: manualContent }: { content?: stri
   }, [handleTextSelection]);
 
   if (!isAllowedPath) return null;
+
+  if (inline) {
+    return (
+      <div className="flex items-center gap-3">
+        {isLoading ? (
+          <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center">
+            <Loader2 className="w-4 h-4 text-accent animate-spin" />
+          </div>
+        ) : isPlaying || selectedText ? (
+          <button 
+            onClick={() => { stop(); setSelectedText(""); }} 
+            className="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center hover:scale-105 transition-transform"
+          >
+            <Square className="w-3.5 h-3.5 fill-current" />
+          </button>
+        ) : (
+          <button 
+            onClick={handlePlay} 
+            className="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center hover:scale-105 transition-transform pl-0.5"
+          >
+            <Play className="w-3.5 h-3.5 fill-current" />
+          </button>
+        )}
+        <span className="text-[14px] font-medium text-text-primary manrope-body hidden sm:inline-block">Listen to article</span>
+      </div>
+    );
+  }
 
   return (
     <div className="fixed z-[9999] bottom-14 right-12 flex flex-col items-end gap-2">

@@ -262,23 +262,25 @@ export default function PublicHeader() {
         </div>
 
         <div className="flex items-center gap-3">
-          <GitHubStarButton />
+          <div className="hidden md:flex items-center gap-3">
+            <GitHubStarButton />
 
-          <button
-            onClick={toggleTheme}
-            className="p-1.5 text-text-muted opacity-70 hover:opacity-100 transition-opacity"
-            aria-label="Toggle Theme"
-          >
-            {theme === 'light' ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5" />}
-          </button>
+            <button
+              onClick={toggleTheme}
+              className="p-1.5 text-text-muted opacity-70 hover:opacity-100 transition-opacity"
+              aria-label="Toggle Theme"
+            >
+              {theme === 'light' ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5" />}
+            </button>
 
-          <Suspense fallback={<div className="w-6 h-6 rounded-full bg-border/10 animate-pulse" />}>
-            <UserNav />
-          </Suspense>
-          
-          <Link href="/generate" className="hidden xs:flex items-center gap-1.5 bg-text-heading text-background px-3.5 py-1.5 rounded-full text-[12px] font-bold tracking-tight hover:opacity-90 transition-all">
-            <Plus className="w-3.5 h-3.5" /> <span>New Goal</span>
-          </Link>
+            <Suspense fallback={<div className="w-6 h-6 rounded-full bg-border/10 animate-pulse" />}>
+              <UserNav />
+            </Suspense>
+            
+            <Link href="/generate" className="hidden xs:flex items-center gap-1.5 bg-text-heading text-background px-3.5 py-1.5 rounded-full text-[12px] font-bold tracking-tight hover:opacity-90 transition-all">
+              <Plus className="w-3.5 h-3.5" /> <span>New Goal</span>
+            </Link>
+          </div>
 
           <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="lg:hidden p-1.5 text-text-muted hover:text-text-heading transition-colors" aria-label="Toggle Menu">
             {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -327,7 +329,22 @@ export default function PublicHeader() {
             </div>
           </div>
 
-          <div className="mt-8 border-t border-border pt-10 pb-6">
+          <div className="mt-8 border-t border-border pt-10 pb-6 flex flex-col gap-8">
+            <div className="flex items-center justify-between px-2">
+              <button
+                onClick={toggleTheme}
+                className="flex items-center gap-3 text-text-heading font-bold text-xl hover:text-teal-700 transition-colors"
+                aria-label="Toggle Theme"
+              >
+                {theme === 'light' ? <Moon className="w-6 h-6" /> : <Sun className="w-6 h-6" />}
+                {theme === 'light' ? 'Dark Mode' : 'Light Mode'}
+              </button>
+              
+              <Suspense fallback={<div className="w-8 h-8 rounded-full bg-border/10 animate-pulse" />}>
+                <UserNav />
+              </Suspense>
+            </div>
+            
             <Link href="/generate" className="w-full bg-text-heading text-background py-5 rounded-lg flex items-center justify-center gap-3 text-[16px] font-bold active:scale-95 transition-all">
               <Plus className="w-5 h-5" /> Get Started
             </Link>

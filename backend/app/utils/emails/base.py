@@ -7,7 +7,7 @@ from app.core.config import settings
 logger = logging.getLogger(__name__)
 RESEND_API = "https://api.resend.com/emails"
 
-async def send_email(to: str, subject: str, html: str, sender: str = None) -> dict:
+async def send_email(to: str, subject: str, html: str, sender: str = None, reply_to: str = "eulerfold@gmail.com") -> dict:
     if not sender:
         sender = f"EulerFold <{settings.RESEND_SENDER}>"
 
@@ -21,6 +21,9 @@ async def send_email(to: str, subject: str, html: str, sender: str = None) -> di
         "subject": subject,
         "html": html,
     }
+    
+    if reply_to:
+        payload["reply_to"] = reply_to
 
     headers = {"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"}
 
