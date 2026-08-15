@@ -1,5 +1,5 @@
 ---
-title: "Why We Still Can’t Solve P vs NP"
+title: "Baker-Gill-Solovay: Why We Still Cannot Solve P vs NP"
 authors: "Baker, Gill, Solovay (1975)"
 citation: "Baker, T., Gill, J., & Solovay, R. (1975). Relativizations of the P=?NP question. SIAM Journal on Computing, 4(4), 431-442."
 link: "https://doi.org/10.1137/0204037"

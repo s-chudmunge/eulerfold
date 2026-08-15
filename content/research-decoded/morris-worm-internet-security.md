@@ -1,5 +1,5 @@
 ---
-title: "The Day the Internet Almost Died"
+title: "The Morris Worm: An Early Case Study in Internet Security Vulnerabilities"
 authors: "Eugene H. Spafford (1988)"
 citation: "Spafford, E. H. (1988). The Morris Worm: An Analysis. Purdue University Technical Report."
 link: "https://www.cs.utah.edu/~seeley/worm.pdf"

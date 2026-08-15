@@ -1,5 +1,5 @@
 ---
-title: "Giving AI More Time to Think"
+title: "S1: Simple Test-Time Scaling for Improved AI Reasoning"
 authors: "Muennighoff, et al."
 citation: "arXiv:2501.19393 (2025)"
 link: "https://arxiv.org/abs/2501.19393"

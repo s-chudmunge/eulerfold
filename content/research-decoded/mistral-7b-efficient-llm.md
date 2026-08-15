@@ -1,5 +1,5 @@
 ---
-title: "Why Smaller AI Models are Winning"
+title: "Mistral 7B: An Efficient Small Language Model Outperforming Larger Baselines"
 authors: "Jiang et al. (2023)"
 citation: "Jiang, A. Q., Sablayrolles, A., Mensch, A., Bamford, C., et al. (2023). Mistral 7B. arXiv:2310.06825."
 link: "https://arxiv.org/abs/2310.06825"

@@ -1,5 +1,5 @@
 ---
-title: "Finding the Best Solution in a Quantum World"
+title: "QAOA: Finding Near-Optimal Solutions with a Quantum Approximate Algorithm"
 authors: "Edward Farhi, Jeffrey Goldstone, & Sam Gutmann (2014)"
 citation: "Farhi, E., Goldstone, J., & Gutmann, S. (2014). A quantum approximate optimization algorithm. arXiv preprint arXiv:1411.4028."
 link: "https://arxiv.org/abs/1411.4028"

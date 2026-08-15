@@ -1,5 +1,5 @@
 ---
-title: "Inside the Most Powerful Model Ever Built"
+title: "GPT-4: OpenAI's Technical Report on a Large Multimodal Model"
 authors: "OpenAI (2023)"
 citation: "OpenAI. (2023). GPT-4 Technical Report. arXiv preprint arXiv:2303.08774."
 link: "https://arxiv.org/abs/2303.08774"

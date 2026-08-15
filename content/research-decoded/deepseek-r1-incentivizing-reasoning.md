@@ -1,5 +1,5 @@
 ---
-title: "The New Era of Open-Source Reasoning AI"
+title: "DeepSeek-R1: Incentivizing Reasoning in Language Models via Reinforcement Learning"
 authors: "DeepSeek-AI (2025)"
 citation: "DeepSeek-AI. (2025). DeepSeek-R1: Incentivizing Reasoning Capability in LLMs via Reinforcement Learning. arXiv preprint arXiv:2501.12948."
 link: "https://arxiv.org/abs/2501.12948"

@@ -1,5 +1,5 @@
 ---
-title: "How to Find a Giant Prime in Seconds"
+title: "Rabin-Miller Primality Test: A Probabilistic Algorithm for Testing Primality"
 authors: "Michael Rabin (1980)"
 citation: "Rabin, M. O. (1980). Probabilistic algorithm for testing primality. Journal of Number Theory, 12(1), 128-138."
 link: "https://doi.org/10.1016/0022-314X(80)90084-0"

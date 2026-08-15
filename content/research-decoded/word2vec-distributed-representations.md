@@ -1,5 +1,5 @@
 ---
-title: "Teaching Computers the Meaning of Words"
+title: "Word2Vec: Distributed Representations of Words and Phrases"
 authors: "Mikolov et al. (2013)"
 citation: "Mikolov, T., Sutskever, I., Chen, K., Corrado, G. S., & Dean, J. (2013). Distributed representations of words and phrases and their compositionality. Advances in neural information processing systems, 26."
 link: "https://arxiv.org/abs/1310.4546"

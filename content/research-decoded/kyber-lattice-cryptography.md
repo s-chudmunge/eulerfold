@@ -1,5 +1,5 @@
 ---
-title: "Securing the Future Against Quantum Hackers"
+title: "CRYSTALS-Kyber: A CCA-Secure Lattice-Based Key Encapsulation Mechanism"
 authors: "Joppe Bos et al. (2018)"
 citation: "Bos, J., et al. (2018). CRYSTALS-Kyber: a CCA-secure module-lattice-based KEM. In 2018 IEEE European Symposium on Security and Privacy (EuroS&P) (pp. 353-367)."
 link: "https://eprint.iacr.org/2017/634.pdf"

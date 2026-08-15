@@ -1,5 +1,5 @@
 ---
-title: "Searching for Thousands of Patterns at Once"
+title: "Aho-Corasick Algorithm: Searching for Thousands of Patterns at Once"
 authors: "Alfred Aho & Margaret Corasick (1975)"
 citation: "Aho, A. V., & Corasick, M. J. (1975). Efficient string matching: an aid to bibliographic search. Communications of the ACM, 18(6), 333-340."
 link: "https://doi.org/10.1145/360825.360855"

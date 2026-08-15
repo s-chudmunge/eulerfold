@@ -1,5 +1,5 @@
 ---
-title: "How Gemini Handles Millions of Data Points"
+title: "Gemini 1.5 Pro: Multimodal Understanding Across Millions of Tokens"
 authors: "Google DeepMind (2024)"
 citation: "Reid, M., Savinov, N., Teplyashin, D., ... & Vinyals, O. (2024). Gemini 1.5: Unlocking multimodal understanding across millions of tokens of context. arXiv preprint arXiv:2403.05530."
 link: "https://ar5iv.org/abs/2403.05530"

@@ -1,5 +1,5 @@
 ---
-title: "How to Prove a Secret Without Telling It"
+title: "Zero-Knowledge Proofs: How to Prove a Secret Without Revealing It"
 authors: "Shafi Goldwasser, Silvio Micali, & Charles Rackoff (1985)"
 citation: "Goldwasser, S., Micali, S., & Rackoff, C. (1989). The knowledge complexity of interactive proof systems. SIAM Journal on Computing, 18(1), 186-208."
 link: "https://people.csail.mit.edu/silvio/Selected%20Scientific%20Papers/Zero%20Knowledge/The_Knowledge_Complexity_Of_Interactive_Proof_Systems.pdf"

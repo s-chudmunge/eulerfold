@@ -1,5 +1,5 @@
 ---
-title: "The Math Behind High-Speed AI Art"
+title: "Latent Diffusion Models: High-Resolution Image Synthesis in Latent Space"
 authors: "Robin Rombach et al. (LMU Munich, 2021)"
 citation: "Rombach, R., Blattmann, A., Lorenz, D., Esser, P., & Ommer, B. (2022). High-resolution image synthesis with latent diffusion models. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition (pp. 10684-10695)."
 link: "https://arxiv.org/abs/2112.10752"

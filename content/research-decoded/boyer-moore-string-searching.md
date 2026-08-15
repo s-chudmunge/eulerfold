@@ -1,5 +1,5 @@
 ---
-title: "Why Most String Searches Are Faster Than You Think"
+title: "Boyer-Moore Algorithm: A Fast String Searching Algorithm"
 authors: "Robert Boyer & J. Strother Moore (1977)"
 citation: "Boyer, R. S., & Moore, J. S. (1977). A fast string searching algorithm. Communications of the ACM, 20(10), 762-772."
 link: "https://doi.org/10.1145/359842.359859"

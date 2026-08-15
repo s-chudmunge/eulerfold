@@ -1,5 +1,5 @@
 ---
-title: "Unlocking 3D Vision from 2D Photos"
+title: "Depth Anything: Monocular Depth Estimation from Large-Scale Unlabeled Data"
 authors: "Yang et al. (2024)"
 citation: "Yang, L., Kang, B., Huang, Z., Xu, X., Feng, J., & Zhao, H. (2024). Depth Anything: Unleashing the Power of Large-Scale Unlabeled Data. arXiv:2401.10891."
 link: "https://arxiv.org/abs/2401.10891"

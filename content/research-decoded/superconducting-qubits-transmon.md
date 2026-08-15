@@ -1,5 +1,5 @@
 ---
-title: "How IBM and Google Build Their Qubits"
+title: "Transmon Qubit: The Charge-Insensitive Design Behind IBM and Google's Processors"
 authors: "Jens Koch et al. (Yale University, 2007)"
 citation: "Koch, J., Yu, T. M., Gambetta, J., Houck, A. A., Schuster, D. I., Majer, J., ... & Schoelkopf, R. J. (2007). Charge-insensitive qubit design derived from the Cooper pair box. Physical Review A, 76(4), 042319."
 link: "https://arxiv.org/abs/cond-mat/0703002"

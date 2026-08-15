@@ -1,5 +1,5 @@
 ---
-title: "Solving Massive Equations with Quantum Logic"
+title: "HHL Algorithm: Quantum Algorithm for Linear Systems of Equations"
 authors: "Aram Harrow, Avinatan Hassidim, & Seth Lloyd (2008)"
 citation: "Harrow, A. W., Hassidim, A., & Lloyd, S. (2009). Quantum algorithm for linear systems of equations. Physical Review Letters, 103(15), 150502."
 link: "https://doi.org/10.1103/PhysRevLett.103.150502"

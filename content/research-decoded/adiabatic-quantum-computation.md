@@ -1,5 +1,5 @@
 ---
-title: "Solving Hard Problems Through Quantum Evolution"
+title: "Adiabatic Quantum Computation: Solving Hard Problems Through Quantum Evolution"
 authors: "Edward Farhi et al. (2000)"
 citation: "Farhi, E., Goldstone, J., Gutmann, S., & Sipser, M. (2000). Quantum computation by adiabatic evolution. arXiv preprint quant-ph/0001106."
 link: "https://arxiv.org/abs/quant-ph/0001106"

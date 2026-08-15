@@ -1,5 +1,5 @@
 ---
-title: "Can You Trust a Proof Without Reading It All?"
+title: "Dinur's PCP Theorem: A Combinatorial Proof via Gap Amplification"
 authors: "Irit Dinur (2007)"
 citation: "Dinur, I. (2007). The PCP theorem by gap amplification. Journal of the ACM (JACM), 54(3), 12-es."
 link: "https://doi.org/10.1145/1236457.1236459"

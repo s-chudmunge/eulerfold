@@ -1,5 +1,5 @@
 ---
-title: "Simulating Molecules on Today’s Quantum Hardware"
+title: "VQE: A Variational Eigenvalue Solver for Simulating Molecules on Quantum Hardware"
 authors: "Alberto Peruzzo et al. (University of Bristol, 2013)"
 citation: "Peruzzo, A., McClean, J., Shadbolt, P., Yung, M. H., Zhou, X. Q., Love, P. J., ... & O'Brien, J. L. (2014). A variational eigenvalue solver on a photonic quantum processor. Nature Communications, 5(1), 4213."
 link: "https://arxiv.org/abs/1304.3061"

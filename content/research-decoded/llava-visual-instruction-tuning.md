@@ -1,5 +1,5 @@
 ---
-title: "Building an Open-Source Vision Assistant"
+title: "LLaVA: Visual Instruction Tuning for Open-Source Vision-Language Models"
 authors: "Liu et al. (2023)"
 citation: "Liu, H., Li, C., Wu, Q., & Lee, Y. J. (2023). Visual Instruction Tuning. arXiv:2304.08485."
 link: "https://arxiv.org/abs/2304.08485"

@@ -1,5 +1,5 @@
 ---
-title: "Teaching AI to Connect Sight, Sound, and Touch"
+title: "ImageBind: One Embedding Space to Bind Sight, Sound, and Touch"
 authors: "Girdhar et al. (2023)"
 citation: "Girdhar, R., El-Nouby, A., Liu, Z., Singh, M., Alwala, K. V., Joulin, A., & Misra, I. (2023). ImageBind: One embedding space to bind them all. arXiv preprint arXiv:2305.05665."
 link: "https://arxiv.org/abs/2305.05665"

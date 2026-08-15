@@ -1,5 +1,5 @@
 ---
-title: "Solving Biology’s 50-Year-Old Protein Puzzle"
+title: "AlphaFold 2: Protein Structure Prediction with Neural Networks"
 authors: "John Jumper et al. (DeepMind, 2021)"
 citation: "Jumper, J., Evans, R., Pritzel, A., ... & Hassabis, D. (2021). Highly accurate protein structure prediction with AlphaFold. Nature, 596(7873), 583-589."
 link: "https://www.nature.com/articles/s41586-021-03819-2"
