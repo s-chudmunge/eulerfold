@@ -2,7 +2,7 @@
 title: "How to Train Models Until They Grok"
 slug: "overfitting"
 shortSlug: "overfitting"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "April 18, 2026"
 subject: "AI & Data Science"
 heroImage: "/images/articles/hero_overfitting_abstract.jpg"

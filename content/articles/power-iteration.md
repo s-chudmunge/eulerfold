@@ -2,7 +2,7 @@
 title: "Why Power Iteration Works"
 slug: "power-iteration"
 shortSlug: "power-iteration"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "August 13, 2026"
 subject: "Linear Algebra & Numerical Methods"
 heroImage: "https://ctp.cc.au.dk/w/images/f/f0/Avocado-armchair.png"

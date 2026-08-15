@@ -2,7 +2,7 @@
 title: "How a Teenager Who Played Chess Better Than Any Human Built the Most Influential AI Lab in History"
 slug: "demis-hassabis-universal-learning"
 shortSlug: "hassabis"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "May 15, 2026"
 subject: "Computer Science"
 heroImage: "https://images.openai.com/static-rsc-4/Z-Ku2p5IEiSQIIJdnQsDgmKE1m4x4sn8Tc10Tkn1EO5SzWVzzGYs3KTjN3DdiG8LUcEApBxv-cE_j2XQdxInqMNXHYDu6TFpYrCKbY7Fk6MLCCTzLWfMDwGoKIqtyIecR4cls7QUZOl3VF3-nKIbn4hXT1AlTpbY6j2Sthmum3UrkB8WhNcqlCy3I58alOeO?purpose=fullsize"

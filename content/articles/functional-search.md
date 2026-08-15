@@ -2,7 +2,7 @@
 title: "Structure-Aware Functional Search in Protein Mining"
 slug: "functional-search"
 shortSlug: "functional-search"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "May 7, 2026"
 subject: "Computer Science"
 heroImage: "https://images.openai.com/static-rsc-4/GBlLPtjQmyIxfUF4PIw2J8Q0bgc2GJ3eoIJrE0HFuCJ_fcz4YAxYnjZ4nFhoAemC3sBcDn_exasxFtxdls5V-ax_OmIIr4QFyUTeO8wdDmJSm1uUQiDTCZxSN_GnZm7ghz3nB5HKN8ILvX2bCzkUJyqGcVCyUcX7gh9Kx1-92fFpvOXor_6i6E6NxPndbUdf?purpose=fullsize"

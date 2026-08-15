@@ -2,7 +2,7 @@
 title: "Why Do Static Maps Fail to Predict Living Machinery?"
 slug: "how-does-alphafold-predict-protein-structures"
 shortSlug: "alphafold"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "April 30, 2026"
 subject: "Biology"
 heroImage: "/images/articles/hero_alphafold_abstract.jpg"

@@ -2,7 +2,7 @@
 title: "Why is AI Training Throttled by the Chain Rule?"
 slug: "backpropagation"
 shortSlug: "backpropagation"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "April 16, 2026"
 subject: "AI Infrastructure"
 heroImage: "/images/articles/hero_backprop_abstract.jpg"

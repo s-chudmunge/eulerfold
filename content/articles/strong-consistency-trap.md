@@ -2,7 +2,7 @@
 title: "Why is Strong Consistency a Trap?"
 slug: "strong-consistency-trap"
 shortSlug: "consistency"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "May 30, 2026"
 subject: "Distributed Systems"
 heroImage: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=2000&auto=format&fit=crop"

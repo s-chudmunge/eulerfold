@@ -2,7 +2,7 @@
 title: "How A Teenage Immigrant Built the First Map Of Human Vision"
 slug: "fei-fei-li-north-star-vision"
 shortSlug: "feifeili"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "May 15, 2026"
 subject: "AI & Data Science"
 heroImage: "https://images.openai.com/static-rsc-4/VFZuwhLsq4zxbV5KszM1d3vvsCdAglDIyjaohVpKV6nrnr12ER00h5IQyg5B-3g3dnHOQLYBSsdYwpzLEKnrs4WoXTKcq14591uatdyz7DOYIcCEWNSHmdu59Tc0otRiknPXUMfFSgNubYtNGpyGe3U2J-l7xlCIUZ4Dafo0NdhDUyVCd26-OyrF4HEX3lAa?purpose=fullsize"

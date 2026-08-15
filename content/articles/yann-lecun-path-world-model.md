@@ -2,7 +2,7 @@
 title: "Why is Yann LeCun Pursuing Autonomous World Models?"
 slug: "yann-lecun-path-world-model"
 shortSlug: "lecun"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "May 15, 2026"
 subject: "AI & Data Science"
 heroImage: "https://images.openai.com/static-rsc-4/SNKKDSWw_fofwmA_bQaylEbeY4pvtsjucqgIUwdnlTB9kMsqFpc2_2CXQtMmlG0ZJ4IMDV4QbFcMtv-d9jrpiB-9FZnkIajdi7Y5B-HlmRAE7xw49h5fFS3ECgnnRI8Cbyq1htzV8OC77JZTpyOwewMmGc3uMJohXZEsNypf_W8ftHPk3Qieg1jk5a7Pw-ON?purpose=fullsize"

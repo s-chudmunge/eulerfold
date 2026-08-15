@@ -2,7 +2,7 @@
 title: "Why Do Analog AI Chips Forget Their Weights?"
 slug: "computing-with-glass"
 shortSlug: "pcm-drift"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "May 31, 2026"
 subject: "Computer Science"
 heroImage: "/images/articles/hero_analog_chips.jpg"

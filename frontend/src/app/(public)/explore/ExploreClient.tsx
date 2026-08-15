@@ -52,6 +52,7 @@ import VerifiedBadge from '@/components/VerifiedBadge';
 import { getCategory, matchesCategory } from '@/lib/roadmapUtils';
 import { SideBanner, QUOTES } from '@/components/layout/SideBanners';
 import CommunityRoadmapBanner from '@/components/landing/CommunityRoadmapBanner';
+import NewsletterBanner from '@/components/landing/NewsletterBanner';
 import LatestArticlesCarousel from '@/components/landing/LatestArticlesCarousel';
 import { articles } from '@/app/articles/generatedArticles';
 import GoalGeneratorModal from '@/components/landing/GoalGeneratorModal';
@@ -560,7 +561,10 @@ export default function ExploreClient({
             <div className="border-t border-border/30 bg-sidebar/5">
                 <div className="max-w-[1200px] mx-auto px-6 py-16 md:px-10 flex flex-col gap-24">
                     <div className="max-w-2xl mx-auto w-full">
-                        <CommunityRoadmapBanner />
+                        <div className="flex flex-col gap-8 mt-8">
+                            <CommunityRoadmapBanner />
+                            <NewsletterBanner />
+                        </div>
                     </div>
                     
                     <div className="space-y-6">

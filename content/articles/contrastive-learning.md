@@ -2,7 +2,7 @@
 title: "The False Negative Problem in Contrastive Learning"
 slug: "contrastive-learning"
 shortSlug: "contrastive"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "April 27, 2026"
 subject: "AI & Data Science"
 heroImage: "/images/articles/hero_contrastive_abstract.jpg"

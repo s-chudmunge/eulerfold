@@ -2,7 +2,7 @@
 title: "How To Build Your Own Neural Network (And Why You Should)"
 slug: "andrej-karpathy-first-principles"
 shortSlug: "karpathy"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "May 9, 2026"
 subject: "Computer Science"
 heroImage: "https://images.openai.com/static-rsc-4/-RPOBN2st7oDhUso3OBVLJ-xH-M8WPuBE_lLVaxII2qvLCE7-4L9vrafniwK6wDeXNGzcAgNPY4IRvNvycmS1__RDMaGszpmqLg1s5LkhNMxFCr9FFjJsyRID5hVMLm_02UsUxPS03ytWmb3M_-ZScWepDHqWa1kYVozN4SE9zTOx0ciUWEYTqzJL_rS2N1v?purpose=fullsize"

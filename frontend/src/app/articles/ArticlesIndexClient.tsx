@@ -10,6 +10,7 @@ import PublicHeader from '@/components/PublicHeader';
 import { Article } from './generatedArticles';
 import ArticleCard from '@/components/ArticleCard';
 import CommunityRoadmapBanner from '@/components/landing/CommunityRoadmapBanner';
+import NewsletterBanner from '@/components/landing/NewsletterBanner';
 
 interface Props {
   articles: Record<string, Article>;
@@ -101,8 +102,11 @@ export default function ArticlesIndexClient({ articles }: Props) {
           </div>
 
           {/* Goal Architect Banner */}
-          <div className="mb-10">
-            <CommunityRoadmapBanner />
+          <div className="max-w-[1200px] mx-auto px-6 pb-20 md:px-10">
+            <div className="flex flex-col gap-8 mt-8 max-w-2xl mx-auto">
+              <CommunityRoadmapBanner />
+              <NewsletterBanner />
+            </div>
           </div>
 
           {/* Article List */}

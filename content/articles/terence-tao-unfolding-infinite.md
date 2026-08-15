@@ -2,7 +2,7 @@
 title: "A Boy Who Played With a Garden Hose And Discovered Prime Numbers"
 slug: "terence-tao-unfolding-infinite"
 shortSlug: "tao"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "May 15, 2026"
 subject: "Mathematics"
 heroImage: "https://images.openai.com/static-rsc-4/ZCpksTMTMfOd3nirvEUU0PBpvUBM3UKsfxxbYP6BRztmJzt9AjbfPCp1UIuvkZNATC16OaQxZ-XSntmYLis5RRCkzCyfqocEXmVSFPi_LRBcacRW-Tf3t91nKDT94dxHNm1JQnrl-GXhMeqApIIpU7BOjy18kamesmhoh0Fj10ePrcmxrEvI2FtxyauRJlKk?purpose=fullsize"

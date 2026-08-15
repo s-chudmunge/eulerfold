@@ -11,7 +11,8 @@ import {
   Heart,
   MessageCircle,
   Clock,
-  List
+  List,
+  Linkedin
 } from 'lucide-react';
 import { FaXTwitter, FaWhatsapp } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
@@ -29,6 +30,7 @@ import { Article, articles } from '../generatedArticles';
 import { Paper, papers } from '../../research-decoded/generatedData';
 import { api } from '@/lib/api';
 import CommunityRoadmapBanner from '@/components/landing/CommunityRoadmapBanner';
+import NewsletterBanner from '@/components/landing/NewsletterBanner';
 import SocialShare from '@/components/SocialShare';
 const D2Diagram = ({ code, cache }: { code: string, cache?: Record<string, string> }) => {
   const [svg, setSvg] = React.useState<string>(cache?.[code] || '');
@@ -292,7 +294,7 @@ interface Props {
 }
 
 const AUTHOR_IMAGES: Record<string, string> = {
-  "Sankalp": "/author-photo.png",
+  "Sankalp Chudmunge": "/author-photo.png",
   "Meera Venkatesh": "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=100&h=100",
   "Dr. Riya Srinivasan": "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&q=80&w=100&h=100",
   "Ananya Rao": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=100&h=100",
@@ -606,8 +608,9 @@ export default function ArticleClient({ article }: Props) {
                   )}
 
                   {/* Community Banner */}
-                  <div className="mt-[80px]">
+                  <div className="mt-[80px] flex flex-col gap-8 w-full">
                     <CommunityRoadmapBanner />
+                    <NewsletterBanner />
                   </div>
 
                   {/* Author Block at Bottom */}
@@ -628,6 +631,15 @@ export default function ArticleClient({ article }: Props) {
                           {authorRole}
                         </div>
                       )}
+                      <a 
+                        href="https://www.linkedin.com/in/sankalp-chudmunge-a3ba80423/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mt-2 text-text-muted hover:text-[#0A66C2] transition-colors"
+                        aria-label="LinkedIn Profile"
+                      >
+                        <Linkedin className="w-4 h-4" />
+                      </a>
                     </div>
                   </div>
 

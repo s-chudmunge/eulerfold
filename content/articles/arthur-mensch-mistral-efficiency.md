@@ -2,7 +2,7 @@
 title: "Why Europe Is Building Its Own 'AI Armada'"
 slug: "arthur-mensch-mistral-efficiency"
 shortSlug: "mensch"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "May 9, 2026"
 subject: "Computer Science"
 heroImage: "https://images.openai.com/static-rsc-4/UXhH4nHlUaQEbKvYQi0Wwvjn5ihLcTKJbLEdFI_6e8iFqNKE3IfJckt-ZRx0tt6AOCsGwnpEJf0VAqQnK0H6k9DptfPcwtpaw_onbVAJn6xsy9fsZPuzVg1ZLl1xA-falM2adq5pasMrt3Z-CEc-7Tv4vu1bHMUQwgI18HHPDBV-qKE0DOAW7qu0ES5pG07Z?purpose=fullsize"

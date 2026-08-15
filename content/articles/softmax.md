@@ -2,7 +2,7 @@
 title: "The Mathematical Realities of Softmax in Production"
 slug: "softmax"
 shortSlug: "softmax"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "April 25, 2026"
 subject: "AI & Data Science"
 heroImage: "/images/articles/hero_softmax_abstract.jpg"

@@ -2,7 +2,7 @@
 title: "Why Is My LLM Inference So Slow? It's Because GPUs Can't Keep Up"
 slug: "memory-wall-ai"
 shortSlug: "memory-wall"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "May 31, 2026"
 subject: "Computer Science"
 heroImage: "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?q=80&w=2000&auto=format&fit=crop"

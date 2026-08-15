@@ -8,6 +8,7 @@ import { coinsAPI, LeaderboardEntry } from '@/lib/api';
 import Link from 'next/link';
 import { useAuth } from '@/components/AuthProvider';
 import CommunityRoadmapBanner from '@/components/landing/CommunityRoadmapBanner';
+import NewsletterBanner from '@/components/landing/NewsletterBanner';
 import ProductEcosystem from '@/components/landing/ProductEcosystem';
 import LatestArticlesCarousel from '@/components/landing/LatestArticlesCarousel';
 import { articles } from '@/app/articles/generatedArticles';
@@ -256,8 +257,11 @@ export default function LeaderboardPage({
 
       <div className="border-t border-border/30 bg-sidebar/5">
         <div className="max-w-[1200px] mx-auto px-6 py-16 md:px-10 flex flex-col gap-24">
-          <div className="max-w-2xl mx-auto w-full">
-            <CommunityRoadmapBanner />
+          <div className="max-w-[1200px] mx-auto pt-6 px-6 pb-20 md:px-10">
+            <div className="flex flex-col gap-8 mt-8 max-w-2xl mx-auto">
+              <CommunityRoadmapBanner />
+              <NewsletterBanner />
+            </div>
           </div>
           
           <ProductEcosystem />

@@ -2,7 +2,7 @@
 title: "How one Silicon Valley dropout built the fastest-inference computer in the world"
 slug: "jonathan-ross-lpu-architecture"
 shortSlug: "ross"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "May 9, 2026"
 subject: "Computer Science"
 heroImage: "https://images.openai.com/static-rsc-4/yuuAsT6lPwZLoD3yiToZ5jnzIbSvQ1KySDMMtCWrfOVyHTAaquyQ8-o6m7Hw7DmntW8QbA_3hFNbeApDTKow6qRL7ibnW8Hb6dahB1rMlL9qRUXV7ZvBjqb55gN5hoBn3hBw-lpk5XQFYXk0n7BapKRNeU0mJfxSlzDyN2BAQqFHWToR5WwyNCwe1K_zX2ra?purpose=fullsize"

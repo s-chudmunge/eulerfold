@@ -649,7 +649,7 @@ async def get_similar_content(content_id: str):
         sb = get_supabase_client()
         res = sb.rpc("match_content", {
             "source_id": content_id,
-            "match_threshold": 0.3,
+            "match_threshold": 0.2,
             "match_count": 10
         }).execute()
         return res.data

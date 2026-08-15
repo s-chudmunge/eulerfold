@@ -2,7 +2,7 @@
 title: "AI Is Great at Finding the Best Trade-Off Between Multiple Goals"
 slug: "multi-objective-optimization"
 shortSlug: "moo"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "May 7, 2026"
 subject: "AI & Data Science"
 heroImage: "https://images.openai.com/static-rsc-4/XVvklCTI5Ia1yBhuvjYTqjMSWyjiIxAwOcangdo2remWgN0ugeNo5o2qbaMfl2qq116TjZgLsUoUj7DFmbynL4eIobWe-0piZboyXJ2yecYNFeyqFevxzNT8vdLc0-kSa2XtOjpPkuOUlF1gEyL2Rv8P6APr86KWGkfXYEhB2cyJHc5gKDkaBwMkjmc_h1aw?purpose=fullsize"

@@ -124,49 +124,27 @@ export default function ProductEcosystem() {
           </motion.p>
         </div>
 
-        {/* Flush Grid Cards Container */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px border border-border/50 rounded-lg overflow-hidden bg-border/50">
+        {/* Simple Link Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-6 max-w-3xl">
           {products.map((product, index) => {
             const Icon = product.icon;
             return (
               <motion.div
                 key={product.id}
-                initial={{ opacity: 0, y: 16 }}
+                initial={{ opacity: 0, y: 10 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: (index % 3) * 0.08 }}
+                transition={{ delay: index * 0.04 }}
               >
                 <Link
                   href={product.href}
-                  className="group flex flex-col justify-between h-full bg-background p-6 lg:p-7 hover:bg-sidebar transition-colors duration-300"
+                  className="group flex items-center gap-3 py-2 px-3 rounded-md hover:bg-sidebar/50 transition-colors duration-200 -ml-3"
                 >
-                  <div>
-                    {/* Category Tag & Icon */}
-                    <div className="flex items-center justify-between mb-5">
-                      <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-text-muted/70">
-                        {product.category}
-                      </span>
-                      <div className="w-8 h-8 rounded-md border border-border/70 bg-background flex items-center justify-center group-hover:border-accent/30 transition-colors">
-                        <Icon className="w-4 h-4 text-text-muted group-hover:text-accent transition-colors" strokeWidth={1.5} />
-                      </div>
-                    </div>
-
-                    {/* Title */}
-                    <h3 className="inconsolata-ui text-[1.1rem] font-bold text-text-heading leading-tight mb-2.5">
-                      {product.title}
-                    </h3>
-
-                    {/* Description */}
-                    <p className="manrope-body text-[12.5px] text-text-muted leading-relaxed mb-6">
-                      {product.description}
-                    </p>
-                  </div>
-
-                  {/* Arrow Link Indicator */}
-                  <div className="pt-4 border-t border-border/40 flex items-center justify-between text-[11.5px] font-bold text-text-muted group-hover:text-accent transition-colors">
-                    <span>Explore tool</span>
-                    <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform duration-200" strokeWidth={1.5} />
-                  </div>
+                  <Icon className="w-4 h-4 text-text-muted group-hover:text-accent transition-colors shrink-0" strokeWidth={1.5} />
+                  <span className="inconsolata-ui text-[14px] font-bold text-text-heading group-hover:text-accent transition-colors">
+                    {product.title}
+                  </span>
+                  <ArrowRight className="w-3.5 h-3.5 text-transparent group-hover:text-accent/60 group-hover:translate-x-0.5 transition-all duration-200 ml-auto" strokeWidth={2} />
                 </Link>
               </motion.div>
             );

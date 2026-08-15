@@ -2,7 +2,7 @@
 title: "Why is Attention a Hardware Crisis?"
 slug: "transformer"
 shortSlug: "transformer"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "April 27, 2026"
 subject: "Computer Science"
 heroImage: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=2000&auto=format&fit=crop"

@@ -2,7 +2,7 @@
 title: "Why Do Neural Networks Stall at Saddle Points?"
 slug: "gradient-descent"
 shortSlug: "gradient-descent"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "April 20, 2026"
 subject: "AI & Data Science"
 heroImage: "/images/articles/hero_flatlands_optimization.jpg"

@@ -2,7 +2,7 @@
 title: "The Token Tax"
 slug: "tokens"
 shortSlug: "tokens"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "April 24, 2026"
 subject: "Computer Science"
 heroImage: "/images/articles/hero_tokens_abstract.jpg"

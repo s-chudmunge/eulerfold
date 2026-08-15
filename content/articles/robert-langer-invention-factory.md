@@ -2,7 +2,7 @@
 title: 'How One Man Built the Largest "Invention Factory" in Human History'
 slug: "robert-langer-invention-factory"
 shortSlug: "langer"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "May 15, 2026"
 subject: "Medicine"
 heroImage: "https://images.openai.com/static-rsc-4/sYl0ENZFAJMfnelWbL4RaMuwcpUdx_my1tGKHSdRmTIbsTu1ayUJid-Eqc68fT_WwMZ6G10ly1gAb6WV2f_TtT4-bpxZT6G2S_IQEhI5V9H4MxDRRExCfLbJgUjA3XmD7AwUP6n9I2q8WnGzfSaUhNcM0Pg5pgIHQLpO3QysJCpqLRpnjIJSqQ0TgrPfpiFG?purpose=fullsize"

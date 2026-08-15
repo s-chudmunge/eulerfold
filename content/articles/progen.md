@@ -2,7 +2,7 @@
 title: "The Engineering Constraints of Generative Protein Design"
 slug: "progen"
 shortSlug: "progen"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "May 7, 2026"
 subject: "Biology"
 heroImage: "https://images.openai.com/static-rsc-4/oO5D9OvdwqGs177ebNXzYoTAB7oHqQNIt4NTGFdxNbgaVGurdjIUVExAOmbFDT80KEULTebgtEyToi468WpLAD-hAxwK2sK1XDLCWRdJZYo8W2u1XuLm2Cb-sWoTud6p3hJr6nAhPKnjNiycDsx3HBJpfEBAAFgXUiR689WCW-Ve9KzxkvWe46ltEYR1xIDj?purpose=fullsize"

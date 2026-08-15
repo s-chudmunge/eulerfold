@@ -2,7 +2,7 @@
 title: "Building a Materials Lab with Machine Learning"
 slug: "how-does-ai-discover-new-materials"
 shortSlug: "materials-discovery"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "May 5, 2026"
 subject: "Chemistry"
 heroImage: "https://images.openai.com/static-rsc-4/SOd3n4eUwalqUZ6XVhNRjsuQPaFYWGx_JA63HoahxNuoAYwgrdP5xqj3nBmvs-dUD8cqLn2lXPBlArs6B-wQGZNgTwXRihB9E-VmCZ3FyqJvfhbw3noAavCdylt1af8VYIfNXMz0NwgqSOqgvWl86U50Tuk50jVJweAUgCpYDpGg04JyYjz44rZJiF-jz5eq?purpose=fullsize"

@@ -47,6 +47,25 @@ async def unsubscribe_email(request: UnsubscribeRequest):
         
     return {"status": "ok", "message": "Successfully unsubscribed"}
 
+class SubscribeRequest(BaseModel):
+    email: str
+
+@router.post("/subscribe")
+async def subscribe_email(request: SubscribeRequest):
+    """Handle newsletter subscriptions."""
+    email = request.email.lower().strip()
+    supabase = get_supabase_client()
+    
+    try:
+        res = supabase.table("newsletter_subscribers").select("id").eq("email", email).execute()
+        if not res.data:
+            supabase.table("newsletter_subscribers").insert({"email": email}).execute()
+    except Exception as e:
+        logger.error(f"Failed to insert into newsletter_subscribers for {email}: {e}")
+        raise HTTPException(status_code=500, detail="Failed to subscribe")
+        
+    return {"status": "ok", "message": "Successfully subscribed"}
+
 @router.post("/feature-request")
 async def submit_feature_request(
     request: FeatureRequest,

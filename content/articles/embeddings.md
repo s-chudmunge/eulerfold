@@ -2,7 +2,7 @@
 title: "Why is Vector Distance a Poor Proxy for Meaning?"
 slug: "embeddings"
 shortSlug: "embeddings"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "April 17, 2026"
 subject: "AI & Data Science"
 heroImage: "/images/articles/hero_embeddings_abstract.jpg"

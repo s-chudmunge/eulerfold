@@ -2,7 +2,7 @@
 title: "The Mathematical Framework of Geometric Deep Learning"
 slug: "geometric-deep-learning"
 shortSlug: "gdl"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "May 7, 2026"
 subject: "Computer Science"
 heroImage: "https://images.openai.com/static-rsc-4/ZkSJ2CAoglonGTjIex9ocxZAoAv_jWKk21GJT3cY-UPTZcm851dOUjY6CDbR3KrFGHI8aMj5Dvwih02OoRe2O2vzeF9Bhw7RGFsTn5TWSQ97X7ntNGUKT659tg-0DbcddONqOBYcNrOEEkApi-QeWi02cc56xEbdMfH0D8LQvZQvmim7yG7VvfLMwSNaKI5l?purpose=fullsize"

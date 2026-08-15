@@ -14,6 +14,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import RecommendedRoadmaps from '@/components/RecommendedRoadmaps';
 import FloatingTTS from '@/components/FloatingTTS';
 import CommunityRoadmapBanner from '@/components/landing/CommunityRoadmapBanner';
+import NewsletterBanner from '@/components/landing/NewsletterBanner';
 import { motion, AnimatePresence } from 'framer-motion';
 import { articles } from '../../articles/generatedArticles';
 import { api } from '@/lib/api';
@@ -551,8 +552,9 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
           ))}
 
           {/* Community Banner */}
-          <div className="mt-20">
+          <div className="mt-[80px] flex flex-col gap-8 w-full">
             <CommunityRoadmapBanner />
+            <NewsletterBanner />
           </div>
 
           {/* Resources Section */}

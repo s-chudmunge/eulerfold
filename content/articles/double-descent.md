@@ -2,7 +2,7 @@
 title: "Why Do Perfectly Sized Models Fail in Production?"
 slug: "double-descent"
 shortSlug: "double-descent"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "April 15, 2026"
 subject: "AI & Data Science"
 heroImage: "/images/articles/hero_double_descent_abstract.jpg"

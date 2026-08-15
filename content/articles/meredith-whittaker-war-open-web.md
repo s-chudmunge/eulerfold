@@ -2,7 +2,7 @@
 title: "Why Does Meredith Whittaker Defend Privacy Against Compute Monopolies?"
 slug: "meredith-whittaker-war-open-web"
 shortSlug: "whittaker"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "May 15, 2026"
 subject: "Computer Science"
 heroImage: "https://images.openai.com/static-rsc-4/dzUXA2byYuDjtBoTOPYd8CRTbKzGQrUSIVkpF3xVBNE8wrhJWIHxCiVnbCNc4GygGcfgKsoSyId4bVO0903c5k5TAEGgxQHDVV0WOI-IwXriRg8pRSU6CwaIZsG_ImWiI4G0Npds5VGzt7AvzJ2GQVCvRtHls2RGusViCPpQt1G7pey9c7T_zLyWiRWhSZ62?purpose=fullsize"

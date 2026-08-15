@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { RoadmapData, saveRoadmap, roadmapsAPI, submissionsAPI } from '../../lib/api';
-import { Download, CheckCircle, ChevronDown, ChevronUp, Play, BookOpen, X, Trophy, Plus, FileText, Copy, Target, MonitorPlay, BookText, Hash, Scroll, ChevronRight, Trash2, Hammer, Edit3, Eye } from 'lucide-react';
+import { Download, CheckCircle, ChevronDown, ChevronUp, Play, BookOpen, X, Trophy, Plus, FileText, Copy, Target, MonitorPlay, BookText, Hash, Scroll, ChevronRight, Trash2, Hammer, Edit3, Eye, Youtube } from 'lucide-react';
 import { supabase } from '../../lib/supabase/client';
 import Link from 'next/link';
 
@@ -420,14 +420,39 @@ interface RoadmapDisplayProps {
                                     <div className="h-3.5 w-3.5 border border-border rounded-full opacity-20" />
                                   )}
                                 </div>
-                                <div className="flex flex-1 items-baseline justify-between gap-4 min-w-0">
-                                  <div className="flex items-center gap-2 min-w-0">
-                                    <span className={`manrope-body text-[14px] leading-snug truncate ${isTopicDone ? 'text-green-600 font-semibold' : 'text-text-primary font-medium'} ${isOwner ? 'group-hover/topic:text-accent transition-colors' : ''}`}>
-                                      {typeof topic === 'string' ? topic : topic.title}
-                                    </span>
-                                    {hasVideo && (
-                                      <div title="Contains video" className="bg-accent/10 text-accent p-0.5 rounded shadow-sm shrink-0">
-                                        <Play className="w-2.5 h-2.5 fill-current" />
+                                <div className="flex flex-1 items-start justify-between gap-4 min-w-0">
+                                  <div className="flex flex-col gap-0.5 min-w-0">
+                                    <div className="flex items-center gap-2 min-w-0">
+                                      <span className={`manrope-body text-[14px] leading-snug truncate ${isTopicDone ? 'text-green-600 font-semibold' : 'text-text-primary font-medium'} ${isOwner ? 'group-hover/topic:text-accent transition-colors' : ''}`}>
+                                        {typeof topic === 'string' ? topic : topic.title}
+                                      </span>
+                                      {hasVideo && (!topic.youtube_video_title) && (
+                                        <div title="Contains video" className="bg-accent/10 text-accent p-0.5 rounded shadow-sm shrink-0 mt-0.5">
+                                          <Play className="w-2.5 h-2.5 fill-current" />
+                                        </div>
+                                      )}
+                                    </div>
+                                    {hasVideo && topic.youtube_video_title && (
+                                      <div className="flex items-center gap-1.5 text-text-muted mt-0.5 w-full">
+                                        <div className="relative group/yt shrink-0 cursor-pointer">
+                                          <Youtube className="w-3.5 h-3.5 text-[#FF0000]" />
+                                          <div className="absolute bottom-full left-0 mb-2 w-48 bg-background border border-border shadow-xl rounded-lg overflow-hidden opacity-0 invisible group-hover/yt:opacity-100 group-hover/yt:visible transition-all z-50 pointer-events-none scale-95 group-hover/yt:scale-100 origin-bottom-left">
+                                            <div className="aspect-video relative w-full bg-sidebar">
+                                              <img 
+                                                src={`https://img.youtube.com/vi/${topic.youtube_video_id}/mqdefault.jpg`}
+                                                alt="Thumbnail"
+                                                className="w-full h-full object-cover"
+                                                loading="lazy"
+                                              />
+                                              <div className="absolute inset-0 flex items-center justify-center bg-black/20">
+                                                <Play className="w-6 h-6 text-white fill-white opacity-80" />
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <span className="text-[12px] truncate manrope-body" title={topic.youtube_video_title}>
+                                          {topic.youtube_video_title}
+                                        </span>
                                       </div>
                                     )}
                                   </div>

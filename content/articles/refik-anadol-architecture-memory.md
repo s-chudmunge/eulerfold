@@ -2,7 +2,7 @@
 title: "How an Architect Who Believed in 'Intelligent Architecture' Built a New Kind of Museum"
 slug: "refik-anadol-architecture-memory"
 shortSlug: "anadol"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "May 15, 2026"
 subject: "Computer Science"
 heroImage: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=2000"

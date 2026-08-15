@@ -2,7 +2,7 @@
 title: "How Did Katalin Karikó's Persistence Lead to the mRNA Breakthrough?"
 slug: "katalin-kariko-mrna-resurrection"
 shortSlug: "kariko"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "May 15, 2026"
 subject: "Medicine"
 heroImage: "https://images.openai.com/static-rsc-4/kA2pSYyoJNqxGgtU81baj0XUxuc_WoDxwDh5AvpoaKYsTbaBTIA4bL5YEplkuNyHCGKVREkXuEPsNA1mzposQM_zMQdYM7kOcpfKWNraq1DVktU1BGfTurJTzc6yxmeOxvrnxomoU5QkUrtevs-dgik36IrGqVWIZDBel4hPjHER6W_wVEwz_Yh2ZYiKSLO1?purpose=fullsize"

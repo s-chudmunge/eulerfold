@@ -2,7 +2,7 @@
 title: "Why Does DRAM Leak Charge?"
 slug: "dram-refresh-leakage"
 shortSlug: "dram-leakage"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "May 31, 2026"
 subject: "Computer Science"
 heroImage: "/images/articles/hero_dram_leakage.jpg"

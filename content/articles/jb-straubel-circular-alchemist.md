@@ -2,7 +2,7 @@
 title: "Why Tesla's Co-Creator Is Building a Refinery That Turns Junk Into Gold"
 slug: "jb-straubel-circular-alchemist"
 shortSlug: "straubel"
-author: "Sankalp — Engineering Lead"
+author: "Sankalp Chudmunge — Engineering Lead"
 date: "May 15, 2026"
 subject: "Computer Science"
 heroImage: "https://images.openai.com/static-rsc-4/nWzeq-xyP-CVBa7kv6nfuwNtg67jAWxi1RD37LyW4FwDokuE3qbwstAsU_Mc4KEHcEHSHHaLLE90JGbqUVYqUHqqBSo2Nm2bXXCX0jHImuiDGUobYwcC_D-otNtVJvNq-8aqfyKdOJ6OjQg0QC4JxO59P5xoDM-6_j-dFAVu8WqzfF1QdqFefwuF4Pg0TzUJ?purpose=fullsize"
