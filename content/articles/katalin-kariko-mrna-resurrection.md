@@ -1,5 +1,5 @@
 ---
-title: "How Did Katalin Karikó's Persistence Lead to the mRNA Breakthrough?"
+title: "Katalin Karikó: The Persistence and Development of mRNA Technology"
 slug: "katalin-kariko-mrna-resurrection"
 shortSlug: "kariko"
 author: "Sankalp Chudmunge — Engineering Lead"

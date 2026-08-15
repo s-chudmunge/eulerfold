@@ -1,5 +1,5 @@
 ---
-title: "How To Build Your Own Neural Network (And Why You Should)"
+title: "Andrej Karpathy: Educational Philosophy and Software 2.0"
 slug: "andrej-karpathy-first-principles"
 shortSlug: "karpathy"
 author: "Sankalp Chudmunge — Engineering Lead"

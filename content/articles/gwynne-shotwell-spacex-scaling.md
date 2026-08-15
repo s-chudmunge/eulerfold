@@ -1,5 +1,5 @@
 ---
-title: "How Gwynne Shotwell Built a Private Space Industry"
+title: "Gwynne Shotwell: Operational Scaling in the Private Space Industry"
 slug: "gwynne-shotwell-spacex-scaling"
 shortSlug: "shotwell"
 author: "Sankalp Chudmunge — Engineering Lead"

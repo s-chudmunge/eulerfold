@@ -1,5 +1,5 @@
 ---
-title: "Why is Yann LeCun Pursuing Autonomous World Models?"
+title: "Yann LeCun: Joint-Embedding Predictive Architectures and World Models"
 slug: "yann-lecun-path-world-model"
 shortSlug: "lecun"
 author: "Sankalp Chudmunge — Engineering Lead"

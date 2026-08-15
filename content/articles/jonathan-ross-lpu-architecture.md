@@ -1,5 +1,5 @@
 ---
-title: "How one Silicon Valley dropout built the fastest-inference computer in the world"
+title: "Jonathan Ross: LPU Architecture and High-Speed Inference"
 slug: "jonathan-ross-lpu-architecture"
 shortSlug: "ross"
 author: "Sankalp Chudmunge — Engineering Lead"

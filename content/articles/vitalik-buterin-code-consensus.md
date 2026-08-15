@@ -1,5 +1,5 @@
 ---
-title: "Why Does Vitalik Buterin Take a Philosophical Approach to Decentralized Consensus?"
+title: "Vitalik Buterin: Mechanisms of Decentralized Consensus"
 slug: "vitalik-buterin-code-consensus"
 shortSlug: "vitalik"
 author: "Sankalp Chudmunge — Engineering Lead"

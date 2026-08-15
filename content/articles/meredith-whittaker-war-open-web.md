@@ -1,5 +1,5 @@
 ---
-title: "Why Does Meredith Whittaker Defend Privacy Against Compute Monopolies?"
+title: "Meredith Whittaker: Data Privacy and AI Infrastructure Monopolies"
 slug: "meredith-whittaker-war-open-web"
 shortSlug: "whittaker"
 author: "Sankalp Chudmunge — Engineering Lead"

@@ -1,5 +1,5 @@
 ---
-title: "How Did Dr. Lisa Su Engineer the Resurrection of AMD?"
+title: "Dr. Lisa Su: Architectural Strategy and the Turnaround of AMD"
 slug: "lisa-su-amd-turnaround"
 shortSlug: "lisa-su"
 author: "Sankalp Chudmunge — Engineering Lead"

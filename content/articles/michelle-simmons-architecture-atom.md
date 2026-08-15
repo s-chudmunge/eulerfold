@@ -1,5 +1,5 @@
 ---
-title: "How is Michelle Simmons Building Quantum Computers Atom-by-Atom?"
+title: "Michelle Simmons: Atomic-Scale Manufacturing for Quantum Computing"
 slug: "michelle-simmons-architecture-atom"
 shortSlug: "simmons"
 author: "Sankalp Chudmunge — Engineering Lead"

@@ -1,5 +1,5 @@
 ---
-title: "How an Architect Who Believed in 'Intelligent Architecture' Built a New Kind of Museum"
+title: "Refik Anadol: Data Integration in Generative Architecture"
 slug: "refik-anadol-architecture-memory"
 shortSlug: "anadol"
 author: "Sankalp Chudmunge — Engineering Lead"

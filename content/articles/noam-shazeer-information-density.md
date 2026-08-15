@@ -1,5 +1,5 @@
 ---
-title: "Why Does Noam Shazeer Believe Text is the Ultimate Carrier of Intelligence?"
+title: "Noam Shazeer: The Transformer Architecture and Associative Memory"
 slug: "noam-shazeer-information-density"
 shortSlug: "shazeer"
 author: "Sankalp Chudmunge — Engineering Lead"

@@ -1,5 +1,5 @@
 ---
-title: "How a boy on a unicycle changed the course of robotics"
+title: "Marc Raibert: Dynamic Balance and the Evolution of Legged Robotics"
 slug: "marc-raibert-gospel-balance"
 shortSlug: "raibert"
 author: "Sankalp Chudmunge — Engineering Lead"

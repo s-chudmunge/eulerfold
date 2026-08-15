@@ -1,5 +1,5 @@
 ---
-title: "The Man Who Built a God"
+title: "Ilya Sutskever: Neural Network Scaling and Safe Superintelligence"
 slug: "ilya-sutskever-superalignment"
 shortSlug: "sutskever"
 author: "Sankalp Chudmunge — Engineering Lead"

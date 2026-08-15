@@ -1,5 +1,5 @@
 ---
-title: "Why Europe Is Building Its Own 'AI Armada'"
+title: "Arthur Mensch: The Architecture and Efficiency of Mistral AI"
 slug: "arthur-mensch-mistral-efficiency"
 shortSlug: "mensch"
 author: "Sankalp Chudmunge — Engineering Lead"

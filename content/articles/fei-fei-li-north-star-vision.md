@@ -1,5 +1,5 @@
 ---
-title: "How A Teenage Immigrant Built the First Map Of Human Vision"
+title: "Fei-Fei Li: ImageNet and the Foundation of Computer Vision"
 slug: "fei-fei-li-north-star-vision"
 shortSlug: "feifeili"
 author: "Sankalp Chudmunge — Engineering Lead"

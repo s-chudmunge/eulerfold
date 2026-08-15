@@ -1,5 +1,5 @@
 ---
-title: "How is Jennifer Doudna Rewriting Evolution with CRISPR?"
+title: "Jennifer Doudna: The Development of CRISPR Gene Editing"
 slug: "jennifer-doudna-crispr-logic"
 shortSlug: "doudna"
 author: "Sankalp Chudmunge — Engineering Lead"

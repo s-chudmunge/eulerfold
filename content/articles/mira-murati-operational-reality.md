@@ -1,5 +1,5 @@
 ---
-title: "How Does Mira Murati Use Operational Reality to Ship AGI?"
+title: "Mira Murati: Operational Reality and the Deployment of AI Systems"
 slug: "mira-murati-operational-reality"
 shortSlug: "murati"
 author: "Sankalp Chudmunge — Engineering Lead"

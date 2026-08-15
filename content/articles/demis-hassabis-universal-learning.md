@@ -1,5 +1,5 @@
 ---
-title: "How a Teenager Who Played Chess Better Than Any Human Built the Most Influential AI Lab in History"
+title: "Demis Hassabis: DeepMind and the Pursuit of Artificial General Intelligence"
 slug: "demis-hassabis-universal-learning"
 shortSlug: "hassabis"
 author: "Sankalp Chudmunge — Engineering Lead"

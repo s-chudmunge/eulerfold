@@ -1,5 +1,5 @@
 ---
-title: "Caitlin Kalinowski Is the Woman Who Built a Pair of Augmented Reality Glasses. Here's How She Did It."
+title: "Caitlin Kalinowski: The Engineering of Augmented Reality Hardware"
 slug: "caitlin-kalinowski-hardware-future"
 shortSlug: "kalinowski"
 author: "Sankalp Chudmunge — Engineering Lead"

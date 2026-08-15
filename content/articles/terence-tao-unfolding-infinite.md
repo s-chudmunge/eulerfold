@@ -1,5 +1,5 @@
 ---
-title: "A Boy Who Played With a Garden Hose And Discovered Prime Numbers"
+title: "Terence Tao: Mathematical Problem Solving and Collaboration"
 slug: "terence-tao-unfolding-infinite"
 shortSlug: "tao"
 author: "Sankalp Chudmunge — Engineering Lead"

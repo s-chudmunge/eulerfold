@@ -1,5 +1,5 @@
 ---
-title: "How is Mary Lou Jepsen Using Holographic Light to See Inside the Brain?"
+title: "Mary Lou Jepsen: Holographic Optics and Non-Invasive Brain Imaging"
 slug: "mary-lou-jepsen-vision-beyond-skull"
 shortSlug: "jepsen"
 author: "Sankalp Chudmunge — Engineering Lead"

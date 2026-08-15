@@ -1,5 +1,5 @@
 ---
-title: "Why Tesla's Co-Creator Is Building a Refinery That Turns Junk Into Gold"
+title: "JB Straubel: Battery Technology and Circular Supply Chains"
 slug: "jb-straubel-circular-alchemist"
 shortSlug: "straubel"
 author: "Sankalp Chudmunge — Engineering Lead"
