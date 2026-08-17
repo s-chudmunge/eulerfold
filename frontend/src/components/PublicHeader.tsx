@@ -245,17 +245,15 @@ export default function PublicHeader() {
         <div className="max-w-7xl mx-auto h-full px-6 flex items-center justify-between">
           
           <div className="flex items-center gap-8 h-full">
-            <Link href="/" className="group flex items-center gap-2 hover:opacity-100 transition-opacity">
-              <img src="/apple-touch-icon.png" alt="" className="w-7 h-7" />
-              <span className="text-[18px] font-bold text-text-heading tracking-tight hidden md:block">
+            <Link href="/" className="group flex items-center hover:opacity-100 transition-opacity h-full">
+              <img src="/apple-touch-icon.png" alt="" className="w-7 h-7 shrink-0" />
+              <span className="text-[18px] font-bold text-text-heading tracking-tight hidden md:block max-w-0 opacity-0 group-hover:max-w-[140px] group-hover:opacity-100 group-hover:pl-2 transition-all duration-300 ease-out overflow-hidden whitespace-nowrap">
                 Euler<span className="text-teal-700">Fold</span> AI
               </span>
             </Link>
 
           <nav className="hidden lg:flex items-center gap-5 h-full">
-            <MegaMenu id="platforms" data={NAVIGATION_DATA.platforms} />
             <MegaMenu id="research" data={NAVIGATION_DATA.research} />
-            <MegaMenu id="library" data={NAVIGATION_DATA.library} />
             <NavLink href="/about" label="About" />
             <NavLink href="/pricing" label="Pricing" />
           </nav>
