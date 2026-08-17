@@ -271,29 +271,6 @@ function ArchiveContent() {
         <BrandedSideBanners />
         <Breadcrumbs items={[{ label: 'Archive' }]} />
 
-        {showBanner && (
-          <div className="bg-transparent rounded-3xl p-6 md:p-8 border border-border/60 relative overflow-hidden group mb-10">
-            <button 
-              onClick={() => setShowBanner(false)}
-              className="absolute top-4 right-4 z-20 p-2 text-text-muted hover:text-text-primary hover:bg-[var(--border)] rounded-full transition-all"
-            >
-              <X className="w-4 h-4" />
-            </button>
-            <div className="relative z-10 max-w-xl">
-              <div className="flex items-center gap-2 text-accent mb-3">
-                <span className="inconsolata-ui text-[12px] md:text-[13px] font-bold">EulerFold</span>
-              </div>
-              <h2 className="text-[20px] md:text-[22px] font-bold mb-3 text-text-heading tracking-tight inconsolata-ui">Join the EulerFold community</h2>
-              <p className="manrope-body text-[13px] md:text-[14px] mb-6 text-text-primary leading-relaxed font-medium">
-                Track your preparation progress and collaborate with students worldwide.
-              </p>
-              <button className="inline-flex items-center gap-2 bg-[var(--text-heading)] text-[var(--bg-main)] rounded-full px-6 py-2.5 text-[14px] font-bold hover:opacity-90 transition-all shadow-lg hover:shadow-teal-500/20">
-                Start Your Journey <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-            <span className="absolute -bottom-10 -right-10 text-[180px] opacity-[0.03] grayscale -rotate-12 pointer-events-none group-hover:scale-110 transition-transform duration-1000">🐢</span>
-          </div>
-        )}
 
         {/* Filter Section */}
         <div className="mb-10 space-y-4">
