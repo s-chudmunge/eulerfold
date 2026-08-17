@@ -274,13 +274,35 @@ const MarkdownWithLinks = ({ content, currentSlug, cache }: { content: string, c
             )}
           </figure>
         ),
+        pre: ({ node, children, ...props }: any) => {
+          return (
+            <pre
+              className="my-6 rounded-md bg-[#1a1a1a] border border-white/10 overflow-x-auto p-5 text-[13.5px] leading-relaxed font-mono text-[#e2e2e2]"
+              {...props}
+            >
+              {children}
+            </pre>
+          );
+        },
         code: ({ node, className, children, ...props }: any) => {
           const match = /language-(\w+)/.exec(className || '');
           const isD2 = match && match[1] === 'd2';
           if (isD2) {
             return <D2Diagram code={String(children).replace(/\n$/, '')} cache={cache} />;
           }
-          return <code className={className} {...props}>{children}</code>;
+          // inline code (not inside a pre block)
+          const isInline = !className;
+          if (isInline) {
+            return (
+              <code
+                className="px-[5px] py-[2px] rounded bg-sidebar border border-border font-mono text-[13px] text-accent"
+                {...props}
+              >
+                {children}
+              </code>
+            );
+          }
+          return <code className={`font-mono text-[#e2e2e2] ${className || ''}`} {...props}>{children}</code>;
         }
       }}
     >
@@ -529,28 +551,52 @@ export default function ArticleClient({ article }: Props) {
           </div>
         </header>
 
+        {/* Featured Image — full bleed (moved above ToC alignment) */}
+        <div className="w-full max-w-[720px] mx-auto min-w-0">
+          {article.heroImage && (
+            <figure className="mb-[48px] -mx-4 md:mx-0">
+              <div className="overflow-hidden rounded-none md:rounded-lg aspect-[16/7]">
+                <img 
+                  src={article.heroImage} 
+                  alt={article.title} 
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            </figure>
+          )}
+        </div>
+
         <div className="flex justify-center pb-[80px]">
 
           {/* Sticky ToC Sidebar (desktop only) */}
           {tocHeadings.length > 0 && (
-            <aside className="hidden xl:block w-[240px] shrink-0 mr-24 self-start sticky top-[120px] max-h-[calc(100vh-140px)] overflow-y-auto custom-scrollbar pr-4">
-              <nav className="flex flex-col gap-1">
-                {tocHeadings.map(h => (
-                  <a
-                    key={h.id}
-                    href={`#${h.id}`}
-                    className={`block text-[9px] leading-tight transition-colors duration-150 manrope-body opacity-80 ${
-                      h.level === 3 ? 'pl-3' : ''
-                    } ${
-                      activeHeading === h.id
-                        ? 'text-text-primary font-semibold'
-                        : 'text-text-muted hover:text-text-primary'
-                    }`}
-                  >
-                    {h.text}
-                  </a>
-                ))}
-              </nav>
+            <aside className="hidden xl:flex w-[180px] shrink-0 mr-12 self-start sticky top-[120px] max-h-[calc(100vh-140px)] flex-col">
+              <div className="relative flex flex-col">
+                {tocHeadings.map(h => {
+                  const isActive = activeHeading === h.id;
+                  return (
+                    <a
+                      key={h.id}
+                      href={`#${h.id}`}
+                      title={h.text}
+                      className="group relative flex items-center py-[6px] transition-all duration-150"
+                    >
+                      <span className="relative flex items-center w-full">
+                        {/* Dash indicator */}
+                        <span className={`shrink-0 block w-[14px] h-[1.5px] rounded-full transition-all duration-150 ${
+                          isActive
+                            ? 'bg-accent'
+                            : 'bg-text-muted/30 group-hover:bg-text-muted/50'
+                        }`} />
+                        {/* Text — shown on hover */}
+                        <span className="absolute left-6 manrope-body text-[8px] text-text-muted leading-tight line-clamp-2 opacity-0 group-hover:opacity-100 transition-opacity duration-150 whitespace-nowrap overflow-hidden text-ellipsis max-w-[140px]">
+                          {h.text}
+                        </span>
+                      </span>
+                    </a>
+                  );
+                })}
+              </div>
             </aside>
           )}
 
@@ -558,18 +604,6 @@ export default function ArticleClient({ article }: Props) {
           <main className="w-full max-w-[720px] min-w-0">
             <article>
               <div className="page-content">
-                {/* Featured Image — full bleed */}
-                {article.heroImage && (
-                  <figure className="mb-[48px] -mx-4 md:mx-0">
-                    <div className="overflow-hidden rounded-none md:rounded-lg aspect-[16/7]">
-                      <img 
-                        src={article.heroImage} 
-                        alt={article.title} 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  </figure>
-                )}
 
                 <div className="max-w-[720px] mx-auto">
                   <div className="prose prose-eulerfold max-w-none text-text-primary">
