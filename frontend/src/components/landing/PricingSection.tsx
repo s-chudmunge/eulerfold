@@ -72,21 +72,6 @@ export default function PricingSection() {
           Choose the plan that's right for you
         </p>
 
-        {/* Independence Week Sale badge */}
-        {hasMounted && onSale && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4 }}
-            className="mt-5 inline-flex flex-col sm:flex-row items-center justify-center gap-2 bg-amber-50 dark:bg-amber-950/30 border border-amber-300/60 dark:border-amber-700/40 rounded-md px-4 py-2.5"
-          >
-            <span className="flex items-center gap-2 text-[13px] font-bold text-amber-800 dark:text-amber-300 uppercase tracking-wider">
-              <span>🇮🇳</span>
-              <span>Independence Week Sale — ends in</span>
-            </span>
-            <SaleTimer seconds={saleSeconds} />
-          </motion.div>
-        )}
       </div>
 
       <div className="lg:max-w-[60%] mx-auto">
