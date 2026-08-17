@@ -816,6 +816,11 @@ export default function ArticleClient({ article }: Props) {
               </div>
             </article>
           </main>
+
+          {/* Spacer to balance the ToC and perfectly center the main content on the screen */}
+          {tocHeadings.length > 0 && (
+            <div className="hidden xl:block w-[180px] shrink-0 ml-12 pointer-events-none" aria-hidden="true" />
+          )}
         </div>
       </div>
     </div>
