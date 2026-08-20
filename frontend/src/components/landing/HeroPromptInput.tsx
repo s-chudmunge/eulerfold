@@ -429,7 +429,7 @@ export default function HeroPromptInput() {
                       <div className="absolute bottom-full left-0 mb-2 w-36 bg-background border border-border rounded-md shadow-xl z-50 overflow-hidden">
                         {ENGINES.map(e => (
                           <button key={e.id} onClick={() => {
-                            if (e.id === 'local' && !localAIModelId) {
+                            if (e.id === 'local') {
                                 setIsLocalAIModalOpen(true);
                             } else {
                                 setEngine(e.id);
