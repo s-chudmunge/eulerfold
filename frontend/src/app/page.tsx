@@ -75,8 +75,6 @@ export default async function LandingPage() {
 
         {/* Final CTA Section */}
         <section className="py-20 md:py-32 px-6 bg-transparent relative overflow-hidden">
-          {/* Subtle grid pattern in the background of the section */}
-          <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
           
           <div className="max-w-4xl mx-auto relative z-10">
             <div className="group relative overflow-hidden rounded-2xl bg-transparent border border-accent/30 hover:border-accent/50 transition-all hover:shadow-md">
