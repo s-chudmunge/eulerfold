@@ -5,7 +5,7 @@ import { supabase } from '@/lib/supabase/client';
 import { roadmapsAPI, exploreAPI, submissionsAPI, authAPI } from '@/lib/api';
 import RoadmapDisplay from '@/components/landing/RoadmapDisplay';
 import PublicRoadmapView from './PublicRoadmapView';
-import RoadmapBanner from '@/components/FluidGradient/RoadmapBanner';
+import PrivateRoadmapBanner from '@/components/PrivateRoadmapBanner';
 import StarRating from '@/components/roadmap/StarRating';
 import { 
     ChevronLeft, 
@@ -879,7 +879,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                             </div>
                         ) : (
                             <>
-                                <RoadmapBanner 
+                                <PrivateRoadmapBanner 
                                     title={roadmap.title} 
                                     slug={slug} 
                                     authorName={roadmap.author}
@@ -1013,68 +1013,6 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                 )}
                 </div>
 
-                {/* Shared Landing Footer */}
-                <footer className="w-full px-6 py-12 border-t border-border bg-background mt-20">
-                <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-5 gap-8 md:gap-4">
-                    <div className="col-span-2 md:col-span-1 flex flex-col items-start">
-                        <Link href="/" className="flex items-center gap-2 opacity-40 hover:opacity-100 transition-opacity grayscale">
-                            <img src="/apple-touch-icon.png" alt="" className="w-6 h-6" />
-                            <span className="font-semibold text-[11px] tracking-tight inconsolata-ui text-black dark:text-white">EulerFold</span>
-                        </Link>
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <h4 className="text-[10px] font-bold text-black dark:text-white opacity-30">Website</h4>
-                        <div className="flex flex-col gap-1">
-                            <Link href="/dashboard" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Dashboard</Link>
-                            <Link href="/explore" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Explore</Link>
-                            <Link href="/generate" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Generate</Link>
-                            <Link href="/learn" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Learn</Link>
-                            <Link href="/leaderboard" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Leaderboard</Link>
-                        </div>
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <h4 className="text-[10px] font-bold text-black dark:text-white opacity-30">Resources</h4>
-                        <div className="flex flex-col gap-1">
-                            <Link href="/research-decoded" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Research</Link>
-                            <Link href="/help" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Help center</Link>
-                            <button 
-                                onClick={openSettings}
-                                className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors text-left"
-                            >
-                                Settings
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <h4 className="text-[10px] font-bold text-black dark:text-white opacity-30">Company</h4>
-                        <div className="flex flex-col gap-1">
-                            <Link href="/terms" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Terms of service</Link>
-                            <Link href="/privacy" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Privacy</Link>
-                        </div>
-                    </div>
-
-                    <div className="flex flex-col gap-2">
-                        <h4 className="text-[10px] font-bold text-black dark:text-white opacity-30">Social</h4>
-                        <div className="flex flex-col gap-1">
-                            <a href="mailto:eulerfold@gmail.com" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Contact support</a>                            <span className="text-[10px] text-gray-300 dark:text-gray-800 cursor-default">GitHub</span>
-                            <span className="text-[10px] text-gray-300 dark:text-gray-800 cursor-default">Twitter</span>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="max-w-5xl mx-auto mt-12 pt-6 border-t border-border dark:border-white/5 flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <p className="text-[9px] font-medium text-gray-400 inconsolata-ui opacity-50">
-                        © {new Date().getFullYear()} EulerFold
-                    </p>                    <div className="flex items-center gap-1">
-                        <div className="w-1 h-1 rounded-full bg-sidebar dark:bg-white/5"></div>
-                        <div className="w-1 h-1 rounded-full bg-sidebar dark:bg-white/5"></div>
-                        <div className="w-1 h-1 rounded-full bg-sidebar dark:bg-white/5"></div>
-                    </div>
-                </div>
-                </footer>
                 </main>
                 </div>            {/* Sharing Nudge - Bottom Right Corner */}
             {showNudge && (

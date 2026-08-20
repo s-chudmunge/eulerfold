@@ -157,11 +157,6 @@ const [isMenuOpen, setIsMenuOpen] = useState(false);
             `}>
                 <div className="flex flex-col h-full overflow-y-auto no-scrollbar">
 
-                    <div className="flex items-center gap-3 px-6 py-4">
-                        <img src="/apple-touch-icon.png" alt="Logo" className="w-8 h-8" />
-                        <span className="text-[18px] font-bold tracking-tight">Euler<span className="text-accent">Fold</span></span>
-                    </div>
-
 
                     <div className="px-4 py-4">
                         <Link href="/generate" onClick={onClose} className="w-full bg-accent text-white flex items-center justify-center gap-2 py-2 rounded-lg font-bold text-[13px] shadow-sm hover:bg-teal-700 transition-colors">
@@ -169,11 +164,7 @@ const [isMenuOpen, setIsMenuOpen] = useState(false);
                         </Link>
                     </div>
 
-                    {/* Header / Space */}
                     <div className="p-3 mb-1 h-[48px] shrink-0 lg:hidden">
-                        <Link href="/" className="flex items-center px-1">
-                            <img src="/apple-touch-icon.png" alt="" className="w-5 h-5 object-contain" />
-                        </Link>
                     </div>
 
                     <div className="space-y-2 pt-2">
