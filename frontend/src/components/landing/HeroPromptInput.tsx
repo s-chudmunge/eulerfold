@@ -90,7 +90,7 @@ export default function HeroPromptInput() {
               onClick={handleSubmit}
               className="inline-flex items-center gap-2 bg-accent text-white px-5 py-2 rounded-md text-[13px] font-bold transition-all hover:bg-teal-700 active:scale-[0.97] shadow-sm"
             >
-              Generate
+              Create
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>

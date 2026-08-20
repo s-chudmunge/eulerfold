@@ -91,66 +91,75 @@ const products: Product[] = [
 
 export default function ProductEcosystem() {
   return (
-    <section className="py-20 md:py-32 px-6 bg-background relative border-t border-border/30">
-      <div className="max-w-6xl mx-auto">
-        
-        {/* Section Header */}
-        <div className="max-w-2xl mb-14 md:mb-18">
-          <motion.span 
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="block text-[11px] font-bold uppercase tracking-[0.2em] text-accent mb-4"
-          >
-            The EulerFold Ecosystem
-          </motion.span>
-          <motion.h2 
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.08 }}
-            className="text-2xl md:text-[2.25rem] font-bold text-text-heading tracking-tight leading-[1.2] mb-4"
-          >
-            Tools to deconstruct topics, build courses, and prove mastery.
-          </motion.h2>
-          <motion.p 
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.14 }}
-            className="text-[14px] text-text-muted leading-relaxed"
-          >
-            Explore our specialized tools designed for deep technical learning and skill verification.
-          </motion.p>
-        </div>
+    <section className="py-20 md:py-32 px-6 bg-background relative border-t border-border/30 overflow-hidden">
+      {/* Subtle grid pattern in the background of the section */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+      
+      <div className="max-w-6xl mx-auto relative z-10">
+        <div className="group relative overflow-hidden rounded-2xl bg-sidebar/50 border border-border backdrop-blur-xl shadow-sm px-6 py-10 sm:p-10 md:p-16 transition-all hover:shadow-md">
+          
+          {/* Decorative gradient blur */}
+          <div className="absolute -top-32 -left-32 w-96 h-96 bg-accent/10 rounded-full blur-3xl opacity-50 transition-opacity group-hover:opacity-80 pointer-events-none"></div>
 
-        {/* Simple Link Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-y-2 gap-x-6 max-w-3xl">
-          {products.map((product, index) => {
-            const Icon = product.icon;
-            return (
-              <motion.div
-                key={product.id}
-                initial={{ opacity: 0, y: 10 }}
+          <div className="relative z-10 flex flex-col md:flex-row gap-12 justify-between">
+            {/* Section Header */}
+            <div className="max-w-md mb-8 md:mb-0">
+              <motion.span 
+                initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: index * 0.04 }}
+                className="block text-[11px] font-bold uppercase tracking-[0.2em] text-accent mb-4"
               >
-                <Link
-                  href={product.href}
-                  className="group flex items-center gap-3 py-2 px-3 rounded-md hover:bg-sidebar/50 transition-colors duration-200 -ml-3"
-                >
-                  <Icon className="w-4 h-4 text-text-muted group-hover:text-accent transition-colors shrink-0" strokeWidth={1.5} />
-                  <span className="inconsolata-ui text-[14px] font-bold text-text-heading group-hover:text-accent transition-colors">
-                    {product.title}
-                  </span>
-                  <ArrowRight className="w-3.5 h-3.5 text-transparent group-hover:text-accent/60 group-hover:translate-x-0.5 transition-all duration-200 ml-auto" strokeWidth={2} />
-                </Link>
-              </motion.div>
-            );
-          })}
-        </div>
+                The EulerFold Ecosystem
+              </motion.span>
+              <motion.h2 
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.08 }}
+                className="text-2xl md:text-[2.25rem] font-bold text-text-heading tracking-tight leading-[1.2] mb-4"
+              >
+                Tools to deconstruct topics, build courses, and prove mastery.
+              </motion.h2>
+              <motion.p 
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: 0.14 }}
+                className="text-[14px] text-text-muted leading-relaxed"
+              >
+                Explore our specialized tools designed for deep technical learning and skill verification.
+              </motion.p>
+            </div>
 
+            {/* Simple Link Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-8 max-w-xl flex-grow">
+              {products.map((product, index) => {
+                const Icon = product.icon;
+                return (
+                  <motion.div
+                    key={product.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: index * 0.04 }}
+                  >
+                    <Link
+                      href={product.href}
+                      className="group/item flex items-center gap-3 py-2.5 px-3 rounded-md hover:bg-background/80 hover:shadow-sm border border-transparent hover:border-border/60 transition-all duration-200 -ml-3"
+                    >
+                      <Icon className="w-4 h-4 text-text-muted group-hover/item:text-accent transition-colors shrink-0" strokeWidth={1.5} />
+                      <span className="inconsolata-ui text-[14px] font-bold text-text-heading group-hover/item:text-accent transition-colors">
+                        {product.title}
+                      </span>
+                      <ArrowRight className="w-3.5 h-3.5 text-transparent group-hover/item:text-accent/60 group-hover/item:translate-x-0.5 transition-all duration-200 ml-auto" strokeWidth={2} />
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
       </div>
     </section>
   );

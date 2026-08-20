@@ -14,11 +14,17 @@ import SessionTracker from '@/components/SessionTracker';
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
+import { Familjen_Grotesk } from 'next/font/google';
+
+const familjen = Familjen_Grotesk({
+  weight: ['400', '500', '600', '700'],
+  subsets: ['latin'],
+  variable: '--font-sans',
+  display: 'swap',
+});
+
 const inter = { variable: '--font-inter', className: 'font-inter' };
-
 const inconsolata = { variable: '--font-mono', className: 'font-mono' };
-
-const manrope = { variable: '--font-sans', className: 'font-sans' };
 
 export const metadata: Metadata = {
   applicationName: 'EulerFold',
@@ -199,7 +205,7 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${inter.variable} ${inconsolata.variable} ${manrope.variable} antialiased font-sans`}
+        className={`${inter.variable} ${inconsolata.variable} ${familjen.variable} antialiased font-sans`}
       >
         <QueryProvider>
           <AuthProvider>

@@ -442,131 +442,37 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                     authorName={roadmap.author}
                     username={roadmap.username}
                     avatarUrl={roadmap.avatar_url}
+                    subject={roadmap.subject}
+                    description={roadmap.description}
+                    durationText={`${roadmap.roadmap_plan?.modules?.length || roadmap.time_value} ${roadmap.roadmap_plan?.modules?.length ? (roadmap.roadmap_plan.modules.length === 1 ? 'week' : 'weeks') : roadmap.time_unit}`}
+                    learnersCount={roadmap.clone_count || 0}
+                    createdDate={roadmap.created_at}
+                    isOwner={isOwner}
+                    isCloned={roadmap.is_cloned}
                     isAuthenticated={isAuthenticated}
+                    saving={saving}
                     onStartLearning={() => {
-                        if (isOwner || roadmap.is_cloned) {
-                            handleContinueLearning();
-                        } else {
-                            setCloneSuccess(false);
-                            setShowCloneModal(true);
-                        }
+                        handleContinueLearning();
+                    }}
+                    onClone={() => {
+                        setCloneSuccess(false);
+                        handleClone();
                     }}
                 />
                 <div className="max-w-[1000px] mx-auto px-6 pb-12 md:px-12 md:pb-16 relative mt-10">
-                    {/* Public Header Area - Minimalist Design */}
-                    <div className="relative mb-10 pb-8 border-b border-border/60 group/header">
-                        <div className="flex flex-col gap-5">
-                            <div className="space-y-2">
-                                {successMsg && (
-                                    <div className="mb-3 p-1.5 bg-emerald-500/10 border border-emerald-500/20 rounded text-emerald-600 text-[10px] font-bold animate-in fade-in slide-in-from-top-1 duration-300">
-                                        {successMsg}
-                                    </div>
-                                )}
-                                {error && (
-                                    <div className="mb-3 p-1.5 bg-red-500/10 border border-red-500/20 rounded text-red-500 text-[10px] font-bold animate-in fade-in slide-in-from-top-1 duration-300">
-                                        {error}
-                                    </div>
-                                )}
-                                
-                                <div className="mb-1">
-                                    <span className="text-accent font-bold uppercase tracking-[0.2em] text-[9px] font-inter">{roadmap.subject}</span>
-                                </div>
-
-                                <h1 className="font-inter text-2xl md:text-4xl font-bold text-text-heading tracking-tight leading-[1.1] max-w-4xl">
-                                    {roadmap.title}
-                                </h1>
-                                
-                                {/* Metadata Row */}
-                                <div className="flex flex-wrap items-center gap-x-5 gap-y-1.5 manrope-body text-[11px] text-text-muted font-medium pt-1">
-                                    <div className="flex items-center gap-1.5 group/meta">
-                                        <Clock className="w-3.5 h-3.5 text-accent/50 group-hover/meta:text-accent transition-colors" />
-                                        <span>{roadmap.roadmap_plan?.modules?.length || roadmap.time_value} {roadmap.roadmap_plan?.modules?.length ? (roadmap.roadmap_plan.modules.length === 1 ? 'week' : 'weeks') : roadmap.time_unit}</span>
-                                    </div>
-                                    <div className="flex items-center gap-1.5 group/meta">
-                                        <Users className="w-3.5 h-3.5 text-accent/50 group-hover/meta:text-accent transition-colors" />
-                                        <span>{roadmap.clone_count || 0} Learners</span>
-                                    </div>
-                                    {(roadmap.author || roadmap.username) && (
-                                        <div className="flex items-center gap-1.5 group/meta">
-                                            {roadmap.username ? (
-                                                <Link href={`/u/${roadmap.username}`} className="hover:text-accent transition-colors underline-offset-4 hover:underline flex items-center gap-1.5">
-                                                    <img 
-                                                        src={(roadmap.avatar_url?.includes('initials') ? null : roadmap.avatar_url) || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(roadmap.author || roadmap.username || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`}
-                                                        alt={roadmap.author || roadmap.username}
-                                                        className="w-4 h-4 rounded-full border border-border/50 object-cover"
-                                                    />
-                                                    {roadmap.author || roadmap.username}
-                                                </Link>
-                                            ) : (
-                                                <span className="flex items-center gap-1.5">
-                                                    <img 
-                                                        src={(roadmap.avatar_url?.includes('initials') ? null : roadmap.avatar_url) || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(roadmap.author || 'User')}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`}
-                                                        alt={roadmap.author || "User"}
-                                                        className="w-4 h-4 rounded-full border border-border/50 object-cover"
-                                                    />
-                                                    {roadmap.author || roadmap.username}
-                                                </span>
-                                            )}
-                                        </div>
-                                    )}
-                                    {roadmap.created_at && (
-                                        <div className="flex items-center gap-1.5 group/meta">
-                                            <Calendar className="w-3.5 h-3.5 text-accent/50 group-hover/meta:text-accent transition-colors" />
-                                            <span>{new Date(roadmap.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</span>
-                                        </div>
-                                    )}
-                                </div>
-
-                                {/* Description & Goal Section */}
-                                <div className="pt-3 max-w-4xl">
-                                    {roadmap.description && (
-                                        <p className="manrope-body text-[14px] md:text-[15px] text-text-muted leading-relaxed font-medium italic opacity-90">
-                                            &ldquo;{roadmap.description}&rdquo;
-                                        </p>
-                                    )}
-                                    
-                                    <div className="mt-3 flex flex-wrap gap-2">
-                                        {/* Dynamic label if Job Decoded */}
-                                        {roadmap.subject?.includes("JD:") && (
-                                            <div className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-blue-500/5 border border-blue-500/10 rounded text-blue-600 uppercase tracking-wider text-[10px] font-bold">
-                                                Professional Track
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
+                    
+                    {/* Alerts Area */}
+                    <div className="space-y-2 mb-8">
+                        {successMsg && (
+                            <div className="p-3 bg-emerald-500/10 border border-emerald-500/20 rounded-lg text-emerald-600 text-[13px] font-bold animate-in fade-in slide-in-from-top-1 duration-300">
+                                {successMsg}
                             </div>
-
-                            {/* Actions Area */}
-                            <div className="flex flex-wrap items-center gap-4 pt-2">
-                                {(isOwner || roadmap.is_cloned) ? (
-                                    <button 
-                                        onClick={handleContinueLearning}
-                                        disabled={saving}
-                                        className="inline-flex items-center justify-center bg-accent text-white hover:bg-teal-700 px-6 py-2 rounded-lg text-[12px] font-bold transition-all shadow-sm gap-2 font-inter disabled:opacity-50 shadow-md"
-                                    >
-                                        <ArrowRight className="w-3.5 h-3.5" /> Continue
-                                    </button>
-                                ) : (
-                                    <button 
-                                        onClick={handleClone}
-                                        disabled={saving}
-                                        className="inline-flex items-center justify-center bg-zinc-800 text-white hover:bg-zinc-700 px-6 py-2 rounded-lg text-[12px] font-bold transition-all shadow-sm gap-2 font-inter shadow-md"
-                                    >
-                                        <Copy className="w-3.5 h-3.5" /> {saving ? '...' : 'Clone to Dashboard'}
-                                    </button>
-                                )}
-
-                                <div className="h-4 w-[1px] bg-border/40" />
-
-                                <div className="flex items-center gap-3">
-                                    <p className="inconsolata-ui text-[9px] font-bold text-text-muted uppercase tracking-widest opacity-40">Share:</p>
-                                    <SocialShare 
-                                        title={roadmap.title} 
-                                        text={`Check out this ${roadmap.subject} roadmap on EulerFold:`} 
-                                    />
-                                </div>
+                        )}
+                        {error && (
+                            <div className="p-3 bg-red-500/10 border border-red-500/20 rounded-lg text-red-500 text-[13px] font-bold animate-in fade-in slide-in-from-top-1 duration-300">
+                                {error}
                             </div>
-                        </div>
+                        )}
                     </div>
 
                     {/* Course Overview Section */}

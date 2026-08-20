@@ -77,7 +77,7 @@ async def get_personalized_recommendations(current_user: Optional[User] = Depend
                     })
             
             curated_articles = [
-                {"id": "article-backpropagation", "title": "Understanding Backpropagation", "slug": "backpropagation", "description": "The calculus behind modern deep learning.", "subject": "Mathematics", "content_type": "article"},
+                {"id": "article-power-iteration", "title": "Power Iteration & PageRank", "slug": "power-iteration", "description": "The spectral graph theory behind the internet.", "subject": "Mathematics", "content_type": "article"},
                 {"id": "article-lisa-su-amd-turnaround", "title": "Lisa Su & The AMD Turnaround", "slug": "lisa-su-amd-turnaround", "description": "Architecting the silicon turnaround.", "subject": "Semiconductors", "content_type": "article"}
             ]
             

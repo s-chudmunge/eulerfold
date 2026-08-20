@@ -39,11 +39,17 @@ import {
     Linkedin,
     Share2
 } from 'lucide-react';
+
+import AppSidebar from '@/components/AppSidebar';
+import { Menu, Bell, Calendar } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
 import { PublicProfile, profileAPI } from '@/lib/api';
-import PublicHeader from '@/components/PublicHeader';
+import ProfileHeader from '@/components/profile/ProfileHeader';
+import FeaturedCourses from '@/components/profile/FeaturedCourses';
+import ProvenSkills from '@/components/profile/ProvenSkills';
+import VerifiedWork from '@/components/profile/VerifiedWork';
 
 import { 
     SiPython, SiJavascript, SiTypescript, SiReact, SiVuedotjs, SiAngular, 
@@ -100,7 +106,6 @@ function getSkillIcon(name: string) {
     return <BookOpen className="w-5 h-5 text-accent opacity-40" />;
 }
 
-import ActivityChart from '@/components/dashboard/ActivityChart';
 import SkillsProfile from '@/components/dashboard/SkillsProfile';
 import ActivityHeatmap from '@/components/profile/ActivityHeatmap';
 import TTSListenButton from '@/components/TTSListenButton';
@@ -120,7 +125,9 @@ export default function ProfileClient({ profile }: Props) {
     const [isOwner, setIsOwner] = useState(false);
     const [isLoggedIn, setIsLoggedIn] = useState(false);
     const [authUser, setAuthUser] = useState<any>(null);
-    const [activeTab, setActiveTab] = useState<TabType>('overview');
+    
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+const [activeTab, setActiveTab] = useState<TabType>('overview');
     const [uploading, setUploading] = useState(false);
     const [currentAvatarUrl, setCurrentAvatarUrl] = useState(profile.avatar_url);
     const [selectedReview, setSelectedReview] = useState<any>(null);
@@ -251,513 +258,250 @@ export default function ProfileClient({ profile }: Props) {
         { id: 'insights', label: 'Insights', icon: MessageSquare, count: profile.discussions?.length },
     ];
 
+
+    const copyShareLink = () => {
+        if (typeof window !== 'undefined') {
+            navigator.clipboard.writeText(window.location.href);
+            alert("Profile link copied to clipboard!");
+        }
+    };
+
     return (
-        <div className="min-h-screen flex flex-col bg-background text-text-primary selection:bg-teal-500/30 selection:text-text-heading">
-            <PublicHeader />
+        <div className="fixed inset-0 z-[100] flex flex-col bg-background text-text-primary selection:bg-teal-500/30 font-sans overflow-hidden">
+            
+            {/* Custom Header (Matches Image) */}
+            <header className="border-b border-border bg-header h-[64px] shrink-0 z-50 flex items-center justify-between px-4 md:px-6">
+                <div className="flex items-center gap-4">
+                    <button 
+                        onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                        className="p-2 -ml-2 text-text-muted hover:text-text-heading transition-colors"
+                    >
+                        {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+                    </button>
+                    <span className="text-[16px] font-bold text-text-heading flex items-center gap-2">
+                        {profile.display_name || profile.username}'s Details
+                    </span>
+                </div>
 
-            <div className="flex-1 pt-6 md:pt-12">
-                {/* Profile Header (Tabs Area) - GitHub style */}
-                <div 
-                    className="border-b border-border bg-background/80 backdrop-blur-xl sticky top-[56px] z-30 hidden md:block"
-                    style={{ top: 'calc(56px + var(--announcement-height, 0px))' }}
-                >
-                    <div className="max-w-[1280px] mx-auto px-6 lg:px-10 flex items-center justify-between">
-                        <div className="flex gap-8">
-                            {/* Space for sidebar alignment */}
-                            <div className="w-[260px] shrink-0"></div>
-                            
-                            <nav className="flex items-center">
-                                {tabs.map((tab) => {
-                                    const Icon = tab.icon;
-                                    return (
-                                        <button
-                                            key={tab.id}
-                                            onClick={() => setActiveTab(tab.id)}
-                                            className={`
-                                                flex items-center gap-2 px-4 py-2 text-[12.5px] font-semibold border-b-2 transition-all relative manrope-body tracking-tight
-                                                ${activeTab === tab.id 
-                                                    ? 'border-accent text-text-heading' 
-                                                    : 'border-transparent text-text-muted hover:text-text-heading hover:border-border'}
-                                            `}
+                <div className="flex items-center gap-6">
+                    {/* Search Bar */}
+                    <div className="hidden md:flex items-center bg-background border border-border rounded-lg px-3 py-1.5 w-[300px]">
+                        <Search className="w-4 h-4 text-text-muted mr-2" />
+                        <input 
+                            type="text" 
+                            placeholder="Search..." 
+                            className="bg-transparent border-none outline-none text-[13px] text-text-heading w-full placeholder:text-text-muted"
+                        />
+                    </div>
+                    
+                    <div className="flex items-center gap-4 border-l border-border pl-6">
+                        <button className="text-text-muted hover:text-text-heading transition-colors relative">
+                            <Bell className="w-5 h-5" />
+                            <span className="absolute top-0 right-0 w-2 h-2 bg-accent rounded-full border border-background"></span>
+                        </button>
+                        <div className="w-8 h-8 rounded-full overflow-hidden border border-border">
+                            <img src={effectiveAvatarUrl || `https://api.dicebear.com/7.x/notionists/svg?seed=${profile.username}`} alt="Avatar" className="w-full h-full object-cover" />
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <div className="flex flex-1 relative overflow-hidden h-full">
+                
+                {/* App Sidebar */}
+                <AppSidebar 
+                    isOpen={isSidebarOpen}
+                    onClose={() => setIsSidebarOpen(false)}
+
+                />
+
+                {/* Main Scrollable Area */}
+                <div className="flex-1 overflow-y-auto no-scrollbar relative w-full">
+                    <div className="w-full max-w-[1400px] mx-auto p-4 md:p-6 lg:p-8 flex flex-col lg:flex-row gap-6">
+                        
+                        {/* Left Profile Card */}
+                        <aside className="w-full lg:w-[320px] shrink-0">
+                            <div className="bg-transparent border border-border rounded-xl overflow-hidden sticky top-[20px]">
+                                {/* Top Banner Area */}
+                                <div className="h-32 bg-accent/10 relative">
+                                    <div className="absolute top-4 right-4 flex gap-2">
+                                        <button 
+                                            onClick={copyShareLink}
+                                            className="p-2 bg-background/50 hover:bg-background rounded-lg border border-border/50 text-text-heading transition-all backdrop-blur-md"
+                                            title="Share Profile"
                                         >
-                                            <Icon className={`w-3 h-3 ${activeTab === tab.id ? 'text-accent' : 'opacity-40'}`} />
-                                            <span>{tab.label}</span>
-                                            {tab.count !== undefined && (
-                                                <span className={`ml-1 text-[10.5px] opacity-40 font-medium`}>
-                                                    ({tab.count})
-                                                </span>
-                                            )}
+                                            <Share2 className="w-4 h-4" />
                                         </button>
-                                    );
-                                })}
-                            </nav>
-                            </div>
-
-                            <button 
-                            onClick={handleExportPDF}
-                            className="p-1.5 text-text-muted hover:text-accent transition-all opacity-40 hover:opacity-100"
-                            title="Download PDF Report"
-                            >
-                            <Download className="w-3.5 h-3.5" />
-                            </button>
-                            </div>
-                            </div>
-
-                            <div className="max-w-[1280px] mx-auto px-4 md:px-6 lg:px-10 flex flex-col md:flex-row gap-8 py-8 md:py-12">
-                            {/* Sidebar */}
-                            <aside className="w-full md:w-[260px] shrink-0 flex flex-col">
-                            {/* Avatar/Name Group */}
-                            <div className="flex md:flex-col items-center md:items-start gap-4 md:gap-0 mb-6 relative">
-                            <div className="w-20 h-20 md:w-full md:h-auto aspect-square rounded-lg border border-border shadow-md overflow-hidden bg-header flex items-center justify-center relative z-10 group">
-                                {effectiveAvatarUrl ? (
-                                    <img src={effectiveAvatarUrl} alt={profile.username} className="w-full h-full object-cover" />
-                                ) : (
-                                    <div className="w-full h-full bg-sidebar flex items-center justify-center text-text-heading text-3xl font-bold inconsolata-ui">
-                                        {profile.display_name?.[0] || profile.username[0].toUpperCase()}
-                                    </div>
-                                )}
-
-                                {isOwner && (
-                                    <label className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-20">
-                                        {uploading ? (
-                                            <Loader2 className="w-6 h-6 text-white animate-spin" />
-                                        ) : (
-                                            <>
-                                                <Camera className="w-6 h-6 text-white mb-1" />
-                                                <span className="text-[9px] font-bold text-white uppercase tracking-widest inconsolata-ui">Change Photo</span>
-                                            </>
+                                        {isOwner && (
+                                            <button 
+                                                onClick={() => openSettings()}
+                                                className="p-2 bg-accent hover:bg-teal-700 rounded-lg text-white transition-all "
+                                                title="Edit Profile"
+                                            >
+                                                <Edit2 className="w-4 h-4" />
+                                            </button>
                                         )}
-                                        <input 
-                                            type="file" 
-                                            className="hidden" 
-                                            accept="image/*" 
-                                            onChange={handleAvatarUpload}
-                                            disabled={uploading}
-                                        />
-                                    </label>
-                                )}
-                            </div>
-
-                            <div className="flex-1 md:mt-6">
-                                <h1 className="text-[20px] md:text-[22px] font-bold text-text-heading tracking-tight leading-tight inconsolata-ui flex items-center gap-2">
-                                    {profile.display_name || profile.username}
-                                    {(profile as any).is_pro && <VerifiedBadge size={18} className="shrink-0 text-accent" />}
-                                </h1>
-                                <p className="text-[14px] md:text-[15px] font-medium text-text-muted opacity-60 inconsolata-ui">@{profile.username}</p>
-                            </div>
-                            </div>
-
-                            {isOwner && (
-                            <button 
-                                onClick={openSettings}
-                                className="w-full py-2 mb-8 bg-sidebar border border-border hover:bg-callout-bg rounded-lg text-[11px] font-bold text-text-heading flex items-center justify-center gap-2 transition-all uppercase tracking-widest inconsolata-ui cursor-pointer shadow-sm hover:shadow"
-                            >
-                                <Edit2 className="w-3 h-3 opacity-60" /> Edit profile
-                            </button>
-                            )}
-
-                            {/* Bio/Info */}
-                            <div className="space-y-4 mb-8">
-                            <div className="flex items-center gap-3 text-[12px] text-text-muted">
-                                <Target className="w-4 h-4 opacity-30 text-accent" />
-                                <span className="font-medium">{profile.total_roadmaps} Roadmaps Mastered</span>
-                            </div>
-                            <div className="flex items-center gap-3 text-[12px] text-text-muted">
-                                <Clock className="w-4 h-4 opacity-30 text-accent" />
-                                <span className="font-medium">{Math.round(profile.total_hours)} Hours Invested</span>
-                            </div>
-                            {profile.email && isOwner && (
-                                <div className="flex items-center gap-3 text-[12px] text-text-muted">
-                                    <Globe className="w-4 h-4 opacity-30 text-accent" />
-                                    <span className="truncate opacity-60">{profile.email}</span>
+                                    </div>
                                 </div>
-                            )}
-                            {profile.github_username && (
-                                <Link 
-                                    href={`https://github.com/${profile.github_username}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center gap-3 text-[12px] text-text-muted hover:text-accent transition-colors"
-                                >
-                                    <Github className="w-4 h-4 opacity-30 text-accent" />
-                                    <span className="font-medium truncate">github.com/{profile.github_username}</span>
-                                </Link>
-                            )}
-                            </div>
 
-                            {/* Intelligence Bars - Pricing page inspiration */}
-                            <div className="space-y-4 pt-8 border-t border-border">
-                            <h3 className="text-[10px] font-bold text-text-muted uppercase tracking-[0.25em] mb-4 inconsolata-ui">Intelligence Analytics</h3>
-                            {(() => {
-                                const standardTotal = (profile.practice_stats?.easy || 0) + (profile.practice_stats?.medium || 0) + (profile.practice_stats?.hard || 0);
-                                const standardDisplayTotal = standardTotal || 1;
-                                return [
-                                    { label: 'Level I', count: profile.practice_stats?.easy || 0, color: 'bg-teal-500', total: standardDisplayTotal },
-                                    { label: 'Level II', count: profile.practice_stats?.medium || 0, color: 'bg-teal-600', total: standardDisplayTotal },
-                                    { label: 'Level III', count: profile.practice_stats?.hard || 0, color: 'bg-teal-700', total: standardDisplayTotal },
-                                    { label: 'MCQ Mastery', count: profile.practice_stats?.mcq_correct || 0, color: 'bg-accent', total: profile.practice_stats?.mcq_total || 1 }
-                                ].map((item) => {
-                                    const percentage = (item.count / item.total) * 100;
-                                    return (
-                                        <div key={item.label} className="space-y-2">
-                                            <div className="flex justify-between items-end">
-                                                <span className="text-[10px] font-bold text-text-muted uppercase tracking-wider">{item.label}</span>
-                                                <span className="text-[11px] font-bold text-text-heading tabular-nums">{item.count}{item.label === 'MCQ Mastery' && ` / ${item.total}`}</span>
+                                {/* Avatar & Info */}
+                                <div className="px-6 pb-6 relative -mt-16 text-center">
+                                    <div className="w-28 h-28 mx-auto rounded-full border border-border overflow-hidden bg-header flex items-center justify-center relative group mb-4">
+                                        {effectiveAvatarUrl ? (
+                                            <img src={effectiveAvatarUrl} alt={profile.username} className="w-full h-full object-cover" />
+                                        ) : (
+                                            <div className="w-full h-full bg-sidebar flex items-center justify-center text-text-heading text-4xl font-bold inconsolata-ui">
+                                                {profile.display_name?.[0] || profile.username[0].toUpperCase()}
                                             </div>
-                                            <div className="h-1.5 w-full bg-sidebar rounded-full overflow-hidden border border-border/50">
-                                                <div
-                                                    className={`h-full ${item.color} transition-all duration-1000 rounded-full`}
-                                                    style={{ width: `${item.count > 0 ? Math.max(percentage, 5) : 0}%` }}
+                                        )}
+                                        {isOwner && (
+                                            <label className="absolute inset-0 bg-black/60 flex flex-col items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer z-20">
+                                                {uploading ? (
+                                                    <Loader2 className="w-6 h-6 text-white animate-spin" />
+                                                ) : (
+                                                    <>
+                                                        <Camera className="w-6 h-6 text-white mb-1" />
+                                                        <span className="text-[10px] font-bold text-white uppercase tracking-widest inconsolata-ui">Change</span>
+                                                    </>
+                                                )}
+                                                <input 
+                                                    type="file" 
+                                                    className="hidden" 
+                                                    accept="image/*" 
+                                                    onChange={handleAvatarUpload}
+                                                    disabled={uploading}
                                                 />
+                                            </label>
+                                        )}
+                                    </div>
+
+                                    <h1 className="text-xl font-bold text-text-heading tracking-tight mb-1 flex items-center justify-center gap-2">
+                                        {profile.display_name || profile.username}
+                                        {(profile as any).is_pro && <VerifiedBadge size={18} className="text-accent" />}
+                                    </h1>
+                                    <p className="text-[13px] font-medium text-text-muted mb-6 inconsolata-ui">@{profile.username}</p>
+                                    
+                                    <div className="space-y-4 text-left border-t border-border/40 pt-6">
+                                        {profile.email && isOwner && (
+                                            <div className="flex items-center gap-3 text-[12px] text-text-muted">
+                                                <Globe className="w-3.5 h-3.5 text-text-muted shrink-0" />
+                                                <span className="truncate opacity-80">{profile.email}</span>
                                             </div>
-                                        </div>
-                                    );
-                                });
-                            })()}
-                            </div>                            </aside>
-
-                            {/* Main Content Area */}
-                            <main className="flex-1 min-w-0">
-                            {/* Mobile Tabs */}
-                            <div 
-                            className="md:hidden border-b border-border mb-8 overflow-x-auto no-scrollbar bg-sidebar/20 sticky top-[56px] z-30"
-                            style={{ top: 'calc(56px + var(--announcement-height, 0px))' }}
-                            >
-                            <div className="flex whitespace-nowrap px-4">
-                                {tabs.map((tab) => (
-                                    <button
-                                        key={tab.id}
-                                        onClick={() => setActiveTab(tab.id)}
-                                        className={`px-3 py-2 text-[12.5px] font-semibold border-b-2 transition-all manrope-body tracking-tight ${activeTab === tab.id ? 'border-accent text-text-heading' : 'border-transparent text-text-muted'}`}
-                                    >
-                                        {tab.label}
-                                    </button>
-                                ))}
-                            </div>
-                            </div>
-                        {activeTab === 'overview' && (
-                            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
-                                {/* Recent Activity Stats */}
-                                <div className="grid grid-cols-3 gap-3 md:gap-4">
-                                    <div className="group relative bg-header border border-border/60 rounded-lg p-4 md:p-5 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md hover:border-accent/50 transition-all duration-300 overflow-hidden">
-                                        <div className="absolute inset-0 bg-gradient-to-br from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                                        <div className="w-8 h-8 rounded-full bg-accent/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
-                                            <TrendingUp className="w-4 h-4 text-accent" />
-                                        </div>
-                                        <span className="text-2xl md:text-3xl font-black text-text-heading tracking-tight mb-1">{profile.learning_momentum.mastered}</span>
-                                        <span className="text-[9px] md:text-[10px] font-bold text-text-muted uppercase tracking-widest">Skills Mastered (30d)</span>
-                                    </div>
-                                    <div className="group relative bg-header border border-border/60 rounded-lg p-4 md:p-5 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md hover:border-amber-500/50 transition-all duration-300 overflow-hidden">
-                                        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                                        <div className="w-8 h-8 rounded-full bg-amber-500/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
-                                            <Zap className="w-4 h-4 text-amber-500" />
-                                        </div>
-                                        <span className="text-2xl md:text-3xl font-black text-text-heading tracking-tight mb-1">{profile.learning_momentum.explored}</span>
-                                        <span className="text-[9px] md:text-[10px] font-bold text-text-muted uppercase tracking-widest">Skills Explored (30d)</span>
-                                    </div>
-                                    <div className="group relative bg-header border border-border/60 rounded-lg p-4 md:p-5 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md hover:border-orange-500/50 transition-all duration-300 overflow-hidden">
-                                        <div className="absolute inset-0 bg-gradient-to-br from-orange-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                                        <div className="w-8 h-8 rounded-full bg-orange-500/10 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300">
-                                            <Flame className="w-4 h-4 text-orange-500" />
-                                        </div>
-                                        <span className="text-2xl md:text-3xl font-black text-text-heading tracking-tight mb-1">{profile.current_streak || 0}</span>
-                                        <span className="text-[9px] md:text-[10px] font-bold text-text-muted uppercase tracking-widest">Day Streak</span>
-                                    </div>
-                                </div>
-
-                                {/* Currently Learning */}
-                                {activeRoadmaps.length > 0 && (
-                                    <div className="space-y-3">
-                                        <h4 className="text-[11px] font-black text-text-muted uppercase tracking-widest px-1">Currently Learning</h4>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            {activeRoadmaps.map((roadmap: any) => (
-                                                <div key={roadmap.id} className="group relative p-5 bg-header border border-border/60 rounded-lg shadow-sm hover:shadow-lg hover:border-accent/40 transition-all duration-300 flex flex-col justify-between gap-5 overflow-hidden cursor-pointer" onClick={() => router.push(`/roadmaps/${roadmap.id}`)}>
-                                                    <div className="absolute top-0 right-0 w-32 h-32 bg-accent/5 rounded-full blur-2xl group-hover:bg-accent/10 transition-colors pointer-events-none" />
-                                                    <div className="relative z-10">
-                                                        <h5 className="text-[15px] font-bold text-text-heading leading-tight mb-1.5 line-clamp-2 group-hover:text-accent transition-colors">{roadmap.title}</h5>
-                                                        <p className="text-[10px] text-text-muted font-bold tracking-widest uppercase flex items-center gap-1.5">
-                                                            <Target className="w-3 h-3" /> Active Roadmap
-                                                        </p>
-                                                    </div>
-                                                    <div className="space-y-2.5 relative z-10">
-                                                        <div className="flex justify-between items-end text-[10px] font-black uppercase tracking-widest">
-                                                            <span className="text-text-muted">Progress</span>
-                                                            <span className="text-accent text-[12px]">{Math.round(roadmap.depth_score)}%</span>
-                                                        </div>
-                                                        <div className="h-1.5 bg-sidebar rounded-full overflow-hidden shadow-inner">
-                                                            <div className="h-full bg-gradient-to-r from-accent/80 to-accent rounded-full transition-all duration-1000 relative" style={{ width: `${roadmap.depth_score}%` }}>
-                                                                <div className="absolute top-0 right-0 bottom-0 w-10 bg-white/20 blur-[2px] animate-[shimmer_2s_infinite]" />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Recent Verification */}
-                                {recentVerified && (
-                                    <div className="space-y-3">
-                                        <h4 className="text-[11px] font-black text-text-muted uppercase tracking-widest px-1">Recent Validated Homework</h4>
-                                        <div className="p-5 bg-header border border-border/60 rounded-lg shadow-sm relative overflow-hidden group hover:shadow-md hover:border-emerald-500/30 transition-all duration-300">
-                                            <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-emerald-400 to-emerald-600" />
-                                            <div className="absolute right-0 top-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl pointer-events-none group-hover:bg-emerald-500/10 transition-colors" />
-                                            <div className="flex items-start gap-4 relative z-10">
-                                                <div className="mt-1 bg-gradient-to-br from-emerald-500/20 to-emerald-500/5 text-emerald-500 p-2.5 rounded-lg shrink-0 border border-emerald-500/20 shadow-sm">
-                                                    <CheckCircle className="w-5 h-5" />
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                                                        <h5 className="text-[14px] font-bold text-text-heading truncate group-hover:text-emerald-600 transition-colors">
-                                                            {recentVerified.roadmaps?.title || 'Technical Submission'}
-                                                        </h5>
-                                                        <span className="text-[9px] font-black text-emerald-600 bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-1 rounded-md uppercase tracking-widest w-fit shadow-sm">
-                                                            {recentVerified.evaluation_level}
-                                                        </span>
-                                                    </div>
-                                                    <p className="text-[13px] text-text-muted leading-relaxed font-medium italic line-clamp-2 pl-3 border-l-2 border-emerald-500/20">
-                                                        &ldquo;{recentVerified.description}&rdquo;
-                                                    </p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Top Skills Grid */}
-                                <div className="space-y-3">
-                                    <h4 className="text-[11px] font-black text-text-muted uppercase tracking-widest px-1">Strongest Skills</h4>
-                                {strongSkills.length > 0 && (
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        {strongSkills.slice(0, 4).map(skill => (
-                                            <div key={skill.id} className="flex items-center justify-between p-4 bg-header border border-border/60 hover:border-accent/40 rounded-lg group transition-all duration-300 shadow-sm hover:shadow-md hover:bg-accent/[0.02] relative overflow-hidden">
-                                                <div className="absolute right-0 top-0 bottom-0 w-1/2 bg-gradient-to-l from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                                                <div className="flex items-center gap-3.5 relative z-10">
-                                                    <div className="w-10 h-10 rounded-lg bg-sidebar border border-border/50 flex items-center justify-center shadow-sm text-text-muted group-hover:text-accent group-hover:border-accent/30 group-hover:bg-background transition-all duration-300 shrink-0">
-                                                        {getSkillIcon(skill.name || '')}
-                                                    </div>
-                                                    <div className="min-w-0">
-                                                        <h4 className="text-[14px] font-bold text-text-heading tracking-tight leading-tight mb-1 truncate group-hover:text-accent transition-colors">{skill.name}</h4>
-                                                        <span className="text-[9px] text-text-muted font-bold uppercase tracking-widest truncate block opacity-80">{skill.category}</span>
-                                                    </div>
-                                                </div>
-                                                <div className="flex flex-col items-end gap-2 shrink-0 pl-3 relative z-10">
-                                                    <div className="px-2 py-1 border border-accent/20 bg-background shadow-sm text-[10px] font-black text-accent rounded-md uppercase tracking-widest leading-none">{skill.tier}</div>
-                                                    <div className="text-[9px] font-black text-text-muted/80 inconsolata-ui flex items-center gap-2 tracking-widest uppercase">
-                                                        <span className="flex items-center gap-1 group-hover:text-text-muted transition-colors"><Clock className="w-3 h-3 opacity-60" /> {Math.round(skill.time_invested)}H</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
-                                </div>
-
-                                {/* Activity Graph */}
-                                <div className="space-y-3">
-                                    <h4 className="text-[11px] font-black text-text-muted uppercase tracking-widest px-1">Activity Chart</h4>
-                                    <div className="p-6 border border-border rounded-lg shadow-sm bg-header relative overflow-hidden">
-                                        <ActivityChart roadmaps={pAny.roadmaps} profile={profile} />
-                                    </div>
-                                </div>
-
-                                <div className="space-y-3">
-                                    <h4 className="text-[11px] font-black text-text-muted uppercase tracking-widest px-1">Commit History</h4>
-                                    <ActivityHeatmap profile={profile} activityMap={activityMap} />
-                                </div>
-                            </div>
-                        )}
-
-                        {activeTab === 'skills' && (
-                            <div className="animate-in fade-in duration-300">
-                                <SkillsProfile skills={profile.skills as any[]} />
-                            </div>
-                        )}
-
-                        {activeTab === 'evidence' && (
-                            <div className="space-y-4 animate-in fade-in duration-300">
-                                {pAny.submissions && pAny.submissions.length > 0 ? (
-                                    pAny.submissions.map((sub: any, idx: number) => (
-                                        <div key={idx} className="bg-header border border-border shadow-sm rounded-lg p-6 relative group hover:border-accent/40 hover:shadow-md transition-all duration-300 overflow-hidden">
-                                            <div className="absolute -bottom-20 -right-20 w-48 h-48 bg-accent/5 rounded-full blur-[40px] group-hover:bg-accent/10 transition-colors duration-500 pointer-events-none" />
-                                            <div className="relative z-10">
-                                            <div className="flex justify-between items-start mb-6">
-                                                <div className="flex flex-col gap-2">
-                                                    <div className="flex items-center gap-3">
-                                                        <div className="text-[9px] font-black text-accent bg-accent-muted px-2.5 py-0.5 rounded-md border border-accent/20 inconsolata-ui tracking-widest uppercase">LOG #{pAny.submissions.length - idx}</div>
-                                                        <div className={`text-[9px] font-black px-2.5 py-0.5 rounded-md border inconsolata-ui tracking-widest uppercase ${
-                                                            sub.evaluation_level === 'Solid' || sub.evaluation_level === 'Expert' ? 'border-emerald-500/30 text-emerald-600 bg-emerald-500/5' :
-                                                            sub.evaluation_level === 'Developing' ? 'border-amber-500/30 text-amber-600 bg-amber-500/5' :
-                                                            'border-red-500/30 text-red-600 bg-red-500/5'
-                                                        }`}>{sub.evaluation_level}</div>
-                                                    </div>
-                                                    <h4 className="text-[15px] font-bold text-text-heading tracking-tight">
-                                                        {sub.roadmaps?.title || (sub.roadmap_id ? 'Technical Roadmap' : 'Independent Build')}
-                                                    </h4>
-                                                </div>
-                                                <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest inconsolata-ui opacity-40">{new Date(sub.submitted_at).toLocaleDateString()}</span>
-                                            </div>
-                                            <div className="manrope-body prose prose-sm max-w-none text-text-primary mb-6 leading-relaxed font-medium">
-                                                <ReactMarkdown 
-                                                    remarkPlugins={[remarkMath]} 
-                                                    rehypePlugins={[rehypeKatex]}
-                                                >
-                                                    {sub.senate_summary || sub.evaluation}
-                                                </ReactMarkdown>
-                                            </div>
-                                            <div className="flex items-center justify-between pt-4 border-t border-border/50">
-                                                <div className="flex items-center gap-4">
-                                                    {sub.link ? (
-                                                        <Link href={sub.link} target="_blank" className="text-[10px] font-bold text-accent hover:opacity-80 flex items-center gap-2 uppercase tracking-[0.2em] inconsolata-ui transition-all">
-                                                            Source Material <ArrowRight className="w-3 h-3" />
-                                                        </Link>
-                                                    ) : (
-                                                        <div />
-                                                    )}
-                                                </div>
-                                                <button 
-                                                    onClick={() => setSelectedReview(sub)}
-                                                    className="text-[10px] font-bold text-text-muted hover:text-accent transition-colors uppercase tracking-widest inconsolata-ui flex items-center gap-1.5"
-                                                >
-                                                    View Full Log <ChevronRight className="w-3.5 h-3.5" />
-                                                </button>
-                                            </div>
-                                            </div>
-                                        </div>
-                                    ))
-                                ) : (
-                                    <div className="py-20 text-center border border-dashed border-border rounded-lg bg-sidebar/5">
-                                        <p className="text-[13px] text-text-muted italic opacity-60">Awaiting review logs.</p>
-                                    </div>
-                                )}
-                            </div>
-                        )}
-
-                        {activeTab === 'certificates' && (
-                            <div className="space-y-4 animate-in fade-in duration-300">
-                                {pAny.certificates && pAny.certificates.length > 0 ? (
-                                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-                                        {pAny.certificates.map((cert: any, idx: number) => (
-                                            <div key={idx} className="relative flex flex-col justify-between p-5 overflow-hidden transition-all duration-300 border shadow-sm group bg-header border-border/60 rounded-xl hover:shadow-md hover:border-accent/40">
-                                                <div className="absolute top-0 right-0 w-32 h-32 transition-colors pointer-events-none bg-accent/5 rounded-full blur-2xl group-hover:bg-accent/10" />
-                                                <div className="relative z-10">
-                                                    <div className="flex items-start justify-between mb-3">
-                                                        <div className="p-2 border rounded-lg bg-teal-500/10 border-teal-500/20 text-teal-600">
-                                                            <Award className="w-5 h-5" />
-                                                        </div>
-                                                        <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest bg-sidebar px-2 py-1 rounded-md border border-border">
-                                                            Grade {cert.grade}
-                                                        </span>
-                                                    </div>
-                                                    <h4 className="text-[15px] font-bold text-text-heading tracking-tight leading-snug mb-1 group-hover:text-accent transition-colors line-clamp-2">
-                                                        {cert.roadmap_title || 'Roadmap Certificate'}
-                                                    </h4>
-                                                    <p className="text-[11px] text-text-muted font-medium mb-4">
-                                                        {new Date(cert.issued_at).toLocaleDateString()} • {cert.time_invested_hours.toFixed(1)} Hours
-                                                    </p>
-                                                </div>
-                                                <div className="relative z-10 flex items-center justify-between pt-4 border-t border-border/50">
-                                                    <div className="flex items-center justify-between w-full">
-                                                        <Link 
-                                                            href={`/certificates/${cert.credential_id}`}
-                                                            className="text-[10px] font-bold text-accent hover:opacity-80 flex items-center gap-1.5 uppercase tracking-widest transition-all"
-                                                        >
-                                                            Verify <ExternalLink className="w-3 h-3" />
-                                                        </Link>
-                                                        <div className="flex items-center gap-3">
-                                                            <button
-                                                                onClick={() => {
-                                                                    const url = `https://www.eulerfold.com/certificates/${cert.credential_id}`;
-                                                                    if (navigator.share) {
-                                                                        navigator.share({
-                                                                            title: `${cert.roadmap_title} Certificate`,
-                                                                            url: url
-                                                                        }).catch(console.error);
-                                                                    } else {
-                                                                        navigator.clipboard.writeText(url);
-                                                                        alert('Certificate link copied to clipboard!');
-                                                                    }
-                                                                }}
-                                                                className="text-text-muted hover:text-accent transition-colors"
-                                                                title="Share Certificate"
-                                                            >
-                                                                <Share2 className="w-4 h-4" />
-                                                            </button>
-                                                            <a
-                                                                href={`https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=${encodeURIComponent(cert.roadmap_title || 'Certificate')}&organizationName=EulerFold&issueYear=${new Date(cert.issued_at).getFullYear()}&issueMonth=${new Date(cert.issued_at).getMonth() + 1}&certUrl=${encodeURIComponent(`https://www.eulerfold.com/certificates/${cert.credential_id}`)}&certId=${cert.credential_id}`}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                className="text-[#0a66c2] hover:opacity-80 transition-opacity"
-                                                                title="Add to LinkedIn"
-                                                            >
-                                                                <Linkedin className="w-4 h-4" />
-                                                            </a>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                ) : (
-                                    <div className="py-20 text-center border border-dashed rounded-lg border-border bg-sidebar/5">
-                                        <p className="text-[13px] text-text-muted italic opacity-60">No certificates yet 📭</p>
-                                    </div>
-                                )}
-                            </div>
-                        )}
-
-                        {activeTab === 'assessments' && (
-                            <div className="space-y-4 animate-in fade-in duration-300">
-                                {profile.mcq_history && profile.mcq_history.length > 0 ? (
-                                    profile.mcq_history.map((mcq, idx) => (
-                                        <AssessmentCard key={idx} mcq={mcq} index={profile.mcq_history!.length - idx} />
-                                    ))
-                                ) : (
-                                    <div className="py-20 text-center border border-dashed border-border rounded-lg bg-sidebar/5">
-                                        <p className="text-[13px] text-text-muted italic opacity-60">No practice records available.</p>
-                                    </div>
-                                )}
-                            </div>
-                        )}
-
-                        {activeTab === 'insights' && (
-                            <div className="space-y-4 animate-in fade-in duration-300">
-                                {profile.discussions && profile.discussions.length > 0 ? (
-                                    profile.discussions.map((disc, idx) => (
-                                        <div key={idx} className="bg-header border border-border shadow-sm rounded-lg p-6 relative group hover:border-accent/40 hover:shadow-md transition-all duration-300 overflow-hidden">
-                                            <div className="absolute -bottom-20 -right-20 w-48 h-48 bg-accent/5 rounded-full blur-[40px] group-hover:bg-accent/10 transition-colors duration-500 pointer-events-none" />
-                                            <div className="relative z-10">
-                                            <div className="flex justify-between items-start mb-6">
-                                                <div className="flex flex-col gap-2">
-                                                    <div className="text-[9px] font-black text-accent bg-accent-muted px-2.5 py-0.5 rounded-md border border-accent/20 w-fit uppercase tracking-widest inconsolata-ui">{disc.context_type}</div>
-                                                    <Link href={`/roadmap/${disc.context_id}`} className="text-[15px] font-bold text-text-heading hover:text-accent transition-colors tracking-tight">
-                                                        {disc.context_id.replace('-', ' ')}
-                                                    </Link>
-                                                </div>
-                                                <span className="text-[10px] font-bold text-text-muted uppercase tracking-widest inconsolata-ui opacity-40">{new Date(disc.created_at).toLocaleDateString()}</span>
-                                            </div>
-                                            <div className="text-[13px] text-text-primary leading-relaxed line-clamp-3 mb-6 font-medium">
-                                                {disc.content}
-                                            </div>
-                                            <Link href={`/roadmap/${disc.context_id}`} className="text-[10px] font-bold text-accent hover:opacity-80 flex items-center gap-2 uppercase tracking-[0.2em] inconsolata-ui transition-all">
-                                                View Context <ArrowRight className="w-3 h-3" />
+                                        )}
+                                        {profile.github_username && (
+                                            <Link 
+                                                href={`https://github.com/${profile.github_username}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="flex items-center gap-3 text-[12px] text-text-muted hover:text-accent transition-colors"
+                                            >
+                                                <Github className="w-3.5 h-3.5 text-text-muted shrink-0" />
+                                                <span className="font-medium truncate">github.com/{profile.github_username}</span>
                                             </Link>
-                                            </div>
+                                        )}
+                                        <div className="flex items-center gap-3 text-[12px] text-text-muted">
+                                            <Calendar className="w-3.5 h-3.5 text-text-muted shrink-0" />
+                                            <span className="font-medium opacity-80">Joined {new Date((profile as any).created_at || Date.now()).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })}</span>
                                         </div>
-                                    ))
-                                ) : (
-                                    <div className="py-20 text-center border border-dashed border-border rounded-lg bg-sidebar/5">
-                                        <p className="text-[13px] text-text-muted italic opacity-60">Awaiting community insights.</p>
                                     </div>
-                                )}
+                                </div>
                             </div>
-                        )}
-                    </main>
+                        </aside>
+
+                        {/* Right Content Area */}
+                        <main className="flex-1 min-w-0 flex flex-col gap-6">
+                            {/* Top Stats Cards */}
+                            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                                <div className="bg-transparent border border-border rounded-xl p-5 flex flex-col">
+                                    <div className="mb-4">
+                                        
+                                        <span className="text-[11px] font-bold text-text-muted uppercase tracking-widest">Skills Mastered</span>
+                                    </div>
+                                    <span className="text-3xl font-black text-text-heading mt-auto">{profile.total_skills || 0}</span>
+                                </div>
+
+                                <div className="bg-transparent border border-border rounded-xl p-5 flex flex-col">
+                                    <div className="mb-4">
+                                        
+                                        <span className="text-[11px] font-bold text-text-muted uppercase tracking-widest">Roadmaps</span>
+                                    </div>
+                                    <span className="text-3xl font-black text-text-heading mt-auto">{profile.total_roadmaps || 0}</span>
+                                </div>
+
+                                <div className="bg-transparent border border-border rounded-xl p-5 flex flex-col">
+                                    <div className="mb-4">
+                                        
+                                        <span className="text-[11px] font-bold text-text-muted uppercase tracking-widest">Hours Invested</span>
+                                    </div>
+                                    <span className="text-3xl font-black text-text-heading mt-auto">{Math.round(profile.total_hours || 0)}</span>
+                                </div>
+                            </div>
+
+                            {/* Tabbed Section */}
+                            <div className="bg-transparent border border-border rounded-xl overflow-hidden flex-1 flex flex-col min-h-[500px]">
+                                <div className="flex overflow-x-auto no-scrollbar border-b border-border/60 bg-transparent">
+                                    {tabs.map((tab) => {
+                                        const isActive = activeTab === tab.id;
+                                        const Icon = tab.icon;
+                                        return (
+                                            <button
+                                                key={tab.id}
+                                                onClick={() => setActiveTab(tab.id)}
+                                                className={`flex items-center gap-2 px-6 py-4 text-[13px] font-bold border-b-2 transition-all whitespace-nowrap ${
+                                                    isActive 
+                                                    ? 'border-text-heading text-text-heading' 
+                                                    : 'border-transparent text-text-muted hover:text-text-heading'
+                                                }`}
+                                            >
+                                                {tab.label}
+                                                {tab.count !== undefined && tab.count > 0 && (
+                                                    <span className={`px-2 py-0.5 rounded-full text-[10px] ml-1 ${isActive ? 'bg-accent/10 text-accent' : 'bg-border/50 text-text-muted'}`}>
+                                                        {tab.count}
+                                                    </span>
+                                                )}
+                                            </button>
+                                        );
+                                    })}
+                                </div>
+
+                                <div className="p-6">
+                                    {activeTab === 'overview' && (
+                                        <div className="space-y-12 animate-in fade-in duration-300">
+                                            <FeaturedCourses roadmaps={activeRoadmaps} />
+                                            <ProvenSkills skills={strongSkills} />
+                                            <VerifiedWork submissions={pAny.submissions} onSelectReview={setSelectedReview} />
+                                        </div>
+                                    )}
+                                    
+                                    {activeTab === 'skills' && (
+                                        <div className="animate-in fade-in duration-300">
+                                            <ProvenSkills skills={filteredSkills} />
+                                        </div>
+                                    )}
+
+                                    {activeTab === 'evidence' && (
+                                        <div className="animate-in fade-in duration-300">
+                                            <VerifiedWork submissions={pAny.submissions} onSelectReview={setSelectedReview} />
+                                        </div>
+                                    )}
+
+                                    {(activeTab === 'certificates' || activeTab === 'assessments' || activeTab === 'insights') && (
+                                        <div className="flex flex-col items-center justify-center py-20 text-center opacity-60">
+                                            <div className="w-16 h-16 bg-sidebar rounded-full flex items-center justify-center mb-4">
+                                                <Target className="w-8 h-8 text-text-muted" />
+                                            </div>
+                                            <h3 className="text-[15px] font-bold text-text-heading mb-1">No data available</h3>
+                                            <p className="text-[13px] text-text-muted">This section is currently empty.</p>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </main>
+                    </div>
                 </div>
             </div>
 
-            {/* Review Details Modal */}
+            {/* Profile Modals */}
             {selectedReview && (
                 <ReviewModal 
                     sub={selectedReview} 

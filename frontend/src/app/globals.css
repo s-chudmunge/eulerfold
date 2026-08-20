@@ -23,6 +23,7 @@
   --color-callout-border: var(--callout-border);
   --color-image-bg: var(--image-bg);
   --color-subheader: var(--bg-subheader);
+  --font-sans: var(--font-sans), 'Familjen Grotesk', ui-sans-serif, system-ui, sans-serif;
 }
 
 html {
@@ -114,6 +115,14 @@ html {
   --color-link: #60a5fa;
   --image-bg: #131d1d;
   --color-image-bg: #131d1d;
+}
+
+@keyframes infinite-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-100%); }
+}
+.animate-infinite-scroll {
+  animation: infinite-scroll 40s linear infinite;
 }
 
 body {

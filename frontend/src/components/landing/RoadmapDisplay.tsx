@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { RoadmapData, saveRoadmap, roadmapsAPI, submissionsAPI } from '../../lib/api';
-import { Download, CheckCircle, ChevronDown, ChevronUp, Play, BookOpen, X, Trophy, Plus, FileText, Copy, Target, MonitorPlay, BookText, Hash, Scroll, ChevronRight, Trash2, Hammer, Edit3, Eye, Youtube } from 'lucide-react';
+import { Download, CheckCircle, ChevronDown, ChevronUp, Play, BookOpen, X, Trophy, Plus, FileText, Copy, Target, MonitorPlay, BookText, Hash, Scroll, ChevronRight, Trash2, Hammer, Edit3, Eye, Youtube, ExternalLink } from 'lucide-react';
 import { supabase } from '../../lib/supabase/client';
 import Link from 'next/link';
 
@@ -144,19 +144,38 @@ interface RoadmapDisplayProps {
     if (!resources || resources.length === 0) return null;
 
     return (
-      <div className="mt-4">
-        <h4 className="inconsolata-ui text-[10px] font-bold text-text-muted  tracking-wide mb-2">Study Resources</h4>
-        <div className="flex flex-col gap-2">
+      <div className="mt-8 pt-6 border-t border-border/40">
+        <h4 className="inconsolata-ui text-[11px] font-bold text-text-muted tracking-widest uppercase mb-4 flex items-center gap-2">
+          <BookOpen className="w-3.5 h-3.5 opacity-70" />
+          Required Reading & References
+        </h4>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4">
           {resources.map((r: any, ri: number) => (
             <a
               key={ri}
               href={r.link || r.url || '#'}
               target="_blank"
               rel="noreferrer"
-              className="manrope-body text-[13px] text-accent hover:underline flex items-center gap-2 group w-fit"
+              className="group flex items-start gap-3 p-3 md:p-4 bg-background border border-border/60 hover:border-accent/40 rounded-xl hover:bg-sidebar/50 transition-all shadow-sm"
             >
-              <span className="opacity-50 group-hover:opacity-100 transition-opacity">→</span>
-              <span className="truncate font-medium">{r.title || r.name || r.url}</span>
+              <div className="bg-accent/10 p-2 rounded-lg shrink-0 group-hover:bg-accent/20 transition-colors">
+                <FileText className="w-4 h-4 text-accent" />
+              </div>
+              <div className="flex flex-col min-w-0 flex-1 justify-center py-0.5">
+                <span className="manrope-body text-[13px] md:text-[14px] font-bold text-text-heading group-hover:text-accent transition-colors truncate">
+                  {r.title || r.name || r.url}
+                </span>
+                <span className="inconsolata-ui text-[10px] text-text-muted mt-1 opacity-70 truncate flex items-center gap-1.5">
+                  <ExternalLink className="w-2.5 h-2.5" /> 
+                  {(() => {
+                    try {
+                      return new URL(r.link || r.url).hostname.replace('www.', '');
+                    } catch {
+                      return 'External Link';
+                    }
+                  })()}
+                </span>
+              </div>
             </a>
           ))}
         </div>
@@ -262,12 +281,16 @@ interface RoadmapDisplayProps {
             return (
               <div
                 key={index}
-                className={`transition-colors duration-300 relative group/module ${isCurrent ? 'bg-accent/[0.03]' : 'bg-background hover:bg-callout-bg/50'}`}
+                className={`transition-all duration-300 relative group/module rounded-2xl border overflow-hidden ${
+                  isCurrent 
+                    ? 'bg-accent/[0.02] border-accent/30 shadow-md shadow-accent/5' 
+                    : 'bg-sidebar/30 border-border/50 hover:border-accent/30 hover:bg-sidebar/60 hover:shadow-sm'
+                }`}
               >
                 {/* Module Header */}
                 <div
                   onClick={() => toggleModule(index)}
-                  className="w-full px-4 md:px-6 py-5 md:py-6 flex items-center justify-between text-left cursor-pointer"
+                  className="w-full px-5 md:px-7 py-6 md:py-7 flex items-center justify-between text-left cursor-pointer"
                   role="button"
                   tabIndex={0}
                   onKeyDown={(e) => {
@@ -277,25 +300,25 @@ interface RoadmapDisplayProps {
                     }
                   }}
                 >
-                  <div className="flex items-center gap-3 md:gap-6 min-w-0">
-                    <div className={`inconsolata-ui w-8 h-8 md:w-9 md:h-9 rounded-lg flex items-center justify-center text-[12px] md:text-[14px] font-bold shrink-0 transition-all border ${
+                  <div className="flex items-center gap-4 md:gap-6 min-w-0">
+                    <div className={`inconsolata-ui w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center text-[13px] md:text-[15px] font-bold shrink-0 transition-all border ${
                       isCurrent 
-                        ? 'bg-background border-border text-text-heading shadow-sm' 
-                        : 'bg-callout-bg border-border text-text-muted'
+                        ? 'bg-accent text-white border-accent/20 shadow-md' 
+                        : 'bg-background border-border text-text-muted group-hover/module:border-accent/20 group-hover/module:text-text-primary'
                     }`}>
                       W{index + 1}
                     </div>
                     <div className="min-w-0">
-                      <h3 className="inconsolata-ui text-[18px] font-bold text-text-heading truncate pr-4  ">{module.title}</h3>
-                      <p className="text-[13px] text-text-muted line-clamp-5 leading-relaxed mt-1 font-medium italic pr-8">{module.outcome}</p>
+                      <h3 className="font-inter text-[17px] md:text-[19px] font-bold text-text-heading truncate pr-4 tracking-tight">{module.title}</h3>
+                      <p className="text-[14px] text-text-muted line-clamp-2 md:line-clamp-3 leading-relaxed mt-1 font-medium pr-8">{module.outcome}</p>
                       
-                      <div className="flex flex-wrap items-center gap-x-3 md:gap-x-6 gap-y-2 mt-4">
+                      <div className="flex flex-wrap items-center gap-x-4 md:gap-x-6 gap-y-2 mt-4">
                         {videoCount > 0 && (
                           <div className="flex items-center gap-2">
-                            <div className="bg-blue-500/10 p-1.5 rounded-full border border-blue-500/5">
-                              <MonitorPlay className="w-3.5 h-3.5 text-blue-600" />
+                            <div className="bg-accent/10 p-1.5 rounded-full border border-accent/10">
+                              <MonitorPlay className="w-3.5 h-3.5 text-accent" />
                             </div>
-                            <span className="manrope-body text-[12px] md:text-[13px] font-semibold text-text-primary">
+                            <span className="manrope-body text-[12px] md:text-[13px] font-bold text-text-primary/90">
                               {videoCount} {videoCount === 1 ? 'video' : 'videos'}
                               {totalDuration > 0 && <span className="mx-1.5 opacity-30">•</span>}
                               {totalDuration > 0 && `${totalDuration}m`}
@@ -304,32 +327,32 @@ interface RoadmapDisplayProps {
                         )}
                         {resourceCount > 0 && (
                           <div className="flex items-center gap-2">
-                            <div className="bg-indigo-500/10 p-1.5 rounded-full border border-indigo-500/5">
-                              <BookText className="w-3.5 h-3.5 text-indigo-600" />
+                            <div className="bg-accent/10 p-1.5 rounded-full border border-accent/10">
+                              <BookText className="w-3.5 h-3.5 text-accent" />
                             </div>
-                            <span className="manrope-body text-[12px] md:text-[13px] font-semibold text-text-primary">{resourceCount} {resourceCount === 1 ? 'reading' : 'readings'}</span>
+                            <span className="manrope-body text-[12px] md:text-[13px] font-bold text-text-primary/90">{resourceCount} {resourceCount === 1 ? 'reading' : 'readings'}</span>
                           </div>
                         )}
                         {topicCount > 0 && (
                           <div className="flex items-center gap-2">
-                            <div className="bg-slate-500/10 p-1.5 rounded-full border border-slate-500/5">
-                              <Hash className="w-3.5 h-3.5 text-slate-600" />
+                            <div className="bg-accent/10 p-1.5 rounded-full border border-accent/10">
+                              <Hash className="w-3.5 h-3.5 text-accent" />
                             </div>
-                            <span className="manrope-body text-[12px] md:text-[13px] font-semibold text-text-primary">{topicCount} {topicCount === 1 ? 'topic' : 'topics'}</span>
+                            <span className="manrope-body text-[12px] md:text-[13px] font-bold text-text-primary/90">{topicCount} {topicCount === 1 ? 'topic' : 'topics'}</span>
                           </div>
                         )}
                         <div className="flex items-center gap-2">
-                          <div className="bg-emerald-500/10 p-1.5 rounded-full border border-emerald-500/5">
-                            <Scroll className="w-3.5 h-3.5 text-emerald-600" />
+                          <div className="bg-accent/10 p-1.5 rounded-full border border-accent/10">
+                            <Scroll className="w-3.5 h-3.5 text-accent" />
                           </div>
-                          <span className="manrope-body text-[12px] md:text-[13px] font-semibold text-text-primary">1 homework</span>
+                          <span className="manrope-body text-[12px] md:text-[13px] font-bold text-text-primary/90">1 homework</span>
                         </div>
                       </div>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 md:gap-4 shrink-0">
+                  <div className="flex items-center gap-2 md:gap-4 shrink-0 pl-4">
                     {(isOwner || roadmapData.is_public) && (
-                    <div className="flex flex-col gap-1.5 min-w-[70px] md:min-w-[90px]">
+                    <div className="flex flex-col gap-2 min-w-[80px] md:min-w-[110px]">
                         <Link 
                           href={`/roadmap/${roadmapData.cloned_id || roadmapData.slug || roadmapData.id}/learn?module=${index + 1}&topic=1`}
                           onClick={(e) => {
@@ -344,9 +367,9 @@ interface RoadmapDisplayProps {
                               onCloneRequired();
                             }
                           }}
-                          className="flex items-center justify-center gap-1.5 px-3 md:px-5 py-1.5 bg-blue-600/90 text-white rounded-lg text-[8px] md:text-[9px] font-bold tracking-widest uppercase hover:bg-blue-600 transition-all active:scale-95"
+                          className="flex items-center justify-center gap-1.5 px-4 md:px-5 py-2 bg-accent text-white rounded-lg text-[9px] md:text-[10px] font-bold tracking-widest uppercase hover:bg-teal-700 transition-all active:scale-95 shadow-sm"
                         >
-                          <Play className="w-2.5 h-2.5 md:w-3 md:h-3 fill-current" />
+                          <Play className="w-3 h-3 md:w-3.5 md:h-3.5 fill-current" />
                           <span>Learn</span>
                         </Link>
 
@@ -369,10 +392,11 @@ interface RoadmapDisplayProps {
                                     window.location.href = `/roadmap/${roadmapData.slug || roadmapData.id}/build/${index + 1}`;
                                 }
                             }}
-                            className="flex items-center justify-center gap-1.5 px-3 md:px-5 py-1.5 bg-emerald-600/90 text-white rounded-lg text-[8px] md:text-[9px] font-bold tracking-widest uppercase hover:bg-emerald-600 transition-all active:scale-95"
+                            className="flex items-center justify-center gap-1.5 px-4 md:px-5 py-2 bg-background border border-border/80 text-text-primary rounded-lg text-[9px] md:text-[10px] font-bold tracking-widest uppercase hover:border-accent/40 hover:text-accent transition-all active:scale-95 shadow-sm"
                           >
-                            <Scroll className="w-2.5 h-2.5 md:w-3 md:h-3" />
-                            <span>Homework</span>                          </button>
+                            <Scroll className="w-3 h-3 md:w-3.5 md:h-3.5" />
+                            <span>Homework</span>
+                          </button>
                         )}
                       </div>
                     )}

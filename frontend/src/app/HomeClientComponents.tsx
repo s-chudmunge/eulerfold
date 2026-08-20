@@ -9,7 +9,7 @@ import OnboardingFlow from '@/components/onboarding/OnboardingFlow';
 
 export function GoogleTrustBadge() {
   return (
-    <div className="flex items-center gap-3 mt-2 cursor-default">
+    <div className="flex items-center gap-3 cursor-default">
       <img 
         src="/google.svg" 
         alt="Google" 
@@ -25,22 +25,42 @@ export function GoogleTrustBadge() {
 
 export function TrustedSourcesTicker() {
   const sources = [
-    'arXiv', 'IEEE Xplore', 'Nature', 'ACM Digital Library', 'MIT OpenCourseWare', 
-    'PubMed', 'JSTOR', 'Springer', 'MDN Web Docs', 'GitHub', 'Stack Overflow', 
-    'PyTorch Docs', 'TensorFlow Docs', 'Wikipedia'
+    { name: 'arXiv', class: 'font-serif text-[20px] md:text-[24px] font-medium tracking-tight' },
+    { name: 'NATURE', class: 'font-serif text-[16px] md:text-[18px] uppercase tracking-widest' },
+    { name: 'IEEE', class: 'font-sans text-[20px] md:text-[22px] font-black tracking-tighter' },
+    { name: 'Stanford Online', class: 'font-serif text-[17px] md:text-[20px] font-medium tracking-tight' },
+    { name: 'MIT OpenCourseWare', class: 'font-sans text-[16px] md:text-[18px] font-semibold tracking-tight' },
+    { name: 'PubMed', class: 'font-sans text-[18px] md:text-[21px] font-bold tracking-tight' },
+    { name: 'ACM Digital Library', class: 'font-sans text-[16px] md:text-[19px] font-black tracking-tighter uppercase' },
+    { name: 'GitHub', class: 'font-sans text-[18px] md:text-[21px] font-bold tracking-tight' },
+    { name: 'MDN Web Docs', class: 'font-sans text-[17px] md:text-[19px] font-bold tracking-tight' },
+    { name: 'Stack Overflow', class: 'font-sans text-[17px] md:text-[19px] font-bold tracking-tight' },
+    { name: 'Wikipedia', class: 'font-serif text-[19px] md:text-[22px] font-normal tracking-tight' },
   ];
 
+  const renderLogos = () => (
+    <>
+      {sources.map((source, idx) => (
+        <div key={idx} className={`text-text-primary hover:opacity-100 transition-opacity duration-300 cursor-default whitespace-nowrap ${source.class}`}>
+          {source.name}
+        </div>
+      ))}
+    </>
+  );
+
   return (
-    <div className="mt-6 w-full max-w-2xl">
-      <span className="manrope-body text-[12px] text-text-muted font-medium block mb-2">
+    <div className="w-full text-center overflow-hidden border-t border-border/30 pt-8 mt-12 md:mt-0">
+      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted/60 mb-8 block">
         Curriculum sourced from
       </span>
-      <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
-        {sources.map((source, idx) => (
-          <span key={source} className="text-[12px] text-text-muted font-medium">
-            {source}{idx < sources.length - 1 && <span className="ml-1.5">·</span>}
-          </span>
-        ))}
+      
+      <div className="relative flex overflow-hidden w-full max-w-[100vw] [mask-image:linear-gradient(to_right,transparent,black_15%,black_85%,transparent)]">
+        <div className="flex animate-infinite-scroll items-center gap-x-12 md:gap-x-24 w-max shrink-0 pr-12 md:pr-24 opacity-[0.55] grayscale hover:[animation-play-state:paused]">
+          {renderLogos()}
+        </div>
+        <div aria-hidden="true" className="flex animate-infinite-scroll items-center gap-x-12 md:gap-x-24 w-max shrink-0 pr-12 md:pr-24 opacity-[0.55] grayscale hover:[animation-play-state:paused]">
+          {renderLogos()}
+        </div>
       </div>
     </div>
   );

@@ -508,6 +508,11 @@ export default function ArticleClient({ article }: Props) {
         
         {/* Full-width Header */}
         <header className="mb-12 mt-[100px] md:mt-[80px] text-center flex flex-col items-center px-4 md:px-0">
+          {article.status === 'archived' && (
+            <div className="mb-6 inline-flex items-center gap-2 bg-amber-500/10 border border-amber-500/20 text-amber-500 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest inconsolata-ui">
+              <span>⚠️ Legacy / Archived Article</span>
+            </div>
+          )}
           <div className="mb-6 flex flex-wrap items-center justify-center gap-4 text-[14px] md:text-[15px] font-medium text-text-muted manrope-body">
             <span>{article.date}</span>
             <span className="text-text-muted/40">•</span>
@@ -606,6 +611,14 @@ export default function ArticleClient({ article }: Props) {
               <div className="page-content">
 
                 <div className="max-w-[720px] mx-auto">
+                  {article.status === 'archived' && (
+                    <div className="mb-10 p-5 bg-amber-500/5 border-l-4 border-l-amber-500 border-y border-r border-border rounded-r-lg">
+                      <p className="text-[14px] text-text-primary font-medium leading-relaxed italic opacity-90">
+                        <strong className="text-amber-500 not-italic mr-2">Note:</strong> 
+                        This article has been classified as legacy. It was written prior to current technical standards and is preserved purely for historical reference. Some information may be deprecated.
+                      </p>
+                    </div>
+                  )}
                   <div className="prose prose-eulerfold max-w-none text-text-primary">
                     <MarkdownWithLinks content={article.content} currentSlug={article.slug} cache={article.d2Cache} />
                   </div>
@@ -648,34 +661,36 @@ export default function ArticleClient({ article }: Props) {
                   </div>
 
                   {/* Author Block at Bottom */}
-                  <div className="flex items-center gap-4 mt-[60px] border-t border-border pt-[36px]">
-                    <div className="w-12 h-12 rounded-full overflow-hidden border border-border bg-sidebar shrink-0 shadow-sm">
-                      <img 
-                        src={authorImage} 
-                        alt={authorName}
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                    <div className="flex flex-col items-start text-left">
-                      <div className="text-[14px] font-bold text-text-heading manrope-body leading-tight">
-                        Written by {authorName}
+                  {article.status !== 'archived' && (
+                    <div className="flex items-center gap-4 mt-[60px] border-t border-border pt-[36px]">
+                      <div className="w-12 h-12 rounded-full overflow-hidden border border-border bg-sidebar shrink-0 shadow-sm">
+                        <img 
+                          src={authorImage} 
+                          alt={authorName}
+                          className="w-full h-full object-cover"
+                        />
                       </div>
-                      {authorRole && (
-                        <div className="text-[13px] text-text-muted manrope-body leading-tight mt-1">
-                          {authorRole}
+                      <div className="flex flex-col items-start text-left">
+                        <div className="text-[14px] font-bold text-text-heading manrope-body leading-tight">
+                          Written by {authorName}
                         </div>
-                      )}
-                      <a 
-                        href="https://www.linkedin.com/in/sankalp-chudmunge-a3ba80423/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="mt-2 text-text-muted hover:text-[#0A66C2] transition-colors"
-                        aria-label="LinkedIn Profile"
-                      >
-                        <Linkedin className="w-4 h-4" />
-                      </a>
+                        {authorRole && (
+                          <div className="text-[13px] text-text-muted manrope-body leading-tight mt-1">
+                            {authorRole}
+                          </div>
+                        )}
+                        <a 
+                          href="https://www.linkedin.com/in/sankalp-chudmunge-a3ba80423/"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-2 text-text-muted hover:text-[#0A66C2] transition-colors"
+                          aria-label="LinkedIn Profile"
+                        >
+                          <Linkedin className="w-4 h-4" />
+                        </a>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Social Share */}
                   <div className="flex items-center gap-3 mt-[36px]">

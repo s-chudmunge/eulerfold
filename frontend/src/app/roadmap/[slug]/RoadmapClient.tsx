@@ -5,6 +5,7 @@ import { supabase } from '@/lib/supabase/client';
 import { roadmapsAPI, exploreAPI, submissionsAPI, authAPI } from '@/lib/api';
 import RoadmapDisplay from '@/components/landing/RoadmapDisplay';
 import PublicRoadmapView from './PublicRoadmapView';
+import RoadmapBanner from '@/components/FluidGradient/RoadmapBanner';
 import StarRating from '@/components/roadmap/StarRating';
 import { 
     ChevronLeft, 
@@ -878,44 +879,27 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                             </div>
                         ) : (
                             <>
-                                <header className="mb-0">
-                                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                                        <div className="inconsolata-ui flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] font-bold tracking-wide">
-                                    <div className="flex items-center gap-2 text-accent">
-                                        <span className="bg-teal-500/10 px-2 py-0.5 rounded text-accent font-bold">Roadmap</span>
-                                        <span className="text-[var(--border)]">/</span>
-                                        <span className="text-text-muted italic">{roadmap.subject}</span>
-                                    </div>
-                                    {(roadmap.author || roadmap.username) && (
-                                        <div className="flex items-center gap-1.5 text-text-muted">
-                                            <span className="text-[var(--border)] hidden sm:inline">•</span>
-                                            <User className="w-3 h-3" />
-                                            <span className="text-[11px]">{roadmap.author || roadmap.username}</span>
-                                        </div>
-                                    )}
-                                    {roadmap.created_at && (
-                                        <div className="flex items-center gap-1.5 text-text-muted">
-                                            <span className="text-[var(--border)] hidden sm:inline">•</span>
-                                            <Calendar className="w-3 h-3" />
-                                            <span className="text-[11px]">{new Date(roadmap.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                                        </div>
-                                    )}
-                                </div>
-                                        
-                                        {roadmap.is_public && (
-                                            <StarRating 
-                                                rating={rating} 
-                                                count={ratingCount} 
-                                                size={18}
-                                                interactive={isAuthenticated && !isOwner}
-                                                onRate={handleRate}
-                                                className="md:text-right"
-                                            />
-                                        )}
-                                    </div>
-                                </header>
-
-                                <div className="mb-12">
+                                <RoadmapBanner 
+                                    title={roadmap.title} 
+                                    slug={slug} 
+                                    authorName={roadmap.author}
+                                    username={roadmap.username}
+                                    avatarUrl={roadmap.avatar_url}
+                                    subject={roadmap.subject}
+                                    description={roadmap.description}
+                                    durationText={`${roadmap.roadmap_plan?.modules?.length || roadmap.time_value} ${roadmap.roadmap_plan?.modules?.length ? (roadmap.roadmap_plan.modules.length === 1 ? 'week' : 'weeks') : roadmap.time_unit}`}
+                                    learnersCount={roadmap.clone_count || 0}
+                                    createdDate={roadmap.created_at}
+                                    isOwner={isOwner}
+                                    isCloned={roadmap.is_cloned}
+                                    isAuthenticated={isAuthenticated}
+                                    saving={saving}
+                                    onStartLearning={() => handleContinueLearning()}
+                                    onClone={() => {
+                                        handleClone();
+                                    }}
+                                />
+                                <div className="mt-8 mb-12">
                                     <RoadmapDisplay 
                                     roadmapData={roadmap} 
                                     initialFormData={{

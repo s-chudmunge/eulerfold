@@ -37,6 +37,33 @@ logging.getLogger("httpx").setLevel(logging.WARNING)
 
 logger = logging.getLogger(__name__)
 
+# --- Python 3.14 + httpx HTTP/2 Socket Patch ---
+# Catch transient `[Errno 11] Resource temporarily unavailable` (which wraps as httpx.ReadError)
+# on sync httpx.Client calls (which Supabase Python client uses under the hood)
+import httpx
+import time
+original_send = httpx.Client.send
+
+def patched_send(self, request, *args, **kwargs):
+    retries = 3
+    for attempt in range(retries):
+        try:
+            return original_send(self, request, *args, **kwargs)
+        except httpx.ReadError as e:
+            if attempt == retries - 1:
+                raise
+            if "Errno 11" in str(e) or "Resource temporarily unavailable" in str(e):
+                logger.warning(f"Intercepted httpx.ReadError (Errno 11). Retrying {attempt + 1}/{retries} for {request.url}...")
+                time.sleep(0.5 * (attempt + 1))
+            else:
+                raise
+        except Exception:
+            raise
+
+httpx.Client.send = patched_send
+logger.info("Applied global httpx sync ReadError patch for Python 3.14 compatibility.")
+# -----------------------------------------------
+
 from fastapi import FastAPI, Depends, WebSocket, status
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse

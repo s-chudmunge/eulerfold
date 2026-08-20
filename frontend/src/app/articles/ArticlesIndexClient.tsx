@@ -24,6 +24,7 @@ export default function ArticlesIndexClient({ articles }: Props) {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState<SortOption>('newest');
   const [selectedSubject, setSelectedSubject] = useState<string>('All');
+  const [showArchived, setShowArchived] = useState(false);
 
   const handleSignIn = () => {
     router.push(`/login?next=${encodeURIComponent(window.location.pathname)}`);
@@ -52,6 +53,19 @@ export default function ArticlesIndexClient({ articles }: Props) {
         return 0;
       });
   }, [articleList, searchQuery, sortBy, selectedSubject]);
+
+  const { publishedArticles, archivedArticles } = useMemo(() => {
+    const published: Article[] = [];
+    const archived: Article[] = [];
+    filteredArticles.forEach(article => {
+      if (article.status === 'archived') {
+        archived.push(article);
+      } else {
+        published.push(article);
+      }
+    });
+    return { publishedArticles: published, archivedArticles: archived };
+  }, [filteredArticles]);
 
   return (
     <div className="min-h-screen bg-background text-text-primary">
@@ -111,11 +125,36 @@ export default function ArticlesIndexClient({ articles }: Props) {
 
           {/* Article List */}
           <div className="grid grid-cols-1 gap-6">
-            {filteredArticles.length > 0 ? (
-              filteredArticles.map((article) => (
-                <ArticleCard key={article.slug} article={article} variant="horizontal" />
-              ))
-            ) : (
+            {publishedArticles.length > 0 && publishedArticles.map((article) => (
+              <ArticleCard key={article.slug} article={article} variant="horizontal" />
+            ))}
+            
+            {archivedArticles.length > 0 && (
+              <div className="mt-12">
+                <button 
+                  onClick={() => setShowArchived(!showArchived)}
+                  className="w-full text-left flex items-center justify-between mb-6 border-b border-border pb-4 group"
+                >
+                  <div>
+                    <h3 className="text-xl font-bold text-text-muted group-hover:text-text-primary transition-colors">Legacy / Archived Articles</h3>
+                    <p className="text-sm text-text-muted mt-1 opacity-70">These articles were written prior to the current technical standards and are preserved for historical reference.</p>
+                  </div>
+                  <div className="bg-card border border-border p-2 rounded-full group-hover:border-accent/40 transition-colors">
+                    <ArrowRight className={`w-4 h-4 text-text-muted transition-transform duration-300 ${showArchived ? 'rotate-90' : ''}`} />
+                  </div>
+                </button>
+                
+                {showArchived && (
+                  <div className="grid grid-cols-1 gap-6 opacity-60 hover:opacity-100 transition-opacity duration-300">
+                    {archivedArticles.map((article) => (
+                      <ArticleCard key={article.slug} article={article} variant="horizontal" />
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {filteredArticles.length === 0 && (
               <div className="py-20 text-center border-2 border-dashed border-border rounded-3xl">
                 <p className="text-text-muted manrope-body italic text-lg">No articles found matching your search.</p>
               </div>

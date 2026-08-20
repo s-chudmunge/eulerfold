@@ -28,6 +28,18 @@ async def get_fastest_free_openrouter_model() -> str:
     
     if _cached_free_model and time.time() - _cached_time < 3600:
         return _cached_free_model
+    
+    # Preferred free models ranked by structured JSON capability
+    PREFERRED_FREE_MODELS = [
+        "nvidia/nemotron-3-ultra-550b-a55b:free",
+        "google/gemma-4-31b-it:free",
+        "nvidia/nemotron-3-super-120b-a12b:free",
+        "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
+        "openrouter/free",
+        "openai/gpt-oss-20b:free",
+        "cohere/north-mini-code:free",
+        "google/gemma-4-26b-a4b-it:free",
+    ]
         
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
@@ -35,27 +47,33 @@ async def get_fastest_free_openrouter_model() -> str:
             res.raise_for_status()
             data = res.json()
             
-            free_models = []
+            free_model_ids = set()
             for m in data.get("data", []):
-                # We discontinue use of gemini models per user request
-                if "gemini" in m["id"].lower():
-                    continue
                 pricing = m.get("pricing", {})
                 if pricing.get("prompt") == "0" and pricing.get("completion") == "0":
-                    free_models.append(m)
+                    ctx = m.get("context_length", 0)
+                    if ctx >= 32000:
+                        free_model_ids.add(m["id"])
             
-            if free_models:
-                # Prefer cohere/north-mini-code:free
-                preferred_models = [m for m in free_models if "north-mini-code" in m["id"].lower()]
-                selected = preferred_models[0]["id"] if preferred_models else free_models[0]["id"]
+            # Pick the first preferred model that's currently available and free
+            for pref in PREFERRED_FREE_MODELS:
+                if pref in free_model_ids:
+                    _cached_free_model = pref
+                    _cached_time = time.time()
+                    logger.info(f"Selected free OpenRouter model: {_cached_free_model}")
+                    return _cached_free_model
+            
+            # Fallback: pick any free model with decent context
+            if free_model_ids:
+                selected = next(iter(free_model_ids))
                 _cached_free_model = selected
                 _cached_time = time.time()
-                logger.info(f"Selected free OpenRouter model: {_cached_free_model}")
+                logger.info(f"Selected free OpenRouter model (fallback): {_cached_free_model}")
                 return _cached_free_model
     except Exception as e:
         logger.error(f"Failed to fetch free models from OpenRouter: {e}")
         
-    return "cohere/north-mini-code:free"
+    return "deepseek/deepseek-r1-0528:free"
 
 async def _call_openrouter(prompt: str, model: str, response_mime_type: str):
     api_key = settings.OPENROUTER_API_KEY or os.getenv("OPENROUTER_API_KEY")
@@ -74,6 +92,7 @@ async def _call_openrouter(prompt: str, model: str, response_mime_type: str):
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0.1,
         "top_p": 0.95,
+        "max_tokens": 8192,
     }
     
     if response_mime_type == "application/json":
@@ -137,10 +156,8 @@ async def _call_groq(prompt: str, model: str, response_mime_type: str):
     if not api_key:
         raise RuntimeError("GROQ_API_KEY not configured for fallback")
 
-    # Map OpenRouter model names to Groq models
-    groq_model = "llama-3.1-8b-instant" # default fallback
-    if "sonnet" in model.lower() or "pro" in model.lower() or "gpt-4o" in model.lower() and "mini" not in model.lower() or "70b" in model.lower():
-        groq_model = "llama-3.3-70b-versatile"
+    # Always use a highly capable stable Groq model for fallback
+    groq_model = "llama3-70b-8192"
         
     headers = {
         "Authorization": f"Bearer {api_key}",
@@ -152,6 +169,7 @@ async def _call_groq(prompt: str, model: str, response_mime_type: str):
         "messages": [{"role": "user", "content": prompt}],
         "temperature": 0.1,
         "top_p": 0.95,
+        "max_tokens": 8192,
     }
     
     if response_mime_type == "application/json":
@@ -172,7 +190,7 @@ async def _call_groq(prompt: str, model: str, response_mime_type: str):
             if "choices" not in data or not data["choices"]:
                 raise RuntimeError("Empty choices from Groq")
                 
-            return data["choices"][0]["message"]["content"], data.get("usage", {}), model
+            return data["choices"][0]["message"]["content"], data.get("usage", {}), groq_model
         except httpx.HTTPStatusError as e:
             logger.error(f"Groq HTTP Error {e.response.status_code}: {e.response.text}")
             raise RuntimeError(f"Groq fallback failed: {e.response.status_code}")
@@ -236,8 +254,8 @@ async def _call_gemini(prompt: str, response_mime_type: str):
     
     if not response or not response.text:
         raise RuntimeError("Empty response from Gemini")
-        
-        usage = {}
+
+    usage = {}
     if hasattr(response, "usage_metadata") and response.usage_metadata:
         usage = {
             "prompt_tokens": response.usage_metadata.prompt_token_count or 0,
@@ -279,39 +297,56 @@ async def _call_huggingface(prompt: str, response_mime_type: str):
 
 async def generate_text(prompt: str, model: str = None, response_mime_type: str = None, return_usage: bool = False):
     """Generates text from OpenRouter, with a fallback cascade: Groq -> Cohere -> Gemini -> Hugging Face."""
+    import time
     # Enforce fastest available free model for OpenRouter
     openrouter_model = await get_fastest_free_openrouter_model()
+    
+    prompt_len = len(prompt)
+    json_mode = response_mime_type == "application/json"
     
     def _attach_model(usage_dict, model_name):
         usage_dict["model_name"] = model_name
         return usage_dict
 
+    def _log_success(provider: str, model_name: str, usage: dict, elapsed: float):
+        tokens = usage.get("total_tokens", 0)
+        logger.info(f"[AI] ✓ {provider} ({model_name}) — {tokens} tokens, {elapsed:.1f}s, prompt={prompt_len} chars{' [JSON]' if json_mode else ''}")
+
+    t0 = time.time()
+    actual_model = model or openrouter_model
+    logger.info(f"[AI] Starting generation — model={actual_model}, prompt={prompt_len} chars{' [JSON]' if json_mode else ''}")
+
     try:
-        actual_model = model or openrouter_model
         text, usage, used_model = await _call_openrouter(prompt, actual_model, response_mime_type)
+        _log_success("OpenRouter", used_model, usage, time.time() - t0)
         return (text, _attach_model(usage, used_model)) if return_usage else text
     except Exception as e:
-        logger.error(f"Primary OpenRouter call failed: {e}. Attempting Groq fallback...")
+        logger.warning(f"[AI] ✗ OpenRouter failed ({type(e).__name__}: {str(e)[:100]})")
         try:
             text, usage, used_model = await _call_groq(prompt, model or openrouter_model, response_mime_type)
+            _log_success("Groq", used_model, usage, time.time() - t0)
             return (text, _attach_model(usage, used_model)) if return_usage else text
         except Exception as groq_e:
-            logger.error(f"Groq fallback failed: {groq_e}. Attempting Cohere fallback...")
+            logger.warning(f"[AI] ✗ Groq failed ({type(groq_e).__name__}: {str(groq_e)[:100]})")
             try:
                 text, usage, used_model = await _call_cohere(prompt, response_mime_type)
+                _log_success("Cohere", used_model, usage, time.time() - t0)
                 return (text, _attach_model(usage, used_model)) if return_usage else text
             except Exception as cohere_e:
-                logger.error(f"Cohere fallback failed: {cohere_e}. Attempting Gemini fallback...")
+                logger.warning(f"[AI] ✗ Cohere failed ({type(cohere_e).__name__}: {str(cohere_e)[:100]})")
                 try:
                     text, usage, used_model = await _call_gemini(prompt, response_mime_type)
+                    _log_success("Gemini", used_model, usage, time.time() - t0)
                     return (text, _attach_model(usage, used_model)) if return_usage else text
                 except Exception as gemini_e:
-                    logger.error(f"Gemini fallback failed: {gemini_e}. Attempting Hugging Face fallback...")
+                    logger.warning(f"[AI] ✗ Gemini failed ({type(gemini_e).__name__}: {str(gemini_e)[:100]})")
                     try:
                         text, usage, used_model = await _call_huggingface(prompt, response_mime_type)
+                        _log_success("HuggingFace", used_model, usage, time.time() - t0)
                         return (text, _attach_model(usage, used_model)) if return_usage else text
                     except Exception as hf_e:
-                        logger.error(f"All AI providers failed.")
+                        elapsed = time.time() - t0
+                        logger.error(f"[AI] ✗ All 5 providers failed after {elapsed:.1f}s")
                         raise Exception(f"AI generation failed completely.\\nOpenRouter: {e}\\nGroq: {groq_e}\\nCohere: {cohere_e}\\nGemini: {gemini_e}\\nHugging Face: {hf_e}")
 
 def clean_json_string(text: str) -> str:

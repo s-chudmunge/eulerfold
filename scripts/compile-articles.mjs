@@ -150,6 +150,7 @@ export interface Article {
   author: string;
   date: string;
   subject: string;
+  status?: string;
   heroImage: string;
   excerpt: string;
   technicalInsight?: string;

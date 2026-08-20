@@ -31,7 +31,9 @@ import {
     Briefcase,
     Sparkles,
     Link2,
-    BookOpen
+    BookOpen,
+    Sun,
+    Moon,
 } from 'lucide-react';
 import { supabase } from '@/lib/supabase/client';
 import { authAPI, roadmapsAPI, coinsAPI } from '@/lib/api';
@@ -60,7 +62,22 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
     const [searchParams, setSearchParams] = useState<URLSearchParams | null>(null);
     const router = useRouter();
     const { user } = useAuth();
-    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    
+    const [theme, setTheme] = useState('light');
+    useEffect(() => {
+        if (typeof window !== 'undefined') {
+            const storedTheme = localStorage.getItem('eulerfold-theme') || 
+                (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            setTheme(storedTheme);
+        }
+    }, []);
+
+    const toggleTheme = (newTheme: string) => {
+        setTheme(newTheme);
+        localStorage.setItem('eulerfold-theme', newTheme);
+        document.documentElement.classList.toggle('dark', newTheme === 'dark');
+    };
+const [isMenuOpen, setIsMenuOpen] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -103,13 +120,16 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
     const { openSettings } = useSettings();
     const { openPracticeModal } = usePractice();
 
-    const navLinkClass = (path: string) => `
-        flex items-center gap-2 px-2.5 py-1 text-[13px] transition-colors rounded-md
-        ${isActive(path) 
-            ? 'text-text-heading font-semibold bg-sidebar/80 dark:bg-white/5' 
-            : 'text-text-muted hover:text-text-heading hover:bg-sidebar dark:hover:bg-background/[0.02]'
-        }
-    `;
+            const navLinkClass = (path: string) => {
+        const active = isActive(path);
+        return `
+            flex items-center gap-3 px-4 py-2.5 text-[13px] transition-all
+            ${active 
+                ? 'text-accent font-bold bg-accent/[0.08] border-l-4 border-accent' 
+                : 'text-text-muted hover:text-text-heading hover:bg-background/40 border-l-4 border-transparent font-medium'
+            }
+        `;
+    };
 
     return (
         <>
@@ -136,6 +156,19 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                 flex flex-col h-full overflow-hidden shrink-0
             `}>
                 <div className="flex flex-col h-full overflow-y-auto no-scrollbar">
+
+                    <div className="flex items-center gap-3 px-6 py-4">
+                        <img src="/apple-touch-icon.png" alt="Logo" className="w-8 h-8" />
+                        <span className="text-[18px] font-bold tracking-tight">Euler<span className="text-accent">Fold</span></span>
+                    </div>
+
+
+                    <div className="px-4 py-4">
+                        <Link href="/generate" onClick={onClose} className="w-full bg-accent text-white flex items-center justify-center gap-2 py-2 rounded-lg font-bold text-[13px] shadow-sm hover:bg-teal-700 transition-colors">
+                            <Plus className="w-4 h-4" /> New Goal
+                        </Link>
+                    </div>
+
                     {/* Header / Space */}
                     <div className="p-3 mb-1 h-[48px] shrink-0 lg:hidden">
                         <Link href="/" className="flex items-center px-1">
@@ -143,7 +176,7 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                         </Link>
                     </div>
 
-                    <div className="px-2 space-y-4 pt-4 lg:pt-2">
+                    <div className="space-y-2 pt-2">
                         {/* Primary Operations */}
                         <nav className="space-y-0.5" aria-label="Operations navigation">
                             <Link href="/dashboard" aria-current={isActive('/dashboard') ? 'page' : undefined} className={navLinkClass('/dashboard')} onClick={onClose}>
@@ -165,7 +198,7 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
 
                         {/* Products */}
                         <div className="pt-3 border-t border-border dark:border-white/[0.05]">
-                            <span className="px-2.5 text-[10px] font-bold text-text-muted uppercase tracking-[0.15em] block mb-2 opacity-50">Products</span>
+                            <span className="px-5 text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2 mt-4 opacity-60">Products</span>
                             <nav className="space-y-0.5" aria-label="Products navigation">
                                 <Link href="/research-lab" aria-current={isActive('/research-lab') ? 'page' : undefined} className={navLinkClass('/research-lab')} onClick={onClose}>
                                     <Microscope className="w-3.5 h-3.5 stroke-[1.5px]" /> 
@@ -190,7 +223,7 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
 
                         {/* Create Your Course */}
                         <div className="pt-3 border-t border-border dark:border-white/[0.05]">
-                            <span className="px-2.5 text-[10px] font-bold text-text-muted uppercase tracking-[0.15em] block mb-2 opacity-50">Create your course</span>
+                            <span className="px-5 text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2 mt-4 opacity-60">Create your course</span>
                             <nav className="space-y-0.5" aria-label="Generators navigation">
                                 <Link href="/generate" aria-current={isActive('/generate') ? 'page' : undefined} className={navLinkClass('/generate')} onClick={onClose}>
                                     <Sparkles className="w-3.5 h-3.5 stroke-[1.5px]" /> AI Architect
@@ -286,7 +319,22 @@ export default function AppSidebar({ children, header, isOpen, onClose }: Sideba
                             </div>
                         )}
                         
-                        <div 
+                        
+                        <div className="flex items-center gap-1 bg-background/50 border border-border rounded-full p-1 mx-2 mb-4 w-max">
+                            <button 
+                                onClick={() => toggleTheme('light')}
+                                className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all ${theme === 'light' ? 'bg-background text-text-heading shadow-sm border border-border/50' : 'text-text-muted hover:text-text-heading'}`}
+                            >
+                                <Sun className="w-3.5 h-3.5" /> Light
+                            </button>
+                            <button 
+                                onClick={() => toggleTheme('dark')}
+                                className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all ${theme === 'dark' ? 'bg-sidebar text-text-heading shadow-sm border border-border/50' : 'text-text-muted hover:text-text-heading'}`}
+                            >
+                                <Moon className="w-3.5 h-3.5" />
+                            </button>
+                        </div>
+<div 
                             className="flex items-center justify-between gap-2 px-2 py-1.5 border border-border dark:border-white/10 rounded-lg hover:bg-sidebar dark:hover:bg-background/[0.02] transition-colors cursor-pointer group" 
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
                         >

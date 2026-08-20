@@ -130,6 +130,9 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
     }, []);
 
     useEffect(() => {
+        let pollCount = 0;
+        const MAX_POLLS = 24; // 24 × 5s = 2 minutes max
+
         const fetchData = async () => {
             try {
                 // Fetch profile to check pro status
@@ -139,6 +142,11 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
                 const res = await api.get(`/research-lab/decodes/${id}`);
                 setData(res.data);
                 if (res.data.status === 'processing' || res.data.status === 'pending') {
+                    pollCount++;
+                    if (pollCount >= MAX_POLLS) {
+                        setError("Analysis is taking longer than expected. Please check back later or try again.");
+                        return;
+                    }
                     setTimeout(fetchData, 5000);
                 }
             } catch (err: any) {
@@ -186,6 +194,19 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
         </div>
     );
 
+    if (data?.status === 'failed') {
+        return (
+            <div className="flex flex-col min-h-screen">
+                <main className="flex-grow flex flex-col items-center justify-center py-24 px-6 text-center">
+                    <AlertCircle className="w-10 h-10 text-red-500 mb-4" />
+                    <h2 className="text-lg font-bold text-text-heading mb-2">Analysis Failed</h2>
+                    <p className="text-text-muted text-[13px] max-w-md mb-6">{data.error_message || "The AI engine was unable to extract or deconstruct this paper. Please check the URL or try again."}</p>
+                    <Link href="/research-lab" className="px-6 py-2.5 bg-accent text-white font-bold text-[11px] uppercase tracking-wider rounded-lg shadow-md hover:opacity-90 transition-all">Back to Lab</Link>
+                </main>
+            </div>
+        );
+    }
+
     if (data?.status === 'processing' || data?.status === 'pending') {
         return (
             <div className="flex flex-col min-h-screen">
@@ -215,7 +236,7 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
                                 ))}
                             </div>
                         </div>
-                        <Link href="/research-lab" className="px-10 py-3 bg-text-heading text-background text-[11px] font-bold uppercase tracking-[0.2em] rounded-none shadow-xl hover:opacity-90 transition-all">Dashboard</Link>
+                        <Link href="/research-lab" className="px-6 py-2.5 bg-sidebar hover:bg-background border border-border text-text-primary text-[11px] font-bold uppercase tracking-[0.15em] rounded-lg shadow-sm transition-all">Back to Lab</Link>
                     </div>
                 </main>
             </div>

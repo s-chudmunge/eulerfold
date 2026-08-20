@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/research-lab", tags=["Research Lab"])
 
 async def _fetch_pdf_content(url: str) -> Optional[bytes]:
-    """Internal helper to fetch PDF bytes with proper headers."""
+    """Internal helper to fetch PDF bytes with proper headers and timeouts."""
     import httpx
     if "arxiv.org/abs/" in url:
         url = url.replace("arxiv.org/abs/", "arxiv.org/pdf/")
@@ -25,28 +25,37 @@ async def _fetch_pdf_content(url: str) -> Optional[bytes]:
             url += ".pdf"
             
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept": "application/pdf,text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
     }
-    try:
-        async with httpx.AsyncClient(timeout=30.0, follow_redirects=True, headers=headers) as client:
-            resp = await client.get(url)
-            if resp.status_code == 200:
-                return resp.content
-    except Exception as e:
-        logger.error(f"Failed to fetch PDF from {url}: {e}")
+    timeout = httpx.Timeout(connect=15.0, read=60.0, write=15.0, pool=15.0)
+    for attempt in range(2):
+        try:
+            async with httpx.AsyncClient(timeout=timeout, follow_redirects=True, headers=headers) as client:
+                resp = await client.get(url)
+                if resp.status_code == 200:
+                    return resp.content
+        except Exception as e:
+            logger.warning(f"PDF fetch attempt {attempt + 1} failed for {url}: {e}")
+            if attempt == 0:
+                await asyncio.sleep(1)
     return None
 
 async def run_research_analysis(decode_id: str, paper_url: str, uid: str):
     """
     Background task to perform the paper analysis using modern google-genai SDK.
     """
+    import time
+    t0 = time.time()
     sb = get_supabase_client()
+    logger.info(f"[ResearchLab] Starting analysis {decode_id[:8]}... | URL: {paper_url[:80]}")
     try:
         sb.table("research_lab_decodes").update({"status": "processing"}).eq("id", decode_id).execute()
         
         pdf_bytes = await _fetch_pdf_content(paper_url)
         if not pdf_bytes:
             raise Exception("Could not retrieve paper content from the provided URL.")
+        logger.info(f"[ResearchLab] PDF fetched — {len(pdf_bytes) / 1024:.0f} KB, {time.time() - t0:.1f}s")
 
         import io
         from pypdf import PdfReader
@@ -58,59 +67,45 @@ async def run_research_analysis(decode_id: str, paper_url: str, uid: str):
             if extracted:
                 paper_text += extracted + "\n\n"
         
-        paper_text = paper_text[:80000]
+        paper_text = paper_text[:60000]
+        logger.info(f"[ResearchLab] Text extracted — {len(reader.pages)} pages, {len(paper_text)} chars")
 
-        # Dynamic Technical Module Prompt
-        prompt = """
-        You are a world-class Technical Consultant. Deconstruct the attached paper into an 'Engineering Dossier'.
-        
-        TASK:
-        1. Identify the paper archetype: (Theoretical Math, Systems/Hardware, AI Architecture, or Applied Engineering).
-        2. Extract Metadata: (Clean Title, List of Authors, Publication Year).
-        3. Create 5-6 high-utility technical modules based on that archetype.
+        # Streamlined prompt — no extracted_text echo, cleaner schema for free models
+        prompt = """You are a Technical Consultant. Deconstruct this paper into a structured Engineering Dossier.
 
-        MODULE RULES:
-        - ALWAYS include: 'The Shift', 'Logic', and 'Realities'.
-        - 'The Shift' data schema: {"before": "...", "after": "...", "the_win": "..."}
-        - 'Logic' data schema: {"details": "Step-by-step logic in Markdown"}
-        - 'Realities' data schema: {"items": ["list of technical gotchas"]}
-        - 'Concept' data schema: {"details": "Technical breakdown of the underlying architecture or core mechanism. Avoid oversimplification. Focus on structural insights."}
-        - For others like 'Math', 'Blueprint', 'Benchmarks', 'Industry':
-            - Use "details" for text.
-            - Use "items" for lists.
-            - Use "math" for formula maps: [{"formula": "LaTeX", "action": "...", "intuition": "..."}]
+TASK:
+1. Identify paper archetype: Theoretical Math, Systems/Hardware, AI Architecture, or Applied Engineering.
+2. Extract metadata: title, authors, year.
+3. Create 5-6 technical modules.
 
-        STRICT STYLE: Plain English. Technical Precision. No fluff.
+REQUIRED MODULES (always include these 3):
+- "The Shift": {"before": "old approach", "after": "new approach", "the_win": "core advantage"}
+- "Logic": {"details": "step-by-step technical logic in Markdown. Use $...$ for inline math and $$...$$ for block math."}
+- "Realities": {"items": ["gotcha 1", "gotcha 2", ...]}
 
-        OUTPUT JSON STRUCTURE:
-        {
-            "extracted_text": "Full text extraction",
-            "analysis": {
-                "paper_title": "Clean Title",
-                "authors": ["Author 1", "Author 2"],
-                "year": "202X",
-                "archetype": "The identified paper type",
-                "modules": [
-                    {
-                        "id": "unique_id",
-                        "label": "The Shift", 
-                        "data": {"before": "...", "after": "...", "the_win": "..."}
-                    },
-                    {
-                        "id": "unique_id",
-                        "label": "Logic",
-                        "data": {"details": "..."}
-                    },
-                    {
-                        "id": "unique_id",
-                        "label": "Math",
-                        "data": {"math": [...]}
-                    }
-                ],
-                "summary": "Final technical synthesis"
-            }
-        }
-        """ + f"\n\nPAPER CONTENT:\n{paper_text}\n"
+OPTIONAL MODULES (pick 2-3 based on archetype):
+- "Concept": {"details": "core architecture/mechanism breakdown in Markdown"}
+- "Math": {"math": [{"formula": "$LaTeX$", "action": "what it computes", "intuition": "why it matters"}]}
+- "Blueprint": {"details": "system design / implementation details in Markdown"}
+- "Benchmarks": {"items": ["result 1", "result 2", ...]}
+
+MATH RULE: Always use $...$ for inline math and $$...$$ for block math. Never use bare LaTeX.
+STYLE: Plain English. Technical precision. No fluff. No filler.
+
+Return ONLY this JSON structure:
+{
+    "paper_title": "Clean Title",
+    "authors": ["Author 1", "Author 2"],
+    "year": "202X",
+    "archetype": "identified type",
+    "modules": [
+        {"id": "shift", "label": "The Shift", "data": {"before": "...", "after": "...", "the_win": "..."}},
+        {"id": "logic", "label": "Logic", "data": {"details": "..."}},
+        {"id": "realities", "label": "Realities", "data": {"items": ["..."]}}
+    ],
+    "summary": "2-3 sentence technical synthesis"
+}
+""" + f"\n\nPAPER CONTENT:\n{paper_text}\n"
         
         response_text, usage = await generate_text(prompt, model=settings.DEFAULT_ROADMAP_MODEL, response_mime_type="application/json", return_usage=True)
         log_backend_ai_usage(sb, uid, "Research Lab Analysis (Cost: 1.0 Credits)", usage, source="backend")
@@ -119,18 +114,29 @@ async def run_research_analysis(decode_id: str, paper_url: str, uid: str):
             raise Exception("AI failed to return a valid analysis.")
 
         data = robust_json_loads(response_text)
-        decoded_data = data.get("analysis", {})
-        full_text = data.get("extracted_text", "")
+        
+        # The response is the analysis directly (no nested "analysis" wrapper)
+        # Handle both formats: direct or wrapped in "analysis" key
+        if "analysis" in data and isinstance(data["analysis"], dict):
+            decoded_data = data["analysis"]
+        elif "modules" in data:
+            decoded_data = data
+        else:
+            decoded_data = data
+        
+        module_count = len(decoded_data.get("modules", []))
+        title = decoded_data.get("paper_title", "Untitled")
         
         sb.table("research_lab_decodes").update({
             "paper_title": decoded_data.get("paper_title", "Untitled Paper"),
             "core_analysis": decoded_data,
-            "extracted_text": full_text,
+            "extracted_text": paper_text[:15000],
             "status": "completed",
             "updated_at": datetime.now(timezone.utc).isoformat()
         }).eq("id", decode_id).execute()
         
-        logger.info(f"Research Lab: Successfully analyzed {decode_id}")
+        elapsed = time.time() - t0
+        logger.info(f"[ResearchLab] ✓ Completed {decode_id[:8]} — \"{title}\" | {module_count} modules | {elapsed:.1f}s total")
 
     except Exception as e:
         logger.error(f"Research Lab Background Task Failed for {decode_id}: {e}")
@@ -139,6 +145,16 @@ async def run_research_analysis(decode_id: str, paper_url: str, uid: str):
             "error_message": str(e),
             "updated_at": datetime.now(timezone.utc).isoformat()
         }).eq("id", decode_id).execute()
+        
+        # Refund the 1.0 credit on failure
+        try:
+            profile_res = sb.table("profiles").select("roadmap_credits").eq("id", uid).single().execute()
+            if profile_res.data:
+                current_credits = float(profile_res.data.get("roadmap_credits", 0))
+                sb.table("profiles").update({"roadmap_credits": current_credits + 1.0}).eq("id", uid).execute()
+                logger.info(f"Refunded 1.0 credit to user {uid} after failed analysis {decode_id}")
+        except Exception as refund_err:
+            logger.error(f"Failed to refund credit for {decode_id}: {refund_err}")
 
 
 @router.post("/decodes/{decode_id}/chat")
@@ -345,4 +361,21 @@ async def get_decode_detail(decode_id: str, current_user: User = Depends(get_cur
         raise HTTPException(status_code=403, detail="Not authorized")
         
     return decode
+
+@router.delete("/decodes/{decode_id}")
+async def delete_decode(decode_id: str, current_user: User = Depends(get_current_user)):
+    sb = get_supabase_client()
+    
+    # Verify ownership
+    res = sb.table("research_lab_decodes").select("user_id").eq("id", decode_id).execute()
+    if not res.data:
+        raise HTTPException(status_code=404, detail="Analysis not found")
+        
+    if res.data[0]["user_id"] != current_user.supabase_uid:
+        raise HTTPException(status_code=403, detail="Not authorized to delete this analysis")
+        
+    # Delete it
+    sb.table("research_lab_decodes").delete().eq("id", decode_id).execute()
+    
+    return {"status": "success", "message": "Analysis deleted successfully"}
 
