@@ -50,12 +50,12 @@ export default function GenerationSystems() {
   const [isLocalModalOpen, setIsLocalModalOpen] = useState(false);
 
   return (
-    <section className="py-20 md:py-32 px-6 bg-background relative border-t border-border/30 overflow-hidden">
+    <section className="py-20 md:py-32 px-6 bg-transparent relative border-t border-border/30 overflow-hidden">
       {/* Subtle grid pattern in the background of the section */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
       
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="group relative overflow-hidden rounded-2xl bg-sidebar/50 border border-accent/30 hover:border-accent/50 px-6 py-10 sm:p-10 md:p-16 transition-all hover:shadow-md">
+        <div className="group relative overflow-hidden rounded-2xl bg-transparent border border-accent/30 hover:border-accent/50 px-6 py-10 sm:p-10 md:p-16 transition-all hover:shadow-md">
 
           <div className="relative z-10 flex flex-col gap-12">
             {/* Section Header */}
@@ -99,7 +99,7 @@ export default function GenerationSystems() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: index * 0.04 }}
-                    className="group/item flex flex-col items-start gap-2 py-4 px-5 rounded-lg bg-background/40 hover:bg-background border border-accent/30 hover:border-accent/60 hover:shadow-sm transition-all duration-200 cursor-pointer"
+                    className="group/item flex flex-col items-start gap-2 py-4 px-5 rounded-lg bg-transparent border border-accent/30 hover:border-accent/60 hover:shadow-sm transition-all duration-200 cursor-pointer"
                     onClick={() => {
                       if (system.id === 'openrouter') {
                         window.open('https://openrouter.ai/models', '_blank');
