@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, ArrowRight } from 'lucide-react';
 import { useAuth } from '@/components/AuthProvider';
 import { authAPI } from '@/lib/api';
 import OnboardingFlow from '@/components/onboarding/OnboardingFlow';
@@ -49,8 +49,8 @@ export function TrustedSourcesTicker() {
   );
 
   return (
-    <div className="w-full text-center overflow-hidden border-t border-border/30 pt-8 mt-12 md:mt-0">
-      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted/60 mb-8 block">
+    <div className="w-full text-center overflow-hidden border-t border-border/30 pt-6">
+      <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted/60 mb-5 block">
         Curriculum sourced from
       </span>
       
@@ -221,3 +221,31 @@ export function LocalChatCTA() {
     </section>
   );
 }
+
+export function ScrollToHeroCTA() {
+  const handleScroll = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const heroInput = document.getElementById('hero-prompt-input');
+    const heroTextarea = document.getElementById('hero-prompt-textarea') as HTMLTextAreaElement | null;
+
+    if (heroInput) {
+      heroInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    setTimeout(() => {
+      heroTextarea?.focus();
+    }, 450);
+  };
+
+  return (
+    <button 
+      onClick={handleScroll}
+      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-text-heading text-background hover:opacity-90 px-8 py-3.5 rounded-lg text-[14px] font-bold transition-all shadow-sm hover:-translate-y-0.5 cursor-pointer"
+    >
+      Create Course <ArrowRight className="w-4 h-4" />
+    </button>
+  );
+}
+

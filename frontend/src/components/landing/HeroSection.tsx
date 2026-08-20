@@ -63,11 +63,11 @@ export default function HeroSection() {
 
   return (
     <div className="relative w-full overflow-hidden">
-      <section className="relative pt-28 pb-16 md:pt-40 md:pb-32 px-6 min-h-[550px] md:min-h-[800px] flex items-center w-full">
+      <section className="relative pt-24 pb-8 sm:pt-28 md:pt-36 md:pb-16 px-4 sm:px-6 min-h-[600px] md:min-h-[750px] flex flex-col items-center justify-between w-full">
         <HeroBackground />
         
 
-        <div className="max-w-3xl mx-auto w-full relative z-10">
+        <div className="max-w-3xl mx-auto w-full relative z-10 flex-1 flex flex-col justify-center">
           <motion.div
             variants={stagger}
             initial="hidden"
@@ -125,16 +125,10 @@ export default function HeroSection() {
               </span>
             </motion.h1>
 
-            {/* Subheading */}
-            <motion.p 
-              variants={fadeUp}
-              className="text-text-muted text-[15px] md:text-[17px] manrope-body font-medium mb-8 leading-relaxed max-w-2xl mx-auto"
-            >
-              Turn any topic into a complete curriculum with resources, video lectures, and technical assessments.
-            </motion.p>
-
             {/* Interactive prompt input */}
-            <HeroPromptInput />
+            <div className="mt-8">
+              <HeroPromptInput />
+            </div>
 
             {/* Secondary CTAs */}
             <motion.div 
@@ -174,12 +168,12 @@ export default function HeroSection() {
           </motion.div>
         </div>
 
-        {/* Consolidated Social Proof - Pulled outside to span full width */}
+        {/* Consolidated Social Proof */}
         <motion.div 
           variants={fadeUp} 
           initial="hidden"
           animate="visible"
-          className="absolute bottom-10 left-0 right-0 w-full"
+          className="w-full relative z-10 mt-10 md:mt-16"
         >
           <TrustedSourcesTicker />
         </motion.div>

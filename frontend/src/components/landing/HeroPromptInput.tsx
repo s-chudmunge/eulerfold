@@ -216,10 +216,11 @@ export default function HeroPromptInput() {
 
   return (
     <motion.div
+      id="hero-prompt-input"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.5, duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
-      className="w-full max-w-xl mx-auto"
+      className="w-full max-w-xl mx-auto scroll-mt-28"
     >
       {/* Gradient border wrapper */}
       <div
@@ -231,6 +232,7 @@ export default function HeroPromptInput() {
       >
         <div className="bg-background rounded-[5px] p-4">
           <textarea
+            id="hero-prompt-textarea"
             ref={textareaRef}
             value={value}
             onChange={(e) => setValue(e.target.value)}

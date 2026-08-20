@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { ArrowRight, BookOpen } from 'lucide-react';
 import PublicHeader from '@/components/PublicHeader';
 import Footer from '@/components/Footer';
-import { AlreadySignedInMessage, LandingOnboardingTrigger } from './HomeClientComponents';
+import { AlreadySignedInMessage, LandingOnboardingTrigger, ScrollToHeroCTA } from './HomeClientComponents';
 import PagePreloader from '@/components/PagePreloader';
 
 import HeroSection from '@/components/landing/HeroSection';
@@ -103,12 +103,7 @@ export default async function LandingPage() {
                 </div>
                 
                 <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row items-center gap-3 shrink-0 w-full md:w-auto">
-                  <Link 
-                    href="/generate"
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-text-heading text-background hover:opacity-90 px-8 py-3.5 rounded-lg text-[14px] font-bold transition-all shadow-sm hover:-translate-y-0.5"
-                  >
-                    Create Course <ArrowRight className="w-4 h-4" />
-                  </Link>
+                  <ScrollToHeroCTA />
                   <Link 
                     href="/explore"
                     className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-background border border-border hover:border-accent/40 text-text-heading px-8 py-3.5 rounded-lg text-[14px] font-bold transition-all hover:-translate-y-0.5"
