@@ -660,7 +660,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
     };
 
     return (
-        <div className="fixed inset-0 z-[100] flex flex-col bg-background text-text-primary selection:bg-teal-500/30 selection:text-text-heading overflow-hidden">
+        <div className="fixed inset-0 z-[100] flex flex-col text-text-primary selection:bg-teal-500/30 selection:text-text-heading overflow-hidden">
             {/* Header */}
             <CourseHeader 
                 roadmapId={id}
@@ -861,7 +861,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                 </aside>
 
                 {/* Main Content Area */}
-                <main className="flex-1 flex flex-col h-full bg-background relative overflow-hidden">
+                <main className="flex-1 flex flex-col h-full relative overflow-hidden">
                     <div className="flex-1 overflow-y-auto no-scrollbar">
                         <div className="max-w-[1200px] mx-auto w-full p-4 md:p-8">
                             

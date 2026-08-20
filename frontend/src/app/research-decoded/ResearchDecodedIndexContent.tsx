@@ -103,7 +103,7 @@ export default function ResearchDecodedIndexContent() {
   }).filter(category => category.sections.length > 0);
 
   return (
-    <div className="bg-background min-h-screen pb-24 text-text-primary">
+    <div className="bg-transparent min-h-screen pb-24 text-text-primary">
       <Suspense fallback={null}>
         <SearchParamsHandler onParams={handleSearchParams} />
       </Suspense>

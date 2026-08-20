@@ -1,6 +1,7 @@
 "use client";
 
 // Fresh build trigger
+import NewsletterBanner from '@/components/landing/NewsletterBanner';
 import React, { useMemo, useState, useEffect, Suspense } from 'react';
 import { archiveData, PaperEntry } from '../../generatedArchiveData';
 import { Search, Download, Key, ArrowRight, X, ChevronDown, ChevronRight } from 'lucide-react';
@@ -263,12 +264,12 @@ function ArchiveContent() {
   }, [query, selectedExam, selectedYear, selectedSubject, sortOrder]);
 
   return (
-    <div className="bg-background">
+    <div>
       <Suspense fallback={null}>
         <SearchParamsHandler onParams={handleSearchParams} />
       </Suspense>
       <main className="max-w-[1000px] mx-auto px-6 py-8 md:px-12 md:py-12 relative">
-        <BrandedSideBanners />
+        
         <Breadcrumbs items={[{ label: 'Archive' }]} />
 
 
@@ -279,7 +280,7 @@ function ArchiveContent() {
               <select 
                 value={selectedExam}
                 onChange={(e) => updateFilters({ exam: e.target.value, subject: "All Subjects" })}
-                className="w-full bg-background border border-border rounded-lg py-2.5 px-4 inconsolata-ui text-[14px] appearance-none focus:outline-none focus:border-[var(--accent)] cursor-pointer shadow-sm truncate pr-8 dark:bg-[#1a1a1a]"
+                className="w-full bg-surface border border-border rounded-lg py-2.5 px-4 inconsolata-ui text-[14px] appearance-none focus:outline-none focus:border-[var(--accent)] cursor-pointer shadow-sm truncate pr-8"
               >
                 {allExams.map(exam => <option key={exam} value={exam}>{exam}</option>)}
               </select>
@@ -288,7 +289,7 @@ function ArchiveContent() {
               <select 
                 value={selectedSubject}
                 onChange={(e) => updateFilters({ subject: e.target.value })}
-                className="w-full bg-background border border-border rounded-lg py-2.5 px-4 inconsolata-ui text-[14px] appearance-none focus:outline-none focus:border-[var(--accent)] cursor-pointer shadow-sm truncate pr-8 dark:bg-[#1a1a1a]"
+                className="w-full bg-surface border border-border rounded-lg py-2.5 px-4 inconsolata-ui text-[14px] appearance-none focus:outline-none focus:border-[var(--accent)] cursor-pointer shadow-sm truncate pr-8"
               >
                 {allSubjects.map(sub => <option key={sub} value={sub}>{sub}</option>)}
               </select>
@@ -297,7 +298,7 @@ function ArchiveContent() {
               <select 
                 value={selectedYear}
                 onChange={(e) => updateFilters({ year: e.target.value })}
-                className="w-full bg-background border border-border rounded-lg py-2.5 px-4 inconsolata-ui text-[14px] appearance-none focus:outline-none focus:border-[var(--accent)] cursor-pointer shadow-sm dark:bg-[#1a1a1a]"
+                className="w-full bg-surface border border-border rounded-lg py-2.5 px-4 inconsolata-ui text-[14px] appearance-none focus:outline-none focus:border-[var(--accent)] cursor-pointer shadow-sm"
               >
                 {allYears.map(year => <option key={year} value={year}>{year}</option>)}
               </select>
@@ -306,7 +307,7 @@ function ArchiveContent() {
               <select 
                 value={sortOrder}
                 onChange={(e) => updateFilters({ sort: e.target.value })}
-                className="w-full bg-background border border-border rounded-lg py-2.5 px-4 inconsolata-ui text-[14px] appearance-none focus:outline-none focus:border-[var(--accent)] cursor-pointer shadow-sm dark:bg-[#1a1a1a]"
+                className="w-full bg-surface border border-border rounded-lg py-2.5 px-4 inconsolata-ui text-[14px] appearance-none focus:outline-none focus:border-[var(--accent)] cursor-pointer shadow-sm"
               >
                 <option value="newest">Newest First</option>
                 <option value="oldest">Oldest First</option>
@@ -374,7 +375,7 @@ function ArchiveContent() {
                           <Link href={`/archive/exams/previous-year-papers/${category.id.toLowerCase()}`} className="flex-1 flex items-center gap-4 min-w-0 hover:opacity-80 transition-all hover:underline underline-offset-4">
                             <div className="flex items-center gap-2 truncate">
                               {EXAM_LOGOS[category.title] && (
-                                <div className="w-5 h-5 bg-background rounded border border-border overflow-hidden flex items-center justify-center p-0.5 shrink-0">
+                                <div className="w-5 h-5 bg-surface rounded border border-border overflow-hidden flex items-center justify-center p-0.5 shrink-0">
                                   <img src={EXAM_LOGOS[category.title]} alt={`${category.title} Exam Logo`} className="w-full h-full object-contain grayscale-[0.3]" />
                                 </div>
                               )}
@@ -452,6 +453,10 @@ function ArchiveContent() {
               <p className="manrope-body text-text-muted text-sm uppercase tracking-widest font-black">No matching items found</p>
             </div>
           )}
+        </div>
+
+        <div className="my-16">
+          <NewsletterBanner />
         </div>
 
         {/* Discussion Section */}

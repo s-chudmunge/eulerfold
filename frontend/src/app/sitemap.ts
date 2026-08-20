@@ -1,8 +1,5 @@
 import { MetadataRoute } from 'next';
 import { supabase } from '@/lib/supabase/client';
-import { papers } from './research-decoded/generatedData';
-import { archiveData } from './(public)/archive/generatedArchiveData';
-import { articles } from './articles/generatedArticles';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.eulerfold.com';
@@ -24,8 +21,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/careers',
     '/sitemap',
     '/planner',
-    '/practice',
-    '/generate',
     '/job-decoded',
     '/link-to-roadmap',
     '/syllabus-to-roadmap',

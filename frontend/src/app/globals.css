@@ -1,6 +1,4 @@
 @import "tailwindcss";
-@import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 @import "katex/dist/katex.min.css";
 
 @theme {
@@ -126,10 +124,10 @@ html {
 }
 
 body {
-  background-color: var(--background);
+  background-color: transparent;
   color: var(--text-primary);
   font-family: var(--font-inter), sans-serif;
-  transition: background-color 0.3s ease, color 0.3s ease;
+  transition: color 0.3s ease;
   font-size: 1rem; /* 17px on desktop */
   line-height: 1.7;
   font-weight: var(--font-weight-normal);

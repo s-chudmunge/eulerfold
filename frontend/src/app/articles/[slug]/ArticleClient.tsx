@@ -494,14 +494,15 @@ export default function ArticleClient({ article }: Props) {
   }, [article.slug]);
 
   return (
-    <div className="min-h-screen bg-background text-text-primary serif-page-scope selection:bg-accent/20">
+    <div className="relative min-h-screen text-text-primary serif-page-scope selection:bg-accent/20">
       {/* Reading Progress Bar */}
       <div
         className="fixed top-0 left-0 z-[100] h-[2.5px] bg-accent transition-all duration-100 ease-out"
         style={{ width: `${readProgress}%` }}
       />
 
-      <PublicHeader />
+      <div className="relative z-10">
+        <PublicHeader />
 
       {/* Site Content */}
       <div className="max-w-[1500px] mx-auto px-4 md:px-6 relative">
@@ -837,6 +838,7 @@ export default function ArticleClient({ article }: Props) {
             <div className="hidden xl:block w-[180px] shrink-0 ml-12 pointer-events-none" aria-hidden="true" />
           )}
         </div>
+      </div>
       </div>
     </div>
   );

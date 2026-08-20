@@ -121,7 +121,7 @@ export default function LeaderboardPage({
   );
 
   return (
-    <div className="bg-background text-text-primary">
+    <div className="bg-transparent text-text-primary">
       <div className="max-w-[1200px] mx-auto px-6 py-8 md:px-10 md:py-12 flex flex-col lg:flex-row gap-10">
         <main className="flex-1 min-w-0">
           <div className="mb-8">

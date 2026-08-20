@@ -62,7 +62,7 @@ export default function CertificationSection() {
           </div>
 
           <Link
-            href="/generate"
+            href="/#hero-prompt-input"
             className="inline-flex items-center gap-2 px-5 py-2.5 bg-accent hover:bg-teal-700 text-white rounded-md text-[13px] font-bold tracking-tight transition-colors shadow-sm"
           >
             Start Earning <ArrowRight className="w-4 h-4" />

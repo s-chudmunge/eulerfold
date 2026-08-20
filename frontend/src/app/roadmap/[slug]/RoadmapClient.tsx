@@ -544,7 +544,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
     }
 
     return (
-        <div className={`${inconsolata.variable} ${manrope.variable} fixed inset-0 z-[100] flex flex-col bg-background text-text-primary selection:bg-teal-500/30 selection:text-text-heading overflow-hidden`}>
+        <div className={`${inconsolata.variable} ${manrope.variable} fixed inset-0 z-[100] flex flex-col text-text-primary selection:bg-teal-500/30 selection:text-text-heading overflow-hidden`}>
             {/* Header */}
             <header className="inconsolata-ui border-b border-border bg-header h-[48px] shrink-0 z-50">
                 <div className="w-full px-4 md:px-6 flex h-full items-center justify-between">
@@ -765,7 +765,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                     </div>
                 </AppSidebar>
 
-                <main className="flex-1 min-w-0 h-full overflow-y-auto no-scrollbar bg-background">
+                <main className="flex-1 min-w-0 h-full overflow-y-auto no-scrollbar">
                     <div className="max-w-[900px] mx-auto px-8 py-6">
                         {isOwner && !roadmap.is_public && !roadmap.cloned_from && (
                             <div className="mb-6 p-2.5 px-4 bg-sidebar/40 border border-border rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-in fade-in">

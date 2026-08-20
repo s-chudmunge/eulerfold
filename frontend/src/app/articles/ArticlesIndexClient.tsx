@@ -68,10 +68,11 @@ export default function ArticlesIndexClient({ articles }: Props) {
   }, [filteredArticles]);
 
   return (
-    <div className="min-h-screen bg-background text-text-primary">
-      <PublicHeader />
-      
-      <main className="max-w-[850px] mx-auto py-12 px-6">
+    <div className="relative min-h-screen text-text-primary">
+      <div className="relative z-10">
+        <PublicHeader />
+        
+        <main className="max-w-[850px] mx-auto py-12 px-6">
         <div className="w-full">
           {/* Controls: Search, Sort, Filter */}
           <div className="mb-10 flex flex-col gap-4">
@@ -186,6 +187,7 @@ export default function ArticlesIndexClient({ articles }: Props) {
           </div>
         </div>
       </main>
+      </div>
     </div>
   );
 }

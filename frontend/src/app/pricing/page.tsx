@@ -64,8 +64,8 @@ export default function PricingPage() {
               </div>
           </div>
       </header>
-      <main className="flex-grow min-w-0 bg-background scroll-smooth">
-        <div className="max-w-[1000px] mx-auto px-6 py-10 md:py-16">
+      <main className="flex-grow min-w-0 scroll-smooth relative">
+        <div className="max-w-[1000px] mx-auto px-6 py-10 md:py-16 relative z-10">
           <PricingClient />
         </div>
       </main>

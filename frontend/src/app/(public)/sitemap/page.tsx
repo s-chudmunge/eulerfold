@@ -20,7 +20,7 @@ export default function SitemapPage() {
         { name: "Dashboard", href: "/dashboard" },
         { name: "Study Planner", href: "/planner" },
 
-        { name: "Roadmap Generator", href: "/generate" },
+        { name: "Roadmap Generator", href: "/#hero-prompt-input" },
         { name: "Explore Roadmaps", href: "/explore" },
         { name: "Roadmap Index", href: "/roadmap" },
         { name: "Leaderboard", href: "/leaderboard" },

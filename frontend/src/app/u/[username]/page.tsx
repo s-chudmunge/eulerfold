@@ -85,7 +85,7 @@ export default async function PublicProfilePage({ params }: { params: { username
     }
 
     return (
-        <div className="min-h-screen flex flex-col bg-background">
+        <div className="min-h-screen flex flex-col">
             <PagePreloader />
             <main className="flex-grow min-w-0 h-screen overflow-hidden">
                 <ProfileClient profile={profile} />

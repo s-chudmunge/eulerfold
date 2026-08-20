@@ -279,7 +279,7 @@ export default function ExploreClient({
     };
 
     return (
-        <div className="bg-background text-text-primary selection:bg-teal-500/30 selection:text-text-heading">
+        <div className="bg-transparent text-text-primary selection:bg-teal-500/30 selection:text-text-heading">
             <Suspense fallback={null}>
                 <SearchParamsHandler onParams={handleSearchParams} />
             </Suspense>

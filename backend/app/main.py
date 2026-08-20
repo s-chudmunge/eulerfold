@@ -81,7 +81,12 @@ class COOPMiddleware(BaseHTTPMiddleware):
 
 from app.core.websocket_manager import manager
 
-from app.routers import health, roadmaps, auth, explore, coins, practice, profiles, sessions, leaderboard, payments, discussions, planner, tts, research_lab, interactions, ai_usage, dashboard, misc, certificates, diagnostics
+from app.routers.generators import ai as gen_ai
+from app.routers.generators import job as gen_job
+from app.routers.generators import syllabus as gen_syllabus
+from app.routers.generators import gaps as gen_gaps
+from app.routers.generators import quiz as gen_quiz
+from app.routers import health, roadmaps, auth, explore, coins, profiles, sessions, leaderboard, payments, discussions, planner, tts, research_lab, interactions, ai_usage, dashboard, misc, certificates, diagnostics
 from app.routers import submissions as submissions_router
 from app.core.config import settings
 
@@ -169,6 +174,11 @@ async def validation_exception_handler(request: Request, exc: RequestValidationE
 from app.routers import roadmaps_generate_url
 
 # Prioritize auth router
+app.include_router(gen_ai.router)
+app.include_router(gen_job.router)
+app.include_router(gen_syllabus.router)
+app.include_router(gen_gaps.router)
+app.include_router(gen_quiz.router)
 app.include_router(auth.router)
 app.include_router(health.router)
 app.include_router(roadmaps.router)
@@ -176,7 +186,6 @@ app.include_router(roadmaps_generate_url.router)
 app.include_router(submissions_router.router)
 app.include_router(explore.router)
 app.include_router(coins.router)
-app.include_router(practice.router)
 app.include_router(profiles.router)
 
 app.include_router(certificates.router, prefix="/certificates", tags=["certificates"])

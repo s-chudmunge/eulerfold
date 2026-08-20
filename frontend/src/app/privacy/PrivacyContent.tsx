@@ -6,10 +6,10 @@ import PublicHeader from '@/components/PublicHeader';
 
 export default function PrivacyContent() {
   return (
-    <div className="min-h-screen flex flex-col bg-background text-text-primary selection:bg-teal-500/30 selection:text-text-heading">
+    <div className="min-h-screen flex flex-col text-text-primary selection:bg-teal-500/30 selection:text-text-heading">
       <PublicHeader />
 
-      <main className="flex-1 bg-background scroll-smooth pt-[68px]">
+      <main className="flex-1 scroll-smooth pt-[68px]">
         <div className="max-w-[800px] mx-auto px-8 py-8 md:py-12">
           <header className="mb-12">
             <h1 className="text-3xl font-bold mt-4 text-text-heading manrope-body">Privacy Policy</h1>

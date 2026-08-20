@@ -41,7 +41,7 @@ function OpenRouterCallbackContent() {
           setStatus('success');
           // Redirect back after a short delay
           setTimeout(() => {
-            router.push('/generate');
+            router.push('/#hero-prompt-input');
           }, 2000);
         } else {
           throw new Error('No key returned from OpenRouter');
@@ -81,7 +81,7 @@ function OpenRouterCallbackContent() {
             <h2 className="text-xl font-bold text-text-heading mb-2">Connection Failed</h2>
             <p className="text-sm text-red-500 bg-red-500/10 p-3 rounded-lg border border-red-500/20 mb-6">{errorMsg}</p>
             <button 
-              onClick={() => router.push('/generate')}
+              onClick={() => router.push('/#hero-prompt-input')}
               className="px-6 py-2 bg-accent text-white rounded-lg font-bold text-sm"
             >
               Return to Generator

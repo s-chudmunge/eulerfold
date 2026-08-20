@@ -6,7 +6,6 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/components/AuthProvider';
 import { roadmapsAPI } from '@/lib/api';
-import HeroBackground from '@/components/HeroBackground';
 import HeroPromptInput from '@/components/landing/HeroPromptInput';
 import { GoogleTrustBadge, TrustedSourcesTicker } from '@/app/HomeClientComponents';
 
@@ -64,7 +63,6 @@ export default function HeroSection() {
   return (
     <div className="relative w-full overflow-hidden">
       <section className="relative pt-24 pb-8 sm:pt-28 md:pt-36 md:pb-16 px-4 sm:px-6 min-h-[600px] md:min-h-[750px] flex flex-col items-center justify-between w-full">
-        <HeroBackground />
         
 
         <div className="max-w-3xl mx-auto w-full relative z-10 flex-1 flex flex-col justify-center">
@@ -82,7 +80,7 @@ export default function HeroSection() {
               Describe What You Want to Learn.{' '}
               <br className="hidden md:block" />
               Get a{' '}
-              <span className="relative inline-block text-transparent bg-clip-text bg-gradient-to-r from-teal-600 via-emerald-400 to-teal-600 animate-gradient-x drop-shadow-sm pb-1">
+              <span className="relative inline-block text-accent drop-shadow-sm pb-1">
                 Structured Course
               </span>
               {' '}in Seconds.{' '}

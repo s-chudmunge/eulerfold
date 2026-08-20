@@ -75,6 +75,30 @@ async def get_fastest_free_openrouter_model() -> str:
         
     return "deepseek/deepseek-r1-0528:free"
 
+
+async def _call_ollama(prompt: str, response_mime_type: str):
+    # Try localhost ollama
+    endpoint = "http://localhost:11434/api/chat"
+    payload = {
+        "model": "llama3.1", # Or mistral, etc. We'll use llama3.1 as standard local.
+        "messages": [{"role": "user", "content": prompt}],
+        "stream": False
+    }
+    if response_mime_type == "application/json":
+        payload["format"] = "json"
+        
+    async with httpx.AsyncClient(timeout=300.0) as client:
+        response = await client.post(endpoint, json=payload)
+        response.raise_for_status()
+        data = response.json()
+        
+        usage = {
+            "total_tokens": data.get("eval_count", 0) + data.get("prompt_eval_count", 0),
+            "prompt_tokens": data.get("prompt_eval_count", 0),
+            "completion_tokens": data.get("eval_count", 0)
+        }
+        return data["message"]["content"], usage, "ollama/llama3.1"
+
 async def _call_openrouter(prompt: str, model: str, response_mime_type: str):
     api_key = settings.OPENROUTER_API_KEY or os.getenv("OPENROUTER_API_KEY")
     if not api_key:
@@ -311,6 +335,21 @@ async def generate_text(prompt: str, model: str = None, response_mime_type: str 
     def _log_success(provider: str, model_name: str, usage: dict, elapsed: float):
         tokens = usage.get("total_tokens", 0)
         logger.info(f"[AI] ✓ {provider} ({model_name}) — {tokens} tokens, {elapsed:.1f}s, prompt={prompt_len} chars{' [JSON]' if json_mode else ''}")
+
+
+    if model in ("eulerfold", "openrouter", ""):
+        model = None
+
+    if model == "local":
+        t0 = time.time()
+        try:
+            logger.info(f"[AI] Starting generation — model=local, prompt={prompt_len} chars")
+            text, usage, used_model = await _call_ollama(prompt, response_mime_type)
+            _log_success("Ollama (Local)", used_model, usage, time.time() - t0)
+            return (text, _attach_model(usage, used_model)) if return_usage else text
+        except Exception as e:
+            logger.error(f"[AI] ✗ Local Ollama failed: {e}")
+            raise Exception(f"Local AI failed: {e}. Is Ollama running on localhost:11434?")
 
     t0 = time.time()
     actual_model = model or openrouter_model

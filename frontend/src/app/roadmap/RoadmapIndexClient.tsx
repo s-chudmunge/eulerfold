@@ -45,7 +45,7 @@ export default function RoadmapIndexClient({ initialRoadmaps }: { initialRoadmap
     }, [search, sortBy]);
 
     return (
-        <div className="min-h-screen bg-background text-text-primary flex flex-col font-sans">
+        <div className="min-h-screen text-text-primary flex flex-col font-sans">
             <PublicHeader />
 
             <main className="flex-grow">

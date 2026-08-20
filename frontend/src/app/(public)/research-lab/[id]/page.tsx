@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function ResearchLabDetailPage({ params }: { params: { id: string } }) {
   return (
-    <div className="min-h-screen flex flex-col bg-background">
+    <div className="min-h-screen flex flex-col bg-transparent">
       <header className="inconsolata-ui border-b border-border bg-header h-[48px] shrink-0 z-50 sticky top-0 inset-x-0">
           <div className="w-full px-4 md:px-6 flex h-full items-center justify-between">
               <div className="flex items-center gap-2 md:gap-4">

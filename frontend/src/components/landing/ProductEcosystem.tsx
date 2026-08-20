@@ -21,7 +21,7 @@ const products: Product[] = [
     category: "Generation",
     description: "Enter any subject to generate a curriculum with verified references, videos, theory, and assessments.",
     icon: Sparkles, 
-    href: "/generate"
+    href: "/#hero-prompt-input"
   },
   {
     id: 'job', 
@@ -29,7 +29,7 @@ const products: Product[] = [
     category: "Career",
     description: "Paste a job description from LinkedIn or Indeed to extract required skills and turn them into a course.",
     icon: Briefcase, 
-    href: "/generate?mode=job"
+    href: "/#hero-prompt-input"
   },
   {
     id: 'url', 
@@ -37,7 +37,7 @@ const products: Product[] = [
     category: "Sources",
     description: "Convert documentation pages, technical blogs, or GitHub repositories directly into an interactive curriculum.",
     icon: Link2, 
-    href: "/generate?mode=url"
+    href: "/#hero-prompt-input"
   },
   {
     id: 'syllabus', 
@@ -45,7 +45,7 @@ const products: Product[] = [
     category: "Import",
     description: "Transform course syllabi, textbook outlines, or lecture topics into structured learning modules.",
     icon: BookOpen, 
-    href: "/generate?mode=syllabus"
+    href: "/#hero-prompt-input"
   },
   {
     id: 'gaps', 
@@ -53,7 +53,7 @@ const products: Product[] = [
     category: "Diagnostic",
     description: "Take a quick diagnostic quiz for your target role and generate a course tailored to your knowledge gaps.",
     icon: Target, 
-    href: "/generate?mode=gaps"
+    href: "/#hero-prompt-input"
   },
   {
     id: 'decode', 
@@ -79,14 +79,6 @@ const products: Product[] = [
     icon: Calendar, 
     href: "/planner"
   },
-  {
-    id: 'practice', 
-    title: "Practice Portal",
-    category: "Evaluation",
-    description: "Complete AI-reviewed homework assignments and practice exercises to verify your understanding.",
-    icon: Zap, 
-    href: "/practice"
-  },
 ];
 
 export default function ProductEcosystem() {
@@ -96,10 +88,9 @@ export default function ProductEcosystem() {
       <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_80%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
       
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="group relative overflow-hidden rounded-2xl bg-sidebar/50 border border-border backdrop-blur-xl shadow-sm px-6 py-10 sm:p-10 md:p-16 transition-all hover:shadow-md">
+        <div className="group relative overflow-hidden rounded-2xl bg-sidebar/50 border border-accent/30 hover:border-accent/50 px-6 py-10 sm:p-10 md:p-16 transition-all hover:shadow-md">
           
-          {/* Decorative gradient blur */}
-          <div className="absolute -top-32 -left-32 w-96 h-96 bg-accent/10 rounded-full blur-3xl opacity-50 transition-opacity group-hover:opacity-80 pointer-events-none"></div>
+          {/* Decorative gradient blur removed for minimal UI */}
 
           <div className="relative z-10 flex flex-col md:flex-row gap-12 justify-between">
             {/* Section Header */}
@@ -146,7 +137,7 @@ export default function ProductEcosystem() {
                   >
                     <Link
                       href={product.href}
-                      className="group/item flex items-center gap-3 py-2.5 px-3 rounded-md hover:bg-background/80 hover:shadow-sm border border-transparent hover:border-border/60 transition-all duration-200 -ml-3"
+                      className="group/item flex items-center gap-3 py-2.5 px-3 rounded-md bg-background/30 hover:bg-background/80 hover:shadow-sm border border-accent/20 hover:border-accent/50 transition-all duration-200 -ml-3"
                     >
                       <Icon className="w-4 h-4 text-text-muted group-hover/item:text-accent transition-colors shrink-0" strokeWidth={1.5} />
                       <span className="inconsolata-ui text-[14px] font-bold text-text-heading group-hover/item:text-accent transition-colors">

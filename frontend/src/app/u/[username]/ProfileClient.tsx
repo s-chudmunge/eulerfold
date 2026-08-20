@@ -267,7 +267,7 @@ const [activeTab, setActiveTab] = useState<TabType>('overview');
     };
 
     return (
-        <div className="fixed inset-0 z-[100] flex flex-col bg-background text-text-primary selection:bg-teal-500/30 font-sans overflow-hidden">
+        <div className="fixed inset-0 z-[100] flex flex-col text-text-primary selection:bg-teal-500/30 font-sans overflow-hidden">
             
             {/* Custom Header (Matches Image) */}
             <header className="border-b border-border bg-header h-[64px] shrink-0 z-50 flex items-center justify-between px-4 md:px-6">

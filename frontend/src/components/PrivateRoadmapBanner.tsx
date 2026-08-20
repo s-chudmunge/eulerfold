@@ -3,7 +3,6 @@ import Link from 'next/link';
 import { ArrowRight, BookOpen, Github, Mail, Loader2, Clock, Users, Calendar, Copy } from 'lucide-react';
 import { supabase } from '@/lib/supabase/client';
 import SocialShare from '@/components/SocialShare';
-import HeroBackground from '@/components/HeroBackground';
 
 export default function PrivateRoadmapBanner({ 
   title, 
@@ -58,8 +57,7 @@ export default function PrivateRoadmapBanner({
   };
 
   return (
-    <div className="w-full relative overflow-hidden border-b border-border shadow-sm min-h-[400px] md:min-h-[500px] flex items-center bg-background">
-      <HeroBackground />
+    <div className="w-full relative overflow-hidden border-b border-border shadow-sm min-h-[400px] md:min-h-[500px] flex items-center">
       
       <div className="relative z-20 w-full max-w-7xl mx-auto px-6 md:px-12 py-16 flex flex-col items-start justify-center gap-6">
         
@@ -67,7 +65,7 @@ export default function PrivateRoadmapBanner({
         <h1 
           className="font-inter font-bold text-text-heading tracking-tight leading-[1.1] max-w-4xl"
           style={{ 
-            fontSize: 'clamp(32px, 4vw, 56px)',
+            fontSize: 'clamp(24px, 3vw, 40px)',
             wordBreak: 'break-word',
             margin: 0
           }}

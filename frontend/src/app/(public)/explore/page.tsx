@@ -92,7 +92,7 @@ export default async function ExplorePage() {
               </div>
           </div>
       </header>
-      <main className="flex-grow min-w-0 bg-background scroll-smooth">
+      <main className="flex-grow min-w-0  scroll-smooth">
         <ExploreClient 
           initialRoadmaps={initialRoadmaps} 
           initialLeaderboard={initialLeaderboard} 

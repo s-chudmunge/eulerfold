@@ -456,7 +456,7 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
 
   return (
     <>
-      <div className="bg-background min-h-screen pb-24 text-text-primary serif-page-scope">
+      <div className="bg-transparent min-h-screen pb-24 text-text-primary serif-page-scope">
         <FloatingTTS content={fullContent} />
 
         {/* Design matches strictly the refined example/topic-page */}

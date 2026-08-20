@@ -1,5 +1,6 @@
 "use client";
 
+import NewsletterBanner from '@/components/landing/NewsletterBanner';
 import React, { useState, useMemo, useEffect } from 'react';
 import { PaperEntry, ExamCategory } from '../../../generatedArchiveData';
 import { Download, ChevronRight, ExternalLink } from 'lucide-react';
@@ -190,9 +191,9 @@ export default function ExamClient({ exam }: Props) {
   const totalPapers = exam.entries.length;
 
   return (
-    <div className="bg-background">
+    <div>
       <main className="max-w-[1000px] mx-auto px-6 pt-8 pb-12 relative">
-        <BrandedSideBanners />
+        
         <Breadcrumbs 
           items={[
             { label: 'Archive', href: '/archive/exams/previous-year-papers' },
@@ -349,6 +350,10 @@ export default function ExamClient({ exam }: Props) {
             </div>
           )}
         </section>
+
+        <div className="my-16">
+          <NewsletterBanner />
+        </div>
 
         {/* Discussion Section */}
         <DiscussionSection 

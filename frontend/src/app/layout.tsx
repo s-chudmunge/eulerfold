@@ -6,13 +6,14 @@ import Script from 'next/script';
 import BannerWrapper from '@/components/BannerWrapper';
 import AuthProvider from '@/components/AuthProvider';
 import { SettingsProvider } from '@/components/SettingsProvider';
-import SettingsModal from '@/components/SettingsModal';
-import { PracticeProvider } from '@/components/PracticeProvider';
-import GlobalPracticeModal from '@/components/GlobalPracticeModal';
 import QueryProvider from '@/app/providers/QueryProvider';
 import SessionTracker from '@/components/SessionTracker';
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import dynamic from 'next/dynamic';
+import HeroBackground from '@/components/HeroBackground';
+
+const SettingsModal = dynamic(() => import('@/components/SettingsModal'), { ssr: false });
 
 import { Familjen_Grotesk } from 'next/font/google';
 
@@ -207,10 +208,10 @@ export default function RootLayout({
       <body
         className={`${inter.variable} ${inconsolata.variable} ${familjen.variable} antialiased font-sans`}
       >
+        <HeroBackground />
         <QueryProvider>
           <AuthProvider>
             <SettingsProvider>
-              <PracticeProvider>
                 <Suspense fallback={null}>
                   <SessionTracker />
                 </Suspense>
@@ -219,10 +220,8 @@ export default function RootLayout({
                   {children}
                 </main>
                 <SettingsModal />
-                <GlobalPracticeModal />
                 <Analytics />
                 <SpeedInsights />
-              </PracticeProvider>
             </SettingsProvider>
           </AuthProvider>
         </QueryProvider>

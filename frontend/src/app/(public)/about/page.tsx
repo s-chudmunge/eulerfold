@@ -7,7 +7,7 @@ export const metadata = {
 
 export default function AboutPage() {
   return (
-    <div className="flex-1 bg-background">
+    <div className="flex-1">
       <div className="max-w-3xl mx-auto px-6 py-8 md:py-16">
         <h1 className="text-3xl font-bold text-text-heading mb-6 manrope-body">About EulerFold</h1>
         

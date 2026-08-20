@@ -205,15 +205,15 @@ function LearnContent() {
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
-        if (query.trim()) router.push(`/generate?subject=${encodeURIComponent(query.trim())}`);
+        if (query.trim()) router.push(`/#hero-prompt-input?subject=${encodeURIComponent(query.trim())}`);
     };
 
     return (
-        <div className="min-h-screen flex flex-col bg-background text-text-primary selection:bg-teal-500/30 selection:text-text-heading">
+        <div className="min-h-screen flex flex-col text-text-primary selection:bg-teal-500/30 selection:text-text-heading">
             <PublicHeader />
 
             <div className="flex flex-1 relative overflow-hidden pt-[68px]">
-                <main className="flex-1 min-w-0 h-full overflow-y-auto bg-background scroll-smooth">
+                <main className="flex-1 min-w-0 h-full overflow-y-auto  scroll-smooth">
                     <div className="max-w-[800px] mx-auto px-6 py-10 md:py-14 flex flex-col items-center">
                         
                         {/* Search Section */}
@@ -267,7 +267,7 @@ function LearnContent() {
                                                     >
                                                         <div className="flex items-center gap-3 min-w-0">
                                                             {s.logo ? (
-                                                                <div className="w-3.5 h-3.5 bg-background rounded border border-border overflow-hidden flex items-center justify-center p-0.5 shrink-0 grayscale group-hover/item:grayscale-0 transition-all">
+                                                                <div className="w-3.5 h-3.5 bg-surface rounded border border-border overflow-hidden flex items-center justify-center p-0.5 shrink-0 grayscale group-hover/item:grayscale-0 transition-all">
                                                                     <img src={s.logo} alt="" className="w-full h-full object-contain" />
                                                                 </div>
                                                             ) : (
@@ -362,7 +362,7 @@ function LearnContent() {
                         {/* AI Creation CTA */}
                         <div className="w-full max-w-md mt-12 pt-8 flex justify-center border-t border-border/40">
                             <Link 
-                                href="/generate"
+                                href="/#hero-prompt-input"
                                 className="inline-flex items-center gap-2 bg-text-heading text-background px-8 py-3 rounded-full text-[14px] font-bold tracking-tight hover:opacity-90 active:scale-95 transition-all"
                             >
                                 <Plus className="w-4 h-4" /> Create your course
@@ -377,7 +377,7 @@ function LearnContent() {
 
 export default function LearnClient() {
     return (
-        <Suspense fallback={<div className="min-h-screen bg-background animate-pulse" />}>
+        <Suspense fallback={<div className="min-h-screen  animate-pulse" />}>
             <LearnContent />
         </Suspense>
     );

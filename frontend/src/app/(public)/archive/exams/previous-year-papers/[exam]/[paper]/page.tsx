@@ -66,7 +66,7 @@ export default async function PaperPage({ params }: { params: { exam: string, pa
 
   if (!data) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
+      <div className="min-h-screen flex items-center justify-center ">
         <div className="text-center">
           <h1 className="text-4xl font-black inconsolata-ui mb-4">404</h1>
           <p className="manrope-body text-gray-500 mb-8">Paper not found in archive.</p>

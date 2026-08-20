@@ -23,17 +23,15 @@ const NAVIGATION_DATA = {
       {
         title: "Build & Plan",
         links: [
-          { label: "Roadmap Generator", href: "/generate", description: "AI custom courses" },
+          { label: "Roadmap Generator", href: "/#hero-prompt-input", description: "AI custom courses" },
           { label: "Study Planner", href: "/planner", description: "Dynamic tracking" },
-          { label: "Practice Portal", href: "/practice", description: "Skill validation" },
-          { label: "Local Playground", href: "/local-chat", description: "On-device AI Sandbox" }
         ]
       },
       {
         title: "Career",
         links: [
-          { label: "Job Decoded", href: "/generate?mode=job", description: "Skill gap analysis" },
-          { label: "Goal Builder", href: "/generate", description: "Objective tracking" }
+          { label: "Job Decoded", href: "/#hero-prompt-input", description: "Skill gap analysis" },
+          { label: "Goal Builder", href: "/#hero-prompt-input", description: "Objective tracking" }
         ]
       }
     ],
@@ -41,7 +39,7 @@ const NAVIGATION_DATA = {
       title: "Featured",
       label: "Build-a-Path v2",
       description: "Our new reasoning engine for complex technical roadmaps is now live.",
-      href: "/generate",
+      href: "/#hero-prompt-input",
       cta: "Learn more"
     }
   },
@@ -275,7 +273,7 @@ export default function PublicHeader() {
               <UserNav />
             </Suspense>
             
-            <Link href="/generate" className="hidden xs:flex items-center gap-1.5 bg-text-heading text-background px-3.5 py-1.5 rounded-full text-[12px] font-bold tracking-tight hover:opacity-90 transition-all">
+            <Link href="/#hero-prompt-input" className="hidden xs:flex items-center gap-1.5 bg-text-heading text-background px-3.5 py-1.5 rounded-full text-[12px] font-bold tracking-tight hover:opacity-90 transition-all">
               <Plus className="w-3.5 h-3.5" /> <span>New Goal</span>
             </Link>
           </div>
@@ -306,10 +304,8 @@ export default function PublicHeader() {
           <div className="flex flex-col gap-8">
             <div className="flex flex-col gap-4">
               <span className="text-[11px] font-bold text-text-muted uppercase tracking-widest opacity-60">Tools</span>
-              <Link href="/generate" className="text-2xl font-bold text-text-heading hover:text-teal-700 transition-colors">Generator</Link>
+              <Link href="/#hero-prompt-input" className="text-2xl font-bold text-text-heading hover:text-teal-700 transition-colors">Generator</Link>
               <Link href="/planner" className="text-2xl font-bold text-text-heading hover:text-teal-700 transition-colors">Planner</Link>
-              <Link href="/practice" className="text-2xl font-bold text-text-heading hover:text-teal-700 transition-colors">Practice</Link>
-              <Link href="/local-chat" className="text-2xl font-bold text-text-heading hover:text-teal-700 transition-colors">Local Chat</Link>
             </div>
 
             <div className="flex flex-col gap-4 border-t border-border pt-8">
@@ -343,7 +339,7 @@ export default function PublicHeader() {
               </Suspense>
             </div>
             
-            <Link href="/generate" className="w-full bg-text-heading text-background py-5 rounded-lg flex items-center justify-center gap-3 text-[16px] font-bold active:scale-95 transition-all">
+            <Link href="/#hero-prompt-input" className="w-full bg-text-heading text-background py-5 rounded-lg flex items-center justify-center gap-3 text-[16px] font-bold active:scale-95 transition-all">
               <Plus className="w-5 h-5" /> Get Started
             </Link>
           </div>

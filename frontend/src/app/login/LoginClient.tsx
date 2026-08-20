@@ -296,7 +296,7 @@ export default function LoginPage() {
                             <Link href="/dashboard" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Dashboard</Link>
                             <Link href="/login" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Sign in</Link>
                             <Link href="/explore" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Explore</Link>
-                            <Link href="/generate" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Generate</Link>
+                            <Link href="/#hero-prompt-input" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Generate</Link>
                             <Link href="/learn" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Learn</Link>
                             <Link href="/pricing" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Pricing</Link>
                             <Link href="/leaderboard" className="text-[10px] text-gray-500 hover:text-black dark:hover:text-white transition-colors">Leaderboard</Link>

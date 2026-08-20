@@ -54,7 +54,7 @@ export default async function LandingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-text-primary flex flex-col font-sans relative overflow-clip">
+    <div className="min-h-screen text-text-primary flex flex-col font-sans relative overflow-clip">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
@@ -79,11 +79,9 @@ export default async function LandingPage() {
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
           
           <div className="max-w-4xl mx-auto relative z-10">
-            <div className="group relative overflow-hidden rounded-2xl bg-sidebar/50 border border-border backdrop-blur-xl shadow-sm transition-all hover:shadow-md">
+            <div className="group relative overflow-hidden rounded-2xl bg-sidebar/50 border border-accent/30 hover:border-accent/50 transition-all hover:shadow-md">
               
-              {/* Decorative gradient blur */}
-              <div className="absolute -top-24 -right-24 w-96 h-96 bg-accent/10 rounded-full blur-3xl opacity-50 transition-opacity group-hover:opacity-80"></div>
-              <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-accent/5 rounded-full blur-3xl opacity-50"></div>
+              {/* Decorative gradient blur removed for minimal UI */}
 
               <div className="relative px-6 py-12 sm:p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-10 text-center md:text-left">
                 <div className="max-w-xl space-y-4">

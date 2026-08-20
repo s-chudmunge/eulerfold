@@ -145,7 +145,7 @@ export default function ScoringPage() {
 
                 <footer className="mt-40 pt-16 border-t border-border flex flex-col items-center text-center">
                     <h3 className="manrope-body text-[20px] font-black text-text-heading mb-4">Ready to prove your skills?</h3>
-                    <Link href="/generate" className="inline-flex items-center gap-2.5 px-8 py-4 bg-text-heading text-background rounded-full font-bold text-[13px] uppercase tracking-[0.1em] hover:opacity-90 transition-all shadow-xl shadow-black/5">
+                    <Link href="/#hero-prompt-input" className="inline-flex items-center gap-2.5 px-8 py-4 bg-text-heading text-background rounded-full font-bold text-[13px] uppercase tracking-[0.1em] hover:opacity-90 transition-all shadow-xl shadow-black/5">
                         Start your first roadmap <ArrowRight className="w-4 h-4" />
                     </Link>
                 </footer>

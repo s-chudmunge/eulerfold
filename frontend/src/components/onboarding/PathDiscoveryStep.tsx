@@ -26,7 +26,7 @@ export default function PathDiscoveryStep({ displayName, onExit }: PathDiscovery
       <div className="space-y-4">
         {/* Option 1: Create */}
         <button 
-          onClick={() => router.push('/generate')}
+          onClick={() => router.push('/#hero-prompt-input')}
           className="group w-full flex items-center gap-6 p-6 bg-callout-bg border border-border rounded-none hover:border-accent transition-all duration-300 text-left relative overflow-hidden"
         >
           <div className="w-10 h-10 shrink-0 bg-background border border-border flex items-center justify-center group-hover:border-accent transition-colors">

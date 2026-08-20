@@ -398,7 +398,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
     };
 
     return (
-        <div className="min-h-screen bg-background text-text-primary flex flex-col font-sans">
+        <div className="min-h-screen text-text-primary flex flex-col font-sans">
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{

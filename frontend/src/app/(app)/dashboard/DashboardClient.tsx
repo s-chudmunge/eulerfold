@@ -168,7 +168,7 @@ export default function DashboardPage() {
 
 
     if (authLoading || (loading && !profile)) return (
-        <div className="fixed inset-0 bg-background flex flex-col">
+        <div className="fixed inset-0 flex flex-col">
             <header className="h-[48px] border-b border-border bg-header animate-pulse" />
             <div className="flex flex-1">
                 <aside className="w-[260px] border-r border-border bg-sidebar hidden lg:block animate-pulse" />
@@ -185,7 +185,7 @@ export default function DashboardPage() {
     );
 
     return (
-        <div className={`${inconsolata.variable} ${manrope.variable} fixed inset-0 z-[100] flex flex-col bg-background text-text-primary selection:bg-teal-500/30 selection:text-text-heading overflow-hidden`}>
+        <div className={`${inconsolata.variable} ${manrope.variable} fixed inset-0 z-[100] flex flex-col text-text-primary selection:bg-teal-500/30 selection:text-text-heading overflow-hidden`}>
             {/* Header */}
             <header 
                 style={{ top: 'var(--announcement-height, 0px)' }}
@@ -229,7 +229,7 @@ export default function DashboardPage() {
                                 <span className="sm:hidden">Profile</span>
                             </Link>
                         )}
-                        <Link href="/generate" className="whitespace-nowrap rounded-full bg-[var(--text-heading)] px-4 md:px-5 py-1.5 text-[var(--bg-main)] text-[10px] md:text-[12px] font-bold hover:opacity-90 transition-opacity flex items-center gap-2">
+                        <Link href="/#hero-prompt-input" className="whitespace-nowrap rounded-full bg-[var(--text-heading)] px-4 md:px-5 py-1.5 text-[var(--bg-main)] text-[10px] md:text-[12px] font-bold hover:opacity-90 transition-opacity flex items-center gap-2">
                             <Plus className="w-3.5 h-3.5" /> <span className="hidden sm:inline">New Goal</span>
                             <span className="sm:hidden">New</span>
                         </Link>
@@ -248,7 +248,7 @@ export default function DashboardPage() {
                 >
                 </AppSidebar>
                 {/* Main Content */}
-                <main className="flex-1 min-w-0 h-full overflow-y-auto bg-background">
+                <main className="flex-1 min-w-0 h-full overflow-y-auto">
                     <div className="max-w-[1000px] mx-auto px-6 pt-8 pb-12">
                         
                         {error && (

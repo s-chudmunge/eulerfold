@@ -64,7 +64,7 @@ export default function ResearchDecodedClientShell({
 
   return (
     <div 
-      className="fixed inset-0 z-[100] flex flex-col bg-background text-text-primary selection:bg-teal-500/30 selection:text-text-heading overflow-hidden transition-all duration-300"
+      className="fixed inset-0 z-[100] flex flex-col text-text-primary selection:bg-teal-500/30 selection:text-text-heading overflow-hidden transition-all duration-300"
       style={{ top: 'var(--announcement-height, 0px)' }}
     >
       <React.Suspense fallback={null}>
@@ -79,8 +79,10 @@ export default function ResearchDecodedClientShell({
       <div className="flex flex-1 relative overflow-hidden">
         <ResearchNavigationSidebar hideTrigger currentSlug={pathname?.split('/').pop()} />
 
-        <main ref={scrollContainerRef} className="flex-1 min-w-0 h-full overflow-y-auto no-scrollbar bg-background transition-all duration-300">
-          {children}
+        <main ref={scrollContainerRef} className="flex-1 min-w-0 h-full overflow-y-auto no-scrollbar transition-all duration-300 relative">
+          <div className="relative z-10">
+            {children}
+          </div>
         </main>
       </div>
     </div>

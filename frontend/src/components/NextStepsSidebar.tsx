@@ -25,13 +25,7 @@ const NextStepsSidebar: React.FC<NextStepsSidebarProps> = ({ subject, topic, cla
             <p className="text-[13px] text-text-muted leading-relaxed mb-3 manrope-body font-medium">
               Do you want to practice some questions on <span className="text-text-heading">{subject}</span>?
             </p>
-            <Link 
-              href={`/practice?subject=${encodeURIComponent(subject)}&topic=${encodeURIComponent(topic)}`}
-              className="inline-flex items-center gap-1.5 text-[10px] font-bold text-accent uppercase tracking-widest hover:underline"
-            >
-              <span>Launch Lab</span>
-              <ArrowRight className="w-3 h-3" />
-            </Link>
+            
           </div>
 
           <div className="h-px bg-border/40 my-6" />
@@ -43,7 +37,7 @@ const NextStepsSidebar: React.FC<NextStepsSidebarProps> = ({ subject, topic, cla
               Do you want to get a step-by-step path to learn <span className="text-text-heading">{subject}</span> from basics?
             </p>
             <Link 
-              href={`/generate?subject=${encodeURIComponent(subject)}&goal=${encodeURIComponent(topic)}`}
+              href={`/#hero-prompt-input?subject=${encodeURIComponent(subject)}&goal=${encodeURIComponent(topic)}`}
               className="inline-flex items-center gap-1.5 text-[10px] font-bold text-accent uppercase tracking-widest hover:underline"
             >
               <span>Build Roadmap</span>
