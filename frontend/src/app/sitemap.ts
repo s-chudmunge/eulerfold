@@ -1,5 +1,8 @@
 import { MetadataRoute } from 'next';
 import { supabase } from '@/lib/supabase/client';
+import { papers } from '@/app/research-decoded/generatedData';
+import { articles } from '@/app/articles/generatedArticles';
+import { archiveData } from '@/app/(public)/archive/generatedArchiveData';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = 'https://www.eulerfold.com';
