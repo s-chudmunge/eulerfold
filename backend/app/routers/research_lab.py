@@ -21,16 +21,13 @@ async def _fetch_pdf_content(url: str) -> Optional[bytes]:
     import httpx
     
     # Handle ArXiv and AlphaXiv rewrites to get the raw PDF
-    if "arxiv.org/abs/" in url:
-        url = url.replace("arxiv.org/abs/", "arxiv.org/pdf/")
-        if not url.endswith(".pdf"):
-            url += ".pdf"
-    elif "alphaxiv.org/abs/" in url or "alphaxiv.org/pdf/" in url or "alphaxiv.org/html/" in url:
-        # Extract the arxiv ID from the alphaxiv URL
-        import re
-        match = re.search(r'alphaxiv\.org/(?:abs|pdf|html)/([0-9]+\.[0-9]+(?:v[0-9]+)?)', url)
-        if match:
-            url = f"https://arxiv.org/pdf/{match.group(1)}.pdf"
+    import re
+    arxiv_match = re.search(r'(?:arxiv\.org|alphaxiv\.org)/(?:abs|pdf|html)/([a-zA-Z\-]+/[0-9]+|[0-9]+\.[0-9]+(?:v[0-9]+)?)', url)
+    if arxiv_match:
+        paper_id = arxiv_match.group(1)
+        if paper_id.endswith(".pdf"):
+            paper_id = paper_id[:-4]
+        url = f"https://arxiv.org/pdf/{paper_id}.pdf"
             
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
