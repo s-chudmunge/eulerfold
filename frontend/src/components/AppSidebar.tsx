@@ -4,41 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
-import { 
-    LayoutDashboard,
-    ChevronLeft,
-    ChevronRight,
-    PanelLeftClose,
-    PanelLeftOpen, 
-    Calendar,
-    Globe, 
-    GraduationCap,
-    Trophy, 
-    HelpCircle, 
-    Plus, 
-    FileText, 
-    ShieldCheck,
-    Settings,
-    LogOut,
-    User,
-    MoreHorizontal,
-    MessageSquare,
-    Home,
-    Zap,
-    Coins,
-    TrendingUp,
-    Archive,
-    CreditCard,
-    Hammer,
-    Target,
-    Microscope,
-    Briefcase,
-    Sparkles,
-    Link2,
-    BookOpen,
-    Sun,
-    Moon,
-} from 'lucide-react';
+import { BrainCircuit, Waypoints, LayoutDashboard, ChevronLeft, ChevronRight, PanelLeftClose, PanelLeftOpen, Calendar, Globe, GraduationCap, Trophy, HelpCircle, Plus, FileText, ShieldCheck, Settings, LogOut, User, MoreHorizontal, MessageSquare, Home, Zap, Coins, TrendingUp, Archive, CreditCard, Hammer, Target, Microscope, Briefcase, Sparkles, Link2, BookOpen, Sun, Moon, Compass, Library, Activity } from 'lucide-react';
 import { supabase } from '@/lib/supabase/client';
 import { authAPI, roadmapsAPI, coinsAPI } from '@/lib/api';
 import { useSettings } from './SettingsProvider';
@@ -211,11 +177,6 @@ const [isMenuOpen, setIsMenuOpen] = useState(false);
                         <div className="pt-3 border-t border-border dark:border-white/[0.05]">
                             {isCollapsed ? null : <span className="px-5 text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2 mt-4 opacity-60">Products</span>}
                             <nav className="space-y-0.5" aria-label="Products navigation">
-                                <Link href="/research-lab" aria-current={isActive('/research-lab') ? 'page' : undefined} className={navLinkClass('/research-lab')} onClick={onClose}>
-                                    <Microscope className="w-3.5 h-3.5 stroke-[1.5px]" /> 
-                                    {isCollapsed ? null : <span className="flex-1">Decode</span>}
-                                    {isCollapsed ? null : <span className="text-[8px] font-black uppercase tracking-widest bg-accent text-white px-1 py-0.5 rounded leading-none shrink-0">New</span>}
-                                </Link>
                                 <Link href="/planner" aria-current={isActive('/planner') ? 'page' : undefined} className={navLinkClass('/planner')} onClick={onClose}>
                                     <Calendar className="w-3.5 h-3.5 stroke-[1.5px]" /> {isCollapsed ? null : <span className="truncate">Study Planner</span>}
                                 </Link>
@@ -229,16 +190,16 @@ const [isMenuOpen, setIsMenuOpen] = useState(false);
                             {isCollapsed ? null : <span className="px-5 text-[10px] font-bold text-text-muted uppercase tracking-widest block mb-2 mt-4 opacity-60">Create your course</span>}
                             <nav className="space-y-0.5" aria-label="Generators navigation">
                                 <Link href="/#hero-prompt-input" aria-current={isActive('/generate') ? 'page' : undefined} className={navLinkClass('/generate')} onClick={onClose}>
-                                    <Sparkles className="w-3.5 h-3.5 stroke-[1.5px]" /> {isCollapsed ? null : <span className="truncate">AI Architect</span>}
+                                    <Waypoints className="w-3.5 h-3.5 stroke-[1.5px]" /> {isCollapsed ? null : <span className="truncate">AI Architect</span>}
                                 </Link>
                                 <Link href="/#hero-prompt-input" aria-current={isActive('/generate?mode=job') ? 'page' : undefined} className={navLinkClass('/generate?mode=job')} onClick={onClose}>
-                                    <Briefcase className="w-3.5 h-3.5 stroke-[1.5px]" /> {isCollapsed ? null : <span className="truncate">Job Decoded</span>}
+                                    <Compass className="w-3.5 h-3.5 stroke-[1.5px]" /> {isCollapsed ? null : <span className="truncate">Job Decoded</span>}
                                 </Link>
                                 <Link href="/#hero-prompt-input" aria-current={isActive('/generate?mode=url') ? 'page' : undefined} className={navLinkClass('/generate?mode=url')} onClick={onClose}>
-                                    <Link2 className="w-3.5 h-3.5 stroke-[1.5px]" /> From Link
+                                    <Globe className="w-3.5 h-3.5 stroke-[1.5px]" /> From Link
                                 </Link>
                                 <Link href="/#hero-prompt-input" aria-current={isActive('/generate?mode=syllabus') ? 'page' : undefined} className={navLinkClass('/generate?mode=syllabus')} onClick={onClose}>
-                                    <BookOpen className="w-3.5 h-3.5 stroke-[1.5px]" /> {isCollapsed ? null : <span className="truncate">Syllabus Parse</span>}
+                                    <Library className="w-3.5 h-3.5 stroke-[1.5px]" /> {isCollapsed ? null : <span className="truncate">Syllabus Parse</span>}
                                 </Link>
                                 <Link href="/#hero-prompt-input" aria-current={isActive('/generate?mode=gaps') ? 'page' : undefined} className={navLinkClass('/generate?mode=gaps')} onClick={onClose}>
                                     <Target className="w-3.5 h-3.5 stroke-[1.5px]" /> {isCollapsed ? null : <span>Skill Gap</span>}

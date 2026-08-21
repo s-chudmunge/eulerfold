@@ -19,10 +19,18 @@ router = APIRouter(prefix="/research-lab", tags=["Research Lab"])
 async def _fetch_pdf_content(url: str) -> Optional[bytes]:
     """Internal helper to fetch PDF bytes with proper headers and timeouts."""
     import httpx
+    
+    # Handle ArXiv and AlphaXiv rewrites to get the raw PDF
     if "arxiv.org/abs/" in url:
         url = url.replace("arxiv.org/abs/", "arxiv.org/pdf/")
         if not url.endswith(".pdf"):
             url += ".pdf"
+    elif "alphaxiv.org/abs/" in url or "alphaxiv.org/pdf/" in url or "alphaxiv.org/html/" in url:
+        # Extract the arxiv ID from the alphaxiv URL
+        import re
+        match = re.search(r'alphaxiv\.org/(?:abs|pdf|html)/([0-9]+\.[0-9]+(?:v[0-9]+)?)', url)
+        if match:
+            url = f"https://arxiv.org/pdf/{match.group(1)}.pdf"
             
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -34,14 +42,20 @@ async def _fetch_pdf_content(url: str) -> Optional[bytes]:
             async with httpx.AsyncClient(timeout=timeout, follow_redirects=True, headers=headers) as client:
                 resp = await client.get(url)
                 if resp.status_code == 200:
+                    content_type = resp.headers.get("content-type", "").lower()
+                    if "text/html" in content_type or resp.content.startswith(b"<!DOC") or resp.content.startswith(b"<html"):
+                        logger.warning(f"URL returned HTML instead of PDF: {url}")
+                        raise Exception("The provided URL points to an HTML webpage instead of a raw PDF file. Please provide a direct link to the PDF.")
                     return resp.content
+                else:
+                    raise Exception(f"HTTP {resp.status_code}")
         except Exception as e:
             logger.warning(f"PDF fetch attempt {attempt + 1} failed for {url}: {e}")
             if attempt == 0:
                 await asyncio.sleep(1)
     return None
 
-async def run_research_analysis(decode_id: str, paper_url: str, uid: str):
+async def run_research_analysis(decode_id: str, paper_url: str, uid: str, user_email: str):
     """
     Background task to perform the paper analysis using modern google-genai SDK.
     """
@@ -50,13 +64,14 @@ async def run_research_analysis(decode_id: str, paper_url: str, uid: str):
     sb = get_supabase_client()
     logger.info(f"[ResearchLab] Starting analysis {decode_id[:8]}... | URL: {paper_url[:80]}")
     try:
-        sb.table("research_lab_decodes").update({"status": "processing"}).eq("id", decode_id).execute()
+        sb.table("research_lab_decodes").update({"status": "fetching_paper"}).eq("id", decode_id).execute()
         
         pdf_bytes = await _fetch_pdf_content(paper_url)
         if not pdf_bytes:
             raise Exception("Could not retrieve paper content from the provided URL.")
         logger.info(f"[ResearchLab] PDF fetched — {len(pdf_bytes) / 1024:.0f} KB, {time.time() - t0:.1f}s")
 
+        sb.table("research_lab_decodes").update({"status": "extracting_text"}).eq("id", decode_id).execute()
         import io
         from pypdf import PdfReader
         
@@ -70,49 +85,84 @@ async def run_research_analysis(decode_id: str, paper_url: str, uid: str):
         paper_text = paper_text[:60000]
         logger.info(f"[ResearchLab] Text extracted — {len(reader.pages)} pages, {len(paper_text)} chars")
 
-        # Streamlined prompt — no extracted_text echo, cleaner schema for free models
-        prompt = """You are a Technical Consultant. Deconstruct this paper into a structured Engineering Dossier.
+        sb.table("research_lab_decodes").update({"status": "analyzing_architecture"}).eq("id", decode_id).execute()
+        prompt = """You are a Technical Analyst decoding a research paper for a reader who is smart but has NOT read the paper.
+Your job is to make the paper understandable — not just transcribe it.
+
+CORE RULE: Every module MUST start with 1-2 sentences of plain-English context explaining WHAT this section covers and WHY it matters, before any equations, tables, bullet points, or technical terms. No cold starts.
 
 TASK:
 1. Identify paper archetype: Theoretical Math, Systems/Hardware, AI Architecture, or Applied Engineering.
 2. Extract metadata: title, authors, year.
-3. Create 5-6 technical modules.
+3. Create 5-6 modules that tell a coherent story — not a dump of information.
 
 REQUIRED MODULES (always include these 3):
-- "The Shift": {"before": "old approach", "after": "new approach", "the_win": "core advantage"}
-- "Logic": {"details": "step-by-step technical logic in Markdown. Use $...$ for inline math and $$...$$ for block math."}
-- "Realities": {"items": ["gotcha 1", "gotcha 2", ...]}
+- "The Shift": {
+    "context": "One sentence: what is the core problem this paper is responding to?",
+    "before": "The old approach — what was the existing state of affairs? Be specific.",
+    "after": "The new approach proposed — what changes and why?",
+    "the_win": "The concrete advantage. What can you now do that you couldn't before?"
+  }
+- "Logic": {
+    "details": "Markdown explaining the step-by-step reasoning of the paper. MUST start with a plain-English paragraph describing what the argument/proof/method is trying to achieve before any math or symbols. Then walk through the logic step by step. Use $...$ for inline math, $$...$$ for block math."
+  }
+- "Realities": {
+    "context": "One sentence summarizing the theme of these limitations/gotchas.",
+    "items": ["Each item is a complete thought: state the gotcha AND why it matters to practitioners. No one-liners that assume the reader already knows the paper."]
+  }
 
 OPTIONAL MODULES (pick 2-3 based on archetype):
-- "Concept": {"details": "core architecture/mechanism breakdown in Markdown"}
-- "Math": {"math": [{"formula": "$LaTeX$", "action": "what it computes", "intuition": "why it matters"}]}
-- "Blueprint": {"details": "system design / implementation details in Markdown"}
-- "Benchmarks": {"items": ["result 1", "result 2", ...]}
+- "Concept": {
+    "details": "Markdown. Start with: what is the core concept and why does the paper need to define it? Then explain the mechanism/architecture. Tables and diagrams are welcome but must be preceded by a setup sentence."
+  }
+- "Math": {
+    "math": [{"formula": "$LaTeX$", "action": "what this formula computes in plain English", "intuition": "why this formula captures the right thing — connect it to real-world intuition"}]
+  }
+- "Blueprint": {
+    "context": "One sentence: what problem does this implementation/system solve, and who needs to build it?",
+    "details": "Markdown describing the components and architecture. Do NOT repeat the context sentence here — dive straight into the structure. Plain text for tool names and field names; code blocks only for actual code (minimum 3 lines of logic)."
+  }
+- "Benchmarks": {
+    "context": "What was being measured and why these specific metrics matter.",
+    "items": ["Each result stated with its significance: not just the number but what it proves or disproves."]
+  }
 
-MATH RULE: Always use $...$ for inline math and $$...$$ for block math. Never use bare LaTeX.
-STYLE: Plain English. Technical precision. No fluff. No filler.
+STYLE RULES:
+- Plain English first, then technical notation.
+- Never open a section with a symbol, equation, table header, or bullet point.
+- A smart but uninitiated expert should be able to follow every module from start to finish.
+- Use $...$ for inline math and $$...$$ for block math. Never use bare LaTeX.
+- No fluff, no marketing language. Be precise and direct.
 
-Return ONLY this JSON structure:
+CODE BLOCK RULES (strictly enforced):
+- Code blocks (triple backticks) are SACRED. Use them ONLY when showing actual executable/compilable code that directly illustrates a mechanism from the paper — e.g., a Lean proof, a Python algorithm, a pseudocode procedure showing the logic.
+- NEVER use a code block for: tool names (Mathlib, Lean 4, HOL), variable names (compute_budget, verification_status), field names, system names, or any single word or short phrase that is just a technical term. Write those inline as plain text.
+- A code block must contain at least 3 lines of meaningful code logic to justify its existence. A code block containing a single identifier like `Mathlib` or `human_scaffolding_hours` is strictly forbidden.
+- When in doubt, write it as plain text.
+
+Return ONLY this JSON:
 {
     "paper_title": "Clean Title",
     "authors": ["Author 1", "Author 2"],
     "year": "202X",
     "archetype": "identified type",
     "modules": [
-        {"id": "shift", "label": "The Shift", "data": {"before": "...", "after": "...", "the_win": "..."}},
+        {"id": "shift", "label": "The Shift", "data": {"context": "...", "before": "...", "after": "...", "the_win": "..."}},
         {"id": "logic", "label": "Logic", "data": {"details": "..."}},
-        {"id": "realities", "label": "Realities", "data": {"items": ["..."]}}
+        {"id": "realities", "label": "Realities", "data": {"context": "...", "items": ["..."]}}
     ],
-    "summary": "2-3 sentence technical synthesis"
+    "summary": "3-4 sentence synthesis: what this paper claims, how it argues it, and what changes if it is right."
 }
 """ + f"\n\nPAPER CONTENT:\n{paper_text}\n"
         
+        sb.table("research_lab_decodes").update({"status": "generating_report"}).eq("id", decode_id).execute()
         response_text, usage = await generate_text(prompt, model=settings.DEFAULT_ROADMAP_MODEL, response_mime_type="application/json", return_usage=True)
         log_backend_ai_usage(sb, uid, "Research Lab Analysis (Cost: 1.0 Credits)", usage, source="backend")
 
         if not response_text:
             raise Exception("AI failed to return a valid analysis.")
 
+        sb.table("research_lab_decodes").update({"status": "finalizing"}).eq("id", decode_id).execute()
         data = robust_json_loads(response_text)
         
         # The response is the analysis directly (no nested "analysis" wrapper)
@@ -148,11 +198,11 @@ Return ONLY this JSON structure:
         
         # Refund the 1.0 credit on failure
         try:
-            profile_res = sb.table("profiles").select("roadmap_credits").eq("id", uid).single().execute()
+            profile_res = sb.table("profiles").select("roadmap_credits").eq("email", user_email).single().execute()
             if profile_res.data:
                 current_credits = float(profile_res.data.get("roadmap_credits", 0))
-                sb.table("profiles").update({"roadmap_credits": current_credits + 1.0}).eq("id", uid).execute()
-                logger.info(f"Refunded 1.0 credit to user {uid} after failed analysis {decode_id}")
+                sb.table("profiles").update({"roadmap_credits": current_credits + 1.0}).eq("email", user_email).execute()
+                logger.info(f"Refunded 1.0 credit to user {user_email} after failed analysis {decode_id}")
         except Exception as refund_err:
             logger.error(f"Failed to refund credit for {decode_id}: {refund_err}")
 
@@ -264,7 +314,7 @@ async def start_analysis(background_tasks: BackgroundTasks, payload: dict = Body
         raise HTTPException(status_code=500, detail="Failed to initialize analysis session")
         
     decode_id = ins_res.data[0]["id"]
-    background_tasks.add_task(run_research_analysis, decode_id, paper_url, current_user.supabase_uid)
+    background_tasks.add_task(run_research_analysis, decode_id, paper_url, current_user.supabase_uid, email)
     return {"id": decode_id, "status": "pending", "message": "Analysis started in background."}
 
 @router.post("/extract")

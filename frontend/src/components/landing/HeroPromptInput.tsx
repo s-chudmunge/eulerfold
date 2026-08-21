@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from 'react';
-import { ArrowRight, Sparkles, Github, Briefcase, Link2, BookOpen, Target, Cpu, HardDrive, Wand2, BrainCircuit } from 'lucide-react';
+import { ArrowRight, Sparkles, Github, Briefcase, Link2, BookOpen, Target, Cpu, HardDrive, Wand2, BrainCircuit, Waypoints, Microscope, Compass, Globe, Library, Activity, Atom } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { LocalAIModal } from './LocalAIModal';
 import { CreateMLCEngine } from '@mlc-ai/web-llm';
@@ -14,15 +14,16 @@ import { supabase } from '@/lib/supabase/client';
 
 const PaymentModal = dynamic(() => import('../PaymentModal'), { ssr: false });
 
-type Mode = 'ai' | 'job' | 'url' | 'syllabus' | 'gaps';
+type Mode = 'ai' | 'job' | 'url' | 'syllabus' | 'gaps' | 'research';
 type Engine = 'eulerfold' | 'openrouter' | 'local';
 
 const MODES: { id: Mode; label: string; icon: any; placeholder: string }[] = [
-  { id: 'ai', label: 'AI Gen', icon: Wand2, placeholder: "e.g. I want to master Transformer architectures from scratch" },
-  { id: 'job', label: 'Job Decoded', icon: Briefcase, placeholder: "Paste a LinkedIn or Indeed job description..." },
-  { id: 'url', label: 'From Link', icon: Link2, placeholder: "Paste an article, GitHub repo, or doc link..." },
-  { id: 'syllabus', label: 'Syllabus', icon: BookOpen, placeholder: "Paste your course syllabus or outline..." },
-  { id: 'gaps', label: 'Skill Quiz', icon: Target, placeholder: "What is your target role?" },
+  { id: 'ai', label: 'AI Gen', icon: Waypoints, placeholder: "e.g. I want to master Transformer architectures from scratch" },
+  { id: 'job', label: 'Job Decoded', icon: Compass, placeholder: "Paste a LinkedIn or Indeed job description..." },
+  { id: 'url', label: 'From Link', icon: Globe, placeholder: "Paste an article, GitHub repo, or doc link..." },
+  { id: 'syllabus', label: 'Syllabus', icon: Library, placeholder: "Paste your course syllabus or outline..." },
+  { id: 'gaps', label: 'Skill Quiz', icon: Activity, placeholder: "What is your target role?" },
+  { id: 'research', label: 'Research Lab', icon: Atom, placeholder: "Paste a PDF URL or ArXiv link to decode..." },
 ];
 
 const ENGINES: { id: Engine; label: string; icon: any }[] = [
@@ -65,10 +66,16 @@ export default function HeroPromptInput() {
 
   const [isLocalAIModalOpen, setIsLocalAIModalOpen] = useState(false);
   const [localAIModelId, setLocalAIModelId] = useState<string | null>(null);
+  const [localAIModelName, setLocalAIModelName] = useState<string | null>(null);
+  const [openRouterModel, setOpenRouterModel] = useState<string>('openai/gpt-4o');
 
   useEffect(() => {
-    const saved = localStorage.getItem('localAIModelId');
-    if (saved) setLocalAIModelId(saved);
+    const savedId = localStorage.getItem('localAIModelId');
+    const savedName = localStorage.getItem('localAIModelName');
+    const savedOrModel = localStorage.getItem('openRouterModel') || localStorage.getItem('openrouter_model');
+    if (savedId) setLocalAIModelId(savedId);
+    if (savedName) setLocalAIModelName(savedName);
+    if (savedOrModel) setOpenRouterModel(savedOrModel);
   }, []);
 
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
@@ -128,7 +135,11 @@ export default function HeroPromptInput() {
 
   const handleNextStep = () => {
     if (!value.trim()) return;
-    setStep(2);
+    if (mode === 'research') {
+       submitGeneration();
+    } else {
+       setStep(2);
+    }
   };
 
   const submitGeneration = async (overrideValue?: string) => {
@@ -147,6 +158,116 @@ export default function HeroPromptInput() {
     try {
         let endpoint = '/roadmaps/generate';
         let payload: any = { time_value: timeValue, time_unit: timeUnit };
+
+
+        if (mode === 'research') {
+            if (engine === 'cloud' || engine === 'eulerfold') {
+                const res = await api.post('/research-lab/decode', { paper_url: finalValue });
+                router.push(`/research-lab/${res.data.id}`);
+                return;
+            } else {
+                if (engine === 'local' && !localAIModelId) {
+                    setIsGenerating(false);
+                    setIsLocalAIModalOpen(true);
+                    return;
+                }
+                const openRouterKey = localStorage.getItem('openrouter_key') || localStorage.getItem('openRouterKey');
+                if (engine === 'openrouter' && !openRouterKey) {
+                    setIsGenerating(false);
+                    alert("Please set your OpenRouter API key in Settings first.");
+                    return;
+                }
+
+                setDynamicLoadingMsg("Extracting paper text... 📄");
+                const extRes = await api.post('/research-lab/extract', { paper_url: finalValue });
+                const rawText = extRes.data.text;
+
+                const prompt = `Deconstruct this paper into a structured Engineering Dossier.
+
+TASK:
+1. Identify paper archetype: Theoretical Math, Systems/Hardware, AI Architecture, or Applied Engineering.
+2. Extract metadata: title, authors, year.
+3. Create 5-6 technical modules.
+
+REQUIRED MODULES (always include these 3):
+- "The Shift": {"before": "old approach", "after": "new approach", "the_win": "core advantage"}
+- "Logic": {"details": "step-by-step technical logic in Markdown. Use $...$ for inline math and $$...$$ for block math."}
+- "Realities": {"items": ["gotcha 1", "gotcha 2", ...]}
+
+OPTIONAL MODULES (pick 2-3 based on archetype):
+- "Concept": {"details": "core architecture/mechanism breakdown in Markdown"}
+- "Math": {"math": [{"formula": "$LaTeX$", "action": "what it computes", "intuition": "why it matters"}]}
+- "Blueprint": {"details": "system design / implementation details in Markdown"}
+- "Benchmarks": {"items": ["result 1", "result 2", ...]}
+
+MATH RULE: Always use $...$ for inline math and $$...$$ for block math. Never use bare LaTeX.
+STYLE: Plain English. Technical precision. No fluff. No filler.
+
+Return ONLY this JSON structure:
+{
+    "paper_title": "Clean Title",
+    "authors": ["Author 1", "Author 2"],
+    "year": "202X",
+    "archetype": "identified type",
+    "modules": [
+        {"id": "shift", "label": "The Shift", "data": {"before": "...", "after": "...", "the_win": "..."}},
+        {"id": "logic", "label": "Logic", "data": {"details": "..."}},
+        {"id": "realities", "label": "Realities", "data": {"items": ["..."]}}
+    ],
+    "summary": "2-3 sentence technical synthesis"
+}`;
+                
+                let jsonStr = "";
+                if (engine === 'local') {
+                    setDynamicLoadingMsg(`Loading local model: ${localAIModelId}...`);
+                    const engineLocal = await CreateMLCEngine(localAIModelId, { 
+                        initProgressCallback: (p) => setDynamicLoadingMsg(`Local AI: ${p.text}`) 
+                    });
+                    setDynamicLoadingMsg("Decoding paper directly on your GPU... 🧠");
+                    const msg = await engineLocal.chat.completions.create({
+                        messages: [{role: "user", content: prompt + "\n\nTEXT:\n" + rawText}],
+                        max_tokens: 8000
+                    });
+                    jsonStr = msg.choices[0].message.content || "{}";
+                } else {
+                    setDynamicLoadingMsg(`Reasoning with OpenRouter... 🧠`);
+                    const orRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                        method: "POST",
+                        headers: {
+                            "Authorization": `Bearer ${openRouterKey}`,
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify({
+                            model: openRouterModel,
+                            messages: [{role: "user", content: prompt + "\n\nTEXT:\n" + rawText}],
+                            response_format: { type: "json_object" },
+                            max_tokens: 8000
+                        })
+                    });
+                    if (!orRes.ok) throw new Error("OpenRouter API error");
+                    const data = await orRes.json();
+                    jsonStr = data.choices[0].message.content;
+                }
+
+                setDynamicLoadingMsg("Saving analysis... 🚀");
+                let analysisData;
+                try {
+                    let cleaned = jsonStr.trim();
+                    if (cleaned.startsWith("```json")) cleaned = cleaned.replace(/^```json\n?/, "").replace(/```$/, "");
+                    else if (cleaned.startsWith("```")) cleaned = cleaned.replace(/^```\n?/, "").replace(/```$/, "");
+                    analysisData = JSON.parse(jsonrepair(cleaned.trim()));
+                } catch (e) {
+                    throw new Error("The AI model failed to output valid JSON.");
+                }
+                const coreAnalysis = analysisData.modules ? analysisData : (analysisData.analysis || analysisData);
+                const saveRes = await api.post('/research-lab/save-external', {
+                    paper_url: finalValue,
+                    analysis_data: { analysis: coreAnalysis, extracted_text: rawText.slice(0, 15000) }
+                });
+                router.push(`/research-lab/${saveRes.data.id}`);
+                return;
+            }
+        }
 
         if (mode === 'ai') {
 
@@ -499,6 +620,28 @@ export default function HeroPromptInput() {
               </motion.div>
             </AnimatePresence>
           )}
+
+          {engine === 'local' && localAIModelId && (
+            <div className="mt-1 pt-3 border-t border-border/30 flex items-center justify-between">
+              <span className="text-[11px] font-bold text-accent uppercase tracking-widest flex items-center gap-1.5">
+                <HardDrive className="w-3.5 h-3.5" /> WebGPU Active: {localAIModelName || localAIModelId}
+              </span>
+              <button onClick={() => setIsLocalAIModalOpen(true)} className="text-[10px] font-bold text-text-muted hover:text-text-heading transition-colors">
+                CHANGE
+              </button>
+            </div>
+          )}
+
+          {engine === 'openrouter' && (
+            <div className="mt-1 pt-3 border-t border-border/30 flex items-center justify-between">
+              <span className="text-[11px] font-bold text-accent uppercase tracking-widest flex items-center gap-1.5">
+                <Cpu className="w-3.5 h-3.5" /> OpenRouter: {openRouterModel}
+              </span>
+              <span className="text-[10px] font-bold text-text-muted">
+                (Change in Settings)
+              </span>
+            </div>
+          )}
         </div>
       </div>
       <PaymentModal isOpen={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} onSuccess={() => setIsPaymentModalOpen(false)} />
@@ -510,6 +653,7 @@ export default function HeroPromptInput() {
           localStorage.setItem('localAIModelId', modelId);
           localStorage.setItem('localAIModelName', modelName);
           setLocalAIModelId(modelId);
+          setLocalAIModelName(modelName);
           setEngine('local');
           setIsLocalAIModalOpen(false);
         }}

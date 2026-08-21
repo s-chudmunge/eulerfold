@@ -9,6 +9,7 @@ import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
 import { vscDarkPlus } from 'react-syntax-highlighter/dist/cjs/styles/prism';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
+import remarkGfm from 'remark-gfm';
 import rehypeKatex from 'rehype-katex';
 import { visit } from 'unist-util-visit';
 import 'katex/dist/katex.min.css';
@@ -106,7 +107,29 @@ const markdownComponents = {
                 {children}
             </code>
         );
-    }
+    },
+    table: ({ children }: any) => (
+        <div className="overflow-x-auto my-8 border border-border/40 rounded-lg shadow-sm">
+            <table className="w-full text-left border-collapse text-[13px]">
+                {children}
+            </table>
+        </div>
+    ),
+    thead: ({ children }: any) => <thead className="bg-sidebar/50 border-b border-border/60">{children}</thead>,
+    tbody: ({ children }: any) => <tbody className="divide-y divide-border/30">{children}</tbody>,
+    tr: ({ children }: any) => <tr className="hover:bg-sidebar/20 transition-colors">{children}</tr>,
+    th: ({ children }: any) => <th className="px-5 py-3.5 font-bold text-text-heading whitespace-nowrap">{children}</th>,
+    td: ({ children }: any) => <td className="px-5 py-3.5 text-text-muted leading-relaxed align-top">{children}</td>,
+    blockquote: ({ children }: any) => (
+        <blockquote className="border-l-4 border-accent/40 bg-accent/5 px-5 py-3 my-6 text-text-muted italic rounded-r-lg">
+            {children}
+        </blockquote>
+    ),
+    ul: ({ children }: any) => <ul className="space-y-3 my-6 list-disc pl-6 marker:text-accent/60 text-text-muted leading-relaxed">{children}</ul>,
+    ol: ({ children }: any) => <ol className="space-y-3 my-6 list-decimal pl-6 marker:text-accent/60 text-text-muted leading-relaxed">{children}</ol>,
+    li: ({ children }: any) => <li className="pl-1">{children}</li>,
+    p: ({ children }: any) => <p className="mb-6 leading-relaxed text-text-muted">{children}</p>,
+    strong: ({ children }: any) => <strong className="font-bold text-text-heading">{children}</strong>
 };
 
 interface Message { role: 'user' | 'assistant'; content: string; }
@@ -141,13 +164,13 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
 
                 const res = await api.get(`/research-lab/decodes/${id}`);
                 setData(res.data);
-                if (res.data.status === 'processing' || res.data.status === 'pending') {
+                if (res.data.status !== 'completed' && res.data.status !== 'failed') {
                     pollCount++;
                     if (pollCount >= MAX_POLLS) {
                         setError("Analysis is taking longer than expected. Please check back later or try again.");
                         return;
                     }
-                    setTimeout(fetchData, 5000);
+                    setTimeout(fetchData, 3000);
                 }
             } catch (err: any) {
                 setError(err.response?.data?.detail || "Failed to load report.");
@@ -207,7 +230,22 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
         );
     }
 
-    if (data?.status === 'processing' || data?.status === 'pending') {
+    if (data?.status !== 'completed' && data?.status !== 'failed') {
+        // Map backend statuses to friendly, fun messages
+        const formatStatus = (s: string) => {
+            switch (s) {
+                case 'pending':
+                case 'processing': return "SPINNING UP ENGINE...";
+                case 'fetching_paper': return "PULLING THE PDF...";
+                case 'extracting_text': return "PARSING RAW TEXT...";
+                case 'analyzing_architecture': return "DECONSTRUCTING LOGIC & MATH...";
+                case 'generating_report': return "SYNTHESIZING DOSSIER...";
+                case 'finalizing': return "WRAPPING UP...";
+                default: return s?.toUpperCase().replace(/_/g, ' ') || "ANALYZING...";
+            }
+        };
+        const currentMessage = formatStatus(data?.status);
+
         return (
             <div className="flex flex-col min-h-screen">
                 <main className="flex-grow flex items-center justify-center py-24 px-6 text-center">
@@ -219,14 +257,14 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
                             <div className="h-6 flex items-center justify-center mt-6">
                                 <AnimatePresence mode="wait">
                                     <motion.span
-                                        key={statusIndex}
+                                        key={currentMessage}
                                         initial={{ opacity: 0, y: 5 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -5 }}
                                         transition={{ duration: 0.5 }}
                                         className="inconsolata-ui text-[11px] font-bold text-accent uppercase tracking-[0.3em] block"
                                     >
-                                        {statusMessages[statusIndex]}
+                                        {currentMessage}
                                     </motion.span>
                                 </AnimatePresence>
                             </div>
@@ -268,6 +306,11 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
                          <div className="absolute top-0 right-0 p-4 opacity-[0.05] pointer-events-none">
                             <Layers className="w-20 h-24 text-teal-600" />
                          </div>
+                         {moduleData.context && (
+                            <p className="text-[15px] text-text-muted leading-relaxed mb-8 pb-8 border-b border-teal-600/15 relative z-10">
+                                {moduleData.context}
+                            </p>
+                         )}
                          <div className="flex flex-col md:flex-row gap-12 relative z-10">
                             <div className="flex-1">
                                 <h3 className="inconsolata-ui text-[9px] font-black text-text-muted uppercase tracking-[0.3em] mb-4 opacity-50">Traditional Approach</h3>
@@ -281,7 +324,7 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
                         {moduleData.the_win && (
                             <div className="mt-8 pt-8 border-t border-teal-600/10 text-center">
                                 <span className="inconsolata-ui text-[8px] font-black text-text-muted uppercase tracking-widest block mb-2 opacity-50">Core Technical Advantage</span>
-                                <p className="text-xl font-black text-teal-600 italic leading-tight">"{moduleData.the_win}"</p>
+                                <p className="text-xl font-black text-teal-600 italic leading-tight">&ldquo;{moduleData.the_win}&rdquo;</p>
                             </div>
                         )}
                     </div>
@@ -291,6 +334,13 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
                     <div className="max-w-3xl">
                         {moduleData.summary && <p className="text-xl font-bold text-text-heading leading-relaxed mb-10 border-l-4 border-accent pl-8 italic">{moduleData.summary}</p>}
                         
+                        {/* Blueprint / Concept context sentence — shown before the details markdown */}
+                        {moduleData.context && !moduleData.before && (
+                            <p className="text-[15px] text-text-muted leading-relaxed mb-8 pb-8 border-b border-border/30">
+                                {moduleData.context}
+                            </p>
+                        )}
+
                         {moduleData.details && (
                             <div className="relative">
                                 {/* Convert LaTeX \( \) to $ $ for remark-math */}
@@ -317,7 +367,7 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
                                                 [&>ul>li]:before:absolute [&>ul>li]:before:left-[7px] [&>ul>li]:before:top-[9px] [&>ul>li]:before:w-2 [&>ul>li]:before:h-2 [&>ul>li]:before:bg-accent [&>ul>li]:before:rounded-full [&>ul>li]:before:z-10
                                                 [&>ul>li_p]:mb-6 last:[&>ul>li_p]:mb-0
                                             ">
-                                                <ReactMarkdown components={markdownComponents as any} remarkPlugins={[remarkMath]} rehypePlugins={[rehypeMathBox, rehypeKatex]}>{cleanDetails}</ReactMarkdown>
+                                                <ReactMarkdown components={markdownComponents as any} remarkPlugins={[remarkMath, remarkGfm]} rehypePlugins={[rehypeMathBox, rehypeKatex]}>{cleanDetails}</ReactMarkdown>
                                             </div>
                                         </div>
                                     ) : (
@@ -326,7 +376,7 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
                                             [&_.katex-display]:block [&_.katex-display]:my-10 [&_.katex-display]:overflow-x-auto [&_.katex-display]:py-2
                                             [&>strong]:text-text-heading
                                         ">
-                                            <ReactMarkdown components={markdownComponents as any} remarkPlugins={[remarkMath]} rehypePlugins={[rehypeMathBox, rehypeKatex]}>{cleanDetails}</ReactMarkdown>
+                                            <ReactMarkdown components={markdownComponents as any} remarkPlugins={[remarkMath, remarkGfm]} rehypePlugins={[rehypeMathBox, rehypeKatex]}>{cleanDetails}</ReactMarkdown>
                                         </div>
                                     );
                                 })()}
@@ -352,7 +402,7 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
                                             </div>
                                             <h4 className="text-[17px] font-black text-text-heading leading-tight group-hover:text-blue-600 transition-colors">{item.action}</h4>
                                             <div className="text-[14px] text-text-secondary leading-relaxed italic border-l-2 border-border/40 pl-5">
-                                                <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
+                                                <ReactMarkdown remarkPlugins={[remarkMath, remarkGfm]} rehypePlugins={[rehypeKatex]}>
                                                     {item.intuition?.replace(/\\+\(/g, '$').replace(/\\+\)/g, '$').replace(/\\+\[/g, '$$$$').replace(/\\+\]/g, '$$$$')}
                                                 </ReactMarkdown>
                                             </div>
@@ -362,7 +412,7 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
                                             <div className="p-8 bg-sidebar/20 border border-border group-hover:border-blue-600/30 transition-all rounded-lg shadow-inner relative overflow-hidden">
                                                 <div className="absolute top-0 right-0 p-2 text-[8px] font-black text-text-muted uppercase tracking-widest opacity-20 group-hover:opacity-40">Formal Derivation</div>
                                                 <div className="text-blue-600 text-[18px]">
-                                                    <ReactMarkdown components={markdownComponents as any} remarkPlugins={[remarkMath]} rehypePlugins={[rehypeMathBox, rehypeKatex]}>
+                                                    <ReactMarkdown components={markdownComponents as any} remarkPlugins={[remarkMath, remarkGfm]} rehypePlugins={[rehypeMathBox, rehypeKatex]}>
                                                         {`$$ ${item.formula} $$`}
                                                     </ReactMarkdown>
                                                 </div>
@@ -382,12 +432,15 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
                             <Cpu className="w-5 h-5 text-blue-600/60" />
                             <h3 className="inconsolata-ui text-[10px] font-black text-text-muted uppercase tracking-[0.4em]">Engineering Realities</h3>
                         </div>
+                        {moduleData.context && (
+                            <p className="text-[15px] text-text-muted leading-relaxed max-w-2xl">{moduleData.context}</p>
+                        )}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {moduleData.items.map((g: string, i: number) => (
                                 <div key={i} className="flex gap-4 items-start p-6 bg-sidebar/10 border border-border/40 hover:border-blue-600/30 transition-all rounded-lg">
                                     <span className="inconsolata-ui text-blue-600/40 font-black text-xs">0{i+1}</span>
                                     <div className="text-[14px] leading-relaxed text-text-primary font-medium prose-p:m-0">
-                                        <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
+                                        <ReactMarkdown remarkPlugins={[remarkMath, remarkGfm]} rehypePlugins={[rehypeKatex]}>
                                             {g.replace(/\\+\(/g, '$').replace(/\\+\)/g, '$').replace(/\\+\[/g, '$$$$').replace(/\\+\]/g, '$$$$')}
                                         </ReactMarkdown>
                                     </div>
@@ -401,12 +454,15 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
                 {hasList && (
                     <div className="space-y-6">
                         <h3 className="inconsolata-ui text-[9px] font-black text-text-muted uppercase tracking-[0.3em] opacity-50">Field Observations</h3>
+                        {moduleData.context && (
+                            <p className="text-[15px] text-text-muted leading-relaxed max-w-2xl">{moduleData.context}</p>
+                        )}
                         <div className="grid grid-cols-1 gap-4">
                             {moduleData.items.map((item: string, i: number) => (
                                 <div key={i} className="flex gap-5 items-start p-5 bg-sidebar/10 border border-border/40 rounded-lg">
                                     <Target className="w-4 h-4 text-accent/60 mt-1 shrink-0" />
                                     <div className="text-[14px] leading-relaxed text-text-primary prose-p:m-0">
-                                        <ReactMarkdown remarkPlugins={[remarkMath]} rehypePlugins={[rehypeKatex]}>
+                                        <ReactMarkdown remarkPlugins={[remarkMath, remarkGfm]} rehypePlugins={[rehypeKatex]}>
                                             {item.replace(/\\+\(/g, '$').replace(/\\+\)/g, '$').replace(/\\+\[/g, '$$$$').replace(/\\+\]/g, '$$$$')}
                                         </ReactMarkdown>
                                     </div>

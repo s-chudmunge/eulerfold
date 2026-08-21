@@ -294,7 +294,7 @@ export function LocalAIModal({ isOpen, onClose, onSelectModel }: LocalAIModalPro
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-background/80 backdrop-blur-sm">
-      <div className="bg-background border border-border w-full max-w-4xl rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+      <div className="bg-background border border-border w-full max-w-3xl rounded-lg shadow-2xl overflow-hidden flex flex-col max-h-[80vh]">
         {/* Header */}
         <div className="flex items-center justify-between p-5 border-b border-border bg-sidebar/50">
           <div>
@@ -311,7 +311,7 @@ export function LocalAIModal({ isOpen, onClose, onSelectModel }: LocalAIModalPro
         </div>
 
         {/* Content Body */}
-        <div className="p-6 overflow-y-auto space-y-5">
+        <div className="p-6 overflow-y-auto space-y-5 flex-1 min-h-0">
           {webGPUStatus === 'unsupported' ? (
             <div className="p-6 bg-red-500/10 border border-red-500/20 rounded-lg text-center">
               <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />

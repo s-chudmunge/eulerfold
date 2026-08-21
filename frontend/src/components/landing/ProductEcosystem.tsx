@@ -69,7 +69,7 @@ const products: Product[] = [
     category: "Exploration",
     description: "Explore technical documents and dissect complex research architectures in an interactive environment.",
     icon: Microscope, 
-    href: "/research-lab"
+    href: "/"
   },
   {
     id: 'planner', 
