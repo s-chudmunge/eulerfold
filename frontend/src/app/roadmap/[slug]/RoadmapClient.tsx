@@ -37,6 +37,7 @@ import {
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import AppSidebar from '@/components/AppSidebar';
+import ThemeToggle from '@/components/ThemeToggle';
 import ShareMenu from '@/components/ShareMenu';
 import TTSListenButton from '@/components/TTSListenButton';
 import MCQPractice from '@/components/roadmap/MCQPractice';
@@ -585,6 +586,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                     </div>
 
                     <div className="flex items-center gap-2 md:gap-4">
+                        <ThemeToggle />
                         {isAuthenticated ? (
                             (isOwner || roadmap.is_cloned) ? (
                                 <button 

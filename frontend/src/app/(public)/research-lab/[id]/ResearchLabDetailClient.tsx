@@ -124,10 +124,10 @@ const markdownComponents = {
             {children}
         </blockquote>
     ),
-    ul: ({ children }: any) => <ul className="space-y-3 my-6 list-disc pl-6 marker:text-accent/60 text-text-muted leading-relaxed">{children}</ul>,
-    ol: ({ children }: any) => <ol className="space-y-3 my-6 list-decimal pl-6 marker:text-accent/60 text-text-muted leading-relaxed">{children}</ol>,
-    li: ({ children }: any) => <li className="pl-1">{children}</li>,
-    p: ({ children }: any) => <p className="mb-6 leading-relaxed text-text-muted">{children}</p>,
+    ul: ({ children }: any) => <ul className="space-y-6 my-10 list-disc pl-6 marker:text-accent/60 text-text-muted leading-relaxed">{children}</ul>,
+    ol: ({ children }: any) => <ol className="space-y-6 my-10 list-decimal pl-6 marker:text-accent/60 text-text-muted leading-relaxed">{children}</ol>,
+    li: ({ children }: any) => <li className="pl-2">{children}</li>,
+    p: ({ children }: any) => <p className="mb-10 leading-relaxed text-text-muted">{children}</p>,
     strong: ({ children }: any) => <strong className="font-bold text-text-heading">{children}</strong>
 };
 
@@ -138,7 +138,7 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
     const [data, setData] = useState<any>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [activeStage, setActiveStage] = useState(0);
+
     const [statusIndex, setStatusIndex] = useState(0);
     const [isPro, setIsPro] = useState(false);
     
@@ -183,19 +183,10 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
 
     if (loading && !data) return (
         <div className="flex flex-col items-center justify-center min-h-[80vh] gap-6">
-                        <div className="h-6 flex items-center justify-center">
-                <AnimatePresence mode="wait">
-                    <motion.span
-                        key={statusIndex}
-                        initial={{ opacity: 0, y: 5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -5 }}
-                        transition={{ duration: 0.5 }}
-                        className="inconsolata-ui text-[10px] font-black uppercase tracking-[0.4em] text-text-muted"
-                    >
-                        {statusMessages[statusIndex]}
-                    </motion.span>
-                </AnimatePresence>
+            <div className="h-6 flex items-center justify-center">
+                <span className="inconsolata-ui text-[10px] font-black uppercase tracking-[0.4em] text-text-muted">
+                    LOADING REPORT...
+                </span>
             </div>
             <div className="flex justify-center gap-1.5 mt-2">
                 {[0, 1, 2].map(i => (
@@ -353,24 +344,26 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
                                     
                                     return isListFormat ? (
                                         <div className="space-y-0 relative before:absolute before:left-[11px] before:top-2 before:bottom-2 before:w-[1px] before:bg-border/60">
-                                            <div className="prose prose-sm dark:prose-invert max-w-none text-[15px] leading-relaxed
-                                                [&>p]:mb-8 last:[&>p]:mb-0
-                                                [&_.math-display]:my-10 [&_.math-display]:overflow-x-auto [&_.math-display]:py-2
+                                            <div className="prose prose-base dark:prose-invert max-w-none text-[16px] leading-loose
+                                                [&>p]:mb-10 last:[&>p]:mb-0
+                                                [&_.math-display]:my-12 [&_.math-display]:overflow-x-auto [&_.math-display]:py-2
                                                 [&>ol]:list-none [&>ol]:pl-0 [&>ol>li]:relative [&>ol>li]:pl-10 [&>ol>li]:pb-20 last:[&>ol>li]:pb-0
-                                                [&>ol>li]:before:absolute [&>ol>li]:before:left-0 [&>ol>li]:before:top-1 [&>ol>li]:before:w-6 [&>ol>li]:before:h-6 [&>ol>li]:before:bg-background [&>ol>li]:before:border [&>ol>li]:before:border-border [&>ol>li]:before:rounded-full [&>ol>li]:before:flex [&>ol>li]:before:items-center [&>ol>li]:before:justify-center [&>ol>li]:before:text-[10px] [&>ol>li]:before:font-black [&>ol>li]:before:text-accent [&>ol>li]:before:content-[counter(list-item)] [&>ol>li]:before:z-10
-                                                [&>ol>li_p]:mb-6 last:[&>ol>li_p]:mb-0
+                                                [&>ol>li]:before:absolute [&>ol>li]:before:left-0 [&>ol>li]:before:top-1.5 [&>ol>li]:before:w-6 [&>ol>li]:before:h-6 [&>ol>li]:before:bg-background [&>ol>li]:before:border [&>ol>li]:before:border-border [&>ol>li]:before:rounded-full [&>ol>li]:before:flex [&>ol>li]:before:items-center [&>ol>li]:before:justify-center [&>ol>li]:before:text-[10px] [&>ol>li]:before:font-black [&>ol>li]:before:text-accent [&>ol>li]:before:content-[counter(list-item)] [&>ol>li]:before:z-10
+                                                [&>ol>li_p]:mb-8 last:[&>ol>li_p]:mb-0
                                                 [&>ol>li_strong]:block [&>ol>li_strong]:text-[16px] [&>ol>li_strong]:text-text-heading [&>ol>li_strong]:mb-3 [&>ol>li_strong]:mt-1
-                                                [&>ul]:list-none [&>ul]:pl-0 [&>ul>li]:relative [&>ul>li]:pl-10 [&>ul>li]:pb-12 last:[&>ul>li]:pb-0
-                                                [&>ul>li]:before:absolute [&>ul>li]:before:left-[7px] [&>ul>li]:before:top-[9px] [&>ul>li]:before:w-2 [&>ul>li]:before:h-2 [&>ul>li]:before:bg-accent [&>ul>li]:before:rounded-full [&>ul>li]:before:z-10
+                                                [&>ul]:list-none [&>ul]:pl-0 [&>ul>li]:relative [&>ul>li]:pl-10 [&>ul>li]:pb-16 last:[&>ul>li]:pb-0
+                                                [&>ul>li]:before:absolute [&>ul>li]:before:left-[7px] [&>ul>li]:before:top-[11px] [&>ul>li]:before:w-2 [&>ul>li]:before:h-2 [&>ul>li]:before:bg-accent [&>ul>li]:before:rounded-full [&>ul>li]:before:z-10
                                                 [&>ul>li_p]:mb-6 last:[&>ul>li_p]:mb-0
                                             ">
                                                 <ReactMarkdown components={markdownComponents as any} remarkPlugins={[remarkMath, remarkGfm]} rehypePlugins={[rehypeMathBox, rehypeKatex]}>{cleanDetails}</ReactMarkdown>
                                             </div>
                                         </div>
                                     ) : (
-                                        <div className="prose prose-sm dark:prose-invert max-w-none text-[16px] leading-[1.8]
-                                            [&>p]:mb-8 last:[&>p]:mb-0
-                                            [&_.katex-display]:block [&_.katex-display]:my-10 [&_.katex-display]:overflow-x-auto [&_.katex-display]:py-2
+                                        <div className="prose prose-base dark:prose-invert max-w-none text-[16px] leading-loose
+                                            [&>p]:mb-10 last:[&>p]:mb-0
+                                            [&>ul]:my-10 [&>ul]:pl-6 [&>ul>li]:mb-6
+                                            [&>ol]:my-10 [&>ol]:pl-6 [&>ol>li]:mb-6
+                                            [&_.katex-display]:block [&_.katex-display]:my-12 [&_.katex-display]:overflow-x-auto [&_.katex-display]:py-2
                                             [&>strong]:text-text-heading
                                         ">
                                             <ReactMarkdown components={markdownComponents as any} remarkPlugins={[remarkMath, remarkGfm]} rehypePlugins={[rehypeMathBox, rehypeKatex]}>{cleanDetails}</ReactMarkdown>
@@ -548,94 +541,53 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
                     </a>
                 </div>
 
-                <div className="flex flex-col md:flex-row gap-12 lg:gap-16 items-start">
-                    {/* Vertical Navigation Sidebar */}
-                    <div className="w-full md:w-56 lg:w-64 shrink-0 md:sticky md:top-[80px]">
-                        <div className="flex items-center justify-between mb-6">
-                            <span className="inconsolata-ui text-[10px] font-black text-text-muted uppercase tracking-[0.3em]">Report Sections</span>
+                <div className="flex flex-col w-full max-w-4xl mx-auto gap-24 items-start pb-12">
+                    
+                    {/* Summary Block */}
+                    {analysis?.summary && (
+                        <div className="bg-sidebar/30 border border-border/40 p-8 rounded-lg relative overflow-hidden group w-full">
+                            <div className="absolute top-0 right-0 p-6 opacity-[0.03] pointer-events-none group-hover:opacity-[0.05] transition-opacity">
+                                <Zap className="w-24 h-24 text-accent" />
+                            </div>
+                            <div className="relative z-10">
+                                <h2 className="inconsolata-ui text-[10px] font-black text-accent uppercase tracking-[0.4em] mb-4">Summary</h2>
+                                <p className="text-lg font-medium text-text-heading leading-relaxed italic pr-12">
+                                    "{analysis.summary}"
+                                </p>
+                            </div>
                         </div>
-                        
-                        <div className="flex md:flex-col overflow-x-auto md:overflow-visible hide-scrollbar gap-2 md:gap-1 border-b md:border-b-0 border-border/20 pb-4 md:pb-0">
-                            {modules.map((module: any, idx: number) => {
-                                const isActive = activeStage === idx;
-                                const label = module.label.toLowerCase();
+                    )}
 
-                                // Semantic Color Logic
-                                let activeColors = 'bg-accent/10 border-accent/30 text-accent';
-                                if (label.includes('shift')) activeColors = 'bg-teal-600/10 border-teal-600/30 text-teal-600';
-                                if (label.includes('math')) activeColors = 'bg-blue-600/10 border-blue-600/30 text-blue-600';
-                                if (label.includes('realities')) activeColors = 'bg-slate-600/10 border-slate-600/30 text-slate-300';
+                    {/* Sequential Content Area */}
+                    <div className="w-full space-y-32">
+                        {modules.length > 0 ? (
+                            modules.map((module: any, idx: number) => {
+                                const label = module.label.toLowerCase();
+                                let sectionColor = 'text-accent';
+                                if (label.includes('shift')) sectionColor = 'text-teal-600';
+                                if (label.includes('math')) sectionColor = 'text-blue-600';
+                                if (label.includes('realities')) sectionColor = 'text-slate-500';
 
                                 return (
-                                    <button 
-                                        key={module.id} 
-                                        onClick={() => setActiveStage(idx)}
-                                        className={`flex items-center justify-between px-4 py-3 transition-all duration-300 rounded-lg border whitespace-nowrap ${
-                                            isActive 
-                                                ? `${activeColors} shadow-sm` 
-                                                : 'bg-transparent border-transparent text-text-muted hover:bg-sidebar/50 hover:text-text-heading'
-                                        }`}
-                                    >
-                                        <div className="flex items-center gap-3">
-                                            <span className={`inconsolata-ui text-[9px] font-black ${isActive ? 'opacity-100' : 'opacity-40'}`}>0{idx + 1}</span>
-                                            <span className="text-[11px] font-bold uppercase tracking-widest">{module.label}</span>
+                                    <section key={module.id || idx} className="scroll-mt-32 w-full" id={`section-${module.id}`}>
+                                        <div className="mb-12 pb-4 border-b border-border/30 flex items-center gap-4">
+                                            <span className={`inconsolata-ui text-2xl font-black opacity-30 ${sectionColor}`}>
+                                                0{idx + 1}
+                                            </span>
+                                            <h2 className="text-2xl font-black text-text-heading uppercase tracking-widest">
+                                                {module.label}
+                                            </h2>
                                         </div>
-                                        {isActive && <ChevronRight className="w-3 h-3 md:block hidden" />}
-                                    </button>
+                                        <div className="serif-content">
+                                            {renderModuleContent(module)}
+                                        </div>
+                                    </section>
                                 );
-                            })}
-                        </div>
-                        
-                        <div className="hidden md:flex items-center gap-2 mt-8 pt-6 border-t border-border/10">
-                            <button 
-                                onClick={() => setActiveStage(prev => Math.max(0, prev - 1))}
-                                disabled={activeStage === 0}
-                                className={`p-2 border border-border rounded-full transition-all ${activeStage === 0 ? 'opacity-20 cursor-not-allowed' : 'text-text-muted hover:border-accent hover:text-accent hover:bg-sidebar'}`}
-                            >
-                                <ArrowLeft className="w-4 h-4" />
-                            </button>
-                            <button 
-                                onClick={() => setActiveStage(prev => Math.min(modules.length - 1, prev + 1))}
-                                disabled={activeStage === modules.length - 1}
-                                className={`flex items-center justify-center flex-1 gap-1 py-2 bg-accent text-white rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${activeStage === modules.length - 1 ? 'opacity-20 cursor-not-allowed' : 'hover:bg-accent/90 shadow-sm'}`}
-                            >
-                                Next <ArrowRight className="w-3 h-3" />
-                            </button>
-                        </div>
+                            })
+                        ) : (
+                            <p className="text-center py-20 text-text-muted italic w-full">Report content structure pending.</p>
+                        )}
                     </div>
-
-                    {/* Dynamic Content Area */}
-                    <div className="flex-1 min-w-0 min-h-[400px] relative mb-12">
-                    <AnimatePresence mode="wait">
-                        <motion.div
-                            key={activeStage}
-                            initial={{ opacity: 0, y: 5 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            exit={{ opacity: 0, y: -5 }}
-                            transition={{ duration: 0.2 }}
-                            className="serif-content"
-                        >
-                            {/* Summary Card - Only show on first tab */}
-                            {activeStage === 0 && analysis?.summary && (
-                                <div className="bg-sidebar/30 border border-border/40 p-8 rounded-lg relative overflow-hidden group mb-12">
-                                    <div className="absolute top-0 right-0 p-6 opacity-[0.03] pointer-events-none group-hover:opacity-[0.05] transition-opacity">
-                                        <Zap className="w-24 h-24 text-accent" />
-                                    </div>
-                                    <div className="relative z-10">
-                                        <h2 className="inconsolata-ui text-[10px] font-black text-accent uppercase tracking-[0.4em] mb-4">Summary</h2>
-                                        <p className="text-lg font-medium text-text-heading leading-relaxed italic pr-12">
-                                            "{analysis.summary}"
-                                        </p>
-                                    </div>
-                                </div>
-                            )}
-
-                            {modules.length > 0 ? renderModuleContent(modules[activeStage]) : (
-                                <p className="text-center py-20 text-text-muted italic">Report content structure pending.</p>
-                            )}
-                        </motion.div>
-                    </AnimatePresence>
-                </div>
                 </div>
 {/* Pagination Status - Minimalist */}
 <div className="mt-16 pt-4 border-t border-border/10 flex flex-col items-center gap-6">

@@ -25,6 +25,7 @@ import {
 } from 'lucide-react';
 import { plannerAPI, sessionsAPI, User } from '@/lib/api';
 import AppSidebar from '@/components/AppSidebar';
+import ThemeToggle from '@/components/ThemeToggle';
 import { useAuth } from '@/components/AuthProvider';
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, isSameDay, addDays, parseISO } from 'date-fns';
 import Link from 'next/link';
@@ -164,6 +165,7 @@ export default function PlannerClient() {
           </div>
 
           <div className="flex items-center gap-3">
+            <ThemeToggle />
             <button 
               onClick={() => {
                 const today = new Date();

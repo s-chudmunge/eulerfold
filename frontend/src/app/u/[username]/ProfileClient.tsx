@@ -41,6 +41,7 @@ import {
 } from 'lucide-react';
 
 import AppSidebar from '@/components/AppSidebar';
+import ThemeToggle from '@/components/ThemeToggle';
 import { Menu, Bell, Calendar } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -108,6 +109,7 @@ function getSkillIcon(name: string) {
 
 import SkillsProfile from '@/components/dashboard/SkillsProfile';
 import ActivityHeatmap from '@/components/profile/ActivityHeatmap';
+import KnowledgeGraph from '@/components/profile/KnowledgeGraph';
 import TTSListenButton from '@/components/TTSListenButton';
 import VerifiedBadge from '@/components/VerifiedBadge';
 import { useSettings } from '@/components/SettingsProvider';
@@ -132,6 +134,7 @@ const [activeTab, setActiveTab] = useState<TabType>('overview');
     const [currentAvatarUrl, setCurrentAvatarUrl] = useState(profile.avatar_url);
     const [selectedReview, setSelectedReview] = useState<any>(null);
     const [activityMap, setActivityMap] = useState<Record<string, number> | undefined>(undefined);
+    const [knowledgeGraphData, setKnowledgeGraphData] = useState<any>(null);
 
     // Section collapse states
     const [isExpertiseOpen, setIsExpertiseOpen] = useState(true);
@@ -151,6 +154,22 @@ const [activeTab, setActiveTab] = useState<TabType>('overview');
             }
         };
         fetchActivity();
+    }, [profile.username]);
+
+    useEffect(() => {
+        const fetchKnowledgeGraph = async () => {
+            try {
+                const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
+                const res = await fetch(`${API_URL}/profile/${profile.username}/knowledge-graph`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setKnowledgeGraphData(data);
+                }
+            } catch (err) {
+                console.error("Failed to fetch knowledge graph:", err);
+            }
+        };
+        fetchKnowledgeGraph();
     }, [profile.username]);
 
     useEffect(() => {
@@ -295,6 +314,7 @@ const [activeTab, setActiveTab] = useState<TabType>('overview');
                     </div>
                     
                     <div className="flex items-center gap-4 border-l border-border pl-6">
+                        <ThemeToggle />
                         <button className="text-text-muted hover:text-text-heading transition-colors relative">
                             <Bell className="w-5 h-5" />
                             <span className="absolute top-0 right-0 w-2 h-2 bg-accent rounded-full border border-background"></span>
@@ -467,6 +487,9 @@ const [activeTab, setActiveTab] = useState<TabType>('overview');
                                 <div className="p-6">
                                     {activeTab === 'overview' && (
                                         <div className="space-y-12 animate-in fade-in duration-300">
+                                            {knowledgeGraphData && (
+                                                <KnowledgeGraph data={knowledgeGraphData} username={profile.username} />
+                                            )}
                                             <FeaturedCourses roadmaps={activeRoadmaps} />
                                             <ProvenSkills skills={strongSkills} />
                                             <VerifiedWork submissions={pAny.submissions} onSelectReview={setSelectedReview} />

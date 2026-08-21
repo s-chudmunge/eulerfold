@@ -6,11 +6,13 @@ import {
     Check, 
     Network,
     GraduationCap,
-    UserCheck
+    UserCheck,
+    History
 } from 'lucide-react';
 import { FaXTwitter } from 'react-icons/fa6';
 import { SiPaperswithcode } from 'react-icons/si';
 import Link from 'next/link';
+import { supabase } from '@/lib/supabase/client';
 
 interface ResearchToolboxProps {
     paperUrl: string;
@@ -28,6 +30,28 @@ export default function ResearchToolbox({
     className = "" 
 }: ResearchToolboxProps) {
     const [copiedBibtex, setCopiedBibtex] = useState(false);
+    const [showHistory, setShowHistory] = useState(false);
+    const [historyReports, setHistoryReports] = useState<any[]>([]);
+    const [loadingHistory, setLoadingHistory] = useState(false);
+
+    const fetchHistory = async (e: React.MouseEvent) => {
+        e.preventDefault();
+        if (showHistory) {
+            setShowHistory(false);
+            return;
+        }
+        setShowHistory(true);
+        if (historyReports.length === 0) {
+            setLoadingHistory(true);
+            const { data } = await supabase
+                .from('research_lab_decodes')
+                .select('id, paper_title, created_at')
+                .order('created_at', { ascending: false })
+                .limit(10);
+            if (data) setHistoryReports(data);
+            setLoadingHistory(false);
+        }
+    };
 
     const getArxivId = (url: string) => {
         const match = url.match(/arxiv\.org\/(?:abs|pdf)\/(\d+\.\d+)(?:v\d+)?(?:\.pdf)?/);
@@ -38,6 +62,12 @@ export default function ResearchToolbox({
     const encodedTitle = encodeURIComponent(title);
 
     const tools = [
+        {
+            name: 'My Reports',
+            icon: History,
+            href: '/dashboard',
+            color: 'hover:text-accent',
+        },
         {
             name: 'Semantic Scholar',
             icon: 'https://cdn.semanticscholar.org/fb87754bc307902f/img/apple-touch-icon-144x144.png',
@@ -106,31 +136,58 @@ export default function ResearchToolbox({
     return (
         <div className={`flex flex-row lg:flex-col items-center lg:items-start gap-2 lg:gap-4 ${className}`}>
             <div className="flex flex-row lg:flex-col items-center lg:items-start gap-2 lg:gap-3 bg-background/80 backdrop-blur-md p-1.5 lg:p-2 rounded-lg border border-border/40 shadow-xl lg:shadow-2xl transition-all duration-300 group/toolbox">
-                {tools.map((tool) => (
-                    <a
-                        key={tool.name}
-                        href={tool.href || '#'}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className={`h-11 lg:h-10 flex items-center rounded-lg bg-sidebar/40 border border-transparent text-text-muted transition-all duration-500 group ${tool.color} hover:bg-background hover:border-accent/20 hover:shadow-lg active:scale-95 shrink-0 overflow-hidden w-11 lg:w-10 lg:group-hover/toolbox:w-44 px-3 lg:px-0 lg:group-hover/toolbox:px-3 justify-center lg:justify-start`}
-                        title={tool.name}
-                    >
-                        <div className="flex items-center justify-center lg:w-10 shrink-0">
-                            {typeof tool.icon === 'string' ? (
-                                <img 
-                                    src={tool.icon} 
-                                    alt={tool.name} 
-                                    className="w-5 h-5 lg:w-4.5 lg:h-4.5 transition-transform group-hover:scale-110 object-contain rounded-sm" 
-                                />
-                            ) : (
-                                <tool.icon className="w-4.5 h-4.5 lg:w-4 lg:h-4 transition-transform group-hover:scale-110" />
+                {tools.map((tool) => {
+                    const isHistory = tool.name === 'My Reports';
+                    const ToolWrapper = isHistory ? 'button' : 'a';
+                    const props = isHistory 
+                        ? { onClick: fetchHistory, type: 'button' as const }
+                        : { href: tool.href || '#', target: "_blank", rel: "noopener noreferrer" };
+
+                    return (
+                        <div key={tool.name} className="relative">
+                            <ToolWrapper
+                                {...props}
+                                className={`h-11 lg:h-10 flex items-center rounded-lg bg-sidebar/40 border border-transparent text-text-muted transition-all duration-500 group ${tool.color} hover:bg-background hover:border-accent/20 hover:shadow-lg active:scale-95 shrink-0 overflow-hidden w-11 lg:w-10 lg:group-hover/toolbox:w-44 px-3 lg:px-0 lg:group-hover/toolbox:px-3 justify-center lg:justify-start`}
+                                title={tool.name}
+                            >
+                                <div className="flex items-center justify-center lg:w-10 shrink-0">
+                                    {typeof tool.icon === 'string' ? (
+                                        <img 
+                                            src={tool.icon} 
+                                            alt={tool.name} 
+                                            className="w-5 h-5 lg:w-4.5 lg:h-4.5 transition-transform group-hover:scale-110 object-contain rounded-sm" 
+                                        />
+                                    ) : (
+                                        <tool.icon className="w-4.5 h-4.5 lg:w-4 lg:h-4 transition-transform group-hover:scale-110" />
+                                    )}
+                                </div>
+                                <span className="max-w-0 overflow-hidden group-hover/toolbox:max-w-[140px] transition-all duration-500 ease-in-out whitespace-nowrap text-[12px] font-semibold opacity-0 group-hover/toolbox:opacity-100 ml-0 group-hover/toolbox:ml-1 text-text-primary">
+                                    {tool.name}
+                                </span>
+                            </ToolWrapper>
+                            
+                            {isHistory && showHistory && (
+                                <div className="absolute left-full top-0 ml-4 w-72 bg-header border border-border shadow-2xl rounded-xl p-4 z-[60] animate-in slide-in-from-left-2 fade-in">
+                                    <h3 className="text-[11px] font-black uppercase tracking-wider text-text-muted mb-4 opacity-70">Previous Reports</h3>
+                                    {loadingHistory ? (
+                                        <div className="flex justify-center p-4"><div className="w-5 h-5 border-2 border-accent border-t-transparent rounded-full animate-spin" /></div>
+                                    ) : historyReports.length > 0 ? (
+                                        <div className="flex flex-col gap-2 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                                            {historyReports.map(report => (
+                                                <a key={report.id} href={`/research-lab/${report.id}`} className="flex flex-col gap-1 p-2.5 rounded-lg hover:bg-sidebar transition-colors border border-transparent hover:border-border/50">
+                                                    <span className="text-[13px] font-bold text-text-heading leading-snug line-clamp-2">{report.paper_title || "Untitled Paper"}</span>
+                                                    <span className="text-[10px] text-text-muted">{new Date(report.created_at).toLocaleDateString()}</span>
+                                                </a>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <p className="text-[12px] text-text-muted italic">No previous reports found.</p>
+                                    )}
+                                </div>
                             )}
                         </div>
-                        <span className="max-w-0 overflow-hidden group-hover/toolbox:max-w-[140px] transition-all duration-500 ease-in-out whitespace-nowrap text-[12px] font-semibold opacity-0 group-hover/toolbox:opacity-100 ml-0 group-hover/toolbox:ml-1 text-text-primary">
-                            {tool.name}
-                        </span>
-                    </a>
-                ))}
+                    );
+                })}
                 
                 <div className="w-[1px] h-6 lg:w-10 lg:h-[1px] bg-border/20 mx-1 lg:my-1 shrink-0" />
 

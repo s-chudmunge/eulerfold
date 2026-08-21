@@ -19,6 +19,7 @@ from reportlab.lib.utils import ImageReader
 from app.core.supabase_client import get_supabase_client, get_admin_supabase_client
 from app.core.auth import get_current_user
 from app.schemas import PublicProfile, UserSkill, PracticeStats, User, DiscussionRead, MCQSessionRead
+from app.routers.roadmaps import _parse_roadmap_dict
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -307,6 +308,156 @@ async def get_public_profile(username: str):
         mcq_history=mcq_history,
         discussions=discussions
     )
+
+@router.get("/profile/{username}/knowledge-graph")
+async def get_knowledge_graph(username: str):
+    sb = get_supabase_client()
+    p_res = sb.table("profiles").select("supabase_uid, email").eq("username", username).maybe_single().execute()
+    if not p_res or not p_res.data:
+        raise HTTPException(status_code=404, detail="Profile not found")
+    
+    uid = p_res.data["supabase_uid"]
+    user_email = p_res.data["email"]
+
+    # Fetch ALL roadmaps
+    r_res = sb.table("roadmaps").select("id, title, subject, roadmap_plan, status").eq("email", user_email).execute()
+    
+    # Fetch module progress
+    prog_res = sb.table("module_progress").select("roadmap_id, module_number, topic_index, completed").eq("user_email", user_email).eq("completed", True).execute()
+    completed_topics = {}
+    for row in prog_res.data:
+        key = (row["roadmap_id"], row["module_number"])
+        completed_topics[key] = completed_topics.get(key, 0) + 1
+        
+    # Fetch submissions
+    sub_res = sb.table("submissions").select("roadmap_id, module_number, evaluation_level").eq("user_email", user_email).execute()
+    submissions = {}
+    for row in sub_res.data:
+        key = (row["roadmap_id"], row["module_number"])
+        if key not in submissions or row["evaluation_level"] in ("Solid", "Developing"):
+            submissions[key] = row["evaluation_level"]
+            
+    # Fetch practice progress
+    prac_res = sb.table("practice_progress").select("resource_id, completed, practice_sessions(roadmap_id)").eq("user_id", uid).eq("completed", True).execute()
+    practice_roadmaps = set()
+    for p in prac_res.data:
+        sess = p.get("practice_sessions")
+        if sess and isinstance(sess, dict) and sess.get("roadmap_id"):
+            practice_roadmaps.add(sess["roadmap_id"])
+
+    nodes = []
+    edges = []
+    
+    stop_words = {
+        "the", "a", "an", "and", "or", "in", "to", "of", "for", "with", "on", "is", "are", "at", "by", "from",
+        "week", "module", "part", "fundamentals", "basics", "advanced", "introduction", "intro", "level", 
+        "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "&", "building", "using", "understanding",
+        "core", "principles", "concepts", "data", "system", "systems", "design", "development", "architecture",
+        "engineering", "application", "applications", "project", "overview"
+    }
+    
+    cross_roadmap_candidates = []
+    
+    demonstrated_count = 0
+    explored_count = 0
+
+    for r in r_res.data:
+        roadmap_id = r["id"]
+        roadmap_title = r["title"]
+        plan = _parse_roadmap_dict(r["roadmap_plan"])
+        modules = plan.get("modules", [])
+        
+        prev_node_id = None
+        
+        for idx, module in enumerate(modules):
+            node_id = f"{roadmap_id}_m{idx}"
+            title = module.get("title", f"Module {idx+1}")
+            topics = module.get("topics", [])
+            topic_titles = [t.get("title", "") if isinstance(t, dict) else str(t) for t in topics]
+            topic_count = len(topic_titles)
+            
+            comp_count = completed_topics.get((roadmap_id, idx + 1), 0)
+            
+            evidence_level = 0
+            evidence_label = "Mapped"
+            
+            is_explored = topic_count > 0 and (comp_count / topic_count) >= 0.5
+            if is_explored:
+                evidence_level = 1
+                evidence_label = "Explored"
+                
+                if roadmap_id in practice_roadmaps:
+                    evidence_level = 2
+                    evidence_label = "Practiced"
+                    
+                sub_eval = submissions.get((roadmap_id, idx + 1))
+                if sub_eval in ("Solid", "Developing"):
+                    evidence_level = 3
+                    evidence_label = "Demonstrated"
+                    
+            if evidence_level >= 1:
+                explored_count += 1
+            if evidence_level == 3:
+                demonstrated_count += 1
+                
+            nodes.append({
+                "id": node_id,
+                "label": title,
+                "roadmap_id": roadmap_id,
+                "roadmap_title": roadmap_title,
+                "module_index": idx,
+                "evidence_level": evidence_level,
+                "evidence_label": evidence_label,
+                "topics": topic_titles,
+                "topic_count": topic_count,
+                "topics_completed": comp_count
+            })
+            
+            if prev_node_id:
+                edges.append({
+                    "source": prev_node_id,
+                    "target": node_id,
+                    "type": "sequential",
+                    "label": ""
+                })
+            prev_node_id = node_id
+            
+            words = set(title.lower().split()) - stop_words
+            # Further strip punctuation if necessary, but this simple split might be enough
+            clean_words = {w.strip("(),.!?") for w in words if w.strip("(),.!?")}
+            if clean_words:
+                cross_roadmap_candidates.append({
+                    "id": node_id,
+                    "roadmap_id": roadmap_id,
+                    "words": clean_words
+                })
+                
+    cross_connections = 0
+    for i in range(len(cross_roadmap_candidates)):
+        for j in range(i + 1, len(cross_roadmap_candidates)):
+            c1 = cross_roadmap_candidates[i]
+            c2 = cross_roadmap_candidates[j]
+            if c1["roadmap_id"] != c2["roadmap_id"]:
+                intersection = c1["words"].intersection(c2["words"])
+                if len(intersection) >= 2:
+                    edges.append({
+                        "source": c1["id"],
+                        "target": c2["id"],
+                        "type": "cross_roadmap",
+                        "label": ", ".join(intersection)
+                    })
+                    cross_connections += 1
+                    
+    return {
+        "nodes": nodes,
+        "edges": edges,
+        "stats": {
+            "total_concepts": len(nodes),
+            "demonstrated": demonstrated_count,
+            "explored": explored_count,
+            "cross_connections": cross_connections
+        }
+    }
 
 @router.get("/profile/{username}/activity")
 async def get_activity(username: str):

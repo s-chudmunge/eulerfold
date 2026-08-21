@@ -41,6 +41,7 @@ import { coinsAPI, EulerCoinBalance, authAPI, roadmapsAPI, RoadmapMe, sessionsAP
 import IntensityHeatmap from '@/components/dashboard/IntensityHeatmap';
 import { format } from 'date-fns';
 import AppSidebar from '@/components/AppSidebar';
+import ThemeToggle from '@/components/ThemeToggle';
 import OnboardingFlow from '@/components/onboarding/OnboardingFlow';
 
 
@@ -205,6 +206,7 @@ export default function DashboardPage() {
                     </div>
 
                     <div className="flex items-center gap-2 md:gap-4">
+                        <ThemeToggle />
                         {profile?.is_pro && (
                             <div className="hidden sm:flex items-center px-2 py-0.5 rounded bg-accent/10 border border-accent/20">
                                 <span className="inconsolata-ui text-[9px] font-black text-accent uppercase tracking-tighter">Pro Mode</span>

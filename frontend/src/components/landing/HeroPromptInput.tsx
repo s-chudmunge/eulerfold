@@ -19,7 +19,7 @@ type Engine = 'eulerfold' | 'openrouter' | 'local';
 
 const MODES: { id: Mode; label: string; icon: any; placeholder: string }[] = [
   { id: 'ai', label: 'AI Gen', icon: Waypoints, placeholder: "e.g. I want to master Transformer architectures from scratch" },
-  { id: 'job', label: 'Job Decoded', icon: Compass, placeholder: "Paste a LinkedIn or Indeed job description..." },
+  { id: 'job', label: 'Job Decoded', icon: Compass, placeholder: "Paste any job description or URL..." },
   { id: 'url', label: 'From Link', icon: Globe, placeholder: "Paste an article, GitHub repo, or doc link..." },
   { id: 'syllabus', label: 'Syllabus', icon: Library, placeholder: "Paste your course syllabus or outline..." },
   { id: 'gaps', label: 'Skill Quiz', icon: Activity, placeholder: "What is your target role?" },
@@ -41,11 +41,8 @@ const LOADING_MESSAGES = [
   "Filtering out the noise... 🎧",
   "Connecting the dots... 🧩",
   "Curating the good stuff... 💎",
-  "Sprinkling some magic... 🪄",
-  "Double-checking the vibes... 🧐",
   "Polishing the final modules... ✨",
-  "Almost there, trust the process... 🫡",
-  "Serving it up hot... 🍽️"
+  "Almost there, trust the process... 🫡"
 ];
 
 export default function HeroPromptInput() {
@@ -462,18 +459,21 @@ Return ONLY this JSON structure:
                 <div key={i} className="w-2 h-2 bg-accent rounded-full animate-bounce" style={{ animationDelay: `${i * 0.2}s` }} />
             ))}
         </div>
-        <div className="text-center h-12 relative flex flex-col items-center">
+        <div className="text-center min-h-[60px] relative flex flex-col items-center justify-center">
             <AnimatePresence mode="wait">
               <motion.h3 
                 key={loadingMsgIdx}
                 initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -5 }}
-                className="text-text-heading font-bold text-[14px]"
+                className="text-text-heading font-bold text-[14px] mb-1.5"
               >
                 {dynamicLoadingMsg || LOADING_MESSAGES[loadingMsgIdx]}
               </motion.h3>
             </AnimatePresence>
+            <p className="text-text-muted text-[12px] opacity-70">
+              Go grab a coffee, this might take a few minutes ☕
+            </p>
         </div>
       </motion.div>
     );
@@ -557,7 +557,7 @@ Return ONLY this JSON structure:
                       className="flex items-center justify-center w-8 h-8 rounded-md bg-sidebar/30 border border-border text-text-muted hover:text-text-heading hover:border-text-heading/30 transition-colors"
                       title={activeEngine.label}
                     >
-                      <activeEngine.icon className="w-4 h-4" />
+                      <span className="text-[16px]">🤖</span>
                     </button>
                     {showEngineMenu && (
                       <div className="absolute bottom-full left-0 mb-2 w-36 bg-background border border-border rounded-md shadow-xl z-50 overflow-hidden">
@@ -600,19 +600,30 @@ Return ONLY this JSON structure:
                 <div className="flex gap-4">
                   <div className="flex-1 flex flex-col gap-1.5">
                     <label className="text-[11px] font-bold text-text-muted uppercase">Duration</label>
-                    <div className="flex items-center gap-2">
-                      <input type="number" min={1} max={12} value={timeValue} onChange={e => setTimeValue(Number(e.target.value))} className="w-16 bg-sidebar border border-border rounded-md px-2 py-1.5 text-[13px] font-bold outline-none" />
-                      <select value={timeUnit} onChange={e => setTimeUnit(e.target.value)} className="flex-1 bg-sidebar border border-border rounded-md px-2 py-1.5 text-[13px] font-bold outline-none">
-                        <option value="weeks">Weeks</option>
-                        <option value="months">Months</option>
-                      </select>
+                    <div className="flex items-center bg-sidebar/60 rounded-md p-1 border border-border h-[34px]">
+                      {[
+                        { v: 1, u: 'weeks', l: '1 Wk' },
+                        { v: 2, u: 'weeks', l: '2 Wks' },
+                        { v: 4, u: 'weeks', l: '4 Wks' },
+                        { v: 6, u: 'weeks', l: '6 Wks' },
+                        { v: 12, u: 'weeks', l: '12 Wks' }
+                      ].map((opt) => (
+                        <button
+                          key={opt.l}
+                          type="button"
+                          onClick={() => { setTimeValue(opt.v); setTimeUnit(opt.u); }}
+                          className={`flex-1 flex items-center justify-center h-full rounded text-[12px] font-bold transition-all ${timeValue === opt.v && timeUnit === opt.u ? 'bg-background shadow-sm text-accent border border-border/50' : 'text-text-muted hover:text-text-heading border border-transparent'}`}
+                        >
+                          {opt.l}
+                        </button>
+                      ))}
                     </div>
                   </div>
                   
                   {['ai', 'job'].includes(mode) && (
                     <div className="flex-1 flex flex-col gap-1.5">
                       <label className="text-[11px] font-bold text-text-muted uppercase">Experience</label>
-                      <select value={experienceLevel} onChange={e => setExperienceLevel(e.target.value)} className="w-full bg-sidebar border border-border rounded-md px-2 py-1.5 text-[13px] font-bold outline-none">
+                      <select value={experienceLevel} onChange={e => setExperienceLevel(e.target.value)} className="w-full bg-sidebar/60 border border-border rounded-md px-2 py-1 text-[12px] font-bold outline-none h-[34px] text-text-heading">
                         <option value="novice">Beginner</option>
                         <option value="intermediate">Intermediate</option>
                         <option value="advanced">Advanced</option>
@@ -626,7 +637,7 @@ Return ONLY this JSON structure:
                     onClick={() => submitGeneration()}
                     className="inline-flex items-center gap-2 bg-accent text-white px-5 py-2 rounded-md text-[13px] font-bold transition-all hover:bg-teal-700 active:scale-[0.97]"
                   >
-                    Generate Course
+                    Create My Course
                     <Wand2 className="w-3.5 h-3.5" />
                   </button>
                 </div>

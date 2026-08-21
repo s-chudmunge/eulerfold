@@ -156,7 +156,7 @@ REQUIRED MODULES (always include these 3):
     "the_win": "The concrete advantage. What can you now do that you couldn't before?"
   }
 - "Logic": {
-    "details": "Markdown explaining the step-by-step reasoning of the paper. MUST start with a plain-English paragraph describing what the argument/proof/method is trying to achieve before any math or symbols. Then walk through the logic step by step. Use $...$ for inline math, $$...$$ for block math."
+    "details": "Markdown explaining the step-by-step reasoning of the paper. MUST start with a plain-English paragraph describing what the argument/proof/method is trying to achieve before any math or symbols. Then, break down the logic step-by-step using bullet points, bold headers, and short paragraphs to avoid dense walls of text. Make it highly readable. Use $...$ for inline math, $$...$$ for block math."
   }
 - "Realities": {
     "context": "One sentence summarizing the theme of these limitations/gotchas.",
@@ -165,7 +165,7 @@ REQUIRED MODULES (always include these 3):
 
 OPTIONAL MODULES (pick 2-3 based on archetype):
 - "Concept": {
-    "details": "Markdown. Start with: what is the core concept and why does the paper need to define it? Then explain the mechanism/architecture. Tables and diagrams are welcome but must be preceded by a setup sentence."
+    "details": "Markdown. Start with: what is the core concept and why does the paper need to define it? Then explain the mechanism/architecture using bullet points, bold headers, and short paragraphs for high readability. Tables and diagrams are welcome but must be preceded by a setup sentence."
   }
 - "Figures & Visuals": {
     "details": "Markdown explaining the paper's key figures, architectural diagrams, or plots. IF extracted paper figures are provided below, you MUST embed them using standard Markdown image syntax `![Figure Description](URL)` followed by a detailed paragraph explaining what the figure demonstrates and why it matters to the paper's main thesis."
@@ -189,7 +189,9 @@ STYLE RULES:
 - Plain English first, then technical notation.
 - Never open a section with a symbol, equation, table header, or bullet point.
 - A smart but uninitiated expert should be able to follow every module from start to finish.
+- Structure your markdown with short paragraphs, bold headers, and bullet points where appropriate to avoid dense walls of text. Make it highly readable.
 - Use $...$ for inline math and $$...$$ for block math. Never use bare LaTeX.
+- CRITICAL: You are outputting JSON. You MUST double-escape all LaTeX backslashes! For example, write `\\\\mathbb{R}` instead of `\\mathbb{R}`, and `\\\\times` instead of `\\times`, otherwise JSON parsers will corrupt the math.
 - No fluff, no marketing language. Be precise and direct.
 
 CODE BLOCK RULES (strictly enforced):

@@ -196,7 +196,7 @@ const [isMenuOpen, setIsMenuOpen] = useState(false);
                                     <Compass className="w-3.5 h-3.5 stroke-[1.5px]" /> {isCollapsed ? null : <span className="truncate">Job Decoded</span>}
                                 </Link>
                                 <Link href="/#hero-prompt-input" aria-current={isActive('/generate?mode=url') ? 'page' : undefined} className={navLinkClass('/generate?mode=url')} onClick={onClose}>
-                                    <Globe className="w-3.5 h-3.5 stroke-[1.5px]" /> From Link
+                                    <Globe className="w-3.5 h-3.5 stroke-[1.5px]" /> {isCollapsed ? null : <span className="truncate">From Link</span>}
                                 </Link>
                                 <Link href="/#hero-prompt-input" aria-current={isActive('/generate?mode=syllabus') ? 'page' : undefined} className={navLinkClass('/generate?mode=syllabus')} onClick={onClose}>
                                     <Library className="w-3.5 h-3.5 stroke-[1.5px]" /> {isCollapsed ? null : <span className="truncate">Syllabus Parse</span>}
@@ -282,34 +282,7 @@ const [isMenuOpen, setIsMenuOpen] = useState(false);
                                 </div>
                             </div>
                         )}
-                        
-                        
-                        
-                        {isCollapsed ? (
-                            <div className="flex items-center justify-center w-full mb-4">
-                                <button 
-                                    onClick={() => toggleTheme(theme === 'light' ? 'dark' : 'light')}
-                                    className="p-2 rounded-lg text-text-muted hover:bg-sidebar transition-colors"
-                                >
-                                    {theme === 'light' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
-                                </button>
-                            </div>
-                        ) : (
-                            <div className="flex items-center gap-1 bg-background/50 border border-border rounded-full p-1 mx-2 mb-4 w-max">
-                                <button 
-                                    onClick={() => toggleTheme('light')}
-                                    className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all ${theme === 'light' ? 'bg-background text-text-heading shadow-sm border border-border/50' : 'text-text-muted hover:text-text-heading'}`}
-                                >
-                                    <Sun className="w-3.5 h-3.5" /> Light
-                                </button>
-                                <button 
-                                    onClick={() => toggleTheme('dark')}
-                                    className={`flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-bold transition-all ${theme === 'dark' ? 'bg-sidebar text-text-heading shadow-sm border border-border/50' : 'text-text-muted hover:text-text-heading'}`}
-                                >
-                                    <Moon className="w-3.5 h-3.5" /> Dark
-                                </button>
-                            </div>
-                        )}
+
 
 <div 
                             className="flex items-center justify-between gap-2 px-2 py-1.5 border border-border dark:border-white/10 rounded-lg hover:bg-sidebar dark:hover:bg-background/[0.02] transition-colors cursor-pointer group" 

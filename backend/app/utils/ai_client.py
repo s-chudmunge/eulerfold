@@ -22,24 +22,24 @@ logger = logging.getLogger(__name__)
 _cached_free_model = None
 _cached_time = 0
 
+# Preferred free models ranked by structured JSON capability
+PREFERRED_FREE_MODELS = [
+    "nvidia/nemotron-3.5-lightning:free",
+    "nvidia/nemotron-3-ultra-550b-a55b:free",
+    "google/gemma-4-31b-it:free",
+    "poolside/laguna-s-2.1:free",
+    "z-ai/glm-5.2:free",
+    "nvidia/nemotron-3-super-120b-a12b:free",
+    "cohere/north-mini-code:free",
+    "openrouter/free"
+]
+
 async def get_fastest_free_openrouter_model() -> str:
     global _cached_free_model, _cached_time
     import time
     
     if _cached_free_model and time.time() - _cached_time < 3600:
         return _cached_free_model
-    
-    # Preferred free models ranked by structured JSON capability
-    PREFERRED_FREE_MODELS = [
-        "nvidia/nemotron-3-ultra-550b-a55b:free",
-        "google/gemma-4-31b-it:free",
-        "nvidia/nemotron-3-super-120b-a12b:free",
-        "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free",
-        "openrouter/free",
-        "openai/gpt-oss-20b:free",
-        "cohere/north-mini-code:free",
-        "google/gemma-4-26b-a4b-it:free",
-    ]
         
     try:
         async with httpx.AsyncClient(timeout=10.0) as client:
@@ -122,16 +122,22 @@ async def _call_openrouter(prompt: str, model: str, response_mime_type: str):
     if response_mime_type == "application/json":
         payload["response_format"] = {"type": "json_object"}
 
-    max_retries = 3
+    max_retries = 2
 
-    async with httpx.AsyncClient(timeout=180.0) as client:
+    async with httpx.AsyncClient(timeout=90.0) as client:
         for attempt in range(max_retries):
+            if attempt > 0 and model.endswith(":free"):
+                # Rotate to another free model on retry
+                fallback_idx = attempt % len(PREFERRED_FREE_MODELS)
+                payload["model"] = PREFERRED_FREE_MODELS[fallback_idx]
+                logger.info(f"OpenRouter attempt {attempt + 1}: Retrying with fallback free model {payload['model']}...")
+                
             try:
                 response = await client.post(
                     "https://openrouter.ai/api/v1/chat/completions",
                     headers=headers,
                     json=payload,
-                    timeout=180.0
+                    timeout=90.0
                 )
                 
                 response.raise_for_status()
@@ -141,6 +147,9 @@ async def _call_openrouter(prompt: str, model: str, response_mime_type: str):
                     raise RuntimeError("Empty choices from OpenRouter")
                     
                 content = data["choices"][0]["message"]["content"]
+                if not content or not content.strip() or content.strip() == "{}":
+                    raise RuntimeError("Model returned empty or trivial text completion")
+                    
                 usage = data.get("usage") or {}
                 if usage.get("prompt_tokens", 0) == 0 and usage.get("completion_tokens", 0) == 0:
                     pt = max(1, len(prompt) // 4)
@@ -181,7 +190,7 @@ async def _call_groq(prompt: str, model: str, response_mime_type: str):
         raise RuntimeError("GROQ_API_KEY not configured for fallback")
 
     # Always use a highly capable stable Groq model for fallback
-    groq_model = "llama3-70b-8192"
+    groq_model = "llama-3.3-70b-versatile"
         
     headers = {
         "Authorization": f"Bearer {api_key}",
@@ -199,14 +208,14 @@ async def _call_groq(prompt: str, model: str, response_mime_type: str):
     if response_mime_type == "application/json":
         payload["response_format"] = {"type": "json_object"}
 
-    async with httpx.AsyncClient(timeout=180.0) as client:
+    async with httpx.AsyncClient(timeout=90.0) as client:
         try:
             logger.info(f"Attempting Groq fallback with model {groq_model}...")
             response = await client.post(
                 "https://api.groq.com/openai/v1/chat/completions",
                 headers=headers,
                 json=payload,
-                timeout=180.0
+                timeout=90.0
             )
             response.raise_for_status()
             data = response.json()
@@ -214,7 +223,11 @@ async def _call_groq(prompt: str, model: str, response_mime_type: str):
             if "choices" not in data or not data["choices"]:
                 raise RuntimeError("Empty choices from Groq")
                 
-            return data["choices"][0]["message"]["content"], data.get("usage", {}), groq_model
+            content = data["choices"][0]["message"]["content"]
+            if not content or not content.strip() or content.strip() == "{}":
+                raise RuntimeError("Model returned empty or trivial text completion")
+                
+            return content, data.get("usage", {}), groq_model
         except httpx.HTTPStatusError as e:
             logger.error(f"Groq HTTP Error {e.response.status_code}: {e.response.text}")
             raise RuntimeError(f"Groq fallback failed: {e.response.status_code}")
@@ -380,13 +393,19 @@ async def generate_text(prompt: str, model: str = None, response_mime_type: str 
                 except Exception as gemini_e:
                     logger.warning(f"[AI] ✗ Gemini failed ({type(gemini_e).__name__}: {str(gemini_e)[:100]})")
                     try:
-                        text, usage, used_model = await _call_huggingface(prompt, response_mime_type)
-                        _log_success("HuggingFace", used_model, usage, time.time() - t0)
+                        logger.info(f"[AI] ⚠ All alternative providers failed. Attempting final Hail Mary with OpenRouter...")
+                        text, usage, used_model = await _call_openrouter(prompt, "openrouter/free", response_mime_type)
+                        _log_success("OpenRouter (Final Fallback)", used_model, usage, time.time() - t0)
                         return (text, _attach_model(usage, used_model)) if return_usage else text
-                    except Exception as hf_e:
-                        elapsed = time.time() - t0
-                        logger.error(f"[AI] ✗ All 5 providers failed after {elapsed:.1f}s")
-                        raise Exception(f"AI generation failed completely.\\nOpenRouter: {e}\\nGroq: {groq_e}\\nCohere: {cohere_e}\\nGemini: {gemini_e}\\nHugging Face: {hf_e}")
+                    except Exception as or_final_e:
+                        try:
+                            text, usage, used_model = await _call_huggingface(prompt, response_mime_type)
+                            _log_success("HuggingFace", used_model, usage, time.time() - t0)
+                            return (text, _attach_model(usage, used_model)) if return_usage else text
+                        except Exception as hf_e:
+                            elapsed = time.time() - t0
+                            logger.error(f"[AI] ✗ All 6 providers failed after {elapsed:.1f}s")
+                            raise Exception(f"AI generation failed completely.\\nOpenRouter: {e}\\nGroq: {groq_e}\\nCohere: {cohere_e}\\nGemini: {gemini_e}\\nOpenRouter (Final): {or_final_e}\\nHugging Face: {hf_e}")
 
 def clean_json_string(text: str) -> str:
     """Extracts and prepares JSON string for parsing."""
@@ -532,7 +551,7 @@ async def generate_text_stream(prompt: str, model: str = None, response_mime_typ
             payload["response_format"] = {"type": "json_object"}
 
         try:
-            async with httpx.AsyncClient(timeout=180.0) as client:
+            async with httpx.AsyncClient(timeout=90.0) as client:
                 async with client.stream("POST", "https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload) as response:
                     response.raise_for_status()
                     async for line in response.aiter_lines():

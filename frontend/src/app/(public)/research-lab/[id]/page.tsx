@@ -3,6 +3,7 @@ import { Metadata } from 'next';
 import ResearchLabDetailClient from './ResearchLabDetailClient';
 import UserNav from '@/components/UserNav';
 import GitHubStarButton from '@/components/GitHubStarButton';
+import ThemeToggle from '@/components/ThemeToggle';
 import Link from 'next/link';
 export const metadata: Metadata = {
   title: 'Technical Report | EulerFold Decode',
@@ -20,6 +21,7 @@ export default function ResearchLabDetailPage({ params }: { params: { id: string
                   </Link>
               </div>
               <div className="flex items-center gap-3">
+                  <ThemeToggle />
                   <GitHubStarButton />
                   <UserNav />
               </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileText, CheckCircle2, ExternalLink } from 'lucide-react';
+import { ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 
 export default function VerifiedWork({ submissions, onSelectReview }: { submissions: any[], onSelectReview: (sub: any) => void }) {
@@ -7,37 +7,42 @@ export default function VerifiedWork({ submissions, onSelectReview }: { submissi
 
     return (
         <section>
-            <div className="flex items-center justify-between mb-8">
-                <h2 className="text-[22px] font-bold text-text-heading flex items-center gap-3">Verified Work</h2>
+            <div className="flex items-center justify-between mb-6">
+                <h2 className="text-[20px] font-bold text-text-heading flex items-center gap-3">Verified Work</h2>
             </div>
-            <div className="grid grid-cols-1 gap-4">
-                {submissions.slice(0, 5).map((sub: any) => (
-                    <div key={sub.id} className="p-5 bg-sidebar/30 border border-border/50 rounded-xl flex flex-col sm:flex-row sm:items-center gap-4 hover:border-emerald-500/30 hover:bg-sidebar/60 transition-all group">
-                        <div className="w-10 h-10 bg-emerald-500/10 text-emerald-600 rounded-lg flex items-center justify-center shrink-0 border border-emerald-500/20">
-                            <CheckCircle2 className="w-5 h-5" />
+            <div className="grid grid-cols-1 gap-3">
+                {submissions.slice(0, 5).map((sub: any) => {
+                    const isSolid = sub.evaluation_level === 'Solid' || sub.evaluation_level === 'Expert';
+                    return (
+                        <div 
+                            key={sub.id} 
+                            onClick={() => onSelectReview(sub)}
+                            className="p-4 bg-sidebar/30 border border-border rounded-lg flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:border-border/80 hover:bg-sidebar/50 transition-all cursor-pointer group"
+                        >
+                            <div className="flex-1 min-w-0">
+                                <h4 className="text-[14px] font-bold text-text-heading mb-1 truncate">{sub.roadmaps?.title || 'Technical Task'}</h4>
+                                <p className="text-[13px] text-text-muted line-clamp-1">
+                                    {sub.description}
+                                </p>
+                            </div>
+                            <div className="flex items-center gap-3 shrink-0 mt-2 sm:mt-0">
+                                <span className={`text-[11px] font-bold uppercase tracking-wider px-2 py-1 rounded-md border ${isSolid ? 'text-teal-700 bg-teal-700/10 border-teal-700/20' : 'text-amber-600 bg-amber-500/10 border-amber-500/20'}`}>
+                                    {sub.evaluation_level}
+                                </span>
+                                {sub.link && (
+                                    <Link 
+                                        href={sub.link} 
+                                        target="_blank" 
+                                        onClick={(e) => e.stopPropagation()}
+                                        className="p-2 text-text-muted hover:text-text-primary bg-background rounded-md transition-colors border border-border"
+                                    >
+                                        <ExternalLink className="w-3.5 h-3.5" />
+                                    </Link>
+                                )}
+                            </div>
                         </div>
-                        <div className="flex-1 min-w-0">
-                            <h4 className="text-[15px] font-bold text-text-heading mb-1 truncate">{sub.roadmaps?.title || 'Technical Task'}</h4>
-                            <p className="text-[13px] text-text-muted line-clamp-1 italic font-medium">&ldquo;{sub.description}&rdquo;</p>
-                        </div>
-                        <div className="flex items-center gap-3 shrink-0 mt-3 sm:mt-0">
-                            <span className="text-[10px] font-bold uppercase tracking-widest text-emerald-600 bg-emerald-500/10 px-2 py-1 rounded border border-emerald-500/20">
-                                {sub.evaluation_level}
-                            </span>
-                            {sub.link && (
-                                <Link href={sub.link} target="_blank" className="p-2 text-text-muted hover:text-accent bg-background rounded-lg transition-colors border border-border">
-                                    <ExternalLink className="w-3.5 h-3.5" />
-                                </Link>
-                            )}
-                            <button 
-                                onClick={() => onSelectReview(sub)}
-                                className="p-2 text-text-muted hover:text-accent bg-background rounded-lg transition-colors border border-border"
-                            >
-                                <FileText className="w-3.5 h-3.5" />
-                            </button>
-                        </div>
-                    </div>
-                ))}
+                    );
+                })}
             </div>
         </section>
     );

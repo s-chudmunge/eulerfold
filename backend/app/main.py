@@ -49,7 +49,10 @@ def patched_send(self, request, *args, **kwargs):
     for attempt in range(retries):
         try:
             return original_send(self, request, *args, **kwargs)
-        except (httpx.ReadError, httpx.LocalProtocolError, httpx.RemoteProtocolError, httpx.ProtocolError) as e:
+        except (httpx.ReadError, httpx.WriteError, httpx.LocalProtocolError, httpx.RemoteProtocolError, httpx.ProtocolError, httpx.ReadTimeout, RuntimeError) as e:
+            if isinstance(e, RuntimeError) and "dictionary changed size" not in str(e).lower():
+                raise
+                
             if attempt == retries - 1:
                 raise
             logger.warning(f"Intercepted transient httpx transport error ({type(e).__name__}: {e}). Closing connection and retrying {attempt + 1}/{retries} for {request.url}...")
