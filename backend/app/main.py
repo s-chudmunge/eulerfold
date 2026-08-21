@@ -49,19 +49,16 @@ def patched_send(self, request, *args, **kwargs):
     for attempt in range(retries):
         try:
             return original_send(self, request, *args, **kwargs)
-        except httpx.ReadError as e:
+        except (httpx.ReadError, httpx.LocalProtocolError, httpx.RemoteProtocolError, httpx.ProtocolError) as e:
             if attempt == retries - 1:
                 raise
-            if "Errno 11" in str(e) or "Resource temporarily unavailable" in str(e):
-                logger.warning(f"Intercepted httpx.ReadError (Errno 11). Retrying {attempt + 1}/{retries} for {request.url}...")
-                time.sleep(0.5 * (attempt + 1))
-            else:
-                raise
+            logger.warning(f"Intercepted transient httpx transport error ({type(e).__name__}: {e}). Retrying {attempt + 1}/{retries} for {request.url}...")
+            time.sleep(0.3 * (attempt + 1))
         except Exception:
             raise
 
 httpx.Client.send = patched_send
-logger.info("Applied global httpx sync ReadError patch for Python 3.14 compatibility.")
+logger.info("Applied global httpx sync error patch for Python compatibility.")
 # -----------------------------------------------
 
 from fastapi import FastAPI, Depends, WebSocket, status
