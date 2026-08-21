@@ -8,7 +8,6 @@ import PublicHeader from '@/components/PublicHeader';
 import Footer from '@/components/Footer';
 import { BrainCircuit, Activity, CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import EulerLogoCanvas from '@/components/EulerLogoCanvas';
 import { FAQAccordion } from '@/app/HomeClientComponents';
 
 export default function SkillGapClient() {
@@ -66,8 +65,7 @@ export default function SkillGapClient() {
               className="flex items-center justify-center gap-3 mb-6"
             >
               <div className="p-3 bg-accent/10 rounded-lg border border-accent/20 shadow-xs flex items-center justify-center">
-                <EulerLogoCanvas size={48} color1={0x0f766e} color2={0x14b8a6} wireframe={false} />
-              </div>
+                              </div>
             </motion.div>
             
             <motion.h1 

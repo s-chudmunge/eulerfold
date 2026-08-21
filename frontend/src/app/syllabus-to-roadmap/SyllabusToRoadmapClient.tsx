@@ -8,7 +8,6 @@ import PublicHeader from '@/components/PublicHeader';
 import Footer from '@/components/Footer';
 import { RefreshCw, FileText, CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import EulerLogoCanvas from '@/components/EulerLogoCanvas';
 import { FAQAccordion } from '@/app/HomeClientComponents';
 
 export default function SyllabusToRoadmapClient() {
@@ -66,8 +65,7 @@ export default function SyllabusToRoadmapClient() {
               className="flex items-center justify-center gap-3 mb-6"
             >
               <div className="p-3 bg-amber-600/10 rounded-2xl border border-amber-600/20 shadow-[0_0_30px_rgba(217,119,6,0.3)] flex items-center justify-center">
-                <EulerLogoCanvas size={48} color1={0xc2410c} color2={0xf97316} wireframe={false} />
-              </div>
+                              </div>
             </motion.div>
             
             <motion.h1 

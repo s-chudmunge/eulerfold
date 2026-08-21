@@ -13,7 +13,6 @@ import { OpenRouterModal } from './OpenRouterModal';
 import { LocalAIModal } from './LocalAIModal';
 import { CreateMLCEngine, hasModelInCache } from '@mlc-ai/web-llm';
 import { jsonrepair } from 'jsonrepair';
-import EulerLogoCanvas from '../EulerLogoCanvas';
 import DiagnosticFlow, { DiagnosticResult } from '../diagnostic/DiagnosticFlow';
 
 interface RoadmapGeneratorProps {

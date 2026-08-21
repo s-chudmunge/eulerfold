@@ -6,7 +6,6 @@ import { logAIUsage } from '@/lib/usageTracker';
 import { Loader, X, Trophy, Check, ArrowRight, ArrowLeft, Zap, Cloud, Key, Cpu } from 'lucide-react';
 import { practiceAPI, MCQSessionRead, MCQQuestion } from '@/lib/api';
 import Link from 'next/link';
-import EulerLogoCanvas from '@/components/EulerLogoCanvas';
 import TTSListenButton from '@/components/TTSListenButton';
 import { OpenRouterModal } from '@/components/landing/OpenRouterModal';
 import { LocalAIModal } from '@/components/landing/LocalAIModal';
@@ -534,8 +533,7 @@ Return ONLY a JSON array of objects. Each object must have:
                 <div className="absolute inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center p-6 text-center">
                     <div className="animate-in fade-in zoom-in duration-300 flex flex-col items-center">
                         <div className="mb-4">
-                            <EulerLogoCanvas size={48} rotationSpeed={0.008} />
-                        </div>
+                                                    </div>
                         <p className="appropriate-sans text-[11px] font-bold text-accent mb-4">
                             Please give us a few seconds...crafting custom questions for {topicName}.
                         </p>
@@ -645,8 +643,7 @@ Return ONLY a JSON array of objects. Each object must have:
 
                         <div className="pt-4 mt-8 flex items-center justify-between border-t border-border pb-8">
                             <div className="flex items-center gap-2 appropriate-sans text-[13px] font-bold text-text-heading tracking-tight">
-                                <EulerLogoCanvas size={20} rotationSpeed={0.002} />
-                                <span>Euler<span className="text-accent">Fold</span></span>
+                                                                <span>Euler<span className="text-accent">Fold</span></span>
                             </div>
                             
                             <div className="flex items-center gap-2.5">

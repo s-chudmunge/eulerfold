@@ -11,7 +11,6 @@ import GenerateFromLink from '@/components/landing/GenerateFromLink';
 import GenerateFromSyllabus from '@/components/landing/GenerateFromSyllabus';
 import KnowledgeGapQuiz from '@/components/landing/KnowledgeGapQuiz';
 import { RoadmapData, ExploreRoadmap } from '@/lib/api';
-import EulerLogoCanvas from '@/components/EulerLogoCanvas';
 import { 
   Sparkles,
   Briefcase,

@@ -3,7 +3,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle2, BookOpen, PlayCircle, ArrowRight, Sparkles, Loader2, Wifi, Battery, Signal } from 'lucide-react';
-import EulerLogoCanvas from '@/components/EulerLogoCanvas';
 
 type Phase = 'input' | 'generating' | 'result';
 
@@ -158,8 +157,7 @@ export default function HeroMockup() {
 
             {/* App Header */}
             <div className="px-4 py-2 flex items-center gap-2 border-b border-border/40">
-              <EulerLogoCanvas size={18} />
-              <span className="text-[12px] font-bold text-text-heading tracking-tight">EulerFold</span>
+                            <span className="text-[12px] font-bold text-text-heading tracking-tight">EulerFold</span>
             </div>
 
             {/* Screen Content — Animated Phases */}
@@ -275,8 +273,7 @@ export default function HeroMockup() {
                   >
                     {/* Roadmap header */}
                     <div className="px-4 py-3 border-b border-border/60 flex items-center gap-2.5">
-                      <EulerLogoCanvas size={18} />
-                      <div className="flex-1 min-w-0">
+                                            <div className="flex-1 min-w-0">
                         <p className="text-[11px] font-bold text-text-heading truncate">Transformer Architectures</p>
                         <p className="text-[9px] text-text-muted">4 modules · 12 hours</p>
                       </div>

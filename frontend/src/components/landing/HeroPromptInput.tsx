@@ -220,15 +220,22 @@ Return ONLY this JSON structure:
                 let jsonStr = "";
                 if (engine === 'local') {
                     setDynamicLoadingMsg(`Loading local model: ${localAIModelId}...`);
-                    const engineLocal = await CreateMLCEngine(localAIModelId, { 
-                        initProgressCallback: (p) => setDynamicLoadingMsg(`Local AI: ${p.text}`) 
-                    });
-                    setDynamicLoadingMsg("Decoding paper directly on your GPU... 🧠");
-                    const msg = await engineLocal.chat.completions.create({
-                        messages: [{role: "user", content: prompt + "\n\nTEXT:\n" + rawText}],
-                        max_tokens: 8000
-                    });
-                    jsonStr = msg.choices[0].message.content || "{}";
+                    let engineLocal = null;
+                    try {
+                        engineLocal = await CreateMLCEngine(localAIModelId, { 
+                            initProgressCallback: (p) => setDynamicLoadingMsg(`Local AI: ${p.text}`) 
+                        });
+                        setDynamicLoadingMsg("Decoding paper directly on your GPU... 🧠");
+                        const msg = await engineLocal.chat.completions.create({
+                            messages: [{role: "user", content: prompt + "\n\nTEXT:\n" + rawText}],
+                            max_tokens: 8000
+                        });
+                        jsonStr = msg.choices[0].message.content || "{}";
+                    } finally {
+                        if (engineLocal) {
+                            try { await engineLocal.unload(); } catch(e) {}
+                        }
+                    }
                 } else {
                     setDynamicLoadingMsg(`Reasoning with OpenRouter... 🧠`);
                     const orRes = await fetch("https://openrouter.ai/api/v1/chat/completions", {
@@ -284,11 +291,12 @@ Return ONLY this JSON structure:
                 setDynamicLoadingMsg(`Local AI: ${report.text}`);
             };
             
-            const mlc_engine = await CreateMLCEngine(localAIModelId, { initProgressCallback });
-            
-            setDynamicLoadingMsg("Brainstorming curriculum directly on your GPU... 🧠");
-            
-            const localSystemPrompt = `You are an expert technical lead. Generate a highly technical and mathematically rigorous course. Output ONLY valid JSON matching exactly this format:
+            let mlc_engine = null;
+            try {
+                mlc_engine = await CreateMLCEngine(localAIModelId, { initProgressCallback });
+                setDynamicLoadingMsg("Brainstorming curriculum directly on your GPU... 🧠");
+                
+                const localSystemPrompt = `You are an expert technical lead. Generate a highly technical and mathematically rigorous course. Output ONLY valid JSON matching exactly this format:
 {
   "title": "string",
   "description": "string",
@@ -307,41 +315,46 @@ Return ONLY this JSON structure:
     }
   ]
 }`;
-            const localUserPrompt = `Subject: ${finalValue}\nGoal: ${finalValue}\nExperience: ${experienceLevel}\nTime: ${timeValue} ${timeUnit}\nGenerate the JSON.`;
-            
-            const mlcResponse = await mlc_engine.chat.completions.create({
-                messages: [
-                    { role: "system", content: localSystemPrompt },
-                    { role: "user", content: localUserPrompt }
-                ],
-                max_tokens: 8192
-            });
-            
-            let generatedText = mlcResponse.choices[0].message.content || '';
-            let cleanedText = generatedText.trim();
-            if (cleanedText.startsWith("```json")) cleanedText = cleanedText.replace(/^```json\n?/, "").replace(/```$/, "");
-            else if (cleanedText.startsWith("```")) cleanedText = cleanedText.replace(/^```\n?/, "").replace(/```$/, "");
-            
-            cleanedText = cleanedText.trim();
-            const parsedJSON = JSON.parse(jsonrepair(cleanedText));
-            
-            setDynamicLoadingMsg("Saving and enriching with YouTube videos... 🚀");
-            
-            const saveResponse = await api.post("/roadmaps/save-external", {
-                roadmap_plan: parsedJSON,
-                subject: finalValue,
-                goal: finalValue,
-                time_value: timeValue,
-                time_unit: timeUnit,
-                model: localAIModelId,
-                email: user.email
-            });
-            
-            const resultData = saveResponse.data;
-            localStorage.setItem('last_generated_roadmap', JSON.stringify({ data: resultData, timestamp: Date.now() }));
-            sessionStorage.setItem('roadmap_just_generated', 'true');
-            router.push(`/roadmap/${resultData.slug || resultData.id}`);
-            return;
+                const localUserPrompt = `Subject: ${finalValue}\nGoal: ${finalValue}\nExperience: ${experienceLevel}\nTime: ${timeValue} ${timeUnit}\nGenerate the JSON.`;
+                
+                const mlcResponse = await mlc_engine.chat.completions.create({
+                    messages: [
+                        { role: "system", content: localSystemPrompt },
+                        { role: "user", content: localUserPrompt }
+                    ],
+                    max_tokens: 8192
+                });
+                
+                let generatedText = mlcResponse.choices[0].message.content || '';
+                let cleanedText = generatedText.trim();
+                if (cleanedText.startsWith("```json")) cleanedText = cleanedText.replace(/^```json\n?/, "").replace(/```$/, "");
+                else if (cleanedText.startsWith("```")) cleanedText = cleanedText.replace(/^```\n?/, "").replace(/```$/, "");
+                
+                cleanedText = cleanedText.trim();
+                const parsedJSON = JSON.parse(jsonrepair(cleanedText));
+                
+                setDynamicLoadingMsg("Saving and enriching with YouTube videos... 🚀");
+                
+                const saveResponse = await api.post("/roadmaps/save-external", {
+                    roadmap_plan: parsedJSON,
+                    subject: finalValue,
+                    goal: finalValue,
+                    time_value: timeValue,
+                    time_unit: timeUnit,
+                    model: localAIModelId,
+                    email: user.email
+                });
+                
+                const resultData = saveResponse.data;
+                localStorage.setItem('last_generated_roadmap', JSON.stringify({ data: resultData, timestamp: Date.now() }));
+                sessionStorage.setItem('roadmap_just_generated', 'true');
+                router.push(`/roadmap/${resultData.slug || resultData.id}`);
+                return;
+            } finally {
+                if (mlc_engine) {
+                    try { await mlc_engine.unload(); } catch(e) {}
+                }
+            }
         }
 
             payload = { ...payload, subject: finalValue, goal: finalValue, experience_level: experienceLevel, model: engine };

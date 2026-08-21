@@ -8,7 +8,6 @@ import PublicHeader from '@/components/PublicHeader';
 import Footer from '@/components/Footer';
 import { Target, Zap, CheckCircle2 } from 'lucide-react';
 import { motion } from 'framer-motion';
-import EulerLogoCanvas from '@/components/EulerLogoCanvas';
 import { FAQAccordion } from '@/app/HomeClientComponents';
 
 export default function JobDecodedPageClient() {
@@ -66,8 +65,7 @@ export default function JobDecodedPageClient() {
               className="flex items-center justify-center gap-3 mb-6"
             >
               <div className="p-3 bg-teal-600/10 rounded-2xl border border-teal-600/20 shadow-[0_0_30px_rgba(15,118,110,0.3)] flex items-center justify-center">
-                <EulerLogoCanvas size={48} color1={0x0f766e} color2={0x2dd4bf} wireframe={false} />
-              </div>
+                              </div>
             </motion.div>
             
             <motion.h1 

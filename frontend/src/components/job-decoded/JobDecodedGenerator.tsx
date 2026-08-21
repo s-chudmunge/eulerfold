@@ -26,7 +26,6 @@ import { LocalAIModal } from '../landing/LocalAIModal';
 import { logAIUsage } from '@/lib/usageTracker';
 import { CreateMLCEngine } from '@mlc-ai/web-llm';
 import { jsonrepair } from 'jsonrepair';
-import EulerLogoCanvas from '../EulerLogoCanvas';
 import DiagnosticFlow, { DiagnosticResult } from '../diagnostic/DiagnosticFlow';
 
 interface JobDecodedGeneratorProps {

@@ -26,7 +26,6 @@ import { archiveData } from '../(public)/archive/generatedArchiveData';
 import { articles } from '../articles/generatedArticles';
 import { exploreAPI } from '@/lib/api';
 import { cleanSearchQuery, getSearchKeywords } from '@/lib/search';
-import EulerLogoCanvas from '@/components/EulerLogoCanvas';
 import PublicHeader from '@/components/PublicHeader';
 import Fuse from 'fuse.js';
 
@@ -219,8 +218,7 @@ function LearnContent() {
                         {/* Search Section */}
                         <div className="w-full mb-12 text-center flex flex-col items-center">
                             <div className="mb-6">
-                                <EulerLogoCanvas size={28} />
-                            </div>
+                                                            </div>
                             <h1 className="manrope-body text-xl md:text-2xl font-bold text-text-heading tracking-tight mb-2">
                                 What do you want to learn?
                             </h1>

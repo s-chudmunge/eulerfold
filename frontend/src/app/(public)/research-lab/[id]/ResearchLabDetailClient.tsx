@@ -18,7 +18,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import ResearchToolbox from '@/components/research-lab/ResearchToolbox';
 import ResearchHelpBot from '@/components/research-lab/ResearchHelpBot';
 
-import EulerLogoCanvas from '@/components/EulerLogoCanvas';
 
 
 const CopyButton = ({ text }: { text: string }) => {
@@ -184,8 +183,7 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
 
     if (loading && !data) return (
         <div className="flex flex-col items-center justify-center min-h-[80vh] gap-6">
-            <EulerLogoCanvas size={80} color1={0x1e3a8a} color2={0x3b82f6} emissive1={0x1d4ed8} emissive2={0x2563eb} emissiveIntensity={0.6} wireframe={true} className="mx-auto mb-8 block" />
-            <div className="h-6 flex items-center justify-center">
+                        <div className="h-6 flex items-center justify-center">
                 <AnimatePresence mode="wait">
                     <motion.span
                         key={statusIndex}
@@ -250,8 +248,7 @@ export default function ResearchLabDetailClient({ id }: { id: string }) {
             <div className="flex flex-col min-h-screen">
                 <main className="flex-grow flex items-center justify-center py-24 px-6 text-center">
                     <div className="max-w-sm w-full">
-                        <EulerLogoCanvas size={80} color1={0x1e3a8a} color2={0x3b82f6} emissive1={0x1d4ed8} emissive2={0x2563eb} emissiveIntensity={0.6} wireframe={true} className="mx-auto mb-8 block" />
-                        <h2 className="inconsolata-ui text-[18px] font-black text-text-heading uppercase tracking-[0.4em] mb-4">Analyzing Paper</h2>
+                                                <h2 className="inconsolata-ui text-[18px] font-black text-text-heading uppercase tracking-[0.4em] mb-4">Analyzing Paper</h2>
                         <div className="space-y-4 mb-10">
                             <p className="text-text-muted text-[13px] leading-relaxed manrope-body">We are analyzing the logic and math in this paper.</p>
                             <div className="h-6 flex items-center justify-center mt-6">
