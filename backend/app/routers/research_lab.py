@@ -52,6 +52,53 @@ async def _fetch_pdf_content(url: str) -> Optional[bytes]:
                 await asyncio.sleep(1)
     return None
 
+async def _extract_paper_figures(paper_url: str) -> List[Dict[str, str]]:
+    """Helper to extract figure image URLs and captions from arXiv/ar5iv HTML if available."""
+    import re
+    import httpx
+    from bs4 import BeautifulSoup
+    from urllib.parse import urljoin
+
+    arxiv_match = re.search(r'(?:arxiv\.org|alphaxiv\.org)/(?:abs|pdf|html)/([a-zA-Z\-]+/[0-9]+|[0-9]+\.[0-9]+(?:v[0-9]+)?)', paper_url)
+    if not arxiv_match:
+        return []
+    
+    paper_id = arxiv_match.group(1)
+    if paper_id.endswith(".pdf"):
+        paper_id = paper_id[:-4]
+
+    target_urls = [
+        f"https://arxiv.org/html/{paper_id}",
+        f"https://ar5iv.labs.arxiv.org/html/{paper_id}"
+    ]
+
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
+
+    timeout = httpx.Timeout(connect=10.0, read=15.0, write=10.0, pool=10.0)
+    for html_url in target_urls:
+        try:
+            async with httpx.AsyncClient(timeout=timeout, follow_redirects=True, headers=headers) as client:
+                resp = await client.get(html_url)
+                if resp.status_code == 200 and ("/html/" in str(resp.url) or "ar5iv" in str(resp.url)):
+                    soup = BeautifulSoup(resp.text, 'html.parser')
+                    figures = []
+                    for fig in soup.find_all(['figure', 'div'], class_=['ltx_figure', 'ltx_table', 'figure']):
+                        img = fig.find('img')
+                        caption = fig.find(['figcaption', 'span', 'div'], class_=['ltx_caption', 'caption'])
+                        if img:
+                            img_src = img.get('src')
+                            if img_src and not img_src.startswith('data:'):
+                                absolute_url = urljoin(str(resp.url), img_src)
+                                cap_text = caption.get_text().strip() if caption else "Figure from paper"
+                                figures.append({"src": absolute_url, "caption": cap_text})
+                    if figures:
+                        return figures[:8]  # Limit to top 8 key figures
+        except Exception as e:
+            logger.warning(f"Figure extraction attempt failed for {html_url}: {e}")
+    return []
+
 async def run_research_analysis(decode_id: str, paper_url: str, uid: str, user_email: str):
     """
     Background task to perform the paper analysis using modern google-genai SDK.
@@ -81,6 +128,14 @@ async def run_research_analysis(decode_id: str, paper_url: str, uid: str, user_e
         
         paper_text = paper_text[:60000]
         logger.info(f"[ResearchLab] Text extracted — {len(reader.pages)} pages, {len(paper_text)} chars")
+
+        # Fetch figures if available
+        figures = await _extract_paper_figures(paper_url)
+        figures_formatted = ""
+        if figures:
+            figures_formatted = "\nEXTRACTED PAPER FIGURES & CAPTIONS:\n" + "\n".join(
+                [f"- Image URL: {f['src']}\n  Caption: {f['caption']}" for f in figures]
+            ) + "\n"
 
         sb.table("research_lab_decodes").update({"status": "analyzing_architecture"}).eq("id", decode_id).execute()
         prompt = """You are a Technical Analyst decoding a research paper for a reader who is smart but has NOT read the paper.
@@ -112,6 +167,9 @@ OPTIONAL MODULES (pick 2-3 based on archetype):
 - "Concept": {
     "details": "Markdown. Start with: what is the core concept and why does the paper need to define it? Then explain the mechanism/architecture. Tables and diagrams are welcome but must be preceded by a setup sentence."
   }
+- "Figures & Visuals": {
+    "details": "Markdown explaining the paper's key figures, architectural diagrams, or plots. IF extracted paper figures are provided below, you MUST embed them using standard Markdown image syntax `![Figure Description](URL)` followed by a detailed paragraph explaining what the figure demonstrates and why it matters to the paper's main thesis."
+  }
 - "Math": {
     "math": [{"formula": "$LaTeX$", "action": "what this formula computes in plain English", "intuition": "why this formula captures the right thing — connect it to real-world intuition"}]
   }
@@ -123,6 +181,9 @@ OPTIONAL MODULES (pick 2-3 based on archetype):
     "context": "What was being measured and why these specific metrics matter.",
     "items": ["Each result stated with its significance: not just the number but what it proves or disproves."]
   }
+
+FIGURE HANDLING RULE:
+- If EXTRACTED PAPER FIGURES are provided below, make sure to reference and embed the most important ones (`![Caption](src)`) in the "Figures & Visuals", "Concept", or "Blueprint" module details and explain what each figure represents in detail.
 
 STYLE RULES:
 - Plain English first, then technical notation.
@@ -150,7 +211,7 @@ Return ONLY this JSON:
     ],
     "summary": "3-4 sentence synthesis: what this paper claims, how it argues it, and what changes if it is right."
 }
-""" + f"\n\nPAPER CONTENT:\n{paper_text}\n"
+""" + figures_formatted + f"\n\nPAPER CONTENT:\n{paper_text}\n"
         
         sb.table("research_lab_decodes").update({"status": "generating_report"}).eq("id", decode_id).execute()
         response_text, usage = await generate_text(prompt, model=settings.DEFAULT_ROADMAP_MODEL, response_mime_type="application/json", return_usage=True)
