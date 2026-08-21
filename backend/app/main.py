@@ -52,7 +52,17 @@ def patched_send(self, request, *args, **kwargs):
         except (httpx.ReadError, httpx.LocalProtocolError, httpx.RemoteProtocolError, httpx.ProtocolError) as e:
             if attempt == retries - 1:
                 raise
-            logger.warning(f"Intercepted transient httpx transport error ({type(e).__name__}: {e}). Retrying {attempt + 1}/{retries} for {request.url}...")
+            logger.warning(f"Intercepted transient httpx transport error ({type(e).__name__}: {e}). Closing connection and retrying {attempt + 1}/{retries} for {request.url}...")
+            
+            # Force close the underlying transport so the next attempt creates a fresh connection
+            try:
+                if hasattr(self, "_transport") and hasattr(self._transport, "close"):
+                    self._transport.close()
+                elif hasattr(self, "close"):
+                    self.close()
+            except Exception as close_err:
+                logger.debug(f"Error while forcing connection close during retry: {close_err}")
+                
             time.sleep(0.3 * (attempt + 1))
         except Exception:
             raise
