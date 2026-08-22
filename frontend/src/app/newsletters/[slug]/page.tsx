@@ -40,6 +40,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       type: 'article',
       url: `https://www.eulerfold.com/newsletters/${resolvedParams.slug}`,
       siteName: 'EulerFold',
+      images: newsletter.hero_image_url ? [{ url: newsletter.hero_image_url }] : [],
       publishedTime: new Date(newsletter.date).toISOString(),
       authors: [newsletter.author],
     },
@@ -47,6 +48,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
       card: 'summary_large_image',
       title: newsletter.title,
       description: newsletter.subtitle,
+      images: newsletter.hero_image_url ? [newsletter.hero_image_url] : [],
       creator: '@eulerfold',
     },
     alternates: {
@@ -69,6 +71,7 @@ export default async function NewsletterPage({ params }: { params: { slug: strin
     "@type": "Article",
     "headline": newsletter.title,
     "description": newsletter.subtitle,
+    "image": newsletter.hero_image_url ? [newsletter.hero_image_url] : [],
     "author": [
       {
         "@type": "Organization",

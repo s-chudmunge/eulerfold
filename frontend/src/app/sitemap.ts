@@ -35,7 +35,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
-    changeFrequency: 'daily' as const,
+    changeFrequency: route.includes('/archive') || route.includes('/research-decoded')
+      ? 'monthly' as const 
+      : route.includes('/newsletters') 
+        ? 'weekly' as const 
+        : 'daily' as const,
     priority: route === '' ? 1 : 0.8,
   }));
 
@@ -43,7 +47,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const researchDecodedRoutes = Object.keys(papers).map((slug) => ({
     url: `${baseUrl}/research-decoded/${slug}`,
     lastModified: new Date(),
-    changeFrequency: 'daily' as const,
+    changeFrequency: 'monthly' as const,
     priority: 0.9,
   }));
 
@@ -59,7 +63,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const newsletterRoutes = Object.keys(newsletters).map((slug) => ({
     url: `${baseUrl}/newsletters/${slug}`,
     lastModified: new Date(newsletters[slug].date),
-    changeFrequency: 'monthly' as const,
+    changeFrequency: 'weekly' as const,
     priority: 0.8,
   }));
 
@@ -70,7 +74,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     archiveRoutes.push({
       url: `${baseUrl}/archive/exams/previous-year-papers/${category.id.toLowerCase()}`,
       lastModified: new Date(),
-      changeFrequency: 'daily' as const,
+      changeFrequency: 'monthly' as const,
       priority: 0.7,
     });
 
@@ -79,7 +83,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       archiveRoutes.push({
         url: `${baseUrl}/archive/exams/previous-year-papers/${category.id.toLowerCase()}/${entry.slug}`,
         lastModified: new Date(),
-        changeFrequency: 'daily' as const,
+        changeFrequency: 'monthly' as const,
         priority: 0.7,
       });
     });
