@@ -94,7 +94,7 @@ export default async function LandingPage() {
                     Build your first course today.
                   </h2>
                   <p className="text-[15px] text-text-muted leading-relaxed max-w-md">
-                    Pick any technical topic, generate a structured curriculum with verified resources, and master it from first principles.
+                    Mention any technical topic or goal, create a structured curriculum with helpful resources, and master it from first principles.
                   </p>
                 </div>
                 
