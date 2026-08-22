@@ -65,10 +65,10 @@ const NAVIGATION_DATA = {
     ],
     featured: {
       title: "Latest",
-      label: "AlphaFold 3 Logic",
-      description: "A deep dive into how biological structures are predicted with AI.",
-      href: "/research-decoded/alphafold-3-unified-biology",
-      cta: "Read more"
+      label: "Weekly Newsletter",
+      description: "Stay informed on frontier models, AI research, and agentic workflows.",
+      href: "/newsletters",
+      cta: "Read latest"
     }
   },
   library: {
@@ -310,6 +310,7 @@ export default function PublicHeader() {
 
             <div className="flex flex-col gap-4 border-t border-border pt-8">
               <span className="text-[11px] font-bold text-text-muted uppercase tracking-widest opacity-60">Research & Library</span>
+              <Link href="/newsletters" className="text-2xl font-bold text-text-heading hover:text-teal-700 transition-colors">Newsletters</Link>
               <Link href="/research-decoded" className="text-2xl font-bold text-text-heading hover:text-teal-700 transition-colors">Research</Link>
               <Link href="/articles" className="text-2xl font-bold text-text-heading hover:text-teal-700 transition-colors">Articles</Link>
               <Link href="/explore" className="text-2xl font-bold text-text-heading hover:text-teal-700 transition-colors">Library</Link>
