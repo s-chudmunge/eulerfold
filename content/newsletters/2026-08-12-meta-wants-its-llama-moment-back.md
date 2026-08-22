@@ -1,7 +1,7 @@
 ---
 title: "Meta Wants Its Llama Moment Back"
 subtitle: "Zuckerberg has a type. And it's called 'open weights, please love us again'."
-author: "Sankalp"
+author: "Sankalp Chudmunge"
 date: "2026-08-12"
 hero_image_url: "https://upload.wikimedia.org/wikipedia/commons/1/18/Mark_Zuckerberg_F8_2019_Keynote_%2832830578717%29_%28cropped%29.jpg"
 ---

@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next';
 import { supabase } from '@/lib/supabase/client';
 import { papers } from '@/app/research-decoded/generatedData';
 import { articles } from '@/app/articles/generatedArticles';
+import { newsletters } from '@/app/newsletters/generatedNewsletters';
 import { archiveData } from '@/app/(public)/archive/generatedArchiveData';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -15,6 +16,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/learn',
     '/research-decoded',
     '/articles',
+    '/newsletters',
     '/leaderboard',
     '/help',
     '/privacy',
@@ -51,6 +53,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified: new Date(),
     changeFrequency: 'daily' as const,
     priority: 0.9,
+  }));
+
+  // 3.5 Newsletters Dynamic Routes (from generatedNewsletters.ts)
+  const newsletterRoutes = Object.keys(newsletters).map((slug) => ({
+    url: `${baseUrl}/newsletters/${slug}`,
+    lastModified: new Date(newsletters[slug].date),
+    changeFrequency: 'monthly' as const,
+    priority: 0.8,
   }));
 
   // 4. Archive Dynamic Routes (Exams and Papers)
@@ -124,6 +134,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...profileRoutes,
     ...researchDecodedRoutes,
     ...articleRoutes,
+    ...newsletterRoutes,
     ...archiveRoutes,
   ];
 }

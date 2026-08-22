@@ -13,12 +13,13 @@ async def build_newsletter_email(
     if not date_str:
         date_str = datetime.now().strftime("%B %d, %Y")
         
-    bg_color = "#f4ebd8"       # Beige outer background
-    card_bg = "#fbf7ef"        # Lighter beige inner card
+    bg_color = "#fcf9f2"       # Lighter cream grid background base
+    card_bg = "#fff4e3"        # Warmer cream/ivory inner card
     header_bg = "#292b36"      # Charcoal header
-    footer_bg = "#0047ff"      # Blue footer (can be adjusted to brand colors, e.g. #0F766E for Teal)
+    footer_bg = "#0047ff"      # Blue footer
     text_color = "#1a1a1a"     # Very dark text for high contrast
     accent_color = "#d92c2c"   # Red accent for author name / links
+    grid_css = "background-image: linear-gradient(to right, rgba(128,128,128,0.07) 1px, transparent 1px), linear-gradient(to bottom, rgba(128,128,128,0.07) 1px, transparent 1px); background-size: 24px 24px;"
 
     unsub_section = ""
     if unsubscribe_link:
@@ -52,6 +53,7 @@ async def build_newsletter_email(
             /* Content Styles */
             .content-body p {{ margin: 0 0 20px 0; line-height: 1.8; font-size: 15px; color: {text_color}; }}
             .content-body a {{ color: {accent_color}; text-decoration: none; font-weight: 600; }}
+            .content-body img {{ max-width: 100%; height: auto; border-radius: 8px; margin: 16px 0; border: 1px solid #e5e7eb; }}
             .content-body h2, .content-body h3 {{ font-family: 'Playfair Display', Georgia, serif; color: {text_color}; margin-top: 32px; margin-bottom: 16px; font-weight: 700; font-size: 22px; }}
             
             /* Responsive */
@@ -63,13 +65,13 @@ async def build_newsletter_email(
             }}
         </style>
     </head>
-    <body style="margin: 0; padding: 0; background-color: {bg_color};">
-        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: {bg_color};">
+    <body style="margin: 0; padding: 0; background-color: {bg_color}; {grid_css}">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: {bg_color}; {grid_css}">
             <tr>
                 <td align="center" style="padding: 40px 0;">
                     
                     <!-- Main Container -->
-                    <table class="container" border="0" cellpadding="0" cellspacing="0" width="600" style="background-color: {card_bg}; box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
+                    <table class="container" border="0" cellpadding="0" cellspacing="0" width="600" style="background-color: {card_bg}; border: 1px solid rgba(217, 44, 44, 0.3); box-shadow: 0 10px 25px rgba(0,0,0,0.05);">
                         
                         <!-- Header Block (Charcoal) -->
                         <tr>
@@ -87,7 +89,7 @@ async def build_newsletter_email(
                                             <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                                 <tr>
                                                     <td class="sans" style="color: #ffffff; font-weight: 700; font-size: 14px; margin-bottom: 4px;">
-                                                        Research Decoded
+                                                        Weekly Newsletter
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -116,9 +118,14 @@ async def build_newsletter_email(
                                 <p class="serif" style="margin: 0 0 20px 0; font-size: 17px; color: #444444; font-style: italic; line-height: 1.5;">
                                     {subtitle}
                                 </p>
-                                <p class="serif" style="margin: 0; font-size: 15px; font-weight: 600; color: {text_color};">
-                                    By <span style="color: {accent_color};">{author}</span>
-                                </p>
+                                <div style="margin-top: 12px;">
+                                    <a href="https://www.linkedin.com/in/sankalp-chudmunge-a3ba80423/" target="_blank" style="text-decoration: none;">
+                                        <img src="https://www.eulerfold.com/author-photo.png" alt="{author}" width="32" height="32" style="border-radius: 50%; vertical-align: middle; margin-right: 8px; border: 1px solid #d1d1d1;" />
+                                    </a>
+                                    <p class="serif" style="display: inline-block; margin: 0; font-size: 15px; font-weight: 600; color: {text_color}; vertical-align: middle;">
+                                        By <a href="https://www.linkedin.com/in/sankalp-chudmunge-a3ba80423/" target="_blank" style="color: {accent_color}; text-decoration: none;">{author}</a>
+                                    </p>
+                                </div>
                             </td>
                         </tr>
 
