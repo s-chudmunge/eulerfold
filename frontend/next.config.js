@@ -3,7 +3,7 @@ const nextConfig = {
   // Performance optimizations
   compress: true,
   poweredByHeader: false,
-  optimizeFonts: false,
+  optimizeFonts: true,
   staticPageGenerationTimeout: 300,
   
   // Ignore linting and type errors during build

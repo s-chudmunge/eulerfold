@@ -3,15 +3,13 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { ArrowRight, Sparkles, Github, Briefcase, Link2, BookOpen, Target, Cpu, HardDrive, Wand2, BrainCircuit, Waypoints, Microscope, Compass, Globe, Library, Activity, Atom } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { LocalAIModal } from './LocalAIModal';
-import { CreateMLCEngine } from '@mlc-ai/web-llm';
-import { jsonrepair } from 'jsonrepair';
 import { motion, AnimatePresence } from 'framer-motion';
 import { api } from '@/lib/api';
 import { useAuth } from '@/components/AuthProvider';
 import dynamic from 'next/dynamic';
 import { supabase } from '@/lib/supabase/client';
 
+const LocalAIModal = dynamic(() => import('./LocalAIModal').then(m => ({ default: m.LocalAIModal })), { ssr: false });
 const PaymentModal = dynamic(() => import('../PaymentModal'), { ssr: false });
 
 type Mode = 'ai' | 'job' | 'url' | 'syllabus' | 'gaps' | 'research';
@@ -219,6 +217,7 @@ Return ONLY this JSON structure:
                     setDynamicLoadingMsg(`Loading local model: ${localAIModelId}...`);
                     let engineLocal = null;
                     try {
+                        const { CreateMLCEngine } = await import('@mlc-ai/web-llm');
                         engineLocal = await CreateMLCEngine(localAIModelId, { 
                             initProgressCallback: (p) => setDynamicLoadingMsg(`Local AI: ${p.text}`) 
                         });
@@ -259,6 +258,7 @@ Return ONLY this JSON structure:
                     let cleaned = jsonStr.trim();
                     if (cleaned.startsWith("```json")) cleaned = cleaned.replace(/^```json\n?/, "").replace(/```$/, "");
                     else if (cleaned.startsWith("```")) cleaned = cleaned.replace(/^```\n?/, "").replace(/```$/, "");
+                    const { jsonrepair } = await import('jsonrepair');
                     analysisData = JSON.parse(jsonrepair(cleaned.trim()));
                 } catch (e) {
                     throw new Error("The AI model failed to output valid JSON.");
@@ -290,6 +290,7 @@ Return ONLY this JSON structure:
             
             let mlc_engine = null;
             try {
+                const { CreateMLCEngine } = await import('@mlc-ai/web-llm');
                 mlc_engine = await CreateMLCEngine(localAIModelId, { initProgressCallback });
                 setDynamicLoadingMsg("Brainstorming curriculum directly on your GPU... 🧠");
                 
@@ -328,6 +329,7 @@ Return ONLY this JSON structure:
                 else if (cleanedText.startsWith("```")) cleanedText = cleanedText.replace(/^```\n?/, "").replace(/```$/, "");
                 
                 cleanedText = cleanedText.trim();
+                const { jsonrepair } = await import('jsonrepair');
                 const parsedJSON = JSON.parse(jsonrepair(cleanedText));
                 
                 setDynamicLoadingMsg("Saving and enriching with YouTube videos... 🚀");

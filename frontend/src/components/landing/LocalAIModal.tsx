@@ -130,7 +130,9 @@ export function LocalAIModal({ isOpen, onClose, onSelectModel }: LocalAIModalPro
   // Extract full Web-LLM catalog (160+ models)
   const fullCatalog: CatalogModelItem[] = useMemo(() => {
     const list = prebuiltAppConfig?.model_list || [];
-    return list.map((item: any) => {
+    return list
+      .filter((item: any) => !item.model_id.toLowerCase().includes('embed'))
+      .map((item: any) => {
       const id: string = item.model_id;
       const vramMB: number = item.vram_required_MB || 2000;
       const vramFormatted = (vramMB / 1024).toFixed(1) + ' GB';

@@ -73,10 +73,7 @@ export default function HeroSection() {
             className="text-center"
           >
             {/* Main heading */}
-            <motion.h1 
-              variants={fadeUp}
-              className="font-inter text-3xl sm:text-4xl md:text-[46px] font-semibold text-text-heading mb-5 leading-[1.12] tracking-tight"
-            >
+            <h1 className="font-inter text-3xl sm:text-4xl md:text-[46px] font-semibold text-text-heading mb-5 leading-[1.12] tracking-tight">
               Describe What You Want to Learn.{' '}
               <br className="hidden md:block" />
               Get a{' '}
@@ -88,40 +85,18 @@ export default function HeroSection() {
                 <AnimatePresence mode="wait">
                   <motion.span
                     key={phraseIndex}
-                    initial="hidden"
-                    animate="visible"
-                    exit="exit"
-                    variants={{
-                      visible: { transition: { staggerChildren: 0.1 } },
-                      exit: { opacity: 0, y: -10, transition: { duration: 0.2 } }
-                    }}
+                    initial={{ opacity: 0, y: 4 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6, transition: { duration: 0.2 } }}
+                    transition={{ duration: 0.3 }}
                     className="inline-block"
                   >
-                    {(rotatingPhrases[phraseIndex] || rotatingPhrases[0]).split("").map((char, index) => (
-                      <motion.span
-                        key={index}
-                        variants={{
-                          hidden: { opacity: 0, display: "none" },
-                          visible: { 
-                            opacity: 1, 
-                            display: "inline-block", 
-                            transition: { duration: 0 } 
-                          }
-                        }}
-                      >
-                        {char === " " ? "\u00A0" : char}
-                      </motion.span>
-                    ))}
-                    <motion.span
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      transition={{ duration: 0.5, repeat: Infinity, repeatType: "reverse" }}
-                      className="inline-block ml-[2px] w-[5px] h-[0.75em] bg-accent align-baseline"
-                    />
+                    {rotatingPhrases[phraseIndex]}
+                    <span className="inline-block ml-[2px] w-[5px] h-[0.75em] bg-accent align-baseline animate-pulse" />
                   </motion.span>
                 </AnimatePresence>
               </span>
-            </motion.h1>
+            </h1>
 
             {/* Interactive prompt input */}
             <div className="mt-8">

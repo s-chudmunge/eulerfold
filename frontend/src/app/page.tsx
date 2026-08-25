@@ -5,7 +5,6 @@ import { ArrowRight, BookOpen } from 'lucide-react';
 import PublicHeader from '@/components/PublicHeader';
 import Footer from '@/components/Footer';
 import { AlreadySignedInMessage, LandingOnboardingTrigger, ScrollToHeroCTA } from './HomeClientComponents';
-import PagePreloader from '@/components/PagePreloader';
 
 import HeroSection from '@/components/landing/HeroSection';
 
@@ -63,7 +62,6 @@ export default async function LandingPage() {
         <AlreadySignedInMessage />
         <LandingOnboardingTrigger />
       </Suspense>
-      <PagePreloader />
       <PublicHeader />
       
       <main className="flex-grow">

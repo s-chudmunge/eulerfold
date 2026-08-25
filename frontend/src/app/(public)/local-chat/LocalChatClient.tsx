@@ -55,8 +55,17 @@ export default function LocalChatClient() {
   useEffect(() => {
     const id   = localStorage.getItem('localAIModelId') || localStorage.getItem('local_ai_model');
     const name = localStorage.getItem('localAIModelName') || localStorage.getItem('local_ai_model_name');
-    if (id)   setModelId(id);
-    if (name) setModelName(name);
+    
+    // Prevent loading embedding models for chat
+    if (id && !id.toLowerCase().includes('embed')) {
+      setModelId(id);
+      if (name) setModelName(name);
+    } else if (id && id.toLowerCase().includes('embed')) {
+      localStorage.removeItem('localAIModelId');
+      localStorage.removeItem('local_ai_model');
+      localStorage.removeItem('localAIModelName');
+      localStorage.removeItem('local_ai_model_name');
+    }
 
     // Read initial query parameter 'q'
     if (typeof window !== 'undefined') {

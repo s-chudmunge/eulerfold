@@ -137,7 +137,7 @@ const [isMenuOpen, setIsMenuOpen] = useState(false);
                 className={`
                 manrope-body bg-sidebar border-r border-border dark:border-white/[0.05]
                 fixed bottom-0 left-0 z-[70] w-[240px] transform transition-all duration-200 ease-in-out
-                lg:translate-x-0 lg:static ${isCollapsed ? 'lg:w-[72px]' : 'lg:w-[230px]'} lg:z-40
+                lg:translate-x-0 lg:static ${isCollapsed ? 'lg:w-[90px]' : 'lg:w-[230px]'} lg:z-40
                 ${isOpen ? 'translate-x-0' : '-translate-x-full'}
                 flex flex-col h-full overflow-hidden shrink-0
             `}>
