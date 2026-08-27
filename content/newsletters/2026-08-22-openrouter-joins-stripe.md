@@ -22,18 +22,6 @@ The open-weight ecosystem also saw movement. Meta released **[Muse Glimmer 30B](
 
 For a limited time, **[GPT-5.6 Sol](https://openai.com)** and **Gemini 3.7 Flash** are available at a 50% discount on OpenRouter. The Sol discount applies to batch, flex, and priority tiers. 
 
-### How the Rebuilt Auto Router Helps You
-
-If you aren't sure which model fits your prompt, the rebuilt Auto Router handles the selection for you. Instead of relying on rigid task classifiers, it dynamically picks a model based on the aggregate choices of millions of OpenRouter users over the past seven days. 
-
-This ensures your requests are seamlessly routed to the model currently performing best for similar prompts across the community. There are no extra fees for this routing, as you simply pay the standard rate of the chosen model.
-
-You can use it by specifying `openrouter/auto` in your API calls:
-
-```json
-{"model": "openrouter/auto", "messages": [{ "role": "user", "content": "Explain quantum entanglement in simple terms" }]}
-```
-
 ### Cost and Analytics
 
 The latest agent cost data highlights a critical trend for developers running extended workflows: while single-turn costs are negligible across the board, long multi-turn agent loops reveal massive price disparities. For a 50+ turn execution (such as a complex Claude Code or Hermes Agent task), heavy models like GPT-5.6 Luna reach up to $0.24 per run. In contrast, smaller or open-weight alternatives like Ling-2.6-flash and gpt-oss-120b remain exceptionally economical, costing as little as $0.014 to $0.12 for the exact same volume of turns. This stark contrast makes dynamic model routing essential for scaling agentic applications without burning through your budget.
