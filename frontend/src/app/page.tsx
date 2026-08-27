@@ -10,6 +10,7 @@ import HeroSection from '@/components/landing/HeroSection';
 
 import ProductEcosystem from '@/components/landing/ProductEcosystem';
 import GenerationSystems from '@/components/landing/GenerationSystems';
+import LatestUpdates from '@/components/landing/LatestUpdates';
 
 export const revalidate = 3600;
 
@@ -70,6 +71,8 @@ export default async function LandingPage() {
         <GenerationSystems />
 
         <ProductEcosystem />
+        
+        <LatestUpdates />
 
         {/* Final CTA Section */}
         <section className="py-20 md:py-32 px-6 bg-transparent relative overflow-hidden">
