@@ -25,7 +25,7 @@ Most neural networks are trained on data. You give them inputs with known output
 
 A Physics-Informed Neural Network is different. It has to satisfy a governing equation — a differential equation that describes how a physical system actually behaves. Not approximately. The equation is written directly into the training objective, as a constraint the network must minimize every time it updates its parameters. This framework was introduced by Raissi, Perdikaris & Karniadakis (2019) in their foundational paper in the *Journal of Computational Physics*.
 
-This sounds like a small change. It is not.
+
 
 ## What a Differential Equation Is Asking
 
