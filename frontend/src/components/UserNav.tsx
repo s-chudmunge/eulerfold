@@ -72,7 +72,7 @@ export default function UserNav() {
         </button>
 
         {isOpen && (
-          <div className="absolute right-0 mt-2 w-60 bg-header border border-border shadow-[0_15px_50px_-12px_rgba(0,0,0,0.15)] z-[100] animate-in fade-in zoom-in-98 slide-in-from-top-2 duration-200 origin-top-right rounded-lg overflow-hidden">
+          <div className="absolute right-0 mt-2 w-60 bg-header border border-border shadow-md z-[100] animate-in fade-in zoom-in-98 slide-in-from-top-2 duration-200 origin-top-right rounded-lg overflow-hidden">
             {/* User Info Section */}
             <div className="px-4 py-3 border-b border-border/50">
               <p className="text-[13px] font-bold text-text-heading truncate tracking-tight">{displayName}</p>

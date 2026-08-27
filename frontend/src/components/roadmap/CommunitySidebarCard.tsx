@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { ArrowRight, Sparkles } from 'lucide-react';
 import { supabase } from '@/lib/supabase/client';
-import GoalGeneratorModal from '../landing/GoalGeneratorModal';
+
 import Link from 'next/link';
 
 interface CommunitySidebarCardProps {

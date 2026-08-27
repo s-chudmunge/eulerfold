@@ -26,7 +26,6 @@ import {
     ArrowRight,
     User,
     Calendar,
-    Edit3,
     Check,
     CheckCircle2,
     BookOpen,
@@ -101,7 +100,7 @@ const ModuleReferenceCarousel = ({ module, index }: { module: any, index: number
                         href={resource.link || resource.url} 
                         target="_blank" 
                         rel="noreferrer"
-                        className="snap-start flex-shrink-0 w-[260px] md:w-[280px] h-[160px] p-5 rounded-lg border border-border/60 bg-sidebar/50 hover:bg-background/80 hover:border-accent/40 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
+                        className="snap-start shrink-0 w-[260px] md:w-[280px] h-[160px] p-5 rounded-md border border-border/60 bg-sidebar/50 hover:bg-background/80 hover:border-accent/40 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
                     >
                         {/* Feature Image Background (if available) */}
                         {(resource.image_url || resource.image) && (
@@ -113,7 +112,7 @@ const ModuleReferenceCarousel = ({ module, index }: { module: any, index: number
                         <div className="absolute inset-0 bg-gradient-to-b from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
                         <div className="relative z-10">
                             <div className="flex items-center justify-between mb-4">
-                                <div className="w-8 h-8 rounded-lg bg-accent/10 text-accent flex items-center justify-center font-bold text-[12px] font-inconsolata border border-accent/20 group-hover:bg-accent group-hover:text-white transition-colors">
+                                <div className="w-8 h-8 rounded-md bg-accent/10 text-accent flex items-center justify-center font-bold text-[12px] font-inconsolata border border-accent/20 group-hover:bg-accent group-hover:text-white transition-colors">
                                     {String(idx + 1).padStart(2, '0')}
                                 </div>
                                 <ExternalLink className="w-4 h-4 text-text-muted opacity-0 group-hover:opacity-100 group-hover:text-accent transition-all transform group-hover:translate-x-1 group-hover:-translate-y-1" />

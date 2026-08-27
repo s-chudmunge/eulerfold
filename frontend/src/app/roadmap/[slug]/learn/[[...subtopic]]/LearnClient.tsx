@@ -866,7 +866,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                         <div className="max-w-[1200px] mx-auto w-full p-4 md:p-8">
                             
                             {displayPercent >= 98 && (
-                                <div className="mb-8 p-6 bg-gradient-to-r from-[var(--accent)]/10 to-[var(--accent)]/5 border border-[var(--accent)]/20 rounded-lg flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
+                                <div className="mb-8 p-6 bg-accent/10 border border-[var(--accent)]/20 rounded-lg flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
                                     <div className="flex items-center gap-4">
                                         <div className="w-14 h-14 bg-[var(--accent)]/20 rounded-full flex items-center justify-center shrink-0">
                                             <Trophy className="h-7 w-7 text-accent" />
@@ -1228,7 +1228,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
 
             {coinToast && (
                 <div className="fixed bottom-8 right-8 z-[200] animate-in slide-in-from-bottom-4 duration-500">
-                    <div className="bg-[var(--text-heading)] text-[var(--bg-main)] px-6 py-4 rounded-lg shadow-2xl flex items-center gap-4 border border-white/10">
+                    <div className="bg-[var(--text-heading)] text-[var(--bg-main)] px-6 py-4 rounded-lg shadow-md flex items-center gap-4 border border-white/10">
                         <div className="h-10 w-10 bg-white/20 rounded-full flex items-center justify-center">
                             <Zap className="h-5 w-5 fill-current" />
                         </div>

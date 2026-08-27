@@ -245,7 +245,7 @@ const [isMenuOpen, setIsMenuOpen] = useState(false);
                 {user && (
                     <div className="p-2.5 mt-auto relative" ref={menuRef}>
                         {isMenuOpen && (
-                            <div className="absolute bottom-[calc(100%+6px)] left-2.5 right-2.5 bg-background dark:bg-[#111] border border-border dark:border-white/10 rounded-lg shadow-xl overflow-hidden animate-in fade-in slide-in-from-bottom-1 duration-150 z-[80]">
+                            <div className="absolute bottom-[calc(100%+6px)] left-2.5 right-2.5 bg-background dark:bg-[#111] border border-border dark:border-white/10 rounded-lg shadow-md overflow-hidden animate-in fade-in slide-in-from-bottom-1 duration-150 z-[80]">
                                 <div className="px-3 py-1.5 border-b border-border dark:border-white/5 bg-sidebar/30 dark:bg-white/[0.01]">
                                     <p className="text-[9px] text-gray-400 lowercase tracking-tight">account</p>
                                     <p className="text-[11px] font-semibold text-black dark:text-white truncate">{user.email}</p>

@@ -53,9 +53,7 @@ import { getCategory, matchesCategory } from '@/lib/roadmapUtils';
 import { SideBanner, QUOTES } from '@/components/layout/SideBanners';
 import CommunityRoadmapBanner from '@/components/landing/CommunityRoadmapBanner';
 import NewsletterBanner from '@/components/landing/NewsletterBanner';
-import LatestArticlesCarousel from '@/components/landing/LatestArticlesCarousel';
-import { articles } from '@/app/articles/generatedArticles';
-import GoalGeneratorModal from '@/components/landing/GoalGeneratorModal';
+
 import Footer from '@/components/Footer';
 
 const CATEGORY_METADATA: Record<string, { icon: any }> = {
@@ -165,7 +163,7 @@ export default function ExploreClient({
     const [reportReason, setReportReason] = useState('');
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const [isRoadmapModalOpen, setIsRoadmapModalOpen] = useState(false);
+
     
     // Filtering & Sorting State
     const [sortBy, setSortBy] = useState('newest');
@@ -294,8 +292,8 @@ export default function ExploreClient({
                                     <p className="text-text-muted text-base md:text-lg manrope-body font-medium leading-relaxed max-w-2xl">Discover and clone courses from the community.</p>
                                 </div>
                                 <button 
-                                    onClick={() => setIsRoadmapModalOpen(true)}
-                                    className="bg-accent text-white px-6 py-2.5 rounded-lg text-[12px] font-bold tracking-wide transition-all hover:scale-[1.02] active:scale-[0.98]  shadow-accent/20"
+                                    onClick={() => router.push('/#hero-prompt-input')}
+                                    className="bg-accent text-white px-6 py-2.5 rounded-md text-[12px] font-bold tracking-wide transition-all hover:scale-[1.02] active:scale-[0.98]  shadow-accent/20"
                                 >
                                     Create New Course
                                 </button>
@@ -311,7 +309,7 @@ export default function ExploreClient({
                                         placeholder="Search by subject, goal, or technology..."
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="w-full bg-sidebar/50 border border-border rounded-lg py-3 pl-10 pr-4 manrope-body text-[14px] focus:outline-none focus:border-[var(--accent)] transition-all focus:bg-background shadow-sm"
+                                        className="w-full bg-sidebar/50 border border-border rounded-md py-3 pl-10 pr-4 manrope-body text-[14px] focus:outline-none focus:border-[var(--accent)] transition-all focus:bg-background shadow-sm"
                                     />
                                 </div>
                                 <div className="flex items-center gap-2 shrink-0">
@@ -319,7 +317,7 @@ export default function ExploreClient({
                                         <select 
                                             value={sortBy}
                                             onChange={(e) => setSortBy(e.target.value)}
-                                            className="appearance-none bg-sidebar/50 border border-border rounded-lg pl-10 pr-8 py-3 text-[12px] font-bold focus:outline-none focus:border-[var(--text-heading)] transition-all manrope-body cursor-pointer min-w-[160px]"
+                                            className="appearance-none bg-sidebar/50 border border-border rounded-md pl-10 pr-8 py-3 text-[12px] font-bold focus:outline-none focus:border-[var(--text-heading)] transition-all manrope-body cursor-pointer min-w-[160px]"
                                         >
                                             <option value="newest">Newest First</option>
                                             <option value="most_cloned">Most Popular</option>
@@ -335,7 +333,7 @@ export default function ExploreClient({
 
                         {/* Leaderboard Strip - Compact & Refined */}
                         {leaderboard.length > 0 && (
-                            <div className="mb-6 flex items-center gap-4 py-1.5 px-4 bg-teal-500/[0.03] border border-teal-500/10 rounded-lg overflow-x-auto whitespace-nowrap scrollbar-hide">
+                            <div className="mb-6 flex items-center gap-4 py-1.5 px-4 bg-teal-500/[0.03] border border-teal-500/10 rounded-md overflow-x-auto whitespace-nowrap scrollbar-hide">
                                 <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-teal-700 shrink-0 inconsolata-ui">
                                     <Trophy className="h-3 w-3" />
                                     <span>Top Builders</span>
@@ -370,7 +368,7 @@ export default function ExploreClient({
                                     <button
                                         key={cat}
                                         onClick={() => setFilter(cat)}
-                                        className={`flex items-center gap-2 px-4 py-2 rounded-lg text-[12px] font-bold tracking-tight transition-all border whitespace-nowrap
+                                        className={`flex items-center gap-2 px-4 py-2 rounded-md text-[12px] font-bold tracking-tight transition-all border whitespace-nowrap
                                             ${filter === cat 
                                             ? 'bg-text-heading text-background border-text-heading shadow-md shadow-black/5 scale-[1.02]' 
                                             : 'bg-sidebar/30 text-text-muted border-border hover:border-text-muted hover:bg-sidebar/50'
@@ -384,7 +382,7 @@ export default function ExploreClient({
                         </div>
 
                         {/* Professional Table View - Modernized */}
-                        <div className="bg-background border border-border rounded-lg overflow-hidden shadow-sm">
+                        <div className="bg-background border border-border rounded-md overflow-hidden shadow-sm">
                             <table className="w-full text-left border-collapse table-fixed md:table-auto">
                                 <thead>
                                     <tr className="border-b border-border bg-sidebar/20">
@@ -425,7 +423,7 @@ export default function ExploreClient({
                                                     <tr key={r.id} className="group hover:bg-sidebar/30 transition-all cursor-pointer" onClick={() => router.push(`/roadmap/${r.slug}`)}>
                                                         <td className="px-3 md:px-5 py-3 md:py-4">
                                                             <div className="flex items-start gap-3">
-                                                                <div className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-[10px] bg-sidebar border border-border text-text-muted shrink-0 group-hover:scale-110 transition-transform group-hover:border-accent/30 group-hover:text-accent mt-0.5">
+                                                                <div className="flex items-center justify-center w-8 h-8 md:w-9 md:h-9 rounded-md bg-sidebar border border-border text-text-muted shrink-0 group-hover:scale-110 transition-transform group-hover:border-accent/30 group-hover:text-accent mt-0.5">
                                                                     <CategoryIcon category={cat} className="w-3.5 h-3.5 md:w-4 md:h-4 stroke-[1.5px]" />
                                                                 </div>
                                                                 <div className="flex flex-col min-w-0">
@@ -466,7 +464,7 @@ export default function ExploreClient({
                                                                 </div>
                                                                 <button 
                                                                     onClick={(e) => { e.stopPropagation(); handleReport(e, r.id); }}
-                                                                    className="p-1.5 md:p-2 text-text-muted hover:text-red-500 hover:bg-red-500/10 rounded-lg transition-all opacity-0 md:group-hover:opacity-100"
+                                                                    className="p-1.5 md:p-2 text-text-muted hover:text-red-500 hover:bg-red-500/10 rounded-md transition-all opacity-0 md:group-hover:opacity-100"
                                                                 >
                                                                     <Flag className="h-3 w-3 md:h-3.5 md:w-3.5" />
                                                                 </button>
@@ -494,7 +492,7 @@ export default function ExploreClient({
                                 <button
                                     onClick={() => fetchNextPage()}
                                     disabled={isFetchingNextPage}
-                                    className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-sidebar border border-border text-[11px] font-bold tracking-wide hover:bg-background hover:border-text-muted transition-all disabled:opacity-50"
+                                    className="flex items-center gap-2 px-6 py-2.5 rounded-md bg-sidebar border border-border text-[11px] font-bold tracking-wide hover:bg-background hover:border-text-muted transition-all disabled:opacity-50"
                                 >
                                     {isFetchingNextPage ? (
                                         <>
@@ -515,14 +513,14 @@ export default function ExploreClient({
 
             {/* Error/Success Alerts */}
             {error && (
-                <div className="fixed bottom-6 right-6 z-[120] bg-red-500 text-white px-4 py-3 rounded-lg shadow-2xl flex items-center gap-3 animate-in slide-in-from-right-4 duration-300">
+                <div className="fixed bottom-6 right-6 z-[120] bg-red-500 text-white px-4 py-3 rounded-md shadow-md flex items-center gap-3 animate-in slide-in-from-right-4 duration-300">
                     <AlertCircle className="w-5 h-5" />
                     <span className="text-sm font-bold">{error}</span>
                     <button onClick={() => setError(null)}><X className="w-4 h-4" /></button>
                 </div>
             )}
             {successMessage && (
-                <div className="fixed bottom-6 right-6 z-[120] bg-teal-700 text-white px-4 py-3 rounded-lg shadow-2xl flex items-center gap-3 animate-in slide-in-from-right-4 duration-300">
+                <div className="fixed bottom-6 right-6 z-[120] bg-teal-700 text-white px-4 py-3 rounded-md shadow-md flex items-center gap-3 animate-in slide-in-from-right-4 duration-300">
                     <CheckCircle2 className="w-5 h-5" />
                     <span className="text-sm font-bold">{successMessage}</span>
                     <button onClick={() => setSuccessMessage(null)}><X className="w-4 h-4" /></button>
@@ -532,31 +530,26 @@ export default function ExploreClient({
             {/* Report Prompt */}
             {reporting !== null && (
                 <div className="fixed inset-0 bg-black/90 flex items-center justify-center z-[110] p-4 animate-in fade-in duration-300">
-                    <div className="bg-background rounded-lg shadow-2xl max-w-sm w-full p-8 border border-border">
+                    <div className="bg-background rounded-md shadow-md max-w-sm w-full p-6 border border-border">
                         <h3 className="inconsolata-ui text-[18px] font-bold text-text-heading tracking-normal mb-6">Report Course</h3>
                         <div className="space-y-2 mb-8">
                             {['Inappropriate content', 'Spam or misleading', 'Broken resources', 'Other'].map((reason) => (
                                 <button 
                                     key={reason} 
                                     onClick={() => setReportReason(reason)}
-                                    className={`w-full text-left px-4 py-3 rounded-lg border text-[13px] font-bold transition-all ${reportReason === reason ? 'border-teal-700 bg-teal-700/5 text-teal-700' : 'border-border text-gray-500'}`}
+                                    className={`w-full text-left px-4 py-3 rounded-md border text-[13px] font-bold transition-all ${reportReason === reason ? 'border-teal-700 bg-teal-700/5 text-teal-700' : 'border-border text-gray-500'}`}
                                 >
                                     {reason}
                                 </button>
                             ))}
                         </div>
                         <div className="flex flex-col gap-2">
-                            <button onClick={(e) => handleReport(e, reporting)} disabled={!reportReason} className="w-full py-3 bg-red-600 text-white rounded-lg text-[12px] font-bold tracking-wide disabled:opacity-50">Submit Report</button>
+                            <button onClick={(e) => handleReport(e, reporting)} disabled={!reportReason} className="w-full py-3 bg-red-600 text-white rounded-md text-[12px] font-bold tracking-wide disabled:opacity-50">Submit Report</button>
                             <button onClick={() => setReporting(null)} className="w-full py-3 text-[10px] font-bold text-gray-400 tracking-wide">Cancel</button>
                         </div>
                     </div>
                 </div>
             )}
-
-            <GoalGeneratorModal 
-                isOpen={isRoadmapModalOpen} 
-                onClose={() => setIsRoadmapModalOpen(false)} 
-            />
 
             <div className="border-t border-border/30 bg-sidebar/5">
                 <div className="max-w-[1200px] mx-auto px-6 py-16 md:px-10 flex flex-col gap-24">
@@ -567,13 +560,7 @@ export default function ExploreClient({
                         </div>
                     </div>
                     
-                    <div className="space-y-6">
-                        <div className="flex flex-col items-center text-center space-y-2 mb-8">
-                            <h2 className="inconsolata-ui text-[14px] font-black text-text-heading uppercase tracking-[0.1em]">Recommended Reading</h2>
-                            <div className="h-[1px] w-12 bg-accent opacity-50"></div>
-                        </div>
-                        <LatestArticlesCarousel articles={Object.values(articles).slice(0, 6)} />
-                    </div>
+
                 </div>
             </div>
 

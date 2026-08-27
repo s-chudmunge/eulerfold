@@ -34,7 +34,7 @@ export default function HeroSection() {
         <div className="max-w-3xl mx-auto w-full relative z-10 flex-1 flex flex-col justify-center">
           <div className="text-center">
 
-            <h1 className="text-3xl sm:text-4xl md:text-[48px] font-semibold text-text-heading mb-5 leading-[1.1] tracking-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-[48px] font-semibold text-text-heading mb-10 md:mb-12 leading-[1.1] tracking-tight">
               Describe What You Want to Learn.{' '}
               <br className="hidden md:block" />
               Get a{' '}
@@ -42,9 +42,7 @@ export default function HeroSection() {
               {' '}in Seconds.
             </h1>
 
-            <p className="text-[15px] text-text-muted leading-relaxed max-w-xl mx-auto mb-8">
-              Free, AI-generated courses with credible resources, videos, and assessments. Start from scratch or import a topic, URL, or syllabus.
-            </p>
+
 
             {/* Interactive prompt input */}
             <div id="hero-prompt-input" className="scroll-mt-32">

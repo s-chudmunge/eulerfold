@@ -126,9 +126,8 @@ export default function PricingClient() {
                 </div>
 
                 {/* Pro Tier */}
-                <div className="flex flex-col p-8 border-2 border-teal-600/30 rounded-lg bg-teal-900/[0.02] relative overflow-hidden group">
+                <div className="flex flex-col p-8 border border-border rounded-lg bg-background relative overflow-hidden group">
                     {/* Background glow */}
-                    <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-teal-600/5 rounded-full blur-3xl -z-10" />
                     
                     <div className="mb-8 relative z-10">
                         <div className="flex items-center justify-between mb-4">
@@ -217,7 +216,6 @@ export default function PricingClient() {
                 {/* Enterprise Tier */}
                 <div className="flex flex-col p-8 border border-border/40 rounded-lg bg-background/30 relative overflow-hidden group opacity-80 backdrop-blur-sm">
                     {/* Background glow */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-slate-500/5 rounded-full blur-3xl -z-10" />
                     
                     <div className="mb-8 relative z-10">
                         <div className="flex items-center justify-between mb-4">
