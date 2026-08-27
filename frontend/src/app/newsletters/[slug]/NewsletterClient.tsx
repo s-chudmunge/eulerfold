@@ -64,13 +64,6 @@ export default function NewsletterClient({ newsletter }: { newsletter: Newslette
                 </p>
               )}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', fontSize: '14px', color: '#a1a1aa' }}>
-                <a href="https://www.linkedin.com/in/sankalp-chudmunge-a3ba80423/" target="_blank" rel="noopener noreferrer">
-                  <img 
-                    src="https://www.eulerfold.com/author-photo.png" 
-                    alt={newsletter.author} 
-                    style={{ width: '32px', height: '32px', borderRadius: '50%', border: '1px solid #d1d1d1' }}
-                  />
-                </a>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
                   <a href="https://www.linkedin.com/in/sankalp-chudmunge-a3ba80423/" target="_blank" rel="noopener noreferrer" style={{ fontWeight: 500, color: '#ffffff', textDecoration: 'none' }}>
                     <span className="hover:underline">{newsletter.author}</span>
