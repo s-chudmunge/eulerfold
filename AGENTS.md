@@ -39,8 +39,8 @@ Read it fully before making any changes. Rules here are not suggestions.
 
 - Maintain high information density. Target ~44px row height in tables.
 - Keep cards and link components compact across Dashboard, Explore, and Learning Directory pages.
-- **Component Style:** Prefer squared edges over heavily rounded ones. The aesthetic should be "close square but rounded edges". Use `rounded-md` or `rounded-lg` for most cards, buttons, and containers. Avoid `rounded-xl`, `rounded-2xl`, or `rounded-3xl` unless specifically required for large layout sections.
-- **Spacing:** Minimize unnecessary padding and margins to keep the UI tight and focused.
+- **Component Style:** Prefer squared edges over heavily rounded ones. The aesthetic should be "close square but rounded edges". STRICTLY use `rounded-md` for ALL standard UI elements (cards, buttons, icons, carousels, inputs, dropdowns, table wrappers). Do not use `rounded-lg`, `rounded-xl`, `rounded-2xl`, or `rounded-3xl`. Use `rounded-full` ONLY for user avatars or very specific pill indicators. Never force UI elements into a single cramped row on mobile—use `flex-col` to allow content to breathe and stack natively.
+- **Spacing:** Minimize unnecessary padding and margins to keep the UI tight and focused, but ensure there is adequate horizontal layout structure to prevent text squishing on mobile.
 
 ---
 
