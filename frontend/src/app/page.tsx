@@ -75,40 +75,27 @@ export default async function LandingPage() {
         <LatestUpdates />
 
         {/* Final CTA Section */}
-        <section className="py-20 md:py-32 px-6 bg-transparent relative overflow-hidden">
-          
-          <div className="max-w-4xl mx-auto relative z-10">
-            <div className="group relative overflow-hidden rounded-2xl bg-transparent border border-accent/30 hover:border-accent/50 transition-all hover:shadow-md">
-              
-              {/* Decorative gradient blur removed for minimal UI */}
-
-              <div className="relative px-6 py-12 sm:p-10 md:p-16 flex flex-col md:flex-row items-center justify-between gap-10 text-center md:text-left">
-                <div className="max-w-xl space-y-4">
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 border border-accent/20">
-                    <div className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse"></div>
-                    <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-accent">
-                      Start Learning
-                    </span>
-                  </div>
-                  
-                  <h2 className="text-3xl md:text-4xl font-bold text-text-heading tracking-tight leading-tight">
-                    Build your first course today.
-                  </h2>
-                  <p className="text-[15px] text-text-muted leading-relaxed max-w-md">
-                    Mention any technical topic or goal, create a structured curriculum with helpful resources, and master it from first principles.
-                  </p>
-                </div>
-                
-                <div className="flex flex-col sm:flex-row md:flex-col lg:flex-row items-center gap-3 shrink-0 w-full md:w-auto">
-                  <ScrollToHeroCTA />
-                  <Link 
-                    href="/explore"
-                    className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-background border border-border hover:border-accent/40 text-text-heading px-8 py-3.5 rounded-lg text-[14px] font-bold transition-all hover:-translate-y-0.5"
-                  >
-                    <BookOpen className="w-4 h-4 text-text-muted" /> Browse Library
-                  </Link>
-                </div>
-              </div>
+        <section className="py-20 md:py-32 px-6 bg-transparent relative border-t border-border/30">
+          <div className="max-w-6xl mx-auto relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-10">
+            <div className="max-w-xl space-y-4">
+              <span className="block text-[11px] font-bold uppercase tracking-[0.2em] text-accent">
+                Start Learning
+              </span>
+              <h2 className="text-2xl md:text-[2.25rem] font-bold text-text-heading tracking-tight leading-[1.2]">
+                Build your first course today.
+              </h2>
+              <p className="text-[14px] text-text-muted leading-relaxed max-w-md">
+                Mention any technical topic or goal, create a structured curriculum with helpful resources, and master it from first principles.
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row items-center gap-3 shrink-0">
+              <ScrollToHeroCTA />
+              <Link 
+                href="/explore"
+                className="inline-flex items-center justify-center gap-2 bg-background border border-border hover:border-accent/40 text-text-heading px-6 py-2.5 rounded-md text-[13px] font-bold transition-all"
+              >
+                <BookOpen className="w-4 h-4 text-text-muted" /> Browse Library
+              </Link>
             </div>
           </div>
         </section>

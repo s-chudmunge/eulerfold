@@ -49,9 +49,8 @@ export default function LatestUpdates() {
   if (recentItems.length === 0) return null;
 
   return (
-    <section className="py-20 md:py-32 px-6 bg-transparent relative border-t border-border/30 overflow-hidden">
+    <section className="py-20 md:py-32 px-6 bg-transparent relative border-t border-border/30">
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="rounded-2xl bg-transparent border border-accent/30 hover:border-accent/50 px-6 py-10 sm:p-10 md:p-16 transition-all hover:shadow-md">
 
         {/* Header */}
         <div className="flex items-end justify-between mb-10">
@@ -72,47 +71,33 @@ export default function LatestUpdates() {
 
         {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {recentItems.map((item, i) => (
-            <Link
+          {recentItems.map((item) => (
+            <div
               key={item.id}
-              href={item.type === 'article' ? `/articles/${item.slug}` : `/newsletters/${item.slug}`}
-              className="group flex flex-row bg-background border border-border rounded-lg overflow-hidden hover:border-accent/40 hover:shadow-md transition-all duration-300 h-[160px]"
+              className="flex flex-col border border-border rounded-lg p-6 bg-transparent"
             >
-              {/* Image */}
-              <div className="relative w-[140px] shrink-0 overflow-hidden bg-sidebar">
-                {item.heroImage && (
-                  <img
-                    src={item.heroImage}
-                    alt={item.title}
-                    className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 group-hover:scale-105"
-                  />
-                )}
-                <span className="absolute bottom-2 left-2 text-[8px] font-bold text-white uppercase tracking-[0.15em] bg-black/50 backdrop-blur-sm px-1.5 py-0.5 rounded">
-                  {item.subject}
-                </span>
+              <div className="flex-grow mb-8">
+                <h3 className="text-[20px] font-bold text-text-heading leading-snug tracking-tight mb-3">
+                  {item.title}
+                </h3>
+                <p className="text-text-muted text-[14px] leading-relaxed line-clamp-3">
+                  {item.excerpt}
+                </p>
               </div>
 
-              {/* Content */}
-              <div className="p-4 flex flex-col justify-between flex-grow overflow-hidden">
-                <div>
-                  <p className="text-[9px] font-bold text-accent uppercase tracking-[0.15em] mb-1.5">
-                    {String(i + 1).padStart(2, '0')}
-                  </p>
-                  <h3 className="text-[15px] font-bold text-text-heading leading-snug group-hover:text-accent transition-colors tracking-tight line-clamp-2 mb-1.5">
-                    {item.title}
-                  </h3>
-                  <p className="text-text-muted text-[12px] line-clamp-2 leading-relaxed">
-                    {item.excerpt}
-                  </p>
-                </div>
-                <div className="flex items-center justify-between text-[10px] font-bold uppercase tracking-wider border-t border-border/50 pt-2 mt-2">
-                  <span className="text-text-muted/70 truncate pr-2">{item.author.split('—')[0].trim()}</span>
-                  <span className="text-accent shrink-0">{item.dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
-                </div>
+              <div>
+                <p className="text-[12px] text-text-muted mb-3">
+                  {item.subject} · {item.dateObj.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                </p>
+                <Link
+                  href={item.type === 'article' ? `/articles/${item.slug}` : `/newsletters/${item.slug}`}
+                  className="inline-block bg-text-heading text-background text-[13px] font-semibold px-4 py-2 rounded-md hover:opacity-80 transition-opacity"
+                >
+                  Read more
+                </Link>
               </div>
-            </Link>
+            </div>
           ))}
-        </div>
         </div>
 
       </div>

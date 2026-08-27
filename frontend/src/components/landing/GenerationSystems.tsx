@@ -50,92 +50,110 @@ export default function GenerationSystems() {
   const [isLocalModalOpen, setIsLocalModalOpen] = useState(false);
 
   return (
-    <section className="py-20 md:py-32 px-6 bg-transparent relative border-t border-border/30 overflow-hidden">
-      
+    <section className="py-20 md:py-32 px-6 bg-transparent relative border-t border-border/30">
       <div className="max-w-6xl mx-auto relative z-10">
-        <div className="group relative overflow-hidden rounded-2xl bg-transparent border border-accent/30 hover:border-accent/50 px-6 py-10 sm:p-10 md:p-16 transition-all hover:shadow-md">
 
-          <div className="relative z-10 flex flex-col gap-12">
-            {/* Section Header */}
-            <div className="max-w-2xl">
-              <motion.span 
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="block text-[11px] font-bold uppercase tracking-[0.2em] text-accent mb-4"
-              >
-                Generation Modes
-              </motion.span>
-              <motion.h2 
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.08 }}
-                className="text-2xl md:text-[2.25rem] font-bold text-text-heading tracking-tight leading-[1.2] mb-4"
-              >
-                Choose how your course gets built.
-              </motion.h2>
-              <motion.p 
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.14 }}
-                className="text-[14px] text-text-muted leading-relaxed"
-              >
-                Pick what fits your workflow. You can switch between modes at any time.
-              </motion.p>
-            </div>
+        {/* Section Header */}
+        <div className="mb-12">
+          <motion.span
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="block text-[11px] font-bold uppercase tracking-[0.2em] text-accent mb-4"
+          >
+            Generation Modes
+          </motion.span>
+          <motion.h2
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.08 }}
+            className="text-2xl md:text-[2.25rem] font-bold text-text-heading tracking-tight leading-[1.2] mb-4"
+          >
+            Choose how your course gets built.
+          </motion.h2>
+          <motion.p
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.14 }}
+            className="text-[14px] text-text-muted leading-relaxed"
+          >
+            Pick what fits your workflow. You can switch between modes at any time.
+          </motion.p>
+        </div>
 
-            {/* Minimal List Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-y-6 gap-x-8 w-full">
-              {SYSTEMS.map((system, index) => {
-                const Icon = system.icon;
-                return (
-                  <motion.div
-                    key={system.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.04 }}
-                    className="group/item flex flex-col items-start gap-2 py-4 px-5 rounded-lg bg-transparent border border-accent/30 hover:border-accent/60 hover:shadow-sm transition-all duration-200 cursor-pointer"
-                    onClick={() => {
-                      if (system.id === 'openrouter') {
-                        window.open('https://openrouter.ai/models', '_blank');
-                      } else if (system.id === 'local') {
-                        setIsLocalModalOpen(true);
-                      }
-                    }}
-                  >
-                    <div className="flex items-center gap-3 w-full mb-2">
-                      <Icon className="w-5 h-5 text-text-muted group-hover/item:text-accent transition-colors shrink-0" strokeWidth={1.5} />
-                      <span className="inconsolata-ui text-[15px] font-bold text-text-heading group-hover/item:text-accent transition-colors">
-                        {system.title}
-                      </span>
-                      {system.id !== 'default' && (
-                        <ArrowRight className="w-4 h-4 text-transparent group-hover/item:text-accent/60 group-hover/item:translate-x-0.5 transition-all duration-200 ml-auto" strokeWidth={2} />
-                      )}
-                    </div>
-                    <p className="manrope-body text-[13px] text-text-muted leading-relaxed">
-                      {system.description}
-                    </p>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </div>
+        {/* Cards Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          {SYSTEMS.map((system, index) => {
+            const buttonLabel =
+              system.id === 'default'
+                ? 'Get started'
+                : system.id === 'openrouter'
+                ? 'Connect key'
+                : 'Try local inference';
+
+            return (
+              <motion.div
+                key={system.id}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.04 }}
+                className="border border-border rounded-lg p-6 flex flex-col"
+              >
+                {/* Title */}
+                <h3 className="text-[18px] font-bold text-text-heading mb-2">
+                  {system.title}
+                </h3>
+
+                {/* Description */}
+                <p className="text-text-muted text-[14px] leading-relaxed mb-4">
+                  {system.description}
+                </p>
+
+                {/* Bullet Points */}
+                <ul className="flex flex-col gap-1.5 mb-4">
+                  {system.points.map((point) => (
+                    <li key={point} className="flex items-start gap-2 text-[13px] text-text-muted">
+                      <span className="mt-[6px] w-1 h-1 rounded-full bg-text-muted shrink-0" />
+                      {point}
+                    </li>
+                  ))}
+                </ul>
+
+                {/* Spacer */}
+                <div className="flex-grow" />
+
+                {/* Button */}
+                <button
+                  className="inline-block bg-text-heading text-background text-[13px] font-semibold px-4 py-2 rounded-md hover:opacity-80 transition-opacity text-left w-fit"
+                  onClick={() => {
+                    if (system.id === 'openrouter') {
+                      window.open('https://openrouter.ai/models', '_blank');
+                    } else if (system.id === 'local') {
+                      setIsLocalModalOpen(true);
+                    }
+                  }}
+                >
+                  {buttonLabel}
+                </button>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
-      
+
       {isLocalModalOpen && (
-        <LocalAIModal 
-          isOpen={isLocalModalOpen} 
-          onClose={() => setIsLocalModalOpen(false)} 
+        <LocalAIModal
+          isOpen={isLocalModalOpen}
+          onClose={() => setIsLocalModalOpen(false)}
           onSelectModel={(id, name) => {
-             localStorage.setItem('local_ai_model', id);
-             localStorage.setItem('local_ai_model_name', name);
-             localStorage.setItem('use_local_ai', 'true');
-             localStorage.setItem('use_openrouter', 'false');
-             window.dispatchEvent(new Event('ai_settings_changed'));
+            localStorage.setItem('local_ai_model', id);
+            localStorage.setItem('local_ai_model_name', name);
+            localStorage.setItem('use_local_ai', 'true');
+            localStorage.setItem('use_openrouter', 'false');
+            window.dispatchEvent(new Event('ai_settings_changed'));
           }}
         />
       )}
