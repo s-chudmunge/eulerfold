@@ -25,11 +25,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '/about',
     '/careers',
     '/sitemap',
-    '/planner',
-    '/job-decoded',
-    '/link-to-roadmap',
-    '/syllabus-to-roadmap',
-    '/skill-gap-analyzer',
     '/research-lab',
     '/archive/exams/previous-year-papers',
   ].map((route) => ({

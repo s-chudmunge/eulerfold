@@ -58,7 +58,7 @@ export default function ProvenSkills({ skills }: { skills: any[] }) {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {skills.slice(0, 9).map((skill: any) => (
-                    <div key={skill.id} className="p-4 bg-sidebar/30 border border-border/50 hover:border-accent/30 rounded-xl group transition-all duration-300 relative overflow-hidden flex flex-col justify-between hover:bg-sidebar/60">
+                    <div key={skill.id} className="p-4 bg-sidebar/30 border border-border/50 hover:border-accent/30 rounded-lg group transition-all duration-300 relative overflow-hidden flex flex-col justify-between hover:bg-sidebar/60">
                         <div className="flex items-center gap-3 mb-4 relative z-10">
                             <div className="w-10 h-10 rounded-lg bg-background border border-border flex items-center justify-center text-text-muted group-hover:text-accent group-hover:border-accent/30 transition-all shrink-0">
                                 {getSkillIcon(skill.name || '')}

@@ -265,7 +265,7 @@ const MarkdownWithLinks = ({ content, currentSlug, cache }: { content: string, c
           );
         },
         img: ({node, alt, ...props}) => (
-          <figure className="my-10 w-full overflow-hidden rounded-xl border border-border shadow-md bg-card">
+          <figure className="my-10 w-full overflow-hidden rounded-lg border border-border shadow-md bg-card">
             <img className="w-full h-auto object-cover hover:scale-[1.02] transition-transform duration-700" loading="lazy" alt={alt} {...props} />
             {alt && (
               <figcaption className="p-3 text-center text-[13px] font-medium text-text-muted border-t border-border/50 bg-sidebar/50 italic">

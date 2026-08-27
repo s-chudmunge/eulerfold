@@ -101,7 +101,7 @@ const ModuleReferenceCarousel = ({ module, index }: { module: any, index: number
                         href={resource.link || resource.url} 
                         target="_blank" 
                         rel="noreferrer"
-                        className="snap-start flex-shrink-0 w-[260px] md:w-[280px] h-[160px] p-5 rounded-2xl border border-border/60 bg-sidebar/50 hover:bg-background/80 hover:border-accent/40 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
+                        className="snap-start flex-shrink-0 w-[260px] md:w-[280px] h-[160px] p-5 rounded-lg border border-border/60 bg-sidebar/50 hover:bg-background/80 hover:border-accent/40 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
                     >
                         {/* Feature Image Background (if available) */}
                         {(resource.image_url || resource.image) && (
@@ -508,7 +508,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
 
                             {/* Sidebar (Right) */}
                             <div className="lg:col-span-4">
-                                <div className="sticky top-28 space-y-6 p-5 md:p-6 rounded-2xl bg-sidebar/30 border border-border/40 backdrop-blur-sm">
+                                <div className="sticky top-28 space-y-6 p-5 md:p-6 rounded-lg bg-sidebar/30 border border-border/40 backdrop-blur-sm">
                                     {/* Prerequisites */}
                                     {roadmap.roadmap_plan.prerequisites && (
                                         <div>
@@ -690,10 +690,10 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                     <Link 
                                         key={idx} 
                                         href={`/roadmap/${simRoadmap.slug}`}
-                                        className="group relative flex flex-col p-6 rounded-2xl border border-border/60 bg-sidebar/50 hover:bg-background/80 hover:border-accent/40 hover:-translate-y-1 transition-all duration-300"
+                                        className="group relative flex flex-col p-6 rounded-lg border border-border/60 bg-sidebar/50 hover:bg-background/80 hover:border-accent/40 hover:-translate-y-1 transition-all duration-300"
                                     >
                                         {/* Subtle gradient overlay on hover */}
-                                        <div className="absolute inset-0 bg-gradient-to-b from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl pointer-events-none" />
+                                        <div className="absolute inset-0 bg-gradient-to-b from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg pointer-events-none" />
                                         
                                         <h3 className="relative text-[16px] font-bold text-text-heading group-hover:text-accent transition-colors leading-snug mb-3 mt-2">
                                             {simRoadmap.title}
@@ -863,7 +863,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
             {/* Clone Modal */}
             {showCloneModal && (
                 <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/30 animate-in fade-in duration-200">
-                    <div className="w-full max-w-[420px] bg-background border border-border shadow-2xl rounded-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+                    <div className="w-full max-w-[420px] bg-background border border-border shadow-2xl rounded-lg overflow-hidden animate-in zoom-in-95 duration-200">
                         <div className="p-6 flex gap-4 md:gap-5 items-start">
                             {cloneSuccess ? (
                                 <div className="flex flex-col items-center justify-center w-full py-4 text-center animate-in fade-in zoom-in duration-300">
@@ -877,7 +877,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                 </div>
                             ) : (
                                 <>
-                                    <div className="shrink-0 w-12 h-12 bg-accent/10 text-accent rounded-xl flex items-center justify-center">
+                                    <div className="shrink-0 w-12 h-12 bg-accent/10 text-accent rounded-lg flex items-center justify-center">
                                         <Copy className="w-6 h-6" />
                                     </div>
                                     <div className="flex flex-col flex-1">

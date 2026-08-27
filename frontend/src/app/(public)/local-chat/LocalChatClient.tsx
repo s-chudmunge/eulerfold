@@ -521,7 +521,7 @@ export default function LocalChatClient() {
                     {message.role === 'user' ? (
                       <div className="flex justify-end">
                         <div className="max-w-[85%]">
-                          <div className="bg-sidebar border border-border/80 rounded-2xl rounded-br-sm px-4 py-3">
+                          <div className="bg-sidebar border border-border/80 rounded-lg rounded-br-sm px-4 py-3">
                             <p className="text-[14px] text-text-primary leading-relaxed whitespace-pre-wrap">{message.content}</p>
                           </div>
                         </div>
@@ -603,7 +603,7 @@ export default function LocalChatClient() {
           )}
           <form
             onSubmit={e => { e.preventDefault(); send(inputValue); }}
-            className="relative flex items-end gap-2 bg-sidebar border border-border rounded-xl px-4 py-3 focus-within:border-accent/40 transition-colors"
+            className="relative flex items-end gap-2 bg-sidebar border border-border rounded-lg px-4 py-3 focus-within:border-accent/40 transition-colors"
           >
             <button
               type="button"

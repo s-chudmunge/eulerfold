@@ -38,7 +38,7 @@ export default function ProfileHeader({
             </div>
 
             <div className="max-w-4xl mx-auto px-6 pt-8 pb-16 flex flex-col md:flex-row items-center md:items-start gap-8 relative z-10">
-                <div className="w-32 h-32 md:w-40 md:h-40 rounded-2xl border border-border/50 shadow-xl overflow-hidden bg-header flex items-center justify-center relative group shrink-0">
+                <div className="w-32 h-32 md:w-40 md:h-40 rounded-lg border border-border/50 shadow-xl overflow-hidden bg-header flex items-center justify-center relative group shrink-0">
                     {effectiveAvatarUrl ? (
                         <img src={effectiveAvatarUrl} alt={profile.username} className="w-full h-full object-cover" />
                     ) : (

@@ -60,7 +60,7 @@ export default async function CertificatePage({ params }: Props) {
     // Fallback if PDF generation/upload failed
     return (
         <div className="flex items-center justify-center min-h-screen bg-gray-50">
-            <div className="text-center p-8 bg-white shadow-xl rounded-xl border border-gray-100 max-w-md mx-auto">
+            <div className="text-center p-8 bg-white shadow-xl rounded-lg border border-gray-100 max-w-md mx-auto">
                 <h1 className="text-2xl font-bold text-gray-900 mb-2">PDF Unavailable</h1>
                 <p className="text-gray-600">
                     The PDF for this certificate could not be found or is still generating. Please ensure the 'certificates' storage bucket is correctly configured.

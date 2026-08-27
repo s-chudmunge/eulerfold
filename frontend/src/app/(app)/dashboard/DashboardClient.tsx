@@ -272,12 +272,12 @@ export default function DashboardPage() {
                                 {loading ? (
                                     <>
                                         {[1, 2, 3, 4].map((i) => (
-                                            <div key={i} className="h-40 w-full bg-callout-bg border border-border rounded-2xl animate-pulse" />
+                                            <div key={i} className="h-40 w-full bg-callout-bg border border-border rounded-lg animate-pulse" />
                                         ))}
                                     </>
                                 ) : roadmaps.length > 0 ? (
                                     roadmaps.map((r) => (
-                                        <div key={r.id} className={`group flex flex-col justify-between bg-transparent border border-border hover:border-border/80 rounded-xl p-5 transition-colors ${r.status === 'archived' || r.status === 'quit' ? 'opacity-60' : ''}`}>
+                                        <div key={r.id} className={`group flex flex-col justify-between bg-transparent border border-border hover:border-accent/50 rounded-lg p-4 transition-colors ${r.status === 'archived' || r.status === 'quit' ? 'opacity-60' : ''}`}>
                                             <div>
                                                 <div className="flex flex-wrap items-center gap-2 mb-3">
                                                     {r.is_public && (
@@ -362,7 +362,7 @@ export default function DashboardPage() {
                                         </div>
                                     ))
                                 ) : (
-                                    <div className="col-span-full py-16 text-center bg-sidebar/30 border border-dashed border-border rounded-2xl">
+                                    <div className="col-span-full py-12 text-center bg-sidebar/30 border border-dashed border-border rounded-lg">
                                         <p className="manrope-body text-[14px] text-text-muted font-medium italic">No courses yet. Time to start one? 🫠</p>
                                     </div>
                                 )}

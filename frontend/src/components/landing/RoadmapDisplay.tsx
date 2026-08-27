@@ -156,7 +156,7 @@ interface RoadmapDisplayProps {
               href={r.link || r.url || '#'}
               target="_blank"
               rel="noreferrer"
-              className="group flex items-start gap-3 p-3 md:p-4 bg-background border border-border/60 hover:border-accent/40 rounded-xl hover:bg-sidebar/50 transition-all shadow-sm"
+              className="group flex items-start gap-3 p-3 md:p-4 bg-background border border-border/60 hover:border-accent/40 rounded-lg hover:bg-sidebar/50 transition-all shadow-sm"
             >
               <div className="bg-accent/10 p-2 rounded-lg shrink-0 group-hover:bg-accent/20 transition-colors">
                 <FileText className="w-4 h-4 text-accent" />
@@ -281,7 +281,7 @@ interface RoadmapDisplayProps {
             return (
               <div
                 key={index}
-                className={`transition-all duration-300 relative group/module rounded-2xl border overflow-hidden ${
+                className={`transition-all duration-300 relative group/module rounded-lg border overflow-hidden ${
                   isCurrent 
                     ? 'bg-accent/[0.02] border-accent/30 shadow-md shadow-accent/5' 
                     : 'bg-sidebar/30 border-border/50 hover:border-accent/30 hover:bg-sidebar/60 hover:shadow-sm'
@@ -301,7 +301,7 @@ interface RoadmapDisplayProps {
                   }}
                 >
                   <div className="flex items-center gap-4 md:gap-6 min-w-0">
-                    <div className={`inconsolata-ui w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center text-[13px] md:text-[15px] font-bold shrink-0 transition-all border ${
+                    <div className={`inconsolata-ui w-10 h-10 md:w-12 md:h-12 rounded-lg flex items-center justify-center text-[13px] md:text-[15px] font-bold shrink-0 transition-all border ${
                       isCurrent 
                         ? 'bg-accent text-white border-accent/20 shadow-md' 
                         : 'bg-background border-border text-text-muted group-hover/module:border-accent/20 group-hover/module:text-text-primary'

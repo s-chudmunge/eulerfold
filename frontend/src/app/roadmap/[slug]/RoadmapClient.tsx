@@ -119,7 +119,7 @@ const ModuleReferenceCarousel = ({ module, index }: { module: any, index: number
                         href={resource.link || resource.url} 
                         target="_blank" 
                         rel="noreferrer"
-                        className="snap-start shrink-0 w-[260px] md:w-[280px] h-[160px] p-5 rounded-2xl border border-border/60 bg-sidebar/50 hover:bg-background/80 hover:border-accent/40 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
+                        className="snap-start shrink-0 w-[260px] md:w-[280px] h-[160px] p-5 rounded-lg border border-border/60 bg-sidebar/50 hover:bg-background/80 hover:border-accent/40 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
                     >
                         {/* Feature Image Background (if available) */}
                         {(resource.image_url || resource.image) && (

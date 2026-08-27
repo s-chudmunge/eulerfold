@@ -15,9 +15,7 @@ if not url or not key:
 supabase: Client = create_client(url, key)
 
 emails = [
-    "sharynn22@gmail.com",
-    "pallaviasadi660@gmail.com",
-    "lowkey.kappesberg@gmail.com"
+    "reoreo3045iine@gmail.com"
 ]
 
 for email in emails:

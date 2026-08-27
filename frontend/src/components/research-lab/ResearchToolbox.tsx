@@ -167,7 +167,7 @@ export default function ResearchToolbox({
                             </ToolWrapper>
                             
                             {isHistory && showHistory && (
-                                <div className="absolute left-full top-0 ml-4 w-72 bg-header border border-border shadow-2xl rounded-xl p-4 z-[60] animate-in slide-in-from-left-2 fade-in">
+                                <div className="absolute left-full top-0 ml-4 w-72 bg-header border border-border shadow-2xl rounded-lg p-4 z-[60] animate-in slide-in-from-left-2 fade-in">
                                     <h3 className="text-[11px] font-black uppercase tracking-wider text-text-muted mb-4 opacity-70">Previous Reports</h3>
                                     {loadingHistory ? (
                                         <div className="flex justify-center p-4"><div className="w-5 h-5 border-2 border-accent border-t-transparent rounded-full animate-spin" /></div>

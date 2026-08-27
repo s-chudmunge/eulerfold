@@ -341,7 +341,7 @@ const [activeTab, setActiveTab] = useState<TabType>('overview');
                         
                         {/* Left Profile Card */}
                         <aside className="w-full lg:w-[320px] shrink-0">
-                            <div className="bg-transparent border border-border rounded-xl overflow-hidden sticky top-[20px]">
+                            <div className="bg-transparent border border-border rounded-lg overflow-hidden sticky top-[20px]">
                                 {/* Top Banner Area */}
                                 <div className="h-32 bg-accent/10 relative">
                                     <div className="absolute top-4 right-4 flex gap-2">
@@ -432,7 +432,7 @@ const [activeTab, setActiveTab] = useState<TabType>('overview');
                         <main className="flex-1 min-w-0 flex flex-col gap-6">
                             {/* Top Stats Cards */}
                             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                                <div className="bg-transparent border border-border rounded-xl p-5 flex flex-col">
+                                <div className="bg-transparent border border-border rounded-lg p-5 flex flex-col">
                                     <div className="mb-4">
                                         
                                         <span className="text-[11px] font-bold text-text-muted uppercase tracking-widest">Skills Mastered</span>
@@ -440,7 +440,7 @@ const [activeTab, setActiveTab] = useState<TabType>('overview');
                                     <span className="text-3xl font-black text-text-heading mt-auto">{profile.total_skills || 0}</span>
                                 </div>
 
-                                <div className="bg-transparent border border-border rounded-xl p-5 flex flex-col">
+                                <div className="bg-transparent border border-border rounded-lg p-5 flex flex-col">
                                     <div className="mb-4">
                                         
                                         <span className="text-[11px] font-bold text-text-muted uppercase tracking-widest">Roadmaps</span>
@@ -448,7 +448,7 @@ const [activeTab, setActiveTab] = useState<TabType>('overview');
                                     <span className="text-3xl font-black text-text-heading mt-auto">{profile.total_roadmaps || 0}</span>
                                 </div>
 
-                                <div className="bg-transparent border border-border rounded-xl p-5 flex flex-col">
+                                <div className="bg-transparent border border-border rounded-lg p-5 flex flex-col">
                                     <div className="mb-4">
                                         
                                         <span className="text-[11px] font-bold text-text-muted uppercase tracking-widest">Hours Invested</span>
@@ -458,7 +458,7 @@ const [activeTab, setActiveTab] = useState<TabType>('overview');
                             </div>
 
                             {/* Tabbed Section */}
-                            <div className="bg-transparent border border-border rounded-xl overflow-hidden flex-1 flex flex-col min-h-[500px]">
+                            <div className="bg-transparent border border-border rounded-lg overflow-hidden flex-1 flex flex-col min-h-[500px]">
                                 <div className="flex overflow-x-auto no-scrollbar border-b border-border/60 bg-transparent">
                                     {tabs.map((tab) => {
                                         const isActive = activeTab === tab.id;

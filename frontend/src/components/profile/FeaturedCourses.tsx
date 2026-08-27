@@ -12,7 +12,7 @@ export default function FeaturedCourses({ roadmaps }: { roadmaps: any[] }) {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {roadmaps.map((roadmap: any) => (
-                    <Link href={`/roadmap/${roadmap.slug || roadmap.id}`} key={roadmap.id} className="group p-6 bg-transparent border border-border hover:border-border/80 rounded-xl transition-colors flex flex-col justify-between overflow-hidden relative">
+                    <Link href={`/roadmap/${roadmap.slug || roadmap.id}`} key={roadmap.id} className="group p-6 bg-transparent border border-border hover:border-border/80 rounded-lg transition-colors flex flex-col justify-between overflow-hidden relative">
                         <div className="relative z-10">
                             <div className="flex items-center gap-2 mb-4">
                                 <span className="text-[9px] font-bold uppercase tracking-widest text-accent bg-accent/10 px-2 py-0.5 rounded">Course</span>
