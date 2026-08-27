@@ -128,6 +128,47 @@ export default function HeroPromptInput() {
     }
   }, [user]);
 
+  const [toastMsg, setToastMsg] = useState('');
+  
+  // Listen for ecosystem tool clicks
+  useEffect(() => {
+    const handleModeSelect = (e: any) => {
+      const targetMode = e.detail?.mode;
+      if (targetMode) {
+        setMode(targetMode);
+        setStep(1);
+        
+        const modeObj = MODES.find(m => m.id === targetMode);
+        if (modeObj) {
+          const friendlyMessages: Record<string, string> = {
+            'ai': 'Ready to generate a course. Tell us what you want to learn!',
+            'job': 'Ready to decode a job. Paste a description or URL below!',
+            'url': 'Ready to deconstruct a link. Paste your URL below!',
+            'syllabus': 'Ready to parse a syllabus. Paste your outline below!',
+            'gaps': 'Ready to analyze your skills. Enter your target role below!',
+            'research': 'Ready to decode research. Paste a paper URL below!'
+          };
+          setToastMsg(friendlyMessages[targetMode] || `Ready to use ${modeObj.label}. Follow the instructions below!`);
+          setTimeout(() => setToastMsg(''), 4000);
+        }
+
+        // Add a highlight animation class temporarily
+        setIsFocused(true);
+        setTimeout(() => setIsFocused(false), 2000);
+
+        // Focus the textarea
+        setTimeout(() => {
+          if (textareaRef.current) {
+            textareaRef.current.focus();
+          }
+        }, 300);
+      }
+    };
+
+    window.addEventListener('hero-mode-select', handleModeSelect);
+    return () => window.removeEventListener('hero-mode-select', handleModeSelect);
+  }, []);
+
   const handleNextStep = () => {
     if (!value.trim()) return;
     if (mode === 'research') {
@@ -509,8 +550,23 @@ Return ONLY this JSON structure:
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.5, duration: 0.6 }}
-      className="w-full max-w-xl mx-auto"
+      className="w-full max-w-xl mx-auto relative"
     >
+      <AnimatePresence>
+        {toastMsg && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            className="absolute -top-14 left-0 right-0 flex justify-center z-20 pointer-events-none"
+          >
+            <div className="bg-background border border-border text-text-heading px-5 py-2.5 rounded-full text-[13px] font-medium shadow-md">
+              {toastMsg}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className={`relative rounded-lg transition-all duration-300 border ${isFocused ? 'border-accent shadow-[0_0_15px_-5px_rgba(15,118,110,0.2)]' : 'border-border'}`}>
         <div className="bg-background rounded-[5px] p-4 flex flex-col gap-3">
           

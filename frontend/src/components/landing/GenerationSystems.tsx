@@ -13,7 +13,7 @@ const SYSTEMS = [
     title: 'EulerFold AI',
     subtitle: 'Zero Setup',
     icon: Cloud,
-    description: 'Creates your course using our managed models, with verified references. No API key needed.',
+    description: 'Creates your course using our managed models, with credible resources. No API key needed.',
     points: [
       'No API key or configuration needed',
       'Courses include papers, videos, and assessments',

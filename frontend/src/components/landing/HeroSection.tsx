@@ -29,44 +29,42 @@ export default function HeroSection() {
   }, [user]);
 
   return (
-    <div className="relative w-full overflow-hidden">
-      <section className="relative pt-24 pb-8 sm:pt-28 md:pt-36 md:pb-16 px-4 sm:px-6 min-h-[600px] md:min-h-[750px] flex flex-col items-center justify-between w-full">
+    <div className="relative w-full">
+      <section className="relative pt-24 pb-8 sm:pt-28 md:pt-36 md:pb-16 px-6 min-h-[600px] md:min-h-[750px] flex flex-col items-center justify-between w-full">
         <div className="max-w-3xl mx-auto w-full relative z-10 flex-1 flex flex-col justify-center">
           <div className="text-center">
-            {/* Main heading */}
-            <h1 className="font-inter text-3xl sm:text-4xl md:text-[46px] font-semibold text-text-heading mb-5 leading-[1.12] tracking-tight">
+
+            <h1 className="text-3xl sm:text-4xl md:text-[48px] font-semibold text-text-heading mb-5 leading-[1.1] tracking-tight">
               Describe What You Want to Learn.{' '}
               <br className="hidden md:block" />
               Get a{' '}
-              <span className="relative inline-block text-accent drop-shadow-sm pb-1">
-                Structured Course
-              </span>
-              {' '}in Seconds.{' '}
-              <span className="font-serif italic text-accent opacity-90 text-[32px] sm:text-[38px] md:text-[44px] tracking-normal font-medium inline-block">
-                Completely Free.
-              </span>
+              <span className="text-accent">Structured Course</span>
+              {' '}in Seconds.
             </h1>
 
+            <p className="text-[15px] text-text-muted leading-relaxed max-w-xl mx-auto mb-8">
+              Free, AI-generated courses with credible resources, videos, and assessments. Start from scratch or import a topic, URL, or syllabus.
+            </p>
+
             {/* Interactive prompt input */}
-            <div className="mt-8">
+            <div id="hero-prompt-input" className="scroll-mt-32">
               <HeroPromptInput />
             </div>
 
             {/* Secondary CTAs */}
             <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
               {lastRoadmap && (
-                <Link 
+                <Link
                   href={`/roadmap/${lastRoadmap.slug}/learn`}
-                  className="inline-flex items-center gap-2 bg-accent text-white hover:bg-teal-700 px-5 py-2.5 rounded-md text-[13px] font-bold transition-all shadow-sm group"
+                  className="inline-flex items-center gap-2 bg-text-heading text-background px-5 py-2.5 rounded-md text-[13px] font-bold hover:opacity-80 transition-opacity"
                 >
-                  <ArrowRight className="w-3.5 h-3.5" /> 
+                  <ArrowRight className="w-3.5 h-3.5" />
                   <span className="truncate max-w-[150px] sm:max-w-[180px]">Continue: {lastRoadmap.title}</span>
                 </Link>
               )}
-
-              <Link 
+              <Link
                 href="/explore"
-                className="inline-flex items-center gap-2 bg-sidebar/80 backdrop-blur-sm border border-border text-text-primary px-5 py-2.5 rounded-md text-[13px] font-bold transition-all hover:bg-sidebar active:scale-[0.98]"
+                className="inline-flex items-center gap-2 border border-border text-text-primary px-5 py-2.5 rounded-md text-[13px] font-bold hover:border-accent/40 transition-colors"
               >
                 <BookOpen className="w-3.5 h-3.5" /> Browse Courses
               </Link>
@@ -76,8 +74,8 @@ export default function HeroSection() {
             <div className="flex items-center justify-center gap-2 mt-5 h-[20px]">
               {!user && (
                 <>
-                  <span className="manrope-body text-[12px] text-text-muted">Already a member?</span>
-                  <Link href="/login" className="manrope-body text-[12px] font-bold text-accent hover:underline">
+                  <span className="text-[12px] text-text-muted">Already a member?</span>
+                  <Link href="/login" className="text-[12px] font-bold text-accent hover:underline">
                     Sign in to your account
                   </Link>
                 </>
@@ -87,7 +85,7 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Consolidated Social Proof */}
+        {/* Trusted sources ticker */}
         <div className="w-full relative z-10 mt-10 md:mt-16">
           <TrustedSourcesTicker />
         </div>

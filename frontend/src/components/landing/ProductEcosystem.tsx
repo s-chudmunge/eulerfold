@@ -19,7 +19,7 @@ const products: Product[] = [
     id: 'architect', 
     title: "AI Architect",
     category: "Generation",
-    description: "Enter any subject to generate a curriculum with verified references, videos, theory, and assessments.",
+    description: "Enter any subject to generate a curriculum with credible resources, videos, theory, and assessments.",
     icon: Sparkles, 
     href: "/#hero-prompt-input"
   },
@@ -131,7 +131,28 @@ export default function ProductEcosystem() {
                 >
                   <Link
                     href={product.href}
-                    className="border border-border rounded-lg p-4 flex flex-col gap-2 hover:border-accent/50 transition-colors"
+                    onClick={(e) => {
+                      if (product.href === "/#hero-prompt-input") {
+                        e.preventDefault();
+                        const el = document.getElementById('hero-prompt-input');
+                        if (el) {
+                          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                        // Dispatch event to HeroPromptInput
+                        const modeMap: Record<string, string> = {
+                          'architect': 'ai',
+                          'job': 'job',
+                          'url': 'url',
+                          'syllabus': 'syllabus',
+                          'gaps': 'gaps'
+                        };
+                        const targetMode = modeMap[product.id];
+                        if (targetMode) {
+                          window.dispatchEvent(new CustomEvent('hero-mode-select', { detail: { mode: targetMode } }));
+                        }
+                      }
+                    }}
+                    className="border border-border rounded-lg p-4 flex flex-col gap-2 hover:border-accent/50 transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-2">
                       <Icon className="w-4 h-4 text-text-muted shrink-0" strokeWidth={1.5} />
