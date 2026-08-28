@@ -222,7 +222,7 @@ CPU Architecture,CPU Architecture,CrashCourse,DONE
 Arithmetic Logic Unit,ALU,CrashCourse,DONE
 RAM and Registers,Registers and RAM,CrashCourse,DONE
 Virtual Memory,Virtual Memory,Neso Academy,DONE
-Memory Paging,Paging in OS,Neso Academy,DONE
+Memory Paging,L-5.9: What is Paging | Memory management |  Operating System,Neso Academy,DONE
 CPU Scheduling,CPU Scheduling,Neso Academy,DONE
 Multithreading,Multithreading in OS,Neso Academy,DONE
 Binary Numbers,Binary Numbers,CrashCourse,DONE
@@ -274,7 +274,7 @@ CQRS Pattern,CQRS,CodeOpinion,DONE
 Hexagonal Architecture,Hexagonal Architecture,CodeOpinion,DONE
 MVC Pattern (Model-View-Controller),MVC Pattern,Web Dev Simplified,DONE
 SOLID - Single Responsibility,Single Responsibility Principle,Web Dev Simplified,DONE
-SOLID - Open Closed,Open Closed Principle,Web Dev Simplified,DONE
+SOLID - Open Closed,Open Closed Principle,Web Dev Simplified,FAILED
 SOLID - Liskov Substitution,Liskov Substitution Principle,Web Dev Simplified,DONE
 SOLID - Interface Segregation,Interface Segregation Principle,Web Dev Simplified,DONE
 Convolutional Filters,Convolutions in Computer Vision,Computerphile,DONE
@@ -288,7 +288,7 @@ Snowflake Data Warehouse,Snowflake Data Warehouse Explained,Seattle Data Guy,DON
 Node.js Event Loop,Node.js Event Loop,Hussein Nasser,DONE
 JavaScript Generators,JavaScript Generators,Web Dev Simplified,DONE
 JavaScript Maps vs Objects,Map vs Object in JavaScript,Web Dev Simplified,DONE
-Web Workers,Web Workers,Hussein Nasser,DONE
+Web Workers,NGINX Internal Architecture - Workers,Hussein Nasser,DONE
 V8 JavaScript Engine,V8 Engine Architecture,Hussein Nasser,DONE
 Prototypes in JavaScript,JavaScript Prototypes,Web Dev Simplified,DONE
 JavaScript Call Apply Bind,Call Apply Bind in JavaScript,Web Dev Simplified,DONE
@@ -317,9 +317,9 @@ Binomial Distribution,Binomial Distribution,StatQuest with Josh Starmer,DONE
 Poisson Distribution,Poisson Distribution,StatQuest with Josh Starmer,DONE
 Exponential Distribution,Exponential Distribution,jbstatistics,DONE
 Maximum Likelihood Estimation (MLE),Maximum Likelihood For the Binomial Distribution,StatQuest with Josh Starmer,DONE
-A/B Testing,A/B Testing,StatQuest with Josh Starmer,DONE
+A/B Testing,"Hypothesis Testing and The Null Hypothesis, Clearly Explained!!!",StatQuest with Josh Starmer,DONE
 Chi-Square Test,Chi-Square Test,StatQuest with Josh Starmer,DONE
-Student's t-Distribution,t-Distribution,StatQuest with Josh Starmer,DONE
+Student's t-Distribution,"Using Linear Models for t tests and ANOVA, Clearly Explained!!!",StatQuest with Josh Starmer,DONE
 Central Limit Theorem,Central Limit Theorem,StatQuest with Josh Starmer,DONE
 Law of Large Numbers,Law of large numbers,Khan Academy,DONE
 Z-Scores,Z-Scores,StatQuest with Josh Starmer,DONE
@@ -366,7 +366,7 @@ Vision Transformers,Vision Transformer (ViT),Yannic Kilcher,DONE
 BERT,BERT Neural Network,Yannic Kilcher,DONE
 GPT Architecture,GPT-3,Yannic Kilcher,DONE
 Stable Diffusion,How Stable Diffusion Works,Computerphile,DONE
-Self-Attention,Self-Attention,StatQuest with Josh Starmer,DONE
+Self-Attention,Self-Attention,StatQuest with Josh Starmer,FAILED
 Reinforcement Learning from Human Feedback (RLHF),RLHF,Hugging Face,DONE
 Introduction to CUDA,CUDA Tutorial 1,CoffeeBeforeArch,DONE
 CUDA Thread Hierarchy,CUDA Threads and Blocks,CoffeeBeforeArch,DONE
@@ -418,7 +418,7 @@ Merkle Trees,Merkle Trees,Whiteboard Crypto,DONE
 IPFS (InterPlanetary File System),IPFS Explained,Finematics,DONE
 Sequence Alignment (Needleman-Wunsch),Needleman-Wunsch Algorithm,ritvikmath,DONE
 Hidden Markov Models (HMMs),Hidden Markov Models,ritvikmath,DONE
-FPGA Architecture,What is an FPGA?,Branch Education,DONE
+FPGA Architecture,Introduction to FPGA Part 1 - What is an FPGA? | Digi-Key Electronics,Branch Education,DONE
 Verilog Basics,Verilog Tutorial,Neso Academy,DONE
 RISC-V Architecture,RISC-V Architecture,Computerphile,DONE
 Instruction Pipelining,Pipelining in Computer Architecture,Neso Academy,DONE
@@ -587,7 +587,7 @@ Runge-Kutta Methods,Runge-Kutta Methods,Steve Brunton,DONE
 Partial Differential Equations (PDEs),Partial Differential Equations,Steve Brunton,DONE
 The Heat Equation,The Heat Equation,3Blue1Brown,DONE
 The Wave Equation,The Wave Equation,Steve Brunton,DONE
-Propositional Logic,Propositional Logic,The Organic Chemistry Tutor,DONE
+Propositional Logic,"Converse, Inverse, & Contrapositive - Conditional & Biconditional Statements, Logic, Geometry",The Organic Chemistry Tutor,DONE
 Truth Tables,Truth Tables,The Organic Chemistry Tutor,DONE
 Direct and Indirect Proofs,Direct and Indirect Proofs,Dr. Trefor Bazett,DONE
 Proof by Contradiction,Proof by Contradiction,Dr. Trefor Bazett,DONE
@@ -989,9 +989,9 @@ Mendelian Genetics and Punnett Squares,Genetics,Bozeman Science,DONE
 Non-Mendelian Genetics,Chromosomal Genetics,Bozeman Science,DONE
 Pedigree Analysis,Pedigree Analysis - Part 1: Autosomal Inheritance Patterns,AMBOSS: Medical Knowledge Distilled,DONE
 Linked Genes and Recombination Frequency,Linked Genes,Bozeman Science,DONE
-DNA Structure and Packaging,Introduction to Nucleic Acids,Andrey K,DONE
+DNA Structure and Packaging,Introduction to Nucleic Acids,Andrey K,ERROR
 Telomeres and Telomerase,What is telomere?,Shomu's Biology,DONE
-DNA Repair Mechanisms,Mismatch repair,Shomu's Biology,DONE
+DNA Repair Mechanisms,Mismatch repair,Shomu's Biology,ERROR
 Prokaryotic vs Eukaryotic Transcription,Promoter and Termination Sites of Transcription,Andrey K,DONE
 RNA Splicing and Spliceosomes,RNA splicing and processing | RNA splicing mechanism | spliceosome,Shomu's Biology,DONE
 Translation (Ribosomes and tRNA),The Central Dogma: Transcription and Translation,Bozeman Science,DONE
@@ -1020,7 +1020,7 @@ The Countercurrent Multiplier System,Renal | Loop of Henle,Ninja Nerd,DONE
 Renin-Angiotensin-Aldosterone System (RAAS),Acid-Base Disorders | Clinical Medicine,Ninja Nerd,DONE
 Hypothalamic-Pituitary Axis,Endocrinology | Hypothalamus: Anterior Pituitary Connection,Ninja Nerd,DONE
 Insulin and Glucagon Signaling,Endocrinology | Pancreas: Insulin Function,Ninja Nerd,DONE
-Innate vs Adaptive Immunity,Immunology | Immune System: Overview,Ninja Nerd,DONE
+Innate vs Adaptive Immunity,Immunology | Immune System: Overview,Ninja Nerd,ERROR
 Phagocytosis and Macrophages,Immunology | Inflammation: Cellular Events: Part 2,Ninja Nerd,DONE
 MHC Class I and II,Immunology | Inflammation: Vascular Events: Part 1,Ninja Nerd,DONE
 T-Cell Activation (CD4 and CD8),Immunology | T- Cell Development,Ninja Nerd,DONE
@@ -1031,7 +1031,7 @@ Gastrointestinal Digestion and Absorption,Gastrointestinal | Digestion & Absorpt
 Gram Positive vs Gram Negative Bacteria,Bacteria | Structure and Function,Ninja Nerd,DONE
 Bacterial Growth Curve,"Bacterial growth curve | log phase, lag phase, stationary phase | microbial growth curve",Shomu's Biology,DONE
 Bacterial Conjugation Transformation and Transduction,"Horizontal gene transfer | Transformation, Transduction and Conjugation",Shomu's Biology,DONE
-The Lytic and Lysogenic Viral Cycles,Viral Replication,Bozeman Science,DONE
+The Lytic and Lysogenic Viral Cycles,Viral Replication,Bozeman Science,FAILED
 Retroviruses and Reverse Transcriptase (HIV),"Antivirals | HIV, Hepatitis, Influenza, Herpes Treatment",Ninja Nerd,DONE
 Antibiotic Resistance Mechanisms,Antibiotic resistance क्या होता है | Antibiotic resistance in hindi ज्यादा antibiotic खाने से नुकसान,Shomu's Biology,DONE
 The Human Microbiome,How Bacteria Rule Over Your Body – The Microbiome,Kurzgesagt – In a Nutshell,DONE
@@ -1039,9 +1039,9 @@ Fungi and Dimorphism,Introduction to Mycology,Professor Dave Explains,DONE
 Prions and Protein Misfolding Diseases,Prion protein and prion disease,Shomu's Biology,DONE
 Endospore Formation,Endospore formation in bacteria animation,Shomu's Biology,DONE
 Natural Selection and Fitness,Unit 1 Review - Natural Selection,Bozeman Science,DONE
-Genetic Drift (Founder and Bottleneck Effects),Genetic Drift,Bozeman Science,DONE
+Genetic Drift (Founder and Bottleneck Effects),Genetic Drift,Bozeman Science,FAILED
 Speciation (Allopatric and Sympatric),Speciation,Bozeman Science,DONE
-Cladograms and Phylogenetic Trees,Cladograms,Bozeman Science,DONE
+Cladograms and Phylogenetic Trees,Cladograms,Bozeman Science,FAILED
 The Endosymbiotic Theory,Endosymbiosis,Bozeman Science,DONE
 Population Dynamics and Carrying Capacity,Population Ecology,Bozeman Science,DONE
 r-selected vs K-selected Species,r and K selection,Bozeman Science,DONE
@@ -1053,89 +1053,89 @@ Energy Flow and Trophic Levels,Energy Flow in Ecosystems,Bozeman Science,DONE
 Keystone Species and Trophic Cascades,Keystone species,Shomu's Biology,DONE
 Palladium-Catalyzed Cross-Couplings (Suzuki Heck Stille),Introduction to C-C Cross-Coupling: The Suzuki-Miyaura Reaction,Professor Dave Explains,DONE
 Pericyclic Reactions and Woodward-Hoffmann Rules,Pericyclic Reactions Part 1: Revisiting the Diels-Alder Reaction,Professor Dave Explains,DONE
-Sharpless Asymmetric Epoxidation,Sharpless Epoxidation Mechanism | Detailed Review,Organic Chemistry with Victor,DONE
+Sharpless Asymmetric Epoxidation,Sharpless Epoxidation Mechanism | Detailed Review,Organic Chemistry with Victor,FAILED
 Solid-Phase Peptide Synthesis,Solid phase peptide synthesis,HM Chemistry,DONE
-2D NMR Spectroscopy (COSY and NOESY),2D NMR Analysis - H-H COSY NMR,Tony St John,DONE
-X-ray Photoelectron Spectroscopy (XPS),X ray Photoelectron Spectroscopy,Engineering Physics by Sanjiv,DONE
-Debye-Hückel Theory of Electrolytes,Chemical Thermodynamics 9.7 - Debye-Huckel Law (Old Version),TMP Chem,DONE
-Marcus Theory of Electron Transfer,5.6 Marcus Theory I,Michael Evans,DONE
-Bioinorganic Chemistry (Metalloenzymes),Oxygen Transport & Storage System | Myoglobin |Hemoglobin | Hemerythrin | Hemocyanin | Bioinorganic,SP Chemistry Classes,DONE
-Embryonic Cleavage and Gastrulation,Embryology | Gastrulation,Ninja Nerd,DONE
-Neurulation and the Neural Tube,"Embryology | Neurulation, Vesiculation, Neural Crest Cell Migration",Ninja Nerd,DONE
-Hox Genes and Body Patterning,Development: Timing and Coordination,Bozeman Science,DONE
+2D NMR Spectroscopy (COSY and NOESY),2D NMR Analysis - H-H COSY NMR,Tony St John,ERROR
+X-ray Photoelectron Spectroscopy (XPS),X ray Photoelectron Spectroscopy,Engineering Physics by Sanjiv,ERROR
+Debye-Hückel Theory of Electrolytes,Chemical Thermodynamics 9.7 - Debye-Huckel Law (Old Version),TMP Chem,ERROR
+Marcus Theory of Electron Transfer,5.6 Marcus Theory I,Michael Evans,ERROR
+Bioinorganic Chemistry (Metalloenzymes),Oxygen Transport & Storage System | Myoglobin |Hemoglobin | Hemerythrin | Hemocyanin | Bioinorganic,SP Chemistry Classes,ERROR
+Embryonic Cleavage and Gastrulation,Embryology | Gastrulation,Ninja Nerd,ERROR
+Neurulation and the Neural Tube,"Embryology | Neurulation, Vesiculation, Neural Crest Cell Migration",Ninja Nerd,ERROR
+Hox Genes and Body Patterning,Development: Timing and Coordination,Bozeman Science,ERROR
 Sonic Hedgehog (Shh) Signaling Pathway,Hedgehog signaling pathway | Sonic Hedgehog protein Hh,Shomu's Biology,DONE
-Stem Cells and Induced Pluripotency (iPSCs),Totipotent pluripotent multipotent stem cells | Embryonic stem cells | Totipotent vs pluripotent,Shomu's Biology,DONE
-Next-Generation Sequencing (Illumina),Illumina sequencing | DNA sequencing by synthesis,Shomu's Biology,DONE
-Genome-Wide Association Studies (GWAS),"Genome-Wide Association Studies (GWAS), Part 1",Biology For All,DONE
-V(D)J Recombination and Antibody Diversity,VDJ recombination | antibody class switching,Shomu's Biology,DONE
-Hypersensitivity Reactions (Types I-IV),Hypersensitivity by Priyanka Sachdev Ma'am : Unraveling Mechanisms and Clinical Insights,MedLive By Dr. Priyanka,DONE
-Tumor Immunology and Immune Evasion,Tumour immunology and immunotherapy,nature video,DONE
-Phototransduction Cascade (Vision),Special Senses | The Phototransduction Cascade,Ninja Nerd,DONE
-Plant Hormones (Auxin and Gibberellins),Plant Control,Bozeman Science,DONE
-Arrays vs Linked Lists,2.3 Arrays vs Linked List | Data structures,Jenny's Lectures CS IT,DONE
+Stem Cells and Induced Pluripotency (iPSCs),Totipotent pluripotent multipotent stem cells | Embryonic stem cells | Totipotent vs pluripotent,Shomu's Biology,FAILED
+Next-Generation Sequencing (Illumina),Illumina sequencing | DNA sequencing by synthesis,Shomu's Biology,ERROR
+Genome-Wide Association Studies (GWAS),"Genome-Wide Association Studies (GWAS), Part 1",Biology For All,ERROR
+V(D)J Recombination and Antibody Diversity,VDJ recombination | antibody class switching,Shomu's Biology,ERROR
+Hypersensitivity Reactions (Types I-IV),Hypersensitivity by Priyanka Sachdev Ma'am : Unraveling Mechanisms and Clinical Insights,MedLive By Dr. Priyanka,ERROR
+Tumor Immunology and Immune Evasion,Tumour immunology and immunotherapy,nature video,ERROR
+Phototransduction Cascade (Vision),Special Senses | The Phototransduction Cascade,Ninja Nerd,ERROR
+Plant Hormones (Auxin and Gibberellins),Plant Control,Bozeman Science,ERROR
+Arrays vs Linked Lists,2.3 Arrays vs Linked List | Data structures,Jenny's Lectures CS IT,ERROR
 Stack and Queue Implementation,3.1 Stack in Data Structure | Introduction to Stack | Data Structures Tutorials,Jenny's Lectures CS IT,DONE
 AVL Trees,10.1 AVL Tree - Insertion and Rotations,Abdul Bari,DONE
 Red-Black Trees,006 Creating Red Black Tree similar to Creating 2 3 4 Tree,Thành Nguyễn,DONE
-B-Trees and B+ Trees,10.2  B Trees and B+ Trees. How they are useful in Databases,Abdul Bari,DONE
-Hash Tables and Collisions,Hashing Technique - Simplified,Abdul Bari,DONE
-Min and Max Heaps,2.6.3 Heap - Heap Sort - Heapify - Priority Queues,Abdul Bari,DONE
-Graph Representations (Adjacency Matrix/List),1.12 Disjoint Sets Data Structure - Weighted Union and Collapsing Find,Abdul Bari,DONE
-Big O Notation and Time Complexity,1.5.1 Time Complexity #1,Abdul Bari,DONE
-Merge Sort and Quick Sort,2.8.1  QuickSort Algorithm,Abdul Bari,DONE
-Dijkstra's Shortest Path Algorithm,3.6 Dijkstra Algorithm - Single Source Shortest Path - Greedy Method,Abdul Bari,DONE
+B-Trees and B+ Trees,10.2  B Trees and B+ Trees. How they are useful in Databases,Abdul Bari,ERROR
+Hash Tables and Collisions,Hashing Technique - Simplified,Abdul Bari,ERROR
+Min and Max Heaps,2.6.3 Heap - Heap Sort - Heapify - Priority Queues,Abdul Bari,ERROR
+Graph Representations (Adjacency Matrix/List),1.12 Disjoint Sets Data Structure - Weighted Union and Collapsing Find,Abdul Bari,ERROR
+Big O Notation and Time Complexity,1.5.1 Time Complexity #1,Abdul Bari,ERROR
+Merge Sort and Quick Sort,2.8.1  QuickSort Algorithm,Abdul Bari,ERROR
+Dijkstra's Shortest Path Algorithm,3.6 Dijkstra Algorithm - Single Source Shortest Path - Greedy Method,Abdul Bari,ERROR
 Bellman-Ford Algorithm,4.4 Bellman Ford Algorithm - Single Source Shortest Path - Dynamic Programming,Abdul Bari,DONE
 Floyd-Warshall Algorithm,4.2 All Pairs Shortest Path (Floyd-Warshall) - Dynamic Programming,Abdul Bari,DONE
-Kruskal's Minimum Spanning Tree,3.5 Prims and Kruskals Algorithms - Greedy Method,Abdul Bari,DONE
+Kruskal's Minimum Spanning Tree,3.5 Prims and Kruskals Algorithms - Greedy Method,Abdul Bari,ERROR
 Prim's Algorithm,3.5 Prims and Kruskals Algorithms - Greedy Method,Abdul Bari,DONE
-A* Search Algorithm,A* (A Star) Search Algorithm - Computerphile,Computerphile,DONE
-Dynamic Programming (0/1 Knapsack),4.5 0/1 Knapsack - Two Methods - Dynamic Programming,Abdul Bari,DONE
-Longest Common Subsequence,4.9 Longest Common Subsequence (LCS)  - Recursion and Dynamic Programming,Abdul Bari,DONE
+A* Search Algorithm,A* (A Star) Search Algorithm - Computerphile,Computerphile,ERROR
+Dynamic Programming (0/1 Knapsack),4.5 0/1 Knapsack - Two Methods - Dynamic Programming,Abdul Bari,ERROR
+Longest Common Subsequence,4.9 Longest Common Subsequence (LCS)  - Recursion and Dynamic Programming,Abdul Bari,ERROR
 Matrix Chain Multiplication,4.3 Matrix Chain Multiplication - Dynamic Programming,Abdul Bari,DONE
-Process vs Thread,Process Management (Processes and Threads),Neso Academy,DONE
+Process vs Thread,Process Management (Processes and Threads),Neso Academy,ERROR
 CPU Scheduling Algorithms,Introduction to CPU Scheduling,Neso Academy,DONE
-Mutex and Semaphores,Semaphores,Neso Academy,DONE
-Producer-Consumer Problem,Process Synchronization,Neso Academy,DONE
-Deadlock Avoidance (Banker's Algorithm),Lec23 Deadlock Avoidance: Banker's Algorithm with example | Operating System,Jenny's Lectures CS IT,DONE
-Paging and Segmentation,Introduction to Operating Systems,Neso Academy,DONE
-Virtual Memory and Page Replacement,Paging in Operating Systems with Example & Working - Memory Management,Simple Snippets,DONE
+Mutex and Semaphores,Semaphores,Neso Academy,ERROR
+Producer-Consumer Problem,Process Synchronization,Neso Academy,ERROR
+Deadlock Avoidance (Banker's Algorithm),Lec23 Deadlock Avoidance: Banker's Algorithm with example | Operating System,Jenny's Lectures CS IT,ERROR
+Paging and Segmentation,Introduction to Operating Systems,Neso Academy,ERROR
+Virtual Memory and Page Replacement,Paging in Operating Systems with Example & Working - Memory Management,Simple Snippets,ERROR
 Thrashing in OS,Introduction to Operating Systems,Neso Academy,DONE
-File System Allocation Methods,Introduction to Operating Systems,Neso Academy,DONE
-The OSI Model,The OSI Reference Model (Part 1),Neso Academy,DONE
-TCP vs UDP,TCP vs UDP Comparison,PowerCert Animated Videos,DONE
-IPv4 and Subnetting,Subnetting,Neso Academy,DONE
-ARP and MAC Addresses,ARP - Address Resolution Protocol in Computer Networks,Engineering Funda,DONE
-OSPF Routing Protocol,Demystifying OSPF: How It Works and Connects Devices in Your Network,Network Direction,DONE
-TCP Congestion Control,CN 25 : TCP Congestion Control with Example,CS & IT Tutorials by Vrushali 👩‍🎓,DONE
-DNS Architecture,DNS is beautiful,Hussein Nasser,DONE
+File System Allocation Methods,Introduction to Operating Systems,Neso Academy,ERROR
+The OSI Model,The OSI Reference Model (Part 1),Neso Academy,ERROR
+TCP vs UDP,TCP vs UDP Comparison,PowerCert Animated Videos,ERROR
+IPv4 and Subnetting,Subnetting,Neso Academy,ERROR
+ARP and MAC Addresses,ARP - Address Resolution Protocol in Computer Networks,Engineering Funda,ERROR
+OSPF Routing Protocol,Demystifying OSPF: How It Works and Connects Devices in Your Network,Network Direction,ERROR
+TCP Congestion Control,CN 25 : TCP Congestion Control with Example,CS & IT Tutorials by Vrushali 👩‍🎓,ERROR
+DNS Architecture,DNS is beautiful,Hussein Nasser,ERROR
 HTTP and HTTPS Protocols,What are web servers and how do they work (with examples httpd and nodejs),Hussein Nasser,DONE
-Relational Algebra,Basics of Relational Algebra,Neso Academy,DONE
+Relational Algebra,Basics of Relational Algebra,Neso Academy,ERROR
 SQL Joins Explained,"SQL Joins Basics (Visually Explained) | INNER, LEFT, RIGHT, FULL | #SQL Course 8",Data with Baraa,DONE
-Database Normalization (1NF to BCNF),Lec 1:  Introduction to DBMS | Database Management System,Jenny's Lectures CS IT,DONE
-ACID Properties in Databases,Relational Database ACID Transactions (Explained by Example),Hussein Nasser,DONE
-Database Indexing and B-Trees,Database Indexing Explained (with PostgreSQL),Hussein Nasser,DONE
-Database Sharding and Partitioning,When should you shard your database?,Hussein Nasser,DONE
+Database Normalization (1NF to BCNF),Lec 1:  Introduction to DBMS | Database Management System,Jenny's Lectures CS IT,ERROR
+ACID Properties in Databases,Relational Database ACID Transactions (Explained by Example),Hussein Nasser,ERROR
+Database Indexing and B-Trees,Database Indexing Explained (with PostgreSQL),Hussein Nasser,ERROR
+Database Sharding and Partitioning,When should you shard your database?,Hussein Nasser,ERROR
 PostgreSQL Architecture,PostgreSQL Internal Architecture Explained,Hussein Nasser,DONE
-Finite Automata (DFA and NFA),Deterministic Finite Automata (Example 1),Neso Academy,DONE
-Context-Free Grammars,Derivations of CFGs,Neso Academy,DONE
-Pushdown Automata,Pushdown Automata (Introduction),Neso Academy,DONE
-Turing Machines,Turing Machine - Introduction (Part 1),Neso Academy,DONE
-The P vs NP Problem,Biggest Puzzle in Computer Science: P vs. NP,Quanta Magazine,DONE
-The Halting Problem,Turing & The Halting Problem - Computerphile,Computerphile,DONE
-The CAP Theorem,CAP Theorem Simplified,ByteByteGo,DONE
+Finite Automata (DFA and NFA),Deterministic Finite Automata (Example 1),Neso Academy,ERROR
+Context-Free Grammars,Derivations of CFGs,Neso Academy,ERROR
+Pushdown Automata,Pushdown Automata (Introduction),Neso Academy,ERROR
+Turing Machines,Turing Machine - Introduction (Part 1),Neso Academy,ERROR
+The P vs NP Problem,Biggest Puzzle in Computer Science: P vs. NP,Quanta Magazine,ERROR
+The Halting Problem,Turing & The Halting Problem - Computerphile,Computerphile,ERROR
+The CAP Theorem,CAP Theorem Simplified,ByteByteGo,ERROR
 Consistent Hashing,Consistent Hashing | Algorithms You Should Know #1,ByteByteGo,DONE
 The Paxos Consensus Algorithm,The Paxos Algorithm,Google TechTalks,DONE
-The Raft Consensus Algorithm,Understand RAFT without breaking your brain,ankush,DONE
-Vector Clocks and Logical Time,Vector Clock 🔥🔥,Perfect Computer Engineer,DONE
-MapReduce Architecture,Map Reduce explained with example | System Design,ByteMonk,DONE
-Distributed Transactions (Two-Phase Commit),Distributed Transactions are Hard (How Two-Phase Commit works),Hussein Nasser,DONE
+The Raft Consensus Algorithm,Understand RAFT without breaking your brain,ankush,ERROR
+Vector Clocks and Logical Time,Vector Clock 🔥🔥,Perfect Computer Engineer,ERROR
+MapReduce Architecture,Map Reduce explained with example | System Design,ByteMonk,ERROR
+Distributed Transactions (Two-Phase Commit),Distributed Transactions are Hard (How Two-Phase Commit works),Hussein Nasser,ERROR
 Apache Kafka Architecture,What is Kafka and How does it work?,Hussein Nasser,DONE
-Redis Architecture and Caching,Redis In-Memory Database Crash Course,Hussein Nasser,DONE
-Microservices vs Monolithic Architecture,What Are Microservices Really All About? (And When Not To Use It),ByteByteGo,DONE
+Redis Architecture and Caching,Redis In-Memory Database Crash Course,Hussein Nasser,ERROR
+Microservices vs Monolithic Architecture,What Are Microservices Really All About? (And When Not To Use It),ByteByteGo,ERROR
 Bloom Filters,Bloom Filters | Algorithms You Should Know #2 | Real-world Examples,ByteByteGo,DONE
-Backpropagation in Neural Networks,Neural Networks Pt. 2: Backpropagation Main Ideas,StatQuest with Josh Starmer,DONE
-Convolutional Neural Networks (CNNs),Neural Networks Part 8: Image Classification with Convolutional Neural Networks (CNNs),StatQuest with Josh Starmer,DONE
-LSTMs and Recurrent Neural Networks,"Long Short-Term Memory (LSTM), Clearly Explained",StatQuest with Josh Starmer,DONE
-The Attention Mechanism and Transformers,"Attention for Neural Networks, Clearly Explained!!!",StatQuest with Josh Starmer,DONE
+Backpropagation in Neural Networks,Neural Networks Pt. 2: Backpropagation Main Ideas,StatQuest with Josh Starmer,ERROR
+Convolutional Neural Networks (CNNs),Neural Networks Part 8: Image Classification with Convolutional Neural Networks (CNNs),StatQuest with Josh Starmer,ERROR
+LSTMs and Recurrent Neural Networks,"Long Short-Term Memory (LSTM), Clearly Explained",StatQuest with Josh Starmer,ERROR
+The Attention Mechanism and Transformers,"Attention for Neural Networks, Clearly Explained!!!",StatQuest with Josh Starmer,ERROR
 Q-Learning (Reinforcement Learning),Reinforcement Learning: Essential Concepts,StatQuest with Josh Starmer,DONE
 Support Vector Machines (SVMs),Support Vector Machines Part 1 (of 3): Main Ideas!!!,StatQuest with Josh Starmer,DONE
 RSA Encryption,Prime Numbers & RSA Encryption Algorithm - Computerphile,Computerphile,DONE
@@ -1144,204 +1144,350 @@ SHA-256 Hashing Algorithm,SHA: Secure Hashing Algorithm - Computerphile,Computer
 Elliptic Curve Cryptography,Elliptic Curves - Computerphile,Computerphile,DONE
 Zero-Knowledge Proofs,Zero Knowledge Proofs - Computerphile,Computerphile,DONE
 Branch Prediction,How Branch Prediction Works in CPUs - Computerphile,Computerphile,DONE
-Tomasulo's Algorithm,Tomasulo's Algorithm example| lec 54| Advanced computer architecture| BhanuPriya,AllAboutCSIT,DONE
-Cache Coherence MESI Protocol,MESI Cache Coherence Protocol | Vasileios Trigonakis,"Wandida, EPFL",DONE
-Lexical Analysis and Tokenization,Introduction to Compiler Design,Neso Academy,DONE
-Syntax Analysis and LL(1) Parsing,LL(1) Parsing,Neso Academy,DONE
+Tomasulo's Algorithm,Tomasulo's Algorithm example| lec 54| Advanced computer architecture| BhanuPriya,AllAboutCSIT,ERROR
+Cache Coherence MESI Protocol,MESI Cache Coherence Protocol | Vasileios Trigonakis,"Wandida, EPFL",ERROR
+Lexical Analysis and Tokenization,Introduction to Compiler Design,Neso Academy,ERROR
+Syntax Analysis and LL(1) Parsing,LL(1) Parsing,Neso Academy,ERROR
 LR and LALR Parsers,Introduction to Compiler Design,Neso Academy,DONE
-Generative Adversarial Networks (GANs),What are GANs (Generative Adversarial Networks)?,IBM Technology,DONE
+Generative Adversarial Networks (GANs),What are GANs (Generative Adversarial Networks)?,IBM Technology,ERROR
 Diffusion Models,Diffusion Models for AI Image Generation,IBM Technology,DONE
 Hidden Markov Models (HMMs),Hidden Markov Model : Data Science Concepts,ritvikmath,DONE
 Markov Decision Processes (MDPs),Markov Decision Processes - Georgia Tech - Machine Learning,Udacity,DONE
-The TLS/SSL Handshake,The TLS Handshake Explained with Example (the Math),Hussein Nasser,DONE
-OAuth 2.0 and OpenID Connect,OAuth 2.0 explained with examples,ByteMonk,DONE
-JSON Web Tokens (JWT),JWT - JSON Web Token Crash Course (NodeJS & Postgres),Hussein Nasser,DONE
+The TLS/SSL Handshake,The TLS Handshake Explained with Example (the Math),Hussein Nasser,ERROR
+OAuth 2.0 and OpenID Connect,OAuth 2.0 explained with examples,ByteMonk,ERROR
+JSON Web Tokens (JWT),JWT - JSON Web Token Crash Course (NodeJS & Postgres),Hussein Nasser,ERROR
 Cross-Site Scripting (XSS),Cracking Websites with Cross Site Scripting - Computerphile,Computerphile,DONE
 SQL Injection,Running an SQL Injection Attack - Computerphile,Computerphile,DONE
-Public Key Infrastructure (PKI),Tech Talk: What is Public Key Infrastructure (PKI)?,IBM Technology,DONE
-Docker Internals (cgroups and namespaces),Spin up a lightweight Nodejs docker container running your application,Hussein Nasser,DONE
+Public Key Infrastructure (PKI),Tech Talk: What is Public Key Infrastructure (PKI)?,IBM Technology,ERROR
+Docker Internals (cgroups and namespaces),Spin up a lightweight Nodejs docker container running your application,Hussein Nasser,ERROR
 Kubernetes Architecture,Kubernetes Architecture explained | Kubernetes Tutorial 15,TechWorld with Nana,DONE
-CI/CD Pipelines,GitHub Actions Tutorial - Basic Concepts and CI/CD Pipeline with Docker,TechWorld with Nana,DONE
-Reverse Proxies vs Load Balancers,Load Balancer vs Reverse Proxy (Explained by Example),Hussein Nasser,DONE
-gRPC Protocol,"gRPC Crash Course - Modes, Examples, Pros & Cons and more",Hussein Nasser,DONE
+CI/CD Pipelines,GitHub Actions Tutorial - Basic Concepts and CI/CD Pipeline with Docker,TechWorld with Nana,ERROR
+Reverse Proxies vs Load Balancers,Load Balancer vs Reverse Proxy (Explained by Example),Hussein Nasser,ERROR
+gRPC Protocol,"gRPC Crash Course - Modes, Examples, Pros & Cons and more",Hussein Nasser,ERROR
 WebSockets,"WebSockets Crash Course - Handshake, Use-cases, Pros & Cons and more",Hussein Nasser,DONE
-Resultant of Force Systems,"Statics: Lesson 1 - Intro and Newton’s Laws, Scalers, and Vectors",Jeff Hanson,DONE
-Moments and Cross Products,Statics: How to Use This Course Successfully Plus Book!,Jeff Hanson,DONE
-Free Body Diagrams,Statics: How to Use This Course Successfully Plus Book!,Jeff Hanson,DONE
-Trusses: Method of Joints,"Statics: Lesson 48 - Trusses, Method of Joints",Jeff Hanson,DONE
-Trusses: Method of Sections,"Statics: Lesson 49 - Trusses, The Method of Sections",Jeff Hanson,DONE
-Centroids and Center of Gravity,Statics Lesson 37 - Finding the Center of Gravity & Centroids,Jeff Hanson,DONE
-Area Moment of Inertia,Statics: Lesson 67 - Introduction to Area Moment of Inertia,Jeff Hanson,DONE
-Parallel Axis Theorem,"Statics: Lesson 68 - Parallel Axis Theorem, Area Moment of Inertia",Jeff Hanson,DONE
-Dry Friction,"Statics: Lesson 62 - Friction is Fun, Box on an Incline",Jeff Hanson,DONE
-Rectilinear and Curvilinear Kinematics,Dynamics - Lesson 9: Curvilinear Motion Acceleration Components,Jeff Hanson,DONE
-Principle of Impulse and Momentum,Dynamics: Lesson 26 - Impulse and Momentum Collision Examples,Jeff Hanson,DONE
-Rigid Body Kinematics,Dynamics: Lesson 28 - Introduction to Relative Motion Analysis,Jeff Hanson,DONE
+Resultant of Force Systems,"Statics: Lesson 1 - Intro and Newton’s Laws, Scalers, and Vectors",Jeff Hanson,ERROR
+Moments and Cross Products,Statics: How to Use This Course Successfully Plus Book!,Jeff Hanson,ERROR
+Free Body Diagrams,Statics: How to Use This Course Successfully Plus Book!,Jeff Hanson,ERROR
+Trusses: Method of Joints,"Statics: Lesson 48 - Trusses, Method of Joints",Jeff Hanson,ERROR
+Trusses: Method of Sections,"Statics: Lesson 49 - Trusses, The Method of Sections",Jeff Hanson,ERROR
+Centroids and Center of Gravity,Statics Lesson 37 - Finding the Center of Gravity & Centroids,Jeff Hanson,ERROR
+Area Moment of Inertia,Statics: Lesson 67 - Introduction to Area Moment of Inertia,Jeff Hanson,ERROR
+Parallel Axis Theorem,"Statics: Lesson 68 - Parallel Axis Theorem, Area Moment of Inertia",Jeff Hanson,ERROR
+Dry Friction,"Statics: Lesson 62 - Friction is Fun, Box on an Incline",Jeff Hanson,ERROR
+Rectilinear and Curvilinear Kinematics,Dynamics - Lesson 9: Curvilinear Motion Acceleration Components,Jeff Hanson,ERROR
+Principle of Impulse and Momentum,Dynamics: Lesson 26 - Impulse and Momentum Collision Examples,Jeff Hanson,ERROR
+Rigid Body Kinematics,Dynamics: Lesson 28 - Introduction to Relative Motion Analysis,Jeff Hanson,ERROR
 Instantaneous Center of Zero Velocity,Dynamics: Lesson 30- Intro to Instantaneous Centers with Relative Motion,Jeff Hanson,DONE
-Normal and Shear Stress,"Mechanics of Materials: Lesson 2 - Normal Stress, Review of Units",Jeff Hanson,DONE
-Stress-Strain Diagrams,"Mechanics of Materials: Lesson 9 - Stress Strain Diagram, Guaranteed for Exam 1!",Jeff Hanson,DONE
-Hooke's Law and Poisson's Ratio,Mechanics of Materials: Lesson 7 - Intro to Strain and Poisson’s Ratio,Jeff Hanson,DONE
-Torsion of Circular Shafts,"Mechanics of Materials: Lesson 23 - Shear Stress Due to Torsion, Polar Moment of Inertia",Jeff Hanson,DONE
-Shear Force and Bending Moment Diagrams,"Statics: Lesson 59 - Shear Moment Diagram, The Graphic Method",Jeff Hanson,DONE
-Bending Stresses in Beams,"Mechanics of Materials: Lesson 31 - The Flexure Formula, Beam Bending Example",Jeff Hanson,DONE
-Transverse Shear Stress,Mechanics of Materials: Lesson 36 - What is Transverse Shear? Explained,Jeff Hanson,DONE
-Mohr's Circle (Plane Stress),Mechanics of Materials: Lesson 50 - Mohr’s Circle for Stress Transformation,Jeff Hanson,DONE
-Failure Theories (Von Mises and Tresca),"Understanding Failure Theories (Tresca, von Mises etc...)",The Efficient Engineer,DONE
-Column Buckling (Euler's Formula),Mechanics of Materials: Lesson 66 - Intro to Column Buckling,Jeff Hanson,DONE
-The First Law of Thermodynamics,"Mechanical Engineering Thermodynamics - Lec 1, pt 1 of 5:  Introduction",Ron Hugo,DONE
-The Second Law and Entropy,"Mechanical Engineering Thermodynamics - Lec 1, pt 1 of 5:  Introduction",Ron Hugo,DONE
-Isentropic Processes,"Mechanical Engineering Thermodynamics - Lec 1, pt 1 of 5:  Introduction",Ron Hugo,DONE
-The Otto Cycle (Internal Combustion),"Mechanical Engineering Thermodynamics - Lec 1, pt 1 of 5:  Introduction",Ron Hugo,DONE
-The Diesel Cycle,"Mechanical Engineering Thermodynamics - Lec 16, pt 3 of 6: Ideal Diesel Cycle",Ron Hugo,DONE
-The Rankine Cycle (Steam Power Plants),"Mechanical Engineering Thermodynamics - Lec 20, pt 1 of 7:  Actual Rankine Cycle",Ron Hugo,DONE
-The Brayton Cycle (Gas Turbines),"Mechanical Engineering Thermodynamics - Lec 17, pt 1 of 5: Brayton Cycle Introduction",Ron Hugo,DONE
-Refrigeration Cycles,"Mechanical Engineering Thermodynamics - Lec 1, pt 1 of 5:  Introduction",Ron Hugo,DONE
-Exergy and Reversible Work,"Mechanical Engineering Thermodynamics - Lec 11, pt 1 of 5:  Exergy - Introduction",Ron Hugo,DONE
-Fluid Statics and Manometry,"Fluid Mechanics: Fundamental Concepts, Fluid Properties (1 of 34)",CPPMechEngTutorials,DONE
-Buoyancy and Archimedes Principle,"Fluid Mechanics: Fundamental Concepts, Fluid Properties (1 of 34)",CPPMechEngTutorials,DONE
-Conservation of Mass (Continuity Equation),Fluid Mechanics: Topic 11.1 - The continuity equation,CPPMechEngTutorials,DONE
+Normal and Shear Stress,"Mechanics of Materials: Lesson 2 - Normal Stress, Review of Units",Jeff Hanson,ERROR
+Stress-Strain Diagrams,"Mechanics of Materials: Lesson 9 - Stress Strain Diagram, Guaranteed for Exam 1!",Jeff Hanson,ERROR
+Hooke's Law and Poisson's Ratio,Mechanics of Materials: Lesson 7 - Intro to Strain and Poisson’s Ratio,Jeff Hanson,ERROR
+Torsion of Circular Shafts,"Mechanics of Materials: Lesson 23 - Shear Stress Due to Torsion, Polar Moment of Inertia",Jeff Hanson,ERROR
+Shear Force and Bending Moment Diagrams,"Statics: Lesson 59 - Shear Moment Diagram, The Graphic Method",Jeff Hanson,ERROR
+Bending Stresses in Beams,"Mechanics of Materials: Lesson 31 - The Flexure Formula, Beam Bending Example",Jeff Hanson,ERROR
+Transverse Shear Stress,Mechanics of Materials: Lesson 36 - What is Transverse Shear? Explained,Jeff Hanson,ERROR
+Mohr's Circle (Plane Stress),Mechanics of Materials: Lesson 50 - Mohr’s Circle for Stress Transformation,Jeff Hanson,ERROR
+Failure Theories (Von Mises and Tresca),"Understanding Failure Theories (Tresca, von Mises etc...)",The Efficient Engineer,ERROR
+Column Buckling (Euler's Formula),Mechanics of Materials: Lesson 66 - Intro to Column Buckling,Jeff Hanson,ERROR
+The First Law of Thermodynamics,"Mechanical Engineering Thermodynamics - Lec 1, pt 1 of 5:  Introduction",Ron Hugo,ERROR
+The Second Law and Entropy,"Mechanical Engineering Thermodynamics - Lec 1, pt 1 of 5:  Introduction",Ron Hugo,ERROR
+Isentropic Processes,"Mechanical Engineering Thermodynamics - Lec 1, pt 1 of 5:  Introduction",Ron Hugo,ERROR
+The Otto Cycle (Internal Combustion),"Mechanical Engineering Thermodynamics - Lec 1, pt 1 of 5:  Introduction",Ron Hugo,ERROR
+The Diesel Cycle,"Mechanical Engineering Thermodynamics - Lec 16, pt 3 of 6: Ideal Diesel Cycle",Ron Hugo,ERROR
+The Rankine Cycle (Steam Power Plants),"Mechanical Engineering Thermodynamics - Lec 20, pt 1 of 7:  Actual Rankine Cycle",Ron Hugo,ERROR
+The Brayton Cycle (Gas Turbines),"Mechanical Engineering Thermodynamics - Lec 17, pt 1 of 5: Brayton Cycle Introduction",Ron Hugo,ERROR
+Refrigeration Cycles,"Mechanical Engineering Thermodynamics - Lec 1, pt 1 of 5:  Introduction",Ron Hugo,ERROR
+Exergy and Reversible Work,"Mechanical Engineering Thermodynamics - Lec 11, pt 1 of 5:  Exergy - Introduction",Ron Hugo,ERROR
+Fluid Statics and Manometry,"Fluid Mechanics: Fundamental Concepts, Fluid Properties (1 of 34)",CPPMechEngTutorials,ERROR
+Buoyancy and Archimedes Principle,"Fluid Mechanics: Fundamental Concepts, Fluid Properties (1 of 34)",CPPMechEngTutorials,ERROR
+Conservation of Mass (Continuity Equation),Fluid Mechanics: Topic 11.1 - The continuity equation,CPPMechEngTutorials,ERROR
 Bernoulli's Equation,Fluid Mechanics: Buoyancy & the Bernoulli Equation (5 of 34),CPPMechEngTutorials,DONE
-The Momentum Equation in Fluids,Fluid Mechanics: Topic 7.2 - Conservation of linear momentum for a control volume,CPPMechEngTutorials,DONE
+The Momentum Equation in Fluids,Fluid Mechanics: Topic 7.2 - Conservation of linear momentum for a control volume,CPPMechEngTutorials,ERROR
 Navier-Stokes Equations,"Fluid Mechanics: Navier-Stokes Equations, Conservation of Energy Examples (15 of 34)",CPPMechEngTutorials,DONE
-Reynolds Number (Laminar vs Turbulent Flow),"Fluid Mechanics: Viscous Flow in Pipes, Laminar Pipe Flow Characteristics (16 of 34)",CPPMechEngTutorials,DONE
-Boundary Layer Theory,Fluid Mechanics: Laminar Boundary Layer on a Flat Plate (31 of 34),CPPMechEngTutorials,DONE
-Lift and Drag Forces,Drag And Lift || Hindi || Drag and Lift kya hota hai || Drag and Lift in hindi,Gear Institute Mechanical Engineering Videos,DONE
-Fourier's Law of Heat Conduction,"Heat Transfer (01): Introduction to heat transfer, conduction, convection, and radiation",CPPMechEngTutorials,DONE
-Thermal Resistance Networks,"Heat Transfer (01): Introduction to heat transfer, conduction, convection, and radiation",CPPMechEngTutorials,DONE
-Transient Heat Conduction (Lumped Capacitance),"Heat Transfer (13): Transient heat conduction, lumped heat capacity model and examples",CPPMechEngTutorials,DONE
-Forced Convection vs Natural Convection,"Heat Transfer (01): Introduction to heat transfer, conduction, convection, and radiation",CPPMechEngTutorials,DONE
-Thermal Radiation (Stefan-Boltzmann Law),"Heat Transfer (01): Introduction to heat transfer, conduction, convection, and radiation",CPPMechEngTutorials,DONE
-Heat Exchangers (LMTD Method),LMTD for Parallel Flow Heat Exchanger | Heat Transfer #engineering #gateexam #gateexam2027,Impact Academy Official,DONE
-Effectiveness-NTU Method,Lecture 43 - NTU Effectiveness Method Concept,Sampurna Engineering,DONE
-Iron-Carbon Phase Diagram,"Material Science, The Iron Carbon Phase Diagram, Part 1",Welt der Werkstoffe,DONE
-Heat Treatment of Steel (Quenching/Tempering),"Material Science, Heat Treatment of Steel, Part 1",Welt der Werkstoffe,DONE
+Reynolds Number (Laminar vs Turbulent Flow),"Fluid Mechanics: Viscous Flow in Pipes, Laminar Pipe Flow Characteristics (16 of 34)",CPPMechEngTutorials,ERROR
+Boundary Layer Theory,Fluid Mechanics: Laminar Boundary Layer on a Flat Plate (31 of 34),CPPMechEngTutorials,ERROR
+Lift and Drag Forces,Drag And Lift || Hindi || Drag and Lift kya hota hai || Drag and Lift in hindi,Gear Institute Mechanical Engineering Videos,ERROR
+Fourier's Law of Heat Conduction,"Heat Transfer (01): Introduction to heat transfer, conduction, convection, and radiation",CPPMechEngTutorials,ERROR
+Thermal Resistance Networks,"Heat Transfer (01): Introduction to heat transfer, conduction, convection, and radiation",CPPMechEngTutorials,ERROR
+Transient Heat Conduction (Lumped Capacitance),"Heat Transfer (13): Transient heat conduction, lumped heat capacity model and examples",CPPMechEngTutorials,ERROR
+Forced Convection vs Natural Convection,"Heat Transfer (01): Introduction to heat transfer, conduction, convection, and radiation",CPPMechEngTutorials,ERROR
+Thermal Radiation (Stefan-Boltzmann Law),"Heat Transfer (01): Introduction to heat transfer, conduction, convection, and radiation",CPPMechEngTutorials,ERROR
+Heat Exchangers (LMTD Method),LMTD for Parallel Flow Heat Exchanger | Heat Transfer #engineering #gateexam #gateexam2027,Impact Academy Official,ERROR
+Effectiveness-NTU Method,Lecture 43 - NTU Effectiveness Method Concept,Sampurna Engineering,ERROR
+Iron-Carbon Phase Diagram,"Material Science, The Iron Carbon Phase Diagram, Part 1",Welt der Werkstoffe,ERROR
+Heat Treatment of Steel (Quenching/Tempering),"Material Science, Heat Treatment of Steel, Part 1",Welt der Werkstoffe,ERROR
 Gear Trains and Gear Ratios,Gear train // Numerical Problem: 01 // Compound gear train,Mech PM,DONE
-Design of Coil Springs,Helical Springs Numerical 1,Topper Mechanical,DONE
-Ball and Roller Bearings Design,Machine Design - Rolling Contact Bearings Question 15.1 Unsolved Problem (V B Bhandari),E Learning with Kunal,DONE
-Geometric Dimensioning and Tolerancing (GD&T),Understanding GD&T,The Efficient Engineer,DONE
-Free Undamped Vibrations,Lecture 1 - Introduction to Mechanical Vibrations - Module 1 - Mechanical Vibrations by GURUDATT.H.M,Mechanical Engineering E-Learning,DONE
-Damped Free Vibrations,Lecture 1 - Introduction to Mechanical Vibrations - Module 1 - Mechanical Vibrations by GURUDATT.H.M,Mechanical Engineering E-Learning,DONE
-Introduction to Finite Element Analysis (FEA),Mod-01 Lec-01 Introduction to Finite Element Method,nptelhrd,DONE
-Stiffness Matrices in FEA,FEA 15:  Beam/Frame Element Stiffness Matrices,Schuster Engineering,DONE
-Compressible Flow and Normal Shock Waves,Normal Shock - Compressible Fluid Flow - Fluid Mechanics 1,Ekeeda,DONE
-Velocity Triangles in Turbomachinery,velocity triangles for turbines | hydraulic machine fm | all ae&je exam/fluid mechanics by rahul sir,Make It Easy: Best Platform for Mechanical,DONE
-Exact Solutions of Navier-Stokes Equations,Mod-01 Lec-01 Introduction and Fundamental Concepts - I,nptelhrd,DONE
-Boundary Layer Momentum Integral Equation,Mod-01 Lec-01 Introduction and Fundamental Concepts - I,nptelhrd,DONE
-Compressible Fluid Flow and Mach Waves,Mod-01 Lec-01 Introduction to Fluid Machines 1,nptelhrd,DONE
-Convective Heat Transfer Mathematics,Mod-01 Lec-01 Introduction to convective heat transfer - Part 1,nptelhrd,DONE
-Microfluidics and Capillarity,Mod-01 Lec-01 Introduction to Microfluidics,nptelhrd,DONE
-Exergy and Second Law Efficiency,Lec-1 Introduction and Fundamental Concepts,nptelhrd,DONE
-Thermodynamics of Reactive Systems,Lec-1 Introduction and Fundamental Concepts,nptelhrd,DONE
-Phase Change Heat Transfer (Boiling and Condensation),Lecture - 29 Boiling and Condensation - 1,nptelhrd,DONE
-Theory of Elasticity and Stress Tensors,Theory of Elasticity by Prof  Amit Shaw and Prof  Biswanath Banerjee,NPTEL IIT Kharagpur,DONE
+Design of Coil Springs,Helical Springs Numerical 1,Topper Mechanical,ERROR
+Ball and Roller Bearings Design,Machine Design - Rolling Contact Bearings Question 15.1 Unsolved Problem (V B Bhandari),E Learning with Kunal,ERROR
+Geometric Dimensioning and Tolerancing (GD&T),Understanding GD&T,The Efficient Engineer,ERROR
+Free Undamped Vibrations,Lecture 1 - Introduction to Mechanical Vibrations - Module 1 - Mechanical Vibrations by GURUDATT.H.M,Mechanical Engineering E-Learning,ERROR
+Damped Free Vibrations,Lecture 1 - Introduction to Mechanical Vibrations - Module 1 - Mechanical Vibrations by GURUDATT.H.M,Mechanical Engineering E-Learning,ERROR
+Introduction to Finite Element Analysis (FEA),Mod-01 Lec-01 Introduction to Finite Element Method,nptelhrd,ERROR
+Stiffness Matrices in FEA,FEA 15:  Beam/Frame Element Stiffness Matrices,Schuster Engineering,ERROR
+Compressible Flow and Normal Shock Waves,Normal Shock - Compressible Fluid Flow - Fluid Mechanics 1,Ekeeda,ERROR
+Velocity Triangles in Turbomachinery,velocity triangles for turbines | hydraulic machine fm | all ae&je exam/fluid mechanics by rahul sir,Make It Easy: Best Platform for Mechanical,ERROR
+Exact Solutions of Navier-Stokes Equations,Mod-01 Lec-01 Introduction and Fundamental Concepts - I,nptelhrd,ERROR
+Boundary Layer Momentum Integral Equation,Mod-01 Lec-01 Introduction and Fundamental Concepts - I,nptelhrd,ERROR
+Compressible Fluid Flow and Mach Waves,Mod-01 Lec-01 Introduction to Fluid Machines 1,nptelhrd,ERROR
+Convective Heat Transfer Mathematics,Mod-01 Lec-01 Introduction to convective heat transfer - Part 1,nptelhrd,ERROR
+Microfluidics and Capillarity,Mod-01 Lec-01 Introduction to Microfluidics,nptelhrd,ERROR
+Exergy and Second Law Efficiency,Lec-1 Introduction and Fundamental Concepts,nptelhrd,ERROR
+Thermodynamics of Reactive Systems,Lec-1 Introduction and Fundamental Concepts,nptelhrd,ERROR
+Phase Change Heat Transfer (Boiling and Condensation),Lecture - 29 Boiling and Condensation - 1,nptelhrd,ERROR
+Theory of Elasticity and Stress Tensors,Theory of Elasticity by Prof  Amit Shaw and Prof  Biswanath Banerjee,NPTEL IIT Kharagpur,ERROR
 Yield Criteria and Plasticity,Lecture 33: Yield Criteria,IIT KANPUR-NPTEL,DONE
-Fracture Mechanics and Stress Intensity Factor,Mod-01 Lec-01 EFM Course Outline,nptelhrd,DONE
-Finite Element Method (1D and 2D Elements),Mod-01 Lec-01 Introduction to Finite Element Method,nptelhrd,DONE
-Isoparametric Elements in FEA,Mod-01 Lec-01 Introduction to Finite Element Method,nptelhrd,DONE
-Multi-Degree of Freedom Vibrations,Mod-01 Lec-25 Free Vibration for Multi Degree of Freedom Structures,nptelhrd,DONE
-Continuous Systems Vibrations,Vibration of Continuous Systems [Intro Video],NPTEL IIT Guwahati,DONE
-Rotor Dynamics and Critical Speeds,Mod-01 Lec-01 Introduction,nptelhrd,DONE
-Advanced Machining Processes (EDM ECM),Mod-01 Lec-01 Advanced Machining Processes,nptelhrd,DONE
-Mechanics of Machining (Merchant's Circle),Lecture - 8 Machining Forces,nptelhrd,DONE
+Fracture Mechanics and Stress Intensity Factor,Mod-01 Lec-01 EFM Course Outline,nptelhrd,ERROR
+Finite Element Method (1D and 2D Elements),Mod-01 Lec-01 Introduction to Finite Element Method,nptelhrd,ERROR
+Isoparametric Elements in FEA,Mod-01 Lec-01 Introduction to Finite Element Method,nptelhrd,ERROR
+Multi-Degree of Freedom Vibrations,Mod-01 Lec-25 Free Vibration for Multi Degree of Freedom Structures,nptelhrd,ERROR
+Continuous Systems Vibrations,Vibration of Continuous Systems [Intro Video],NPTEL IIT Guwahati,ERROR
+Rotor Dynamics and Critical Speeds,Mod-01 Lec-01 Introduction,nptelhrd,ERROR
+Advanced Machining Processes (EDM ECM),Mod-01 Lec-01 Advanced Machining Processes,nptelhrd,ERROR
+Mechanics of Machining (Merchant's Circle),Lecture - 8 Machining Forces,nptelhrd,ERROR
 Metal Forming and Yielding,Introduction to Metal Forming Technology,IIT Roorkee July 2018,DONE
 Hydrodynamic Journal Bearings,Hydrodynamic Journal Bearings,nptelhrd,DONE
 Elastohydrodynamic Lubrication,Introduction,nptelhrd,DONE
 Poisson Distribution,The Main Ideas behind Probability Distributions,StatQuest with Josh Starmer,DONE
-Gamma Distribution,An Introduction to Continuous Probability Distributions,jbstatistics,DONE
-Beta Distribution,An Introduction to Discrete Random Variables and Discrete Probability Distributions,jbstatistics,DONE
-Joint Probability Distributions,An Introduction to Discrete Random Variables and Discrete Probability Distributions,jbstatistics,DONE
-Covariance and Correlation,"Covariance, Clearly Explained!!!",StatQuest with Josh Starmer,DONE
+Gamma Distribution,An Introduction to Continuous Probability Distributions,jbstatistics,ERROR
+Beta Distribution,An Introduction to Discrete Random Variables and Discrete Probability Distributions,jbstatistics,ERROR
+Joint Probability Distributions,An Introduction to Discrete Random Variables and Discrete Probability Distributions,jbstatistics,ERROR
+Covariance and Correlation,"Covariance, Clearly Explained!!!",StatQuest with Josh Starmer,ERROR
 Maximum Likelihood Estimation (MLE),"Maximum Likelihood, clearly explained!!!",StatQuest with Josh Starmer,DONE
-Method of Moments Estimation,The Method of Moments ... Made Easy!,Stats with Brian,DONE
-Hypothesis Testing and p-values,p-values: What they are and how to interpret them,StatQuest with Josh Starmer,DONE
-Statistical Power and Type I/II Errors,"Statistical Power, Clearly Explained!!!",StatQuest with Josh Starmer,DONE
-Confidence Intervals,"Confidence Intervals, Clearly Explained!!!",StatQuest with Josh Starmer,DONE
+Method of Moments Estimation,The Method of Moments ... Made Easy!,Stats with Brian,ERROR
+Hypothesis Testing and p-values,p-values: What they are and how to interpret them,StatQuest with Josh Starmer,ERROR
+Statistical Power and Type I/II Errors,"Statistical Power, Clearly Explained!!!",StatQuest with Josh Starmer,ERROR
+Confidence Intervals,"Confidence Intervals, Clearly Explained!!!",StatQuest with Josh Starmer,ERROR
 Cramer-Rao Lower Bound,"Cramér-Rao Lower Bound: Full Explanation, Statement & Step-by-Step Proof",Morning Statistics,DONE
 Neyman-Pearson Lemma,Neyman-Pearson Lemma | Easiest Proof,Dr. Harish Garg,DONE
-Likelihood Ratio Tests,Likelihood Ratio Tests Clearly Explained,Stats with Brian,DONE
+Likelihood Ratio Tests,Likelihood Ratio Tests Clearly Explained,Stats with Brian,ERROR
 Ordinary Least Squares (OLS) Derivation,The Main Ideas of Fitting a Line to Data (The Main Ideas of Least Squares and Linear Regression.),StatQuest with Josh Starmer,DONE
 Multiple Linear Regression,"Multiple Regression, Clearly Explained!!!",StatQuest with Josh Starmer,DONE
-Multicollinearity,Multicollinearity (in Regression Analysis),numiqo,DONE
-One-Way ANOVA,One-Way ANOVA [Analysis of Variance] simply explained,numiqo,DONE
+Multicollinearity,Multicollinearity (in Regression Analysis),numiqo,ERROR
+One-Way ANOVA,One-Way ANOVA [Analysis of Variance] simply explained,numiqo,ERROR
 Logistic Regression,StatQuest: Logistic Regression,StatQuest with Josh Starmer,DONE
-Generalized Linear Models (GLMs),The Essence of Linear Regression!!!,StatQuest with Josh Starmer,DONE
-Wilcoxon Signed-Rank Test,"Non-parametric tests - Sign test, Wilcoxon signed rank, Mann-Whitney",zedstatistics,DONE
-Kruskal-Wallis Test,Kruskal-Wallis-Test (Simply explained),numiqo,DONE
-Autoregressive (AR) Models,What are Autoregressive (AR) Models,Aric LaBarr,DONE
-Moving Average (MA) Models,Time Series Talk : Moving Average Model,ritvikmath,DONE
-ARIMA Models,Time Series Talk : ARIMA Model,ritvikmath,DONE
-Dickey-Fuller Test,Dickey Fuller test for unit root,Ben Lambert,DONE
-Bayesian vs Frequentist Statistics,Bayesian vs. Frequentist Statistics ... MADE EASY!!!,Stats with Brian,DONE
-Conjugate Priors,Conjugate prior for a Binomial likelihood,deetoher,DONE
+Generalized Linear Models (GLMs),The Essence of Linear Regression!!!,StatQuest with Josh Starmer,ERROR
+Wilcoxon Signed-Rank Test,"Non-parametric tests - Sign test, Wilcoxon signed rank, Mann-Whitney",zedstatistics,ERROR
+Kruskal-Wallis Test,Kruskal-Wallis-Test (Simply explained),numiqo,ERROR
+Autoregressive (AR) Models,What are Autoregressive (AR) Models,Aric LaBarr,ERROR
+Moving Average (MA) Models,Time Series Talk : Moving Average Model,ritvikmath,ERROR
+ARIMA Models,Time Series Talk : ARIMA Model,ritvikmath,ERROR
+Dickey-Fuller Test,Dickey Fuller test for unit root,Ben Lambert,ERROR
+Bayesian vs Frequentist Statistics,Bayesian vs. Frequentist Statistics ... MADE EASY!!!,Stats with Brian,ERROR
+Conjugate Priors,Conjugate prior for a Binomial likelihood,deetoher,ERROR
 Markov Chain Monte Carlo (MCMC),Markov Chain Monte Carlo (MCMC) : Data Science Concepts,ritvikmath,DONE
-Metropolis-Hastings Algorithm,(ML 18.7) Metropolis algorithm for MCMC,mathematicalmonk,DONE
-Gibbs Sampling,Gibbs Sampling : Data Science Concepts,ritvikmath,DONE
-Randomized Block Design,Introducing ANOVA for RBD Experiments,Dane McGuckian (STATSprofessor),DONE
-Factorial Design of Experiments,Part 12: Factorial Design | 2^2 & 2^3 Factorial Design - Complete Details | Research Methodology,Dr. Puspendra Classes,DONE
-Principal Component Analysis (PCA),"StatQuest: Principal Component Analysis (PCA), Step-by-Step",StatQuest with Josh Starmer,DONE
-Factor Analysis,StatQuest: PCA main ideas in only 5 minutes!!!,StatQuest with Josh Starmer,DONE
-Degree of Freedom Analysis,Multiple Unit Material Balance: Degree of Freedom Analysis,LearnChemE,DONE
-Material Balances on Reactive Systems,Solving Material Balances on Multiple Units,LearnChemE,DONE
-Heat of Reaction and Formation,Heat of Reaction (from Heat of Formation),LearnChemE,DONE
-Psychrometric Charts,How to Use a Psychrometric (Humidity) Chart,LearnChemE,DONE
-Raoult's Law and Henry's Law,Boiling Point Elevation/Raoult's Law,LearnChemE,DONE
-Equations of State (Peng-Robinson SRK),Roots of Peng-Robinson Equation of State,LearnChemE,DONE
-Fugacity and Fugacity Coefficients,What is Fugacity?,LearnChemE,DONE
-Activity Models (Margules Van Laar),What is an Activity Coefficient?,LearnChemE,DONE
-Chemical Equilibrium Constant (Kp),Equilibrium Constant Introduction,LearnChemE,DONE
-Gibbs Free Energy of Reaction,"Signs of Gibbs Energy, Enthalpy, and Entropy",LearnChemE,DONE
-Maxwell Relations,Maxwell Relations,LearnChemE,DONE
-Filtration (Constant Pressure and Rate),Lec 25: Constant Pressure Filtration (Formulation of problem/Derivation/Example),"Dr. Surendra Sasikumar Jampa (PhD,Chem Engg, IITB)",DONE
-Heat Exchangers (Shell and Tube Design),Shell and Tube Heat Exchanger,LearnChemE,DONE
-Convective Mass Transfer Coefficients,Introduction | L:1 | Mass Transfer Operation | GATE2022 (Chemical Engineering) | Manish Sir,Unacademy GATE - Chemical ,DONE
-Distillation: McCabe-Thiele Method,McCabe-Thiele Graphical Method Example Part 1,LearnChemE,DONE
-Distillation: Ponchon-Savarit Method,Lec 36: The Ponchon-Savarit method - I,NPTEL IIT Guwahati,DONE
-Gas Absorption and Stripping,Introduction to Absorption Columns,LearnChemE,DONE
-Liquid-Liquid Extraction,Single-Stage Extraction Calculations,LearnChemE,DONE
-Solid-Liquid Extraction (Leaching),Leaching Part 1 What is Leaching?,AKB Academy of Chemical Engineeing,DONE
-Adsorption Isotherms (Langmuir Freundlich),Langmuir Isotherm Introduction,LearnChemE,DONE
-Cooling Towers,Heat Transfer Basics,LearnChemE,DONE
-Membrane Separation Processes,Membrane Separation Introduction,LearnChemE,DONE
-Reaction Kinetics and Rate Laws,Introduction to Chemical Reactor Design,LearnChemE,DONE
-Plug Flow Reactor (PFR),Plug Flow Reactor Overview,LearnChemE,DONE
-Reactors in Series and Parallel,Reactor Sequence: CSTR and PFR,LearnChemE,DONE
-Selectivity and Yield in Multiple Reactions,Multiple Reactions in PBR Part 1,LearnChemE,DONE
-Catalysis and Langmuir-Hinshelwood Kinetics,Langmuir-Hinshelwood Kinetics,LearnChemE,DONE
-Residence Time Distribution (RTD),Analyzing Tracer Data for a Tank,LearnChemE,DONE
-Non-Ideal Reactor Dispersion Model,Mod-01 Lec-37 Non-ideal Reactors: Dispersion model,nptelhrd,DONE
-First-Order and Second-Order Systems,Approximating Higher-Order Transfer Functions as FOPDTs,LearnChemE,DONE
-Laplace Transforms in Process Control,Laplace Transforms: Differential Equations,LearnChemE,DONE
-Transfer Functions of Chemical Processes,Laplace Transforms: Differential Equations,LearnChemE,DONE
-PID Controller Tuning (Ziegler-Nichols),PID Controller: Ziegler-Nichols Tuning Parameters,LearnChemE,DONE
-Root Locus Analysis in Control,Laplace Transforms: Differential Equations,LearnChemE,DONE
-Bode Plots and Frequency Response,Frequency Response An Introduction to Filters,ENGRTUTOR,DONE
-Feedforward and Cascade Control,Introduction to Cascade Control,LearnChemE,DONE
+Metropolis-Hastings Algorithm,(ML 18.7) Metropolis algorithm for MCMC,mathematicalmonk,ERROR
+Gibbs Sampling,Gibbs Sampling : Data Science Concepts,ritvikmath,ERROR
+Randomized Block Design,Introducing ANOVA for RBD Experiments,Dane McGuckian (STATSprofessor),ERROR
+Factorial Design of Experiments,Part 12: Factorial Design | 2^2 & 2^3 Factorial Design - Complete Details | Research Methodology,Dr. Puspendra Classes,ERROR
+Principal Component Analysis (PCA),"StatQuest: Principal Component Analysis (PCA), Step-by-Step",StatQuest with Josh Starmer,ERROR
+Factor Analysis,StatQuest: PCA main ideas in only 5 minutes!!!,StatQuest with Josh Starmer,ERROR
+Degree of Freedom Analysis,Multiple Unit Material Balance: Degree of Freedom Analysis,LearnChemE,ERROR
+Material Balances on Reactive Systems,Solving Material Balances on Multiple Units,LearnChemE,ERROR
+Heat of Reaction and Formation,Heat of Reaction (from Heat of Formation),LearnChemE,ERROR
+Psychrometric Charts,How to Use a Psychrometric (Humidity) Chart,LearnChemE,ERROR
+Raoult's Law and Henry's Law,Boiling Point Elevation/Raoult's Law,LearnChemE,ERROR
+Equations of State (Peng-Robinson SRK),Roots of Peng-Robinson Equation of State,LearnChemE,ERROR
+Fugacity and Fugacity Coefficients,What is Fugacity?,LearnChemE,ERROR
+Activity Models (Margules Van Laar),What is an Activity Coefficient?,LearnChemE,ERROR
+Chemical Equilibrium Constant (Kp),Equilibrium Constant Introduction,LearnChemE,ERROR
+Gibbs Free Energy of Reaction,"Signs of Gibbs Energy, Enthalpy, and Entropy",LearnChemE,ERROR
+Maxwell Relations,Maxwell Relations,LearnChemE,ERROR
+Filtration (Constant Pressure and Rate),Lec 25: Constant Pressure Filtration (Formulation of problem/Derivation/Example),"Dr. Surendra Sasikumar Jampa (PhD,Chem Engg, IITB)",ERROR
+Heat Exchangers (Shell and Tube Design),Shell and Tube Heat Exchanger,LearnChemE,ERROR
+Convective Mass Transfer Coefficients,Introduction | L:1 | Mass Transfer Operation | GATE2022 (Chemical Engineering) | Manish Sir,Unacademy GATE - Chemical ,ERROR
+Distillation: McCabe-Thiele Method,McCabe-Thiele Graphical Method Example Part 1,LearnChemE,ERROR
+Distillation: Ponchon-Savarit Method,Lec 36: The Ponchon-Savarit method - I,NPTEL IIT Guwahati,ERROR
+Gas Absorption and Stripping,Introduction to Absorption Columns,LearnChemE,ERROR
+Liquid-Liquid Extraction,Single-Stage Extraction Calculations,LearnChemE,ERROR
+Solid-Liquid Extraction (Leaching),Leaching Part 1 What is Leaching?,AKB Academy of Chemical Engineeing,ERROR
+Adsorption Isotherms (Langmuir Freundlich),Langmuir Isotherm Introduction,LearnChemE,ERROR
+Cooling Towers,Heat Transfer Basics,LearnChemE,ERROR
+Membrane Separation Processes,Membrane Separation Introduction,LearnChemE,ERROR
+Reaction Kinetics and Rate Laws,Introduction to Chemical Reactor Design,LearnChemE,ERROR
+Plug Flow Reactor (PFR),Plug Flow Reactor Overview,LearnChemE,ERROR
+Reactors in Series and Parallel,Reactor Sequence: CSTR and PFR,LearnChemE,ERROR
+Selectivity and Yield in Multiple Reactions,Multiple Reactions in PBR Part 1,LearnChemE,ERROR
+Catalysis and Langmuir-Hinshelwood Kinetics,Langmuir-Hinshelwood Kinetics,LearnChemE,ERROR
+Residence Time Distribution (RTD),Analyzing Tracer Data for a Tank,LearnChemE,ERROR
+Non-Ideal Reactor Dispersion Model,Mod-01 Lec-37 Non-ideal Reactors: Dispersion model,nptelhrd,ERROR
+First-Order and Second-Order Systems,Approximating Higher-Order Transfer Functions as FOPDTs,LearnChemE,ERROR
+Laplace Transforms in Process Control,Laplace Transforms: Differential Equations,LearnChemE,ERROR
+Transfer Functions of Chemical Processes,Laplace Transforms: Differential Equations,LearnChemE,ERROR
+PID Controller Tuning (Ziegler-Nichols),PID Controller: Ziegler-Nichols Tuning Parameters,LearnChemE,ERROR
+Root Locus Analysis in Control,Laplace Transforms: Differential Equations,LearnChemE,ERROR
+Bode Plots and Frequency Response,Frequency Response An Introduction to Filters,ENGRTUTOR,ERROR
+Feedforward and Cascade Control,Introduction to Cascade Control,LearnChemE,ERROR
 Routh-Hurwitz Stability Criterion,Routh-Hurwitz Criteria,Neso Academy,DONE
-Airfoil Nomenclature and Aerodynamic Forces,Lecture 01: Introduction on Aerodynamics-its relevance and applications,NPTEL IIT Kharagpur,DONE
+Airfoil Nomenclature and Aerodynamic Forces,Lecture 01: Introduction on Aerodynamics-its relevance and applications,NPTEL IIT Kharagpur,ERROR
 Kutta-Joukowski Theorem (Lift Generation),Kutta Joukowski Theorem,Aerokar ,DONE
-Thin Airfoil Theory,Mod-01 Lec-30 Lecture-30-Critical Mach Number and Thin Airfoil Theory,nptelhrd,DONE
-Prandtl's Lifting-Line Theory,Lifting line theory [Aerodynamics #16],Prof. Van Buren,DONE
+Thin Airfoil Theory,Mod-01 Lec-30 Lecture-30-Critical Mach Number and Thin Airfoil Theory,nptelhrd,ERROR
+Prandtl's Lifting-Line Theory,Lifting line theory [Aerodynamics #16],Prof. Van Buren,ERROR
 Oblique Shock Waves,Mod-01 Lec-01 Introduction,nptelhrd,DONE
-Prandtl-Meyer Expansion Fans,Mod-01 Lec-01 Lecture-01-Introduction to Gas Dynamics & Review of Basic Thermodynamics,nptelhrd,DONE
-Swept Wing Aerodynamics,"Mod-07 Lec-19 Roll stability, Wing sweep effect, Rudder",nptelhrd,DONE
-Boundary Layer Separation on Airfoils,Mod-01 Lec-37 Boundary Layer Theory,nptelhrd,DONE
-Aircraft Equations of Motion,"Mod-01 Lec-01 Earth Atmosphere,Aircraft components,Aircraft nomenclature",nptelhrd,DONE
-Breguet Range and Endurance Equations,"Mod-01 Lec-01 Earth Atmosphere,Aircraft components,Aircraft nomenclature",nptelhrd,DONE
-V-n Diagram (Flight Envelope),Lecture 82 : Tutorial on V-n Diagram of Transport Aircraft,NPTEL IIT Bombay,DONE
-Static Longitudinal Stability,"Mod-01 Lec-01 Earth Atmosphere,Aircraft components,Aircraft nomenclature",nptelhrd,DONE
-The Neutral Point and Static Margin,Mod-04 Lec-11 Power effects on neutral point,nptelhrd,DONE
-Phugoid and Short-Period Modes (Dynamic Stability),"Mod-01 Lec-01 Earth Atmosphere,Aircraft components,Aircraft nomenclature",nptelhrd,DONE
-The Thrust Equation,Mod-01 Lec-01 Introduction & Development of Jet Aircraft Propulsion,nptelhrd,DONE
-Propeller Momentum Theory,Mod-01 Lec-29 Propeller aerodynamic theories –I,nptelhrd,DONE
-Turbojet Engine Thermodynamics,Mod-01 Lec-01 Introduction & Development of Jet Aircraft Propulsion,nptelhrd,DONE
-Turbofan Engines and Bypass Ratios,Mod-01 Lec-01 Introduction & Development of Jet Aircraft Propulsion,nptelhrd,DONE
-The Ideal Rocket Equation (Tsiolkovsky),Mod-01 Lec-01 Introduction,nptelhrd,DONE
+Prandtl-Meyer Expansion Fans,Mod-01 Lec-01 Lecture-01-Introduction to Gas Dynamics & Review of Basic Thermodynamics,nptelhrd,ERROR
+Swept Wing Aerodynamics,"Mod-07 Lec-19 Roll stability, Wing sweep effect, Rudder",nptelhrd,ERROR
+Boundary Layer Separation on Airfoils,Mod-01 Lec-37 Boundary Layer Theory,nptelhrd,ERROR
+Aircraft Equations of Motion,"Mod-01 Lec-01 Earth Atmosphere,Aircraft components,Aircraft nomenclature",nptelhrd,ERROR
+Breguet Range and Endurance Equations,"Mod-01 Lec-01 Earth Atmosphere,Aircraft components,Aircraft nomenclature",nptelhrd,ERROR
+V-n Diagram (Flight Envelope),Lecture 82 : Tutorial on V-n Diagram of Transport Aircraft,NPTEL IIT Bombay,ERROR
+Static Longitudinal Stability,"Mod-01 Lec-01 Earth Atmosphere,Aircraft components,Aircraft nomenclature",nptelhrd,ERROR
+The Neutral Point and Static Margin,Mod-04 Lec-11 Power effects on neutral point,nptelhrd,ERROR
+Phugoid and Short-Period Modes (Dynamic Stability),"Mod-01 Lec-01 Earth Atmosphere,Aircraft components,Aircraft nomenclature",nptelhrd,ERROR
+The Thrust Equation,Mod-01 Lec-01 Introduction & Development of Jet Aircraft Propulsion,nptelhrd,ERROR
+Propeller Momentum Theory,Mod-01 Lec-29 Propeller aerodynamic theories –I,nptelhrd,ERROR
+Turbojet Engine Thermodynamics,Mod-01 Lec-01 Introduction & Development of Jet Aircraft Propulsion,nptelhrd,ERROR
+Turbofan Engines and Bypass Ratios,Mod-01 Lec-01 Introduction & Development of Jet Aircraft Propulsion,nptelhrd,ERROR
+The Ideal Rocket Equation (Tsiolkovsky),Mod-01 Lec-01 Introduction,nptelhrd,ERROR
 Solid vs Liquid Rocket Propellants,Mod-01 Lec-01 Introduction,nptelhrd,DONE
 Convergent-Divergent (De Laval) Nozzle Flow,Mod-01 Lec-01 Lecture 01,nptelhrd,DONE
-Six Classical Orbital Elements,Classical/Keplerian Orbital Elements,Spaceflight Science,DONE
+Six Classical Orbital Elements,Classical/Keplerian Orbital Elements,Spaceflight Science,ERROR
 Orbital Plane Changes (Inclination Change),The Only Video Needed to Understand Orbital Mechanics,Animations Xplaned,DONE
 Lambert's Problem,4 - 1 - Gauss's Method,Dmitry Savransky,DONE
-Lagrange Points and Stability,15. Introduction to Lagrange With Examples,MIT OpenCourseWare,DONE
-Bending of Asymmetrical Beam Sections,Unsymmetrical bending part 1,Pradeep Mouria,DONE
-Shear Flow in Thin-Walled Structures,UNSW - Aerospace Structures - Solid Mechanics,Aerospace Structures @ UNSW,DONE
-Torsion of Multi-Cell Sections,Lecture - 18 Torsion - I,nptelhrd,DONE
+Lagrange Points and Stability,15. Introduction to Lagrange With Examples,MIT OpenCourseWare,ERROR
+Bending of Asymmetrical Beam Sections,Unsymmetrical bending part 1,Pradeep Mouria,ERROR
+Shear Flow in Thin-Walled Structures,UNSW - Aerospace Structures - Solid Mechanics,Aerospace Structures @ UNSW,ERROR
+Torsion of Multi-Cell Sections,Lecture - 18 Torsion - I,nptelhrd,ERROR
+Signals and Systems: Continuous-Time Convolution,8. Convolution,MIT OpenCourseWare,DONE
+Signals and Systems: Fourier Series,Fourier Series,MIT OpenCourseWare,DONE
+Signals and Systems: The Laplace Transform,Laplace Transform: First Order Equation,MIT OpenCourseWare,DONE
+Signals and Systems: The Z-Transform,5. Z Transform,MIT OpenCourseWare,DONE
+Semiconductor Physics: PN Junction,"Semiconductors, Insulators & Conductors, Basic Introduction, N type vs P type Semiconductor",The Organic Chemistry Tutor,DONE
+Bipolar Junction Transistor (BJT) Fundamentals,Transistors - NPN & PNP - Basic Introduction,The Organic Chemistry Tutor,DONE
+BJT Small-Signal Analysis,"Razavi Electronics 1, Lec 17, Bipolar Small-Signal Model, Early Effect",Razavi Electronics,DONE
+MOSFET Operation and Characteristics,"Razavi Electronics 1, Lec 29, Intro. to MOSFETs",Razavi Electronics,DONE
+MOSFET Small-Signal Model,"Razavi Electronics 1, Lec 33, Large-Signal & Small-Signal Operation",Razavi Electronics,DONE
+CMOS Inverter Characteristics,Complete Concept of CMOS Inverter for Placements || Analog Electronics (Part 1): Placement Course II,Razavi Electronics,FAILED
+Operational Amplifiers (Op-Amps) Ideal Properties,"Razavi Electronics 1, Lec 44, Nonlinear Op Amp Circuits, Op Amp Nonidealities I",Razavi Electronics,ERROR
+Non-Ideal Op-Amp Effects,"Razavi Electronics 1, Lec 44, Nonlinear Op Amp Circuits, Op Amp Nonidealities I",Razavi Electronics,DONE
+Electromagnetics: Gauss's Law and Electric Fields,Flux and Gauss' Law,MIT OpenCourseWare,DONE
+Electromagnetics: Ampere's Law and Magnetic Fields,"Lec 15: Ampère's Law | 8.02 Electricity and Magnetism, Spring 2002 (Walter Lewin)",MIT OpenCourseWare,DONE
+Electromagnetics: Faraday's Law of Induction,"8.02x - Lect 16 - Electromagnetic Induction, Faraday's Law, Lenz Law, SUPER DEMO",MIT OpenCourseWare,DONE
+Maxwell's Equations and Electromagnetic Waves,"12. Maxwell's Equation, Electromagnetic Waves",MIT OpenCourseWare,ERROR
+Transmission Line Theory and Equations,Reflection and transmission coefficients,MIT OpenCourseWare,DONE
+The Smith Chart,LangChain Explained in 10 Minutes (Components Breakdown + Build Your First AI Chatbot),TechWorld with Nana,DONE
+Waveguides: TE and TM Modes,Rectangular waveguide,nptelhrd,DONE
+Antenna Radiation Patterns,Radiation (Antenna),nptelhrd,DONE
+Digital Logic: Boolean Algebra and Logic Gates,Introduction to Boolean Algebra (Part 1),Neso Academy,DONE
+Combinational Logic Circuits (Multiplexers and Decoders),Introduction to Multiplexers | MUX Basic,Neso Academy,DONE
+Sequential Logic: Flip-Flops and Latches,Introduction to SR Flip Flop,Neso Academy,DONE
+Finite State Machines (FSM),Finite State Machine (Finite Automata),Neso Academy,DONE
+Real Analysis: Metric Spaces,Calculus 1 Lecture 5.3:  Volume of Solids By Cylindrical Shells Method,Professor Leonard,ERROR
+Real Analysis: Sequences and Series of Functions,Lecture 23: Pointwise and Uniform Convergence of Sequences of Functions,MIT OpenCourseWare,DONE
+Real Analysis: Uniform Convergence,Lecture 20: Pointwise Convergence; Uniform Convergence,MIT OpenCourseWare,DONE
+Real Analysis: The Riemann-Stieltjes Integral,Introduction to Riemann-Stieltjes Integration,MIT OpenCourseWare,DONE
+Real Analysis: Lebesgue Measure,Lecture 8: Lebesgue Measurable Subsets and Measure,MIT OpenCourseWare,DONE
+Complex Analysis: The Cauchy-Riemann Equations,Cauchy-Riemann Equations: Proving a Function is Nowhere Differentiable 1,The Math Sorcerer,FAILED
+Complex Analysis: Cauchy's Integral Theorem,Cauchy's Integral Formula e^z/(z - 1) on a Square Complex Variables,The Math Sorcerer,FAILED
+Complex Analysis: Cauchy's Integral Formula,Contour Integral of 1/(z - 1) on a Square with Cauchy's Integral Formula,The Math Sorcerer,FAILED
+Complex Analysis: Taylor and Laurent Series,Complex Analysis Laurent Series Example,The Math Sorcerer,DONE
+Complex Analysis: The Residue Theorem,"Complex Analysis for Engineers, Scientists, Mathematicians, and Super Beginners",The Math Sorcerer,DONE
+Complex Analysis: Conformal Mapping,Classic Book for Learning Complex Analysis,The Math Sorcerer,DONE
+Abstract Algebra: Groups and Subgroups,Definition of a Group and Examples of Groups,The Math Sorcerer,DONE
+Abstract Algebra: Cosets and Lagrange's Theorem,Proof of Lemma and Lagrange's Theorem,The Math Sorcerer,DONE
+Abstract Algebra: Normal Subgroups and Quotient Groups,Direct Product of Normal Subgroups is Normal Proof,The Math Sorcerer,FAILED
+Abstract Algebra: Group Homomorphisms and Isomorphisms,What is a Group Homomorphism? Definition and Example (Abstract Algebra),The Math Sorcerer,DONE
+Abstract Algebra: The Sylow Theorems,The Number of Conjugates of g is the Index of the Centralizer of g in G Proof,The Math Sorcerer,DONE
+Abstract Algebra: Rings and Fields,Definition of a Ring and Examples of Rings,The Math Sorcerer,DONE
+Abstract Algebra: Galois Theory,Galois Theory,The Math Sorcerer,DONE
+Topology: Open and Closed Sets,"How to Prove that the Interval (a, b] is Not an Open Set",The Math Sorcerer,DONE
+Topology: Compactness,Definition of Limit Point Compact,The Math Sorcerer,FAILED
+Topology: Connectedness,Definition of a Connected Subset of R^n,The Math Sorcerer,FAILED
+Topology: Continuous Functions,How to Prove a Function is Continuous using Delta Epsilon,The Math Sorcerer,DONE
+Topology: The Fundamental Group,How Real Math Nerds Do It,The Math Sorcerer,FAILED
+Quantum Mechanics: The Schrödinger Equation,4. Wave-Particle Duality of Matter; Schrödinger Equation,MIT OpenCourseWare,DONE
+Quantum Mechanics: Particle in a 1D Box,5. Quantum Mechanics: Free Particle and Particle in 1D Box,MIT OpenCourseWare,DONE
+Quantum Mechanics: The Quantum Harmonic Oscillator,Lecture 8: Quantum Harmonic Oscillator,MIT OpenCourseWare,ERROR
+Quantum Mechanics: Orbital Angular Momentum,32.1 Angular Momentum for a Point Particle,MIT OpenCourseWare,FAILED
+Quantum Mechanics: The Hydrogen Atom,5. Hydrogen Atom Energy Levels,MIT OpenCourseWare,DONE
+Quantum Mechanics: Spin and Pauli Matrices,"4. Spin One-half, Bras, Kets, and Operators",MIT OpenCourseWare,DONE
+Quantum Mechanics: Time-Independent Perturbation Theory,L1.1 General problem.  Non-degenerate perturbation theory,MIT OpenCourseWare,DONE
+Statistical Mechanics: Microstates and Macrostates,12. Classical Statistical Mechanics Part 1,MIT OpenCourseWare,ERROR
+Statistical Mechanics: The Microcanonical Ensemble,12. Classical Statistical Mechanics Part 1,MIT OpenCourseWare,DONE
+Statistical Mechanics: The Canonical Ensemble,15. Interacting Particles Part 1,MIT OpenCourseWare,DONE
+Statistical Mechanics: The Partition Function,2. 3-Partition I,MIT OpenCourseWare,DONE
+Statistical Mechanics: Bose-Einstein and Fermi-Dirac Statistics,20. Quantum Statistical Mechanics Part 1,MIT OpenCourseWare,DONE
+Electrodynamics: Multipole Expansion,17. SCET Multipole Expansion,MIT OpenCourseWare,DONE
+Electrodynamics: Electromagnetic Waves in Vacuum,"12. Maxwell's Equation, Electromagnetic Waves",MIT OpenCourseWare,ERROR
+Electrodynamics: Retarded Potentials,9. Accelerated Charges Radiating Electromagnetic Waves,MIT OpenCourseWare,ERROR
+Electrodynamics: Liénard-Wiechert Potentials,9. Accelerated Charges Radiating Electromagnetic Waves,MIT OpenCourseWare,DONE
+Electrodynamics: Relativistic Electrodynamics,"12. Maxwell's Equation, Electromagnetic Waves",MIT OpenCourseWare,DONE
+General Relativity: The Equivalence Principle,General Relativity Lecture 1,Stanford,DONE
+General Relativity: Tensors and Differential Geometry,What's a Tensor?,Stanford,DONE
+General Relativity: The Geodesic Equation,On the Phase of the de Sitter Density of States - Douglas Stanford,Stanford,DONE
+General Relativity: The Riemann Curvature Tensor,Einstein's General Theory of Relativity | Lecture 3,Stanford,DONE
+General Relativity: Einstein's Field Equations,Einstein's General Theory of Relativity | Lecture 1,Stanford,DONE
+General Relativity: The Schwarzschild Solution,Einstein's General Theory of Relativity | Lecture 11,Stanford,DONE
+Thermodynamics: The First Law of Thermodynamics,Introduction to First Law: Open Systems,LearnChemE,DONE
+Thermodynamics: The Second Law and Entropy,Second Law of Thermodynamics,LearnChemE,DONE
+Thermodynamics: Exergy and Reversibility,Designing a Heat Exchanger Network,LearnChemE,DONE
+Thermodynamics: Vapor Power Cycles (Rankine),Rankine Cycle Example 1,LearnChemE,DONE
+Thermodynamics: Gas Power Cycles (Brayton),Ideal BRAYTON CYCLE Explained in 11 Minutes!,LearnChemE,DONE
+Thermodynamics: Refrigeration Cycles,Refrigeration Cycle Introduction,LearnChemE,FAILED
+Heat Transfer: Steady-State Conduction,One-Dimensional Heat Conduction with Generation,LearnChemE,DONE
+Heat Transfer: Transient Conduction,Total Energy Transfer for Transient Conduction,LearnChemE,DONE
+Heat Transfer: Free and Forced Convection,Introduction to Free Convection,LearnChemE,DONE
+Heat Transfer: Thermal Radiation,Properties of Radiative Heat Transfer,LearnChemE,DONE
+Heat Transfer: Heat Exchanger Design (LMTD & NTU),Sizing a Heat Exchanger: Counter-Flow,LearnChemE,DONE
+Solid Mechanics: Stress and Strain Analysis,An Introduction to Stress and Strain,The Efficient Engineer,ERROR
+Solid Mechanics: Mohr's Circle,Understanding Stress Transformation and Mohr's Circle,The Efficient Engineer,DONE
+Solid Mechanics: Hooke's Law and Material Properties,An Introduction to Stress and Strain,The Efficient Engineer,DONE
+Solid Mechanics: Bending Moments and Shear Force Diagrams,Understanding Shear Force and Bending Moment Diagrams,The Efficient Engineer,DONE
+Solid Mechanics: Deflection of Beams,Understanding the Deflection of Beams,The Efficient Engineer,DONE
+Solid Mechanics: Torsion of Circular Shafts,Understanding Torsion,The Efficient Engineer,DONE
+Solid Mechanics: Failure Theories (Von Mises & Tresca),"Understanding Failure Theories (Tresca, von Mises etc...)",The Efficient Engineer,ERROR
+Fluid Dynamics: Fluid Statics and Manometry,Properties of Fluids Part 1,LearnChemE,DONE
+Fluid Dynamics: The Bernoulli Equation,Bernoulli Equation Derivation,LearnChemE,DONE
+Fluid Dynamics: Navier-Stokes Equations,Description and Derivation of the Navier-Stokes Equations,LearnChemE,DONE
+Fluid Dynamics: Boundary Layer Theory,Boundary Layers,LearnChemE,DONE
+Fluid Dynamics: Flow in Pipes and Friction Losses,Pipe Flow Introduction,LearnChemE,DONE
+Fluid Dynamics: Drag and Lift,Lift and Drag on Aircraft,LearnChemE,FAILED
+Organic Chemistry: SN1 and SN2 Nucleophilic Substitution,SN2 SN1 E1 E2 Reaction Mechanisms Made Easy!,The Organic Chemistry Tutor,DONE
+Organic Chemistry: E1 and E2 Elimination Reactions,"Organic Chemistry Elimination Reactions -  E1, E2, E1CB",The Organic Chemistry Tutor,DONE
+Organic Chemistry: Electrophilic Addition to Alkenes,Alkene Reactions,The Organic Chemistry Tutor,DONE
+Organic Chemistry: Electrophilic Aromatic Substitution (EAS),Electrophilic Aromatic Substitution Reactions Made Easy!,The Organic Chemistry Tutor,DONE
+Organic Chemistry: Nucleophilic Acyl Substitution,"Nucleophilic Acyl Substitution Reaction Mechanism - Carboxylic Acid Derivatives, Organic Chemistry",The Organic Chemistry Tutor,DONE
+Organic Chemistry: The Aldol Condensation,"Aldol Addition Reactions, Intramolecular Aldol Condensation Reactions, Retro Aldol & Cross Aldol Rea",The Organic Chemistry Tutor,DONE
+Organic Chemistry: Grignard Reagents and Organometallics,Grignard Reagent Reaction Mechanism,The Organic Chemistry Tutor,DONE
+Stereochemistry: Chirality and Stereocenters,"Chiral vs Achiral Molecules - Chirality Carbon Centers, Stereoisomers, Enantiomers, & Meso Compounds",The Organic Chemistry Tutor,DONE
+Stereochemistry: Enantiomers and Diastereomers,"Stereoisomers, Enantiomers, Meso Compounds, Diastereomers, Constitutional Isomers, Cis & Trans",The Organic Chemistry Tutor,DONE
+Stereochemistry: R and S Configuration (Cahn-Ingold-Prelog),Stereochemistry - R S Configuration & Fischer Projections,The Organic Chemistry Tutor,ERROR
+Stereochemistry: Fischer Projections,Stereochemistry - R S Configuration & Fischer Projections,The Organic Chemistry Tutor,DONE
+Stereochemistry: Conformations of Cyclohexane,Chair Conformation and Ring Flips,The Organic Chemistry Tutor,DONE
+Spectroscopy: Nuclear Magnetic Resonance (NMR),Basic Introduction to NMR Spectroscopy,The Organic Chemistry Tutor,DONE
+Spectroscopy: Infrared (IR) Spectroscopy,IR Spectroscopy - Basic Introduction,The Organic Chemistry Tutor,DONE
+Physical Chemistry: Chemical Kinetics and Rate Laws,Chemical Kinetics - Initial Rates Method,The Organic Chemistry Tutor,DONE
+Physical Chemistry: The Arrhenius Equation and Activation Energy,Arrhenius Equation Activation Energy and Rate Constant K Explained,The Organic Chemistry Tutor,DONE
+Physical Chemistry: Catalysis and Reaction Mechanisms,"Organic Chemistry - Reaction Mechanisms - Addition, Elimination, Substitution, & Rearrangement",The Organic Chemistry Tutor,DONE
+Physical Chemistry: Gibbs Free Energy and Spontaneity,"Gibbs Free Energy - Entropy, Enthalpy & Equilibrium Constant K",The Organic Chemistry Tutor,DONE
+Physical Chemistry: Chemical Potential and Phase Equilibria,Chemical Thermodynamics 7.3 - Chemical Potential,TMP Chem,DONE
+Physical Chemistry: The Clausius-Clapeyron Equation,Clausius Clapeyron Equation Examples and Practice Problems,The Organic Chemistry Tutor,DONE
+Physical Chemistry: Ideal and Non-Ideal Solutions (Raoult's Law),Raoult's Law - How To Calculate The Vapor Pressure of a Solution,The Organic Chemistry Tutor,DONE
+Quantum Chemistry: The Particle in a 1D Box,Quantum Chemistry 3.5 - Particle in a Box,TMP Chem,DONE
+Quantum Chemistry: The Rigid Rotor Model,Quantum Chemistry 6.1 - Rigid Rotor Model,TMP Chem,ERROR
+Quantum Chemistry: The Harmonic Oscillator Model,Lecture 8: Quantum Harmonic Oscillator,TMP Chem,DONE
+Quantum Chemistry: Molecular Orbital Theory,Molecular Orbital Theory - Bonding & Antibonding MO - Bond Order,The Organic Chemistry Tutor,DONE
+Probability: Counting and Combinatorics,Lecture 1: Probability and Counting | Statistics 110,Harvard University,ERROR
+Probability: Axioms and Properties,1. Probability Models and Axioms,MIT OpenCourseWare,ERROR
+Probability: Conditional Probability,2. Conditioning and Bayes' Rule,MIT OpenCourseWare,ERROR
+Bayes' Theorem,"Bayes theorem, the geometry of changing beliefs",3Blue1Brown,DONE
+Discrete Random Variables: PMF and CDF,5. Discrete Random Variables I,MIT OpenCourseWare,ERROR
+Expected Value and Variance,Lecture 6: Time Evolution and the Schrödinger Equation,MIT OpenCourseWare,ERROR
+The Binomial Distribution,"The Binomial Distribution and Test, Clearly Explained!!!",StatQuest with Josh Starmer,ERROR
+The Poisson Distribution,The Main Ideas behind Probability Distributions,StatQuest with Josh Starmer,ERROR
+The Geometric and Negative Binomial Distributions,Lecture 11: The Poisson distribution | Statistics 110,Harvard University,ERROR
+Continuous Random Variables and PDFs,8. Continuous Random Variables,MIT OpenCourseWare,ERROR
+The Uniform and Exponential Distributions,The Exponential Distribution,StatQuest with Josh Starmer,FAILED
+The Normal (Gaussian) Distribution,"The Normal Distribution, Clearly Explained!!!",StatQuest with Josh Starmer,ERROR
+Multiple Random Variables: Joint Distributions,9. Multiple Continuous Random Variables,MIT OpenCourseWare,ERROR
+Marginal and Conditional Distributions,10. Continuous Bayes' Rule; Derived Distributions,MIT OpenCourseWare,ERROR
+Covariance and Correlation,Lecture 21: Covariance and Correlation | Statistics 110,Harvard University,ERROR
+Conditional Expectation,11. Derived Distributions (ctd.); Covariance,MIT OpenCourseWare,ERROR
+Moment Generating Functions (MGFs),Lecture 26: Conditional Expectation Continued | Statistics 110,Harvard University,ERROR
+Markov and Chebyshev Inequalities,12. Iterated Expectations,MIT OpenCourseWare,ERROR
+The Weak Law of Large Numbers,19. Weak Law of Large Numbers,MIT OpenCourseWare,ERROR
+The Central Limit Theorem,But what is the Central Limit Theorem?,3Blue1Brown,ERROR
+Introduction to Markov Chains,16. Markov Chains I,MIT OpenCourseWare,ERROR
+Markov Chains: Steady-State Probabilities,17. Markov Chains II,MIT OpenCourseWare,ERROR
+Poisson Processes: Basic Definitions,14. Poisson Process I,MIT OpenCourseWare,ERROR
+Poisson Processes: Merging and Splitting,L22.2 Definition of the Poisson Process,MIT OpenCourseWare,ERROR
+Introduction to Stochastic Processes,5. Stochastic Processes I,MIT OpenCourseWare,ERROR
+Brownian Motion and Random Walks,Do Harvard Students Ever Sleep!? #shorts #interview #harvard,Harvard University,DONE
+Martingales,MT/32. Discrete Black-Scholes formula: background,Harvard University,ERROR

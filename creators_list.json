@@ -1,0 +1,894 @@
+[
+    {
+        "name": "3Blue1Brown",
+        "handle": "3Blue1Brown"
+    },
+    {
+        "name": "AKB Academy of Chemical Engineeing",
+        "handle": "AKB%20Academy%20of%20Chemical%20Engineeing"
+    },
+    {
+        "name": "AMBOSS: Medical Knowledge Distilled",
+        "handle": "AMBOSS%3A%20Medical%20Knowledge%20Distilled"
+    },
+    {
+        "name": "Abdul Bari",
+        "handle": "Abdul%20Bari"
+    },
+    {
+        "name": "Aerokar",
+        "handle": "Aerokar"
+    },
+    {
+        "name": "Aerospace Structures @ UNSW",
+        "handle": "Aerospace%20Structures%20%40%20UNSW"
+    },
+    {
+        "name": "Ahrefs",
+        "handle": "Ahrefs"
+    },
+    {
+        "name": "Aleph 0",
+        "handle": "Aleph%200"
+    },
+    {
+        "name": "All About Electronics",
+        "handle": "All%20About%20Electronics"
+    },
+    {
+        "name": "AllAboutCSIT",
+        "handle": "AllAboutCSIT"
+    },
+    {
+        "name": "Amoeba Sisters",
+        "handle": "Amoeba%20Sisters"
+    },
+    {
+        "name": "Andrej Karpathy",
+        "handle": "Andrej%20Karpathy"
+    },
+    {
+        "name": "Andrey K",
+        "handle": "Andrey%20K"
+    },
+    {
+        "name": "Animations Xplaned",
+        "handle": "Animations%20Xplaned"
+    },
+    {
+        "name": "Applied Science",
+        "handle": "Applied%20Science"
+    },
+    {
+        "name": "Aric LaBarr",
+        "handle": "Aric%20LaBarr"
+    },
+    {
+        "name": "ArjanCodes",
+        "handle": "ArjanCodes"
+    },
+    {
+        "name": "Arxiv Insights",
+        "handle": "Arxiv%20Insights"
+    },
+    {
+        "name": "AssemblyAI",
+        "handle": "AssemblyAI"
+    },
+    {
+        "name": "Astrophysics",
+        "handle": "Astrophysics"
+    },
+    {
+        "name": "Atlassian",
+        "handle": "Atlassian"
+    },
+    {
+        "name": "Be A Better Dev",
+        "handle": "Be%20A%20Better%20Dev"
+    },
+    {
+        "name": "Ben Awad",
+        "handle": "Ben%20Awad"
+    },
+    {
+        "name": "Ben Eater",
+        "handle": "Ben%20Eater"
+    },
+    {
+        "name": "Ben Lambert",
+        "handle": "Ben%20Lambert"
+    },
+    {
+        "name": "Biology",
+        "handle": "Biology"
+    },
+    {
+        "name": "Biology For All",
+        "handle": "Biology%20For%20All"
+    },
+    {
+        "name": "Bozeman Science",
+        "handle": "Bozeman%20Science"
+    },
+    {
+        "name": "Brackeys",
+        "handle": "Brackeys"
+    },
+    {
+        "name": "Branch Education",
+        "handle": "Branch%20Education"
+    },
+    {
+        "name": "Brian Douglas",
+        "handle": "Brian%20Douglas"
+    },
+    {
+        "name": "ByteByteGo",
+        "handle": "ByteByteGo"
+    },
+    {
+        "name": "ByteMonk",
+        "handle": "ByteMonk"
+    },
+    {
+        "name": "CPPMechEngTutorials",
+        "handle": "CPPMechEngTutorials"
+    },
+    {
+        "name": "CS & IT Tutorials by Vrushali \ud83d\udc69\u200d\ud83c\udf93",
+        "handle": "CS%20%26%20IT%20Tutorials%20by%20Vrushali%20%F0%9F%91%A9%E2%80%8D%F0%9F%8E%93"
+    },
+    {
+        "name": "CS Dojo",
+        "handle": "CS%20Dojo"
+    },
+    {
+        "name": "CS50",
+        "handle": "CS50"
+    },
+    {
+        "name": "Chemistry",
+        "handle": "Chemistry"
+    },
+    {
+        "name": "Christopher Okhravi",
+        "handle": "Christopher%20Okhravi"
+    },
+    {
+        "name": "Code.org",
+        "handle": "Code.org"
+    },
+    {
+        "name": "CodeOpinion",
+        "handle": "CodeOpinion"
+    },
+    {
+        "name": "Codevolution",
+        "handle": "Codevolution"
+    },
+    {
+        "name": "Coding in Public",
+        "handle": "Coding%20in%20Public"
+    },
+    {
+        "name": "CoffeeBeforeArch",
+        "handle": "CoffeeBeforeArch"
+    },
+    {
+        "name": "Computerphile",
+        "handle": "Computerphile"
+    },
+    {
+        "name": "Corey Schafer",
+        "handle": "Corey%20Schafer"
+    },
+    {
+        "name": "CrashCourse",
+        "handle": "CrashCourse"
+    },
+    {
+        "name": "Cyrill Stachniss",
+        "handle": "Cyrill%20Stachniss"
+    },
+    {
+        "name": "Dan Fleisch",
+        "handle": "Dan%20Fleisch"
+    },
+    {
+        "name": "Dane McGuckian (STATSprofessor)",
+        "handle": "Dane%20McGuckian%20%28STATSprofessor%29"
+    },
+    {
+        "name": "Data with Baraa",
+        "handle": "Data%20with%20Baraa"
+    },
+    {
+        "name": "David Bombal",
+        "handle": "David%20Bombal"
+    },
+    {
+        "name": "David Silver",
+        "handle": "David%20Silver"
+    },
+    {
+        "name": "Debye Shielding",
+        "handle": "Debye%20Shielding"
+    },
+    {
+        "name": "DeepLearningAI",
+        "handle": "DeepLearningAI"
+    },
+    {
+        "name": "Defog Tech",
+        "handle": "Defog%20Tech"
+    },
+    {
+        "name": "Derek Banas",
+        "handle": "Derek%20Banas"
+    },
+    {
+        "name": "Dmitry Savransky",
+        "handle": "Dmitry%20Savransky"
+    },
+    {
+        "name": "Domain of Science",
+        "handle": "Domain%20of%20Science"
+    },
+    {
+        "name": "Dr. Harish Garg",
+        "handle": "Dr.%20Harish%20Garg"
+    },
+    {
+        "name": "Dr. PhysicsA",
+        "handle": "Dr.%20PhysicsA"
+    },
+    {
+        "name": "Dr. Puspendra Classes",
+        "handle": "Dr.%20Puspendra%20Classes"
+    },
+    {
+        "name": "Dr. Surendra Sasikumar Jampa (PhD,Chem Engg, IITB)",
+        "handle": "Dr.%20Surendra%20Sasikumar%20Jampa%20%28PhD%2CChem%20Engg%2C%20IITB%29"
+    },
+    {
+        "name": "Dr. Trefor Bazett",
+        "handle": "Dr.%20Trefor%20Bazett"
+    },
+    {
+        "name": "E Learning with Kunal",
+        "handle": "E%20Learning%20with%20Kunal"
+    },
+    {
+        "name": "EEVblog",
+        "handle": "EEVblog"
+    },
+    {
+        "name": "ENGRTUTOR",
+        "handle": "ENGRTUTOR"
+    },
+    {
+        "name": "Ekeeda",
+        "handle": "Ekeeda"
+    },
+    {
+        "name": "ElectroBOOM",
+        "handle": "ElectroBOOM"
+    },
+    {
+        "name": "Engineering Funda",
+        "handle": "Engineering%20Funda"
+    },
+    {
+        "name": "Engineering Physics by Sanjiv",
+        "handle": "Engineering%20Physics%20by%20Sanjiv"
+    },
+    {
+        "name": "Faculty of Khan",
+        "handle": "Faculty%20of%20Khan"
+    },
+    {
+        "name": "Fermilab",
+        "handle": "Fermilab"
+    },
+    {
+        "name": "Finematics",
+        "handle": "Finematics"
+    },
+    {
+        "name": "Fluid Mechanics",
+        "handle": "Fluid%20Mechanics"
+    },
+    {
+        "name": "Gear Institute Mechanical Engineering Videos",
+        "handle": "Gear%20Institute%20Mechanical%20Engineering%20Videos"
+    },
+    {
+        "name": "Google Cloud",
+        "handle": "Google%20Cloud"
+    },
+    {
+        "name": "Google TechTalks",
+        "handle": "Google%20TechTalks"
+    },
+    {
+        "name": "HM Chemistry",
+        "handle": "HM%20Chemistry"
+    },
+    {
+        "name": "HackerRank",
+        "handle": "HackerRank"
+    },
+    {
+        "name": "Hugging Face",
+        "handle": "Hugging%20Face"
+    },
+    {
+        "name": "Hussein Nasser",
+        "handle": "Hussein%20Nasser"
+    },
+    {
+        "name": "IAmTimCorey",
+        "handle": "IAmTimCorey"
+    },
+    {
+        "name": "IBM Technology",
+        "handle": "IBM%20Technology"
+    },
+    {
+        "name": "IIT KANPUR-NPTEL",
+        "handle": "IIT%20KANPUR-NPTEL"
+    },
+    {
+        "name": "IIT Roorkee July 2018",
+        "handle": "IIT%20Roorkee%20July%202018"
+    },
+    {
+        "name": "Iain Explains Signals",
+        "handle": "Iain%20Explains%20Signals"
+    },
+    {
+        "name": "Impact Academy Official",
+        "handle": "Impact%20Academy%20Official"
+    },
+    {
+        "name": "Improbable Matter",
+        "handle": "Improbable%20Matter"
+    },
+    {
+        "name": "InfoQ",
+        "handle": "InfoQ"
+    },
+    {
+        "name": "Inorganic Chemistry",
+        "handle": "Inorganic%20Chemistry"
+    },
+    {
+        "name": "JSConf",
+        "handle": "JSConf"
+    },
+    {
+        "name": "Jack Herrington",
+        "handle": "Jack%20Herrington"
+    },
+    {
+        "name": "Jacob Sorber",
+        "handle": "Jacob%20Sorber"
+    },
+    {
+        "name": "Jeff Hanson",
+        "handle": "Jeff%20Hanson"
+    },
+    {
+        "name": "Jenny's Lectures CS IT",
+        "handle": "Jenny%27s%20Lectures%20CS%20IT"
+    },
+    {
+        "name": "John Levine",
+        "handle": "John%20Levine"
+    },
+    {
+        "name": "Jordan Edmunds Chetty",
+        "handle": "Jordan%20Edmunds%20Chetty"
+    },
+    {
+        "name": "Josh Miles",
+        "handle": "Josh%20Miles"
+    },
+    {
+        "name": "Kevin Powell",
+        "handle": "Kevin%20Powell"
+    },
+    {
+        "name": "Khan Academy",
+        "handle": "Khan%20Academy"
+    },
+    {
+        "name": "Kurzgesagt",
+        "handle": "Kurzgesagt"
+    },
+    {
+        "name": "Kurzgesagt \u2013 In a Nutshell",
+        "handle": "Kurzgesagt%20%E2%80%93%20In%20a%20Nutshell"
+    },
+    {
+        "name": "LearnChemE",
+        "handle": "LearnChemE"
+    },
+    {
+        "name": "Let's Get Rusty",
+        "handle": "Let%27s%20Get%20Rusty"
+    },
+    {
+        "name": "LiveOverflow",
+        "handle": "LiveOverflow"
+    },
+    {
+        "name": "MATLAB",
+        "handle": "MATLAB"
+    },
+    {
+        "name": "MIT OpenCourseWare",
+        "handle": "MIT%20OpenCourseWare"
+    },
+    {
+        "name": "Make It Easy: Best Platform for Mechanical",
+        "handle": "Make%20It%20Easy%3A%20Best%20Platform%20for%20Mechanical"
+    },
+    {
+        "name": "MarbleScience",
+        "handle": "MarbleScience"
+    },
+    {
+        "name": "Martin Kleppmann",
+        "handle": "Martin%20Kleppmann"
+    },
+    {
+        "name": "MathTheBeautiful",
+        "handle": "MathTheBeautiful"
+    },
+    {
+        "name": "Mathologer",
+        "handle": "Mathologer"
+    },
+    {
+        "name": "Mech PM",
+        "handle": "Mech%20PM"
+    },
+    {
+        "name": "Mechanical Engineering E-Learning",
+        "handle": "Mechanical%20Engineering%20E-Learning"
+    },
+    {
+        "name": "MedLive By Dr. Priyanka",
+        "handle": "MedLive%20By%20Dr.%20Priyanka"
+    },
+    {
+        "name": "Michael Evans",
+        "handle": "Michael%20Evans"
+    },
+    {
+        "name": "Michael Penn",
+        "handle": "Michael%20Penn"
+    },
+    {
+        "name": "Michel van Biezen",
+        "handle": "Michel%20van%20Biezen"
+    },
+    {
+        "name": "Milan Jovanovic",
+        "handle": "Milan%20Jovanovic"
+    },
+    {
+        "name": "MinutePhysics",
+        "handle": "MinutePhysics"
+    },
+    {
+        "name": "Morning Statistics",
+        "handle": "Morning%20Statistics"
+    },
+    {
+        "name": "NPTEL IIT Bombay",
+        "handle": "NPTEL%20IIT%20Bombay"
+    },
+    {
+        "name": "NPTEL IIT Guwahati",
+        "handle": "NPTEL%20IIT%20Guwahati"
+    },
+    {
+        "name": "NPTEL IIT Kharagpur",
+        "handle": "NPTEL%20IIT%20Kharagpur"
+    },
+    {
+        "name": "NVIDIA Developer",
+        "handle": "NVIDIA%20Developer"
+    },
+    {
+        "name": "NeetCode",
+        "handle": "NeetCode"
+    },
+    {
+        "name": "Neso Academy",
+        "handle": "Neso%20Academy"
+    },
+    {
+        "name": "Network Direction",
+        "handle": "Network%20Direction"
+    },
+    {
+        "name": "NetworkChuck",
+        "handle": "NetworkChuck"
+    },
+    {
+        "name": "Neuroscience",
+        "handle": "Neuroscience"
+    },
+    {
+        "name": "Ninja Nerd",
+        "handle": "Ninja%20Nerd"
+    },
+    {
+        "name": "Numberphile",
+        "handle": "Numberphile"
+    },
+    {
+        "name": "Okta",
+        "handle": "Okta"
+    },
+    {
+        "name": "OktaDev",
+        "handle": "OktaDev"
+    },
+    {
+        "name": "Organic Chemistry with Victor",
+        "handle": "Organic%20Chemistry%20with%20Victor"
+    },
+    {
+        "name": "PBS Infinite Series",
+        "handle": "PBS%20Infinite%20Series"
+    },
+    {
+        "name": "PBS Space Time",
+        "handle": "PBS%20Space%20Time"
+    },
+    {
+        "name": "Perfect Computer Engineer",
+        "handle": "Perfect%20Computer%20Engineer"
+    },
+    {
+        "name": "Philipp Lackner",
+        "handle": "Philipp%20Lackner"
+    },
+    {
+        "name": "Physics",
+        "handle": "Physics"
+    },
+    {
+        "name": "Physics Videos by Eugene Khutoryansky",
+        "handle": "Physics%20Videos%20by%20Eugene%20Khutoryansky"
+    },
+    {
+        "name": "Pine Research Instrumentation, Inc.",
+        "handle": "Pine%20Research%20Instrumentation%2C%20Inc."
+    },
+    {
+        "name": "PowerCert Animated Videos",
+        "handle": "PowerCert%20Animated%20Videos"
+    },
+    {
+        "name": "Practical Networking",
+        "handle": "Practical%20Networking"
+    },
+    {
+        "name": "Pradeep Mouria",
+        "handle": "Pradeep%20Mouria"
+    },
+    {
+        "name": "Prof. Van Buren",
+        "handle": "Prof.%20Van%20Buren"
+    },
+    {
+        "name": "Professor Dave Explains",
+        "handle": "Professor%20Dave%20Explains"
+    },
+    {
+        "name": "Professor Leonard",
+        "handle": "Professor%20Leonard"
+    },
+    {
+        "name": "Programming with Mosh",
+        "handle": "Programming%20with%20Mosh"
+    },
+    {
+        "name": "ProgrammingKnowledge",
+        "handle": "ProgrammingKnowledge"
+    },
+    {
+        "name": "Qiskit",
+        "handle": "Qiskit"
+    },
+    {
+        "name": "Quanta Magazine",
+        "handle": "Quanta%20Magazine"
+    },
+    {
+        "name": "Quantum Intuition",
+        "handle": "Quantum%20Intuition"
+    },
+    {
+        "name": "Quick Biochemistry Basics",
+        "handle": "Quick%20Biochemistry%20Basics"
+    },
+    {
+        "name": "Radiation",
+        "handle": "Radiation"
+    },
+    {
+        "name": "Razavi Electronics",
+        "handle": "Razavi%20Electronics"
+    },
+    {
+        "name": "Robyn Goacher",
+        "handle": "Robyn%20Goacher"
+    },
+    {
+        "name": "Ron Hugo",
+        "handle": "Ron%20Hugo"
+    },
+    {
+        "name": "SP Chemistry Classes",
+        "handle": "SP%20Chemistry%20Classes"
+    },
+    {
+        "name": "Sam Witteveen",
+        "handle": "Sam%20Witteveen"
+    },
+    {
+        "name": "Sampurna Engineering",
+        "handle": "Sampurna%20Engineering"
+    },
+    {
+        "name": "Schuster Engineering",
+        "handle": "Schuster%20Engineering"
+    },
+    {
+        "name": "Science ABC",
+        "handle": "Science%20ABC"
+    },
+    {
+        "name": "ScienceClic English",
+        "handle": "ScienceClic%20English"
+    },
+    {
+        "name": "Sean Allen",
+        "handle": "Sean%20Allen"
+    },
+    {
+        "name": "Seattle Data Guy",
+        "handle": "Seattle%20Data%20Guy"
+    },
+    {
+        "name": "Sebastian Lague",
+        "handle": "Sebastian%20Lague"
+    },
+    {
+        "name": "Shaw Talebi",
+        "handle": "Shaw%20Talebi"
+    },
+    {
+        "name": "Shomu's Biology",
+        "handle": "Shomu%27s%20Biology"
+    },
+    {
+        "name": "Simple Snippets",
+        "handle": "Simple%20Snippets"
+    },
+    {
+        "name": "Simplilearn",
+        "handle": "Simplilearn"
+    },
+    {
+        "name": "Socratica",
+        "handle": "Socratica"
+    },
+    {
+        "name": "Solid State Physics",
+        "handle": "Solid%20State%20Physics"
+    },
+    {
+        "name": "Spaceflight Science",
+        "handle": "Spaceflight%20Science"
+    },
+    {
+        "name": "Sqlpad",
+        "handle": "Sqlpad"
+    },
+    {
+        "name": "StatQuest",
+        "handle": "StatQuest"
+    },
+    {
+        "name": "StatQuest with Josh Starmer",
+        "handle": "StatQuest%20with%20Josh%20Starmer"
+    },
+    {
+        "name": "Statistical Mechanics",
+        "handle": "Statistical%20Mechanics"
+    },
+    {
+        "name": "Stats with Brian",
+        "handle": "Stats%20with%20Brian"
+    },
+    {
+        "name": "Steve Brunton",
+        "handle": "Steve%20Brunton"
+    },
+    {
+        "name": "Superconductivity",
+        "handle": "Superconductivity"
+    },
+    {
+        "name": "TMP Chem",
+        "handle": "TMP%20Chem"
+    },
+    {
+        "name": "Tech Hustler",
+        "handle": "Tech%20Hustler"
+    },
+    {
+        "name": "Tech With Tim",
+        "handle": "Tech%20With%20Tim"
+    },
+    {
+        "name": "TechWorld with Nana",
+        "handle": "TechWorld%20with%20Nana"
+    },
+    {
+        "name": "Teddy Smith",
+        "handle": "Teddy%20Smith"
+    },
+    {
+        "name": "The Cherno",
+        "handle": "The%20Cherno"
+    },
+    {
+        "name": "The Efficient Engineer",
+        "handle": "The%20Efficient%20Engineer"
+    },
+    {
+        "name": "The Engineering Mindset",
+        "handle": "The%20Engineering%20Mindset"
+    },
+    {
+        "name": "The Math Sorcerer",
+        "handle": "The%20Math%20Sorcerer"
+    },
+    {
+        "name": "The Net Ninja",
+        "handle": "The%20Net%20Ninja"
+    },
+    {
+        "name": "The Organic Chemistry Tutor",
+        "handle": "The%20Organic%20Chemistry%20Tutor"
+    },
+    {
+        "name": "The Testing Academy",
+        "handle": "The%20Testing%20Academy"
+    },
+    {
+        "name": "Th\u00e0nh Nguy\u1ec5n",
+        "handle": "Th%C3%A0nh%20Nguy%E1%BB%85n"
+    },
+    {
+        "name": "Tony St John",
+        "handle": "Tony%20St%20John"
+    },
+    {
+        "name": "Topper Mechanical",
+        "handle": "Topper%20Mechanical"
+    },
+    {
+        "name": "Traversy Media",
+        "handle": "Traversy%20Media"
+    },
+    {
+        "name": "Udacity",
+        "handle": "Udacity"
+    },
+    {
+        "name": "Unacademy GATE - Chemical",
+        "handle": "Unacademy%20GATE%20-%20Chemical"
+    },
+    {
+        "name": "Valerio Velardo",
+        "handle": "Valerio%20Velardo"
+    },
+    {
+        "name": "Veritasium",
+        "handle": "Veritasium"
+    },
+    {
+        "name": "Visually Explained",
+        "handle": "Visually%20Explained"
+    },
+    {
+        "name": "Wandida, EPFL",
+        "handle": "Wandida%2C%20EPFL"
+    },
+    {
+        "name": "Web Dev Simplified",
+        "handle": "Web%20Dev%20Simplified"
+    },
+    {
+        "name": "Welt der Werkstoffe",
+        "handle": "Welt%20der%20Werkstoffe"
+    },
+    {
+        "name": "Whiteboard Crypto",
+        "handle": "Whiteboard%20Crypto"
+    },
+    {
+        "name": "WilliamFiset",
+        "handle": "WilliamFiset"
+    },
+    {
+        "name": "Wrath of Math",
+        "handle": "Wrath%20of%20Math"
+    },
+    {
+        "name": "XylyXylyX",
+        "handle": "XylyXylyX"
+    },
+    {
+        "name": "Yannic Kilcher",
+        "handle": "Yannic%20Kilcher"
+    },
+    {
+        "name": "ankush",
+        "handle": "ankush"
+    },
+    {
+        "name": "deetoher",
+        "handle": "deetoher"
+    },
+    {
+        "name": "edureka!",
+        "handle": "edureka%21"
+    },
+    {
+        "name": "jbstatistics",
+        "handle": "jbstatistics"
+    },
+    {
+        "name": "mathematicalmonk",
+        "handle": "mathematicalmonk"
+    },
+    {
+        "name": "mycodeschool",
+        "handle": "mycodeschool"
+    },
+    {
+        "name": "nature video",
+        "handle": "nature%20video"
+    },
+    {
+        "name": "normalized nerd",
+        "handle": "normalized%20nerd"
+    },
+    {
+        "name": "nptelhrd",
+        "handle": "nptelhrd"
+    },
+    {
+        "name": "numiqo",
+        "handle": "numiqo"
+    },
+    {
+        "name": "ritvikmath",
+        "handle": "ritvikmath"
+    },
+    {
+        "name": "zedstatistics",
+        "handle": "zedstatistics"
+    }
+]

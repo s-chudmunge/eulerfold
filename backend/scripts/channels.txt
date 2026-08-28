@@ -1,0 +1,262 @@
+     82 The Organic Chemistry Tutor
+     69 Neso Academy
+     61 StatQuest with Josh Starmer
+     51 Hussein Nasser
+     47 Web Dev Simplified
+     46 Physics
+     45 3Blue1Brown
+     43 Ninja Nerd
+     39 Computerphile
+     32 TechWorld with Nana
+     32 nptelhrd
+     29 LearnChemE
+     29 Abdul Bari
+     27 Bozeman Science
+     22 MIT OpenCourseWare
+     20 TMP Chem
+     20 Professor Dave Explains
+     16 Shomu's Biology
+     15 Traversy Media
+     15 Steve Brunton
+     15 IBM Technology
+     15 ByteByteGo
+     14 DeepLearningAI
+     13 Michel van Biezen
+     13 Khan Academy
+     13 Dr. Trefor Bazett
+     12 ritvikmath
+     12 Jeff Hanson
+     12 Brian Douglas
+     11 Razavi Electronics
+     11 Physics Videos by Eugene Khutoryansky
+     11 Iain Explains Signals
+     11 CoffeeBeforeArch
+     11 All About Electronics
+     10 PBS Space Time
+      9 The Cherno
+      9 Fermilab
+      9 Corey Schafer
+      8 Wrath of Math
+      8 WilliamFiset
+      8 ScienceClic English
+      7 Solid State Physics
+      6 Kevin Powell
+      6 HackerRank
+      6 CrashCourse
+      6 CodeOpinion
+      5 The Engineering Mindset
+      5 Socratica
+      5 pt 1 of 5: Introduction"
+      5 Professor Leonard
+      5 Let's Get Rusty
+      5 Hugging Face
+      5 Clearly Explained!!!"
+      5 Brackeys
+      4 Yannic Kilcher
+      4 StatQuest
+      4 Sebastian Lague
+      4 NetworkChuck
+      4 MATLAB
+      4 Jenny's Lectures CS IT
+      4 jbstatistics
+      4 Jacob Sorber
+      4 Faculty of Khan
+      4 ElectroBOOM
+      4 CS50
+      4 CPPMechEngTutorials
+      4 conduction
+      4 Christopher Okhravi
+      4 Ben Eater
+      4 Aircraft components
+      3 Whiteboard Crypto
+      3 Stats with Brian
+      3 Qiskit
+      3 Programming with Mosh
+      3 Philipp Lackner
+      3 numiqo
+      3 Graded
+      3 Finematics
+      3 Cyrill Stachniss
+      3 CS Dojo
+      3 Chemistry
+      3 Atlassian
+      3 Andrey K
+      2 Veritasium
+      2 The Net Ninja
+      2 Shaw Talebi
+      2 Seattle Data Guy
+      2 Sean Allen
+      2 Quantum Intuition
+      2 Quanta Magazine
+      2 Okta
+      2 Numberphile
+      2 NPTEL IIT Kharagpur
+      2 NPTEL IIT Guwahati
+      2 Milan Jovanovic
+      2 Mechanical Engineering E-Learning
+      2 Martin Kleppmann
+      2 Kurzgesagt
+      2 Fluid Properties (1 of 34)"
+      2 Codevolution
+      2 ByteMonk
+      1 XylyXylyX
+      1 Wing sweep effect
+      1 Wilcoxon signed rank
+      1 "Wandida
+      1 von Mises etc...)"
+      1 Visually Explained
+      1 Vesiculation
+      1 Valerio Velardo
+      1 Use-cases
+      1 Unacademy GATE - Chemical
+      1 Udacity
+      1 Transduction and Conjugation"
+      1 Topper Mechanical
+      1 Tony St John
+      1 tokamaks
+      1 The Testing Academy
+      1 The Method of Sections"
+      1 The Math Sorcerer
+      1 The Iron Carbon Phase Diagram
+      1 The Graphic Method"
+      1 The Efficient Engineer
+      1 Thành Nguyễn
+      1 Teddy Smith
+      1 Tech With Tim
+      1 Tech Hustler
+      1 Superconductivity
+      1 Step-by-Step"
+      1 Statistical Mechanics
+      1 Statement & Step-by-Step Proof"
+      1 Sqlpad
+      1 SP Chemistry Classes
+      1 Spaceflight Science
+      1 Simplilearn
+      1 Simple Snippets
+      1 Science ABC
+      1 Schuster Engineering
+      1 Scalers
+      1 Sam Witteveen
+      1 Sampurna Engineering
+      1 Robyn Goacher
+      1 Review of Units"
+      1 Radiation
+      1 Quick Biochemistry Basics
+      1 pt 3 of 6: Ideal Diesel Cycle"
+      1 pt 1 of 7: Actual Rankine Cycle"
+      1 pt 1 of 5: Exergy - Introduction"
+      1 pt 1 of 5: Brayton Cycle Introduction"
+      1 ProgrammingKnowledge
+      1 Prof. Van Buren
+      1 Pradeep Mouria
+      1 Practical Networking
+      1 PowerCert Animated Videos
+      1 Polar Moment of Inertia"
+      1 "Pine Research Instrumentation
+      1 Perfect Computer Engineer
+      1 PBS Infinite Series
+      1 Part 1"
+      1 Organic Chemistry with Victor
+      1 OktaDev
+      1 NVIDIA Developer
+      1 NPTEL IIT Bombay
+      1 normalized nerd
+      1 Neuroscience
+      1 Network Direction
+      1 NeetCode
+      1 nature video
+      1 mycodeschool
+      1 Mitosis and Meiosis"
+      1 MinutePhysics
+      1 Michael Penn
+      1 Michael Evans
+      1 Method of Joints"
+      1 MedLive By Dr. Priyanka
+      1 Mech PM
+      1 MathTheBeautiful
+      1 Mathologer
+      1 mathematicalmonk
+      1 MarbleScience
+      1 Make It Easy: Best Platform for Mechanical
+      1 lumped heat capacity model and examples"
+      1 LiveOverflow
+      1 LEFT
+      1 Laminar Pipe Flow Characteristics (16 of 34)"
+      1 lag phase
+      1 Kurzgesagt – In a Nutshell
+      1 JSConf
+      1 Josh Miles
+      1 Jordan Edmunds Chetty
+      1 John Levine
+      1 Jack Herrington
+      1 Inorganic Chemistry
+      1 InfoQ
+      1 Impact Academy Official
+      1 IIT Roorkee July 2018
+      1 IIT KANPUR-NPTEL
+      1 IAmTimCorey
+      1 HTTP and Service Mesh Proxy examples)"
+      1 HM Chemistry
+      1 Hepatitis
+      1 Heat Treatment of Steel
+      1 Guaranteed for Exam 1!"
+      1 Google TechTalks
+      1 Google Cloud
+      1 Gear Institute Mechanical Engineering Videos
+      1 Fluid Mechanics
+      1 Examples
+      1 Essence of linear algebra"
+      1 Enthalpy
+      1 ENGRTUTOR
+      1 Engineering Physics by Sanjiv
+      1 Engineering Funda
+      1 E Learning with Kunal
+      1 Ekeeda
+      1 EEVblog
+      1 edureka!
+      1 "Dr. Surendra Sasikumar Jampa (PhD
+      1 Dr. Puspendra Classes
+      1 Dr. PhysicsA
+      1 Dr. Harish Garg
+      1 Domain of Science
+      1 Dmitry Savransky
+      1 Derek Banas
+      1 Defog Tech
+      1 deetoher
+      1 Debye Shielding
+      1 David Silver
+      1 David Bombal
+      1 Dan Fleisch
+      1 Dane McGuckian (STATSprofessor)
+      1 CS & IT Tutorials by Vrushali 👩‍🎓
+      1 Conservation of Energy Examples (15 of 34)"
+      1 Coding in Public
+      1 Code.org
+      1 Clearly Explained"
+      1 clearly explained!!!"
+      1 Branch Education
+      1 Box on an Incline"
+      1 Biology
+      1 Ben Lambert
+      1 Ben Awad
+      1 Beam Bending Example"
+      1 Be A Better Dev
+      1 Astrophysics
+      1 AssemblyAI
+      1 Arxiv Insights
+      1 ArjanCodes
+      1 Aric LaBarr
+      1 Area Moment of Inertia"
+      1 Applied Science
+      1 ankush
+      1 Animations Xplaned
+      1 Andrej Karpathy
+      1 Amoeba Sisters
+      1 AMBOSS: Medical Knowledge Distilled
+      1 AllAboutCSIT
+      1 Aleph 0
+      1 AKB Academy of Chemical Engineeing
+      1 Ahrefs
+      1 Aerospace Structures @ UNSW
+      1 Aerokar
+      1 
