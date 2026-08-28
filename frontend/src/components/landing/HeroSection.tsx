@@ -7,6 +7,7 @@ import { useAuth } from '@/components/AuthProvider';
 import { roadmapsAPI } from '@/lib/api';
 import HeroPromptInput from '@/components/landing/HeroPromptInput';
 import { TrustedSourcesTicker } from '@/app/HomeClientComponents';
+import { CreatorsTicker } from '@/components/landing/CreatorsTicker';
 
 export default function HeroSection() {
   const { user } = useAuth();
@@ -86,6 +87,7 @@ export default function HeroSection() {
         {/* Trusted sources ticker */}
         <div className="w-full relative z-10 mt-10 md:mt-16">
           <TrustedSourcesTicker />
+          <CreatorsTicker />
         </div>
       </section>
     </div>
