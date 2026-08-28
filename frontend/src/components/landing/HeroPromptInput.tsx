@@ -429,9 +429,13 @@ Return ONLY this JSON structure:
                 for (const line of lines) {
                     try {
                         const data = JSON.parse(line);
+                        if (data.error) throw new Error(data.error);
                         if (data.status) setDynamicLoadingMsg(data.status);
                         if (data.result) resultData = data.result;
-                    } catch(e) {
+                    } catch(e: any) {
+                        if (e.message && e.message.includes("AI Engine Error")) {
+                            throw e;
+                        }
                         console.error("Failed to parse chunk", line);
                     }
                 }

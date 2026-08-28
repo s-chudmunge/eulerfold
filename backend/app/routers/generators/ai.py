@@ -517,7 +517,8 @@ async def generate_roadmap(
             raise
         except Exception as e:
             logger.error(f"Roadmap generation failed: {e}")
-            raise HTTPException(status_code=500, detail=f"Generation error: {str(e)}")
+            yield json.dumps({"error": f"AI Engine Error: {str(e)}. Please try again."}) + "\n"
+            return
     
     
     

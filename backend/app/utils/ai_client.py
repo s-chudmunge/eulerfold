@@ -472,7 +472,7 @@ def robust_json_loads(text: str):
 
     if parsed is None:
         logger.error(f"Failed to parse JSON. Length: {len(cleaned)}. Error context: {cleaned[-500:]}")
-        parsed = json.loads(cleaned)
+        raise ValueError("The AI model hit its maximum output limit and truncated the response before finishing. This usually happens when generating very long 12-week courses on free models. Please try again with a shorter duration (e.g., 4 weeks) or switch to a Pro model in the Engine menu.")
         
     # Handle double-encoded JSON strings
     if isinstance(parsed, str):
