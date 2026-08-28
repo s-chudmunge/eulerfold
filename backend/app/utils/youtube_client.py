@@ -226,11 +226,58 @@ async def search_youtube_videos(
 ) -> List[Dict[str, str]]:
     """
     Search YouTube and return the best matching educational videos.
-    When topic_title is provided, videos are scored by relevance, view count,
-    duration, and channel trust. Performs query fallback if no candidates match.
-    When preferred_channel is provided, videos from that channel receive a
-    score bonus to encourage consistent per-module learning from one teacher.
+    First checks the curated database using pgvector semantic search (Gemini embeddings).
+    If no rigorous match is found (>0.75 cosine similarity), falls back to dynamic YouTube API search.
     """
+    from app.core.supabase_client import get_supabase_client
+    import json
+    
+    # --- 1. THE CURATED DATABASE ENGINE (SUPABASE PGVECTOR) ---
+    search_target = topic_title if topic_title else query
+    if search_target and settings.GEMINI_API_KEY:
+        try:
+            # Generate Gemini embedding for semantic search
+            url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-2:embedContent?key={settings.GEMINI_API_KEY}"
+            payload = {
+                "model": "models/gemini-embedding-2",
+                "outputDimensionality": 768,
+                "content": {"parts": [{"text": search_target}]}
+            }
+            async with httpx.AsyncClient(timeout=10.0) as client:
+                res = await client.post(url, json=payload)
+                if res.status_code == 200:
+                    embedding_vector = res.json().get('embedding', {}).get('values')
+                    
+                    if embedding_vector:
+                        sb = get_supabase_client()
+                        # Strict 0.92 threshold ensures we don't accidentally serve 
+                        # 'First Law of Thermodynamics' when asking for 'Second Law'
+                        rpc_response = sb.rpc(
+                            "match_curated_videos",
+                            {
+                                "query_embedding": embedding_vector,
+                                "match_threshold": 0.92,
+                                "match_count": max_results
+                            }
+                        ).execute()
+                        
+                        matches = rpc_response.data
+                        if matches:
+                            logger.info(f"Supabase pgvector match! '{search_target}' -> '{matches[0]['topic']}' ({matches[0]['similarity']:.2f})")
+                            return [
+                                {
+                                    "video_id": m["video_id"],
+                                    "video_title": m["clean_title"],
+                                    "channel_name": m["channel"],
+                                    "duration_minutes": m["duration_mins"]
+                                } for m in matches
+                            ]
+                        else:
+                            logger.info(f"No curated match >= 0.92 for '{search_target}'. Falling back to dynamic YouTube search.")
+        except Exception as e:
+            logger.error(f"Semantic search failed for '{search_target}', falling back to YouTube: {e}")
+
+    # --- 2. THE DYNAMIC FALLBACK ENGINE (OLD SYSTEM) ---
     if not settings.YOUTUBE_API_KEY:
         logger.warning("YOUTUBE_API_KEY not set, skipping YouTube search.")
         return []

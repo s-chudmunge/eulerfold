@@ -388,10 +388,11 @@ async def generate_roadmap(
     2. **SEO-Friendly Description:** The "description" must be a single, punchy, search-engine-friendly sentence similar to the title. Do NOT use long paragraphs like "This intensive intensive X-week course is designed for...".
     3. **Technical Rigor:** Focus on depth and verifiable technical skills. Avoid introductory fluff.
     4. **Logical Progression:** Structure the path into modules that build upon each other logically.
-    5. **Specific Topics:** Each module must have 3-5 specific topics. Use industry-standard technical terms.
-    6. **Practical Outcomes:** For each module, include a "proof_of_work_instructions" object that details a realistic technical task the user must solve to demonstrate mastery.
-    7. **Applied Mastery:** Ensure each module leads to a specific competency string starting with "By the end of this module you will be able to...".
-    8. **Output JSON ONLY** matching this schema:
+    5. **Strict Duration Mapping:** You MUST strictly limit the total number of modules to align with the requested duration. If the user asks for '{roadmap_create.time_value} {roadmap_create.time_unit}' (e.g., '1 weeks'), you must generate exactly {roadmap_create.time_value} module(s). DO NOT generate a 3 or 4 module course if the user only asked for 1 week.
+    6. **Specific Topics:** Each module must have 3-5 specific topics. Use industry-standard technical terms.
+    7. **Practical Outcomes:** For each module, include a "proof_of_work_instructions" object that details a realistic technical task the user must solve to demonstrate mastery.
+    8. **Applied Mastery:** Ensure each module leads to a specific competency string starting with "By the end of this module you will be able to...".
+    9. **Output JSON ONLY** matching this schema:
        {{
          "title": "string",
          "description": "A single, search engine friendly line describing the course (max 1 sentence).",
@@ -417,7 +418,7 @@ async def generate_roadmap(
            }}
          ]
        }}
-    7. **Workspace Selection:** 
+    10. **Workspace Selection:** 
        - Set "workspace_type" to "code" for implementation, algorithms, or scripting tasks.
        - Set "workspace_type" to "design" for system architecture, distributed systems, infrastructure, or UI/UX.
        - Set "workspace_type" to "research" for theoretical science, mathematics, or technical writing.

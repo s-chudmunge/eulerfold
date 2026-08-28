@@ -47,33 +47,21 @@ async def get_fastest_free_openrouter_model() -> str:
             res.raise_for_status()
             data = res.json()
             
-            free_model_ids = set()
+            # Select the very first available free model with adequate context
             for m in data.get("data", []):
                 pricing = m.get("pricing", {})
-                if pricing.get("prompt") == "0" and pricing.get("completion") == "0":
-                    ctx = m.get("context_length", 0)
-                    if ctx >= 32000:
-                        free_model_ids.add(m["id"])
-            
-            # Pick the first preferred model that's currently available and free
-            for pref in PREFERRED_FREE_MODELS:
-                if pref in free_model_ids:
-                    _cached_free_model = pref
-                    _cached_time = time.time()
-                    logger.info(f"Selected free OpenRouter model: {_cached_free_model}")
-                    return _cached_free_model
-            
-            # Fallback: pick any free model with decent context
-            if free_model_ids:
-                selected = next(iter(free_model_ids))
-                _cached_free_model = selected
-                _cached_time = time.time()
-                logger.info(f"Selected free OpenRouter model (fallback): {_cached_free_model}")
-                return _cached_free_model
+                if str(pricing.get("prompt")) == "0" and str(pricing.get("completion")) == "0":
+                    if m.get("context_length", 0) >= 8000:
+                        _cached_free_model = m["id"]
+                        _cached_time = time.time()
+                        logger.info(f"Selected first available free OpenRouter model: {_cached_free_model}")
+                        return _cached_free_model
+                        
     except Exception as e:
         logger.error(f"Failed to fetch free models from OpenRouter: {e}")
         
-    return "deepseek/deepseek-r1-0528:free"
+    # Absolute fallback
+    return "openrouter/free"
 
 
 async def _call_ollama(prompt: str, response_mime_type: str):
@@ -119,8 +107,9 @@ async def _call_openrouter(prompt: str, model: str, response_mime_type: str):
         "max_tokens": 8192,
     }
     
-    if response_mime_type == "application/json":
-        payload["response_format"] = {"type": "json_object"}
+    # We intentionally DO NOT pass "response_format": {"type": "json_object"} 
+    # to OpenRouter because many free models throw 400 errors if they don't support the API feature.
+    # The prompt explicitly asks for JSON, and our parser handles it.
 
     max_retries = 2
 
@@ -189,8 +178,8 @@ async def _call_groq(prompt: str, model: str, response_mime_type: str):
     if not api_key:
         raise RuntimeError("GROQ_API_KEY not configured for fallback")
 
-    # Always use a highly capable stable Groq model for fallback
-    groq_model = "llama-3.3-70b-versatile"
+    # Dynamically select from currently supported Groq API models
+    groq_model = "openai/gpt-oss-120b"
         
     headers = {
         "Authorization": f"Bearer {api_key}",

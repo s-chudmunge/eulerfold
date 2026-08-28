@@ -331,8 +331,15 @@ async def _enrich_roadmap_progress(roadmaps: List[Dict], email: str, uid: str, s
     
     return roadmaps
 
+from fastapi import Query
+
 @router.get("/roadmaps/me", response_model=List[RoadmapMe])
-async def get_my_roadmaps(background_tasks: BackgroundTasks, current_user: User = Depends(get_current_user)):
+async def get_my_roadmaps(
+    background_tasks: BackgroundTasks, 
+    current_user: User = Depends(get_current_user),
+    limit: int = Query(5, ge=1, le=50),
+    offset: int = Query(0, ge=0)
+):
     email = current_user.email
     uid = current_user.supabase_uid
 
@@ -340,8 +347,8 @@ async def get_my_roadmaps(background_tasks: BackgroundTasks, current_user: User 
         raise HTTPException(status_code=401, detail="Could not determine user email")
 
     sb = get_supabase_client()
-    # Fetch roadmaps
-    response = sb.table("roadmaps").select("*").eq("email", email).order("updated_at", desc=True).execute()
+    # Fetch roadmaps: Sort active first ('active' comes before 'archived'/'completed'/'quit' alphabetically), then by updated_at
+    response = sb.table("roadmaps").select("*").eq("email", email).order("status", desc=False).order("updated_at", desc=True).range(offset, offset + limit - 1).execute()
     
     enriched_data = await _enrich_roadmap_progress(response.data, email, uid, sb, background_tasks)
     

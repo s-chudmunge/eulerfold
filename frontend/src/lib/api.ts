@@ -86,8 +86,8 @@ export interface ProgressUpdate {
 }
 
 export const roadmapsAPI = {
-    getMyRoadmaps: async (): Promise<RoadmapMe[]> => {
-        const response = await api.get('/roadmaps/me');
+    getMyRoadmaps: async (limit: number = 5, offset: number = 0): Promise<RoadmapMe[]> => {
+        const response = await api.get(`/roadmaps/me?limit=${limit}&offset=${offset}`);
         return response.data;
     },
     getRoadmapById: async (id: number): Promise<RoadmapMe> => {

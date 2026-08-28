@@ -94,6 +94,11 @@ export default function DashboardPage() {
     const [deleting, setDeleting] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     
+    // Server Pagination State
+    const [offset, setOffset] = useState(0);
+    const [hasMore, setHasMore] = useState(false);
+    const [loadingMore, setLoadingMore] = useState(false);
+    
     // Onboarding
     const [showOnboarding, setShowOnboarding] = useState(false);
 
@@ -132,8 +137,11 @@ export default function DashboardPage() {
 
                 if (!isMounted) return;
 
-                const myRoadmaps = await roadmapsAPI.getMyRoadmaps();
-                if (isMounted) setRoadmaps(myRoadmaps);
+                const myRoadmaps = await roadmapsAPI.getMyRoadmaps(5, 0);
+                if (isMounted) {
+                    setRoadmaps(myRoadmaps);
+                    setHasMore(myRoadmaps.length === 5);
+                }
 
             } catch (err: any) {
                 if (isMounted) setError(err.message);
@@ -144,6 +152,22 @@ export default function DashboardPage() {
         loadData();
         return () => { isMounted = false; };
     }, [authUser]);
+
+    const handleLoadOlder = async () => {
+        if (loadingMore) return;
+        setLoadingMore(true);
+        try {
+            const nextOffset = offset + 5;
+            const moreRoadmaps = await roadmapsAPI.getMyRoadmaps(5, nextOffset);
+            setRoadmaps(prev => [...prev, ...moreRoadmaps]);
+            setOffset(nextOffset);
+            setHasMore(moreRoadmaps.length === 5);
+        } catch (err: any) {
+            setError(err.message);
+        } finally {
+            setLoadingMore(false);
+        }
+    };
 
     const handleDeleteRoadmap = async (id: number) => {
         setDeleting(true);
@@ -276,91 +300,104 @@ export default function DashboardPage() {
                                         ))}
                                     </>
                                 ) : roadmaps.length > 0 ? (
-                                    roadmaps.map((r) => (
-                                        <div key={r.id} className={`group flex flex-col justify-between bg-transparent border border-border hover:border-accent/50 rounded-lg p-4 transition-colors ${r.status === 'archived' || r.status === 'quit' ? 'opacity-60' : ''}`}>
-                                            <div>
-                                                <div className="flex flex-wrap items-center gap-2 mb-3">
-                                                    {r.is_public && (
-                                                        <div className="flex items-center px-1.5 py-0.5 rounded bg-blue-500/10 border border-blue-500/20">
-                                                            <span className="inconsolata-ui text-[9px] font-bold text-blue-600 uppercase tracking-tighter">Public</span>
-                                                        </div>
-                                                    )}
-                                                    {r.cloned_from && (
-                                                        <div className="flex items-center px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/20">
-                                                            <span className="inconsolata-ui text-[9px] font-bold text-amber-600 uppercase tracking-tighter">Cloned</span>
-                                                        </div>
-                                                    )}
-                                                    {getModelPill(r.model)}
-                                                    {r.status && r.status !== 'active' && (
-                                                        <div className={`flex items-center px-1.5 py-0.5 rounded border ${
-                                                            r.status === 'completed' ? 'bg-teal-500/10 border-teal-500/20 text-teal-600' :
-                                                            r.status === 'archived' ? 'bg-zinc-500/10 border-zinc-500/20 text-zinc-500' :
-                                                            r.status === 'quit' ? 'bg-red-500/10 border-red-500/20 text-red-500' :
-                                                            'bg-amber-500/10 border-amber-500/20 text-amber-600'
-                                                        }`}>
-                                                            <span className="inconsolata-ui text-[9px] font-bold uppercase tracking-tighter">{r.status.replace('_', ' ')}</span>
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                                <Link href={r.model === 'manual-build' ? `/project/${r.slug || r.id}` : `/roadmap/${r.slug || r.id}`} className="hover:opacity-70 transition-opacity block mb-2">
-                                                    <h3 className="font-inter text-[16px] font-bold text-text-heading leading-tight tracking-tight line-clamp-2">
-                                                        {r.title}
-                                                    </h3>
-                                                </Link>
-                                            </div>
-
-                                            <div className="mt-4 pt-4 border-t border-border/40 flex items-center justify-between">
-                                                <div className="flex items-center gap-2">
-                                                    <div className="w-full max-w-[60px] h-1.5 bg-background border border-border rounded-full overflow-hidden">
-                                                        <div className="h-full bg-accent transition-all" style={{ width: `${r.progress?.percent || 0}%` }} />
+                                    <>
+                                        {roadmaps.map((r) => (
+                                            <div key={r.id} className={`group flex flex-col justify-between bg-transparent border border-border hover:border-accent/50 rounded-lg p-4 transition-colors ${r.status === 'archived' || r.status === 'quit' ? 'opacity-60' : ''}`}>
+                                                <div>
+                                                    <div className="flex flex-wrap items-center gap-2 mb-3">
+                                                        {r.is_public && (
+                                                            <div className="flex items-center px-1.5 py-0.5 rounded bg-blue-500/10 border border-blue-500/20">
+                                                                <span className="inconsolata-ui text-[9px] font-bold text-blue-600 uppercase tracking-tighter">Public</span>
+                                                            </div>
+                                                        )}
+                                                        {r.cloned_from && (
+                                                            <div className="flex items-center px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/20">
+                                                                <span className="inconsolata-ui text-[9px] font-bold text-amber-600 uppercase tracking-tighter">Cloned</span>
+                                                            </div>
+                                                        )}
+                                                        {getModelPill(r.model)}
+                                                        {r.status && r.status !== 'active' && (
+                                                            <div className={`flex items-center px-1.5 py-0.5 rounded border ${
+                                                                r.status === 'completed' ? 'bg-teal-500/10 border-teal-500/20 text-teal-600' :
+                                                                r.status === 'archived' ? 'bg-zinc-500/10 border-zinc-500/20 text-zinc-500' :
+                                                                r.status === 'quit' ? 'bg-red-500/10 border-red-500/20 text-red-500' :
+                                                                'bg-amber-500/10 border-amber-500/20 text-amber-600'
+                                                            }`}>
+                                                                <span className="inconsolata-ui text-[9px] font-bold uppercase tracking-tighter">{r.status.replace('_', ' ')}</span>
+                                                            </div>
+                                                        )}
                                                     </div>
-                                                    <span className="text-[11px] font-bold text-text-heading inconsolata-ui">{r.progress?.percent || 0}%</span>
-                                                </div>
 
-                                                <div className="flex items-center gap-1.5">
-                                                    {r.status === 'active' && (
-                                                        <button 
-                                                            onClick={() => handleUpdateStatus(r.id, 'archived')}
-                                                            className="p-1.5 text-text-muted hover:text-text-heading hover:bg-background rounded-md transition-all"
-                                                            title="Archive Roadmap"
-                                                        >
-                                                            <Archive className="w-3.5 h-3.5" />
-                                                        </button>
-                                                    )}
-                                                    
-                                                    {r.status === 'archived' && (
-                                                        <button 
-                                                            onClick={() => handleUpdateStatus(r.id, 'active')}
-                                                            className="p-1.5 text-text-muted hover:text-text-heading hover:bg-background rounded-md transition-all"
-                                                            title="Re-activate Roadmap"
-                                                        >
-                                                            <TrendingUp className="w-3.5 h-3.5" />
-                                                        </button>
-                                                    )}
-
-                                                    <button 
-                                                        onClick={() => setDeleteConfirm(r.id)}
-                                                        className="p-1.5 text-text-muted hover:text-red-500 hover:bg-red-500/10 rounded-md transition-all"
-                                                        title="Delete Roadmap"
-                                                    >
-                                                        <Trash2 className="w-3.5 h-3.5" />
-                                                    </button>
-
-                                                    <Link
-                                                        href={r.model === 'manual-build' ? `/project/${r.slug || r.id}/build/1` : `/roadmap/${r.slug || r.id}/learn`}
-                                                        className={`px-4 py-1.5 rounded-lg text-[10px] font-bold tracking-wide transition-all ml-1 ${
-                                                            r.status === 'archived' || r.status === 'quit' 
-                                                            ? 'bg-background border border-border text-text-muted hover:text-text-heading ' 
-                                                            : 'bg-accent text-white hover:bg-teal-700 '
-                                                        }`}
-                                                    >
-                                                        {r.model === 'manual-build' ? 'Workspace' : ((r.progress?.percent || 0) > 0 ? 'Resume' : 'Start')}
+                                                    <Link href={r.model === 'manual-build' ? `/project/${r.slug || r.id}` : `/roadmap/${r.slug || r.id}`} className="hover:opacity-70 transition-opacity block mb-2">
+                                                        <h3 className="font-inter text-[16px] font-bold text-text-heading leading-tight tracking-tight line-clamp-2">
+                                                            {r.title}
+                                                        </h3>
                                                     </Link>
                                                 </div>
+
+                                                <div className="mt-4 pt-4 border-t border-border/40 flex items-center justify-between">
+                                                    <div className="flex items-center gap-2">
+                                                        <div className="w-full max-w-[60px] h-1.5 bg-background border border-border rounded-full overflow-hidden">
+                                                            <div className="h-full bg-accent transition-all" style={{ width: `${r.progress?.percent || 0}%` }} />
+                                                        </div>
+                                                        <span className="text-[11px] font-bold text-text-heading inconsolata-ui">{r.progress?.percent || 0}%</span>
+                                                    </div>
+
+                                                    <div className="flex items-center gap-1.5">
+                                                        {r.status === 'active' && (
+                                                            <button 
+                                                                onClick={() => handleUpdateStatus(r.id, 'archived')}
+                                                                className="p-1.5 text-text-muted hover:text-text-heading hover:bg-background rounded-md transition-all"
+                                                                title="Archive Roadmap"
+                                                            >
+                                                                <Archive className="w-3.5 h-3.5" />
+                                                            </button>
+                                                        )}
+                                                        
+                                                        {r.status === 'archived' && (
+                                                            <button 
+                                                                onClick={() => handleUpdateStatus(r.id, 'active')}
+                                                                className="p-1.5 text-text-muted hover:text-text-heading hover:bg-background rounded-md transition-all"
+                                                                title="Re-activate Roadmap"
+                                                            >
+                                                                <TrendingUp className="w-3.5 h-3.5" />
+                                                            </button>
+                                                        )}
+
+                                                        <button 
+                                                            onClick={() => setDeleteConfirm(r.id)}
+                                                            className="p-1.5 text-text-muted hover:text-red-500 hover:bg-red-500/10 rounded-md transition-all"
+                                                            title="Delete Roadmap"
+                                                        >
+                                                            <Trash2 className="w-3.5 h-3.5" />
+                                                        </button>
+
+                                                        <Link
+                                                            href={r.model === 'manual-build' ? `/project/${r.slug || r.id}/build/1` : `/roadmap/${r.slug || r.id}/learn`}
+                                                            className={`px-4 py-1.5 rounded-md text-[10px] font-bold tracking-wide transition-all ml-1 ${
+                                                                r.status === 'archived' || r.status === 'quit' 
+                                                                ? 'bg-background border border-border text-text-muted hover:text-text-heading ' 
+                                                                : 'bg-accent text-white hover:bg-teal-700 '
+                                                            }`}
+                                                        >
+                                                            {r.model === 'manual-build' ? 'Workspace' : ((r.progress?.percent || 0) > 0 ? 'Resume' : 'Start')}
+                                                        </Link>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                    ))
+                                        ))}
+                                        {hasMore && (
+                                            <div className="col-span-full mt-4 flex justify-center">
+                                                <button
+                                                    onClick={handleLoadOlder}
+                                                    disabled={loadingMore}
+                                                    className="px-6 py-2 bg-sidebar border border-border rounded-md text-text-muted hover:text-text-heading text-[12px] font-bold tracking-wide transition-colors disabled:opacity-50"
+                                                >
+                                                    {loadingMore ? 'Loading...' : 'Load Older'}
+                                                </button>
+                                            </div>
+                                        )}
+                                    </>
                                 ) : (
                                     <div className="col-span-full py-12 text-center bg-sidebar/30 border border-dashed border-border rounded-lg">
                                         <p className="manrope-body text-[14px] text-text-muted font-medium italic">No courses yet. Time to start one? 🫠</p>
