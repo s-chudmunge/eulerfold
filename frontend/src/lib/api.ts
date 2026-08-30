@@ -727,11 +727,30 @@ export const practiceAPI = {
         const response = await api.get(`/practice/session/${sessionId}/progress`);
         return response.data;
     },
-    generateMCQSession: async (payload: { roadmap_id?: number, subtopic_id?: string, topic_name: string, subject: string, week_number: number, num_questions: number }): Promise<MCQSessionRead> => {
+    generateMCQSession: async (payload: { 
+        roadmap_id?: number, 
+        subtopic_id?: string, 
+        topic_name: string, 
+        topics?: string[],
+        module_title?: string,
+        learner_context?: string,
+        subject: string, 
+        week_number: number, 
+        num_questions: number 
+    }): Promise<MCQSessionRead> => {
         const response = await api.post('/practice/mcq/generate', payload);
         return response.data;
     },
-    saveExternalMCQSession: async (payload: { roadmap_id?: number, subtopic_id?: string, topic_name: string, subject: string, week_number: number, questions: any[] }): Promise<MCQSessionRead> => {
+    saveExternalMCQSession: async (payload: { 
+        roadmap_id?: number, 
+        subtopic_id?: string, 
+        topic_name: string, 
+        topics?: string[],
+        module_title?: string,
+        subject: string, 
+        week_number: number, 
+        questions: any[] 
+    }): Promise<MCQSessionRead> => {
         const response = await api.post('/practice/mcq/save-external', payload);
         return response.data;
     },

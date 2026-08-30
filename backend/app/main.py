@@ -96,7 +96,7 @@ from app.routers.generators import job as gen_job
 from app.routers.generators import syllabus as gen_syllabus
 from app.routers.generators import gaps as gen_gaps
 from app.routers.generators import quiz as gen_quiz
-from app.routers import health, roadmaps, auth, explore, coins, profiles, sessions, leaderboard, payments, discussions, planner, tts, research_lab, interactions, ai_usage, dashboard, misc, certificates, diagnostics
+from app.routers import health, roadmaps, auth, explore, coins, profiles, sessions, leaderboard, payments, discussions, planner, tts, research_lab, interactions, ai_usage, dashboard, misc, certificates, diagnostics, practice
 from app.routers import submissions as submissions_router
 from app.core.config import settings
 
@@ -197,6 +197,7 @@ app.include_router(submissions_router.router)
 app.include_router(explore.router)
 app.include_router(coins.router)
 app.include_router(profiles.router)
+app.include_router(practice.router)
 
 app.include_router(certificates.router, prefix="/certificates", tags=["certificates"])
 

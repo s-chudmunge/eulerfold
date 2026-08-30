@@ -394,6 +394,9 @@ class MCQSessionCreate(BaseModel):
     roadmap_id: Optional[int] = None
     subtopic_id: Optional[uuid.UUID] = None
     topic_name: str
+    topics: Optional[List[str]] = None
+    module_title: Optional[str] = None
+    learner_context: Optional[str] = None
     subject: str
     week_number: int
     num_questions: int = Field(10, ge=10, le=20)
@@ -405,6 +408,8 @@ class MCQSessionSaveExternal(BaseModel):
     roadmap_id: Optional[int] = None
     subtopic_id: Optional[uuid.UUID] = None
     topic_name: str
+    topics: Optional[List[str]] = None
+    module_title: Optional[str] = None
     subject: str
     week_number: int
     questions: List[MCQQuestion]

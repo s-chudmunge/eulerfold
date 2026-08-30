@@ -319,6 +319,8 @@ Return ONLY a JSON array of objects. Each object must have:
                     roadmap_id: roadmapId,
                     subtopic_id: subtopicId,
                     topic_name: topicName,
+                    topics: moduleTopicsList,
+                    module_title: moduleTitle,
                     subject: subject,
                     week_number: weekNumber,
                     questions: parsedJSON
@@ -339,12 +341,13 @@ Return ONLY a JSON array of objects. Each object must have:
                     roadmap_id: roadmapId,
                     subtopic_id: subtopicId,
                     topic_name: topicName,
+                    topics: moduleTopicsList,
+                    module_title: moduleTitle,
+                    learner_context: learnerContext,
                     subject: subject,
                     week_number: weekNumber,
                     num_questions: questionCount
                 });
-                
-
             }
 
             setMcqSession(session);
@@ -591,9 +594,9 @@ Return ONLY a JSON array of objects. Each object must have:
                 <div className="absolute inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center p-6 text-center">
                     <div className="animate-in fade-in zoom-in duration-300 flex flex-col items-center">
                         <div className="mb-4">
-                                                    </div>
+                        </div>
                         <p className="appropriate-sans text-[11px] font-bold text-accent mb-4">
-                            Please give us a few seconds...crafting custom questions for {topicName}.
+                            Please give us a few seconds...crafting custom questions across all topics in {moduleTitle || `Module ${weekNumber}`}.
                         </p>
                     </div>
                 </div>
@@ -630,8 +633,8 @@ Return ONLY a JSON array of objects. Each object must have:
                             <div className="flex items-center gap-2.5">
                                 <div className="w-6 h-6 border border-border flex items-center justify-center text-sm">🧠</div>
                                 <div>
-                                    <h3 className="appropriate-sans text-xs font-bold text-text-heading tracking-tight uppercase">MCQ practice session</h3>
-                                    <p className="appropriate-sans text-[7px] font-bold text-text-muted uppercase tracking-widest">{subject.replace('DEVELOPEMENT', 'DEVELOPMENT')} / {topicName}</p>
+                                    <h3 className="appropriate-sans text-xs font-bold text-text-heading tracking-tight uppercase">Module MCQ Practice</h3>
+                                    <p className="appropriate-sans text-[7px] font-bold text-text-muted uppercase tracking-widest">{subject.replace('DEVELOPEMENT', 'DEVELOPMENT')} / {moduleTitle || topicName}</p>
                                 </div>
                             </div>
                             <button 
