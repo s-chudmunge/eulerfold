@@ -32,76 +32,169 @@ logger = logging.getLogger(__name__)
 
 # Trusted educational channels (lowercase for case-insensitive matching)
 TRUSTED_CHANNELS = frozenset([
-    # Universities & Institutes
-    "mit opencourseware", "stanford", "stanford online", "stanford computer science",
-    "harvard", "harvard university", "harvard cs50", "cs50",
-    "yale courses", "yalecourses", "nptel", "nptelhrd", "nptel-noc iitm",
-    "iit madras - bsc degree programme", "iit bombay july 2018", "iit roorkee",
-    "iit kharagpur july 2018", "cmu database group", "carnegie mellon university",
-    "uc berkeley", "berkeley riselab", "caltech", "caltechchannel",
-    "oxford mathematics", "university of oxford", "cornell university",
-    "princeton university", "university of michigan", "georgia tech",
-    "coursera", "edx", "the royal institution", "institute for advanced study",
-    "simons institute",
-    
-    # CS / Programming / Frontend / Backend
-    "freecodecamp.org", "computerphile", "the coding train", "traversy media",
-    "fireship", "tech with tim", "corey schafer", "programming with mosh",
-    "derek banas", "thenewboston", "caleb curry", "web dev simplified",
-    "kevin powell", "the net ninja", "academind", "hussein nasser",
-    "arjancodes", "mcoding", "william fiset", "back to back swe",
-    "clément mihailescu", "cs dojo", "techsith",
-    
-    # System Design / Cloud / DevOps
-    "bytebytego", "gaurav sen", "techworld with nana", "networkchuck", "kodekloud", 
-    "jordan has no life", "martin fowler", "aws training center",
-    
-    # Security / Cybersecurity
-    "john hammond", "david bombal", "ippsec", "liveoverflow",
-    
-    # Mobile (iOS/Android/Flutter)
-    "marcus ng", "resocoder", "filledstacks", "sean allen", "kilo loco",
-    
-    # Web3 / Blockchain
-    "dapp university", "eattheblocks", "patrick collins", "smart contract programmer",
-    
-    # Math / Science / Quantum
-    "3blue1brown", "numberphile", "khan academy", "professor leonard",
-    "the organic chemistry tutor", "dr. trefor bazett", "michael penn",
-    "zach star", "looking glass universe", "pbs space time", "veritasium",
-    "mathologer", "blackpenredpen", "patrickjmt", "professor dave explains",
-    "dr. physics a", "flammable maths", "qiskit",
-    
-    # ML / AI / Data Science
-    "andrej karpathy", "yannic kilcher", "two minute papers", "sentdex",
-    "statquest with josh starmer", "krish naik", "codebasics", "jeremy howard",
-    "lex fridman", "machine learning street talk", "ai explained",
-    
-    # Game Dev (Unity/Unreal)
-    "brackeys", "code monkey", "jason weimann", "sykoo", "gamedev.tv",
-    
-    # ECE / Hardware / Embedded / Robotics
-    "greatscott!", "ben eater", "eater", "dronebot workshop", "explainingcomputers",
-    
-    # Design (UI/UX)
-    "designcourse", "flux academy", "malewicz", "charliemarietv",
-    
-    # Business / Finance / Product Management
-    "y combinator", "aswath damodaran", "the plain bagel", "how money works", "a16z",
-    
-    # Indian & Global Exams (JEE, NEET, UPSC, GATE, CAT)
-    "physics wallah - alakh pandey", "unacademy jee", "vedantu jee", "byju's", 
-    "vision ias", "drishti ias", "gate smashers", "made easy",
-    
-    # Productivity / Career
-    "ali abdaal", "thomas frank",
-    
-    # Advanced AI / Systems / CS Foundational
-    "deeplearning.ai", "siraj raval", "data school", "ritvikmath",
-    "aleksa gordić - the ai epiphany", "umar jamil", "serrano.academy",
-    "steve brunton", "welch labs", "devops toolkit", "neetcode",
-    "abdul bari", "jenny's lectures cs it", "reducible", "jacob sorber",
-    "low level learning", "fasterthanlime", "computerscience"
+    "3blue1brown", "5 minutes engineering", "abdul bari",
+    "academind", "advanced maths", "advanced physics",
+    "ae5x", "ahq associates", "ai study hub",
+    "aikido security", "akshay saini", "alan beary",
+    "alex hyett", "algorithm avenue", "algorithms live!",
+    "ali hajimiri (academy)", "all about electronics", "all electronics channel",
+    "all your tech ai", "allen institute for ai", "amazon web services",
+    "amlan das", "andrej karpathy", "andrey k",
+    "angel poon", "animations xplaned", "aqua security open source",
+    "arjancodes", "artem mishchenko", "arun tyagi",
+    "arvin ash", "arxiv insights", "ask leo!",
+    "asr2020", "assemblyai", "atoms to materials",
+    "aws training center", "back to back swe", "badis ydri | quantum",
+    "beaufort tek", "behzad razavi (long kong)", "ben eater",
+    "ben langmead", "berkeley riselab", "beyond the big bang",
+    "bhadeshia123", "bhavani hazaru", "bindas physics",
+    "binod suman academy", "bio scholar", "biolumination ",
+    "biomechatronics lab", "blackpenredpen", "blaise pascual",
+    "boosty labs", "bozeman science", "brackeys",
+    "brian douglas", "bytebytego", "bytemonk",
+    "caleb curry", "caltech", "carnegie mellon university",
+    "chainlink", "chalana kariyawasam", "chandan physics",
+    "chem4432", "chemistnate", "chemistry untold",
+    "chicken puck's quantum computing tutorials", "chris alexiuk", "christopher okhravi",
+    "chung-sang ng", "classical mechanics", "cloud guru",
+    "cloudenthusiasts", "cmu database group", "cnslab iitm",
+    "codeai", "codebasics", "codelucky",
+    "codeopinion", "coderone", "codetav management",
+    "codevault", "codevolution", "codewrinkles",
+    "coding by shailja", "coding in flow", "computer&electronics",
+    "computerphile", "condensed matter cat", "confluent developer",
+    "content-academy", "corey schafer", "cornell university",
+    "corporate taleem", "coursejet", "coursera",
+    "craft & code club", "crashcourse", "creel",
+    "cs & it tutorials by vrushali 👩‍🎓", "cs dojo", "cs50",
+    "cybernetic systems and controls", "cyrill stachniss", "daily code buffer",
+    "dan fleisch", "danish mustafa ", "darrenongmath",
+    "darryl morrell", "data mozart", "databases a2z",
+    "databricks", "dave your tutor", "david bombal",
+    "david holcman", "david silver", "decomplexify",
+    "deep space declassified", "deeplearningai", "deeplizard",
+    "derek banas", "devaraj umapathi", "developers checkpoint",
+    "devops shack", "digikey", "digital signal processing",
+    "domain of science", "dorian mcintire", "dors coding school",
+    "dot physics", "douglas hundley", "dr. harish garg",
+    "dr. joshua paul steimel", "dr. physics a", "dr. shane ross",
+    "dr. trefor bazett", "dr.sonia dahiya", "duniya drift",
+    "dwbiadda videos", "ec academy", "ece by mvk",
+    "eduphile", "edureka!", "edx",
+    "eeknowhow", "eevblog", "eigenchris",
+    "ekeeda", "electric simplified", "electrical engineering authority",
+    "electroboom", "electronics with professor fiore", "ellipsis projects",
+    "emcapsulation", "empossible", "engineering funda",
+    "engineering with prof. kim", "engineering with utsav", "engrtutor",
+    "essence of reality", "evan thacker", "explorer",
+    "faculty of khan", "fastai", "felixtechtips",
+    "fermilab", "finematics", "firebase",
+    "flammable maths", "foe asu 2nd electrical 20", "for the allure of physics",
+    "frank wong", "franklychemistry", "freecodecamp.org",
+    "freelanceteach", "gate crackers", "gate smashers",
+    "gaurav sen", "georgia tech", "google cloud tech",
+    "google deepmind", "google techtalks", "gradphys with prof. kshetri",
+    "grant lathrom", "grasp engineering", "greenleyf",
+    "greg hogg", "grs_chem", "g‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ‎ ",
+    "hackerrank", "hallow teaches stuff", "hamscript",
+    "harvard", "harvard cs50", "harvard university",
+    "hello byte", "himanshu gaur", "hugging face",
+    "huggingface", "hussein", "hussein nasser",
+    "hydra", "hyperautomation labs", "iain explains signals, systems, and digital comms",
+    "ibm technology", "ictp", "ictp condensed matter and statistical physics",
+    "iit bombay", "iit kanpur-nptel", "iit kharagpur",
+    "iit madras - bsc degree programme", "iit roorkee", "iit roorkee july 2018",
+    "insights into mathematics", "institute for advanced study", "institute of astronomy, ku leuven (belgium)",
+    "intellectually curious podcast", "intermation", "inyima nicholas studio",
+    "ippsec", "isaac amornortey yowetu", "jacob sorber",
+    "jake wright", "james battat", "jaya krishna",
+    "jeff hanson", "jeffrey chasnov", "jenny's lectures cs it",
+    "jeremy howard", "john hammond", "john levine",
+    "josh miles", "josh's channel", "jsconf",
+    "kec ece acumen", "keso rupert", "kevin powell",
+    "khan academy", "khan academy india - english", "kimberly brehm",
+    "kit betts-masters", "knowbee", "kodekloud",
+    "kompile", "konstantinos anagnostopoulos", "kreatryx gate - ee, ece & in by unacademy",
+    "krish naik", "kudvenkat", "kurzgesagt – in a nutshell",
+    "lakhani stem tutorials", "lasseviren1", "leah4sci",
+    "leann faidley", "learn and grow", "learn life science",
+    "learncheme", "learnopencv", "lectures by walter lewin. they will make you ♥ physics.",
+    "leigh halliday", "leonard susskind", "less boring lectures",
+    "let's get rusty", "lively karthik", "liveoverflow",
+    "lseinjr1", "lucius fox", "luis serrano academy",
+    "mafarooqi", "mahmood ul haq", "maksym levinskyi",
+    "manocha academy", "marblescience", "mark rober",
+    "martin fowler", "martin kleppmann", "math at andrews university",
+    "math the beautiful", "math visualized", "mathemaddicts",
+    "mathematicalmonk", "mathmajor ", "mathologer",
+    "mathosy guru - rajiv patel", "maths partner", "matthew donahue",
+    "matthew salomone", "maurits haverkort", "maven silicon",
+    "mcoding", "megr438", "meikanda sivam",
+    "melissa maribel", "menneedtobeheard", "michael kitas",
+    "michael penn", "michel van biezen", "microsoft research",
+    "milan jovanović", "minutephysics", "mission physics",
+    "mit opencourseware", "mitcbmm", "mitk12videos",
+    "mrjakob", "mycodeschool", "neal wu",
+    "neetcode", "neso academy", "net ninja",
+    "networkchuck", "networking made easy by t s srinivas", "neuralnine",
+    "nextrie", "nick", "ninja nerd",
+    "nj wildberger", "node.js", "normalized nerd",
+    "nptel", "nptel iit kharagpur", "nptel-noc iitm",
+    "nptelhrd", "null labs", "numberphile",
+    "nutshell", "oktadev", "online darsgaah",
+    "organic chemistry with victor", "oxford mathematics", "oxford ml and physics seminars",
+    "oxylabs", "pankaj physics gulati", "parth g",
+    "patrick j", "patrickjmt", "pbs infinite series",
+    "pbs space time", "peetha academy ", "perimeter institute for theoretical physics",
+    "pganalyze", "philipp lackner", "photovoltaics explained",
+    "phys whiz", "physical chemistry", "physics almanac",
+    "physics online", "physics videos by eugene khutoryansky", "physics with andrés aragoneses",
+    "potentialg - csir net | gate | tifr physics", "pretty much physics", "princeton university",
+    "prof. van buren", "professor dave explains", "professor leonard",
+    "professor messer", "programming with mosh", "pytorch",
+    "qiskit", "quanta institute llp", "quanta magazine",
+    "quantum data analytics", "quick biochemistry basics", "rajeshmon v g",
+    "ravindra soni health & wellness", "reducible", "reumi's world",
+    "richard sutton", "ritvikmath", "sa7man",
+    "sam witteveen", "sanjay choudhary", "sanju physics ",
+    "sasthra", "scalenescott", "science abc",
+    "science simplified", "scienceclic english", "seamlessblend",
+    "sean allen", "seattle data guy", "sebastian lague",
+    "sebastian wild (lectures)", "sebpic", "seeker",
+    "seibert group (english)", "sentdex", "sergey frolov",
+    "shailza kant pandey", "shomu's biology", "simons institute",
+    "simplilearn", "simply explained", "simulationkart (formerly matlab school)",
+    "sky scholar", "socratica", "software with shawn",
+    "solid state physics in a nutshell", "space explainer", "spin electron",
+    "stanford", "stanford computer science", "stanford institute for theoretical physics",
+    "stanford online", "statquest with josh starmer", "statscast",
+    "stephane maarek", "steve brunton", "steven brunton",
+    "striver", "strong medicine", "students of chemistry",
+    "sunny classroom", "tableau", "take u forward",
+    "tantan", "teacher e", "tech by sensei kushagra",
+    "tech primers", "tech with nader", "tech with tim",
+    "techeducation 4u", "techpapers", "techsith",
+    "techworld with nana", "teddy smith", "thatmaththing",
+    "the cfs channel", "the cherno", "the coding capacitor",
+    "the efficient engineer", "the engineering mindset", "the explorer",
+    "the krusty lab", "the llm show", "the math sorcerer",
+    "the net ninja", "the organic chemistry tutor", "the world of science",
+    "thenewboston", "theoperatorlab", "thetestingacademy hindi",
+    "thomas simonini", "thoughts for your ram", "tikle's academy of maths",
+    "tmp chem", "tom rocks maths", "transcended study hub",
+    "traversy media", "troy amelotte", "tubingen machine learning",
+    "tutorialspoint", "twit tech podcast network", "tyler ai",
+    "uamath115", "uc berkeley", "udacity",
+    "uday", "university of michigan", "university of oxford",
+    "untangle, inc.", "valerio velardo - the sound of ai", "veritasium",
+    "virtual forge an onapsis company", "virtue physics classes", "vyom hans",
+    "web dev simplified", "wessam mesbah", "will fix on prod",
+    "william fiset", "william hoff", "williamfiset",
+    "wolfsound", "world of quantum", "wrath of math",
+    "xander gouws", "xraymancs", "xylyxylyx",
+    "yale courses", "yalecourses", "yannic kilcher",
+    "yoairfresh", "zeiss arivis", "zewail city opencourseware",
+    "zohaib hasan", "zoya (aspiring physicist)", "özhan özatay",
 ])
 
 # Words to ignore when computing title relevance
@@ -135,57 +228,50 @@ def _extract_keywords(text: str) -> set:
     return {w for w in words if w not in _STOPWORDS and len(w) > 1}
 
 
-def _compute_title_relevance(topic_title: str, video_title: str, video_description: str = "", subject_context: str = "") -> float:
-    """Compute keyword overlap ratio between the topic and video title + description with domain context check."""
-    topic_lower = topic_title.lower()
-    video_title_lower = video_title.lower()
-    video_text_lower = (video_title + " " + video_description).lower()
-
-    # Reject clear domain collisions (e.g. Terraform State Drift vs ML Data Drift, DSA Sliding Window vs ML Drift Sliding Window)
-    if any(k in topic_lower or k in subject_context.lower() for k in ["drift", "ml", "data", "streaming", "model", "pipeline"]):
-        if any(term in video_title_lower for term in ["terraform", "resistor", "color code", "leetcode", "data structure"]):
-            if not any(term in topic_lower for term in ["terraform", "resistor", "leetcode", "data structure"]):
-                return 0.0
-
+def _compute_title_relevance(topic_title: str, video_title: str, video_description: str = "", search_query: str = "") -> float:
+    """Compute keyword overlap ratio between the topic and video title + description in a fully domain-agnostic manner."""
     topic_words = _extract_keywords(topic_title)
     if not topic_words:
         return 0.0
 
     video_words = _extract_keywords(video_title)
+    if not video_words:
+        return 0.0
+
     description_words = _extract_keywords(video_description)
 
     title_overlap = len(topic_words & video_words)
     desc_overlap = len(topic_words & description_words)
 
-    title_ratio = title_overlap / len(topic_words)
-    desc_ratio = desc_overlap / len(topic_words)
+    forward_ratio = title_overlap / len(topic_words)
+    reverse_ratio = title_overlap / len(video_words)
 
-    base_relevance = max(title_ratio, desc_ratio * 0.7)
+    import math
+    if forward_ratio > 0 and reverse_ratio > 0:
+        bidirectional_score = math.sqrt(forward_ratio * reverse_ratio)
+    else:
+        bidirectional_score = 0.0
 
-    # Domain anchor check: if subject_context has specific domain terms, check for context alignment
-    if subject_context:
-        subject_words = _extract_keywords(subject_context)
-        subject_anchor_words = subject_words & {"drift", "streaming", "kafka", "flink", "mlops", "evidently", "arize", "whylabs", "monitoring", "pipeline", "model", "data"}
-        if subject_anchor_words:
-            video_all_words = video_words | description_words
-            # If zero subject anchor words matched and title overlap is partial (e.g., matching only 'scalable' or 'state management'), penalize
-            if not (subject_anchor_words & video_all_words) and title_ratio < 0.6:
-                base_relevance *= 0.3
+    # Description can boost an existing title match
+    desc_ratio = (desc_overlap / len(topic_words)) if topic_words else 0.0
+    if bidirectional_score > 0 and desc_ratio > 0:
+        desc_boost = desc_ratio * 0.25
+        base_relevance = min(1.0, bidirectional_score + desc_boost)
+    else:
+        base_relevance = bidirectional_score
 
     return base_relevance
 
 
-def _score_video(video: dict, topic_title: str, subject_context: str = "", preferred_channel: str = "") -> float:
+def _score_video(video: dict, topic_title: str, search_query: str = "", preferred_channel: str = "") -> float:
     """
-    Score a YouTube video for educational relevance.
+    Score a YouTube video for educational relevance in a domain-agnostic way.
     Returns -1.0 if the video should be excluded (duration or relevance gate).
-    When preferred_channel is set, videos from that channel get a bonus to
-    encourage consistent per-module learning from a single teacher.
     """
     duration_seconds = parse_iso8601_duration(video.get("contentDetails", {}).get("duration", ""))
 
-    # Duration gate: 8-60 minutes (480s to 3600s)
-    if duration_seconds < 480 or duration_seconds > 3600:
+    # Duration gate: minimum 5 minutes (300s), no upper bound
+    if duration_seconds < 300:
         return -1.0
 
     snippet = video.get("snippet", {})
@@ -193,27 +279,33 @@ def _score_video(video: dict, topic_title: str, subject_context: str = "", prefe
         topic_title, 
         snippet.get("title", ""), 
         snippet.get("description", ""), 
-        subject_context
+        search_query
     )
 
-    # Relevance gate: require at least 35% keyword overlap with topic title
-    if title_relevance < 0.35:
+    channel_name = snippet.get("channelTitle", "").lower()
+    is_trusted = channel_name in TRUSTED_CHANNELS
+
+    # Relevance gate:
+    # For trusted channels: require at least 15% overlap so lecture series (e.g. "CS50 Lecture 3") can match.
+    # For non-trusted channels: require at least 35% overlap to block clickbait and unrelated re-uploads.
+    min_relevance = 0.15 if is_trusted else 0.35
+    if title_relevance < min_relevance:
+        return -1.0
+
+    # Hard gate: only accept videos from trusted educational channels.
+    # A relevant video from a random channel is worth less than no video at all.
+    if not is_trusted:
         return -1.0
 
     view_count = int(video.get("statistics", {}).get("viewCount", "0"))
-    channel_name = snippet.get("channelTitle", "").lower()
 
-    # Composite score (max ~115 points with channel affinity)
-    relevance_score = title_relevance * 60                              # max 50
+    # Composite score (trusted channel is a prerequisite, not a bonus)
+    relevance_score = title_relevance * 70                             # max 70
     duration_score = min(duration_seconds / 3600, 1.0) * 15            # max 15
-    view_score = min(math.log10(max(view_count, 1)) / 7, 1.0) * 15    # max 25 (10M views = full)
-    channel_score = 10 if channel_name in TRUSTED_CHANNELS else 0       # max 10
+    view_score = min(math.log10(max(view_count, 1)) / 7, 1.0) * 10    # max 10
+    affinity_score = 15 if preferred_channel and channel_name == preferred_channel.lower() else 0
 
-    # Channel affinity bonus: prefer videos from the same channel within a module
-    # so the learner gets a consistent teaching style
-    affinity_score = 15 if preferred_channel and channel_name == preferred_channel.lower() else 0  # max 15
-
-    return relevance_score + duration_score + view_score + channel_score + affinity_score
+    return relevance_score + duration_score + view_score + affinity_score
 
 
 async def search_youtube_videos(
@@ -256,7 +348,7 @@ async def search_youtube_videos(
                             "match_curated_videos",
                             {
                                 "query_embedding": embedding_vector,
-                                "match_threshold": 0.92,
+                                "match_threshold": 0.80,
                                 "match_count": max_results
                             }
                         ).execute()
@@ -292,36 +384,63 @@ async def search_youtube_videos(
     ]
 
     async def execute_search(search_q: str) -> List[Dict[str, str]]:
-        # Enforce English technical content by filtering out common spam/non-english languages
+        import urllib.parse
         strict_search_q = f"{search_q} -telugu -hindi -tamil -marketing"
-        
-        search_url = "https://www.googleapis.com/youtube/v3/search"
-        search_params = {
-            "part": "snippet",
-            "q": strict_search_q,
-            "type": "video",
-            "maxResults": 25 if strict_official_sources else 15,
-            "key": settings.YOUTUBE_API_KEY,
-            "videoEmbeddable": "true",
-            "relevanceLanguage": "en",
-        }
-        async with httpx.AsyncClient(timeout=30.0) as client:
-            search_response = await client.get(search_url, params=search_params)
-            search_response.raise_for_status()
-            search_data = search_response.json()
-            if not search_data.get("items"):
-                return []
+        video_ids = []
 
-            video_ids = [item["id"]["videoId"] for item in search_data["items"]]
+        # 1. Try official YouTube Search API if available
+        if settings.YOUTUBE_API_KEY:
+            try:
+                search_url = "https://www.googleapis.com/youtube/v3/search"
+                search_params = {
+                    "part": "snippet",
+                    "q": strict_search_q,
+                    "type": "video",
+                    "maxResults": 25 if strict_official_sources else 15,
+                    "key": settings.YOUTUBE_API_KEY,
+                    "videoEmbeddable": "true",
+                    "relevanceLanguage": "en",
+                }
+                async with httpx.AsyncClient(timeout=10.0) as client:
+                    search_response = await client.get(search_url, params=search_params)
+                    if search_response.status_code == 200:
+                        search_data = search_response.json()
+                        video_ids = [item["id"]["videoId"] for item in search_data.get("items", [])]
+            except Exception as e:
+                logger.warning(f"YouTube Search API call failed ({e}), falling back to HTML scraper...")
+
+        # 2. Fallback to quota-free HTML search scraping if API failed or 429'd
+        if not video_ids:
+            try:
+                headers = {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                }
+                scrape_url = f"https://www.youtube.com/results?search_query={urllib.parse.quote(strict_search_q)}"
+                async with httpx.AsyncClient(timeout=10.0) as client:
+                    r = await client.get(scrape_url, headers=headers)
+                    if r.status_code == 200:
+                        video_ids = list(dict.fromkeys(re.findall(r'/watch\?v=([a-zA-Z0-9_-]{11})', r.text)))[:15]
+            except Exception as e:
+                logger.error(f"HTML scraper fallback failed for '{strict_search_q}': {e}")
+
+        if not video_ids:
+            return []
+
+        # 3. Bulk fetch metadata via /videos?id= (costs only 1 quota unit, practically unlimited)
+        try:
             videos_url = "https://www.googleapis.com/youtube/v3/videos"
             videos_params = {
                 "part": "contentDetails,snippet,statistics",
-                "id": ",".join(video_ids),
+                "id": ",".join(video_ids[:20]),
                 "key": settings.YOUTUBE_API_KEY,
             }
-            videos_response = await client.get(videos_url, params=videos_params)
-            videos_response.raise_for_status()
-            return videos_response.json().get("items", [])
+            async with httpx.AsyncClient(timeout=15.0) as client:
+                videos_response = await client.get(videos_url, params=videos_params)
+                videos_response.raise_for_status()
+                return videos_response.json().get("items", [])
+        except Exception as e:
+            logger.error(f"Failed to fetch video details for IDs: {e}")
+            return []
 
     def filter_and_score(items: list, require_official: bool, use_scoring: bool):
         valid = []
@@ -333,12 +452,12 @@ async def search_youtube_videos(
                 continue
 
             if use_scoring:
-                score = _score_video(item, topic_title, subject_context, preferred_channel)
+                score = _score_video(item, topic_title, query, preferred_channel)
                 if score >= 0:
                     valid.append((score, item))
             else:
                 duration_seconds = parse_iso8601_duration(item.get("contentDetails", {}).get("duration", ""))
-                if 480 <= duration_seconds <= 3600:
+                if duration_seconds >= 300:
                     valid.append((0, item))
         return valid
 

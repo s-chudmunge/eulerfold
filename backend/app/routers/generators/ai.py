@@ -377,52 +377,61 @@ async def generate_roadmap(
             context_str += f"\n\n{roadmap_create.diagnostic_prompt_context}"
     
         prompt = f"""
-    You are a technical lead.
-    Generate a rigorous technical learning course for the subject: "{roadmap_create.subject}".
-    The learner's specific goal is: "{roadmap_create.goal}".
-    {context_str}
-    Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
-    
-    **Rules:**
-    1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "The Complete Guide to Number Theory", "Fundamentals of React Hooks"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Course". Do NOT include the time duration in the title. and Do NOT use "mastery" in the title.
-    2. **SEO-Friendly Description:** The "description" must be a single, punchy, search-engine-friendly sentence similar to the title. Do NOT use long paragraphs like "This intensive intensive X-week course is designed for...".
-    3. **Technical Rigor:** Focus on depth and verifiable technical skills. Avoid introductory fluff.
-    4. **Logical Progression:** Structure the path into modules that build upon each other logically.
-    5. **Strict Duration Mapping:** You MUST strictly limit the total number of modules to align with the requested duration. If the user asks for '{roadmap_create.time_value} {roadmap_create.time_unit}' (e.g., '1 weeks'), you must generate exactly {roadmap_create.time_value} module(s). DO NOT generate a 3 or 4 module course if the user only asked for 1 week.
-    6. **Specific Topics:** Each module must have 3-5 specific topics. Use industry-standard technical terms.
-    7. **Practical Outcomes:** For each module, include a "proof_of_work_instructions" object that details a realistic technical task the user must solve to demonstrate mastery.
-    8. **Applied Mastery:** Ensure each module leads to a specific competency string starting with "By the end of this module you will be able to...".
-    9. **Output JSON ONLY** matching this schema:
+You are a master educator and curriculum designer. Your job is to build a structured learning course that genuinely teaches a beginner.
+
+Subject: "{roadmap_create.subject}"
+Learner's goal: "{roadmap_create.goal}"
+{context_str}
+Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
+
+**Pedagogical Principles (MUST follow):**
+1. **Teach, don't list.** Every topic must be a genuine teachable unit — something a student can sit down and learn from a video or tutorial. NOT a label like "Advanced Concepts" or "Deep Dive". Ask: "Can I find a 10-minute YouTube video explaining exactly this?" If yes, it's a good topic. If no, split it further.
+2. **Build up from zero.** Structure modules in a strict dependency order. Earlier modules must not assume knowledge that comes later. A beginner reading module 1 should be able to follow it without googling anything from module 2+.
+3. **One concept per topic.** Each topic title must name ONE specific, focused concept (e.g., "How Backpropagation Computes Gradients", not "Backprop and Optimization"). Broad topic titles produce useless YouTube searches.
+4. **Practical outcomes.** Every module ends with a concrete task the learner must build or do — not a reflection exercise.
+5. **No fluff modules.** Do not create a "Introduction to the Course" or "What We'll Learn" module. Every module must teach real content.
+
+**Formatting Rules:**
+6. **Engaging Title:** The "title" must be catchy and natural. Do NOT use dry formats like "Intensive 4-Week X Mastery Course". Do NOT include the time duration in the title. Do NOT use "mastery".
+7. **SEO-Friendly Description:** One punchy sentence. Not a paragraph.
+8. **Strict Duration Mapping:** Generate exactly {roadmap_create.time_value} module(s) for a '{roadmap_create.time_value} {roadmap_create.time_unit}' course.
+9. **Topics per module:** 4-5 focused topics per module.
+10. **Output JSON ONLY** matching this schema:
+   {{
+     "title": "string",
+     "description": "string",
+     "modules": [
        {{
          "title": "string",
-         "description": "A single, search engine friendly line describing the course (max 1 sentence).",
-         "modules": [
+         "outcome": "string starting with: By the end of this module you will be able to...",
+         "timeline": "string",
+         "workspace_type": "code|research|design",
+         "proof_of_work_instructions": {{
+            "what_to_build": "string (Max 1 line, concrete and specific)",
+            "what_counts_as_evidence": "string (Max 1 line, specific and verifiable)",
+            "eval_criteria": ["string", "string"]
+         }},
+         "recommended_resources": [
            {{
-             "title": "string",
-             "outcome": "string",
-             "timeline": "string",
-             "workspace_type": "code|research|design",
-             "proof_of_work_instructions": {{
-                "what_to_build": "string (Max 1 line, strictly concise)",
-                "what_counts_as_evidence": "string (Max 1 line, strictly concise)",
-                "eval_criteria": ["string (Short criterion)", "string (Short criterion)"]
-             }},
-             "optimal_search_query": "A targeted search query to find the best academic/technical resources for this module",
-             "topics": [
-                {{
-                  "title": "string",
-                  "youtube_search_query": "A precise search query to find a university lecture or in-depth technical video on this specific topic (e.g., 'MIT linear algebra eigenvalues lecture')",
-                  "subtopics": [ {{ "title": "string" }} ]
-                }}
-             ]
+             "title": "string (A specific TEXT-BASED reading resource: official documentation, interactive guide, technical blog post, or university lecture notes PDF. STRICTLY NO VIDEOS, NO YOUTUBE CHANNELS, NO PLAYLISTS. Good: 'MDN Web Docs: JavaScript Closures', 'Real Python: Decorators Tutorial', 'GeeksforGeeks: Dynamic Programming Patterns', 'Jay Alammar: The Illustrated Transformer', 'PostgreSQL Docs: Index Types', 'Stanford CS229 Lecture Notes: Linear Regression PDF'. Bad: '3Blue1Brown playlist', 'Andrej Karpathy video', 'YouTube tutorial')",
+             "search_query": "string (A precise search query to find this exact article, documentation, or PDF online, e.g. 'MDN JavaScript closures guide', 'Real Python decorators tutorial article', 'Jay Alammar Illustrated Transformer blog', 'GeeksforGeeks dynamic programming patterns guide', 'Stanford CS229 linear regression lecture notes pdf')"
            }}
+         ],
+         "topics": [
+            {{
+              "title": "string (ONE focused concept, specific enough that a YouTube video exists for it exactly)",
+              "youtube_search_query": "A short, precise YouTube search query (max 6-8 words total) to find a SINGLE specific video — not a playlist, not a series. Format: [Channel Name] [exact concept] [lecture OR tutorial]. The channel name alone is NOT enough — you MUST include the specific concept. BAD: '3Blue1Brown neural networks playlist'. BAD: 'Andrej Karpathy neural networks zero to hero'. GOOD: '3Blue1Brown how neural networks learn'. GOOD: 'Andrej Karpathy tokenization byte pair encoding'. GOOD: 'Khan Academy gradient descent explained'.",
+              "subtopics": [ {{ "title": "string" }} ]
+            }}
          ]
        }}
-    10. **Workspace Selection:** 
-       - Set "workspace_type" to "code" for implementation, algorithms, or scripting tasks.
-       - Set "workspace_type" to "design" for system architecture, distributed systems, infrastructure, or UI/UX.
-       - Set "workspace_type" to "research" for theoretical science, mathematics, or technical writing.
-    """
+     ]
+   }}
+11. **Workspace Selection:**
+   - "code" for implementation, algorithms, scripting
+   - "design" for system architecture, distributed systems, infrastructure, UI/UX
+   - "research" for theoretical science, mathematics, technical writing
+"""
         try:
             model_to_use = roadmap_create.model or settings.DEFAULT_ROADMAP_MODEL
             yield json.dumps({"status": "Brainstorming the curriculum... 🧠"}) + "\n"
@@ -432,6 +441,7 @@ async def generate_roadmap(
     
             yield json.dumps({"status": "Hunting down the best video tutorials... 🎥"}) + "\n"
         # 2. Add IDs and YouTube Videos
+            used_video_ids = set()  # Deduplication: track assigned videos across the entire roadmap
             for i, module in enumerate(roadmap_plan.get("modules", [])):
                 if not isinstance(module, dict): continue
                 module["id"] = f"module_{i+1}"
@@ -449,8 +459,19 @@ async def generate_roadmap(
                     if settings.YOUTUBE_API_KEY:
                         try:
                             search_query = topic.get("youtube_search_query") or f"{topic['title']}"
-                            results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(roadmap_create, 'strict_official_sources', False), subject_context=roadmap_plan.get("title", ""))
-                            if results:
+                            results = await search_youtube_videos(search_query, max_results=3, topic_title=topic['title'], strict_official_sources=getattr(roadmap_create, 'strict_official_sources', False), subject_context=roadmap_plan.get("title", ""))
+                            # Pick the first result that hasn't been used yet
+                            assigned = False
+                            for result in results:
+                                if result["video_id"] not in used_video_ids:
+                                    topic["youtube_video_id"] = result["video_id"]
+                                    topic["youtube_video_title"] = result["video_title"]
+                                    topic["duration"] = result["duration_minutes"]
+                                    used_video_ids.add(result["video_id"])
+                                    assigned = True
+                                    break
+                            # If all results were duplicates, use the first one anyway
+                            if not assigned and results:
                                 topic["youtube_video_id"] = results[0]["video_id"]
                                 topic["youtube_video_title"] = results[0]["video_title"]
                                 topic["duration"] = results[0]["duration_minutes"]
@@ -459,22 +480,51 @@ async def generate_roadmap(
                         except Exception as yt_err:
                             logger.error(f"YouTube enrichment failed for topic {topic['title']}: {yt_err}")
     
-                yield json.dumps({"status": "Gathering academic references... 📚"}) + "\n"
-        # DuckDuckGo Enrichment
-                search_query = module.get("optimal_search_query")
-                if search_query:
+                yield json.dumps({"status": "Gathering reading references... 📚"}) + "\n"
+        # Reading References Enrichment (Articles, Docs, PDFs — NO VIDEOS)
+                recommended = module.get("recommended_resources", [])
+                if recommended:
                     def fetch_ddg():
+                        found = []
                         try:
                             from ddgs import DDGS
                             with DDGS() as ddgs:
-                                return list(ddgs.text(search_query, max_results=3))
+                                for rec in recommended[:4]:  # Search up to 4 reading resources
+                                    # Handle both old string format and new object format
+                                    if isinstance(rec, dict):
+                                        search_q = rec.get("search_query", rec.get("title", ""))
+                                        display_title = rec.get("title", search_q)
+                                    else:
+                                        search_q = str(rec)
+                                        display_title = str(rec)
+                                    
+                                    # Strictly exclude YouTube and video platforms from reading references
+                                    clean_search_q = f"{search_q} -site:youtube.com -site:youtu.be -site:vimeo.com -site:tiktok.com -site:dailymotion.com"
+                                    results = list(ddgs.text(clean_search_q, max_results=3))
+                                    
+                                    valid_result = None
+                                    for res in results:
+                                        href = res.get("href", "").lower()
+                                        if not any(v in href for v in ["youtube.com", "youtu.be", "vimeo.com", "tiktok.com", "dailymotion.com"]):
+                                            valid_result = res
+                                            break
+
+                                    if valid_result:
+                                        res_url = valid_result["href"]
+                                        res_type = "pdf" if res_url.lower().endswith(".pdf") else "article"
+                                        found.append({
+                                            "title": display_title,
+                                            "url": res_url,
+                                            "type": res_type
+                                        })
                         except Exception as e:
-                            logger.error(f"DDG search failed for query {search_query}: {e}")
-                            return []
+                            logger.error(f"DDG search failed for recommended resources: {e}")
+                        return found
+                    
                     ddg_results = await asyncio.to_thread(fetch_ddg)
                     if ddg_results:
-                        logger.info(f"DuckDuckGo search successful for '{search_query}'. Found {len(ddg_results)} references.")
-                        module["resources"] = [{"title": r["title"], "url": r["href"], "type": "article"} for r in ddg_results]
+                        logger.info(f"Successfully mapped {len(ddg_results)} text reading references (articles/docs/PDFs).")
+                        module["resources"] = ddg_results
     
             # 3. Save to DB
             slug = await _generate_unique_slug(roadmap_plan["title"], email, sb)
