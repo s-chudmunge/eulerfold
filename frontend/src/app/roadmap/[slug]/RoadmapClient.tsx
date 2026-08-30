@@ -1115,6 +1115,8 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                 roadmapId={roadmap.id}
                                 subtopicId={selectedPracticeTopic.topic.uuid || ''}
                                 topicName={selectedPracticeTopic.topic.title || ''}
+                                topics={(roadmap.roadmap_plan?.modules?.[selectedPracticeTopic.moduleIndex]?.topics || []).map((t: any) => t.title || '')}
+                                moduleTitle={roadmap.roadmap_plan?.modules?.[selectedPracticeTopic.moduleIndex]?.title || ''}
                                 subject={roadmap.subject || roadmap.title || ''}
                                 weekNumber={selectedPracticeTopic.moduleIndex + 1}
                                 isPro={profile?.is_pro || false}

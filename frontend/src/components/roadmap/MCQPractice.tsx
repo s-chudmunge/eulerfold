@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { logAIUsage } from '@/lib/usageTracker';
 import { Loader, X, Trophy, Check, ArrowRight, ArrowLeft, Zap, Cloud, Key, Cpu } from 'lucide-react';
-import { practiceAPI, MCQSessionRead, MCQQuestion } from '@/lib/api';
+import { practiceAPI, authAPI, MCQSessionRead, MCQQuestion } from '@/lib/api';
 import Link from 'next/link';
 import TTSListenButton from '@/components/TTSListenButton';
 import { OpenRouterModal } from '@/components/landing/OpenRouterModal';
@@ -15,6 +15,8 @@ interface MCQPracticeProps {
     roadmapId?: number;
     subtopicId?: string;
     topicName: string;
+    topics?: string[]; // All topics in current module
+    moduleTitle?: string;
     subject: string;
     weekNumber: number;
     isPro: boolean;
@@ -28,6 +30,8 @@ export default function MCQPractice({
     roadmapId,
     subtopicId,
     topicName,
+    topics = [],
+    moduleTitle,
     subject,
     weekNumber,
     isPro,
@@ -39,6 +43,7 @@ export default function MCQPractice({
     const [mcqSession, setMcqSession] = useState<MCQSessionRead | null>(null);
     const [incompleteSession, setIncompleteSession] = useState<MCQSessionRead | null>(null);
     const [mcqHistory, setMcqHistory] = useState<MCQSessionRead[]>([]);
+    const [learnerProfile, setLearnerProfile] = useState<any | null>(null);
     const [currentMcqIdx, setCurrentMcqIdx] = useState(0);
     const [mcqAnswers, setMcqAnswers] = useState<number[]>([]);
     const [isGenerating, setIsGenerating] = useState(false);
@@ -64,7 +69,7 @@ export default function MCQPractice({
         setLocalAIModelName(localStorage.getItem('localAIModelName'));
     }, []);
 
-    // Check for incomplete sessions on load or subtopic change
+    // Check for incomplete sessions when modal or subtopic opens
     React.useEffect(() => {
         if (isPro && subtopicId) {
             practiceAPI.getIncompleteMCQSession(subtopicId)
@@ -72,13 +77,6 @@ export default function MCQPractice({
                     if (session) setIncompleteSession(session);
                 })
                 .catch(err => console.error('Error checking for incomplete MCQ:', err));
-            
-            // Fetch history
-            practiceAPI.getMCQHistory(subtopicId)
-                .then(history => {
-                    setMcqHistory(history);
-                })
-                .catch(err => console.error('Error fetching MCQ history:', err));
         }
     }, [isPro, subtopicId]);
 
@@ -106,13 +104,73 @@ export default function MCQPractice({
     const handleGenerate = async () => {
         if (!useOpenRouter && !useLocalAI && !isPro) return;
         setIsGenerating(true);
+
+        // Fetch learner profile & practice history on demand in parallel
+        let pastHistory: MCQSessionRead[] = [];
+        let profileData: any = null;
+        try {
+            const [historyRes, profileRes] = await Promise.allSettled([
+                practiceAPI.getAllMCQHistory(),
+                authAPI.getMe()
+            ]);
+            if (historyRes.status === 'fulfilled' && Array.isArray(historyRes.value)) {
+                pastHistory = historyRes.value;
+                setMcqHistory(pastHistory);
+            }
+            if (profileRes.status === 'fulfilled' && profileRes.value) {
+                profileData = profileRes.value;
+                setLearnerProfile(profileData);
+            }
+        } catch (fetchErr) {
+            console.debug('Optional learner context fetch skipped:', fetchErr);
+        }
+
+        // Build list of topics covered by the module
+        const moduleTopicsList = (topics && topics.length > 0)
+            ? topics
+            : [topicName];
+        const topicsStr = moduleTopicsList.map((t, idx) => `${idx + 1}. ${t}`).join('\n');
+
+        // Build context on learner past performance & top skills
+        let learnerContext = '';
+        if (pastHistory && pastHistory.length > 0) {
+            const completedAttempts = pastHistory.filter(h => h.status === 'completed' && h.score !== undefined);
+            const totalSetsSolved = completedAttempts.length;
+            
+            // Summarize recent attempts
+            const recentAttempts = completedAttempts.slice(0, 5).map(h => {
+                const pct = Math.round((h.score || 0) * 100);
+                return `- ${h.topic_name || 'Practice Set'}: Score ${pct}%`;
+            }).join('\n');
+
+            learnerContext += `\nLearner Practice History:
+- Total completed practice sets: ${totalSetsSolved}
+- Recent attempt overview:
+${recentAttempts || 'No previous attempts'}`;
+        }
+
+        if (profileData?.skills && Array.isArray(profileData.skills) && profileData.skills.length > 0) {
+            const topSkills = profileData.skills
+                .slice()
+                .sort((a: any, b: any) => (b.confidence_score || 0) - (a.confidence_score || 0))
+                .slice(0, 4)
+                .map((s: any) => `- ${s.name || s.canonical_skill_id}: ${s.tier || 'developing'} (${Math.round(s.confidence_score || 0)}% confidence, ${s.practice_score || 0} practice score)`)
+                .join('\n');
+
+            learnerContext += `\nLearner's Top Skills:
+${topSkills}`;
+        }
         
         const systemPrompt = `You are a subject matter expert in "${subject}".
-Generate ${questionCount} Multiple Choice Questions (MCQs) for a learner currently in Week ${weekNumber} studying the specific topic: "${topicName}".
+Generate ${questionCount} Multiple Choice Questions (MCQs) for a learner currently in Module/Week ${weekNumber}${moduleTitle ? ` ("${moduleTitle}")` : ''}.
 
+The questions MUST comprehensively cover and be distributed across ALL the following topics of this module:
+${topicsStr}
+${learnerContext ? `\nLearner Background Context (use this to tailor difficulty and cognitive challenge without referencing it explicitly in the questions):${learnerContext}\n` : ''}
 CRITICAL QUALITY STANDARDS:
+- Questions must be distributed across the module topics listed above, testing holistic understanding of this module.
 - Questions must be CONCEPTUAL and SITUATIONAL. Avoid simple recall or rote memorization.
-- Focus on application of principles and "what would happen if" scenarios.
+- Focus on application of principles, cross-topic connections, and "what would happen if" scenarios.
 - Each question must have exactly 4 options.
 - Only one option must be clearly correct.
 - Options should be plausible but distinct.

@@ -1207,6 +1207,8 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
                                         roadmapId={roadmap.id}
                                         subtopicId={currentTopic?.uuid || ''}
                                         topicName={currentTopic?.title || ''}
+                                        topics={(currentModule?.topics || []).map((t: any) => t.title || '')}
+                                        moduleTitle={currentModule?.title || ''}
                                         subject={roadmap.subject || roadmap.title || ''}
                                         weekNumber={currentModuleIndex + 1}
                                         isPro={profile?.is_pro || false}
