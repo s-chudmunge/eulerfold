@@ -419,16 +419,20 @@ Return ONLY this JSON structure:
             const decoder = new TextDecoder();
             
             let resultData = null;
+            let buffer = '';
             while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;
                 
-                const chunk = decoder.decode(value, { stream: true });
-                const lines = chunk.split('\n').filter(l => l.trim());
+                buffer += decoder.decode(value, { stream: true });
+                const lines = buffer.split('\n');
+                buffer = lines.pop() || '';
                 
                 for (const line of lines) {
+                    const trimmedLine = line.trim();
+                    if (!trimmedLine) continue;
                     try {
-                        const data = JSON.parse(line);
+                        const data = JSON.parse(trimmedLine);
                         if (data.error) throw new Error(data.error);
                         if (data.status) setDynamicLoadingMsg(data.status);
                         if (data.result) resultData = data.result;
@@ -436,8 +440,21 @@ Return ONLY this JSON structure:
                         if (e.message && e.message.includes("AI Engine Error")) {
                             throw e;
                         }
-                        console.error("Failed to parse chunk", line);
+                        console.error("Failed to parse chunk", trimmedLine);
                     }
+                }
+            }
+            
+            // Check remaining buffer if any
+            if (buffer.trim()) {
+                try {
+                    const data = JSON.parse(buffer.trim());
+                    if (data.error) throw new Error(data.error);
+                    if (data.status) setDynamicLoadingMsg(data.status);
+                    if (data.result) resultData = data.result;
+                } catch (e: any) {
+                    if (e.message && e.message.includes("AI Engine Error")) throw e;
+                    console.error("Failed to parse remaining buffer chunk", buffer);
                 }
             }
             
