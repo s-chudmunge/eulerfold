@@ -26,7 +26,8 @@ interface RoadmapDisplayProps {
   onOpenHomework?: (moduleNumber: number, moduleTitle: string, instructions: string) => void;
   externalSubmissions?: any[];
   onViewSubmissionResult?: (submission: any) => void;
-  }
+  hideHeader?: boolean;
+}
 
   const RoadmapDisplay: React.FC<RoadmapDisplayProps> = ({ 
   roadmapData, 

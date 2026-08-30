@@ -548,10 +548,12 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
             {/* Header */}
             <header className="inconsolata-ui border-b border-border bg-header h-[48px] shrink-0 z-50">
                 <div className="w-full px-4 md:px-6 flex h-full items-center justify-between">
-                    <div className="flex items-center gap-2 md:gap-4">
+                    <div className="flex items-center gap-2 md:gap-3">
                         <button 
                             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                            className="p-2 -ml-2 lg:hidden text-text-muted hover:text-text-heading transition-colors"
+                            className="p-2 -ml-2 text-text-muted hover:text-text-heading transition-colors"
+                            aria-label="Toggle sidebar"
+                            title="Toggle Sidebar"
                         >
                             {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                         </button>
@@ -577,67 +579,21 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                         )}
 
                         {isOwner && roadmap && !roadmap.is_public && !roadmap.cloned_from && (
-                            <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-600 text-[9px] font-bold tracking-wide ml-3">
+                            <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-600 text-[9px] font-bold tracking-wide ml-2">
                                 <Lock className="w-3 h-3" />
                                 <span className="hidden sm:inline">Private</span>
                             </div>
                         )}
                     </div>
 
-                    <div className="flex items-center gap-2 md:gap-4">
+                    <div className="flex items-center gap-2">
                         <ThemeToggle />
-                        {isAuthenticated ? (
-                            (isOwner || roadmap.is_cloned) ? (
-                                <button 
-                                    onClick={handleContinueLearning}
-                                    disabled={saving}
-                                    className="whitespace-nowrap rounded-lg bg-background border border-border px-4 md:px-5 py-1.5 text-text-heading text-[10px] md:text-[12px] font-bold hover:bg-callout-bg transition-opacity flex items-center gap-2 disabled:opacity-50"
-                                >
-                                    <ArrowRight className="w-3.5 h-3.5" /> <span>Continue</span>
-                                </button>
-                            ) : (
-                                <button 
-                                    onClick={handleClone}
-                                    disabled={saving}
-                                    className="whitespace-nowrap rounded-lg bg-[var(--text-heading)] px-4 md:px-5 py-1.5 text-[var(--bg-main)] text-[10px] md:text-[12px] font-bold hover:opacity-90 transition-opacity flex items-center gap-2 disabled:opacity-50"
-                                >
-                                    <Copy className="w-3.5 h-3.5" /> <span className="hidden sm:inline">{saving ? 'Cloning...' : 'Clone to Dashboard'}</span>
-                                    <span className="sm:hidden">{saving ? '...' : 'Clone'}</span>
-                                </button>
-                            )
-                        ) : (
-                            <button
-                                onClick={handleSignIn}
-                                className="text-[11px] font-bold text-text-primary hover:text-accent transition-colors flex items-center gap-1.5 tracking-wide"
-                            >
-                                <LogIn className="w-3.5 h-3.5" /> Sign In
-                            </button>
-                        )}
-
-                        {isOwner && !roadmap.is_public && !roadmap.cloned_from && (
-                            <button 
-                                onClick={() => handleUpdateVisibility({ is_public: true })}
-                                disabled={saving}
-                                className="whitespace-nowrap rounded-lg bg-teal-700/5 border border-teal-700/20 px-3 md:px-5 py-1.5 text-teal-700 text-[10px] md:text-[12px] font-bold hover:bg-teal-700/10 transition-colors flex items-center gap-2 disabled:opacity-50"
-                            >
-                                <Globe className="w-3.5 h-3.5" /> <span className="hidden sm:inline">Make Public</span>
-                                <span className="sm:hidden">Public</span>
-                            </button>
-                        )}
-
-                        {(roadmap.is_public || isOwner) && (
-                            <ShareMenu 
-                                title={`Check out this course: ${roadmap.title}`}
-                                text={`I'm learning ${roadmap.title} on EulerFold. Join me!`}
-                                url={`https://www.eulerfold.com/roadmap/${roadmap.slug || roadmap.id}`}
-                                triggerClassName="whitespace-nowrap rounded-lg bg-callout-bg border border-border px-4 md:px-5 py-1.5 text-text-heading text-[10px] md:text-[12px] font-bold hover:bg-[var(--border)] transition-opacity flex items-center gap-2"
-                            />
-                        )}
 
                         <div className="relative">
                             <button 
                                 onClick={() => setShowActions(!showActions)}
-                                className="p-2 hover:bg-callout-bg rounded-full transition-colors text-text-muted"
+                                className="p-2 hover:bg-callout-bg rounded-md transition-colors text-text-muted hover:text-text-heading border border-transparent hover:border-border"
+                                title="More actions"
                             >
                                 <MoreVertical className="w-4 h-4" />
                             </button>
@@ -645,64 +601,77 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                             {showActions && (
                                 <>
                                     <div className="fixed inset-0 z-40" onClick={() => setShowActions(false)}></div>
-                                    <div className="absolute right-0 mt-2 w-48 bg-background border border-border rounded-lg shadow-2xl z-50 overflow-hidden animate-in zoom-in-95 duration-100 origin-top-right">
-                                        {isOwner ? (
-                                            <>
-                                                {/* Extend Roadmap for Pro Users */}
-                                                {isPro && (roadmap.progress?.completed_topics || 0) >= (roadmap.progress?.total_topics || 1) && (roadmap.extension_count || 0) < 5 && (
+                                    <div className="absolute right-0 mt-2 w-52 bg-background border border-border rounded-md shadow-2xl z-50 overflow-hidden animate-in zoom-in-95 duration-100 origin-top-right">
+                                        <div className="py-1">
+                                            {isAuthenticated ? (
+                                                (isOwner || roadmap.is_cloned) ? (
                                                     <button 
                                                         onClick={() => {
-                                                            setShowExtendModal(true);
-                                                            setShowActions(false);
-                                                        }}
-                                                        className="w-full px-4 py-3 text-left flex items-center gap-3 transition-colors border-b border-border hover:bg-emerald-500/5 group/ext"
-                                                    >
-                                                        <Plus className="w-4 h-4 text-emerald-500" />
-                                                        <div className="flex flex-col">
-                                                            <span className="inconsolata-ui text-[12px] font-bold text-text-heading tracking-wide group-hover/ext:text-emerald-600">
-                                                                Extend Roadmap
-                                                            </span>
-                                                            <span className="text-[9px] text-emerald-600/60 font-bold uppercase tracking-widest">Pro Feature</span>
-                                                        </div>
-                                                    </button>
-                                                )}
-                                                
-                                                {/* Only allow Make Public if it's NOT already public AND NOT a clone */}
-                                                {!roadmap.is_public && !roadmap.cloned_from && (
-                                                    <button 
-                                                        onClick={() => {
-                                                            handleUpdateVisibility({ is_public: true });
+                                                            handleContinueLearning();
                                                             setShowActions(false);
                                                         }}
                                                         disabled={saving}
-                                                        className="w-full px-4 py-3 text-left flex items-center gap-3 transition-colors border-b border-border hover:bg-callout-bg"
+                                                        className="w-full px-4 py-2.5 text-left flex items-center gap-3 transition-colors hover:bg-callout-bg text-text-heading font-medium text-[12px] disabled:opacity-50"
                                                     >
-                                                        <Globe className="w-4 h-4" />
-                                                        <span className="inconsolata-ui text-[12px] font-bold text-text-heading  tracking-wide">
-                                                            Make Public
-                                                        </span>
+                                                        <ArrowRight className="w-4 h-4 text-accent" />
+                                                        <span>Continue Learning</span>
                                                     </button>
-                                                )}
-                                            </>
-                                        ) : (
-                                            <div className="flex flex-col">
-                                                {!roadmap.is_cloned && (
+                                                ) : (
                                                     <button 
                                                         onClick={() => {
                                                             handleClone();
                                                             setShowActions(false);
                                                         }}
                                                         disabled={saving}
-                                                        className="w-full px-4 py-3 text-left hover:bg-callout-bg flex items-center gap-3 transition-colors disabled:opacity-50"
+                                                        className="w-full px-4 py-2.5 text-left flex items-center gap-3 transition-colors hover:bg-callout-bg text-text-heading font-medium text-[12px] disabled:opacity-50"
                                                     >
-                                                        <Copy className="w-4 h-4" />
-                                                        <span className="inconsolata-ui text-[12px] font-bold text-text-heading  tracking-wide">
-                                                            {saving ? 'Cloning...' : 'Clone Roadmap'}
-                                                        </span>
+                                                        <Copy className="w-4 h-4 text-accent" />
+                                                        <span>{saving ? 'Cloning...' : 'Clone to Dashboard'}</span>
                                                     </button>
-                                                )}
-                                            </div>
-                                        )}
+                                                )
+                                            ) : (
+                                                <button
+                                                    onClick={() => {
+                                                        handleSignIn();
+                                                        setShowActions(false);
+                                                    }}
+                                                    className="w-full px-4 py-2.5 text-left flex items-center gap-3 transition-colors hover:bg-callout-bg text-text-heading font-medium text-[12px]"
+                                                >
+                                                    <LogIn className="w-4 h-4 text-accent" />
+                                                    <span>Sign In</span>
+                                                </button>
+                                            )}
+
+                                            {isOwner && !roadmap.is_public && !roadmap.cloned_from && (
+                                                <button 
+                                                    onClick={() => {
+                                                        handleUpdateVisibility({ is_public: true });
+                                                        setShowActions(false);
+                                                    }}
+                                                    disabled={saving}
+                                                    className="w-full px-4 py-2.5 text-left flex items-center gap-3 transition-colors hover:bg-callout-bg text-teal-700 font-medium text-[12px] disabled:opacity-50 border-t border-border"
+                                                >
+                                                    <Globe className="w-4 h-4" />
+                                                    <span>Make Public</span>
+                                                </button>
+                                            )}
+
+                                            {isOwner && isPro && (roadmap.progress?.completed_topics || 0) >= (roadmap.progress?.total_topics || 1) && (roadmap.extension_count || 0) < 5 && (
+                                                <button 
+                                                    onClick={() => {
+                                                        setShowExtendModal(true);
+                                                        setShowActions(false);
+                                                    }}
+                                                    className="w-full px-4 py-2.5 text-left flex items-center gap-3 transition-colors hover:bg-emerald-500/5 text-emerald-600 font-medium text-[12px] border-t border-border"
+                                                >
+                                                    <Plus className="w-4 h-4 text-emerald-500" />
+                                                    <div className="flex flex-col">
+                                                        <span>Extend Roadmap</span>
+                                                        <span className="text-[9px] text-emerald-600/60 font-bold uppercase">Pro Feature</span>
+                                                    </div>
+                                                </button>
+                                            )}
+                                        </div>
                                     </div>
                                 </>
                             )}
@@ -768,24 +737,6 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
 
                 <main className="flex-1 min-w-0 h-full overflow-y-auto no-scrollbar">
                     <div className="max-w-[900px] mx-auto px-8 py-6">
-                        {isOwner && !roadmap.is_public && !roadmap.cloned_from && (
-                            <div className="mb-6 p-2.5 px-4 bg-sidebar/40 border border-border rounded-lg flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 animate-in fade-in">
-                                <div className="flex items-center gap-2">
-                                    <Globe className="w-3.5 h-3.5 text-text-muted shrink-0" />
-                                    <p className="text-[11px] text-text-muted font-medium">
-                                        <span className="text-text-heading font-bold">Share your knowledge:</span> Make your course public to let others clone it and learn from your journey.
-                                    </p>
-                                </div>
-                                <button 
-                                    onClick={() => handleUpdateVisibility({ is_public: true })}
-                                    disabled={saving}
-                                    className="shrink-0 px-3 py-1 bg-background border border-border text-text-heading font-bold text-[10px] rounded hover:border-accent hover:text-accent transition-colors disabled:opacity-50"
-                                >
-                                    {saving ? 'Saving...' : 'Make Public'}
-                                </button>
-                            </div>
-                        )}
-                        
                         {showLogs ? (
                             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                                 <div className="flex items-center justify-between mb-8 pb-4 border-b border-border">
@@ -893,16 +844,19 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                     createdDate={roadmap.created_at}
                                     isOwner={isOwner}
                                     isCloned={roadmap.is_cloned}
+                                    isPublic={roadmap.is_public}
                                     isAuthenticated={isAuthenticated}
                                     saving={saving}
                                     onStartLearning={() => handleContinueLearning()}
                                     onClone={() => {
                                         handleClone();
                                     }}
+                                    onMakePublic={() => handleUpdateVisibility({ is_public: true })}
                                 />
-                                <div className="mt-8 mb-12">
+                                <div className="mt-8 mb-12" id="course-content">
                                     <RoadmapDisplay 
                                     roadmapData={roadmap} 
+                                    hideHeader={true}
                                     initialFormData={{
                                         subject: roadmap.subject || '',
                                         goal: roadmap.goal || '',

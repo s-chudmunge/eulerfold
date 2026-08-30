@@ -220,7 +220,8 @@ export default function DashboardPage() {
                     <div className="flex items-center gap-2 md:gap-4">
                         <button 
                             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                            className="p-2 -ml-2 lg:hidden text-text-muted hover:text-text-heading transition-colors"
+                            className="p-2 -ml-2 text-text-muted hover:text-text-heading transition-colors"
+                            aria-label="Toggle navigation menu"
                         >
                             {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
                         </button>

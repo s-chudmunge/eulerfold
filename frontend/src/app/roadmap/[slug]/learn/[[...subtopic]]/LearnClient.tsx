@@ -62,7 +62,7 @@ export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoa
     // Navigation & Progress State
     const [currentModuleIndex, setCurrentModuleIndex] = useState(initialRoadmap?.last_position?.mIdx || 0);
     const [currentTopicIndex, setCurrentTopicIndex] = useState(initialRoadmap?.last_position?.tIdx || 0);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [isSyllabusOpen, setIsSyllabusOpen] = useState(false);
     const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
     const [completedTopics, setCompletedTopics] = useState<Set<string>>(new Set());

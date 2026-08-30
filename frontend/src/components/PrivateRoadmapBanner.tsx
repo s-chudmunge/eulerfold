@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, BookOpen, Github, Mail, Loader2, Clock, Users, Calendar, Copy } from 'lucide-react';
+import { ArrowRight, BookOpen, Github, Mail, Loader2, Clock, Users, Calendar, Copy, Globe } from 'lucide-react';
 import { supabase } from '@/lib/supabase/client';
-import SocialShare from '@/components/SocialShare';
+import ShareMenu from '@/components/ShareMenu';
 
 export default function PrivateRoadmapBanner({ 
   title, 
@@ -17,10 +17,12 @@ export default function PrivateRoadmapBanner({
   createdDate,
   isOwner,
   isCloned,
+  isPublic,
   isAuthenticated,
   saving,
   onStartLearning,
-  onClone
+  onClone,
+  onMakePublic
 }: { 
   title: string; 
   slug?: string;
@@ -34,10 +36,12 @@ export default function PrivateRoadmapBanner({
   createdDate?: string;
   isOwner?: boolean;
   isCloned?: boolean;
+  isPublic?: boolean;
   isAuthenticated?: boolean;
   saving?: boolean;
   onStartLearning?: () => void;
   onClone?: () => void;
+  onMakePublic?: () => void;
 }) {
   const [loadingProvider, setLoadingProvider] = useState<'google' | 'github' | null>(null);
 
@@ -57,15 +61,15 @@ export default function PrivateRoadmapBanner({
   };
 
   return (
-    <div className="w-full relative overflow-hidden border-b border-border shadow-sm min-h-[400px] md:min-h-[500px] flex items-center">
+    <div className="w-full relative overflow-hidden border-b border-border shadow-sm flex items-center">
       
-      <div className="relative z-20 w-full max-w-7xl mx-auto px-6 md:px-12 py-16 flex flex-col items-start justify-center gap-6">
+      <div className="relative z-20 w-full max-w-7xl mx-auto px-6 md:px-12 py-8 md:py-10 flex flex-col items-start justify-center gap-4">
         
         {/* Title */}
         <h1 
-          className="font-inter font-bold text-text-heading tracking-tight leading-[1.1] max-w-4xl"
+          className="font-inter font-bold text-text-heading tracking-tight leading-[1.15] max-w-4xl"
           style={{ 
-            fontSize: 'clamp(24px, 3vw, 40px)',
+            fontSize: 'clamp(24px, 2.5vw, 36px)',
             wordBreak: 'break-word',
             margin: 0
           }}
@@ -75,13 +79,13 @@ export default function PrivateRoadmapBanner({
 
         {/* Description */}
         {description && (
-          <p className="manrope-body text-[15px] md:text-[17px] text-text-muted leading-relaxed max-w-3xl font-medium">
+          <p className="manrope-body text-[14px] md:text-[15px] text-text-muted leading-relaxed max-w-3xl font-medium">
             {description}
           </p>
         )}
 
         {/* Metadata Row */}
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-3 mt-2 text-text-muted text-[12px] md:text-[13px] font-medium">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-text-muted text-[12px] md:text-[13px] font-medium">
           {(authorName || username) && (
             <div className="flex items-center gap-2">
               <span className="opacity-60 uppercase tracking-wider text-[10px] font-bold">Created By</span>
@@ -128,13 +132,13 @@ export default function PrivateRoadmapBanner({
         </div>
 
         {/* Actions Area */}
-        <div className="flex flex-wrap items-center gap-4 mt-6">
+        <div className="flex flex-wrap items-center gap-3 mt-2">
           {isAuthenticated ? (
             (isOwner || isCloned) ? (
               <button 
                 onClick={onStartLearning}
                 disabled={saving}
-                className="inline-flex items-center justify-center bg-accent text-white hover:bg-teal-700 px-8 py-3.5 rounded-lg text-[14px] md:text-[15px] font-bold transition-all shadow-md font-inter disabled:opacity-50"
+                className="inline-flex items-center justify-center bg-accent text-white hover:bg-teal-700 px-6 py-2.5 rounded-md text-[13px] md:text-[14px] font-bold transition-all shadow-sm font-inter disabled:opacity-50"
               >
                 <ArrowRight className="w-4 h-4 mr-2" /> Continue Learning
               </button>
@@ -142,7 +146,7 @@ export default function PrivateRoadmapBanner({
               <button 
                 onClick={onClone}
                 disabled={saving}
-                className="inline-flex items-center justify-center bg-text-heading text-background hover:opacity-90 px-8 py-3.5 rounded-lg text-[14px] md:text-[15px] font-bold transition-all shadow-md font-inter disabled:opacity-50"
+                className="inline-flex items-center justify-center bg-text-heading text-background hover:opacity-90 px-6 py-2.5 rounded-md text-[13px] md:text-[14px] font-bold transition-all shadow-sm font-inter disabled:opacity-50"
               >
                 <Copy className="w-4 h-4 mr-2" /> {saving ? 'Adding to Dashboard...' : 'Start Learning'}
               </button>
@@ -154,7 +158,7 @@ export default function PrivateRoadmapBanner({
                   onClick={() => handleLogin('google')} 
                   disabled={loadingProvider !== null}
                   title="Sign in with Google"
-                  className="w-11 h-11 flex items-center justify-center bg-sidebar border border-border text-text-primary rounded-lg hover:bg-background transition-colors shadow-sm disabled:opacity-50"
+                  className="w-10 h-10 flex items-center justify-center bg-sidebar border border-border text-text-primary rounded-md hover:bg-background transition-colors shadow-sm disabled:opacity-50"
                 >
                   {loadingProvider === 'google' ? <Loader2 className="w-4 h-4 animate-spin" /> : (
                     <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
@@ -169,14 +173,14 @@ export default function PrivateRoadmapBanner({
                   onClick={() => handleLogin('github')} 
                   disabled={loadingProvider !== null}
                   title="Sign in with GitHub"
-                  className="w-11 h-11 flex items-center justify-center bg-sidebar border border-border text-text-primary rounded-lg hover:bg-background transition-colors shadow-sm disabled:opacity-50"
+                  className="w-10 h-10 flex items-center justify-center bg-sidebar border border-border text-text-primary rounded-md hover:bg-background transition-colors shadow-sm disabled:opacity-50"
                 >
                   {loadingProvider === 'github' ? <Loader2 className="w-4 h-4 animate-spin" /> : <Github className="w-4 h-4" />}
                 </button>
                 <Link 
                   href={`/login?next=/roadmap/${slug}`} 
                   title="Sign in with Email"
-                  className="w-11 h-11 flex items-center justify-center bg-sidebar border border-border text-text-primary rounded-lg hover:bg-background transition-colors shadow-sm disabled:opacity-50"
+                  className="w-10 h-10 flex items-center justify-center bg-sidebar border border-border text-text-primary rounded-md hover:bg-background transition-colors shadow-sm disabled:opacity-50"
                 >
                   <Mail className="w-4 h-4" />
                 </Link>
@@ -185,22 +189,29 @@ export default function PrivateRoadmapBanner({
             </div>
           )}
 
-          <div className="hidden sm:block h-8 w-[1px] bg-border mx-2" />
-
           <a 
             href="#course-content"
-            className="inline-flex items-center justify-center gap-2 bg-sidebar hover:bg-background text-text-primary border border-border px-6 py-3.5 rounded-lg text-[13px] md:text-[14px] font-bold transition-all shadow-sm font-inter"
+            className="inline-flex items-center justify-center gap-2 bg-sidebar hover:bg-background text-text-primary border border-border px-5 py-2.5 rounded-md text-[13px] md:text-[14px] font-bold transition-all shadow-sm font-inter"
           >
             <BookOpen className="w-4 h-4" /> Curriculum
           </a>
 
-          <div className="flex items-center gap-3 ml-2">
-            <p className="inconsolata-ui text-[10px] font-bold text-text-muted uppercase tracking-widest">Share:</p>
-            <SocialShare 
-                title={title} 
-                text={`Check out this ${subject} course on EulerFold:`} 
-            />
-          </div>
+          {isOwner && !isPublic && !isCloned && onMakePublic && (
+            <button 
+              onClick={onMakePublic}
+              disabled={saving}
+              className="inline-flex items-center justify-center gap-2 bg-sidebar hover:bg-background text-text-primary border border-border px-4 py-2.5 rounded-md text-[13px] md:text-[14px] font-bold transition-all shadow-sm font-inter disabled:opacity-50"
+            >
+              <Globe className="w-4 h-4 text-text-muted" /> Make Public
+            </button>
+          )}
+
+          <ShareMenu 
+            title={`Check out this course: ${title}`}
+            text={`I'm learning ${title} on EulerFold. Join me!`}
+            url={`https://www.eulerfold.com/roadmap/${slug}`}
+            triggerClassName="inline-flex items-center justify-center gap-2 bg-sidebar hover:bg-background text-text-primary border border-border px-4 py-2.5 rounded-md text-[13px] md:text-[14px] font-bold transition-all shadow-sm font-inter"
+          />
         </div>
 
       </div>
