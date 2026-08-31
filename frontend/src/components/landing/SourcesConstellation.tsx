@@ -267,7 +267,7 @@ export default function SourcesConstellation() {
             transition={{ delay: 0.14 }}
             className="text-[14px] text-text-muted leading-relaxed max-w-xl mx-auto"
           >
-            We bring together lectures from top educators, models from frontier labs, research papers, technical blogs, and documentation into a structured path.
+            We bring together lectures from top educators, research papers, technical blogs, and documentation into a structured path using models from frontier labs.
           </motion.p>
         </div>
 

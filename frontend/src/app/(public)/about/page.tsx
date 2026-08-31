@@ -24,8 +24,8 @@ export default function AboutPage() {
             <h2 className="text-xl font-bold text-text-heading mb-3">Our Solution</h2>
             <p>
               EulerFold uses AI to organize technical information into clear, step-by-step paths. 
-              We provide tools to generate custom study plans, read simple summaries of complex 
-              research papers, and access a large archive of competitive exam papers.
+              We provide tools to build custom study plans, read first-principles breakdowns of complex 
+              research papers, and access an archive of competitive exam papers.
             </p>
           </section>
 
