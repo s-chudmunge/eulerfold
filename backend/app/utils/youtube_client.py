@@ -185,16 +185,24 @@ TRUSTED_CHANNELS = frozenset([
     "traversy media", "troy amelotte", "tubingen machine learning",
     "tutorialspoint", "twit tech podcast network", "tyler ai",
     "uamath115", "uc berkeley", "udacity",
-    "uday", "university of michigan", "university of oxford",
+    "uday", "umar jamil", "university of michigan", "university of oxford",
     "untangle, inc.", "valerio velardo - the sound of ai", "veritasium",
     "virtual forge an onapsis company", "virtue physics classes", "vyom hans",
-    "web dev simplified", "wessam mesbah", "will fix on prod",
+    "web dev simplified", "wessam mesbah", "weights & biases", "wandb", "will fix on prod",
     "william fiset", "william hoff", "williamfiset",
     "wolfsound", "world of quantum", "wrath of math",
     "xander gouws", "xraymancs", "xylyxylyx",
     "yale courses", "yalecourses", "yannic kilcher",
     "yoairfresh", "zeiss arivis", "zewail city opencourseware",
     "zohaib hasan", "zoya (aspiring physicist)", "özhan özatay",
+    "the ai epiphany", "aleksa gordić - the ai epiphany",
+    "deeplearning.ai", "trelis research",
+    "ai engineer", "ai engineer foundation", "ai engineer summit",
+    "stanford cs25", "stanford cs336",
+    "sky computing", "uc berkeley sky computing", "lmsys", "lmsys org",
+    "anyscale", "ray", "mlsys", "mlsys conference", "scale ai",
+    "sebastian raschka", "175b", "chris hayduk", "cohere",
+    "tri dao", "tim dettmers",
 ])
 
 # Words to ignore when computing title relevance
@@ -314,18 +322,24 @@ async def search_youtube_videos(
     topic_title: str = "",
     strict_official_sources: bool = False,
     subject_context: str = "",
-    preferred_channel: str = ""
+    preferred_channel: str = "",
+    exclude_video_ids: Optional[Set[str]] = None
 ) -> List[Dict[str, str]]:
     """
     Search YouTube and return the best matching educational videos.
     First checks the curated database using pgvector semantic search (Gemini embeddings).
-    If no rigorous match is found (>0.75 cosine similarity), falls back to dynamic YouTube API search.
+    If no rigorous match is found (>0.78 cosine similarity), falls back to dynamic YouTube API search.
     """
     from app.core.supabase_client import get_supabase_client
     import json
     
     # --- 1. THE CURATED DATABASE ENGINE (SUPABASE PGVECTOR) ---
-    search_target = topic_title if topic_title else query
+    if subject_context and topic_title:
+        search_target = f"{subject_context}: {topic_title}"
+    elif topic_title:
+        search_target = topic_title
+    else:
+        search_target = query
     if search_target and settings.GEMINI_API_KEY:
         try:
             # Generate Gemini embedding for semantic search
@@ -342,30 +356,36 @@ async def search_youtube_videos(
                     
                     if embedding_vector:
                         sb = get_supabase_client()
-                        # Strict 0.92 threshold ensures we don't accidentally serve 
-                        # 'First Law of Thermodynamics' when asking for 'Second Law'
                         rpc_response = sb.rpc(
                             "match_curated_videos",
                             {
                                 "query_embedding": embedding_vector,
                                 "match_threshold": 0.80,
-                                "match_count": max_results
+                                "match_count": max(max_results * 4, 10)
                             }
                         ).execute()
                         
                         matches = rpc_response.data
                         if matches:
-                            logger.info(f"Supabase pgvector match! '{search_target}' -> '{matches[0]['topic']}' ({matches[0]['similarity']:.2f})")
-                            return [
-                                {
-                                    "video_id": m["video_id"],
-                                    "video_title": m["clean_title"],
-                                    "channel_name": m["channel"],
-                                    "duration_minutes": m["duration_mins"]
-                                } for m in matches
+                            # Filter out already used video IDs so topics always get unique videos
+                            filtered_matches = [
+                                m for m in matches
+                                if not exclude_video_ids or m["video_id"] not in exclude_video_ids
                             ]
+                            if filtered_matches:
+                                logger.info(f"Supabase pgvector match! '{search_target}' -> '{filtered_matches[0]['topic']}' ({filtered_matches[0]['similarity']:.2f})")
+                                return [
+                                    {
+                                        "video_id": m["video_id"],
+                                        "video_title": m["clean_title"],
+                                        "channel_name": m["channel"],
+                                        "duration_minutes": m["duration_mins"]
+                                    } for m in filtered_matches[:max_results]
+                                ]
+                            else:
+                                logger.info(f"All {len(matches)} curated matches for '{search_target}' were already used in this roadmap. Falling back to dynamic search.")
                         else:
-                            logger.info(f"No curated match >= 0.92 for '{search_target}'. Falling back to dynamic YouTube search.")
+                            logger.info(f"No curated match >= 0.78 for '{search_target}'. Falling back to dynamic YouTube search.")
         except Exception as e:
             logger.error(f"Semantic search failed for '{search_target}', falling back to YouTube: {e}")
 
@@ -445,6 +465,9 @@ async def search_youtube_videos(
     def filter_and_score(items: list, require_official: bool, use_scoring: bool):
         valid = []
         for item in items:
+            if exclude_video_ids and item.get("id") in exclude_video_ids:
+                continue
+
             snippet = item.get("snippet", {})
             channel_name_lower = snippet.get("channelTitle", "").lower()
 

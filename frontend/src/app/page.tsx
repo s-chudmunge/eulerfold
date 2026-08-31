@@ -10,6 +10,7 @@ import HeroSection from '@/components/landing/HeroSection';
 
 import ProductEcosystem from '@/components/landing/ProductEcosystem';
 import GenerationSystems from '@/components/landing/GenerationSystems';
+import EarlyResearch from '@/components/landing/EarlyResearch';
 import LatestUpdates from '@/components/landing/LatestUpdates';
 
 export const revalidate = 3600;
@@ -71,6 +72,8 @@ export default async function LandingPage() {
         <GenerationSystems />
 
         <ProductEcosystem />
+        
+        <EarlyResearch />
         
         <LatestUpdates />
 

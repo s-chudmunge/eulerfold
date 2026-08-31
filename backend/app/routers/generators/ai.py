@@ -387,13 +387,13 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
 **Pedagogical Principles (MUST follow):**
 1. **Teach, don't list.** Every topic must be a genuine teachable unit — something a student can sit down and learn from a video or tutorial. NOT a label like "Advanced Concepts" or "Deep Dive". Ask: "Can I find a 10-minute YouTube video explaining exactly this?" If yes, it's a good topic. If no, split it further.
 2. **Build up from zero.** Structure modules in a strict dependency order. Earlier modules must not assume knowledge that comes later. A beginner reading module 1 should be able to follow it without googling anything from module 2+.
-3. **One concept per topic.** Each topic title must name ONE specific, focused concept (e.g., "How Backpropagation Computes Gradients", not "Backprop and Optimization"). Broad topic titles produce useless YouTube searches.
+3. **One concept per topic:** Each topic title must name ONE specific, focused concept cleanly as a natural chapter heading. Do NOT start topic titles with "How" or "How to". Broad topic titles produce useless YouTube searches.
 4. **Practical outcomes.** Every module ends with a concrete task the learner must build or do — not a reflection exercise.
 5. **No fluff modules.** Do not create a "Introduction to the Course" or "What We'll Learn" module. Every module must teach real content.
 
 **Formatting Rules:**
-6. **Engaging Title:** The "title" must be catchy and natural. Do NOT use dry formats like "Intensive 4-Week X Mastery Course". Do NOT include the time duration in the title. Do NOT use "mastery".
-7. **SEO-Friendly Description:** One punchy sentence. Not a paragraph.
+6. **Short, Clean Title:** The roadmap "title" must be concise and direct (3 to 6 words maximum). NEVER use dramatic colon subtitles (e.g. NEVER "Topic: From X to Y" or "Topic: The Engine Behind Z"). NEVER use marketing buzzwords like "Mastery", "High-Performance", "Lightning-Fast", "Chaos to Clarity", "Supercharged", or "Deep Dive". Do NOT include the time duration in the title.
+7. **SEO-Friendly Description:** One punchy, clear sentence. Not a paragraph.
 8. **Strict Duration Mapping:** Generate exactly {roadmap_create.time_value} module(s) for a '{roadmap_create.time_value} {roadmap_create.time_unit}' course.
 9. **Topics per module:** 4-5 focused topics per module.
 10. **Output JSON ONLY** matching this schema:
@@ -420,7 +420,7 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
          "topics": [
             {{
               "title": "string (ONE focused concept, specific enough that a YouTube video exists for it exactly)",
-              "youtube_search_query": "A short, precise YouTube search query (max 6-8 words total) to find a SINGLE specific video — not a playlist, not a series. Format: [Channel Name] [exact concept] [lecture OR tutorial]. The channel name alone is NOT enough — you MUST include the specific concept. BAD: '3Blue1Brown neural networks playlist'. BAD: 'Andrej Karpathy neural networks zero to hero'. GOOD: '3Blue1Brown how neural networks learn'. GOOD: 'Andrej Karpathy tokenization byte pair encoding'. GOOD: 'Khan Academy gradient descent explained'.",
+              "youtube_search_query": "A short, precise search query (4-7 words total) describing the specific technical concept (e.g., 'vLLM PagedAttention block tables and memory management', 'transformer multi head self attention lecture', 'KV cache autoregressive decoding optimization'). Do NOT guess or hallucinate creator channel names unless certain they created a dedicated video on this exact topic.",
               "subtopics": [ {{ "title": "string" }} ]
             }}
          ]
@@ -459,22 +459,22 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
                     if settings.YOUTUBE_API_KEY:
                         try:
                             search_query = topic.get("youtube_search_query") or f"{topic['title']}"
-                            results = await search_youtube_videos(search_query, max_results=3, topic_title=topic['title'], strict_official_sources=getattr(roadmap_create, 'strict_official_sources', False), subject_context=roadmap_plan.get("title", ""))
-                            # Pick the first result that hasn't been used yet
-                            assigned = False
+                            results = await search_youtube_videos(
+                                search_query,
+                                max_results=3,
+                                topic_title=topic['title'],
+                                strict_official_sources=getattr(roadmap_create, 'strict_official_sources', False),
+                                subject_context=roadmap_plan.get("title", ""),
+                                exclude_video_ids=used_video_ids
+                            )
+                            # Pick the highest-scoring candidate not yet used in this roadmap
                             for result in results:
                                 if result["video_id"] not in used_video_ids:
                                     topic["youtube_video_id"] = result["video_id"]
                                     topic["youtube_video_title"] = result["video_title"]
                                     topic["duration"] = result["duration_minutes"]
                                     used_video_ids.add(result["video_id"])
-                                    assigned = True
                                     break
-                            # If all results were duplicates, use the first one anyway
-                            if not assigned and results:
-                                topic["youtube_video_id"] = results[0]["video_id"]
-                                topic["youtube_video_title"] = results[0]["video_title"]
-                                topic["duration"] = results[0]["duration_minutes"]
                             # Throttle a bit
                             await asyncio.sleep(0.1)
                         except Exception as yt_err:

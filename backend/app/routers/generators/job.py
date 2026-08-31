@@ -396,10 +396,10 @@ Duration: {payload.time_value} {payload.time_unit}.
 {generation_strategy}
 
 **RULES:**
-1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "The Complete Guide to Data Engineering"). Do NOT use dry, robotic formats like "Intensive 4-Week X Course". Do NOT include the time duration in the title.
+1. **Short, Clean Title:** The "title" must be concise and direct (e.g., "Data Engineering Curriculum", "Full Stack Systems Guide"). Do NOT use dry, robotic formats like "Intensive 4-Week X Course". Do NOT include the time duration in the title.
 2. **Logical Progression:** Structure modules from foundational technical gaps to advanced implementation.
 2. **Technical Rigor:** Prioritize hard skills, tools, and theoretical knowledge required for the role.
-3. **Specific Topics:** Each module must have 3-5 specific topics. Avoid generic titles like "Introduction to X". Use industry-standard technical terms (e.g., "Memory-Mapped I/O" or "Asynchronous Event Loops").
+3. **Specific Topic Titles:** Each module must have 3-5 specific topics named cleanly as natural chapter headings. Do NOT start topic titles with "How", "How to", or "Understanding".
 4. **Practical Outcomes:** The `proof_of_work_instructions` must describe a realistic technical task or project that demonstrates competency in that module's specific skills.
 5. **Applied Knowledge:** Ensure the user learns not just what a tool is, but how to apply it to solve role-specific problems.
 6. **Conciseness:** Course description must be max 2 sentences. Each module 'outcome' must be max 1 sentence.
@@ -438,6 +438,7 @@ Duration: {payload.time_value} {payload.time_unit}.
         roadmap_plan = robust_json_loads(generated_text)
 
         # Enrichment logic (IDs, YouTube) - Shared with standard generator
+        used_video_ids = set()
         for i, module in enumerate(roadmap_plan.get("modules", [])):
             if not isinstance(module, dict): continue
             module["id"] = f"module_{i+1}"
@@ -455,11 +456,21 @@ Duration: {payload.time_value} {payload.time_unit}.
                     try:
                         clean_title = roadmap_plan['title'].replace("Job Decoded: ", "").split("@")[0].strip()
                         search_query = topic.get("youtube_search_query") or f"{topic['title']}"
-                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(payload, 'strict_official_sources', False), subject_context=roadmap_plan.get("title", ""))
-                        if results:
-                            topic["youtube_video_id"] = results[0]["video_id"]
-                            topic["youtube_video_title"] = results[0]["video_title"]
-                            topic["duration"] = results[0]["duration_minutes"]
+                        results = await search_youtube_videos(
+                            search_query,
+                            max_results=3,
+                            topic_title=topic['title'],
+                            strict_official_sources=getattr(payload, 'strict_official_sources', False),
+                            subject_context=roadmap_plan.get("title", ""),
+                            exclude_video_ids=used_video_ids
+                        )
+                        for result in results:
+                            if result["video_id"] not in used_video_ids:
+                                topic["youtube_video_id"] = result["video_id"]
+                                topic["youtube_video_title"] = result["video_title"]
+                                topic["duration"] = result["duration_minutes"]
+                                used_video_ids.add(result["video_id"])
+                                break
                         await asyncio.sleep(0.1)
                     except: pass
 

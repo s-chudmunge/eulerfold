@@ -375,10 +375,10 @@ Generate a {payload.time_value} {payload.time_unit} learning course that COMPLET
 Strictly focus the entire course on bridging the gap in their weak areas.
 
 **RULES:**
-1. **Engaging Title:** The "title" must be catchy, SEO-friendly, and natural (e.g., "Understanding Backpropagation", "Fundamentals of React Hooks"). Do NOT use dry, robotic formats like "Intensive 4-Week X Mastery Course". Do NOT include the time duration in the title. Do NOT use buzzwords like "Mastery", "High-Performance", "Bootcamp", or "Journey".
-2. **SEO-Friendly Description:** The "description" must be a single, punchy, search-engine-friendly sentence similar to the title.
+1. **Short, Clean Title:** The roadmap "title" must be concise and direct (3 to 6 words maximum). NEVER use dramatic colon subtitles (e.g. NEVER "Topic: From X to Y" or "Topic: The Engine Behind Z"). NEVER use marketing buzzwords like "Mastery", "High-Performance", "Lightning-Fast", "Chaos to Clarity", "Bootcamp", "Journey", or "Supercharged". Do NOT include the time duration in the title.
+2. **SEO-Friendly Description:** The "description" must be a single, punchy, clear sentence. Not a paragraph.
 2. **Technical Rigor:** Focus on depth and verifiable technical skills.
-3. **Specific Topics:** Each module must have 3-5 specific topics using industry-standard terms.
+3. **Specific Topic Titles:** Each module must have 3-5 specific topics named cleanly as natural chapter headings. Do NOT start topic titles with "How", "How to", or "Understanding".
 4. **Practical Outcomes:** The `proof_of_work_instructions` must describe a realistic technical task that demonstrates competency.
 5. **Conciseness:** Course description must be max 2 sentences. Each module 'outcome' must be max 1 sentence.
 6. **Output JSON ONLY** matching this schema:
@@ -415,6 +415,7 @@ Strictly focus the entire course on bridging the gap in their weak areas.
         roadmap_plan = robust_json_loads(generated_text)
 
         # Enrichment logic (IDs and YouTube)
+        used_video_ids = set()
         for i, module in enumerate(roadmap_plan.get("modules", [])):
             if not isinstance(module, dict): continue
             module["id"] = f"module_{i+1}"
@@ -432,11 +433,21 @@ Strictly focus the entire course on bridging the gap in their weak areas.
                 if settings.YOUTUBE_API_KEY:
                     try:
                         search_query = topic.get("youtube_search_query") or f"{roadmap_plan['title']} {topic['title']} lecture"
-                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(payload, 'strict_official_sources', False), subject_context=roadmap_plan.get("title", ""))
-                        if results:
-                            topic["youtube_video_id"] = results[0]["video_id"]
-                            topic["youtube_video_title"] = results[0]["video_title"]
-                            topic["duration"] = results[0]["duration_minutes"]
+                        results = await search_youtube_videos(
+                            search_query,
+                            max_results=3,
+                            topic_title=topic['title'],
+                            strict_official_sources=getattr(payload, 'strict_official_sources', False),
+                            subject_context=roadmap_plan.get("title", ""),
+                            exclude_video_ids=used_video_ids
+                        )
+                        for result in results:
+                            if result["video_id"] not in used_video_ids:
+                                topic["youtube_video_id"] = result["video_id"]
+                                topic["youtube_video_title"] = result["video_title"]
+                                topic["duration"] = result["duration_minutes"]
+                                used_video_ids.add(result["video_id"])
+                                break
                         await asyncio.sleep(0.1)
                     except Exception as yt_err:
                         logger.error(f"YouTube enrichment failed for topic {topic['title']}: {yt_err}")
