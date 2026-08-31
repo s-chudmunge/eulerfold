@@ -19,7 +19,7 @@ const products: Product[] = [
     id: 'architect', 
     title: "AI Architect",
     category: "Generation",
-    description: "Enter any subject to generate a curriculum with credible resources, videos, theory, and assessments.",
+    description: "Enter any subject to generate a structured roadmap with curated videos, theory, and assessments.",
     icon: Sparkles, 
     href: "/#hero-prompt-input"
   },
@@ -27,7 +27,7 @@ const products: Product[] = [
     id: 'job', 
     title: "Job Decoded",
     category: "Career",
-    description: "Paste a job description from LinkedIn or Indeed to extract required skills and turn them into a course.",
+    description: "Paste a job description from LinkedIn or Indeed to extract required skills and turn them into a targeted roadmap.",
     icon: Briefcase, 
     href: "/#hero-prompt-input"
   },
@@ -35,7 +35,7 @@ const products: Product[] = [
     id: 'url', 
     title: "Deconstruct URL",
     category: "Sources",
-    description: "Convert documentation pages, technical blogs, or GitHub repositories directly into an interactive curriculum.",
+    description: "Convert documentation pages, technical blogs, or GitHub repositories directly into a structured roadmap.",
     icon: Link2, 
     href: "/#hero-prompt-input"
   },
@@ -51,7 +51,7 @@ const products: Product[] = [
     id: 'gaps', 
     title: "Skill Gap Analyzer",
     category: "Diagnostic",
-    description: "Take a quick diagnostic quiz for your target role and generate a course tailored to your knowledge gaps.",
+    description: "Take a quick diagnostic quiz for your target role and generate a roadmap tailored to your knowledge gaps.",
     icon: Target, 
     href: "/#hero-prompt-input"
   },
@@ -75,7 +75,7 @@ const products: Product[] = [
     id: 'planner', 
     title: "Study Planner",
     category: "Workflow",
-    description: "Build daily study schedules from your active courses based on your available hours and target pace.",
+    description: "Build daily study schedules from your active roadmaps based on your available hours and target pace.",
     icon: Calendar, 
     href: "/planner"
   },
@@ -104,7 +104,7 @@ export default function ProductEcosystem() {
               transition={{ delay: 0.08 }}
               className="text-2xl md:text-[2.25rem] font-bold text-text-heading tracking-tight leading-[1.2] mb-4"
             >
-              Tools to deconstruct topics, build courses, and prove mastery.
+              Everything you need to learn on your own terms.
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 16 }}
@@ -113,7 +113,7 @@ export default function ProductEcosystem() {
               transition={{ delay: 0.14 }}
               className="text-[14px] text-text-muted leading-relaxed"
             >
-              Explore our specialized tools designed for deep technical learning and skill verification.
+              From syllabus imports to daily study schedules, build roadmaps that fit how you study.
             </motion.p>
           </div>
 

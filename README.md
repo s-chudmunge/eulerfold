@@ -10,46 +10,46 @@
   [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
   [![Supabase](https://img.shields.io/badge/Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)](https://supabase.com/)
 
-  [Generate Course](https://www.eulerfold.com/) · [Explore Courses](https://www.eulerfold.com/explore) · [Research Lab](https://www.eulerfold.com/research-lab) · [Planner](https://www.eulerfold.com/planner)
+  [Generate Roadmap](https://www.eulerfold.com/) · [Explore Roadmaps](https://www.eulerfold.com/explore) · [Research Decoded](https://www.eulerfold.com/research-decoded) · [Study Planner](https://www.eulerfold.com/planner)
 </div>
 
 ---
 
 ### What is EulerFold?
 
-Suppose you want to master a complex technical subject—say, distributed consensus, GPU kernel optimization, or async Python backend design. Traditional platforms present static video playlists. You watch videos passively, assume you understand the concepts, and then hit a wall when attempting to write real code.
+Suppose you want to learn a complex technical subject—say, distributed consensus, GPU kernel optimization, or modern LLM inference architectures. Traditional platforms present disconnected video playlists or surface-level tutorials. You watch passively, assume you understand the concepts, and hit a wall when attempting to write real code.
 
-EulerFold is a self-directed course generator and skill verification system. It turns your target subject or job description into a structured, multi-week curriculum, curates video lessons and web references, tests your understanding through diagnostic quizzes, and verifies your progress with AI-evaluated proof-of-work homework submissions.
+EulerFold is a technical roadmap aggregator and learning platform. It takes your target subject, current background, and realistic timeframe, and pulls together video lectures from top educators, research papers, technical blogs, and official documentation into a structured, step-by-step path. It pairs this with diagnostic exercises and AI-evaluated proof-of-work submissions to test your understanding.
 
 ---
 
 ### How it Works (The Pipeline)
 
-EulerFold breaks down learning into a 5-step loop:
+EulerFold organizes learning into a 5-step loop:
 
 ```
-[ User Input / Job Goal ]
+[ User Goal & Background ]
            │
            ▼
-[ 1. Skill Gap Assessment ] ── (10-minute diagnostic quiz & AI evaluation)
+[ 1. Diagnostic / Intent Input ] ── (Target topic, experience level & realistic timeline)
            │
            ▼
-[ 2. Course Generation ]    ── (Modules, topics, YouTube video matching & web reference fallback)
+[ 2. Roadmap Generation ]        ── (Curated pgvector semantic video matching, docs & web references)
            │
            ▼
-[ 3. Interactive Practice ] ── (MCQ sessions & topic-by-topic tracking)
+[ 3. Interactive Practice ]      ── (MCQ recall sessions & concept depth tracking)
            │
            ▼
-[ 4. Technical Evaluation ] ── (1-pass AI code/submission reviewer with cooldowns)
+[ 4. Technical Evaluation ]      ── (1-pass AI code/submission reviewer with cooldowns)
            │
            ▼
-[ 5. Verified Credentials ] ── (Calculated skill score + exportable PDF certificate with QR code)
+[ 5. Verified Credentials ]      ── (Calculated skill score + exportable PDF certificate with QR code)
 ```
 
-1. **Skill Gap Assessment**: Take a 10-minute diagnostic test. The AI evaluates your answer accuracy and decides whether to run a deeper follow-up diagnostic round or proceed directly to generating your tailored course.
-2. **Course Generation**: The backend builds a week-by-week curriculum. For each topic, it queries YouTube for tutorial videos (filtering by duration and title/description relevance) and falls back to an interactive web reference carousel when videos are unavailable.
+1. **Goal & Background Input**: Specify what you want to learn, your starting level, and a target timeframe.
+2. **Roadmap Generation**: The backend builds a week-by-week roadmap. For each topic, it performs pgvector semantic search against 1,800+ verified educational lectures (falling back to YouTube search filtered strictly to trusted channels), accompanied by documentation and paper references.
 3. **Interactive Practice**: Complete topic quizzes and practice sessions to test recall.
-4. **Proof-of-Work Homework**: Submit your code or written explanation for module assignments. A technical AI reviewer evaluates your submission in a single pass (2-4 lines of analytical feedback). Failed attempts trigger a 10-minute cooldown before retaking.
+4. **Proof-of-Work Homework**: Submit your code or written derivation for module assignments. A technical AI reviewer evaluates your submission in a single pass (2–4 lines of analytical feedback). Failed attempts enforce a 10-minute cooldown before retaking.
 5. **Skill Scoring**: Your overall score uses a fixed weighting formula:
    $$\text{Score} = 40\% \text{ (Homework Proof of Work)} + 30\% \text{ (Practice Score)} + 15\% \text{ (Topic Completion)} + 15\% \text{ (Concept Depth)}$$
 
@@ -57,21 +57,21 @@ EulerFold breaks down learning into a 5-step loop:
 
 ### Key Components
 
-- **[Skill Gap Analyzer](https://www.eulerfold.com/skill-gap-analyzer)**: Input a topic or job description to diagnose current knowledge gaps and generate a targeted course.
-- **[Explore Directory](https://www.eulerfold.com/explore)**: Browse and clone existing courses created by the community.
-- **[Learn Platform](https://www.eulerfold.com/dashboard)**: Topic workspace featuring video lessons, web reference carousels, transcripts, and progress tracking.
+- **[Roadmap Generator](https://www.eulerfold.com/#hero-prompt-input)**: Build custom roadmaps from text prompts, job descriptions, URLs, or syllabi.
+- **[Explore Directory](https://www.eulerfold.com/explore)**: Browse and clone existing community roadmaps across computer science, math, and engineering.
+- **[Learn Platform](https://www.eulerfold.com/dashboard)**: Topic workspace featuring verified lectures, interactive reference carousels, transcripts, and progress tracking.
 - **[Study Planner](https://www.eulerfold.com/planner)**: Schedule study tasks based on your weekly availability (Casual, Balanced, or Intense).
-- **[Research Lab](https://www.eulerfold.com/research-lab)**: Read technical research breakdowns and take quick recall quizzes on underlying mechanisms.
+- **[Research Decoded](https://www.eulerfold.com/research-decoded)**: Read first-principles breakdowns of foundation research papers (e.g. Attention, DeepSeek-R1).
 - **[Verified Credentials](https://www.eulerfold.com/account)**: Public profile displaying verified badges and downloadable PDF certificates with QR verification.
 
 ---
 
 ### Tech Stack
 
-- **Frontend**: Next.js (App Router), Tailwind CSS v4, Lucide Icons.
+- **Frontend**: Next.js (App Router), Tailwind CSS v4, Lucide Icons, Framer Motion.
 - **Backend**: FastAPI (Python 3.11+), Uvicorn, Pydantic v2.
-- **Database & Auth**: Supabase (PostgreSQL + Supabase Auth via Google Provider).
-- **AI Models**: Google Gemini & OpenRouter for diagnostic evaluation and proof-of-work grading.
+- **Database & Vector Search**: Supabase (PostgreSQL + `pgvector` embedding index + Supabase Auth).
+- **AI Models & Embeddings**: Google Gemini (`gemini-2.5-flash`, `gemini-embedding-2`), OpenRouter (BYOK), and WebGPU local browser inference.
 - **PDF Generation**: ReportLab engine for credential export.
 - **Email**: Resend for transactional alerts.
 
