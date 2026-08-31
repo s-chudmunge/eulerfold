@@ -739,3 +739,24 @@ body {
 .animate-infinite-scroll-reverse {
   animation: infinite-scroll-reverse 45s linear infinite;
 }
+
+@keyframes orbit-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes orbit-spin-reverse {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+@keyframes orbit-spin-clockwise {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes orbit-spin-counter {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+.animate-orbit       { animation: orbit-spin var(--orbit-duration, 20s) linear infinite; }
+.animate-orbit-ccw   { animation: orbit-spin var(--orbit-duration, 30s) linear infinite reverse; }
+.animate-counter-spin { animation: orbit-spin-reverse var(--orbit-duration, 20s) linear infinite; }
+.animate-counter-spin-ccw { animation: orbit-spin-reverse var(--orbit-duration, 30s) linear infinite reverse; }

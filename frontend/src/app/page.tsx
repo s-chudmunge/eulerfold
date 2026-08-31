@@ -10,6 +10,7 @@ import HeroSection from '@/components/landing/HeroSection';
 
 import ProductEcosystem from '@/components/landing/ProductEcosystem';
 import GenerationSystems from '@/components/landing/GenerationSystems';
+import SourcesConstellation from '@/components/landing/SourcesConstellation';
 import EarlyResearch from '@/components/landing/EarlyResearch';
 import LatestUpdates from '@/components/landing/LatestUpdates';
 
@@ -70,6 +71,8 @@ export default async function LandingPage() {
         <HeroSection />
 
         <GenerationSystems />
+
+        <SourcesConstellation />
 
         <ProductEcosystem />
         

@@ -35,13 +35,18 @@ export default function HeroSection() {
         <div className="max-w-3xl mx-auto w-full relative z-10 flex-1 flex flex-col justify-center">
           <div className="text-center">
 
-            <h1 className="text-3xl sm:text-4xl md:text-[48px] font-semibold text-text-heading mb-10 md:mb-12 leading-[1.1] tracking-tight">
-              Describe What You Want to Learn.{' '}
+            <h1 className="text-3xl sm:text-4xl md:text-[48px] font-semibold text-text-heading mb-4 md:mb-6 leading-[1.1] tracking-tight">
+              The right resources,{' '}
               <br className="hidden md:block" />
-              Get a{' '}
-              <span className="text-accent">Structured Course</span>
-              {' '}in Seconds.
+              in the right order,{' '}
+              <br className="hidden md:block" />
+              for{' '}
+              <span className="text-accent">what you're trying to learn.</span>
             </h1>
+
+            <p className="text-[15px] text-text-muted mb-10 md:mb-12 max-w-xl mx-auto leading-relaxed">
+              Tell us your goal and where you're starting from. We bring together videos by top educators, research papers, blogs, and documentation to build a roadmap that fits your exact level.
+            </p>
 
 
 
@@ -65,7 +70,7 @@ export default function HeroSection() {
                 href="/explore"
                 className="inline-flex items-center gap-2 border border-border text-text-primary px-5 py-2.5 rounded-md text-[13px] font-bold hover:border-accent/40 transition-colors"
               >
-                <BookOpen className="w-3.5 h-3.5" /> Browse Courses
+              <BookOpen className="w-3.5 h-3.5" /> Browse Roadmaps
               </Link>
             </div>
 

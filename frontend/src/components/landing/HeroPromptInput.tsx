@@ -16,7 +16,7 @@ type Mode = 'ai' | 'job' | 'url' | 'syllabus' | 'gaps' | 'research';
 type Engine = 'eulerfold' | 'openrouter' | 'local';
 
 const MODES: { id: Mode; label: string; icon: any; placeholder: string }[] = [
-  { id: 'ai', label: 'AI Gen', icon: Waypoints, placeholder: "e.g. I want to master Transformer architectures from scratch" },
+  { id: 'ai', label: 'AI Gen', icon: Waypoints, placeholder: "e.g. I know Python basics and want to learn Transformer architectures in 6 weeks..." },
   { id: 'job', label: 'Job Decoded', icon: Compass, placeholder: "Paste any job description or URL..." },
   { id: 'url', label: 'From Link', icon: Globe, placeholder: "Paste an article, GitHub repo, or doc link..." },
   { id: 'syllabus', label: 'Syllabus', icon: Library, placeholder: "Paste your course syllabus or outline..." },
@@ -747,6 +747,14 @@ Return ONLY this JSON structure:
           )}
         </div>
       </div>
+
+      {/* Subtle Prompting Guideline */}
+      <div className="flex items-center justify-center gap-1.5 mt-2.5 px-2 text-center">
+        <span className="text-[11.5px] text-text-muted leading-relaxed">
+          <strong className="text-text-primary font-semibold">Tip:</strong> Mention your background and pick a realistic timeframe for the best roadmap depth.
+        </span>
+      </div>
+
       <PaymentModal isOpen={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} onSuccess={() => setIsPaymentModalOpen(false)} />
 
       <LocalAIModal
