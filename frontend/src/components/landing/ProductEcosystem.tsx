@@ -18,8 +18,8 @@ const products: Product[] = [
   {
     id: 'architect', 
     title: "AI Architect",
-    category: "Generation",
-    description: "Enter any subject to generate a structured roadmap with curated videos, theory, and assessments.",
+    category: "Planning",
+    description: "Describe your goal and background to build a step-by-step roadmap with curated videos, theory, and practice.",
     icon: Sparkles, 
     href: "/#hero-prompt-input"
   },
@@ -27,7 +27,7 @@ const products: Product[] = [
     id: 'job', 
     title: "Job Decoded",
     category: "Career",
-    description: "Paste a job description from LinkedIn or Indeed to extract required skills and turn them into a targeted roadmap.",
+    description: "Reverse engineer any job posting from LinkedIn or Indeed into a targeted learning path for that role.",
     icon: Briefcase, 
     href: "/#hero-prompt-input"
   },
@@ -35,7 +35,7 @@ const products: Product[] = [
     id: 'url', 
     title: "Deconstruct URL",
     category: "Sources",
-    description: "Convert documentation pages, technical blogs, or GitHub repositories directly into a structured roadmap.",
+    description: "Reverse engineer documentation, engineering blogs, or GitHub repositories directly into a structured roadmap.",
     icon: Link2, 
     href: "/#hero-prompt-input"
   },
@@ -43,7 +43,7 @@ const products: Product[] = [
     id: 'syllabus', 
     title: "Syllabus Parser",
     category: "Import",
-    description: "Transform course syllabi, textbook outlines, or lecture topics into structured learning modules.",
+    description: "Import textbook outlines or university syllabi and learn them the way you want.",
     icon: BookOpen, 
     href: "/#hero-prompt-input"
   },
@@ -51,7 +51,7 @@ const products: Product[] = [
     id: 'gaps', 
     title: "Skill Gap Analyzer",
     category: "Diagnostic",
-    description: "Take a quick diagnostic quiz for your target role and generate a roadmap tailored to your knowledge gaps.",
+    description: "Take a short diagnostic quiz to uncover your knowledge gaps and skip what you already know.",
     icon: Target, 
     href: "/#hero-prompt-input"
   },
@@ -59,7 +59,7 @@ const products: Product[] = [
     id: 'decode', 
     title: "Research Decoded",
     category: "Analysis",
-    description: "Read technical breakdowns of complex academic papers with first-principles explanations and math.",
+    description: "Read first-principles breakdowns of foundation research papers with math derivations and code.",
     icon: FileSearch, 
     href: "/research-decoded"
   },
@@ -67,7 +67,7 @@ const products: Product[] = [
     id: 'lab', 
     title: "Research Lab",
     category: "Exploration",
-    description: "Explore technical documents and dissect complex research architectures in an interactive environment.",
+    description: "Explore technical documents and break down complex research architectures interactively.",
     icon: Microscope, 
     href: "/"
   },
@@ -75,7 +75,7 @@ const products: Product[] = [
     id: 'planner', 
     title: "Study Planner",
     category: "Workflow",
-    description: "Build daily study schedules from your active roadmaps based on your available hours and target pace.",
+    description: "Schedule daily study sessions from your active roadmaps based on your weekly hours and target pace.",
     icon: Calendar, 
     href: "/planner"
   },
@@ -113,7 +113,7 @@ export default function ProductEcosystem() {
               transition={{ delay: 0.14 }}
               className="text-[14px] text-text-muted leading-relaxed"
             >
-              From syllabus imports to daily study schedules, build roadmaps that fit how you study.
+              From reverse engineering job descriptions to importing syllabi, build roadmaps tailored to how you want to learn.
             </motion.p>
           </div>
 
