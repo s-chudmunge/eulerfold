@@ -418,14 +418,13 @@ Duration: {payload.time_value} {payload.time_unit}.
             "what_counts_as_evidence": "string (Max 1 line, strictly concise)",
             "eval_criteria": ["string (Short criterion)", "string (Short criterion)"]
          }},
-         "optimal_search_query": "A targeted search query to find the best academic/technical resources for this module",
-         "topics": [
-           {{
-              "title": "string",
-              "youtube_search_query": "Clean 3-5 word technical topic query for YouTube (e.g., 'Population Stability Index PSI', 'Kolmogorov Smirnov test'). DO NOT include university names like MIT or Stanford.",
-              "subtopics": [ {{ "title": "string" }} ]
-            }}
-         ]
+          "topics": [
+            {{
+               "title": "string (ONE focused concept, specific enough that a dedicated lecture exists for it exactly)",
+               "youtube_search_query": "A precise 3-6 word search query describing ONLY the exact technical topic and mechanism (e.g. 'Population Stability Index PSI calculation', 'Kolmogorov Smirnov test derivation'). STRICTLY FORBIDDEN: Do NOT include channel/creator names (NEVER include 'Khan Academy', 'Veritasium', 'MIT OCW', '3Blue1Brown', etc.). Do NOT include filler words like 'tutorial', 'explained', 'guide', 'complete course', 'for beginners'.",
+               "subtopics": [ {{ "title": "string" }} ]
+             }}
+          ]
        }}
      ]
    }}

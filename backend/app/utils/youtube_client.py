@@ -145,7 +145,7 @@ TRUSTED_CHANNELS = frozenset([
     "organic chemistry with victor", "oxford mathematics", "oxford ml and physics seminars",
     "oxylabs", "pankaj physics gulati", "parth g",
     "patrick j", "patrickjmt", "pbs infinite series",
-    "pbs space time", "peetha academy ", "perimeter institute for theoretical physics",
+    "peetha academy ", "perimeter institute for theoretical physics",
     "pganalyze", "philipp lackner", "photovoltaics explained",
     "phys whiz", "physical chemistry", "physics almanac",
     "physics online", "physics videos by eugene khutoryansky", "physics with andrés aragoneses",
@@ -204,6 +204,15 @@ TRUSTED_CHANNELS = frozenset([
     "sebastian raschka", "175b", "chris hayduk", "cohere",
     "tri dao", "tim dettmers",
 ])
+
+OFFICIAL_KEYWORDS = [
+    "mit", "stanford", "harvard", "nptel", "courseware", "university", 
+    "institute", "oxford", "yale", "cambridge", "berkeley", 
+    "cmu", "carnegie", "caltech", "princeton", "cornell", "georgia tech",
+    "nasa", "cern", "jpl", "esa", "polytechnic", "purdue", "michigan", 
+    "eth zurich", "ocw", "ucla", "imperial", "waterloo", "ieee", "acm", 
+    "nsf", "darpa", "national lab", "department of", "perimeter", "ictp"
+]
 
 # Words to ignore when computing title relevance
 _STOPWORDS = frozenset([
@@ -291,7 +300,7 @@ def _score_video(video: dict, topic_title: str, search_query: str = "", preferre
     )
 
     channel_name = snippet.get("channelTitle", "").lower()
-    is_trusted = channel_name in TRUSTED_CHANNELS
+    is_trusted = channel_name in TRUSTED_CHANNELS or any(kw in channel_name for kw in OFFICIAL_KEYWORDS)
 
     # Relevance gate:
     # For trusted channels: require at least 15% overlap so lecture series (e.g. "CS50 Lecture 3") can match.
@@ -334,9 +343,7 @@ async def search_youtube_videos(
     import json
     
     # --- 1. THE CURATED DATABASE ENGINE (SUPABASE PGVECTOR) ---
-    if subject_context and topic_title:
-        search_target = f"{subject_context}: {topic_title}"
-    elif topic_title:
+    if topic_title:
         search_target = topic_title
     else:
         search_target = query
@@ -360,7 +367,7 @@ async def search_youtube_videos(
                             "match_curated_videos",
                             {
                                 "query_embedding": embedding_vector,
-                                "match_threshold": 0.80,
+                                "match_threshold": 0.88,
                                 "match_count": max(max_results * 4, 10)
                             }
                         ).execute()
@@ -385,7 +392,7 @@ async def search_youtube_videos(
                             else:
                                 logger.info(f"All {len(matches)} curated matches for '{search_target}' were already used in this roadmap. Falling back to dynamic search.")
                         else:
-                            logger.info(f"No curated match >= 0.78 for '{search_target}'. Falling back to dynamic YouTube search.")
+                            logger.info(f"No curated match >= 0.88 for '{search_target}'. Falling back to dynamic YouTube search.")
         except Exception as e:
             logger.error(f"Semantic search failed for '{search_target}', falling back to YouTube: {e}")
 
@@ -393,15 +400,6 @@ async def search_youtube_videos(
     if not settings.YOUTUBE_API_KEY:
         logger.warning("YOUTUBE_API_KEY not set, skipping YouTube search.")
         return []
-
-    OFFICIAL_KEYWORDS = [
-        "mit", "stanford", "harvard", "nptel", "courseware", "university", 
-        "institute", "oxford", "yale", "cambridge", "berkeley", 
-        "cmu", "carnegie", "caltech", "princeton", "cornell", "georgia tech",
-        "nasa", "cern", "jpl", "esa", "polytechnic", "purdue", "michigan", 
-        "eth zurich", "ocw", "ucla", "imperial", "waterloo", "ieee", "acm", 
-        "nsf", "darpa", "national lab", "department of"
-    ]
 
     async def execute_search(search_q: str) -> List[Dict[str, str]]:
         import urllib.parse
@@ -492,15 +490,17 @@ async def search_youtube_videos(
         if not candidates and strict_official_sources:
             candidates = filter_and_score(items, False, use_scoring)
 
-        # Fallback query using topic_title directly if initial specific query produced 0 valid candidates
+        # Multi-tier fallback queries if initial specific query produced 0 valid candidates
         if not candidates and topic_title:
-            fallback_query = topic_title
-            logger.info(f"Primary YouTube query '{query}' produced no matches (threshold >= 0.35). Retrying with topic title: '{fallback_query}'")
-            items = await execute_search(fallback_query)
-            candidates = filter_and_score(items, False, use_scoring)
+            for fallback_q in [f"{topic_title} lecture", f"{topic_title} derivation calculation", topic_title]:
+                logger.info(f"Retrying YouTube search for '{topic_title}' with fallback: '{fallback_q}'")
+                items = await execute_search(fallback_q)
+                candidates = filter_and_score(items, False, use_scoring)
+                if candidates:
+                    break
 
         if not candidates:
-            logger.info(f"No relevant matches (>= 0.35 keyword overlap) found for '{query}' against topic '{topic_title}'. Defaulting to Reference Cards.")
+            logger.info(f"No relevant matches found for '{query}' against topic '{topic_title}'. Defaulting to Reference Cards.")
             return []
 
         # Sort candidates by score descending

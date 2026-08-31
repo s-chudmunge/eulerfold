@@ -412,18 +412,18 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
             "eval_criteria": ["string", "string"]
          }},
          "recommended_resources": [
-           {{
-             "title": "string (A specific TEXT-BASED reading resource: official documentation, interactive guide, technical blog post, or university lecture notes PDF. STRICTLY NO VIDEOS, NO YOUTUBE CHANNELS, NO PLAYLISTS. Good: 'MDN Web Docs: JavaScript Closures', 'Real Python: Decorators Tutorial', 'GeeksforGeeks: Dynamic Programming Patterns', 'Jay Alammar: The Illustrated Transformer', 'PostgreSQL Docs: Index Types', 'Stanford CS229 Lecture Notes: Linear Regression PDF'. Bad: '3Blue1Brown playlist', 'Andrej Karpathy video', 'YouTube tutorial')",
-             "search_query": "string (A precise search query to find this exact article, documentation, or PDF online, e.g. 'MDN JavaScript closures guide', 'Real Python decorators tutorial article', 'Jay Alammar Illustrated Transformer blog', 'GeeksforGeeks dynamic programming patterns guide', 'Stanford CS229 linear regression lecture notes pdf')"
-           }}
-         ],
-         "topics": [
             {{
-              "title": "string (ONE focused concept, specific enough that a YouTube video exists for it exactly)",
-              "youtube_search_query": "A short, precise search query (4-7 words total) describing the specific technical concept (e.g., 'vLLM PagedAttention block tables and memory management', 'transformer multi head self attention lecture', 'KV cache autoregressive decoding optimization'). Do NOT guess or hallucinate creator channel names unless certain they created a dedicated video on this exact topic.",
-              "subtopics": [ {{ "title": "string" }} ]
+              "title": "string (A specific TEXT-BASED technical reading resource: official documentation, university lecture notes PDF, engineering blog post, or textbook chapter. STRICTLY FORBIDDEN: Do NOT link to Wikipedia biographical pages of people (e.g. NEVER 'Richard Feynman Wikipedia', 'Alan Turing Wikipedia'). Good: 'David Tong: Cambridge Lectures on Quantum Field Theory PDF', 'MIT 8.04 Quantum Physics I Lecture Notes', 'Jay Alammar: The Illustrated Transformer', 'PostgreSQL Docs: Index Types'. Bad: 'Richard Feynman Wikipedia', 'YouTube playlist', 'Course overview')",
+              "search_query": "string (A precise search query to find this exact article, documentation, or PDF online, e.g. 'David Tong Quantum Field Theory lecture notes pdf', 'MIT 8.04 quantum physics lecture notes pdf', 'PostgreSQL docs B-tree index guide')"
             }}
-         ]
+          ],
+          "topics": [
+             {{
+               "title": "string (ONE focused concept, specific enough that a dedicated lecture exists for it exactly)",
+               "youtube_search_query": "A precise 3-6 word search query describing ONLY the exact technical topic and mechanism (e.g. 'Lagrangian mechanics Euler-Lagrange derivation', 'wave-particle duality double slit experiment', 'transformer multi head self attention'). STRICTLY FORBIDDEN: Do NOT include channel/creator names (NEVER include 'Khan Academy', 'Veritasium', 'MIT OCW', 'Feynman', '3Blue1Brown', etc.). Do NOT include filler words like 'tutorial', 'explained', 'guide', 'complete course', 'for beginners'.",
+               "subtopics": [ {{ "title": "string" }} ]
+             }}
+          ]
        }}
      ]
    }}

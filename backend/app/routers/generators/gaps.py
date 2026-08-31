@@ -396,14 +396,13 @@ Strictly focus the entire course on bridging the gap in their weak areas.
             "what_counts_as_evidence": "string",
             "eval_criteria": ["string", "string"]
          }},
-         "optimal_search_query": "string",
-         "topics": [
-           {{
-              "title": "string",
-              "youtube_search_query": "A precise search query to find a university lecture or in-depth technical video on this specific topic (e.g., 'MIT linear algebra eigenvalues lecture')",
-              "subtopics": [ {{ "title": "string" }} ]
-            }}
-         ]
+          "topics": [
+            {{
+               "title": "string (ONE focused concept, specific enough that a dedicated lecture exists for it exactly)",
+               "youtube_search_query": "A precise 3-6 word search query describing ONLY the exact technical topic and mechanism (e.g. 'Lagrangian mechanics Euler-Lagrange derivation', 'eigenvalues eigenvectors geometric interpretation'). STRICTLY FORBIDDEN: Do NOT include channel/creator names (NEVER include 'Khan Academy', 'Veritasium', 'MIT OCW', '3Blue1Brown', etc.). Do NOT include filler words like 'tutorial', 'explained', 'guide', 'complete course', 'for beginners'.",
+               "subtopics": [ {{ "title": "string" }} ]
+             }}
+          ]
        }}
      ]
    }}
