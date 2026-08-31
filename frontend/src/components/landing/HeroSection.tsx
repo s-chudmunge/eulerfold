@@ -45,7 +45,7 @@ export default function HeroSection() {
             </h1>
 
             <p className="text-[15px] text-text-muted mb-10 md:mb-12 max-w-xl mx-auto leading-relaxed">
-              Tell us your goal and where you're starting from. We bring together videos by top educators, research papers, blogs, and documentation to build a roadmap that fits your exact level.
+              Tell us your goal. We organize videos by top educators, in-depth reading material, and research papers.
             </p>
 
 
