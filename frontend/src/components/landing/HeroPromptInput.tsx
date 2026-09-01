@@ -58,6 +58,9 @@ export default function HeroPromptInput() {
   const [loadingMsgIdx, setLoadingMsgIdx] = useState(0);
   const [isGenerating, setIsGenerating] = useState(false);
   const [dynamicLoadingMsg, setDynamicLoadingMsg] = useState('');
+  const [extractedTextPreview, setExtractedTextPreview] = useState<string | null>(null);
+  const [extractedDocType, setExtractedDocType] = useState<string | null>(null);
+  const [isExtractedModalOpen, setIsExtractedModalOpen] = useState(false);
 
   const [isLocalAIModalOpen, setIsLocalAIModalOpen] = useState(false);
   const [localAIModelId, setLocalAIModelId] = useState<string | null>(null);
@@ -83,11 +86,27 @@ export default function HeroPromptInput() {
   const router = useRouter();
   const { user } = useAuth();
 
+  const [loadingStep, setLoadingStep] = useState(0);
+
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (isGenerating) setLoadingMsgIdx(prev => (prev + 1) % LOADING_MESSAGES.length);
-    }, 5000);
-    return () => clearInterval(interval);
+    let timer: any;
+    if (isGenerating) {
+      const stepMessages = [
+        "Structuring course modules & core principles... 🧠",
+        "Hunting down top-tier video tutorials & lectures... 🎥",
+        "Finding rigorous reading references, documentation & PDFs... 📚",
+        "Formulating verifiable proof-of-work assignments... 🛠️",
+        "Finalizing your interactive course... ✨"
+      ];
+      let currentStep = 0;
+      timer = setInterval(() => {
+        currentStep = (currentStep + 1) % stepMessages.length;
+        setDynamicLoadingMsg(stepMessages[currentStep]);
+      }, 6000);
+    }
+    return () => {
+      if (timer) clearInterval(timer);
+    };
   }, [isGenerating]);
 
 
@@ -467,15 +486,39 @@ Return ONLY this JSON structure:
             }
             
         } else {
-            // STANDARD POST LOGIC FOR OTHER MODES
             if (mode === 'job') {
                 endpoint = '/roadmaps/generate-from-jd';
                 payload = { ...payload, job_description: finalValue, current_experience: experienceLevel, generation_type: 'full' };
             } else if (mode === 'url') {
                 endpoint = '/roadmaps/generate-from-url';
+                setDynamicLoadingMsg('Connecting & fetching document / webpage... 🌐');
+                try {
+                    const scrapeRes = await api.post('/roadmaps/scrape-url', { url: finalValue, time_value: timeValue, time_unit: timeUnit });
+                    if (scrapeRes.data?.text) {
+                        setExtractedTextPreview(scrapeRes.data.text);
+                        setExtractedDocType(scrapeRes.data.type || 'webpage');
+                        setDynamicLoadingMsg(`Extracted ${scrapeRes.data.text.length.toLocaleString()} characters. Designing curriculum... 🧠`);
+                    }
+                } catch (e) {
+                    console.warn("Direct scrape preflight skipped, continuing with backend worker:", e);
+                }
                 payload = { ...payload, url: finalValue };
             } else if (mode === 'syllabus') {
                 endpoint = '/roadmaps/generate-from-syllabus';
+                const isUrl = finalValue.trim().startsWith('http://') || finalValue.trim().startsWith('https://');
+                if (isUrl) {
+                    setDynamicLoadingMsg('Reading syllabus document from URL... 📄');
+                    try {
+                        const scrapeRes = await api.post('/roadmaps/scrape-url', { url: finalValue.trim(), time_value: timeValue, time_unit: timeUnit });
+                        if (scrapeRes.data?.text) {
+                            setExtractedTextPreview(scrapeRes.data.text);
+                            setExtractedDocType(scrapeRes.data.type || 'document');
+                            setDynamicLoadingMsg(`Read ${scrapeRes.data.text.length.toLocaleString()} characters from syllabus. Structuring modules... 🧠`);
+                        }
+                    } catch (e) {
+                        console.warn("Syllabus scrape preflight skipped:", e);
+                    }
+                }
                 payload = { ...payload, syllabus_text: finalValue };
             } else if (mode === 'gaps') {
                 endpoint = '/roadmaps/generate-from-gaps';
@@ -516,17 +559,17 @@ Return ONLY this JSON structure:
       <motion.div 
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="w-full max-w-xl mx-auto mt-4 p-8 rounded-lg bg-sidebar/40 border border-border flex flex-col items-center justify-center space-y-4"
+        className="w-full max-w-xl mx-auto mt-4 p-6 rounded-md bg-sidebar/50 border border-border flex flex-col items-center justify-center space-y-4"
       >
         <div className="flex gap-1.5">
             {[0, 1, 2].map(i => (
                 <div key={i} className="w-2 h-2 bg-accent rounded-full animate-bounce" style={{ animationDelay: `${i * 0.2}s` }} />
             ))}
         </div>
-        <div className="text-center min-h-[60px] relative flex flex-col items-center justify-center">
+        <div className="text-center min-h-[50px] relative flex flex-col items-center justify-center">
             <AnimatePresence mode="wait">
               <motion.h3 
-                key={loadingMsgIdx}
+                key={dynamicLoadingMsg || loadingMsgIdx}
                 initial={{ opacity: 0, y: 5 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -5 }}
@@ -536,9 +579,80 @@ Return ONLY this JSON structure:
               </motion.h3>
             </AnimatePresence>
             <p className="text-text-muted text-[12px] opacity-70">
-              Go grab a coffee, this might take a few minutes ☕
+              Go grab a coffee, this might take a moment ☕
             </p>
         </div>
+
+        {extractedTextPreview && (
+          <motion.div 
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="w-full mt-2 bg-background border border-border rounded-md p-3.5 text-left shadow-sm"
+          >
+            <div className="flex items-center justify-between pb-2 mb-2 border-b border-border/40">
+              <span className="inconsolata-ui text-[11px] font-bold text-accent uppercase tracking-wider flex items-center gap-1.5">
+                <span>📄</span> Extracted {extractedDocType || 'document'} content
+              </span>
+              <button 
+                type="button"
+                onClick={() => setIsExtractedModalOpen(true)}
+                className="text-[11px] font-bold text-accent hover:underline flex items-center gap-1 cursor-pointer"
+              >
+                <span>View Full Text</span> ↗
+              </button>
+            </div>
+            <p className="inconsolata-ui text-[11.5px] text-text-muted leading-relaxed line-clamp-4 overflow-hidden font-mono opacity-85">
+              {extractedTextPreview}
+            </p>
+          </motion.div>
+        )}
+
+        {/* Modal to view complete extracted text */}
+        <AnimatePresence>
+          {isExtractedModalOpen && extractedTextPreview && (
+            <motion.div 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-center justify-center p-4"
+              onClick={() => setIsExtractedModalOpen(false)}
+            >
+              <motion.div 
+                initial={{ scale: 0.95, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
+                exit={{ scale: 0.95, y: 20 }}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-background border border-border rounded-lg max-w-2xl w-full max-h-[80vh] flex flex-col shadow-2xl overflow-hidden"
+              >
+                <div className="flex items-center justify-between p-4 border-b border-border bg-sidebar/50">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[14px]">📄</span>
+                    <h3 className="inconsolata-ui text-[13px] font-bold text-text-heading uppercase tracking-wide">
+                      Extracted {extractedDocType || 'Document'} Content
+                    </h3>
+                  </div>
+                  <button 
+                    onClick={() => setIsExtractedModalOpen(false)}
+                    className="w-7 h-7 flex items-center justify-center rounded-md text-text-muted hover:text-text-heading hover:bg-border/40 text-[14px] font-bold"
+                  >
+                    ✕
+                  </button>
+                </div>
+                <div className="p-5 overflow-y-auto max-h-[60vh] font-mono text-[12px] text-text-primary leading-relaxed whitespace-pre-wrap select-text bg-background">
+                  {extractedTextPreview}
+                </div>
+                <div className="p-3 border-t border-border bg-sidebar/30 flex justify-end">
+                  <button 
+                    onClick={() => setIsExtractedModalOpen(false)}
+                    className="px-4 py-1.5 bg-accent text-white font-bold text-[12px] rounded-md hover:bg-teal-700 transition-colors"
+                  >
+                    Close
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
     );
   }

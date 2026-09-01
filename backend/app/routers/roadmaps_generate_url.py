@@ -53,29 +53,11 @@ async def generate_from_url(
 
     # 1. Fetch URL Content
     try:
-        import httpx
-        from bs4 import BeautifulSoup
-        headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36"}
-        async with httpx.AsyncClient(follow_redirects=True, timeout=10.0, headers=headers) as client:
-            response = await client.get(payload.url)
-            response.raise_for_status()
-            content_type = response.headers.get("Content-Type", "")
-            
-            if "application/pdf" in content_type.lower() or payload.url.lower().endswith(".pdf"):
-                import io
-                from pypdf import PdfReader
-                pdf = PdfReader(io.BytesIO(response.content))
-                text_content = ""
-                for page in pdf.pages:
-                    text_content += page.extract_text() + "\n"
-            else:
-                soup = BeautifulSoup(response.text, 'html.parser')
-                # Extract main text
-                for script in soup(["script", "style", "nav", "footer", "header"]):
-                    script.extract()
-                text_content = soup.get_text(separator=' ', strip=True)
-                
-            text_content = text_content[:15000] # Limit to avoid massive prompts
+        from app.utils.doc_fetcher import fetch_rendered_webpage_text
+        text_content, content_type = await fetch_rendered_webpage_text(payload.url)
+        if not text_content or len(text_content.strip()) < 10:
+            raise Exception("No readable text found at URL")
+        text_content = text_content[:30000] # Safe limit for prompt context
     except Exception as e:
         logger.error(f"Failed to fetch URL {payload.url}: {e}")
         raise HTTPException(status_code=400, detail="Could not fetch or parse the provided URL.")

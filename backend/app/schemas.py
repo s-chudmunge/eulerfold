@@ -141,6 +141,11 @@ class JobRoadmapCreate(BaseModel):
     model: Optional[str] = None
     diagnostic_prompt_context: Optional[str] = None
 
+class ScrapeUrlRequest(BaseModel):
+    url: str
+    time_value: Optional[int] = 4
+    time_unit: Optional[str] = "weeks"
+
 class UrlRoadmapCreate(BaseModel):
     url: str
     time_value: int

@@ -572,19 +572,20 @@ interface RoadmapDisplayProps {
           <div className="pt-12 pb-6 border-t border-border mt-12 flex flex-col items-center text-center animate-in fade-in slide-in-from-bottom-4 duration-700">
             <button 
               onClick={onExtend}
-              className="w-16 h-16 bg-emerald-500/10 rounded-lg border border-emerald-500/20 text-emerald-600 mb-6 flex items-center justify-center transition-all hover:bg-emerald-500/20 hover:border-emerald-500/40 hover:scale-105 active:scale-95 group shadow-lg shadow-emerald-500/5"
+              className="w-16 h-16 bg-accent/10 rounded-md border border-accent/30 text-accent mb-4 flex items-center justify-center transition-all hover:bg-accent/20 hover:border-accent/50 hover:scale-105 active:scale-95 group shadow-sm"
+              title="Extend this curriculum"
             >
               <Plus className="w-7 h-7 group-hover:rotate-90 transition-transform duration-500" />
             </button>
             
-            <div className="max-w-[400px]">
-              <h3 className="inconsolata-ui text-lg font-bold text-text-heading tracking-tight mb-2">Continue Learning</h3>
-              <p className="manrope-body text-[12px] text-text-muted leading-relaxed italic opacity-80 mb-6 px-4">
-                You've completed the original curriculum. As a Pro user, you can extend this course further based on your specific needs.
+            <div className="max-w-[440px]">
+              <h3 className="inconsolata-ui text-base font-bold text-text-heading tracking-tight mb-1.5">Extend Curriculum</h3>
+              <p className="manrope-body text-[12px] text-text-muted leading-relaxed opacity-85 mb-4 px-4">
+                Ready to learn subsequent topics or dive deeper? Extend this roadmap with additional modules whenever you are ready.
               </p>
               
-              <div className="inline-flex items-center px-3 py-1 bg-emerald-500/5 rounded-full border border-emerald-500/10">
-                <span className="text-[9px] text-emerald-600 font-bold uppercase tracking-[0.1em]">Pro Exclusive Feature</span>
+              <div className="inline-flex items-center px-3 py-1 bg-accent/10 rounded-md border border-accent/20">
+                <span className="text-[10px] text-accent font-bold uppercase tracking-wider">Pro Learning Feature</span>
               </div>
             </div>
           </div>

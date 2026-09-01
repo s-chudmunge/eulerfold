@@ -870,7 +870,7 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                     onSignInRequired={handleSignIn}
                                     externalSubmissions={submissions}
                                     onExtend={
-                                        isPro && isOwner && (roadmap.progress?.completed_topics || 0) >= (roadmap.progress?.total_topics || 1) && (roadmap.extension_count || 0) < 5
+                                        isPro && isOwner && (roadmap.extension_count || 0) < 5
                                         ? () => setShowExtendModal(true)
                                         : undefined
                                     }
@@ -1054,18 +1054,18 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                     <label className="inconsolata-ui text-[11px] font-bold text-text-muted uppercase tracking-widest block ml-1">
                                         Duration
                                     </label>
-                                    <div className="grid grid-cols-2 gap-3">
-                                        {[1, 2].map((w) => (
+                                    <div className="grid grid-cols-4 gap-2">
+                                        {[1, 2, 3, 4].map((w) => (
                                             <button
                                                 key={w}
                                                 onClick={() => setExtensionWeeks(w)}
-                                                className={`py-3 rounded-lg border inconsolata-ui text-[13px] font-bold transition-all ${
+                                                className={`py-2.5 rounded-md border inconsolata-ui text-[12px] font-bold transition-all ${
                                                     extensionWeeks === w 
-                                                    ? 'bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/20' 
-                                                    : 'bg-callout-bg border-border text-text-muted hover:border-emerald-500/30'
+                                                    ? 'bg-accent border-accent text-white shadow-sm' 
+                                                    : 'bg-sidebar border-border text-text-muted hover:border-accent/40'
                                                 }`}
                                             >
-                                                +{w} Week{w > 1 ? 's' : ''}
+                                                +{w} Wk{w > 1 ? 's' : ''}
                                             </button>
                                         ))}
                                     </div>
@@ -1075,12 +1075,12 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                     <button
                                         onClick={handleExtend}
                                         disabled={extending}
-                                        className="w-full py-4 bg-emerald-600 text-white rounded-lg text-[14px] font-bold inconsolata-ui tracking-wide hover:bg-emerald-700 transition-all flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed shadow-xl shadow-emerald-500/10"
+                                        className="w-full py-3.5 bg-accent text-white rounded-md text-[13px] font-bold inconsolata-ui tracking-wide hover:bg-teal-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm"
                                     >
                                         {extending ? (
                                             <>
                                                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                                Generating Extension...
+                                                Generating Next Modules...
                                             </>
                                         ) : (
                                             <>
@@ -1089,8 +1089,8 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                             </>
                                         )}
                                     </button>
-                                    <p className="text-center mt-4 manrope-body text-[10px] text-text-muted font-medium italic">
-                                        You can extend this course up to 5 times. (Current: {roadmap.extension_count || 0}/5)
+                                    <p className="text-center mt-3 manrope-body text-[11px] text-text-muted font-medium">
+                                        Each extension adds new modules and updates your course duration tag dynamically. ({roadmap.extension_count || 0}/5 extensions used)
                                     </p>
                                 </div>
                             </div>

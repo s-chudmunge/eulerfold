@@ -365,16 +365,29 @@ async def generate_from_syllabus(
         else:
             raise HTTPException(status_code=402, detail="No roadmap credits left. Please upgrade to Pro.")
 
+    raw_syllabus_text = payload.syllabus_text.strip()
+    # If the user supplied a URL in the syllabus box, fetch and extract the document content
+    if raw_syllabus_text.startswith("http://") or raw_syllabus_text.startswith("https://"):
+        try:
+            from app.utils.doc_fetcher import fetch_rendered_webpage_text
+            extracted_doc, _ = await fetch_rendered_webpage_text(raw_syllabus_text)
+            if extracted_doc and len(extracted_doc.strip()) > 10:
+                raw_syllabus_text = extracted_doc[:35000]
+        except Exception as doc_err:
+            logger.error(f"Failed to fetch syllabus URL {raw_syllabus_text}: {doc_err}")
+            raise HTTPException(status_code=400, detail="Could not fetch or parse the syllabus document from the provided URL.")
+
     diagnostic_text = f"\n**DIAGNOSTIC ASSESSMENT RESULTS:**\n{payload.diagnostic_prompt_context}" if payload.diagnostic_prompt_context else ""
 
     prompt = f"""
 You are an instructional designer.
 I will provide you with a static course syllabus or table of contents.
-Translate this exactly into our interactive {payload.time_value} {payload.time_unit} course JSON schema.
-Do not change the core subjects taught, but enrich them with practical "proof_of_work" tasks.
+Translate this into our interactive course JSON schema.
+The learner requested a {payload.time_value} {payload.time_unit} timeframe. 
+If the curriculum covers extensive ground, generate a foundational block of 3-4 structured, deep modules (Weeks 1 to 3 or 4) that sets up the prerequisites for subsequent weeks, and indicate this progression clearly in the module timeline.
 
 **SYLLABUS TEXT:**
-{payload.syllabus_text}
+{raw_syllabus_text}
 {diagnostic_text}
 
 **RULES:**

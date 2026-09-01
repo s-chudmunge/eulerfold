@@ -17,40 +17,17 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/research-lab", tags=["Research Lab"])
 
 async def _fetch_pdf_content(url: str) -> Optional[bytes]:
-    """Internal helper to fetch PDF bytes with proper headers and timeouts."""
-    import httpx
-    
-    # Handle ArXiv and AlphaXiv rewrites to get the raw PDF
-    import re
-    arxiv_match = re.search(r'(?:arxiv\.org|alphaxiv\.org)/(?:abs|pdf|html)/([a-zA-Z\-]+/[0-9]+|[0-9]+\.[0-9]+(?:v[0-9]+)?)', url)
-    if arxiv_match:
-        paper_id = arxiv_match.group(1)
-        if paper_id.endswith(".pdf"):
-            paper_id = paper_id[:-4]
-        url = f"https://arxiv.org/pdf/{paper_id}.pdf"
-            
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        "Accept": "application/pdf,text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-    }
-    timeout = httpx.Timeout(connect=15.0, read=60.0, write=15.0, pool=15.0)
-    for attempt in range(2):
-        try:
-            async with httpx.AsyncClient(timeout=timeout, follow_redirects=True, headers=headers) as client:
-                resp = await client.get(url)
-                if resp.status_code == 200:
-                    content_type = resp.headers.get("content-type", "").lower()
-                    if "text/html" in content_type or resp.content.startswith(b"<!DOC") or resp.content.startswith(b"<html"):
-                        logger.warning(f"URL returned HTML instead of PDF: {url}")
-                        raise Exception("The provided URL points to an HTML webpage instead of a raw PDF file. Please provide a direct link to the PDF.")
-                    return resp.content
-                else:
-                    raise Exception(f"HTTP {resp.status_code}")
-        except Exception as e:
-            logger.warning(f"PDF fetch attempt {attempt + 1} failed for {url}: {e}")
-            if attempt == 0:
-                await asyncio.sleep(1)
-    return None
+    """Internal helper to fetch PDF bytes with resilient SSL headers and timeouts."""
+    from app.utils.doc_fetcher import fetch_url_bytes
+    try:
+        data = await asyncio.to_thread(fetch_url_bytes, url, 30.0)
+        if data.startswith(b"<!DOC") or data.startswith(b"<html"):
+            logger.warning(f"URL returned HTML instead of PDF: {url}")
+            raise Exception("The provided URL points to an HTML webpage instead of a raw PDF file. Please provide a direct link to the PDF.")
+        return data
+    except Exception as e:
+        logger.warning(f"PDF fetch failed for {url}: {e}")
+        return None
 
 async def _extract_paper_figures(paper_url: str) -> List[Dict[str, str]]:
     """Helper to extract figure image URLs and captions from arXiv/ar5iv HTML if available."""

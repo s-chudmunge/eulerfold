@@ -1195,26 +1195,21 @@ async def parse_pdf(file: UploadFile = File(...)):
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Failed to parse PDF: {str(e)}")
 
-from app.schemas import UrlRoadmapCreate
+from app.schemas import UrlRoadmapCreate, ScrapeUrlRequest
 from fastapi import APIRouter, HTTPException, Request, Depends, BackgroundTasks
 import httpx
 from bs4 import BeautifulSoup
 
 @router.post("/roadmaps/scrape-url")
-async def scrape_url(payload: UrlRoadmapCreate):
+async def scrape_url(payload: ScrapeUrlRequest):
     try:
-        async with httpx.AsyncClient(follow_redirects=True, timeout=15.0) as client:
-            headers = {
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
-            }
-            res = await client.get(payload.url, headers=headers)
-            res.raise_for_status()
-            soup = BeautifulSoup(res.text, "html.parser")
-            for script in soup(["script", "style", "nav", "footer", "header"]):
-                script.extract()
-            text = soup.get_text(separator=' ', strip=True)
-            return {"text": text}
+        from app.utils.doc_fetcher import fetch_rendered_webpage_text
+        text, content_type = await fetch_rendered_webpage_text(payload.url)
+        if not text or len(text.strip()) < 10:
+            raise Exception("No readable text could be found at the provided URL.")
+        return {"text": text, "type": content_type}
     except Exception as e:
+        logger.error(f"Failed to scrape URL {payload.url}: {e}")
         raise HTTPException(status_code=400, detail=f"Failed to extract text from URL: {str(e)}")
 
 
