@@ -434,12 +434,12 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
 """
         try:
             model_to_use = roadmap_create.model or settings.DEFAULT_ROADMAP_MODEL
-            yield json.dumps({"status": "Brainstorming the curriculum... 🧠"}) + "\n"
+            yield json.dumps({"status": "Structuring learning path..."}) + "\n"
             generated_text, usage = await generate_text(prompt, model=model_to_use, response_mime_type="application/json", return_usage=True)
             log_backend_ai_usage(sb, uid, f"{roadmap_create.subject} (Cost: 1.0 Credits)", usage, source="backend")
             roadmap_plan = robust_json_loads(generated_text)
     
-            yield json.dumps({"status": "Hunting down the best video tutorials... 🎥"}) + "\n"
+            yield json.dumps({"status": "Curating lectures from educators..."}) + "\n"
         # 2. Add IDs and YouTube Videos
             used_video_ids = set()  # Deduplication: track assigned videos across the entire roadmap
             for i, module in enumerate(roadmap_plan.get("modules", [])):
@@ -455,6 +455,11 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
                         if not isinstance(subtopic, dict): continue
                         subtopic["id"] = str(uuid.uuid4())
                     
+                    # Yield real-time progress for current topic
+                    topic_title = topic.get("title", "")
+                    if topic_title:
+                        yield json.dumps({"status": f"Matching lecture: {topic_title}..."}) + "\n"
+
                     # YouTube Enrichment
                     if settings.YOUTUBE_API_KEY:
                         try:
@@ -480,7 +485,7 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
                         except Exception as yt_err:
                             logger.error(f"YouTube enrichment failed for topic {topic['title']}: {yt_err}")
     
-                yield json.dumps({"status": "Gathering reading references... 📚"}) + "\n"
+                yield json.dumps({"status": f"Finding lecture notes & papers for Module {i+1}..."}) + "\n"
         # Reading References Enrichment (Articles, Docs, PDFs — NO VIDEOS)
                 recommended = module.get("recommended_resources", [])
                 if recommended:

@@ -88,27 +88,6 @@ export default function HeroPromptInput() {
 
   const [loadingStep, setLoadingStep] = useState(0);
 
-  useEffect(() => {
-    let timer: any;
-    if (isGenerating) {
-      const stepMessages = [
-        "Structuring course modules & core principles... 🧠",
-        "Hunting down top-tier video tutorials & lectures... 🎥",
-        "Finding rigorous reading references, documentation & PDFs... 📚",
-        "Formulating verifiable proof-of-work assignments... 🛠️",
-        "Finalizing your interactive course... ✨"
-      ];
-      let currentStep = 0;
-      timer = setInterval(() => {
-        currentStep = (currentStep + 1) % stepMessages.length;
-        setDynamicLoadingMsg(stepMessages[currentStep]);
-      }, 6000);
-    }
-    return () => {
-      if (timer) clearInterval(timer);
-    };
-  }, [isGenerating]);
-
 
   useEffect(() => {
     if (user) {
@@ -569,17 +548,17 @@ Return ONLY this JSON structure:
         <div className="text-center min-h-[50px] relative flex flex-col items-center justify-center">
             <AnimatePresence mode="wait">
               <motion.h3 
-                key={dynamicLoadingMsg || loadingMsgIdx}
-                initial={{ opacity: 0, y: 5 }}
+                key={dynamicLoadingMsg || 'default'}
+                initial={{ opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -5 }}
-                className="text-text-heading font-bold text-[14px] mb-1.5"
+                exit={{ opacity: 0, y: -4 }}
+                className="text-text-heading font-bold text-[14px] mb-1.5 font-mono"
               >
-                {dynamicLoadingMsg || LOADING_MESSAGES[loadingMsgIdx]}
+                {dynamicLoadingMsg || "Structuring learning path..."}
               </motion.h3>
             </AnimatePresence>
             <p className="text-text-muted text-[12px] opacity-70">
-              Go grab a coffee, this might take a moment ☕
+              Organizing verified lectures, university notes, and technical references.
             </p>
         </div>
 

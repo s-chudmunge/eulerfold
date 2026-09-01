@@ -51,21 +51,21 @@ TRUSTED_CHANNELS = frozenset([
     "binod suman academy", "bio scholar", "biolumination ",
     "biomechatronics lab", "blackpenredpen", "blaise pascual",
     "boosty labs", "bozeman science", "brackeys",
-    "brian douglas", "bytebytego", "bytemonk",
+    "brian douglas", "bytebytego",
     "caleb curry", "caltech", "carnegie mellon university",
     "chainlink", "chalana kariyawasam", "chandan physics",
     "chem4432", "chemistnate", "chemistry untold",
     "chicken puck's quantum computing tutorials", "chris alexiuk", "christopher okhravi",
     "chung-sang ng", "classical mechanics", "cloud guru",
     "cloudenthusiasts", "cmu database group", "cnslab iitm",
-    "codeai", "codebasics", "codelucky",
+    "codeai", "codebasics",
     "codeopinion", "coderone", "codetav management",
     "codevault", "codevolution", "codewrinkles",
     "coding by shailja", "coding in flow", "computer&electronics",
     "computerphile", "condensed matter cat", "confluent developer",
     "content-academy", "corey schafer", "cornell university",
     "corporate taleem", "coursejet", "coursera",
-    "craft & code club", "crashcourse", "creel",
+    "crashcourse", "creel",
     "cs & it tutorials by vrushali 👩‍🎓", "cs dojo", "cs50",
     "cybernetic systems and controls", "cyrill stachniss", "daily code buffer",
     "dan fleisch", "danish mustafa ", "darrenongmath",
@@ -280,6 +280,16 @@ def _compute_title_relevance(topic_title: str, video_title: str, video_descripti
     return base_relevance
 
 
+BANNED_CHANNELS = frozenset([
+    "pbs space time", "pbs spacetime",
+    "codelucky", "craft and code club", "craft & code club", "craft and code", "craft & code",
+    "techpapers", "tech papers",
+    "dadhichi", "dadhichi institute", "dadhichi institute of technology and management",
+    "bytemonk", "byte monk",
+    "coding with john", "amigoscode", "java techie", "forrest knight", "forrestknight"
+])
+
+
 def _score_video(video: dict, topic_title: str, search_query: str = "", preferred_channel: str = "") -> float:
     """
     Score a YouTube video for educational relevance in a domain-agnostic way.
@@ -292,6 +302,12 @@ def _score_video(video: dict, topic_title: str, search_query: str = "", preferre
         return -1.0
 
     snippet = video.get("snippet", {})
+    channel_name = snippet.get("channelTitle", "").lower()
+
+    # Hard ban gate: strictly reject banned creators
+    if any(b in channel_name for b in BANNED_CHANNELS):
+        return -1.0
+
     title_relevance = _compute_title_relevance(
         topic_title, 
         snippet.get("title", ""), 
@@ -299,7 +315,6 @@ def _score_video(video: dict, topic_title: str, search_query: str = "", preferre
         search_query
     )
 
-    channel_name = snippet.get("channelTitle", "").lower()
     is_trusted = channel_name in TRUSTED_CHANNELS or any(kw in channel_name for kw in OFFICIAL_KEYWORDS)
 
     # Relevance gate:
