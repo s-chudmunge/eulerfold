@@ -20,13 +20,13 @@ export default function NewsletterBanner() {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1.5">
             <Mail className="w-3.5 h-3.5 text-accent shrink-0" />
-            <span className="text-[11px] font-bold uppercase tracking-widest text-accent">Newsletter</span>
+            <span className="text-[11px] font-bold uppercase tracking-widest text-accent">EulerFold Newsletter</span>
           </div>
           <h2 className="text-[17px] md:text-[18px] font-bold text-text-heading tracking-tight mb-1">
-            Stay current with AI and research.
+            Don't Miss Your Weekly Research Update
           </h2>
           <p className="text-[13px] text-text-muted leading-relaxed">
-            Shifts in AI, research summaries, and what's worth reading — delivered to your inbox.
+            Weekly breakdowns of recent papers, engineering architectures, and technical ideas sent to your inbox.
           </p>
         </div>
 
@@ -37,7 +37,7 @@ export default function NewsletterBanner() {
               <CheckCircle className="w-4 h-4 text-accent shrink-0" />
               <div>
                 <p className="text-[13px] font-bold text-text-heading">You're on the list.</p>
-                <p className="text-[12px] text-text-muted">The next issue goes to your inbox.</p>
+                <p className="text-[12px] text-text-muted">The next weekly research update will be in your inbox.</p>
               </div>
             </div>
           ) : (
