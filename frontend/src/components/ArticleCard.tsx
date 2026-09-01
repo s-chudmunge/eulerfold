@@ -36,7 +36,11 @@ export default function ArticleCard({ article, variant = 'horizontal' }: Article
             </p>
           </div>
           <div className="mt-auto pt-3 border-t border-border/50 flex items-center justify-between text-[9px] md:text-[10px] text-text-muted font-bold inconsolata-ui uppercase tracking-wider">
-            <span className="truncate pr-4 text-text-heading/80">By {article.author}</span>
+            {article.status !== 'archived' ? (
+              <span className="truncate pr-4 text-text-heading/80">By {article.author}</span>
+            ) : (
+              <span />
+            )}
             <span className="shrink-0 opacity-70">{article.date}</span>
           </div>
         </div>
@@ -70,7 +74,11 @@ export default function ArticleCard({ article, variant = 'horizontal' }: Article
           </p>
         </div>
         <div className="mt-4 flex items-center justify-between text-[11px] text-text-muted opacity-70 font-bold inconsolata-ui uppercase tracking-wider">
-          <span className="truncate pr-4">By {article.author}</span>
+          {article.status !== 'archived' ? (
+            <span className="truncate pr-4">By {article.author}</span>
+          ) : (
+            <span />
+          )}
           <span className="shrink-0">{article.date}</span>
         </div>
       </div>

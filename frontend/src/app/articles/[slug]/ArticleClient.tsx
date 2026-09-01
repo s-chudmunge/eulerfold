@@ -530,19 +530,21 @@ export default function ArticleClient({ article }: Props) {
 
           <div className="max-w-[720px] mx-auto w-full">
             {/* Bar 1: Author identity */}
-            <div className="flex items-center justify-between w-full py-3 border-t border-border/60">
-              <span className="text-[11px] text-text-muted uppercase tracking-widest inconsolata-ui opacity-60">Written by</span>
-              <div className="flex items-center manrope-body">
-                <a
-                  href="https://www.linkedin.com/in/sankalp-chudmunge-a3ba80423/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-[13px] font-semibold text-text-heading hover:text-[#0A66C2] transition-colors leading-tight"
-                >
-                  {authorName}
-                </a>
+            {article.status !== 'archived' && (
+              <div className="flex items-center justify-between w-full py-3 border-t border-border/60">
+                <span className="text-[11px] text-text-muted uppercase tracking-widest inconsolata-ui opacity-60">Written by</span>
+                <div className="flex items-center manrope-body">
+                  <a
+                    href="https://www.linkedin.com/in/sankalp-chudmunge-a3ba80423/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[13px] font-semibold text-text-heading hover:text-[#0A66C2] transition-colors leading-tight"
+                  >
+                    {authorName}
+                  </a>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Bar 2: Article actions */}
             <div className="flex items-center justify-between w-full py-3 border-t border-b border-border/60">
