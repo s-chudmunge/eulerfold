@@ -529,28 +529,41 @@ export default function ArticleClient({ article }: Props) {
           </p>
 
           <div className="max-w-[720px] mx-auto w-full">
-            <div className="flex items-center justify-between w-full py-4 border-t border-b border-border/60">
-              {/* Left Actions: Listen, Like, Comment */}
-              <div className="flex items-center gap-6 text-text-primary font-medium text-[14px] manrope-body">
+            {/* Bar 1: Author identity */}
+            <div className="flex items-center justify-between w-full py-3 border-t border-border/60">
+              <span className="text-[11px] text-text-muted uppercase tracking-widest inconsolata-ui opacity-60">Written by</span>
+              <div className="flex items-center manrope-body">
+                <a
+                  href="https://www.linkedin.com/in/sankalp-chudmunge-a3ba80423/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-[13px] font-semibold text-text-heading hover:text-[#0A66C2] transition-colors leading-tight"
+                >
+                  {authorName}
+                </a>
+              </div>
+            </div>
+
+            {/* Bar 2: Article actions */}
+            <div className="flex items-center justify-between w-full py-3 border-t border-b border-border/60">
+              <div className="flex items-center gap-5 text-text-primary font-medium manrope-body">
                 <FloatingTTS content={article.content} inline={true} />
-                <button 
+                <button
                   onClick={toggleLike}
-                  className="flex items-center gap-2 transition-opacity hover:opacity-70"
+                  className="flex items-center gap-1.5 transition-opacity hover:opacity-70"
                 >
-                  <Heart className={`w-5 h-5 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
-                  <span>{likeCount}</span>
+                  <Heart className={`w-4 h-4 ${isLiked ? 'fill-red-500 text-red-500' : ''}`} />
+                  <span className="text-[13px]">{likeCount}</span>
                 </button>
-                <button 
+                <button
                   onClick={scrollToComments}
-                  className="flex items-center gap-2 transition-opacity hover:opacity-70"
+                  className="flex items-center gap-1.5 transition-opacity hover:opacity-70"
                 >
-                  <MessageCircle className="w-5 h-5" />
+                  <MessageCircle className="w-4 h-4" />
                 </button>
               </div>
-
-              {/* Right Actions: Read time & Share */}
-              <div className="flex items-center gap-4 text-text-primary font-medium text-[14px] manrope-body">
-                <span className="text-text-muted hidden sm:inline-block mr-2">{readTime} min read</span>
+              <div className="flex items-center gap-4">
+                <span className="text-[13px] text-text-muted hidden sm:inline-block">{readTime} min read</span>
                 <SocialShare title={article.title} className="scale-90 origin-right" />
               </div>
             </div>
@@ -680,15 +693,26 @@ export default function ArticleClient({ article }: Props) {
                             {authorRole}
                           </div>
                         )}
-                        <a 
-                          href="https://www.linkedin.com/in/sankalp-chudmunge-a3ba80423/"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="mt-2 text-text-muted hover:text-[#0A66C2] transition-colors"
-                          aria-label="LinkedIn Profile"
-                        >
-                          <Linkedin className="w-4 h-4" />
-                        </a>
+                        <div className="flex items-center gap-2.5 mt-2">
+                          <a 
+                            href="https://www.linkedin.com/in/sankalp-chudmunge-a3ba80423/"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-text-muted hover:text-[#0A66C2] transition-colors"
+                            aria-label="LinkedIn Profile"
+                          >
+                            <Linkedin className="w-4 h-4" />
+                          </a>
+                          <a 
+                            href="https://x.com/csankalp21"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-text-muted hover:text-text-primary transition-colors"
+                            aria-label="X Profile"
+                          >
+                            <FaXTwitter className="w-3.5 h-3.5" />
+                          </a>
+                        </div>
                       </div>
                     </div>
                   )}

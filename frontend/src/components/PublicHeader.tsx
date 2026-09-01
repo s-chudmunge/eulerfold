@@ -233,12 +233,10 @@ export default function PublicHeader() {
       className={`sticky top-0 z-50 w-full transition-all duration-300`}
       style={{ top: 'var(--announcement-height, 0px)' }}
     >
-      <div className={`w-full bg-header transition-all duration-300 relative z-[60] ${
-        activeDropdown 
-          ? 'h-[64px] border-b border-transparent' 
-          : isScrolled 
-            ? 'h-[48px] border-b border-border' 
-            : 'h-[64px] border-b border-transparent'
+      <div className={`w-full bg-header transition-all duration-300 relative z-[60] h-[56px] ${
+        isScrolled 
+          ? 'border-b border-border shadow-sm' 
+          : 'border-b border-transparent'
       }`}>
         <div className="max-w-7xl mx-auto h-full px-6 flex items-center justify-between">
           
@@ -298,7 +296,7 @@ export default function PublicHeader() {
         className={`lg:hidden fixed inset-0 bg-header z-[45] transition-all duration-300 ${
           isMobileMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'
         }`}
-        style={{ top: isScrolled ? '48px' : '64px' }}
+        style={{ top: '56px' }}
       >
         <div className="px-6 py-10 flex flex-col gap-10 h-full overflow-y-auto pb-32">
           <div className="flex flex-col gap-8">
