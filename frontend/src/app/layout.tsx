@@ -30,17 +30,18 @@ const inconsolata = { variable: '--font-mono', className: 'font-mono' };
 export const metadata: Metadata = {
   applicationName: 'EulerFold',
   title: {
-    default: 'EulerFold - Courses, Exam Prep & Skill Building.',
+    default: 'EulerFold - The right resources, in the right order, for what you want to learn',
     template: '%s'
   },
-  description: 'Clear courses with simple progress tracking that show exactly what you’ve learned and keep you on-track.',
+  description: 'Turn any technical topic, syllabus, or goal into a structured learning path with curated lectures from top educators, research papers, and technical reading.',
   keywords: [
     'technical roadmaps',
+    'learning paths',
     'skill tracking',
-    'courses',
-    'exam preparation',
+    'study planner',
+    'research papers decoded',
     'structured learning',
-    'adaptive learning'
+    'self-directed learning'
   ],
   authors: [{ name: 'EulerFold' }],
   creator: 'EulerFold',
@@ -55,15 +56,15 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     siteName: 'EulerFold',
-    title: 'EulerFold',
-    description: 'Clear courses with simple progress tracking that show exactly what you’ve learned and keep you on-track.',
+    title: 'EulerFold - The right resources, in the right order, for what you want to learn',
+    description: 'Turn any technical topic, syllabus, or goal into a structured learning path with curated lectures from top educators, research papers, and technical reading.',
   },
   twitter: {
-  card: 'summary',
-  title: 'EulerFold',
-  description: 'Clear courses with simple progress tracking that show exactly what you’ve learned and keep you on track.',
-  creator: '@eulerfold',
-  site: '@eulerfold',
+    card: 'summary_large_image',
+    title: 'EulerFold - The right resources, in the right order, for what you want to learn',
+    description: 'Turn any technical topic, syllabus, or goal into a structured learning path with curated lectures from top educators, research papers, and technical reading.',
+    creator: '@eulerfold',
+    site: '@eulerfold',
   },  robots: {
     index: true,
     follow: true,
@@ -145,7 +146,7 @@ export default function RootLayout({
                 "width": 512,
                 "height": 512
               },
-              "description": "Clear courses with simple progress tracking that show exactly what you’ve learned and keep you on track",
+              "description": "Turn any technical topic, syllabus, or goal into a structured learning path with curated lectures from top educators, research papers, and technical reading",
               "sameAs": [
                 "https://x.com/eulerfold",
                 "https://www.instagram.com/eulerfold"
@@ -159,7 +160,7 @@ export default function RootLayout({
               "areaServed": "Worldwide",
               "hasOfferCatalog": {
                 "@type": "OfferCatalog",
-                "name": "Learning Courses",
+                "name": "Learning Paths",
                 "itemListElement": [
                   {
                     "@type": "Course",
