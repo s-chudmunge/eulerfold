@@ -30,13 +30,13 @@ export default function LatestUpdates() {
       subject: a.subject,
       heroImage: a.heroImage,
     })),
-    ...Object.values(newsletters).map(nl => ({
-      id: `newsletter-${nl.slug}`,
+    ...Object.entries(newsletters).map(([slug, nl]) => ({
+      id: `newsletter-${slug}`,
       type: 'newsletter' as const,
       title: nl.title,
       excerpt: nl.subtitle || '',
       dateObj: new Date(nl.date),
-      slug: nl.slug,
+      slug: nl.slug || slug,
       author: nl.author,
       subject: 'Newsletter',
       heroImage: nl.hero_image_url || '',

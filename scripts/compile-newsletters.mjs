@@ -47,7 +47,7 @@ function compile() {
         const parsed = parseMarkdown(mdContent);
         if (!parsed) continue;
 
-        records[slug] = parsed;
+        records[slug] = { ...parsed, slug };
     }
 
     let tsOutput = `// THIS FILE IS AUTO-GENERATED. DO NOT EDIT DIRECTLY.
