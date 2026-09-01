@@ -17,13 +17,13 @@ import LatestUpdates from '@/components/landing/LatestUpdates';
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: 'EulerFold — Build learning paths that fit how you actually learn',
+  title: 'EulerFold - The right resources, in the right order, for what you want to learn',
   description: 'Turn any technical topic, syllabus, or goal into a structured learning path with curated lectures from top educators, research papers, and technical reading.',
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: 'https://www.eulerfold.com/',
-    title: 'EulerFold — Build learning paths that fit how you actually learn',
+    title: 'EulerFold - The right resources, in the right order, for what you want to learn',
     description: 'Turn any technical topic, syllabus, or goal into a structured learning path with curated lectures from top educators, research papers, and technical reading.',
     siteName: 'EulerFold',
     images: [{
@@ -35,7 +35,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'EulerFold — Build learning paths that fit how you actually learn',
+    title: 'EulerFold - The right resources, in the right order, for what you want to learn',
     description: 'Turn any technical topic, syllabus, or goal into a structured learning path with curated lectures from top educators, research papers, and technical reading.',
     creator: '@eulerfold',
   },
