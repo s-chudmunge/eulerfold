@@ -17,26 +17,26 @@ import LatestUpdates from '@/components/landing/LatestUpdates';
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: 'EulerFold AI - Build and track your courses',
-  description: 'Design dynamic, AI-generated curriculum aligned with the latest technology. Master deep technical skills with interactive courses, curated resources, and comprehensive progress tracking.',
+  title: 'EulerFold — Build learning paths that fit how you actually learn',
+  description: 'Turn any technical topic, syllabus, or goal into a structured learning path with curated lectures from top educators, research papers, and technical reading.',
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: 'https://www.eulerfold.com/',
-    title: 'EulerFold AI - Build and track your courses',
-    description: 'Design dynamic, AI-generated curriculum aligned with the latest technology. Master deep technical skills with interactive courses, curated resources, and comprehensive progress tracking.',
+    title: 'EulerFold — Build learning paths that fit how you actually learn',
+    description: 'Turn any technical topic, syllabus, or goal into a structured learning path with curated lectures from top educators, research papers, and technical reading.',
     siteName: 'EulerFold',
     images: [{
       url: '/og-image.png',
       width: 1200,
       height: 630,
-      alt: 'EulerFold - Intelligent Courses',
+      alt: 'EulerFold - Structured Learning Paths',
     }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'EulerFold AI - Build and track your courses',
-    description: 'Create structured learning courses, track your progress, and analyze your technical skills.',
+    title: 'EulerFold — Build learning paths that fit how you actually learn',
+    description: 'Turn any technical topic, syllabus, or goal into a structured learning path with curated lectures from top educators, research papers, and technical reading.',
     creator: '@eulerfold',
   },
 };
