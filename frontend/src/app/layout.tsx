@@ -70,11 +70,18 @@ export const metadata: Metadata = {
     siteName: 'EulerFold',
     title: 'EulerFold - The free AI tool to build, structure, and track your learning',
     description: 'Tell us what you want to learn. Our free AI tool builds your study path using lectures from top educators, university notes, and research papers, tracking your progress every step of the way.',
+    images: [{
+      url: '/og-image.png',
+      width: 1200,
+      height: 630,
+      alt: 'EulerFold',
+    }],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'EulerFold - The free AI tool to build, structure, and track your learning',
     description: 'Tell us what you want to learn. Our free AI tool builds your study path using lectures from top educators, university notes, and research papers, tracking your progress every step of the way.',
+    images: ['/og-image.png'],
     creator: '@eulerfold',
     site: '@eulerfold',
   },  robots: {
