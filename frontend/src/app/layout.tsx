@@ -30,16 +30,28 @@ const inconsolata = { variable: '--font-mono', className: 'font-mono' };
 export const metadata: Metadata = {
   applicationName: 'EulerFold',
   title: {
-    default: 'EulerFold - The right resources, in the right order, for what you want to learn',
+    default: 'EulerFold - The free AI tool to build, structure, and track your learning',
     template: '%s'
   },
-  description: 'Turn any technical topic, syllabus, or goal into a structured learning path with curated lectures from top educators, research papers, and technical reading.',
+  description: 'Tell us what you want to learn. Our free AI tool builds your study path using lectures from top educators, university notes, and research papers, tracking your progress every step of the way.',
   keywords: [
+    'free ai courses',
+    'free online courses',
+    'free technical courses',
+    'free ai learning tool',
+    'free ai roadmap generator',
+    'free ai course builder',
+    'free learning resources',
+    'free online study paths',
+    'free computer science courses',
+    'free ai study planner',
     'technical roadmaps',
     'learning paths',
     'skill tracking',
     'study planner',
     'research papers decoded',
+    'syllabus to roadmap',
+    'job description to learning path',
     'structured learning',
     'self-directed learning'
   ],
@@ -56,13 +68,13 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     siteName: 'EulerFold',
-    title: 'EulerFold - The right resources, in the right order, for what you want to learn',
-    description: 'Turn any technical topic, syllabus, or goal into a structured learning path with curated lectures from top educators, research papers, and technical reading.',
+    title: 'EulerFold - The free AI tool to build, structure, and track your learning',
+    description: 'Tell us what you want to learn. Our free AI tool builds your study path using lectures from top educators, university notes, and research papers, tracking your progress every step of the way.',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'EulerFold - The right resources, in the right order, for what you want to learn',
-    description: 'Turn any technical topic, syllabus, or goal into a structured learning path with curated lectures from top educators, research papers, and technical reading.',
+    title: 'EulerFold - The free AI tool to build, structure, and track your learning',
+    description: 'Tell us what you want to learn. Our free AI tool builds your study path using lectures from top educators, university notes, and research papers, tracking your progress every step of the way.',
     creator: '@eulerfold',
     site: '@eulerfold',
   },  robots: {
@@ -146,7 +158,7 @@ export default function RootLayout({
                 "width": 512,
                 "height": 512
               },
-              "description": "Turn any technical topic, syllabus, or goal into a structured learning path with curated lectures from top educators, research papers, and technical reading",
+              "description": "Tell us what you want to learn. Our free AI tool builds your study path using lectures from top educators, university notes, and research papers, tracking your progress every step of the way.",
               "sameAs": [
                 "https://x.com/eulerfold",
                 "https://www.instagram.com/eulerfold"
