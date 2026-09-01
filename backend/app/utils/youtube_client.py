@@ -4,7 +4,7 @@ import math
 import re
 import os
 import cohere
-from typing import List, Dict
+from typing import List, Dict, Optional, Set
 from app.core.config import settings
 
 async def generate_embeddings(texts: List[str]) -> List[List[float]]:
