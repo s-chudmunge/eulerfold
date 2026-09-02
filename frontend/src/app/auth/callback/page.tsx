@@ -29,19 +29,50 @@ export default function AuthCallbackPage() {
       if (code) {
         try {
           // 1. Exchange the PKCE code for a session.
-          // We do NOT call getSession() here to avoid competing for the auth lock
-          // with the global interceptors/layout listeners.
-          await supabase.auth.exchangeCodeForSession(code);
+          const { data, error } = await supabase.auth.exchangeCodeForSession(code);
+          if (error) throw error;
+
+          // If this was a Google Calendar permissions connection flow, persist the flag
+          if (window.location.search.includes('calendar') || window.location.search.includes('scope')) {
+            try {
+              const currentMeta = data.session?.user?.user_metadata || {};
+              const conns = currentMeta.connections || {};
+              await supabase.auth.updateUser({
+                data: {
+                  connections: {
+                    ...conns,
+                    google_calendar_connected: true
+                  }
+                }
+              });
+            } catch (metaErr) {
+              console.warn('Failed updating user calendar metadata:', metaErr);
+            }
+            localStorage.setItem('conn_google_calendar', 'true');
+          }
         } catch (error) {
           console.error('Auth code exchange failed:', error);
         }
       }
 
-      // 2. Small delay to allow Supabase client to settle the internal lock
-      // and synchronize the session to local storage before we navigate.
+      // If opened in a popup/child window from Settings, notify opener and close cleanly
+      const isPopup = window.opener && !window.opener.closed;
+      if (isPopup || window.location.search.includes('popup=true')) {
+        try {
+          if (window.opener && !window.opener.closed) {
+            window.opener.postMessage({ type: 'EULERFOLD_AUTH_SUCCESS', provider: 'google_calendar' }, '*');
+          }
+        } catch (e) {}
+        setTimeout(() => {
+          window.close();
+        }, 600);
+        return;
+      }
+
+      // 2. Delay to allow session to settle before navigating
       setTimeout(() => {
         router.push(next);
-      }, 1200); // Slightly longer for smooth transition
+      }, 1200);
     };
 
     handleAuth();

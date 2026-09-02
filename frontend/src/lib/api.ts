@@ -962,3 +962,122 @@ export const dashboardAPI = {
         return response.data;
     }
 };
+
+export const goldfishAPI = {
+    getStatus: async (): Promise<{
+        is_pro: boolean,
+        monthly_limit: number | string,
+        used_this_month: number,
+        remaining_credits: number,
+        connections: {
+            google_calendar: boolean,
+            notion: boolean,
+            todoist: boolean
+        }
+    }> => {
+        const response = await api.get('/goldfish/status');
+        return response.data;
+    },
+    scoutReading: async (data: {
+        roadmap_id: number,
+        module_index: number,
+        prompt: string,
+        action?: 'add' | 'replace'
+    }): Promise<{
+        status: string,
+        agent: string,
+        action: string,
+        module_title: string,
+        added_resources: any[],
+        total_module_resources: any[],
+        summary: string,
+        quota: any
+    }> => {
+        const response = await api.post('/goldfish/scout-reading', data);
+        return response.data;
+    },
+    findAlternateVideo: async (data: {
+        roadmap_id: number,
+        module_index: number,
+        topic_index: number,
+        prompt?: string,
+        preferred_channel?: string,
+        action?: 'replace' | 'candidates_only'
+    }): Promise<{
+        status: string,
+        agent: string,
+        topic_title: string,
+        selected_video: any,
+        all_candidates: any[],
+        replaced: boolean,
+        summary: string,
+        quota: any
+    }> => {
+        const response = await api.post('/goldfish/alternate-video', data);
+        return response.data;
+    },
+    generateSchedule: async (data: {
+        roadmap_id: number,
+        week_number?: number,
+        intensity?: 'casual' | 'balanced' | 'intense',
+        custom_notes?: string,
+        start_date?: string
+    }): Promise<{
+        status: string,
+        agent: string,
+        roadmap_id: number,
+        week_number: number,
+        module_title: string,
+        tasks_created_count: number,
+        schedule: any[],
+        ics_data: string,
+        connected_services: {
+            google_calendar: boolean,
+            notion: boolean,
+            todoist: boolean
+        },
+        summary: string,
+        quota: any
+    }> => {
+        const response = await api.post('/goldfish/generate-schedule', data);
+        return response.data;
+    },
+    chat: async (data: {
+        roadmap_id: number,
+        module_index: number,
+        topic_index: number,
+        message: string,
+        chat_history?: { role: string, content: string }[]
+    }): Promise<{
+        status: string,
+        agent: string,
+        reply: string,
+        quota: any,
+        context: {
+            topic_title: string,
+            module_title: string,
+            progress_percent: number
+        }
+    }> => {
+        const response = await api.post('/goldfish/chat', data);
+        return response.data;
+    },
+    getDailyBriefing: async (): Promise<{
+        status: string,
+        briefing: string,
+        highlight_badge?: string,
+        action_cta?: {
+            label: string,
+            url: string
+        },
+        stats?: {
+            streak_days: number,
+            active_roadmaps_count: number,
+            sessions_last_7_days: number
+        }
+    }> => {
+        const response = await api.get('/goldfish/daily-briefing');
+        return response.data;
+    }
+};
+

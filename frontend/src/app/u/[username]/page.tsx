@@ -1,11 +1,8 @@
 import React from 'react';
 import { Metadata } from 'next';
-import ProfileClient from './ProfileClient';
-import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import UserNav from '@/components/UserNav';
-import PagePreloader from '@/components/PagePreloader';
 import { supabase } from '@/lib/supabase/client';
+import PublicHeader from '@/components/PublicHeader';
 
 export async function generateStaticParams() {
     try {
@@ -77,6 +74,10 @@ export async function generateMetadata({ params }: { params: { username: string 
     };
 }
 
+import ProfileHeader from './ProfileHeader';
+import UserProfileClient from './UserProfileClient';
+import Footer from '@/components/Footer';
+
 export default async function PublicProfilePage({ params }: { params: { username: string } }) {
     const profile = await getProfile(params.username);
 
@@ -85,11 +86,17 @@ export default async function PublicProfilePage({ params }: { params: { username
     }
 
     return (
-        <div className="min-h-screen flex flex-col">
-            <PagePreloader />
-            <main className="flex-grow min-w-0 h-screen overflow-hidden">
-                <ProfileClient profile={profile} />
-            </main>
+        <div 
+            className="relative flex flex-col min-h-screen text-text-primary bg-background"
+            style={{ paddingTop: 'var(--announcement-height, 0px)' }}
+        >
+            <div className="relative z-10 flex-1 flex flex-col">
+                <ProfileHeader />
+                <main className="flex-1 flex flex-col">
+                    <UserProfileClient profile={profile} />
+                </main>
+                <Footer />
+            </div>
         </div>
     );
 }

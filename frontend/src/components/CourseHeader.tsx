@@ -3,10 +3,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase/client';
-import { LogOut, ChevronDown, Settings, ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, User as UserIcon, Trophy, Menu } from 'lucide-react';
+import { LogOut, ChevronDown, Settings, ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, User as UserIcon, Trophy, Menu, LayoutDashboard, UserCircle, CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { authAPI } from '@/lib/api';
+import VerifiedBadge from '@/components/VerifiedBadge';
+import { HeaderFocusPill } from '@/components/grove/HeaderFocusPill';
+import { DailyBriefingBell } from '@/components/goldfish/DailyBriefingBell';
 import { useSettings } from './SettingsProvider';
 
 const ProfileDropdown = ({ user, profile, handleSignOut }: { user: any; profile: any; handleSignOut: () => void }) => {
@@ -269,7 +272,11 @@ export default function CourseHeader({
         </div>
 
         {user ? (
-          <ProfileDropdown user={user} profile={profile} handleSignOut={handleSignOut} />
+          <div className="flex items-center gap-2">
+            <HeaderFocusPill />
+            <DailyBriefingBell />
+            <ProfileDropdown user={user} profile={profile} handleSignOut={handleSignOut} />
+          </div>
         ) : (
           <div className="w-8 h-8 bg-callout-bg animate-pulse rounded-full" />
         )}

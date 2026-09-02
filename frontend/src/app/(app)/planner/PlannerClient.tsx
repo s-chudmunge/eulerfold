@@ -26,6 +26,8 @@ import {
 import { plannerAPI, sessionsAPI, User } from '@/lib/api';
 import AppSidebar from '@/components/AppSidebar';
 import ThemeToggle from '@/components/ThemeToggle';
+import { HeaderFocusPill } from '@/components/grove/HeaderFocusPill';
+import { DailyBriefingBell } from '@/components/goldfish/DailyBriefingBell';
 import { useAuth } from '@/components/AuthProvider';
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, isSameMonth, isSameDay, addDays, parseISO } from 'date-fns';
 import Link from 'next/link';
@@ -166,6 +168,8 @@ export default function PlannerClient() {
           </div>
 
           <div className="flex items-center gap-3">
+            <HeaderFocusPill />
+            <DailyBriefingBell />
             <ThemeToggle />
             <button 
               onClick={() => {

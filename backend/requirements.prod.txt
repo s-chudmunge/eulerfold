@@ -37,4 +37,3 @@ google-genai==0.3.0
 cohere==5.11.2
 beautifulsoup4
 ddgs
-playwright

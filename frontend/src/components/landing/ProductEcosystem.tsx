@@ -10,7 +10,8 @@ interface Product {
   title: string;
   category: string;
   description: string;
-  icon: React.ElementType;
+  icon?: React.ElementType;
+  imageIcon?: string;
   href: string;
 }
 
@@ -18,41 +19,17 @@ const products: Product[] = [
   {
     id: 'architect', 
     title: "AI Architect",
-    category: "Planning",
-    description: "Describe your goal and background to build a step-by-step roadmap with curated videos, theory, and practice.",
+    category: "Curriculum",
+    description: "Build custom step-by-step roadmaps from goals, job posts, syllabi, or URLs with verified lectures and reading.",
     icon: Sparkles, 
     href: "/#hero-prompt-input"
   },
   {
-    id: 'job', 
-    title: "Job Decoded",
-    category: "Career",
-    description: "Reverse engineer any job posting from LinkedIn or Indeed into a targeted learning path for that role.",
-    icon: Briefcase, 
-    href: "/#hero-prompt-input"
-  },
-  {
-    id: 'url', 
-    title: "Deconstruct URL",
-    category: "Sources",
-    description: "Reverse engineer documentation, engineering blogs, or GitHub repositories directly into a structured roadmap.",
-    icon: Link2, 
-    href: "/#hero-prompt-input"
-  },
-  {
-    id: 'syllabus', 
-    title: "Syllabus Parser",
-    category: "Import",
-    description: "Import textbook outlines or university syllabi and learn them the way you want.",
-    icon: BookOpen, 
-    href: "/#hero-prompt-input"
-  },
-  {
-    id: 'gaps', 
-    title: "Skill Gap Analyzer",
-    category: "Diagnostic",
-    description: "Take a short diagnostic quiz to uncover your knowledge gaps and skip what you already know.",
-    icon: Target, 
+    id: 'goldfish', 
+    title: "Goldfish Agentic Co-Pilot",
+    category: "Assistance",
+    description: "A helpful agentic companion by your side at all times while learning.",
+    imageIcon: "/goldfish/goldfish_happy.png", 
     href: "/#hero-prompt-input"
   },
   {
@@ -64,20 +41,28 @@ const products: Product[] = [
     href: "/research-decoded"
   },
   {
+    id: 'gaps', 
+    title: "Skill Gap Analyzer",
+    category: "Diagnostic",
+    description: "Take targeted diagnostic quizzes to uncover exact knowledge gaps and skip concepts you already know.",
+    icon: Target, 
+    href: "/#hero-prompt-input"
+  },
+  {
+    id: 'planner', 
+    title: "Study Planner & Focus",
+    category: "Workflow",
+    description: "Schedule daily study sessions from your active courses and stay locked in with integrated Pomodoro sessions.",
+    icon: Calendar, 
+    href: "/planner"
+  },
+  {
     id: 'lab', 
     title: "Research Lab",
     category: "Exploration",
     description: "Explore technical documents and break down complex research architectures interactively.",
     icon: Microscope, 
     href: "/"
-  },
-  {
-    id: 'planner', 
-    title: "Study Planner",
-    category: "Workflow",
-    description: "Schedule daily study sessions from your active roadmaps based on your weekly hours and target pace.",
-    icon: Calendar, 
-    href: "/planner"
   },
 ];
 
@@ -113,12 +98,12 @@ export default function ProductEcosystem() {
               transition={{ delay: 0.14 }}
               className="text-[14px] text-text-muted leading-relaxed"
             >
-              From reverse engineering job descriptions to importing syllabi, build roadmaps tailored to how you want to learn.
+              From structured curriculum generation to autonomous lecture searching and first-principles paper breakdowns.
             </motion.p>
           </div>
 
           {/* Products Grid */}
-          <div className="grid grid-cols-2 gap-3 max-w-xl flex-grow">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl flex-grow">
             {products.map((product, index) => {
               const Icon = product.icon;
               return (
@@ -141,9 +126,6 @@ export default function ProductEcosystem() {
                         // Dispatch event to HeroPromptInput
                         const modeMap: Record<string, string> = {
                           'architect': 'ai',
-                          'job': 'job',
-                          'url': 'url',
-                          'syllabus': 'syllabus',
                           'gaps': 'gaps'
                         };
                         const targetMode = modeMap[product.id];
@@ -152,10 +134,14 @@ export default function ProductEcosystem() {
                         }
                       }
                     }}
-                    className="border border-border rounded-lg p-4 flex flex-col gap-2 hover:border-accent/50 transition-colors cursor-pointer"
+                    className="border border-border rounded-md bg-sidebar/50 p-4 flex flex-col gap-2 hover:border-accent/50 transition-colors cursor-pointer"
                   >
                     <div className="flex items-center gap-2">
-                      <Icon className="w-4 h-4 text-text-muted shrink-0" strokeWidth={1.5} />
+                      {product.imageIcon ? (
+                        <img src={product.imageIcon} alt="" className="w-4 h-4 object-contain shrink-0" />
+                      ) : Icon ? (
+                        <Icon className="w-4 h-4 text-text-muted shrink-0" strokeWidth={1.5} />
+                      ) : null}
                       <span className="text-[14px] font-bold text-text-heading">
                         {product.title}
                       </span>

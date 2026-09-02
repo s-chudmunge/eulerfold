@@ -20,8 +20,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # Copy and install Python dependencies FIRST (this layer is cached unless requirements change)
 COPY requirements.prod.txt ./requirements.txt
 RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt && \
-    playwright install --with-deps chromium
+    pip install --no-cache-dir -r requirements.txt
 
 # Copy application code (this changes frequently, so it's last)
 COPY app/ ./app/

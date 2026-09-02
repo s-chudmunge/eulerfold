@@ -37,4 +37,3 @@ google-genai
 cohere
 beautifulsoup4
 ddgs
-playwright

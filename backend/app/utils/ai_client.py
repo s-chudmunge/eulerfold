@@ -561,3 +561,85 @@ async def generate_text_stream(prompt: str, model: str = None, response_mime_typ
 
     full_text = await generate_text(prompt, model=model, response_mime_type=response_mime_type)
     yield full_text
+
+
+async def call_openrouter_with_tools(
+    messages: list,
+    tools: list,
+    model: str = "openrouter/free",
+    tool_choice: str = "auto"
+) -> dict:
+    """
+    Call OpenRouter models using native OpenAI-compatible tool calling.
+    Uses 'openrouter/free' router by default to leverage free models on OpenRouter.
+    """
+    api_key = settings.OPENROUTER_API_KEY or os.getenv("OPENROUTER_API_KEY")
+    if not api_key:
+        raise RuntimeError("OPENROUTER_API_KEY not configured")
+
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+        "HTTP-Referer": "https://www.eulerfold.com",
+        "X-Title": "EulerFold Goldfish Agent"
+    }
+
+    candidate_free_models = [
+        "openrouter/free",
+        "meta-llama/llama-3.3-70b-instruct:free",
+        "mistralai/mistral-7b-instruct:free",
+        "google/gemini-2.0-flash-lite-preview-02-05:free"
+    ]
+
+    payload = {
+        "model": model,
+        "messages": messages,
+        "tools": tools,
+        "tool_choice": tool_choice,
+        "temperature": 0.2,
+        "max_tokens": 4096,
+    }
+
+    async with httpx.AsyncClient(timeout=60.0) as client:
+        for attempt, target_model in enumerate(candidate_free_models):
+            payload["model"] = target_model
+            logger.info(f"[AI Tool] Initiating OpenRouter tool call with model: {target_model}")
+            try:
+                res = await client.post(
+                    "https://openrouter.ai/api/v1/chat/completions",
+                    headers=headers,
+                    json=payload,
+                    timeout=60.0
+                )
+                if res.status_code == 200:
+                    data = res.json()
+                    choices = data.get("choices", [])
+                    resolved_model = data.get("model") or target_model
+                    if choices:
+                        msg = choices[0].get("message", {})
+                        tool_calls = msg.get("tool_calls", [])
+                        content = msg.get("content") or ""
+                        
+                        logger.info(f"[AI Tool] ✓ OpenRouter resolved model: '{resolved_model}' (requested: {target_model}) | Tool calls: {len(tool_calls)}")
+                        for tc in tool_calls:
+                            logger.info(f"[AI Tool] -> Function: {tc.get('function', {}).get('name')} | Args: {tc.get('function', {}).get('arguments')}")
+                        
+                        return {
+                            "content": content,
+                            "tool_calls": tool_calls,
+                            "model": resolved_model,
+                            "usage": data.get("usage", {})
+                        }
+                logger.warning(f"OpenRouter tool call with {target_model} returned {res.status_code}: {res.text[:150]}")
+            except Exception as e:
+                logger.warning(f"OpenRouter tool call error with {target_model}: {e}")
+            await asyncio.sleep(0.5)
+
+    # Fallback to general generation if tool calling returned no choice
+    logger.warning("[AI Tool] All candidate free models failed for tool call.")
+    return {
+        "content": None,
+        "tool_calls": [],
+        "model": "fallback",
+        "usage": {}
+    }

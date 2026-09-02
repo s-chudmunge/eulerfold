@@ -3,6 +3,7 @@ from typing import List, Dict, Any
 from ..schemas import LearningSession, LearningSessionCreate, User
 from app.core.auth import get_current_user
 from app.core.supabase_client import get_supabase_client
+from app.utils.eulercoins import award_coins
 from datetime import datetime, timezone
 
 router = APIRouter(prefix="/sessions", tags=["sessions"])
@@ -12,7 +13,7 @@ async def log_session(
     session_data: LearningSessionCreate,
     current_user: User = Depends(get_current_user)
 ):
-    """Log a learning session duration (in seconds)"""
+    """Log a learning session duration (in seconds) and award coins for milestone focus sessions"""
     if session_data.duration_seconds <= 0:
         return {"status": "ignored", "reason": "duration_too_short"}
     
@@ -22,7 +23,7 @@ async def log_session(
 
     sb = get_supabase_client()
     
-    # Insert session
+    # Insert session into PostgreSQL database
     res = sb.table("learning_sessions").insert({
         "user_id": current_user.supabase_uid,
         "duration_seconds": session_data.duration_seconds
@@ -30,6 +31,17 @@ async def log_session(
     
     if not res.data:
         raise HTTPException(status_code=500, detail="Failed to log session")
+    
+    # Award EulerCoins for completed focus session (e.g. >= 15 minutes)
+    if session_data.duration_seconds >= 900:
+        try:
+            await award_coins(
+                user_email=current_user.email,
+                amount=5,
+                reason=f"Completed {round(session_data.duration_seconds / 60)}m Focus Session"
+            )
+        except Exception:
+            pass
         
     return {"status": "success", "session_id": res.data[0]["id"]}
 

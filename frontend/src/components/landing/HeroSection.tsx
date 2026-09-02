@@ -1,13 +1,12 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { BookOpen, ArrowRight } from 'lucide-react';
+import { BookOpen, ArrowRight, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/components/AuthProvider';
 import { roadmapsAPI } from '@/lib/api';
 import HeroPromptInput from '@/components/landing/HeroPromptInput';
-import { TrustedSourcesTicker } from '@/app/HomeClientComponents';
-import { CreatorsTicker } from '@/components/landing/CreatorsTicker';
+import CurvedFlowShowcase from '@/components/landing/CurvedFlowShowcase';
 
 export default function HeroSection() {
   const { user } = useAuth();
@@ -30,28 +29,29 @@ export default function HeroSection() {
   }, [user]);
 
   return (
-    <div className="relative w-full">
-      <section className="relative pt-24 pb-8 sm:pt-28 md:pt-36 md:pb-16 px-6 min-h-[600px] md:min-h-[750px] flex flex-col items-center justify-between w-full">
+    <div className="relative w-full overflow-hidden">
+      <section className="relative pt-24 pb-4 sm:pt-28 md:pt-36 md:pb-8 px-6 min-h-[600px] md:min-h-[720px] flex flex-col items-center justify-between w-full">
         <div className="max-w-3xl mx-auto w-full relative z-10 flex-1 flex flex-col justify-center">
-          <div className="text-center">
+          <div className="text-center flex flex-col items-center">
+            {/* Simple Clean Overline */}
+            <div className="flex items-center gap-1.5 mb-5 text-[11px] font-mono font-bold tracking-wider text-accent uppercase">
+              <span>EulerFold Agentic Learning</span>
+            </div>
 
-            <h1 className="text-3xl sm:text-4xl md:text-[48px] font-semibold text-text-heading mb-4 md:mb-6 leading-[1.1] tracking-tight">
-              The right resources,{' '}
-              <br className="hidden md:block" />
-              in the right order,{' '}
-              <br className="hidden md:block" />
-              for{' '}
-              <span className="text-accent">what you're trying to learn.</span>
+            {/* Main Headline */}
+            <h1 className="text-4xl sm:text-5xl md:text-[54px] font-bold text-text-heading mb-4 md:mb-5 leading-[1.1] tracking-tight max-w-2xl">
+              Learning for the AI era.{' '}
+              <br className="hidden sm:block" />
+              <span className="font-serif italic font-normal text-text-heading/90">Agentic and personalized.</span>
             </h1>
 
-            <p className="text-[15px] text-text-muted mb-10 md:mb-12 max-w-xl mx-auto leading-relaxed">
-              Tell us your goal. We organize videos by top educators, in-depth reading material, and research papers.
+            {/* Subheadline */}
+            <p className="text-[15px] md:text-[16px] text-text-muted max-w-xl mb-8 md:mb-10 leading-relaxed font-normal">
+              A free agentic system that creates your learning path and guides you 24/7 toward your goal.
             </p>
 
-
-
             {/* Interactive prompt input */}
-            <div id="hero-prompt-input" className="scroll-mt-32">
+            <div id="hero-prompt-input" className="w-full scroll-mt-32">
               <HeroPromptInput />
             </div>
 
@@ -59,40 +59,21 @@ export default function HeroSection() {
             <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
               {lastRoadmap && (
                 <Link
-                  href={`/roadmap/${lastRoadmap.slug}/learn`}
-                  className="inline-flex items-center gap-2 bg-text-heading text-background px-5 py-2.5 rounded-md text-[13px] font-bold hover:opacity-80 transition-opacity"
+                  href={`/roadmap/${lastRoadmap.slug}`}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-sidebar hover:bg-callout-bg border border-border rounded-md text-[13px] font-medium text-text-heading transition-colors"
                 >
-                  <ArrowRight className="w-3.5 h-3.5" />
-                  <span className="truncate max-w-[150px] sm:max-w-[180px]">Continue: {lastRoadmap.title}</span>
+                  <BookOpen className="w-4 h-4 text-accent" />
+                  <span>Resume: {lastRoadmap.title}</span>
+                  <ArrowRight className="w-3.5 h-3.5 text-text-muted" />
                 </Link>
               )}
-              <Link
-                href="/explore"
-                className="inline-flex items-center gap-2 border border-border text-text-primary px-5 py-2.5 rounded-md text-[13px] font-bold hover:border-accent/40 transition-colors"
-              >
-              <BookOpen className="w-3.5 h-3.5" /> Browse Roadmaps
-              </Link>
             </div>
-
-            {/* Sign in link */}
-            <div className="flex items-center justify-center gap-2 mt-5 h-[20px]">
-              {!user && (
-                <>
-                  <span className="text-[12px] text-text-muted">Already a member?</span>
-                  <Link href="/login" className="text-[12px] font-bold text-accent hover:underline">
-                    Sign in to your account
-                  </Link>
-                </>
-              )}
-            </div>
-
           </div>
         </div>
 
-        {/* Trusted sources ticker */}
-        <div className="w-full relative z-10 mt-10 md:mt-16">
-          <TrustedSourcesTicker />
-          <CreatorsTicker />
+        {/* Visual Course Graph Showcase */}
+        <div className="w-full mt-4 md:mt-8">
+          <CurvedFlowShowcase />
         </div>
       </section>
     </div>

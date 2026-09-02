@@ -8,6 +8,8 @@ import { supabase } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { useSettings } from './SettingsProvider';
 import VerifiedBadge from '@/components/VerifiedBadge';
+import { DailyBriefingBell } from '@/components/goldfish/DailyBriefingBell';
+import { HeaderFocusPill } from '@/components/grove/HeaderFocusPill';
 
 export default function UserNav() {
   const { user, loading } = useAuth();
@@ -45,11 +47,14 @@ export default function UserNav() {
     const initials = displayName.substring(0, 1).toUpperCase();
 
     return (
-      <div className="relative" ref={dropdownRef}>
-        <button 
-          onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center gap-2 p-1 rounded-lg hover:bg-sidebar/40 transition-colors border border-transparent hover:border-border/40"
-        >
+      <div className="flex items-center gap-2">
+        <HeaderFocusPill />
+        <DailyBriefingBell />
+        <div className="relative" ref={dropdownRef}>
+          <button 
+            onClick={() => setIsOpen(!isOpen)}
+            className="flex items-center gap-2 p-1 rounded-lg hover:bg-sidebar/40 transition-colors border border-transparent hover:border-border/40"
+          >
           <div className="w-6.5 h-6.5 rounded-md bg-accent/10 border border-accent/20 flex items-center justify-center overflow-hidden">
             <img 
               src={(avatarUrl?.includes('initials') ? null : avatarUrl) || `https://api.dicebear.com/7.x/notionists/svg?seed=${encodeURIComponent(displayName)}&backgroundColor=b6e3f4,c0aede,d1d4f9,ffdfbf,ffd5dc`} 
@@ -130,6 +135,7 @@ export default function UserNav() {
             </div>
           </div>
         )}
+        </div>
       </div>
     );
 

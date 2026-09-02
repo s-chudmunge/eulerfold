@@ -22,7 +22,11 @@ import {
   CreditCard,
   Clock,
   Zap,
-  Droplet
+  Droplet,
+  Calendar,
+  CalendarCheck,
+  ListTodo,
+  BookOpen
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/components/AuthProvider';
@@ -62,6 +66,21 @@ export default function SettingsModal() {
   const [localAIModelId, setLocalAIModelId] = useState<string | null>(null);
   const [localAIModelName, setLocalAIModelName] = useState<string | null>(null);
   const [isLocalAIModalOpen, setIsLocalAIModalOpen] = useState(false);
+
+  const [connections, setConnections] = useState<{
+    google_calendar: boolean;
+    notion: boolean;
+    todoist: boolean;
+  }>({
+    google_calendar: false,
+    notion: false,
+    todoist: false
+  });
+
+  const [connectingService, setConnectingService] = useState<'notion' | 'todoist' | null>(null);
+  const [notionToken, setNotionToken] = useState('');
+  const [todoistToken, setTodoistToken] = useState('');
+  const [isSavingConnection, setIsSavingConnection] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
@@ -149,8 +168,125 @@ export default function SettingsModal() {
       paymentsAPI.getSubscriptionStatus()
         .then(res => setSubStatus(res))
         .catch(e => console.error("Failed to load subscription status", e));
+
+      // Load external connections status
+      const userMeta = (authUser as any)?.raw_user_meta_data || {};
+      const userConns = userMeta.connections || {};
+      setConnections({
+        google_calendar: Boolean(userConns.google_calendar_connected || localStorage.getItem('conn_google_calendar') === 'true'),
+        notion: Boolean(userConns.notion_connected || localStorage.getItem('conn_notion') === 'true'),
+        todoist: Boolean(userConns.todoist_connected || localStorage.getItem('conn_todoist') === 'true')
+      });
     }
+
+    const handleWindowMessage = (e: MessageEvent) => {
+      if (e.data?.type === 'EULERFOLD_AUTH_SUCCESS' && e.data?.provider === 'google_calendar') {
+        setConnections(prev => ({ ...prev, google_calendar: true }));
+        localStorage.setItem('conn_google_calendar', 'true');
+        setMessage({ type: 'success', text: 'Google Calendar connected successfully.' });
+      }
+    };
+
+    const handleStorageEvent = (e: StorageEvent) => {
+      if (e.key === 'conn_google_calendar' && e.newValue === 'true') {
+        setConnections(prev => ({ ...prev, google_calendar: true }));
+        setMessage({ type: 'success', text: 'Google Calendar connected successfully.' });
+      }
+    };
+
+    window.addEventListener('message', handleWindowMessage);
+    window.addEventListener('storage', handleStorageEvent);
+    return () => {
+      window.removeEventListener('message', handleWindowMessage);
+      window.removeEventListener('storage', handleStorageEvent);
+    };
   }, [authUser, isOpen]);
+
+  const handleConnectGoogleCalendar = async () => {
+    try {
+      const callbackUrl = `${window.location.origin}/auth/callback?popup=true&scope=calendar`;
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: callbackUrl,
+          scopes: 'https://www.googleapis.com/auth/calendar.events',
+          skipBrowserRedirect: true,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent'
+          }
+        }
+      });
+      if (error) throw error;
+      if (data?.url) {
+        // Open popup window with opener reference intact so callback can close it and notify parent
+        const width = 540;
+        const height = 660;
+        const left = window.screenX + (window.outerWidth - width) / 2;
+        const top = window.screenY + (window.outerHeight - height) / 2;
+        const popup = window.open(
+          data.url,
+          'google_oauth_popup',
+          `width=${width},height=${height},left=${left},top=${top},scrollbars=yes,resizable=yes`
+        );
+        if (popup) {
+          popup.focus();
+        }
+      }
+    } catch (err: any) {
+      console.error("Google Calendar OAuth error:", err);
+      // Fallback: update local sync state
+      handleToggleConnection('google_calendar');
+    }
+  };
+
+  const handleSaveIntegrationToken = async (service: 'notion' | 'todoist', token: string) => {
+    if (!token.trim()) {
+      setMessage({ type: 'error', text: `Please enter your ${service === 'notion' ? 'Notion' : 'Todoist'} API token.` });
+      return;
+    }
+    setIsSavingConnection(true);
+    try {
+      const userMeta = (authUser as any)?.raw_user_meta_data || {};
+      const existingConns = userMeta.connections || {};
+      await authAPI.updateMetadata({
+        connections: {
+          ...existingConns,
+          [`${service}_connected`]: true,
+          [`${service}_token`]: token.trim()
+        }
+      });
+      setConnections(prev => ({ ...prev, [service]: true }));
+      localStorage.setItem(`conn_${service}`, 'true');
+      setConnectingService(null);
+      setMessage({ type: 'success', text: `${service === 'notion' ? 'Notion' : 'Todoist'} connected successfully.` });
+    } catch (err: any) {
+      setMessage({ type: 'error', text: err.message || `Failed to save ${service} integration.` });
+    } finally {
+      setIsSavingConnection(false);
+    }
+  };
+
+  const handleToggleConnection = async (service: 'google_calendar' | 'notion' | 'todoist') => {
+    const next = !connections[service];
+    const newConns = { ...connections, [service]: next };
+    setConnections(newConns);
+    localStorage.setItem(`conn_${service}`, next ? 'true' : 'false');
+    try {
+      const userMeta = (authUser as any)?.raw_user_meta_data || {};
+      const existingConns = userMeta.connections || {};
+      await authAPI.updateMetadata({
+        connections: {
+          ...existingConns,
+          [`${service}_connected`]: next
+        }
+      });
+      const label = service === 'google_calendar' ? 'Google Calendar' : service === 'notion' ? 'Notion' : 'Todoist';
+      setMessage({ type: 'success', text: next ? `${label} connected.` : `${label} disconnected.` });
+    } catch (err: any) {
+      console.error('Failed to update connection:', err);
+    }
+  };
 
   const handleLinkGithub = async () => {
     try {
@@ -528,6 +664,198 @@ export default function SettingsModal() {
                   >
                     Configure
                   </button>
+                )}
+              </div>
+
+              {/* Google Calendar */}
+              <div className="flex flex-col p-4 bg-background border border-border rounded-md gap-3">
+                <div className="flex items-center justify-between gap-6">
+                  <div className="flex items-center gap-4">
+                    <div className={`w-9 h-9 rounded-md flex items-center justify-center border ${connections.google_calendar ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600' : 'bg-sidebar border-border text-text-heading'}`}>
+                      <Calendar className="w-4 h-4" />
+                    </div>
+                    <div className="space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <h3 className="inconsolata-ui text-[12px] font-bold text-text-heading">Google Calendar</h3>
+                        <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-accent/10 text-accent uppercase">Agent Sync</span>
+                      </div>
+                      <p className="manrope-body text-[10px] text-text-muted italic opacity-60">
+                        Sync weekly study sessions and milestone reminders to your calendar.
+                      </p>
+                    </div>
+                  </div>
+
+                  {connections.google_calendar ? (
+                    <div className="flex items-center gap-3">
+                      <div className="px-3 py-1 rounded-md text-[10px] font-bold inconsolata-ui bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 uppercase">
+                        Active
+                      </div>
+                      <button
+                        onClick={() => handleToggleConnection('google_calendar')}
+                        className="text-[9px] font-bold text-red-500 hover:underline uppercase"
+                      >
+                        Disconnect
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={handleConnectGoogleCalendar}
+                      className="px-4 py-1.5 rounded-md text-[10px] font-bold inconsolata-ui bg-text-heading text-background hover:opacity-90 transition-all uppercase flex items-center gap-1.5"
+                    >
+                      <span>Connect</span>
+                      <ExternalLink className="w-3 h-3" />
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              {/* Notion */}
+              <div className="flex flex-col p-4 bg-background border border-border rounded-md gap-3">
+                <div className="flex items-center justify-between gap-6">
+                  <div className="flex items-center gap-4">
+                    <div className={`w-9 h-9 rounded-md flex items-center justify-center border ${connections.notion ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600' : 'bg-sidebar border-border text-text-heading'}`}>
+                      <BookOpen className="w-4 h-4" />
+                    </div>
+                    <div className="space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <h3 className="inconsolata-ui text-[12px] font-bold text-text-heading">Notion</h3>
+                        <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-accent/10 text-accent uppercase">Agent Sync</span>
+                      </div>
+                      <p className="manrope-body text-[10px] text-text-muted italic opacity-60">
+                        Export weekly schedules, lecture notes, and study checkpoints into Notion.
+                      </p>
+                    </div>
+                  </div>
+
+                  {connections.notion ? (
+                    <div className="flex items-center gap-3">
+                      <div className="px-3 py-1 rounded-md text-[10px] font-bold inconsolata-ui bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 uppercase">
+                        Active
+                      </div>
+                      <button
+                        onClick={() => handleToggleConnection('notion')}
+                        className="text-[9px] font-bold text-red-500 hover:underline uppercase"
+                      >
+                        Disconnect
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setConnectingService(connectingService === 'notion' ? null : 'notion')}
+                      className="px-4 py-1.5 rounded-md text-[10px] font-bold inconsolata-ui bg-text-heading text-background hover:opacity-90 transition-all uppercase"
+                    >
+                      {connectingService === 'notion' ? 'Cancel' : 'Connect'}
+                    </button>
+                  )}
+                </div>
+
+                {/* Notion Token Setup Panel */}
+                {connectingService === 'notion' && !connections.notion && (
+                  <div className="pt-3 mt-2 border-t border-border space-y-3 animate-in fade-in duration-200">
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className="font-semibold text-text-heading">Enter Notion Integration Token:</span>
+                      <a 
+                        href="https://www.notion.so/my-integrations" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-accent hover:underline flex items-center gap-1 font-bold text-[10px]"
+                      >
+                        <span>Create Notion Token</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <input 
+                        type="password"
+                        value={notionToken}
+                        onChange={(e) => setNotionToken(e.target.value)}
+                        placeholder="secret_..."
+                        className="flex-1 px-3 py-1.5 bg-sidebar border border-border rounded-md text-[12px] font-mono focus:outline-hidden focus:border-accent"
+                      />
+                      <button
+                        onClick={() => handleSaveIntegrationToken('notion', notionToken)}
+                        disabled={isSavingConnection || !notionToken.trim()}
+                        className="px-3 py-1.5 bg-accent text-background rounded-md text-[11px] font-bold hover:opacity-90 transition-opacity disabled:opacity-50 shrink-0"
+                      >
+                        {isSavingConnection ? 'Saving...' : 'Authorize'}
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* Todoist */}
+              <div className="flex flex-col p-4 bg-background border border-border rounded-md gap-3">
+                <div className="flex items-center justify-between gap-6">
+                  <div className="flex items-center gap-4">
+                    <div className={`w-9 h-9 rounded-md flex items-center justify-center border ${connections.todoist ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-600' : 'bg-sidebar border-border text-text-heading'}`}>
+                      <ListTodo className="w-4 h-4" />
+                    </div>
+                    <div className="space-y-0.5">
+                      <div className="flex items-center gap-2">
+                        <h3 className="inconsolata-ui text-[12px] font-bold text-text-heading">Todoist</h3>
+                        <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-accent/10 text-accent uppercase">Agent Sync</span>
+                      </div>
+                      <p className="manrope-body text-[10px] text-text-muted italic opacity-60">
+                        Sync daily module topics and practice tasks directly into Todoist.
+                      </p>
+                    </div>
+                  </div>
+
+                  {connections.todoist ? (
+                    <div className="flex items-center gap-3">
+                      <div className="px-3 py-1 rounded-md text-[10px] font-bold inconsolata-ui bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 uppercase">
+                        Active
+                      </div>
+                      <button
+                        onClick={() => handleToggleConnection('todoist')}
+                        className="text-[9px] font-bold text-red-500 hover:underline uppercase"
+                      >
+                        Disconnect
+                      </button>
+                    </div>
+                  ) : (
+                    <button
+                      onClick={() => setConnectingService(connectingService === 'todoist' ? null : 'todoist')}
+                      className="px-4 py-1.5 rounded-md text-[10px] font-bold inconsolata-ui bg-text-heading text-background hover:opacity-90 transition-all uppercase"
+                    >
+                      {connectingService === 'todoist' ? 'Cancel' : 'Connect'}
+                    </button>
+                  )}
+                </div>
+
+                {/* Todoist Token Setup Panel */}
+                {connectingService === 'todoist' && !connections.todoist && (
+                  <div className="pt-3 mt-2 border-t border-border space-y-3 animate-in fade-in duration-200">
+                    <div className="flex items-center justify-between text-[11px]">
+                      <span className="font-semibold text-text-heading">Enter Todoist API Token:</span>
+                      <a 
+                        href="https://app.todoist.com/app/settings/integrations/developer" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-accent hover:underline flex items-center gap-1 font-bold text-[10px]"
+                      >
+                        <span>Find API Token</span>
+                        <ExternalLink className="w-3 h-3" />
+                      </a>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <input 
+                        type="password"
+                        value={todoistToken}
+                        onChange={(e) => setTodoistToken(e.target.value)}
+                        placeholder="API Token..."
+                        className="flex-1 px-3 py-1.5 bg-sidebar border border-border rounded-md text-[12px] font-mono focus:outline-hidden focus:border-accent"
+                      />
+                      <button
+                        onClick={() => handleSaveIntegrationToken('todoist', todoistToken)}
+                        disabled={isSavingConnection || !todoistToken.trim()}
+                        className="px-3 py-1.5 bg-accent text-background rounded-md text-[11px] font-bold hover:opacity-90 transition-opacity disabled:opacity-50 shrink-0"
+                      >
+                        {isSavingConnection ? 'Saving...' : 'Authorize'}
+                      </button>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>

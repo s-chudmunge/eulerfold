@@ -39,9 +39,12 @@ import { supabase } from '@/lib/supabase/client';
 import { useAuth } from '@/components/AuthProvider';
 import { coinsAPI, EulerCoinBalance, authAPI, roadmapsAPI, RoadmapMe, sessionsAPI, profileAPI, dashboardAPI } from '@/lib/api';
 import IntensityHeatmap from '@/components/dashboard/IntensityHeatmap';
+import { GlobalStudyForestCard } from '@/components/dashboard/GlobalStudyForestCard';
 import { format } from 'date-fns';
 import AppSidebar from '@/components/AppSidebar';
 import ThemeToggle from '@/components/ThemeToggle';
+import { HeaderFocusPill } from '@/components/grove/HeaderFocusPill';
+import { DailyBriefingBell } from '@/components/goldfish/DailyBriefingBell';
 import OnboardingFlow from '@/components/onboarding/OnboardingFlow';
 
 
@@ -231,6 +234,8 @@ export default function DashboardPage() {
                     </div>
 
                     <div className="flex items-center gap-2 md:gap-4">
+                        <HeaderFocusPill />
+                        <DailyBriefingBell />
                         <ThemeToggle />
                         {profile?.is_pro && (
                             <div className="hidden sm:flex items-center px-2 py-0.5 rounded bg-accent/10 border border-accent/20">
@@ -285,6 +290,9 @@ export default function DashboardPage() {
                             </div>
                         )}
 
+
+                        {/* Lifetime Study Forest (Global Account Level) */}
+                        <GlobalStudyForestCard completedRoadmapsCount={roadmaps.filter(r => r.status === 'completed').length} />
 
                         {/* Objectives Section */}
                         <section className="mb-12">

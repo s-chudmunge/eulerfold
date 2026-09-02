@@ -28,12 +28,12 @@ const inter = { variable: '--font-inter', className: 'font-inter' };
 const inconsolata = { variable: '--font-mono', className: 'font-mono' };
 
 export const metadata: Metadata = {
-  applicationName: 'EulerFold',
+  applicationName: 'EulerFold AI',
   title: {
-    default: 'EulerFold - The free AI tool to build, structure, and track your learning',
+    default: 'EulerFold AI - A free agentic tool to build, structure, and track your learning',
     template: '%s'
   },
-  description: 'Tell us what you want to learn. Our free AI tool builds your study path using lectures from top educators, university notes, and research papers, tracking your progress every step of the way.',
+  description: 'Tell us what you want to learn. Our free agentic system builds your study path using lectures from top educators, university notes, and research papers, tracking your progress every step of the way.',
   keywords: [
     'free ai courses',
     'free online courses',
@@ -67,20 +67,20 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    siteName: 'EulerFold',
-    title: 'EulerFold - The free AI tool to build, structure, and track your learning',
-    description: 'Tell us what you want to learn. Our free AI tool builds your study path using lectures from top educators, university notes, and research papers, tracking your progress every step of the way.',
+    siteName: 'EulerFold AI',
+    title: 'EulerFold AI - A free agentic tool to build, structure, and track your learning',
+    description: 'Tell us what you want to learn. Our free agentic system builds your study path using lectures from top educators, university notes, and research papers, tracking your progress every step of the way.',
     images: [{
       url: '/og-image.png',
       width: 1200,
       height: 630,
-      alt: 'EulerFold',
+      alt: 'EulerFold AI',
     }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'EulerFold - The free AI tool to build, structure, and track your learning',
-    description: 'Tell us what you want to learn. Our free AI tool builds your study path using lectures from top educators, university notes, and research papers, tracking your progress every step of the way.',
+    title: 'EulerFold AI - A free agentic tool to build, structure, and track your learning',
+    description: 'Tell us what you want to learn. Our free agentic system builds your study path using lectures from top educators, university notes, and research papers, tracking your progress every step of the way.',
     images: ['/og-image.png'],
     creator: '@eulerfold',
     site: '@eulerfold',

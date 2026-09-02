@@ -103,7 +103,16 @@ export default function YouTubePlayer({ videoId, title, onComplete, onNext, isCo
         }
 
         return () => {
-            // Player cleanup is complex with YT API, often better to leave it if reusing
+            if (playerRef.current) {
+                try {
+                    if (typeof playerRef.current.pauseVideo === 'function') {
+                        playerRef.current.pauseVideo();
+                    }
+                    if (typeof playerRef.current.stopVideo === 'function') {
+                        playerRef.current.stopVideo();
+                    }
+                } catch (e) {}
+            }
         };
     }, [videoId, onPlayerReady, onPlayerStateChange]);
 

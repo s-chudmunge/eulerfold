@@ -21,10 +21,15 @@ export default function SessionTracker() {
 
     const reportSession = () => {
       if (sessionStartRef.current && currentTokenRef.current) {
-        const duration = Math.round((Date.now() - sessionStartRef.current) / 1000);
+        const currentDuration = Math.round((Date.now() - sessionStartRef.current) / 1000);
+        const storedTime = parseInt(localStorage.getItem('pendingSessionTime') || '0', 10);
+        const totalDuration = currentDuration + storedTime;
         
-        if (duration >= 5) {
-           sessionsAPI.logSession(duration, currentTokenRef.current);
+        if (totalDuration >= 5) {
+           sessionsAPI.logSession(totalDuration, currentTokenRef.current);
+           localStorage.removeItem('pendingSessionTime');
+        } else if (totalDuration > 0) {
+           localStorage.setItem('pendingSessionTime', totalDuration.toString());
         }
         
         sessionStartRef.current = null;
@@ -44,17 +49,11 @@ export default function SessionTracker() {
     }
 
     document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('beforeunload', reportSession);
     
-    const interval = setInterval(() => {
-      if (document.visibilityState === 'visible' && sessionStartRef.current) {
-        reportSession();
-        sessionStartRef.current = Date.now();
-      }
-    }, 5 * 60 * 1000);
-
     return () => {
       document.removeEventListener('visibilitychange', handleVisibilityChange);
-      clearInterval(interval);
+      window.removeEventListener('beforeunload', reportSession);
       subscription.unsubscribe();
       reportSession();
     };

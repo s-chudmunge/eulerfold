@@ -14,6 +14,7 @@ import MCQPractice from '@/components/roadmap/MCQPractice';
 import SocialShare from '@/components/SocialShare';
 import RoadmapBanner from '@/components/FluidGradient/RoadmapBanner';
 import HomeworkSubmissionModal from '@/components/roadmap/HomeworkSubmissionModal';
+import FocusGrove from '@/components/roadmap/FocusGrove';
 import { 
     Library, 
     Play, 
@@ -473,6 +474,19 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                             </div>
                         )}
                     </div>
+
+                    {/* Focus Grove Study Progress (If Owner or Enrolled Learner) */}
+                    {(isOwner || roadmap.is_cloned || (roadmap.progress && (roadmap.progress.completed_topics || 0) > 0)) && (
+                        <div className="mb-10">
+                            <FocusGrove 
+                                roadmapId={roadmap.id}
+                                roadmapSlug={roadmap.slug || slug}
+                                totalTopics={roadmap.progress?.total_topics || roadmap.roadmap_plan?.modules?.reduce((acc: number, m: any) => acc + (m.topics?.length || 0), 0) || 10}
+                                completedTopicsCount={roadmap.progress?.completed_topics || 0}
+                                modules={roadmap.roadmap_plan?.modules || []}
+                            />
+                        </div>
+                    )}
 
                     {/* Course Overview Section */}
                     {(roadmap.roadmap_plan?.what_you_will_learn || roadmap.roadmap_plan?.about) && (

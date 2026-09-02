@@ -3,1310 +3,582 @@
 import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/lib/supabase/client';
-import { RoadmapData, roadmapsAPI, authAPI, practiceAPI, submissionsAPI, PracticeSession, PracticeProgress } from '@/lib/api';
-import { 
-  ChevronLeft, 
-  ChevronRight, 
-  Play, 
-  PlayCircle,
-  CheckCircle2, 
-  Menu, 
-  X,
-  Loader,
-  ArrowLeft,
-  Library,
-  CheckCircle,
-  Check,
-  Circle,
-  VolumeX,
-  RefreshCcw,
-  ArrowRight,
-  Trophy,
-  ChevronDown,
-  LayoutDashboard,
-  Target,
-  Zap,
-  FileText,
-  Info,
-  Terminal,
-  Box,
-  Calendar,
-  Send,
-  Award,
-  Sparkles,
-  ExternalLink
-} from 'lucide-react';
+import { RoadmapData, roadmapsAPI, authAPI, submissionsAPI } from '@/lib/api';
+import { Loader, Zap } from 'lucide-react';
 import Link from 'next/link';
-import ReactMarkdown from 'react-markdown';
 
 import CourseHeader from '@/components/CourseHeader';
 import MCQPractice from '@/components/roadmap/MCQPractice';
 import SyllabusModal from './SyllabusModal';
 import TaskModal from '@/components/planner/TaskModal';
-import YouTubePlayer from '@/components/roadmap/YouTubePlayer';
 import HomeworkSubmissionModal from '@/components/roadmap/HomeworkSubmissionModal';
 import SkillExtractor from '@/components/roadmap/SkillExtractor';
+import GoldfishAssistant, { GoldfishIcon } from '@/components/goldfish/GoldfishAssistant';
 
-export default function LearnClient({ id: propId, slug: subtopicSlug, initialRoadmap }: { id?: string, slug?: string[], initialRoadmap?: RoadmapData | null }) {
-    const params = useParams();
-    const id = propId || (params?.slug as string);
-    const router = useRouter();
+import LearnSidebar from '@/components/roadmap/learn/LearnSidebar';
+import VideoReferenceArea from '@/components/roadmap/learn/VideoReferenceArea';
+import TopicContentDetails from '@/components/roadmap/learn/TopicContentDetails';
+import CourseCompletionBanner from '@/components/roadmap/learn/CourseCompletionBanner';
+
+export default function LearnClient({ 
+  id: propId, 
+  slug: subtopicSlug, 
+  initialRoadmap 
+}: { 
+  id?: string; 
+  slug?: string[]; 
+  initialRoadmap?: RoadmapData | null;
+}) {
+  const params = useParams();
+  const id = propId || (params?.slug as string);
+  const router = useRouter();
+  
+  const [roadmap, setRoadmap] = useState<RoadmapData | null>(initialRoadmap || null);
+  const [loading, setLoading] = useState(!initialRoadmap);
+  const [isFreshRoadmapLoaded, setIsFreshRoadmapLoaded] = useState(false);
+  const [isHomeworkModalOpen, setIsHomeworkModalOpen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [profile, setProfile] = useState<any>(null);
+  
+  // Navigation & Progress State
+  const [currentModuleIndex, setCurrentModuleIndex] = useState(initialRoadmap?.last_position?.mIdx || 0);
+  const [currentTopicIndex, setCurrentTopicIndex] = useState(initialRoadmap?.last_position?.tIdx || 0);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isSyllabusOpen, setIsSyllabusOpen] = useState(false);
+  const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
+  const [completedTopics, setCompletedTopics] = useState<Set<string>>(new Set());
+  const [completedPracticeModules, setCompletedPracticeModules] = useState<Set<number>>(new Set());
+  const [isUpdatingProgress, setIsUpdatingProgress] = useState(false);
+  
+  // Toast & Mode State
+  const [coinToast, setCoinToast] = useState<{show: boolean, amount: number} | null>(null);
+  const [viewMode, setViewMode] = useState<'video' | 'practice'>('video');
+  const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
+  const [resourceCardIdx, setResourceCardIdx] = useState(0);
+
+  // Goldfish Assistant State
+  const [isGoldfishOpen, setIsGoldfishOpen] = useState(false);
+  const [goldfishTab, setGoldfishTab] = useState<'chat' | 'reading' | 'video' | 'calendar' | 'focus'>('chat');
+  const [timerState, setTimerState] = useState<{
+    isActive: boolean;
+    secondsRemaining: number;
+    durationMins: number;
+  }>({
+    isActive: false,
+    secondsRemaining: 25 * 60,
+    durationMins: 25
+  });
+
+  const handleOpenGoldfish = (tab: 'chat' | 'reading' | 'video' | 'calendar' | 'focus' = 'chat') => {
+    setGoldfishTab(tab);
+    setIsGoldfishOpen(true);
+  };
+
+  const handleGoldfishVideoReplaced = (newVideoId: string, newVideoTitle: string, duration?: number) => {
+    setActiveVideoId(newVideoId);
+    if (roadmap && roadmap.roadmap_plan?.modules) {
+      const updatedRoadmap = { ...roadmap };
+      const targetTopic = updatedRoadmap.roadmap_plan.modules[currentModuleIndex]?.topics[currentTopicIndex];
+      if (targetTopic) {
+        targetTopic.youtube_video_id = newVideoId;
+        targetTopic.youtube_video_title = newVideoTitle;
+        if (duration) targetTopic.duration = duration;
+      }
+      setRoadmap(updatedRoadmap);
+    }
+  };
+
+  const handleGoldfishResourceAdded = (newResources: any[]) => {
+    if (roadmap && roadmap.roadmap_plan?.modules) {
+      const updatedRoadmap = { ...roadmap };
+      const targetModule = updatedRoadmap.roadmap_plan.modules[currentModuleIndex];
+      if (targetModule) {
+        targetModule.resources = newResources;
+      }
+      setRoadmap(updatedRoadmap);
+    }
+  };
+
+  // Submissions & Certificates
+  const [submissions, setSubmissions] = useState<any[]>([]);
+  const [certificateId, setCertificateId] = useState<string | null>(null);
+
+  const displayPercent = useMemo(() => {
+    const serverPercent = roadmap?.progress?.percent || 0;
+    const serverCompletedTopics = roadmap?.progress?.completed_topics || 0;
+    const totalTopics = roadmap?.progress?.total_topics || 1;
+    const serverCompletedPracticeModules = roadmap?.progress?.completed_practice_sessions || 0;
+    const totalModules = roadmap?.progress?.required_practice_sessions || roadmap?.roadmap_plan?.modules?.length || 1;
     
-    const [roadmap, setRoadmap] = useState<RoadmapData | null>(initialRoadmap || null);
-    const [loading, setLoading] = useState(!initialRoadmap);
-    const [isFreshRoadmapLoaded, setIsFreshRoadmapLoaded] = useState(false);
-    const [isHomeworkModalOpen, setIsHomeworkModalOpen] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [profile, setProfile] = useState<any>(null);
+    const localTopicDelta = Math.max(0, completedTopics.size - serverCompletedTopics);
+    const topicDeltaPercent = (localTopicDelta / totalTopics) * 30;
     
-    // Navigation & Progress State
-    const [currentModuleIndex, setCurrentModuleIndex] = useState(initialRoadmap?.last_position?.mIdx || 0);
-    const [currentTopicIndex, setCurrentTopicIndex] = useState(initialRoadmap?.last_position?.tIdx || 0);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [isSyllabusOpen, setIsSyllabusOpen] = useState(false);
-    const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
-    const [completedTopics, setCompletedTopics] = useState<Set<string>>(new Set());
-    const [completedPracticeModules, setCompletedPracticeModules] = useState<Set<number>>(new Set());
-    const [isUpdatingProgress, setIsUpdatingProgress] = useState(false);
+    const localPracticeDelta = Math.max(0, completedPracticeModules.size - serverCompletedPracticeModules);
+    const practiceDeltaPercent = (localPracticeDelta / totalModules) * 30;
     
-    // Toast State
-    const [coinToast, setCoinToast] = useState<{show: boolean, amount: number} | null>(null);
-    
-    // Video & Tooltip State
-    const [activeVideoId, setActiveVideoId] = useState<string | null>(null);
-    const [resourceCardIdx, setResourceCardIdx] = useState(0);
-    const [showMuteTooltip, setShowMuteTooltip] = useState(false);
-    const [activeTab, setActiveTab] = useState<'objectives' | 'resources' | 'outcome'>('objectives');
+    return Math.min(100, Math.round(serverPercent + topicDeltaPercent + practiceDeltaPercent));
+  }, [roadmap?.progress, roadmap?.roadmap_plan?.modules?.length, completedTopics.size, completedPracticeModules.size]);
 
-    const displayPercent = useMemo(() => {
-        const serverPercent = roadmap?.progress?.percent || 0;
-        const serverCompletedTopics = roadmap?.progress?.completed_topics || 0;
-        const totalTopics = roadmap?.progress?.total_topics || 1;
-        const serverCompletedPracticeModules = roadmap?.progress?.completed_practice_sessions || 0;
-        const totalModules = roadmap?.progress?.required_practice_sessions || roadmap?.roadmap_plan?.modules?.length || 1;
-        
-        const localTopicDelta = Math.max(0, completedTopics.size - serverCompletedTopics);
-        const topicDeltaPercent = (localTopicDelta / totalTopics) * 30; // 30% weight for topics
-        
-        const localPracticeDelta = Math.max(0, completedPracticeModules.size - serverCompletedPracticeModules);
-        const practiceDeltaPercent = (localPracticeDelta / totalModules) * 30; // 30% weight for practice
-        
-        return Math.min(100, Math.round(serverPercent + topicDeltaPercent + practiceDeltaPercent));
-    }, [roadmap?.progress, roadmap?.roadmap_plan?.modules?.length, completedTopics.size, completedPracticeModules.size]);
-
-    // Submissions State
-    const [submissions, setSubmissions] = useState<any[]>([]);
-    
-    // Certificate State
-    const [certificateId, setCertificateId] = useState<string | null>(null);
-
-    useEffect(() => {
-        if (displayPercent >= 98 && roadmap?.id) {
-            let timeoutId: NodeJS.Timeout;
-            
-            // Trigger backend completion flow (async, don't wait for it)
-            roadmapsAPI.getRoadmapById(roadmap.id).catch(console.error);
-            
-            const checkCert = async () => {
-                const { data: { session } } = await supabase.auth.getSession();
-                if (!session) return;
-                
-                const { data } = await supabase.from('certificates')
-                    .select('credential_id')
-                    .eq('roadmap_id', roadmap.id)
-                    .eq('user_id', session.user.id)
-                    .maybeSingle();
-                    
-                if (data && data.credential_id) {
-                    setCertificateId(data.credential_id);
-                } else {
-                    // Try again in 3 seconds (in case it's being generated)
-                    timeoutId = setTimeout(checkCert, 3000);
-                }
-            };
-            
-            checkCert();
-            
-            return () => clearTimeout(timeoutId);
-        }
-    }, [displayPercent, roadmap?.id]);
-
-    // Practice State
-    const [practiceSession, setPracticeSession] = useState<PracticeSession | null>(null);
-    const [practiceProgress, setPracticeProgress] = useState<Record<string, boolean>>({});
-    const [isPracticeLoading, setIsPracticeLoading] = useState(false);
-    const [isGeneratingPractice, setIsGeneratingPractice] = useState(false);
-    const [isPracticeExpanded, setIsPracticeExpanded] = useState(false);
-    const [isConfirmingMore, setIsConfirmingMore] = useState(false);
-    const [viewMode, setViewMode] = useState<'video' | 'practice'>('video');
-
-    const refreshProfile = useCallback(async () => {
+  useEffect(() => {
+    if (displayPercent >= 98 && roadmap?.id) {
+      let timeoutId: NodeJS.Timeout;
+      roadmapsAPI.getRoadmapById(roadmap.id).catch(console.error);
+      
+      const checkCert = async () => {
         const { data: { session } } = await supabase.auth.getSession();
-        if (session) {
-            const { data: userData } = await supabase.from('profiles').select('*').eq('supabase_uid', session.user.id).single();
-            if (userData) setProfile(userData);
-        }
-    }, []);
-
-    useEffect(() => {
-        if (roadmap) {
-            console.log(`[EulerFold] Roadmap Skills Extracted: ${roadmap.skills_extracted} (Exists in Database)`);
-        }
-    }, [roadmap]);
-
-    const allWeekResources = useMemo(() => {
-        if (!roadmap || !roadmap.roadmap_plan?.modules?.[currentModuleIndex]) return [];
-        const module = roadmap.roadmap_plan.modules[currentModuleIndex];
-        const resources: any[] = [];
+        if (!session) return;
         
-        // 1. Module level resources
-        if (module.resources && Array.isArray(module.resources)) {
-            module.resources.forEach((r: any) => {
-                resources.push({
-                    title: r.title || r.name || 'Untitled Resource',
-                    url: r.url || r.link,
-                    type: 'Study Material',
-                    context: 'Week'
-                });
-            });
+        const { data } = await supabase.from('certificates')
+          .select('credential_id')
+          .eq('roadmap_id', roadmap.id)
+          .eq('user_id', session.user.id)
+          .maybeSingle();
+          
+        if (data && data.credential_id) {
+          setCertificateId(data.credential_id);
+        } else {
+          timeoutId = setTimeout(checkCert, 3000);
         }
+      };
+      checkCert();
+      return () => clearTimeout(timeoutId);
+    }
+  }, [displayPercent, roadmap?.id]);
+
+  const refreshProfile = useCallback(async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      const { data: userData } = await supabase.from('profiles').select('*').eq('supabase_uid', session.user.id).single();
+      if (userData) setProfile(userData);
+    }
+  }, []);
+
+  const fetchCompletedPractices = useCallback(async () => {
+    if (!roadmap || !roadmap.id) return;
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      const { data: mcqData } = await supabase.from('mcq_sessions')
+        .select('subtopic_id')
+        .eq('roadmap_id', roadmap.id)
+        .eq('user_id', session.user.id)
+        .eq('status', 'completed');
+      
+      if (mcqData) {
+        const subtopicIds = new Set(mcqData.map(d => d.subtopic_id));
+        const completedMods = new Set<number>();
         
-        // 2. Topic level resources
-        module.topics?.forEach((topic: any) => {
-            if (topic.resources && Array.isArray(topic.resources)) {
-                topic.resources.forEach((r: any) => {
-                    resources.push({
-                        title: r.title || r.name || 'Untitled Resource',
-                        url: r.url || r.link,
-                        type: 'Unit Resource',
-                        context: topic.title
-                    });
-                });
+        roadmap.roadmap_plan?.modules?.forEach((module: any, idx: number) => {
+          let hasCompleted = false;
+          module.topics?.forEach((topic: any) => {
+            if (topic.uuid && subtopicIds.has(topic.uuid)) {
+              hasCompleted = true;
             }
+          });
+          if (hasCompleted) {
+            completedMods.add(idx);
+          }
         });
+        setCompletedPracticeModules(completedMods);
+      }
+    } catch (err) {
+      console.error('Error fetching completed practices:', err);
+    }
+  }, [roadmap]);
+
+  useEffect(() => {
+    if (roadmap?.id) {
+      fetchCompletedPractices();
+    }
+  }, [fetchCompletedPractices, roadmap?.id]);
+
+  const activeTopicResources = useMemo(() => {
+    if (!roadmap || !roadmap.roadmap_plan?.modules?.[currentModuleIndex]) return [];
+    const module = roadmap.roadmap_plan.modules[currentModuleIndex];
+    const topic = module?.topics?.[currentTopicIndex];
+    if (topic?.resources && Array.isArray(topic.resources) && topic.resources.length > 0) {
+      return topic.resources;
+    }
+    if (module?.resources && Array.isArray(module.resources) && module.resources.length > 0) {
+      return module.resources;
+    }
+    return [];
+  }, [roadmap, currentModuleIndex, currentTopicIndex]);
+
+  // Initial Data Fetching
+  useEffect(() => {
+    async function loadRoadmap() {
+      if (!id) return;
+      try {
+        setLoading(true);
+        const data = await roadmapsAPI.getRoadmapBySlug(id);
+        setRoadmap(data);
+        setIsFreshRoadmapLoaded(true);
         
-        return resources;
-    }, [roadmap, currentModuleIndex]);
-
-    const activeTopicResources = useMemo(() => {
-        if (!roadmap || !roadmap.roadmap_plan?.modules?.[currentModuleIndex]) return [];
-        const module = roadmap.roadmap_plan.modules[currentModuleIndex];
-        const topic = module?.topics?.[currentTopicIndex];
-        if (topic?.resources && Array.isArray(topic.resources) && topic.resources.length > 0) {
-            return topic.resources;
-        }
-        if (module?.resources && Array.isArray(module.resources) && module.resources.length > 0) {
-            return module.resources;
-        }
-        return allWeekResources;
-    }, [roadmap, currentModuleIndex, currentTopicIndex, allWeekResources]);
-
-    const fetchCompletedPractices = useCallback(async () => {
-        if (!roadmap || !roadmap.id) return;
-        try {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) return;
-
-            const { data: mcqData } = await supabase.from('mcq_sessions')
-                .select('subtopic_id')
-                .eq('roadmap_id', roadmap.id)
-                .eq('user_id', session.user.id)
-                .eq('status', 'completed');
-            
-            if (mcqData) {
-                const subtopicIds = new Set(mcqData.map(d => d.subtopic_id));
-                const completedMods = new Set<number>();
-                
-                roadmap.roadmap_plan?.modules?.forEach((module: any, idx: number) => {
-                    let hasCompleted = false;
-                    module.topics?.forEach((topic: any) => {
-                        if (topic.uuid && subtopicIds.has(topic.uuid)) {
-                            hasCompleted = true;
-                        }
-                    });
-                    if (hasCompleted) {
-                        completedMods.add(idx);
-                    }
-                });
-                setCompletedPracticeModules(completedMods);
-            }
-        } catch (err) {
-            console.error('Error fetching completed practices:', err);
-        }
-    }, [roadmap]);
-
-    useEffect(() => {
-        if (roadmap?.id) {
-            fetchCompletedPractices();
-        }
-    }, [fetchCompletedPractices, roadmap?.id]);
-
-    const fetchPracticeSession = useCallback(async () => {
-        if (!roadmap || !roadmap.id) return;
-        const currentModule = roadmap.roadmap_plan?.modules?.[currentModuleIndex];
-        const currentTopic = currentModule?.topics?.[currentTopicIndex];
-        
-        if (!currentTopic?.uuid) {
-            setIsPracticeLoading(false);
-            setPracticeSession(null);
-            return;
+        if (data.last_position) {
+          setCurrentModuleIndex(data.last_position.mIdx || 0);
+          setCurrentTopicIndex(data.last_position.tIdx || 0);
         }
 
-        setIsPracticeLoading(true);
-        setPracticeSession(null);
-        setPracticeProgress({});
-        setIsPracticeExpanded(false);
-
-        try {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) {
-                setIsPracticeLoading(false);
-                return;
-            }
-
-            const { data, error } = await supabase.from('practice_sessions')
-                .select('*')
-                .eq('subtopic_id', currentTopic.uuid)
-                .eq('user_id', session.user.id)
-                .maybeSingle();
-            
-            if (data) {
-                setPracticeSession(data);
-                const progressData = await practiceAPI.getSessionProgress(data.id);
-                const progressMap: Record<string, boolean> = {};
-                progressData.forEach(p => {
-                    progressMap[p.resource_id] = p.completed;
-                });
-                setPracticeProgress(progressMap);
-                setIsPracticeExpanded(true);
-            }
-        } catch (err) {
-            console.error('Error fetching practice session:', err);
-        } finally {
-            setIsPracticeLoading(false);
-        }
-    }, [roadmap, currentModuleIndex, currentTopicIndex]);
-
-    useEffect(() => {
-        fetchPracticeSession();
-        
-        // Fetch submissions
-        if (roadmap?.id) {
-            submissionsAPI.listSubmissions(roadmap.id).then((res) => {
-                if (res.submissions) setSubmissions(res.submissions);
-            }).catch(console.error);
-        }
-    }, [fetchPracticeSession, roadmap?.id]);
-
-    const handleStartPractice = async () => {
-        if (!roadmap || !roadmap.id) return;
-        const currentModule = roadmap.roadmap_plan?.modules?.[currentModuleIndex];
-        const currentTopic = currentModule?.topics?.[currentTopicIndex];
-        
-        if (!currentTopic?.uuid) return;
-
-        setIsGeneratingPractice(true);
-        try {
-            const session = await practiceAPI.getOrCreateSession({
-                roadmap_id: roadmap.id,
-                subtopic_id: currentTopic.uuid,
-                topic_name: currentTopic.title,
-                subject: roadmap.subject || roadmap.title,
-                goal: roadmap.goal || roadmap.description
-            });
-            setPracticeSession(session);
-            setIsPracticeExpanded(true);
-            setViewMode('practice');
-        } catch (err) {
-            console.error('Error starting practice:', err);
-        } finally {
-            setIsGeneratingPractice(false);
-        }
-    };
-
-    const handleToggleResource = async (resourceId: string, completed: boolean) => {
-        if (!practiceSession) return;
-
-        // Optimistic UI update
-        setPracticeProgress(prev => ({ ...prev, [resourceId]: completed }));
-
-        try {
-            const response = await practiceAPI.updateProgress(practiceSession.id, resourceId, completed);
-
-            if (completed) {
-                setCoinToast({ show: true, amount: 1 });
-                setTimeout(() => setCoinToast(null), 3000);
-            }
-        } catch (err) {
-            console.error('Error updating practice progress:', err);
-            // Rollback optimistic update on error
-            setPracticeProgress(prev => ({ ...prev, [resourceId]: !completed }));
-        }
-    };
-
-    const handleLoadMore = async () => {
-        if (!roadmap || !roadmap.id || !practiceSession) return;
-        const currentModule = roadmap.roadmap_plan?.modules?.[currentModuleIndex];
-        const currentTopic = currentModule?.topics?.[currentTopicIndex];
-        if (!currentTopic?.uuid) return;
-
-        setIsGeneratingPractice(true);
-        setIsConfirmingMore(false);
-        try {
-            const session = await practiceAPI.loadMore(practiceSession.id, {
-                roadmap_id: roadmap.id,
-                subtopic_id: currentTopic.uuid,
-                topic_name: currentTopic.title,
-                subject: roadmap.subject || roadmap.title,
-                goal: roadmap.goal || roadmap.description
-            });
-
-            setPracticeSession(session);
-        } catch (err) {
-            console.error('Error loading more practice:', err);
-        } finally {
-            setIsGeneratingPractice(false);
-        }
-    };
-
-    const handleRetryPractice = async () => {
-        if (!roadmap || !roadmap.id || !practiceSession) return;
-        const currentModule = roadmap.roadmap_plan?.modules?.[currentModuleIndex];
-        const currentTopic = currentModule?.topics?.[currentTopicIndex];
-        if (!currentTopic?.uuid) return;
-
-        setIsGeneratingPractice(true);
-        try {
-            const session = await practiceAPI.retrySession(practiceSession.id, {
-                roadmap_id: roadmap.id,
-                subtopic_id: currentTopic.uuid,
-                topic_name: currentTopic.title,
-                subject: roadmap.subject || roadmap.title,
-                goal: roadmap.goal || roadmap.description
-            });
-            setPracticeSession(session);
-            setViewMode('practice');
-        } catch (err) {
-            console.error('Error retrying practice:', err);
-        } finally {
-            setIsGeneratingPractice(false);
-        }
-    };
-
-    const fetchProgress = useCallback(async (roadmapId: number) => {
-        try {
-            const data = await roadmapsAPI.getProgress(roadmapId);
-            const completedSet = new Set<string>();
-            data.completed_topics.forEach((t: any) => {
-                completedSet.add(`${t.module_number}-${t.topic_index}`);
-            });
-            setCompletedTopics(completedSet);
-        } catch (err) {
-            console.error('Error fetching progress:', err);
-        }
-    }, []);
-
-    useEffect(() => {
-        let isMounted = true;
-        const fetchEverything = async () => {
-            try {
-                const { data: { session } } = await supabase.auth.getSession();
-                if (!session) {
-                    router.push('/');
-                    return;
-                }
-
-                if (!isMounted) return;
-
-                try {
-                    const { data: userData } = await supabase.from('profiles').select('*').eq('supabase_uid', session.user.id).single();
-                    if (userData && isMounted) {
-                        setProfile(userData);
-                        if (!userData.metadata?.muted_autoplay_hint_dismissed) {
-                            setShowMuteTooltip(true);
-                        }
-                    }
-                } catch (e) {
-                    console.error("Failed to fetch user profile:", e);
-                }
-
-                // If we are logged in, we MUST re-fetch from our backend (not anonymous Supabase)
-                // to get the version we own/cloned and to avoid extensions being filtered.
-                setLoading(true);
-                let currentRoadmap = null;
-                const isIdNumeric = /^\d+$/.test(id);
-
-                try {
-                    if (isIdNumeric) {
-                        currentRoadmap = await roadmapsAPI.getRoadmapById(Number(id));
-                    } else {
-                        currentRoadmap = await roadmapsAPI.getRoadmapBySlug(id);
-                    }
-                } catch (err) {
-                    console.error("Fetch re-fetch failed:", err);
-                    // Fallback to initialRoadmap if re-fetch fails
-                    currentRoadmap = initialRoadmap;
-                }
-
-                if (currentRoadmap && isMounted) {
-                    setRoadmap(currentRoadmap);
-                    setIsFreshRoadmapLoaded(true);
-                    const isOwner = currentRoadmap.email?.toLowerCase() === session.user.email?.toLowerCase();
-                    
-                    if (isOwner && currentRoadmap.last_position) {
-                        setCurrentModuleIndex(currentRoadmap.last_position.mIdx || 0);
-                        setCurrentTopicIndex(currentRoadmap.last_position.tIdx || 0);
-                    } else if (isOwner && currentRoadmap.current_module) {
-                        setCurrentModuleIndex(Math.max(0, currentRoadmap.current_module - 1));
-                        setCurrentTopicIndex(0);
-                    } else {
-                        // For non-owners, always start at beginning unless query param overrides
-                        setCurrentModuleIndex(0);
-                        setCurrentTopicIndex(0);
-                    }
-
-                    const searchParams = new URLSearchParams(window.location.search);
-                    const mParam = searchParams.get('module');
-                    if (mParam) {
-                        const mIdx = parseInt(mParam) - 1;
-                        if (currentRoadmap.roadmap_plan?.modules?.[mIdx]) {
-                            setCurrentModuleIndex(mIdx);
-                            setCurrentTopicIndex(0);
-                        }
-                    }
-
-                    if (currentRoadmap.id) {
-                        await fetchProgress(currentRoadmap.id);
-                    }
-                }
-            } catch (err: any) {
-                console.error('Error fetching roadmap:', err);
-                if (isMounted) setError(err.message);
-            } finally {
-                if (isMounted) setLoading(false);
-            }
-        };
-
-        if (id) fetchEverything();
-        return () => { isMounted = false; };
-    }, [id, router, fetchProgress]);
-
-    useEffect(() => {
-        if (!roadmap) return;
-        const currentModule = roadmap.roadmap_plan?.modules?.[currentModuleIndex];
-        const currentTopic = currentModule?.topics?.[currentTopicIndex];
-        
-        setActiveVideoId(null);
-        setResourceCardIdx(0);
-        
-        const timer = setTimeout(() => {
-            if (currentTopic?.youtube_video_id) {
-                setActiveVideoId(currentTopic.youtube_video_id);
-            }
-        }, 50);
-
-        return () => clearTimeout(timer);
-    }, [currentModuleIndex, currentTopicIndex, roadmap]);
-
-    useEffect(() => {
-        if (roadmap && roadmap.id) {
-            const subject = roadmap.subject || roadmap.title || 'Roadmap';
-            document.title = `Learning: ${subject}`;
-            
-            // Construct the clean slug
-            const roadmapSlug = roadmap.slug || roadmap.id.toString();
-            if (roadmapSlug) {
-                const targetPath = `/roadmap/${roadmapSlug}/learn`;
-                if (window.location.pathname.startsWith(`/roadmap/${id}/learn`)) {
-                   // Only replace if we are on the old numeric ID path
-                   window.history.replaceState(null, '', targetPath);
-                }
-            }
-        }
-    }, [roadmap, id]);
-
-    const updateProgressOnServer = async (mIdx: number, tIdx: number, isCompleted: boolean = false) => {
-        if (!roadmap || !roadmap.id) return;
-
-        // Optimistic UI update
-        if (isCompleted) {
-            const key = `${mIdx + 1}-${tIdx}`;
-            setCompletedTopics(prev => {
-                const next = new Set(prev);
-                next.add(key);
-                return next;
-            });
+        // Load completed topics
+        if (data.completed_topic_ids) {
+          setCompletedTopics(new Set(data.completed_topic_ids));
         }
 
-        try {
-            const response = await roadmapsAPI.updateProgress(roadmap.id, {
-                module_number: mIdx + 1,
-                topic_index: tIdx,
-                completed: isCompleted
-            });
-
-            if (isCompleted && response.coins_earned && response.coins_earned > 0) {
-                setCoinToast({ show: true, amount: response.coins_earned });
-                setTimeout(() => setCoinToast(null), 4000);
-            }
-        } catch (err) {
-            console.error('Error updating progress:', err);
-            // Rollback optimistic update on error
-            if (isCompleted) {
-                const key = `${mIdx + 1}-${tIdx}`;
-                setCompletedTopics(prev => {
-                    const next = new Set(prev);
-                    next.delete(key);
-                    return next;
-                });
-            }
+        // Submissions
+        if (data.id) {
+          const subs = await submissionsAPI.listSubmissions(data.id);
+          if (subs?.submissions) setSubmissions(subs.submissions);
         }
-    };
-
-    const handleTopicChange = (mIdx: number, tIdx: number) => {
-        setCurrentModuleIndex(mIdx);
-        setCurrentTopicIndex(tIdx);
-        setViewMode('video');
-        
-        // Preserve the completed status instead of passing false (which deletes the completion record)
-        const isCurrentlyCompleted = completedTopics.has(`${mIdx + 1}-${tIdx}`);
-        updateProgressOnServer(mIdx, tIdx, isCurrentlyCompleted);
-        
-        if (window.innerWidth < 768) setIsSidebarOpen(false);
-    };
-
-    const handleMarkAsCompleted = async () => {
-        setIsUpdatingProgress(true);
-        await updateProgressOnServer(currentModuleIndex, currentTopicIndex, true);
-        setIsUpdatingProgress(false);
-    };
-
-    const dismissMuteTooltip = async () => {
-        setShowMuteTooltip(false);
-        try {
-            await authAPI.updateMetadata({ muted_autoplay_hint_dismissed: true });
-        } catch (err) {
-            console.error('Error saving metadata:', err);
-        }
-    };
-
-    if (loading) {
-        return (
-            <div className="fixed inset-0 flex flex-col items-center justify-center bg-background dark:bg-[#0f0f0f]">
-                <div className="flex justify-center gap-1.5 mb-6">
-                    {[0, 1, 2].map(i => (
-                        <div 
-                            key={i} 
-                            className="w-1.5 h-1.5 bg-[var(--accent)] rounded-full animate-bounce" 
-                            style={{ animationDelay: `${i * 0.2}s` }}
-                        ></div>
-                    ))}
-                </div>
-                <p className="text-[11px] font-bold text-text-muted tracking-widest">Establishing learning session</p>
-            </div>
-        );
+      } catch (err: any) {
+        setError(err.message || 'Failed to load course session');
+      } finally {
+        setLoading(false);
+      }
     }
 
-    if (error || !roadmap) {
-        return (
-            <div className="fixed inset-0 flex items-center justify-center bg-background p-4">
-                <div className="text-center">
-                    <h1 className="text-xl font-bold text-text-heading mb-2">Connection error</h1>
-                    <p className="manrope-body text-[14px] text-text-muted mb-8 italic">{error || 'Session failed'}</p>
-                    <Link href={`/roadmap/${roadmap?.slug || id}`} className="bg-[var(--text-heading)] text-[var(--bg-main)] px-6 py-2.5 rounded-lg font-bold text-[12px] tracking-wide">
-                        Back to Overview
-                    </Link>
-                </div>
-            </div>
-        );
+    if (!initialRoadmap) {
+      loadRoadmap();
     }
+    refreshProfile();
+  }, [id, initialRoadmap, refreshProfile]);
 
-    const modules = roadmap.roadmap_plan?.modules || [];
-    const currentModule = modules[currentModuleIndex];
+  // Sync active video
+  useEffect(() => {
+    if (!roadmap || !roadmap.roadmap_plan?.modules) return;
+    const currentModule = roadmap.roadmap_plan.modules[currentModuleIndex];
     const currentTopic = currentModule?.topics?.[currentTopicIndex];
-    const isTopicCompleted = completedTopics.has(`${currentModuleIndex + 1}-${currentTopicIndex}`);
-    
-    const currentWeekTopicsCount = currentModule?.topics?.length || 0;
-    const completedInCurrentWeekCount = Array.from(completedTopics).filter(k => k.startsWith(`${currentModuleIndex + 1}-`)).length;
-    const isWeekFullyCompleted = completedInCurrentWeekCount === currentWeekTopicsCount;
+    setResourceCardIdx(0);
+    setActiveVideoId(currentTopic?.youtube_video_id || null);
+  }, [currentModuleIndex, currentTopicIndex, roadmap]);
 
-    let upNextTopic = null;
-    let upNextModuleIdx = -1;
-    let upNextTopicIdx = -1;
-
-    if (currentTopicIndex < currentModule.topics.length - 1) {
-        upNextTopic = currentModule.topics[currentTopicIndex + 1];
-        upNextModuleIdx = currentModuleIndex;
-        upNextTopicIdx = currentTopicIndex + 1;
-    } else if (currentModuleIndex < modules.length - 1) {
-        upNextTopic = modules[currentModuleIndex + 1].topics[0];
-        upNextModuleIdx = currentModuleIndex + 1;
-        upNextTopicIdx = 0;
+  const updateProgressOnServer = async (mIdx: number, tIdx: number, isCompleted: boolean = false) => {
+    if (!roadmap || !roadmap.id) return;
+    if (isCompleted) {
+      const key = `${mIdx + 1}-${tIdx}`;
+      setCompletedTopics(prev => new Set(prev).add(key));
     }
 
-    const handleNext = () => {
-        if (upNextTopic) {
-            handleTopicChange(upNextModuleIdx, upNextTopicIdx);
-        }
-    };
+    try {
+      const response = await roadmapsAPI.updateProgress(roadmap.id, {
+        module_number: mIdx + 1,
+        topic_index: tIdx,
+        completed: isCompleted
+      });
 
-    const handlePrev = () => {
-        if (currentTopicIndex > 0) {
-            handleTopicChange(currentModuleIndex, currentTopicIndex - 1);
-        } else if (currentModuleIndex > 0) {
-            const prevModule = modules[currentModuleIndex - 1];
-            handleTopicChange(currentModuleIndex - 1, prevModule.topics.length - 1);
-        }
-    };
+      if (isCompleted && response.coins_earned && response.coins_earned > 0) {
+        setCoinToast({ show: true, amount: response.coins_earned });
+        setTimeout(() => setCoinToast(null), 4000);
+      }
+    } catch (err) {
+      console.error('Error updating progress:', err);
+    }
+  };
 
+  const handleTopicChange = (mIdx: number, tIdx: number) => {
+    setCurrentModuleIndex(mIdx);
+    setCurrentTopicIndex(tIdx);
+    const nextTopic = roadmap?.roadmap_plan?.modules?.[mIdx]?.topics?.[tIdx];
+    setActiveVideoId(nextTopic?.youtube_video_id || null);
+    setViewMode('video');
+    const isCurrentlyCompleted = completedTopics.has(`${mIdx + 1}-${tIdx}`);
+    updateProgressOnServer(mIdx, tIdx, isCurrentlyCompleted);
+    if (window.innerWidth < 768) setIsSidebarOpen(false);
+  };
+
+  const handleMarkAsCompleted = async () => {
+    setIsUpdatingProgress(true);
+    await updateProgressOnServer(currentModuleIndex, currentTopicIndex, true);
+    setIsUpdatingProgress(false);
+  };
+
+  if (loading) {
     return (
-        <div className="fixed inset-0 z-[100] flex flex-col text-text-primary selection:bg-teal-500/30 selection:text-text-heading overflow-hidden">
-            {/* Header */}
-            <CourseHeader 
-                roadmapId={id}
-                roadmapSlug={roadmap?.slug}
-                roadmapTitle={roadmap?.subject}
-                unitInfo={`Unit ${currentTopicIndex + 1} of ${currentModule?.topics?.length}`}
-                unitTitle={currentTopic?.title}
-                onPrev={handlePrev}
-                onNext={handleNext}
-                hasPrev={currentModuleIndex > 0 || currentTopicIndex > 0}
-                hasNext={!!upNextTopic}
-                onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                onOpenSyllabus={() => setIsSyllabusOpen(true)}
-                modules={modules}
-                currentModuleIndex={currentModuleIndex}
-                onModuleChange={(idx) => handleTopicChange(idx, 0)}
+      <div className="fixed inset-0 flex flex-col items-center justify-center bg-background">
+        <div className="flex justify-center gap-1.5 mb-6">
+          {[0, 1, 2].map(i => (
+            <div 
+              key={i} 
+              className="w-1.5 h-1.5 bg-accent rounded-full animate-bounce" 
+              style={{ animationDelay: `${i * 0.2}s` }}
             />
-
-            <div className="flex flex-1 relative overflow-hidden mt-14">
-                {/* Sidebar Overlay for Mobile */}
-                {isSidebarOpen && (
-                    <div className="fixed inset-0 bg-black/60 z-30 md:hidden" onClick={() => setIsSidebarOpen(false)} />
-                )}
-
-                {/* Sidebar */}
-                <aside className={`${
-                    isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-                } fixed inset-y-0 left-0 z-40 w-[280px] bg-sidebar border-r border-border transition-all duration-300 ease-in-out md:relative md:translate-x-0 flex flex-col`}>
-                    <div className="flex-1 overflow-y-auto p-4 no-scrollbar">
-                        <div className="mb-6">
-                            <h2 className="text-[13px] font-bold text-text-heading leading-tight">
-                                {currentModule?.title?.toLowerCase().startsWith('module') 
-                                    ? currentModule.title 
-                                    : `Module ${currentModuleIndex + 1}: ${currentModule?.title}`}
-                            </h2>
-                        </div>
-                        
-                        <div className="space-y-1">
-                            {currentModule?.topics?.map((topic: any, tIdx: number) => {
-                                const isCompleted = completedTopics.has(`${currentModuleIndex + 1}-${tIdx}`);
-                                const isActive = tIdx === currentTopicIndex;
-                                const hasVideo = !!topic.youtube_video_id;
-                                
-                                return (
-                                    <button
-                                        key={tIdx}
-                                        onClick={() => handleTopicChange(currentModuleIndex, tIdx)}
-                                        className={`w-full flex items-start text-left px-3 py-3 rounded-lg text-[13px] transition-all group ${
-                                            isActive 
-                                                ? 'bg-[var(--accent)]/10 text-[var(--accent)] font-semibold shadow-sm' 
-                                                : 'hover:bg-callout-bg text-text-primary hover:text-text-heading'
-                                        }`}
-                                    >
-                                        <div className="mr-3 mt-0.5 shrink-0">
-                                            {isCompleted ? (
-                                                <CheckCircle2 className="h-5 w-5 text-emerald-500" />
-                                            ) : hasVideo ? (
-                                                <PlayCircle className={`h-5 w-5 ${isActive ? 'text-accent' : 'opacity-60 group-hover:opacity-100'}`} />
-                                            ) : (
-                                                <Library className={`h-5 w-5 ${isActive ? 'text-accent' : 'opacity-60 group-hover:opacity-100'}`} />
-                                            )}
-                                        </div>
-                                        <div className="flex flex-col min-w-0">
-                                            <span className="line-clamp-2 leading-snug font-medium">{topic.title}</span>
-                                            <span className="text-[10px] mt-1 opacity-80">
-                                                {hasVideo ? (
-                                                    `Video • ${typeof topic.duration === 'string' ? topic.duration.replace('m', ' min') : (topic.duration ? `${topic.duration} min` : '8 min')}`
-                                                ) : (
-                                                    'Resources available'
-                                                )}
-                                            </span>
-                                        </div>
-                                    </button>
-                                );
-                            })}
-
-                            <div className="pt-2 space-y-2">
-                                <button 
-                                    onClick={() => setViewMode('practice')}
-                                    className={`w-full flex items-start gap-3 px-3 py-3 rounded-lg text-[13px] transition-all group ${
-                                        viewMode === 'practice' 
-                                            ? "bg-[var(--accent)]/10 text-[var(--accent)] font-semibold shadow-sm" 
-                                            : "text-text-primary hover:text-text-heading hover:bg-callout-bg"
-                                    }`}
-                                >
-                                    {completedPracticeModules.has(currentModuleIndex) ? (
-                                        <CheckCircle className="h-5 w-5 mt-0.5 text-accent opacity-80 group-hover:opacity-100" />
-                                    ) : (
-                                        <Target className={`h-5 w-5 mt-0.5 ${viewMode === 'practice' ? 'text-accent' : 'opacity-60 group-hover:opacity-100'}`} />
-                                    )}
-                                    <div className="flex flex-col text-left">
-                                        <span className="font-medium">Practice</span>
-                                        <span className="text-[10px] mt-1 opacity-80 group-hover:opacity-100 transition-opacity">
-                                            {completedPracticeModules.has(currentModuleIndex) ? 'Practice completed' : 'Test your knowledge'}
-                                        </span>
-                                    </div>
-                                </button>
-
-                                <button 
-                                    onClick={() => setIsHomeworkModalOpen(true)}
-                                    className="w-full flex items-start gap-3 px-3 py-3 rounded-lg text-[13px] text-text-primary hover:text-text-heading hover:bg-callout-bg transition-all group"
-                                >
-                                    {submissions.some(s => s.module_number === currentModuleIndex + 1) ? (
-                                        <>
-                                            <CheckCircle className="h-5 w-5 mt-0.5 text-accent opacity-80 group-hover:opacity-100" />
-                                            <div className="flex flex-col">
-                                                <span className="font-medium">View Submission</span>
-                                                <span className="text-[10px] mt-1 opacity-80 group-hover:opacity-100 transition-opacity">See your evaluation</span>
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <Send className="h-5 w-5 mt-0.5 opacity-60 group-hover:opacity-100" />
-                                            <div className="flex flex-col">
-                                                <span className="font-medium">Submit Homework</span>
-                                                <span className="text-[10px] mt-1 opacity-80 group-hover:opacity-100 transition-opacity">Verify your skills</span>
-                                            </div>
-                                        </>
-                                    )}
-                                </button>
-
-                            </div>
-                        </div>
-
-                        {/* Module Navigation */}
-                        <div className="mt-8 pt-6 border-t border-border/50 space-y-4">
-                            {currentModuleIndex > 0 && (
-                                <div>
-                                    <p className="text-[11px] font-bold text-text-primary uppercase tracking-wider mb-2 px-1">Previous</p>
-                                    <button 
-                                        onClick={() => handleTopicChange(currentModuleIndex - 1, 0)}
-                                        className="w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-[12px] font-semibold text-text-heading hover:bg-callout-bg transition-all group"
-                                    >
-                                        <ChevronLeft className="h-3.5 w-3.5 shrink-0 transition-transform group-hover:-translate-x-0.5" />
-                                        <span className="truncate ml-2 text-right">
-                                            {modules[currentModuleIndex - 1].title?.toLowerCase().startsWith('module')
-                                                ? modules[currentModuleIndex - 1].title
-                                                : `Module ${currentModuleIndex}: ${modules[currentModuleIndex - 1].title}`}
-                                        </span>
-                                    </button>
-                                </div>
-                            )}
-
-                            {currentModuleIndex < modules.length - 1 && (
-                                <div>
-                                    <p className="text-[11px] font-bold text-text-primary uppercase tracking-wider mb-2 px-1">Next</p>
-                                    <button 
-                                        onClick={() => handleTopicChange(currentModuleIndex + 1, 0)}
-                                        className="w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-[12px] font-semibold text-text-heading hover:bg-callout-bg transition-all group"
-                                    >
-                                        <span className="truncate mr-2 text-left">
-                                            {modules[currentModuleIndex + 1].title?.toLowerCase().startsWith('module')
-                                                ? modules[currentModuleIndex + 1].title
-                                                : `Module ${currentModuleIndex + 2}: ${modules[currentModuleIndex + 1].title}`}
-                                        </span>
-                                        <ChevronRight className="h-3.5 w-3.5 shrink-0 transition-transform group-hover:translate-x-0.5" />
-                                    </button>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* Sidebar Footer with Progress */}
-                    <div className="p-4 border-t border-border bg-sidebar/50">
-                        <div className="mb-4">
-                            <>
-                                <div className="flex items-center justify-between text-[11px] font-bold mb-1.5 px-1">
-                                    <span className="text-text-primary uppercase tracking-wider">Progress</span>
-                                    <span className="text-text-heading">{displayPercent}%</span>
-                                </div>
-                                <div className="h-1.5 w-full bg-border rounded-full overflow-hidden">
-                                    <div 
-                                        className="h-full bg-accent transition-all duration-500 ease-out rounded-full"
-                                        style={{ width: `${displayPercent}%` }}
-                                    />
-                                </div>
-                            </>
-                        </div>
-
-                        <div className="flex items-center justify-between px-1">
-                            <div className="flex items-center gap-4">
-                                <button className="text-text-primary hover:text-text-heading transition-colors" title="Help">
-                                    <Info className="h-4 w-4 opacity-70 group-hover:opacity-100" />
-                                </button>
-                                <button 
-                                    onClick={() => setIsTaskModalOpen(true)}
-                                    className="text-text-primary hover:text-text-heading transition-colors" 
-                                    title="Add to Planner"
-                                >
-                                    <Calendar className="h-4 w-4 opacity-70 group-hover:opacity-100" />
-                                </button>
-                            </div>
-                            <Link href={`/course/${roadmap?.slug || id}`} className="text-text-primary hover:text-text-heading transition-colors">
-                                <LayoutDashboard className="h-4 w-4 opacity-70 group-hover:opacity-100" />
-                            </Link>
-                        </div>
-                    </div>
-                </aside>
-
-                {/* Main Content Area */}
-                <main className="flex-1 flex flex-col h-full relative overflow-hidden">
-                    <div className="flex-1 overflow-y-auto no-scrollbar">
-                        <div className="max-w-[1200px] mx-auto w-full p-4 md:p-8">
-                            
-                            {displayPercent >= 98 && (
-                                <div className="mb-8 p-6 bg-accent/10 border border-[var(--accent)]/20 rounded-lg flex flex-col md:flex-row items-center justify-between gap-6 shadow-sm">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-14 h-14 bg-[var(--accent)]/20 rounded-full flex items-center justify-center shrink-0">
-                                            <Trophy className="h-7 w-7 text-accent" />
-                                        </div>
-                                        <div>
-                                            <h3 className="text-lg font-bold text-text-heading mb-1">You actually did it. Course complete. 🏆</h3>
-                                            <p className="text-text-primary text-[13px]">
-                                                Every topic. Every practice. Every submission. Locked in. 🔒
-                                            </p>
-                                        </div>
-                                    </div>
-                                    <div className="shrink-0">
-                                        {profile?.is_pro ? (
-                                            certificateId ? (
-                                                <Link 
-                                                    href={`/certificates/${certificateId}`} 
-                                                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-accent text-background rounded-lg font-bold text-[13px] hover:opacity-90 transition-opacity shadow-sm"
-                                                >
-                                                    <Award className="h-4 w-4" />
-                                                    View Certificate
-                                                </Link>
-                                            ) : (
-                                                <button 
-                                                    disabled
-                                                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-accent/60 text-background rounded-lg font-bold text-[13px] shadow-sm cursor-not-allowed"
-                                                >
-                                                    <Loader className="h-4 w-4 animate-spin" />
-                                                    Generating...
-                                                </button>
-                                            )
-                                        ) : (
-                                            <Link 
-                                                href="/settings/billing" 
-                                                className="inline-flex flex-col items-center justify-center px-6 py-2 bg-text-heading text-background rounded-lg font-bold hover:opacity-90 transition-opacity shadow-sm"
-                                            >
-                                                <span className="flex items-center gap-2 text-[13px]">
-                                                    <Sparkles className="h-4 w-4 text-amber-400" />
-                                                    Upgrade to Pro
-                                                </span>
-                                                <span className="text-[10px] font-normal opacity-70">to download certificate</span>
-                                            </Link>
-                                        )}
-                                    </div>
-                                </div>
-                            )}
-
-                            {viewMode === 'video' ? (
-                                <div className="animate-in fade-in duration-500">
-                                    {/* Video Player Container */}
-                                    <div className="bg-image-bg border border-border rounded-lg overflow-hidden shadow-sm mb-8">
-                                        <div className={`w-full relative group ${activeVideoId ? 'aspect-video bg-black' : 'min-h-[360px] sm:min-h-[380px] md:aspect-video bg-sidebar'}`}>
-                                            {activeVideoId ? (
-                                                <YouTubePlayer
-                                                    videoId={activeVideoId}
-                                                    title={currentTopic.youtube_video_title || currentTopic.title}
-                                                    onComplete={handleMarkAsCompleted}
-                                                    onNext={handleNext}
-                                                    isCompleted={isTopicCompleted}
-                                                />
-                                            ) : (
-                                                 <div className="w-full h-full bg-sidebar border border-border flex flex-col justify-between p-4 sm:p-6 md:p-8 relative group">
-                                                     {/* Header */}
-                                                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 pb-3 border-b border-border">
-                                                         <div>
-                                                             <span className="text-[11px] font-bold text-accent bg-accent/10 border border-accent/20 px-2.5 py-1 rounded-md uppercase tracking-wider">
-                                                                 Recommended References
-                                                             </span>
-                                                             <p className="text-[12px] text-text-muted mt-1.5 font-medium">
-                                                                 No video available for this topic. Explore these curated study references:
-                                                             </p>
-                                                         </div>
-                                                         {activeTopicResources.length > 1 && (
-                                                             <div className="flex items-center gap-2 self-end sm:self-auto">
-                                                                 <span className="text-[12px] font-bold text-text-muted bg-background px-2.5 py-1 rounded-md border border-border font-mono">
-                                                                     {resourceCardIdx + 1} / {activeTopicResources.length}
-                                                                 </span>
-                                                                 <div className="flex items-center gap-1">
-                                                                     <button
-                                                                         type="button"
-                                                                         onClick={() => setResourceCardIdx(prev => (prev - 1 + activeTopicResources.length) % activeTopicResources.length)}
-                                                                         title="Previous Reference"
-                                                                         className="p-1.5 rounded-md border border-border bg-background text-text-muted hover:text-text-primary hover:border-accent/40 transition-colors"
-                                                                     >
-                                                                         <ChevronLeft className="w-4 h-4" />
-                                                                     </button>
-                                                                     <button
-                                                                         type="button"
-                                                                         onClick={() => setResourceCardIdx(prev => (prev + 1) % activeTopicResources.length)}
-                                                                         title="Next Reference"
-                                                                         className="p-1.5 rounded-md border border-border bg-background text-text-muted hover:text-text-primary hover:border-accent/40 transition-colors"
-                                                                     >
-                                                                         <ChevronRight className="w-4 h-4" />
-                                                                     </button>
-                                                                 </div>
-                                                             </div>
-                                                         )}
-                                                     </div>
-
-                                                     {/* Main Card View with Responsive Controls */}
-                                                     {activeTopicResources.length > 0 ? (
-                                                         <div className="my-auto py-3 md:py-4 flex items-center gap-3">
-                                                             {activeTopicResources.length > 1 && (
-                                                                 <button
-                                                                     type="button"
-                                                                     onClick={() => setResourceCardIdx(prev => (prev - 1 + activeTopicResources.length) % activeTopicResources.length)}
-                                                                     title="Previous Reference"
-                                                                     className="hidden md:flex w-9 h-9 rounded-full border border-border bg-background text-text-muted hover:text-text-heading hover:border-accent shadow-xs items-center justify-center transition-all shrink-0"
-                                                                 >
-                                                                     <ChevronLeft className="w-5 h-5" />
-                                                                 </button>
-                                                             )}
-
-                                                             <div className="flex-1 w-full">
-                                                                 {(() => {
-                                                                     const res = activeTopicResources[resourceCardIdx % activeTopicResources.length];
-                                                                     const urlStr = res.url || res.link || "#";
-                                                                     let domain = "External Reference";
-                                                                     try {
-                                                                         if (urlStr !== "#") domain = new URL(urlStr).hostname.replace(/^www\./, "");
-                                                                     } catch {}
-                                                                     const rawImg = res.image || res.featured_image || res.thumbnail || res.og_image || res.img || res.cover_image;
-                                                                     const featImg = rawImg || (urlStr && urlStr !== "#" ? `https://api.microlink.io/?url=${encodeURIComponent(urlStr)}&embed=image.url` : null);
-                                                                     const faviconUrl = domain !== "External Reference" ? `https://www.google.com/s2/favicons?domain=${domain}&sz=64` : null;
-
-                                                                     return (
-                                                                          <div className="bg-background border border-border rounded-lg p-4 sm:p-6 md:p-8 shadow-md hover:border-accent/60 transition-all flex flex-col justify-between min-h-[180px] sm:min-h-[220px] md:min-h-[260px] gap-4 sm:gap-6">
-                                                                              <div className="flex flex-col md:flex-row items-start md:items-center gap-4 md:gap-6">
-                                                                                  {featImg && (
-                                                                                      <div className="w-full md:w-48 h-36 md:h-32 shrink-0 rounded-md border border-border overflow-hidden bg-sidebar relative">
-                                                                                          <img
-                                                                                              src={featImg}
-                                                                                              alt={res.title || "Reference image"}
-                                                                                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                                                                              onError={(e) => {
-                                                                                                  (e.currentTarget.parentElement as HTMLElement).style.display = 'none';
-                                                                                              }}
-                                                                                          />
-                                                                                      </div>
-                                                                                  )}
-                                                                                  <div className="space-y-2 sm:space-y-3 flex-1 w-full">
-                                                                                      <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                                                                                          <span className="text-[10px] sm:text-[11px] font-bold text-accent bg-accent/10 border border-accent/20 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-md uppercase tracking-wider">
-                                                                                              {res.type || "Article"}
-                                                                                          </span>
-                                                                                          <span className="text-[11px] sm:text-[12px] font-mono text-text-muted flex items-center gap-1.5">
-                                                                                              {faviconUrl && (
-                                                                                                  <img src={faviconUrl} alt="" className="w-3.5 h-3.5 rounded-xs" />
-                                                                                              )}
-                                                                                              {domain}
-                                                                                          </span>
-                                                                                          {res.context && (
-                                                                                              <span className="text-[10px] sm:text-[11px] font-medium text-text-muted bg-sidebar border border-border px-2 py-0.5 rounded-md">
-                                                                                                  {res.context}
-                                                                                              </span>
-                                                                                          )}
-                                                                                      </div>
-                                                                                      <h4 className="text-[15px] sm:text-[18px] md:text-[21px] font-bold text-text-heading leading-snug line-clamp-2">
-                                                                                          {res.title || res.name || "Study Reference"}
-                                                                                      </h4>
-                                                                                      <p className="text-[12px] sm:text-[13px] text-text-muted leading-relaxed line-clamp-2">
-                                                                                          Explore this reference material for in-depth technical documentation and background theory on {currentTopic?.title || "this topic"}.
-                                                                                      </p>
-                                                                                  </div>
-                                                                              </div>
-                                                                              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 pt-3 sm:pt-4 border-t border-border/60">
-                                                                                  <span className="text-[11px] sm:text-[12px] text-text-muted font-medium">
-                                                                                      Source: <strong className="text-text-primary">{domain}</strong>
-                                                                                  </span>
-                                                                                  {urlStr !== "#" && (
-                                                                                      <a
-                                                                                          href={urlStr}
-                                                                                          target="_blank"
-                                                                                          rel="noopener noreferrer"
-                                                                                          className="w-full sm:w-auto px-5 sm:px-6 py-2 sm:py-2.5 rounded-md bg-accent text-white font-bold text-[12px] sm:text-[13px] hover:bg-teal-700 transition-all shadow-sm flex items-center justify-center gap-2"
-                                                                                      >
-                                                                                          Read Reference <ExternalLink className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-                                                                                      </a>
-                                                                                  )}
-                                                                              </div>
-                                                                          </div>
-                                                                     );
-                                                                 })()}
-                                                             </div>
-
-                                                             {activeTopicResources.length > 1 && (
-                                                                 <button
-                                                                     type="button"
-                                                                     onClick={() => setResourceCardIdx(prev => (prev + 1) % activeTopicResources.length)}
-                                                                     title="Next Reference"
-                                                                     className="hidden md:flex w-9 h-9 rounded-full border border-border bg-background text-text-muted hover:text-text-heading hover:border-accent shadow-xs items-center justify-center transition-all shrink-0"
-                                                                 >
-                                                                     <ChevronRight className="w-5 h-5" />
-                                                                 </button>
-                                                             )}
-                                                         </div>
-                                                     ) : (
-                                                         <div className="my-auto text-center py-8 text-text-muted">
-                                                             <p className="text-[14px] font-semibold text-text-heading mb-1">
-                                                                 No Direct Video or Web References
-                                                             </p>
-                                                             <p className="text-[12px] text-text-muted max-w-sm mx-auto">
-                                                                 Please refer to the learning objectives and weekly outcome below for this topic.
-                                                             </p>
-                                                         </div>
-                                                     )}
-
-                                                     {/* Navigation Footer */}
-                                                     {activeTopicResources.length > 1 && (
-                                                         <div className="flex items-center justify-between pt-3 border-t border-border">
-                                                             <button
-                                                                 type="button"
-                                                                 onClick={() => setResourceCardIdx(prev => (prev - 1 + activeTopicResources.length) % activeTopicResources.length)}
-                                                                 className="flex items-center gap-1 px-3 py-1.5 rounded-md border border-border text-[12px] font-semibold text-text-muted hover:text-text-heading hover:bg-background transition-all"
-                                                             >
-                                                                 <ChevronLeft className="w-4 h-4" /> Previous
-                                                             </button>
-                                                             <div className="flex items-center gap-1.5">
-                                                                 {activeTopicResources.map((_: any, idx: number) => (
-                                                                     <button
-                                                                         key={idx}
-                                                                         type="button"
-                                                                         onClick={() => setResourceCardIdx(idx)}
-                                                                         className={`h-2 rounded-full transition-all ${
-                                                                             idx === (resourceCardIdx % activeTopicResources.length)
-                                                                                 ? 'w-6 bg-accent'
-                                                                                 : 'w-2 bg-border hover:bg-text-muted'
-                                                                         }`}
-                                                                     />
-                                                                 ))}
-                                                             </div>
-                                                             <button
-                                                                 type="button"
-                                                                 onClick={() => setResourceCardIdx(prev => (prev + 1) % activeTopicResources.length)}
-                                                                 className="flex items-center gap-1 px-3 py-1.5 rounded-md border border-border text-[12px] font-semibold text-text-muted hover:text-text-heading hover:bg-background transition-all"
-                                                             >
-                                                                 Next <ChevronRight className="w-4 h-4" />
-                                                             </button>
-                                                         </div>
-                                                     )}
-                                                 </div>
-                                            )}
-                                        </div>
-                                        
-                                        <div className="p-4 border-t border-border flex items-center justify-between">
-                                            <button className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-border text-[12px] font-bold text-text-muted hover:bg-callout-bg transition-all">
-                                                <Menu className="h-3.5 w-3.5" />
-                                                Show Transcript
-                                            </button>
-
-                                            <button
-                                                onClick={handleMarkAsCompleted}
-                                                disabled={isUpdatingProgress}
-                                                className={`flex items-center gap-2 px-6 py-2 rounded-lg font-bold text-[12px] transition-all ${
-                                                    isTopicCompleted
-                                                        ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20'
-                                                        : 'bg-text-heading text-background hover:opacity-90 shadow-lg active:scale-95'
-                                                }`}
-                                            >
-                                                {isUpdatingProgress ? (
-                                                    <Loader className="h-3.5 w-3.5 animate-spin" />
-                                                ) : isTopicCompleted ? (
-                                                    <><Check className="h-3.5 w-3.5" /> Completed</>
-                                                ) : (
-                                                    "Mark as Mastered"
-                                                )}
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                    {/* Content Info */}
-                                    <div className="max-w-4xl">
-                                        <h1 className="text-2xl md:text-3xl font-bold text-text-heading mb-6 tracking-tight">
-                                            {currentTopic?.title}
-                                        </h1>
-
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 pb-20">
-                                            <div className="md:col-span-2 space-y-8">
-                                                <section>
-                                                    <h4 className="text-[12px] font-bold text-text-muted uppercase tracking-[0.1em] mb-4">
-                                                        Learning Objectives
-                                                    </h4>
-                                                    {currentTopic?.subtopics?.length > 0 ? (
-                                                        <ul className="space-y-3">
-                                                            {currentTopic.subtopics.map((sub: any, idx: number) => (
-                                                                <li key={idx} className="manrope-body text-[15px] text-text-primary flex gap-3">
-                                                                    <span className="text-accent/40 font-bold">•</span>
-                                                                    {sub.title}
-                                                                </li>
-                                                            ))}
-                                                        </ul>
-                                                    ) : (
-                                                        <p className="text-[14px] text-text-muted italic">No specific objectives defined for this node.</p>
-                                                    )}
-                                                </section>
-
-                                                <section>
-                                                    <h4 className="text-[12px] font-bold text-text-muted uppercase tracking-[0.1em] mb-4">
-                                                        Weekly Outcome
-                                                    </h4>
-                                                    <div className="p-5 bg-callout-bg border border-callout-border rounded-lg">
-                                                        <p className="manrope-body text-[15px] font-medium text-text-heading leading-relaxed">
-                                                            {currentModule?.outcome}
-                                                        </p>
-                                                    </div>
-                                                </section>
-                                            </div>
-
-                                            <div className="space-y-8">
-                                                <section>
-                                                    <h4 className="text-[12px] font-bold text-text-muted uppercase tracking-[0.1em] mb-4">
-                                                        Resources
-                                                    </h4>
-                                                    <div className="flex flex-col gap-2">
-                                                        {currentModule?.resources?.map((res: any, idx: number) => (
-                                                            <a 
-                                                                key={idx}
-                                                                href={res.url || res.link} 
-                                                                target="_blank" 
-                                                                rel="noreferrer"
-                                                                className="text-[13px] text-accent hover:underline flex items-start gap-2 group"
-                                                            >
-                                                                <FileText className="h-4 w-4 shrink-0 opacity-40 group-hover:opacity-100" />
-                                                                <span className="leading-tight">{res.title || res.name}</span>
-                                                            </a>
-                                                        ))}
-                                                        {(!currentModule?.resources || currentModule.resources.length === 0) && (
-                                                            <p className="text-[12px] text-text-muted italic">No supplementary materials.</p>
-                                                        )}
-                                                    </div>
-                                                </section>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className="max-w-3xl mx-auto w-full">
-                                    <MCQPractice
-                                        roadmapId={roadmap.id}
-                                        subtopicId={currentTopic?.uuid || ''}
-                                        topicName={currentTopic?.title || ''}
-                                        topics={(currentModule?.topics || []).map((t: any) => t.title || '')}
-                                        moduleTitle={currentModule?.title || ''}
-                                        subject={roadmap.subject || roadmap.title || ''}
-                                        weekNumber={currentModuleIndex + 1}
-                                        isPro={profile?.is_pro || false}
-                                        userCredits={profile?.roadmap_credits || 0}
-                                        onPointsEarned={(amount) => {
-                                            setCoinToast({ show: true, amount });
-                                            setTimeout(() => setCoinToast(null), 4000);
-                                            fetchCompletedPractices();
-                                        }}
-                                        onRefreshProfile={refreshProfile}
-                                        onClose={() => setViewMode('video')}
-                                    />
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                </main>
-            </div>
-
-            {coinToast && (
-                <div className="fixed bottom-8 right-8 z-[200] animate-in slide-in-from-bottom-4 duration-500">
-                    <div className="bg-[var(--text-heading)] text-[var(--bg-main)] px-6 py-4 rounded-lg shadow-md flex items-center gap-4 border border-white/10">
-                        <div className="h-10 w-10 bg-white/20 rounded-full flex items-center justify-center">
-                            <Zap className="h-5 w-5 fill-current" />
-                        </div>
-                        <div>
-                         <p className="text-[15px] font-bold tracking-tight">+{coinToast.amount}🤑 System Points</p>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            <SyllabusModal 
-                isOpen={isSyllabusOpen}
-                onClose={() => setIsSyllabusOpen(false)}
-                roadmap={roadmap}
-                currentModuleIndex={currentModuleIndex}
-                completedTopics={completedTopics}
-                onTopicChange={handleTopicChange}
-            />
-
-            {isTaskModalOpen && (
-                <TaskModal 
-                    task={null}
-                    initialDate={new Date()}
-                    onClose={() => setIsTaskModalOpen(false)}
-                    onRefresh={() => {
-                        // Optional: show a toast or refresh some state
-                    }}
-                    initialRoadmapId={roadmap.id}
-                    initialModuleNumber={currentModuleIndex + 1}
-                />
-            )}
-
-            {roadmap && (
-                <HomeworkSubmissionModal 
-                    isOpen={isHomeworkModalOpen}
-                    onClose={() => setIsHomeworkModalOpen(false)}
-                    roadmapId={roadmap.id}
-                    moduleNumber={currentModuleIndex + 1}
-                    moduleTitle={modules[currentModuleIndex].title}
-                    instructions={modules[currentModuleIndex].proof_of_work_instructions}
-                    initialResult={
-                        (() => {
-                            const submission = submissions.find(s => s.module_number === currentModuleIndex + 1);
-                            if (!submission) return null;
-                            return {
-                                level: submission.evaluation_level,
-                                summary: submission.evaluation || submission.senate_summary,
-                                link: submission.link,
-                                evidence: submission.user_skill_evidence?.map((ev: any) => ({
-                                    skill: ev.skill_name,
-                                    strength: ev.evidence_strength,
-                                    reason: ev.reason
-                                })) || []
-                            };
-                        })()
-                    }
-                    onSuccess={(evaluation) => {
-                        console.log("Homework submitted successfully:", evaluation);
-                        if (roadmap?.id) {
-                            submissionsAPI.listSubmissions(roadmap.id).then((res) => {
-                                if (res.submissions) setSubmissions(res.submissions);
-                            }).catch(console.error);
-                        }
-                    }}
-                    isPro={profile?.is_pro || false}
-                />
-            )}
-
-            {roadmap && isFreshRoadmapLoaded && roadmap.skills_extracted === false && (
-                <SkillExtractor 
-                    roadmap={roadmap} 
-                    onComplete={() => {
-                        setRoadmap(prev => prev ? { ...prev, skills_extracted: true } : null);
-                    }} 
-                />
-            )}
+          ))}
         </div>
+        <p className="text-[11px] font-bold text-text-muted tracking-wider">Establishing learning session</p>
+      </div>
     );
+  }
+
+  if (error || !roadmap) {
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-background p-4">
+        <div className="text-center">
+          <h1 className="text-lg font-bold text-text-heading mb-2">Connection error</h1>
+          <p className="text-[13px] text-text-muted mb-6">{error || 'Session failed'}</p>
+          <Link href={`/roadmap/${roadmap?.slug || id}`} className="bg-text-heading text-background px-5 py-2 rounded-md font-bold text-[12px]">
+            Back to Overview
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  const modules = roadmap.roadmap_plan?.modules || [];
+  const currentModule = modules[currentModuleIndex];
+  const currentTopic = currentModule?.topics?.[currentTopicIndex];
+  const isTopicCompleted = completedTopics.has(`${currentModuleIndex + 1}-${currentTopicIndex}`);
+
+  let upNextTopic = null;
+  let upNextModuleIdx = -1;
+  let upNextTopicIdx = -1;
+
+  if (currentTopicIndex < (currentModule?.topics?.length || 0) - 1) {
+    upNextTopic = currentModule.topics[currentTopicIndex + 1];
+    upNextModuleIdx = currentModuleIndex;
+    upNextTopicIdx = currentTopicIndex + 1;
+  } else if (currentModuleIndex < modules.length - 1) {
+    upNextTopic = modules[currentModuleIndex + 1].topics?.[0];
+    upNextModuleIdx = currentModuleIndex + 1;
+    upNextTopicIdx = 0;
+  }
+
+  const handleNext = () => {
+    if (upNextTopic) {
+      handleTopicChange(upNextModuleIdx, upNextTopicIdx);
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentTopicIndex > 0) {
+      handleTopicChange(currentModuleIndex, currentTopicIndex - 1);
+    } else if (currentModuleIndex > 0) {
+      const prevModule = modules[currentModuleIndex - 1];
+      handleTopicChange(currentModuleIndex - 1, (prevModule?.topics?.length || 1) - 1);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] flex flex-col text-text-primary overflow-hidden">
+      {/* Course Header */}
+      <CourseHeader 
+        roadmapId={id}
+        roadmapSlug={roadmap?.slug}
+        roadmapTitle={roadmap?.subject}
+        unitInfo={`Unit ${currentTopicIndex + 1} of ${currentModule?.topics?.length || 1}`}
+        unitTitle={currentTopic?.title}
+        onPrev={handlePrev}
+        onNext={handleNext}
+        hasPrev={currentModuleIndex > 0 || currentTopicIndex > 0}
+        hasNext={!!upNextTopic}
+        onMenuClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        onOpenSyllabus={() => setIsSyllabusOpen(true)}
+        modules={modules}
+        currentModuleIndex={currentModuleIndex}
+        onModuleChange={(idx) => handleTopicChange(idx, 0)}
+      />
+
+      <div className="flex flex-1 relative overflow-hidden mt-14">
+        {/* Modular Sidebar */}
+        <LearnSidebar
+          isOpen={isSidebarOpen}
+          onClose={() => setIsSidebarOpen(false)}
+          modules={modules}
+          currentModuleIndex={currentModuleIndex}
+          currentTopicIndex={currentTopicIndex}
+          completedTopics={completedTopics}
+          completedPracticeModules={completedPracticeModules}
+          viewMode={viewMode}
+          setViewMode={setViewMode}
+          onTopicChange={handleTopicChange}
+          onOpenHomework={() => setIsHomeworkModalOpen(true)}
+          onOpenPlanner={() => setIsTaskModalOpen(true)}
+          onOpenGoldfish={handleOpenGoldfish}
+          submissions={submissions}
+          displayPercent={displayPercent}
+          roadmapSlug={roadmap?.slug}
+          roadmapId={id}
+        />
+
+        {/* Main Content Area */}
+        <main className="flex-1 flex flex-col h-full relative overflow-hidden">
+          <div className="flex-1 overflow-y-auto no-scrollbar">
+            <div className="max-w-[1100px] mx-auto w-full p-4 md:p-8">
+              
+              {/* Course Completion Celebration */}
+              {displayPercent >= 98 && (
+                <CourseCompletionBanner 
+                  isPro={profile?.is_pro || false}
+                  certificateId={certificateId}
+                />
+              )}
+
+              {viewMode === 'video' ? (
+                <div className="animate-in fade-in duration-300">
+                  {/* Modular Video & Reference Player */}
+                  <VideoReferenceArea 
+                    activeVideoId={activeVideoId}
+                    currentTopic={currentTopic}
+                    isTopicCompleted={isTopicCompleted}
+                    isUpdatingProgress={isUpdatingProgress}
+                    activeTopicResources={activeTopicResources}
+                    resourceCardIdx={resourceCardIdx}
+                    setResourceCardIdx={setResourceCardIdx}
+                    onMarkAsCompleted={handleMarkAsCompleted}
+                    onNext={handleNext}
+                    onOpenGoldfishVideo={() => handleOpenGoldfish('video')}
+                  />
+
+                  {/* Modular Topic Details & Reading Resources */}
+                  <TopicContentDetails 
+                    currentTopic={currentTopic}
+                    currentModule={currentModule}
+                    onOpenGoldfishReading={() => handleOpenGoldfish('reading')}
+                  />
+                </div>
+              ) : (
+                <div className="max-w-3xl mx-auto w-full">
+                  <MCQPractice
+                    roadmapId={roadmap.id}
+                    subtopicId={currentTopic?.uuid || ''}
+                    topicName={currentTopic?.title || ''}
+                    topics={(currentModule?.topics || []).map((t: any) => t.title || '')}
+                    moduleTitle={currentModule?.title || ''}
+                    subject={roadmap.subject || roadmap.title || ''}
+                    weekNumber={currentModuleIndex + 1}
+                    isPro={profile?.is_pro || false}
+                    userCredits={profile?.roadmap_credits || 0}
+                    onPointsEarned={(amount) => {
+                      setCoinToast({ show: true, amount });
+                      setTimeout(() => setCoinToast(null), 4000);
+                      fetchCompletedPractices();
+                    }}
+                    onRefreshProfile={refreshProfile}
+                    onClose={() => setViewMode('video')}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        </main>
+      </div>
+
+      {/* Floating Goldfish Always-Accessible Circular Button */}
+      <button
+        onClick={() => handleOpenGoldfish(timerState.isActive ? 'focus' : 'reading')}
+        className="fixed bottom-6 right-6 z-[110] w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-sidebar/95 border-2 border-orange-500/40 hover:border-orange-500 shadow-xl hover:shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all duration-200 group cursor-pointer backdrop-blur-xs"
+        title="Goldfish AI Co-Pilot"
+        aria-label="Goldfish AI Assistant"
+      >
+        <GoldfishIcon variant="happy" className="w-9 h-9 sm:w-10 sm:h-10 group-hover:rotate-6 transition-transform drop-shadow-sm" />
+
+        {/* Live Timer Countdown Badge on the Icon */}
+        {timerState.isActive && (
+          <div className="absolute -top-2 px-2 py-0.5 rounded-full bg-emerald-600 text-white font-mono text-[10px] font-bold border-2 border-background shadow-md flex items-center gap-1 animate-in fade-in zoom-in-90 duration-150 select-none">
+            <span className="w-1.5 h-1.5 rounded-full bg-white" />
+            <span>
+              {Math.floor(timerState.secondsRemaining / 60)}:{(timerState.secondsRemaining % 60).toString().padStart(2, '0')}
+            </span>
+          </div>
+        )}
+      </button>
+
+      {/* Goldfish Co-Pilot Modal */}
+      <GoldfishAssistant 
+        isOpen={isGoldfishOpen}
+        onClose={() => setIsGoldfishOpen(false)}
+        roadmapId={roadmap.id}
+        roadmapSlug={roadmap.slug}
+        roadmapTitle={roadmap.subject || roadmap.title}
+        currentModuleIndex={currentModuleIndex}
+        currentTopicIndex={currentTopicIndex}
+        currentTopicTitle={currentTopic?.title}
+        currentModuleTitle={currentModule?.title}
+        currentVideoTitle={currentTopic?.youtube_video_title}
+        currentVideoId={activeVideoId || undefined}
+        initialTab={goldfishTab}
+        onResourceAdded={handleGoldfishResourceAdded}
+        onVideoReplaced={handleGoldfishVideoReplaced}
+        onTimerStateChange={setTimerState}
+      />
+
+      {/* System Points Toast */}
+      {coinToast && (
+        <div className="fixed bottom-8 right-8 z-[200] animate-in slide-in-from-bottom-4 duration-300">
+          <div className="bg-text-heading text-background px-5 py-3 rounded-md shadow-md flex items-center gap-3">
+            <Zap className="h-4 w-4 fill-current text-amber-400" />
+            <p className="text-[13px] font-bold">+{coinToast.amount} System Points</p>
+          </div>
+        </div>
+      )}
+
+      {/* Syllabus Modal */}
+      <SyllabusModal 
+        isOpen={isSyllabusOpen}
+        onClose={() => setIsSyllabusOpen(false)}
+        roadmap={roadmap}
+        currentModuleIndex={currentModuleIndex}
+        completedTopics={completedTopics}
+        onTopicChange={handleTopicChange}
+      />
+
+      {/* Task Modal */}
+      {isTaskModalOpen && (
+        <TaskModal 
+          task={null}
+          initialDate={new Date()}
+          onClose={() => setIsTaskModalOpen(false)}
+          onRefresh={() => {}}
+          initialRoadmapId={roadmap.id}
+          initialModuleNumber={currentModuleIndex + 1}
+        />
+      )}
+
+      {/* Homework Submission Modal */}
+      {roadmap && (
+        <HomeworkSubmissionModal 
+          isOpen={isHomeworkModalOpen}
+          onClose={() => setIsHomeworkModalOpen(false)}
+          roadmapId={roadmap.id}
+          moduleNumber={currentModuleIndex + 1}
+          moduleTitle={modules[currentModuleIndex]?.title}
+          instructions={modules[currentModuleIndex]?.proof_of_work_instructions}
+          initialResult={
+            (() => {
+              const submission = submissions.find(s => s.module_number === currentModuleIndex + 1);
+              if (!submission) return null;
+              return {
+                level: submission.evaluation_level,
+                summary: submission.evaluation || submission.senate_summary,
+                link: submission.link,
+                evidence: submission.user_skill_evidence?.map((ev: any) => ({
+                  skill: ev.skill_name,
+                  strength: ev.evidence_strength,
+                  reason: ev.reason
+                })) || []
+              };
+            })()
+          }
+          onSuccess={(evaluation) => {
+            if (roadmap?.id) {
+              submissionsAPI.listSubmissions(roadmap.id).then((res) => {
+                if (res.submissions) setSubmissions(res.submissions);
+              }).catch(console.error);
+            }
+          }}
+          isPro={profile?.is_pro || false}
+        />
+      )}
+
+      {/* Skill Extractor */}
+      {roadmap && isFreshRoadmapLoaded && roadmap.skills_extracted === false && (
+        <SkillExtractor 
+          roadmap={roadmap} 
+          onComplete={() => {
+            setRoadmap(prev => prev ? { ...prev, skills_extracted: true } : null);
+          }} 
+        />
+      )}
+    </div>
+  );
 }

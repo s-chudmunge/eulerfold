@@ -86,50 +86,31 @@ def extract_text_from_bytes_or_url(raw_bytes: bytes, url: str = "") -> Tuple[str
 
 async def fetch_rendered_webpage_text(url: str, timeout_seconds: int = 25) -> Tuple[str, str]:
     """
-    Tier 1 & Tier 2 web scraper:
-    1. First tries fast direct HTTP/PDF extraction.
-    2. If the text appears truncated, empty, or contains dynamic JS placeholders (e.g. 'Loading...', SPA containers),
-       escalates to headless Playwright (Chromium) to execute JavaScript and capture the rendered DOM.
+    Tier 1 web scraper: Fast direct HTTP/PDF extraction.
+    We removed the Playwright (Chromium) fallback to massively reduce backend bloat.
+    Dynamic JS-rendered pages will fall back to basic text extraction or Jina Reader API if configured.
     """
     # 1. Fast Tier: Direct Fetch
     try:
         raw_bytes = await asyncio.to_thread(fetch_url_bytes, url, 15.0)
         text, ctype = extract_text_from_bytes_or_url(raw_bytes, url)
         
-        # If it's a PDF or we got substantial content without loading skeletons, return immediately
         if ctype == "pdf" or (text and len(text.strip()) > 350 and "loading..." not in text.lower()[:300]):
             return text, ctype
     except Exception as e:
-        logger.warning(f"Fast HTTP extraction failed for {url}: {e}. Escalating to Playwright.")
+        logger.warning(f"Fast HTTP extraction failed for {url}: {e}.")
 
-    # 2. Dynamic Tier: Headless Playwright (Chromium)
+    # 2. Dynamic Tier: Lightweight API fallback (Jina Reader)
+    # This replaces the bloaty 200MB+ Playwright Chromium dependency
     try:
-        from playwright.async_api import async_playwright
-        async with async_playwright() as p:
-            browser = await p.chromium.launch(headless=True)
-            page = await browser.new_page(
-                user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-            )
-            await page.goto(url, wait_until="domcontentloaded", timeout=timeout_seconds * 1000)
-            
-            # Wait for content or network idle
-            try:
-                await page.wait_for_timeout(3000)
-            except Exception:
-                pass
-                
-            content = await page.content()
-            await browser.close()
-
-            soup = BeautifulSoup(content, "html.parser")
-            for script in soup(["script", "style", "nav", "footer", "header", "noscript"]):
-                script.extract()
-            rendered_text = soup.get_text(separator=' ', strip=True)
-            if rendered_text and len(rendered_text.strip()) > 20:
-                logger.info(f"Playwright successfully rendered dynamic page: {len(rendered_text)} chars")
-                return rendered_text, "dynamic_webpage"
-    except Exception as pw_err:
-        logger.error(f"Playwright rendering failed for {url}: {pw_err}")
+        jina_url = f"https://r.jina.ai/{url}"
+        async with httpx.AsyncClient(timeout=timeout_seconds) as client:
+            resp = await client.get(jina_url, headers={"X-No-Cache": "true", "X-Return-Format": "text"})
+            if resp.status_code == 200 and len(resp.text.strip()) > 20:
+                logger.info(f"Jina Reader successfully extracted dynamic page: {len(resp.text)} chars")
+                return resp.text, "dynamic_webpage"
+    except Exception as jina_err:
+        logger.error(f"Jina Reader fallback failed for {url}: {jina_err}")
 
     # Fallback to whatever fast tier retrieved or empty
     return text if 'text' in locals() and text else "", "webpage"

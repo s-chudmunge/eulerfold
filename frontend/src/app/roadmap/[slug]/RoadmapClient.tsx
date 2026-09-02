@@ -2,49 +2,30 @@
 
 import React, { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase/client';
-import { roadmapsAPI, exploreAPI, submissionsAPI, authAPI } from '@/lib/api';
+import { roadmapsAPI, exploreAPI, submissionsAPI } from '@/lib/api';
 import RoadmapDisplay from '@/components/landing/RoadmapDisplay';
 import PublicRoadmapView from './PublicRoadmapView';
 import PrivateRoadmapBanner from '@/components/PrivateRoadmapBanner';
-import StarRating from '@/components/roadmap/StarRating';
 import { 
     ChevronLeft, 
-    Globe, 
     Share2,
-    Copy, 
-    Eye, 
-    Trophy,
-    Target,
+    Copy,
     Compass,
     Library,
-    ShieldCheck,
     X,
-    FileText,
-    Play,
     AlertCircle,
-    Menu,
-    LogIn,
-    MoreVertical,
-    Lock,
-    Scale,
-    Plus,
     ArrowRight,
-    User,
-    Calendar,
-    ExternalLink
+    Plus
 } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import AppSidebar from '@/components/AppSidebar';
-import ThemeToggle from '@/components/ThemeToggle';
-import ShareMenu from '@/components/ShareMenu';
-import TTSListenButton from '@/components/TTSListenButton';
+
 import MCQPractice from '@/components/roadmap/MCQPractice';
 import HomeworkSubmissionModal from '@/components/roadmap/HomeworkSubmissionModal';
 import Celebration from '@/components/Celebration';
-import { motion, AnimatePresence } from 'framer-motion';
+import GoldfishAssistant from '@/components/goldfish/GoldfishAssistant';
+import FocusGrove from '@/components/roadmap/FocusGrove';
 import { Inconsolata, Manrope } from 'next/font/google';
-import { useSettings } from '@/components/SettingsProvider';
 
 const inconsolata = Inconsolata({
   subsets: ['latin'],
@@ -58,106 +39,10 @@ const manrope = Manrope({
   weight: ['400', '500', '600', '700'],
 });
 
-const getDomain = (url: string) => {
-    if (!url) return 'Reference Material';
-    try {
-        return new URL(url).hostname.replace('www.', '');
-    } catch {
-        return 'Reference Material';
-    }
-};
-
-const ModuleReferenceCarousel = ({ module, index }: { module: any, index: number }) => {
-    const scrollRef = React.useRef<HTMLDivElement>(null);
-
-    const scroll = (direction: 'left' | 'right') => {
-        if (scrollRef.current) {
-            const scrollAmount = 300;
-            scrollRef.current.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
-        }
-    };
-
-    if (!module.resources || module.resources.length === 0) return null;
-
-    const uniqueResources = Array.from(new Map(
-        module.resources.map((r: any) => [r.link || r.url, r])
-    ).values()) as any[];
-
-    if (uniqueResources.length === 0) return null;
-
-    return (
-        <div className="mb-10">
-            <div className="flex items-center justify-between mb-4 px-2 md:px-0">
-                <h3 className="manrope-body text-[13px] font-bold text-text-heading/80">
-                    Week {index + 1}: {module.title}
-                </h3>
-                {uniqueResources.length > 2 && (
-                    <div className="flex items-center gap-2">
-                        <button 
-                            onClick={() => scroll('left')}
-                            className="p-1.5 rounded-full bg-sidebar border border-border/50 text-text-muted hover:text-accent hover:border-accent/30 transition-all shadow-sm"
-                        >
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" /></svg>
-                        </button>
-                        <button 
-                            onClick={() => scroll('right')}
-                            className="p-1.5 rounded-full bg-sidebar border border-border/50 text-text-muted hover:text-accent hover:border-accent/30 transition-all shadow-sm"
-                        >
-                            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" /></svg>
-                        </button>
-                    </div>
-                )}
-            </div>
-            <div 
-                ref={scrollRef}
-                className="flex overflow-x-auto gap-4 pb-4 snap-x no-scrollbar -mx-6 px-6 md:mx-0 md:px-0 scroll-smooth"
-            >
-                {uniqueResources.map((resource: any, idx: number) => (
-                    <a 
-                        key={idx}
-                        href={resource.link || resource.url} 
-                        target="_blank" 
-                        rel="noreferrer"
-                        className="snap-start shrink-0 w-[260px] md:w-[280px] h-[160px] p-5 rounded-md border border-border/60 bg-sidebar/50 hover:bg-background/80 hover:border-accent/40 hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col justify-between group relative overflow-hidden"
-                    >
-                        {/* Feature Image Background (if available) */}
-                        {(resource.image_url || resource.image) && (
-                            <>
-                                <div className="absolute inset-0 bg-cover bg-center opacity-10 group-hover:opacity-20 transition-opacity duration-300" style={{ backgroundImage: `url(${resource.image_url || resource.image})` }} />
-                                <div className="absolute inset-0 bg-gradient-to-t from-sidebar via-sidebar/80 to-transparent" />
-                            </>
-                        )}
-                        <div className="absolute inset-0 bg-gradient-to-b from-accent/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-                        <div className="relative z-10">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="w-8 h-8 rounded-md bg-accent/10 text-accent flex items-center justify-center font-bold text-[12px] font-inconsolata border border-accent/20 group-hover:bg-accent group-hover:text-white transition-colors">
-                                    {String(idx + 1).padStart(2, '0')}
-                                </div>
-                                <ExternalLink className="w-4 h-4 text-text-muted opacity-0 group-hover:opacity-100 group-hover:text-accent transition-all transform group-hover:translate-x-1 group-hover:-translate-y-1" />
-                            </div>
-                            <h3 className="manrope-body text-[14px] font-bold text-text-heading group-hover:text-accent transition-colors leading-snug line-clamp-3">
-                                {resource.title || resource.name || resource.url}
-                            </h3>
-                        </div>
-                        <div className="relative z-10 mt-2 pt-3 border-t border-border/50 flex items-center gap-2">
-                            <img 
-                                src={`https://s2.googleusercontent.com/s2/favicons?domain=${getDomain(resource.link || resource.url)}&sz=64`} 
-                                alt="" 
-                                className="w-3.5 h-3.5 rounded-sm grayscale group-hover:grayscale-0 transition-all duration-300" 
-                                onError={(e) => {
-                                    (e.target as HTMLImageElement).style.display = 'none';
-                                }}
-                            />
-                            <span className="text-[10px] text-text-muted uppercase tracking-[0.1em] font-bold font-inter truncate">
-                                {getDomain(resource.link || resource.url)}
-                            </span>
-                        </div>
-                    </a>
-                ))}
-            </div>
-        </div>
-    );
-};
+import RoadmapHeader from '@/components/roadmap/RoadmapHeader';
+import HomeworkReviewLogs from '@/components/roadmap/HomeworkReviewLogs';
+import ActionSidebar from '@/components/roadmap/ActionSidebar';
+import ModuleReferenceCarousel from '@/components/roadmap/ModuleReferenceCarousel';
 
 interface Props {
   slug: string;
@@ -171,14 +56,10 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
     const [error, setError] = useState<string | null>(null);
     const [profile, setProfile] = useState<any>(null);
     const [saving, setSaving] = useState(false);
-    const [rating, setRating] = useState<number>(initialRoadmap?.average_rating || 0);
-    const [ratingCount, setRatingCount] = useState<number>(initialRoadmap?.rating_count || 0);
-    const [userRating, setUserRating] = useState<number | null>(initialRoadmap?.user_rating || null);
     const [successMsg, setSuccessMsg] = useState<string | null>(null);
     const [showCelebration, setShowCelebration] = useState(false);
     const [showNudge, setShowNudge] = useState(false);
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-    const [shareLink, setShareLink] = useState<string>('');
     const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
     const [isOwner, setIsOwner] = useState<boolean>(false);
     const [showActions, setShowActions] = useState<boolean>(false);
@@ -194,8 +75,8 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
     const [showCloneModal, setShowCloneModal] = useState<boolean>(false);
     const [submittingModule, setSubmittingModule] = useState<{number: number, title: string, instructions?: string} | null>(null);
     const [viewOnlyResult, setViewOnlyResult] = useState<any>(null);
+    const [isGoldfishOpen, setIsGoldfishOpen] = useState<boolean>(false);
     const router = useRouter();
-    const { openSettings } = useSettings();
 
     const refreshProfile = React.useCallback(async () => {
         const { data: { session } } = await supabase.auth.getSession();
@@ -259,12 +140,6 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
     }, [profile, roadmap]);
 
     useEffect(() => {
-        if (roadmap) {
-            setShareLink(`${window.location.origin}/roadmap/${roadmap.slug}`);
-        }
-    }, [roadmap]);
-
-    useEffect(() => {
         async function fetchRoadmap() {
             // Re-fetch if roadmap is missing OR if we just logged in (to get personal progress/cloned status)
             if (!roadmap || (isAuthenticated && !isOwner && !roadmap.is_cloned)) {
@@ -273,9 +148,6 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                     const data = await roadmapsAPI.getRoadmapBySlug(slug);
                     if (data) {
                         setRoadmap(data);
-                        setRating(data.average_rating || 0);
-                        setRatingCount(data.rating_count || 0);
-                        setUserRating(data.user_rating || null);
                     } else {
                         setError('Roadmap not found');
                     }
@@ -296,30 +168,6 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
         }
     }, [slug, isAuthenticated]); // Simplified dependencies to trigger on auth change
 
-    const handleRate = async (value: number) => {
-        if (!isAuthenticated) {
-            handleSignIn();
-            return;
-        }
-
-        try {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (session) {
-                await exploreAPI.rateRoadmap(roadmap.id, value, session.access_token);
-                setUserRating(value);
-                // Fetch updated rating data
-                const updated = await exploreAPI.getPublicRoadmap(roadmap.id);
-                setRating(updated.average_rating || 0);
-                setRatingCount(updated.rating_count || 0);
-                setSuccessMsg('Rating submitted.');
-                setTimeout(() => setSuccessMsg(null), 3000);
-            }
-        } catch (err) {
-            console.error("Failed to rate:", err);
-            setError("Failed to submit rating.");
-            setTimeout(() => setError(null), 3000);
-        }
-    };
 
     const handleUpdateVisibility = async (updates: { is_public?: boolean, show_author?: boolean }) => {
         if (!roadmap || !roadmap.id) return;
@@ -364,22 +212,6 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
         }
     };
 
-    const copyShareLink = async () => {
-        const link = `${window.location.origin}/roadmap/${roadmap.slug}`;
-        try {
-            await navigator.clipboard.writeText(link);
-            setSuccessMsg('Link copied.');
-        } catch {
-            const input = document.createElement('input');
-            input.value = link;
-            document.body.appendChild(input);
-            input.select();
-            document.execCommand('copy');
-            document.body.removeChild(input);
-            setSuccessMsg('Link copied.');
-        }
-        setTimeout(() => setSuccessMsg(null), 3000);
-    };
 
     const handleSignIn = () => {
         router.push(`/login?next=${encodeURIComponent(window.location.pathname)}`);
@@ -546,289 +378,42 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
     return (
         <div className={`${inconsolata.variable} ${manrope.variable} fixed inset-0 z-[100] flex flex-col text-text-primary selection:bg-teal-500/30 selection:text-text-heading overflow-hidden`}>
             {/* Header */}
-            <header className="inconsolata-ui border-b border-border bg-header h-[48px] shrink-0 z-50">
-                <div className="w-full px-4 md:px-6 flex h-full items-center justify-between">
-                    <div className="flex items-center gap-2 md:gap-3">
-                        <button 
-                            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                            className="p-2 -ml-2 text-text-muted hover:text-text-heading transition-colors"
-                            aria-label="Toggle sidebar"
-                            title="Toggle Sidebar"
-                        >
-                            {isSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-                        </button>
-                        <Link className="flex items-center group shrink-0" href="/">
-                            <img src="/apple-touch-icon.png" alt="EulerFold" className="w-7 h-7 group-hover:opacity-80 transition-opacity" />
-                        </Link>
-                        
-                        {(successMsg || error) && (
-                            <div className="flex items-center gap-2 animate-in fade-in slide-in-from-top-1 duration-300 ml-2">
-                                {successMsg && (
-                                    <div className="flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 rounded text-emerald-600">
-                                        <ShieldCheck className="w-3 h-3" />
-                                        <span className="inconsolata-ui text-[10px] font-bold uppercase tracking-wider">{successMsg}</span>
-                                    </div>
-                                )}
-                                {error && (
-                                    <div className="flex items-center gap-1.5 px-2 py-0.5 bg-red-500/10 border border-red-500/20 rounded text-red-500">
-                                        <AlertCircle className="w-3 h-3" />
-                                        <span className="inconsolata-ui text-[10px] font-bold uppercase tracking-wider">{error}</span>
-                                    </div>
-                                )}
-                            </div>
-                        )}
-
-                        {isOwner && roadmap && !roadmap.is_public && !roadmap.cloned_from && (
-                            <div className="flex items-center gap-1 px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-600 text-[9px] font-bold tracking-wide ml-2">
-                                <Lock className="w-3 h-3" />
-                                <span className="hidden sm:inline">Private</span>
-                            </div>
-                        )}
-                    </div>
-
-                    <div className="flex items-center gap-2">
-                        <ThemeToggle />
-
-                        <div className="relative">
-                            <button 
-                                onClick={() => setShowActions(!showActions)}
-                                className="p-2 hover:bg-callout-bg rounded-md transition-colors text-text-muted hover:text-text-heading border border-transparent hover:border-border"
-                                title="More actions"
-                            >
-                                <MoreVertical className="w-4 h-4" />
-                            </button>
-
-                            {showActions && (
-                                <>
-                                    <div className="fixed inset-0 z-40" onClick={() => setShowActions(false)}></div>
-                                    <div className="absolute right-0 mt-2 w-52 bg-background border border-border rounded-md shadow-2xl z-50 overflow-hidden animate-in zoom-in-95 duration-100 origin-top-right">
-                                        <div className="py-1">
-                                            {isAuthenticated ? (
-                                                (isOwner || roadmap.is_cloned) ? (
-                                                    <button 
-                                                        onClick={() => {
-                                                            handleContinueLearning();
-                                                            setShowActions(false);
-                                                        }}
-                                                        disabled={saving}
-                                                        className="w-full px-4 py-2.5 text-left flex items-center gap-3 transition-colors hover:bg-callout-bg text-text-heading font-medium text-[12px] disabled:opacity-50"
-                                                    >
-                                                        <ArrowRight className="w-4 h-4 text-accent" />
-                                                        <span>Continue Learning</span>
-                                                    </button>
-                                                ) : (
-                                                    <button 
-                                                        onClick={() => {
-                                                            handleClone();
-                                                            setShowActions(false);
-                                                        }}
-                                                        disabled={saving}
-                                                        className="w-full px-4 py-2.5 text-left flex items-center gap-3 transition-colors hover:bg-callout-bg text-text-heading font-medium text-[12px] disabled:opacity-50"
-                                                    >
-                                                        <Copy className="w-4 h-4 text-accent" />
-                                                        <span>{saving ? 'Cloning...' : 'Clone to Dashboard'}</span>
-                                                    </button>
-                                                )
-                                            ) : (
-                                                <button
-                                                    onClick={() => {
-                                                        handleSignIn();
-                                                        setShowActions(false);
-                                                    }}
-                                                    className="w-full px-4 py-2.5 text-left flex items-center gap-3 transition-colors hover:bg-callout-bg text-text-heading font-medium text-[12px]"
-                                                >
-                                                    <LogIn className="w-4 h-4 text-accent" />
-                                                    <span>Sign In</span>
-                                                </button>
-                                            )}
-
-                                            {isOwner && !roadmap.is_public && !roadmap.cloned_from && (
-                                                <button 
-                                                    onClick={() => {
-                                                        handleUpdateVisibility({ is_public: true });
-                                                        setShowActions(false);
-                                                    }}
-                                                    disabled={saving}
-                                                    className="w-full px-4 py-2.5 text-left flex items-center gap-3 transition-colors hover:bg-callout-bg text-teal-700 font-medium text-[12px] disabled:opacity-50 border-t border-border"
-                                                >
-                                                    <Globe className="w-4 h-4" />
-                                                    <span>Make Public</span>
-                                                </button>
-                                            )}
-
-                                            {isOwner && isPro && (roadmap.progress?.completed_topics || 0) >= (roadmap.progress?.total_topics || 1) && (roadmap.extension_count || 0) < 5 && (
-                                                <button 
-                                                    onClick={() => {
-                                                        setShowExtendModal(true);
-                                                        setShowActions(false);
-                                                    }}
-                                                    className="w-full px-4 py-2.5 text-left flex items-center gap-3 transition-colors hover:bg-emerald-500/5 text-emerald-600 font-medium text-[12px] border-t border-border"
-                                                >
-                                                    <Plus className="w-4 h-4 text-emerald-500" />
-                                                    <div className="flex flex-col">
-                                                        <span>Extend Roadmap</span>
-                                                        <span className="text-[9px] text-emerald-600/60 font-bold uppercase">Pro Feature</span>
-                                                    </div>
-                                                </button>
-                                            )}
-                                        </div>
-                                    </div>
-                                </>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            </header>
+            <RoadmapHeader 
+                isSidebarOpen={isSidebarOpen}
+                setIsSidebarOpen={setIsSidebarOpen}
+                successMsg={successMsg}
+                error={error}
+                isOwner={isOwner}
+                roadmap={roadmap}
+                showActions={showActions}
+                setShowActions={setShowActions}
+                isAuthenticated={isAuthenticated}
+                saving={saving}
+                handleContinueLearning={handleContinueLearning}
+                handleClone={handleClone}
+                handleSignIn={handleSignIn}
+                handleUpdateVisibility={handleUpdateVisibility}
+                isPro={isPro}
+                setShowExtendModal={setShowExtendModal}
+                setIsGoldfishOpen={setIsGoldfishOpen}
+            />
 
             <div className="flex flex-1 relative overflow-hidden">
-                <AppSidebar 
-                    isOpen={isSidebarOpen}
-                    onClose={() => setIsSidebarOpen(false)}
-                >
-                    <div className="space-y-4 px-3">
-                        <div className="space-y-1">
-                            <p className="inconsolata-ui text-[0.7rem] font-bold text-text-muted  tracking-wide">Duration</p>
-                            <p className="inconsolata-ui text-[0.875rem] font-bold text-text-heading">{roadmap.roadmap_plan?.modules?.length || roadmap.time_value} {roadmap.roadmap_plan?.modules?.length ? (roadmap.roadmap_plan.modules.length === 1 ? 'week' : 'weeks') : roadmap.time_unit}</p>
-                        </div>
-
-                        {(roadmap.author || roadmap.username) && (
-                            <div className="space-y-1 pt-2">
-                                <p className="inconsolata-ui text-[0.7rem] font-bold text-text-muted  tracking-wide">Owner</p>
-                                <div className="flex items-center gap-2">
-                                    <User className="w-3.5 h-3.5 text-accent" />
-                                    <p className="inconsolata-ui text-[0.875rem] font-bold text-text-heading">{roadmap.author || roadmap.username}</p>
-                                </div>
-                            </div>
-                        )}
-                        {roadmap.created_at && (
-                            <div className="space-y-1 pt-2">
-                                <p className="inconsolata-ui text-[0.7rem] font-bold text-text-muted  tracking-wide">Created</p>
-                                <div className="flex items-center gap-2">
-                                    <Calendar className="w-3.5 h-3.5 text-accent" />
-                                    <p className="inconsolata-ui text-[0.875rem] font-bold text-text-heading">
-                                        {new Date(roadmap.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                                    </p>
-                                </div>
-                            </div>
-                        )}
-
-                        {isAuthenticated && (isOwner || roadmap.is_cloned) && submissions.length > 0 && (
-                            <div className="pt-4 mt-4 border-t border-border">
-                                <button 
-                                    onClick={() => setShowLogs(!showLogs)}
-                                    className={`w-full py-2.5 px-3 rounded-lg border transition-all flex items-center justify-between group ${
-                                        showLogs 
-                                        ? 'bg-accent text-white border-[var(--accent)]' 
-                                        : 'bg-callout-bg text-text-muted border-border hover:bg-[var(--border)]'
-                                    }`}
-                                >
-                                    <div className="flex items-center gap-2">
-                                        <Scale className="w-3.5 h-3.5" />
-                                        <span className="inconsolata-ui text-[10px] font-bold  tracking-wide">Submit Homework</span>
-                                    </div>
-                                    <span className={`inconsolata-ui text-[10px] font-bold px-1.5 py-0.5 rounded ${showLogs ? 'bg-background/20' : 'bg-[var(--border)]'}`}>
-                                        {submissions.length}
-                                    </span>
-                                </button>
-                            </div>
-                        )}
-                    </div>
-                </AppSidebar>
+                <ActionSidebar 
+                    isSidebarOpen={isSidebarOpen}
+                    setIsSidebarOpen={setIsSidebarOpen}
+                    roadmap={roadmap}
+                    isAuthenticated={isAuthenticated}
+                    isOwner={isOwner}
+                    submissionsLength={submissions.length}
+                    showLogs={showLogs}
+                    setShowLogs={setShowLogs}
+                />
 
                 <main className="flex-1 min-w-0 h-full overflow-y-auto no-scrollbar">
                     <div className="max-w-[900px] mx-auto px-8 py-6">
                         {showLogs ? (
-                            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                                <div className="flex items-center justify-between mb-8 pb-4 border-b border-border">
-                                    <div className="flex items-center gap-3">
-                                        <Scale className="w-5 h-5 text-accent" />
-                                        <h2 className="inconsolata-ui text-lg font-bold text-text-heading  tracking-tight">Review History</h2>
-                                    </div>
-                                    <button 
-                                        onClick={() => setShowLogs(false)}
-                                        className="inconsolata-ui text-[11px] font-bold text-text-muted hover:text-text-heading  tracking-wide flex items-center gap-2"
-                                    >
-                                        <ChevronLeft className="w-3.5 h-3.5" /> Back to Roadmap
-                                    </button>
-                                </div>
-
-                                <div className="space-y-6 pb-20">
-                                    {submissions.map((sub, idx) => (
-                                        <div key={sub.id} className="p-8 bg-background border border-border rounded-none relative">
-                                            <div className="flex justify-between items-start mb-6">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="inconsolata-ui text-[10px] font-bold text-accent  tracking-wide bg-accent-muted px-2.5 py-1 rounded">
-                                                        Log #{submissions.length - idx}
-                                                    </div>
-                                                    <div className="inconsolata-ui text-[10px] font-bold text-text-muted  tracking-wide bg-callout-bg px-2.5 py-1 rounded border border-border">
-                                                        Module {sub.module_number}
-                                                    </div>
-                                                    <div className={`inconsolata-ui text-[10px] font-bold  tracking-wide px-2.5 py-1 rounded border ${
-                                                        sub.evaluation_level === 'Solid' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' :
-                                                        sub.evaluation_level === 'Developing' ? 'bg-blue-500/10 text-blue-600 border-blue-500/20' :
-                                                        'bg-red-500/10 text-red-600 border-red-500/20'
-                                                    }`}>
-                                                        {sub.evaluation_level}
-                                                    </div>
-                                                </div>
-                                                <span className="inconsolata-ui text-[10px] font-bold text-text-muted  tracking-wide">
-                                                    {new Date(sub.submitted_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
-                                                </span>
-                                            </div>
-
-                                            <div className="manrope-body mb-8">
-                                                {sub.is_senate_eval && sub.senate_summary ? (
-                                                    <div className="flex items-start justify-between gap-4 border-l-4 border-[var(--accent)] pl-4 py-1 italic">
-                                                        <p className="text-[15px] font-bold text-text-heading leading-relaxed">
-                                                            &ldquo;{sub.senate_summary}&rdquo;
-                                                        </p>
-                                                        <TTSListenButton text={`Review Summary: ${sub.senate_summary}`} label="Summary" />
-                                                    </div>
-                                                ) : (
-                                                    <p className="text-[14px] text-text-primary leading-relaxed italic">
-                                                        &ldquo;{sub.evaluation}&rdquo;
-                                                    </p>
-                                                )}
-                                            </div>
-
-                                            {sub.is_senate_eval && sub.senate_reasoning && (
-                                                <div className="mt-4 space-y-3 pt-6 border-t border-border">
-                                                    {[
-                                                        { id: 'technical', label: 'Technical Depth', data: sub.senate_reasoning.technical, vote: sub.senate_votes?.[0] },
-                                                        { id: 'understanding', label: 'Learning Proof', data: sub.senate_reasoning.understanding, vote: sub.senate_votes?.[1] },
-                                                        { id: 'relevance', label: 'Alignment', data: sub.senate_reasoning.relevance, vote: sub.senate_votes?.[2] }
-                                                    ].map((item) => (
-                                                        <div key={item.id} className="flex flex-col md:flex-row gap-2 md:gap-6 p-4 rounded-none bg-callout-bg border border-border group/item hover:border-[var(--accent)] transition-all">
-                                                            <div className="w-full md:w-32 shrink-0">
-                                                                <div className="flex items-center justify-between md:flex-col md:items-start mb-1">
-                                                                    <p className="inconsolata-ui text-[9px] font-bold text-text-muted  tracking-wider">{item.label}</p>
-                                                                    <TTSListenButton text={`${item.label}: ${item.data}`} label={item.label} />
-                                                                </div>
-                                                                {item.vote && (
-                                                                    <span className={`inconsolata-ui text-[9px] font-bold  px-2 py-0.5 rounded border ${
-                                                                        item.vote === 'Solid' ? 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20' :
-                                                                        item.vote === 'Developing' ? 'bg-blue-500/10 text-blue-600 border-blue-500/20' : 'bg-red-500/10 text-red-600 border-red-500/20'
-                                                                    }`}>{item.vote}</span>
-                                                                )}
-                                                            </div>
-                                                            <p className="text-[12px] text-text-primary leading-relaxed italic opacity-90">&ldquo;{item.data}&rdquo;</p>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            )}
-
-                                            {sub.dissent_note && (
-                                                <div className="p-3 bg-callout-bg border border-border rounded-none mt-6 flex items-start gap-3">
-                                                    <Scale className="w-3.5 h-3.5 text-text-muted shrink-0 mt-0.5 opacity-60" />
-                                                    <p className="text-[11px] text-text-muted font-medium leading-relaxed">
-                                                        <span className="inconsolata-ui text-[10px] font-bold  tracking-wider mr-2 opacity-70">Committee Detail:</span> {sub.dissent_note}
-                                                    </p>
-                                                </div>
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
+                            <HomeworkReviewLogs submissions={submissions} setShowLogs={setShowLogs} />
                         ) : (
                             <>
                                 <PrivateRoadmapBanner 
@@ -853,7 +438,16 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                                     }}
                                     onMakePublic={() => handleUpdateVisibility({ is_public: true })}
                                 />
-                                <div className="mt-8 mb-12" id="course-content">
+                                <div className="mt-6">
+                                    <FocusGrove 
+                                        roadmapId={roadmap.id}
+                                        roadmapSlug={roadmap.slug || slug}
+                                        totalTopics={roadmap.progress?.total_topics || roadmap.roadmap_plan?.modules?.reduce((acc: number, m: any) => acc + (m.topics?.length || 0), 0) || 10}
+                                        completedTopicsCount={roadmap.progress?.completed_topics || 0}
+                                        modules={roadmap.roadmap_plan?.modules || []}
+                                    />
+                                </div>
+                                <div className="mt-4 mb-12" id="course-content">
                                     <RoadmapDisplay 
                                     roadmapData={roadmap} 
                                     hideHeader={true}
@@ -1206,6 +800,20 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
                 title="Your course is live! 🚀" 
                 subtitle="The community can see it now."
             />
+
+            {/* Goldfish Co-Pilot Assistant */}
+            {roadmap && (
+                <GoldfishAssistant 
+                    isOpen={isGoldfishOpen}
+                    onClose={() => setIsGoldfishOpen(false)}
+                    roadmapId={roadmap.id}
+                    roadmapSlug={roadmap.slug}
+                    roadmapTitle={roadmap.subject || roadmap.title}
+                    currentModuleIndex={0}
+                    currentTopicIndex={0}
+                    initialTab="calendar"
+                />
+            )}
         </div>
     );
 }

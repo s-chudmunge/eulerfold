@@ -8,6 +8,7 @@ import PaymentModal from '@/components/PaymentModal';
 import EnterpriseInterestModal from '@/components/EnterpriseInterestModal';
 import { useAuth } from '@/components/AuthProvider';
 import { getDiscountStatus, formatTime, usePricing } from '@/lib/utils/pricing';
+import { GoldfishIcon } from '@/components/goldfish/GoldfishAvatar';
 
 export default function PricingClient() {
     const [isYearly, setIsYearly] = useState(false);
@@ -79,40 +80,38 @@ export default function PricingClient() {
 
                     <div className="space-y-4 mb-10 flex-1">
                         <div className="space-y-3">
-                            <div className="flex items-start gap-3 text-[12px] text-text-primary">
-                                <span className="text-teal-600 mt-0.5">✓</span>
-                                <span>Learn with AI assistance</span>
+                            <div className="flex items-center gap-2.5 text-[12px] text-text-primary">
+                                <span className="text-teal-600 font-bold">✓</span>
+                                <span className="flex items-center gap-1.5 font-semibold text-text-heading">
+                                    <GoldfishIcon className="w-3.5 h-3.5 inline shrink-0" />
+                                    <span>Goldfish AI Co-Pilot (5 free requests)</span>
+                                </span>
                             </div>
-                            <div className="flex items-start gap-3 text-[12px] text-text-primary">
-                                <span className="text-teal-600 mt-0.5">✓</span>
-                                <span>Access all public roadmaps</span>
+                            <div className="flex items-center gap-2.5 text-[12px] text-text-primary">
+                                <span className="text-teal-600 font-bold">✓</span>
+                                <span>Curated lectures & university notes</span>
                             </div>
-                            <div className="flex items-start gap-3 text-[12px] text-text-primary">
-                                <span className="text-teal-600 mt-0.5">✓</span>
-                                <span>Track your skills and progress</span>
+                            <div className="flex items-center gap-2.5 text-[12px] text-text-primary">
+                                <span className="text-teal-600 font-bold">✓</span>
+                                <span>Study planner & Google Calendar sync</span>
                             </div>
-                            <div className="flex items-start gap-3 text-[12px] text-text-primary">
-                                <span className="text-teal-600 mt-0.5">✓</span>
-                                <span>5 custom roadmap builds</span>
-                            </div>
-                            <div className="flex items-start gap-3 text-[12px] text-text-primary">
-                                <span className="text-teal-600 mt-0.5">✓</span>
-                                <span>Unlimited Local AI & OpenRouter roadmaps</span>
-                            </div>
-                            <div className="flex items-start gap-3 text-[12px] text-text-primary">
-                                <span className="text-teal-600 mt-0.5">✓</span>
-                                <span>4-week study goal projections</span>
+                            <div className="flex items-center gap-2.5 text-[12px] text-text-primary">
+                                <span className="text-teal-600 font-bold">✓</span>
+                                <span>5 custom roadmap builds (Free AI)</span>
                             </div>
                         </div>
 
-                        <div className="pt-6 border-t border-border/50 space-y-3 opacity-40">
-                            <div className="flex items-start gap-3 text-[11px] text-text-muted">
-                                <span className="text-text-muted/50 mt-0.5">×</span>
-                                <span>No Frontier AI models</span>
+                        <div className="pt-6 border-t border-border/50 space-y-2.5 opacity-40">
+                            <div className="flex items-center gap-2.5 text-[11px] text-text-muted">
+                                <span className="text-text-muted/50">×</span>
+                                <span className="flex items-center gap-1.5">
+                                    <GoldfishIcon className="w-3 h-3 grayscale opacity-60 inline shrink-0" />
+                                    <span>Unlimited Goldfish AI requests</span>
+                                </span>
                             </div>
-                            <div className="flex items-start gap-3 text-[11px] text-text-muted">
-                                <span className="text-text-muted/50 mt-0.5">×</span>
-                                <span>No Research Decoded access</span>
+                            <div className="flex items-center gap-2.5 text-[11px] text-text-muted">
+                                <span className="text-text-muted/50">×</span>
+                                <span>Frontier AI models & Research Decoded</span>
                             </div>
                         </div>
                     </div>
@@ -136,54 +135,35 @@ export default function PricingClient() {
                         </div>
                         <h2 className="inconsolata-ui text-[24px] font-bold text-text-heading tracking-tight mb-2">Pro</h2>
                         <p className="manrope-body text-[13px] text-text-muted leading-relaxed">
-                            For in-depth technical learning.
+                            For deep technical mastery.
                         </p>
                     </div>
 
                     <div className="space-y-4 mb-10 flex-1 relative z-10">
-                        <div className="mb-4 font-bold text-text-heading text-[11px] uppercase tracking-widest">Everything in Basic, plus:</div>
-                        <div className="space-y-4">
-                            <div className="flex items-start gap-3 text-[12px] text-text-primary">
-                                <span className="text-teal-600 mt-0.5 font-bold">✓</span>
-                                <div>
-                                    <span className="font-bold text-text-heading">50 Roadmap Credits / month</span>
-                                    <p className="text-[11px] text-text-muted mt-0.5">Build up to 50 structured roadmaps each month.</p>
-                                </div>
+                        <div className="mb-3 font-bold text-text-heading text-[11px] uppercase tracking-widest">Everything in Basic, plus:</div>
+                        <div className="space-y-3">
+                            <div className="flex items-center gap-2.5 text-[12px] text-text-primary">
+                                <span className="text-teal-600 font-bold">✓</span>
+                                <span className="flex items-center gap-1.5 font-semibold text-text-heading">
+                                    <GoldfishIcon className="w-3.5 h-3.5 inline shrink-0" />
+                                    <span>Unlimited Goldfish AI Co-Pilot</span>
+                                </span>
                             </div>
-                            <div className="flex items-start gap-3 text-[12px] text-text-primary">
-                                <span className="text-teal-600 mt-0.5 font-bold">✓</span>
-                                <div>
-                                    <span className="font-bold text-text-heading">Practice Portal & Homework Evaluation</span>
-                                    <p className="text-[11px] text-text-muted mt-0.5">Take quizzes, submit proof of work, and receive technical feedback.</p>
-                                </div>
+                            <div className="flex items-center gap-2.5 text-[12px] text-text-primary">
+                                <span className="text-teal-600 font-bold">✓</span>
+                                <span>50 Frontier Roadmap Builds / month</span>
                             </div>
-                            <div className="flex items-start gap-3 text-[12px] text-text-primary">
-                                <span className="text-teal-600 mt-0.5 font-bold">✓</span>
-                                <div>
-                                    <span className="font-bold text-text-heading">Custom Learning Paths</span>
-                                    <p className="text-[11px] text-text-muted mt-0.5">Build learning paths from URLs, syllabi, or job descriptions.</p>
-                                </div>
+                            <div className="flex items-center gap-2.5 text-[12px] text-text-primary">
+                                <span className="text-teal-600 font-bold">✓</span>
+                                <span>Practice Portal & Homework Evaluations</span>
                             </div>
-                            <div className="flex items-start gap-3 text-[12px] text-text-primary">
-                                <span className="text-teal-600 mt-0.5 font-bold">✓</span>
-                                <div>
-                                    <span className="font-bold text-text-heading">Research Decoded Access</span>
-                                    <p className="text-[11px] text-text-muted mt-0.5">First-principles breakdowns of complex arXiv papers.</p>
-                                </div>
+                            <div className="flex items-center gap-2.5 text-[12px] text-text-primary">
+                                <span className="text-teal-600 font-bold">✓</span>
+                                <span>Research Decoded (arXiv paper breakdowns)</span>
                             </div>
-                            <div className="flex items-start gap-3 text-[12px] text-text-primary">
-                                <span className="text-teal-600 mt-0.5 font-bold">✓</span>
-                                <div>
-                                    <span className="font-bold text-text-heading">Certificates of Completion</span>
-                                    <p className="text-[11px] text-text-muted mt-0.5">Downloadable PDF certificates with proof-of-work validation.</p>
-                                </div>
-                            </div>
-                            <div className="flex items-start gap-3 text-[12px] text-text-primary">
-                                <span className="text-teal-600 mt-0.5 font-bold">✓</span>
-                                <div>
-                                    <span className="font-bold text-text-heading">Frontier AI Models</span>
-                                    <p className="text-[11px] text-text-muted mt-0.5">Faster roadmap structuring with models from frontier labs.</p>
-                                </div>
+                            <div className="flex items-center gap-2.5 text-[12px] text-text-primary">
+                                <span className="text-teal-600 font-bold">✓</span>
+                                <span>Verified PDF Certificates of Completion</span>
                             </div>
                         </div>
                     </div>
