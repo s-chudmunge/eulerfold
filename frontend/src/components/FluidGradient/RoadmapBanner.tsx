@@ -136,10 +136,12 @@ export default function RoadmapBanner({
             </div>
           )}
           
-          <div className="flex items-center gap-1.5">
-            <Users className="w-4 h-4 opacity-70" />
-            <span>{learnersCount || 0} Learners</span>
-          </div>
+          {(learnersCount ?? 0) > 0 && (
+            <div className="flex items-center gap-1.5">
+              <Users className="w-4 h-4 opacity-70" />
+              <span>{learnersCount} Learners</span>
+            </div>
+          )}
           
           {createdDate && (
             <div className="flex items-center gap-1.5">
