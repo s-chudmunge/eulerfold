@@ -9,7 +9,7 @@ import { useAuth } from '@/components/AuthProvider';
 import dynamic from 'next/dynamic';
 import { supabase } from '@/lib/supabase/client';
 
-const LocalAIModal = dynamic(() => import('./LocalAIModal').then(m => ({ default: m.LocalAIModal })), { ssr: false });
+const LocalAIModal = dynamic(() => import('@/components/landing/LocalAIModal'), { ssr: false });
 const PaymentModal = dynamic(() => import('../PaymentModal'), { ssr: false });
 
 type Mode = 'ai' | 'job' | 'url' | 'syllabus' | 'gaps' | 'research';
@@ -558,7 +558,7 @@ Return ONLY this JSON structure:
               </motion.h3>
             </AnimatePresence>
             <p className="text-text-muted text-[12px] opacity-70">
-              Organizing verified lectures, university notes, and technical references.
+              Organizing university lectures, research notes, and technical references.
             </p>
         </div>
 

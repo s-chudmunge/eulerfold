@@ -25,32 +25,32 @@ EulerFold is a technical roadmap aggregator and learning platform. It takes your
 
 ### How it Works (The Pipeline)
 
-EulerFold organizes learning into a 5-step loop:
+EulerFold organizes learning into a continuous adaptive loop:
 
 ```
 [ User Goal & Background ]
            │
            ▼
-[ 1. Diagnostic / Intent Input ] ── (Target topic, experience level & realistic timeline)
+[ 1. Diagnostic & Curriculum Init ] ── (Target topic, experience level & roadmap baseline)
            │
            ▼
-[ 2. Roadmap Generation ]        ── (Curated pgvector semantic video matching, docs & web references)
+[ 2. Curated Lecture & Paper Match] ── (Semantic lecture search, research papers & primary docs)
            │
            ▼
-[ 3. Interactive Practice ]      ── (MCQ recall sessions & concept depth tracking)
+[ 3. Interactive Checkpoints ]      ── (Adaptive questions to test comprehension and unlock next topics)
            │
            ▼
-[ 4. Technical Evaluation ]      ── (1-pass AI code/submission reviewer with cooldowns)
+[ 4. Technical Evaluation ]         ── (1-pass AI reviewer for homework submissions with cooldowns)
            │
            ▼
-[ 5. Verified Credentials ]      ── (Calculated skill score + exportable PDF certificate with QR code)
+[ 5. Verified Credentials & Grove ] ── (Calculated skill score, PDF credentials, EulerCoins & Grove forest)
 ```
 
 1. **Goal & Background Input**: Specify what you want to learn, your starting level, and a target timeframe.
-2. **Roadmap Generation**: The backend builds a week-by-week roadmap. For each topic, it performs pgvector semantic search against 1,800+ verified educational lectures (falling back to YouTube search filtered strictly to trusted channels), accompanied by documentation and paper references.
-3. **Interactive Practice**: Complete topic quizzes and practice sessions to test recall.
+2. **Roadmap Generation**: The backend builds a structured roadmap. For each topic, it performs pgvector semantic search against 1,800+ verified educational lectures (falling back to YouTube search filtered strictly to trusted channels), accompanied by documentation and paper references.
+3. **Adaptive Checkpoints**: Complete interactive checkpoints at the end of each topic. The system adapts questions to reinforce concepts and sequentially unlocks lessons.
 4. **Proof-of-Work Homework**: Submit your code or written derivation for module assignments. A technical AI reviewer evaluates your submission in a single pass (2–4 lines of analytical feedback). Failed attempts enforce a 10-minute cooldown before retaking.
-5. **Skill Scoring**: Your overall score uses a fixed weighting formula:
+5. **Skill Scoring & Rewards**: Earn EulerCoins and maintain study streaks. Your overall skill score uses a fixed weighting formula:
    $$\text{Score} = 40\% \text{ (Homework Proof of Work)} + 30\% \text{ (Practice Score)} + 15\% \text{ (Topic Completion)} + 15\% \text{ (Concept Depth)}$$
 
 ---
@@ -59,10 +59,11 @@ EulerFold organizes learning into a 5-step loop:
 
 - **[Roadmap Generator](https://www.eulerfold.com/#hero-prompt-input)**: Build custom roadmaps from text prompts, job descriptions, URLs, or syllabi.
 - **[Explore Directory](https://www.eulerfold.com/explore)**: Browse and clone existing community roadmaps across computer science, math, and engineering.
-- **[Learn Platform](https://www.eulerfold.com/dashboard)**: Topic workspace featuring verified lectures, interactive reference carousels, transcripts, and progress tracking.
-- **[Study Planner](https://www.eulerfold.com/planner)**: Schedule study tasks based on your weekly availability (Casual, Balanced, or Intense).
+- **[Learn Platform](https://www.eulerfold.com/dashboard)**: Topic workspace featuring verified lectures, interactive checkpoints, reference carousels, transcripts, and progress tracking.
+- **[Goldfish AI Co-Pilot](https://www.eulerfold.com/dashboard)**: Companion for on-demand concept explanations, schedule creation, and daily briefings.
+- **[Study Planner & Grove Pomodoro](https://www.eulerfold.com/planner)**: Schedule study tasks, track deep work blocks, and plant trees in your personal study forest upon session completion.
 - **[Research Decoded](https://www.eulerfold.com/research-decoded)**: Read first-principles breakdowns of foundation research papers (e.g. Attention, DeepSeek-R1).
-- **[Verified Credentials](https://www.eulerfold.com/account)**: Public profile displaying verified badges and downloadable PDF certificates with QR verification.
+- **[Verified Credentials](https://www.eulerfold.com/account)**: Public profile displaying verified badges, EulerCoins balance, study streaks, and downloadable PDF certificates with QR verification.
 
 ---
 

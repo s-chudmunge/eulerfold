@@ -94,6 +94,24 @@ Read it fully before making any changes. Rules here are not suggestions.
 
 - ALWAYS synchronize `backend/requirements.prod.txt` whenever `backend/app/requirements.txt` is updated or changed. The production environment on Render depends on `requirements.prod.txt` being an exact match of the confirmed working local setup.
 
+### Adaptive Curriculum & Checkpoints System
+
+- Each lesson topic features an interactive **Checkpoint** to confirm understanding before advancing.
+- Checkpoints adapt questions dynamically based on concept mastery.
+- Topic and module unlocking happens sequentially upon checkpoint completion. When a new module unlocks, ensure it reflects immediately on the roadmap view and preserves continuity.
+- In UI copy, use plain, friendly terminology like "Updating your learning path" rather than verbose phrases like "Adaptive Curriculum Synthesis".
+
+### EulerCoins & Pomodoro Grove
+
+- Learners earn **EulerCoins** through checkpoint completions, module milestones, and study focus blocks.
+- The Grove Pomodoro timer tracks study sessions. When a timer completes, a tree is planted in the learner's forest and a congratulatory modal is shown across the app.
+- Key learner stats (EulerCoins balance, study streak in days, course generation credits, and Pro status) are displayed on the user profile and in the **General** tab of the settings modal.
+
+### AI Usage Tracking
+
+- All AI operations (curriculum generation, Goldfish co-pilot chat, briefing creation, checkpoint evaluation, homework reviews) MUST automatically log prompt and completion tokens into `ai_usage_logs`.
+- Metrics are surfaced under "Usage and metrics" in the settings modal.
+
 ---
 
 ## SEO & Sitemaps
