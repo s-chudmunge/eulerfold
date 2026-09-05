@@ -211,7 +211,8 @@ TRUSTED_CHANNELS = frozenset([
     "tech with tim", "traversy media", "the net ninja", "cs dojo",
     "john philip jones", "sentdex", "derek banas", "arjan codes", "arjancodes",
     "michaël gallego", "calm code", "calmcode", "anthony writes code",
-    "codebasics", "codewithharry", "gate smashers",
+    "codebasics", "codewithharry", "gate smashers", "patrick loeber",
+    "python engineer", "aladdin persson", "daniel bourke", "mrdbourke",
     # World-Class Scientists, Researchers & Professors (Physics, Quantum, ML/AI, Theoretical CS)
     "subir sachdev", "sachdevsyk", "david tong", "frederic schuller",
     "tobias osborne", "qiskit", "michael nielsen", "scott aaronson",
@@ -423,11 +424,9 @@ async def search_youtube_videos(
     from app.core.supabase_client import get_supabase_client
     import json
     
-    # --- 1. THE CURATED DATABASE ENGINE (SUPABASE PGVECTOR) ---
-    if topic_title:
-        search_target = f"{subject_context} - {topic_title}".strip(" -") if subject_context else topic_title
-    else:
-        search_target = f"{subject_context} - {query}".strip(" -") if subject_context else query
+    # Use the detailed search query for the vector search as it is highly discriminative.
+    # Fallback to topic_title or subject_context if query is missing.
+    search_target = query or topic_title or subject_context
 
     if search_target and settings.GEMINI_API_KEY:
         try:
