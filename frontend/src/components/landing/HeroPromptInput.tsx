@@ -558,7 +558,7 @@ Return ONLY this JSON structure:
               </motion.h3>
             </AnimatePresence>
             <p className="text-text-muted text-[12px] opacity-70">
-              Organizing university lectures, research notes, and technical references.
+              This might take a few mins depending on the duration, you can go grab a coffee ☕
             </p>
         </div>
 

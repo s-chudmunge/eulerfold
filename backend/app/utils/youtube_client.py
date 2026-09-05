@@ -220,7 +220,11 @@ TRUSTED_CHANNELS = frozenset([
     "pieter abbeel", "sergey levine", "pascal poupart", "shai shalev-shwartz",
     "alexander amini", "tim roughgarden", "erik demaine", "srinivas devadas",
     "ryan o'donnell", "gilbert strang", "john preskill", "quantum computing report",
-    "alán aspuru-guzik", "ted sidiropoulos", "simons institute for the theory of computing"
+    "alán aspuru-guzik", "ted sidiropoulos", "simons institute for the theory of computing",
+    "maziar raissi", "machine learning street talk", "machine learning street talk (mlst)",
+    "nathan kutz", "data-driven science and engineering", "institute for pure & applied mathematics (ipam)",
+    "institute for pure and applied mathematics", "stanford mlsys", "zongyi li",
+    "physics-informed machine learning"
 ])
 
 OFFICIAL_KEYWORDS = [
