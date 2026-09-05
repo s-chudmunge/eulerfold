@@ -21,7 +21,7 @@ export default function TopicContentDetails({
         {currentTopic?.title}
       </h1>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pb-16">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pb-6">
         <div className="md:col-span-2 space-y-6">
           {/* Learning Objectives */}
           <section className="bg-sidebar p-4 rounded-md border border-border">
@@ -30,12 +30,16 @@ export default function TopicContentDetails({
             </h4>
             {currentTopic?.subtopics?.length > 0 ? (
               <ul className="space-y-2">
-                {currentTopic.subtopics.map((sub: any, idx: number) => (
-                  <li key={idx} className="text-[13px] text-text-primary flex gap-2.5 items-start">
-                    <span className="text-accent font-bold mt-0.5">•</span>
-                    <span>{sub.title}</span>
-                  </li>
-                ))}
+                {currentTopic.subtopics.map((sub: any, idx: number) => {
+                  const title = typeof sub === 'string' ? sub : (sub?.title || sub?.name || '');
+                  if (!title) return null;
+                  return (
+                    <li key={idx} className="text-[13px] text-text-primary flex gap-2.5 items-start">
+                      <span className="text-accent font-bold mt-0.5">•</span>
+                      <span>{title}</span>
+                    </li>
+                  );
+                })}
               </ul>
             ) : (
               <p className="text-[12px] text-text-muted italic">No specific objectives defined for this node.</p>

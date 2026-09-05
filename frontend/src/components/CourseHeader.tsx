@@ -3,7 +3,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase/client';
-import { LogOut, ChevronDown, Settings, ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, User as UserIcon, Trophy, Menu, LayoutDashboard, UserCircle, CheckCircle2 } from 'lucide-react';
+import { LogOut, ChevronDown, Settings, ArrowLeft, ArrowRight, ChevronLeft, ChevronRight, User as UserIcon, Trophy, Menu, LayoutDashboard, UserCircle, CheckCircle2, Lock } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { authAPI } from '@/lib/api';
@@ -206,27 +206,45 @@ export default function CourseHeader({
               <div className="absolute top-full left-0 mt-1 w-80 bg-background border border-border rounded-lg shadow-2xl py-2 z-[60] animate-in fade-in slide-in-from-top-1 duration-200">
                 <p className="px-4 py-1.5 text-[10px] font-bold text-text-muted uppercase tracking-wider">Select Module</p>
                 <div className="max-h-[60vh] overflow-y-auto no-scrollbar">
-                  {modules.map((m, idx) => (
-                    <button
-                      key={idx}
-                      onClick={() => {
-                        onModuleChange?.(idx);
-                        setIsModuleDropdownOpen(false);
-                      }}
-                      className={`w-full text-left px-4 py-2.5 text-[13px] transition-colors flex flex-col gap-0.5 ${
-                        idx === currentModuleIndex 
-                          ? 'bg-accent/5 text-accent font-bold' 
-                          : 'text-text-primary hover:bg-callout-bg'
-                      }`}
-                    >
-                      <span className="leading-snug">
-                        {m.title?.toLowerCase().startsWith('module')
-                          ? m.title
-                          : `Module ${idx + 1}: ${m.title}`}
-                      </span>
-                      <span className="text-[10px] text-text-muted font-normal">{m.topics?.length || 0} Units</span>
-                    </button>
-                  ))}
+                  {modules.map((m, idx) => {
+                    const isLocked = m.locked === true || (idx > 0 && (!m.topics || m.topics.length === 0));
+                    return (
+                      <button
+                        key={idx}
+                        disabled={isLocked}
+                        onClick={() => {
+                          if (!isLocked) {
+                            onModuleChange?.(idx);
+                            setIsModuleDropdownOpen(false);
+                          }
+                        }}
+                        className={`w-full text-left px-4 py-2.5 text-[13px] transition-colors flex flex-col gap-0.5 ${
+                          isLocked
+                            ? 'text-text-muted/50 cursor-not-allowed bg-background/20'
+                            : idx === currentModuleIndex 
+                            ? 'bg-accent/5 text-accent font-bold' 
+                            : 'text-text-primary hover:bg-callout-bg'
+                        }`}
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="leading-snug truncate">
+                            {m.title?.toLowerCase().startsWith('module')
+                              ? m.title
+                              : `Module ${idx + 1}: ${m.title}`}
+                          </span>
+                          {isLocked && (
+                            <span className="shrink-0 flex items-center gap-1 text-[10px] text-text-muted/60 font-medium uppercase tracking-wider">
+                              <Lock className="w-2.5 h-2.5" />
+                              Locked
+                            </span>
+                          )}
+                        </div>
+                        <span className="text-[10px] text-text-muted font-normal">
+                          {isLocked ? 'Unlocks as you complete earlier modules' : `${m.topics?.length || 0} Units`}
+                        </span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { X, Settings, MessageSquare, BookOpen, Video, Calendar, Timer, RotateCcw } from 'lucide-react';
+import { X, Settings, MessageSquare, BookOpen, Video, Calendar, RotateCcw } from 'lucide-react';
 import { GoldfishAvatar } from './GoldfishAvatar';
 import { GoldfishTab, GoldfishAgentState } from './types';
 
@@ -122,21 +122,6 @@ export function AssistantHeader({
         >
           <Calendar className="w-3.5 h-3.5" />
           <span>Schedule</span>
-        </button>
-
-        <button
-          onClick={() => onTabChange('focus')}
-          className={`flex items-center gap-1.5 px-3 py-1.5 border-b-2 rounded-t-md transition-all shrink-0 ${
-            activeTab === 'focus'
-              ? 'border-accent text-accent bg-background font-bold'
-              : 'border-transparent text-text-muted hover:text-text-heading'
-          }`}
-        >
-          <Timer className="w-3.5 h-3.5" />
-          <span>Focus Timer</span>
-          {isTimerActive && (
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-          )}
         </button>
       </div>
     </div>

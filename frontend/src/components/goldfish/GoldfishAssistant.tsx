@@ -41,13 +41,6 @@ const TAB_CONTEXT_PROMPTS: Record<string, string[]> = {
     "Plan a balanced 4-day study schedule this week",
     "I want an intense 6-day study plan with daily quizzes",
     "Set up a casual weekend study schedule"
-  ],
-  focus: [
-    "Start 25 min focus timer",
-    "Start 40 min pomodoro session",
-    "Start 15 min quick sprint",
-    "Pause timer",
-    "Reset timer"
   ]
 };
 
@@ -115,79 +108,8 @@ export default function GoldfishAssistant(props: GoldfishAssistantProps) {
             onClose={onClose}
           />
 
-          {/* Interactive Focus Timer Dashboard when Focus Tab is active */}
-          {activeTab === 'focus' && (
-            <div className="bg-sidebar/90 border-b border-border p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shrink-0 animate-in fade-in duration-200">
-              <div className="flex items-center gap-4">
-                <div className="p-1 rounded-md bg-background border border-border">
-                  <TreeIllustration stage={currentTimerTreeStage} size={46} />
-                </div>
-                <div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl font-bold font-mono text-text-heading leading-none">
-                      {formatTime(secondsRemaining)}
-                    </span>
-                    {isTimerActive ? (
-                      <span className="px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
-                        Growing
-                      </span>
-                    ) : (
-                      <span className="px-1.5 py-0.5 rounded-md text-[9px] font-bold bg-text-muted/10 text-text-muted border border-border">
-                        Paused
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-[11px] text-text-muted mt-1">
-                    {isTimerActive ? "Stay focused to grow your tree" : "Select duration or tell Goldfish in chat"}
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-1.5 flex-wrap justify-end">
-                {!isTimerActive ? (
-                  <>
-                    <button
-                      onClick={() => handleStartTimer(15)}
-                      className="px-2.5 py-1.5 bg-background hover:bg-callout-bg border border-border rounded-md text-[11px] font-bold text-text-heading transition-colors"
-                    >
-                      15m
-                    </button>
-                    <button
-                      onClick={() => handleStartTimer(25)}
-                      className="px-3 py-1.5 bg-accent text-background rounded-md text-[11px] font-bold hover:opacity-90 transition-opacity"
-                    >
-                      Start (25m)
-                    </button>
-                    <button
-                      onClick={() => handleStartTimer(40)}
-                      className="px-2.5 py-1.5 bg-background hover:bg-callout-bg border border-border rounded-md text-[11px] font-bold text-text-heading transition-colors"
-                    >
-                      40m
-                    </button>
-                  </>
-                ) : (
-                  <>
-                    <button
-                      onClick={handlePauseTimer}
-                      className="px-3 py-1.5 bg-background border border-border rounded-md text-[11px] font-bold text-text-heading hover:bg-callout-bg transition-colors flex items-center gap-1"
-                    >
-                      <span>Pause</span>
-                    </button>
-                    <button
-                      onClick={handleResetTimer}
-                      className="p-1.5 rounded-md text-text-muted hover:text-red-500 transition-colors"
-                      title="Reset Timer"
-                    >
-                      <span>Reset</span>
-                    </button>
-                  </>
-                )}
-              </div>
-            </div>
-          )}
-
-          {/* Active Timer Banner in other tabs */}
-          {activeTab !== 'focus' && isTimerActive && (
+          {/* Active Timer Banner when a timer is running */}
+          {isTimerActive && (
             <FocusTimerBanner
               isTimerActive={isTimerActive}
               secondsRemaining={secondsRemaining}

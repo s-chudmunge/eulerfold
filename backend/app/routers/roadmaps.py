@@ -322,6 +322,9 @@ async def _enrich_roadmap_progress(roadmaps: List[Dict], email: str, uid: str, s
             "required_practice_sessions": min_expected_sessions,
             "bottleneck_module": bottleneck_module
         }
+        # Format completed topic ids as 'mNum-tIdx' (e.g. '1-0', '1-1')
+        r["completed_topic_ids"] = [f"{m_num}-{t_idx}" for (m_num, t_idx) in mp_map.get(rid, set())]
+
         # If DB status is terminal (archived, quit), keep it. 
         # Otherwise use calculated (active, completed, resubmit_required, etc.)
         if db_status in ["archived", "quit", "completed"]:
@@ -379,7 +382,8 @@ async def get_my_roadmaps(
             is_cloned=bool(r.get("cloned_from")),
             progress=r.get("calculated_progress"),
             status=r.get("calculated_status", "active"),
-            extension_count=r.get("extension_count", 0)
+            extension_count=r.get("extension_count", 0),
+            completed_topic_ids=r.get("completed_topic_ids") or []
         ))
 
     return results
@@ -521,7 +525,8 @@ async def get_roadmap_by_slug(slug: str, background_tasks: BackgroundTasks, curr
         extension_count=r.get("extension_count", 0),
         user_rating=user_rating,
         author=author,
-        username=username
+        username=username,
+        completed_topic_ids=r.get("completed_topic_ids") or []
     )
 
 @router.post("/roadmaps/{roadmap_id}/extend", response_model=RoadmapRead)
@@ -633,8 +638,13 @@ Begin the JSON output immediately.
             try:
                 for module in new_modules:
                     for topic in module.get("topics", []):
-                        search_query = topic.get("youtube_search_query") or f"{topic['title']}"
-                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(payload, 'strict_official_sources', False), subject_context=roadmap_plan.get("title", ""))
+                        raw_query = topic.get("youtube_search_query") or f"{topic['title']}"
+                        core_subj = roadmap_plan.get("title", "")
+                        if core_subj and core_subj.lower() not in raw_query.lower():
+                            search_query = f"{core_subj} {raw_query}"
+                        else:
+                            search_query = raw_query
+                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(payload, 'strict_official_sources', False), subject_context=core_subj)
                         if results:
                             topic["youtube_video_id"] = results[0]["video_id"]
                             topic["youtube_video_title"] = results[0]["video_title"]
@@ -790,7 +800,8 @@ async def get_roadmap_by_id(roadmap_id: int, background_tasks: BackgroundTasks, 
         progress=r.get("calculated_progress"),
         status=r.get("calculated_status", "active"),
         extension_count=r.get("extension_count", 0),
-        user_rating=user_rating
+        user_rating=user_rating,
+        completed_topic_ids=r.get("completed_topic_ids") or []
     )
 
 @router.post("/roadmaps/save", response_model=RoadmapRead)
@@ -875,8 +886,13 @@ async def save_external_roadmap(
             # YouTube Enrichment
             if settings.YOUTUBE_API_KEY:
                 try:
-                    search_query = topic.get("youtube_search_query") or f"{topic['title']}"
-                    results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(roadmap_create, 'strict_official_sources', False), subject_context=roadmap_plan.get("title", ""))
+                    raw_query = topic.get("youtube_search_query") or f"{topic['title']}"
+                    core_subj = roadmap_plan.get("title", "")
+                    if core_subj and core_subj.lower() not in raw_query.lower():
+                        search_query = f"{core_subj} {raw_query}"
+                    else:
+                        search_query = raw_query
+                    results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(roadmap_create, 'strict_official_sources', False), subject_context=core_subj)
                     if results:
                         topic["youtube_video_id"] = results[0]["video_id"]
                         topic["youtube_video_title"] = results[0]["video_title"]

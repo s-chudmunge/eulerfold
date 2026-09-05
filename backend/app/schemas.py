@@ -247,6 +247,10 @@ class SyncSkillsRequest(BaseModel):
     mappings: List[Dict[str, Any]]
     skill_depths: Dict[str, float]
 
+class UnlockModuleRequest(BaseModel):
+    roadmap_id: int
+    target_module_number: int
+
 class RoadmapMe(RoadmapRead):
     progress: Optional[Dict[str, Any]] = None
     status: Optional[str] = "active" # active, completed, action_required, pending_review, resubmit_required
@@ -254,6 +258,7 @@ class RoadmapMe(RoadmapRead):
     user_rating: Optional[int] = None
     author: Optional[str] = None
     username: Optional[str] = None
+    completed_topic_ids: Optional[List[str]] = None
 
 # --- Explore & Clone Schemas ---
 

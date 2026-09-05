@@ -12,7 +12,7 @@ from app.core.config import settings
 from app.core.supabase_client import get_supabase_client
 from app.core.auth import get_current_user
 from app.schemas import User
-from app.utils.ai_client import generate_text, robust_json_loads, call_openrouter_with_tools
+from app.utils.ai_client import generate_text, robust_json_loads, call_openrouter_with_tools, current_ai_subject
 from app.utils.youtube_client import search_youtube_videos, TRUSTED_CHANNELS, BANNED_CHANNELS
 
 logger = logging.getLogger(__name__)
@@ -109,6 +109,7 @@ async def scout_reading_materials(
     
     target_subject = topic_title or module_title
     roadmap_subject = roadmap.get("subject") or roadmap.get("title", "")
+    current_ai_subject.set(f"Goldfish Scout: {target_subject}")
 
     # 2. Use OpenRouter native tool calling to formulate exact search queries prioritizing topic PDFs
     tools = [
@@ -292,6 +293,7 @@ async def find_alternate_video(
     current_video_title = target_topic.get("youtube_video_title", "")
     module_title = modules[payload.module_index].get("title", "")
     roadmap_subject = roadmap.get("subject") or roadmap.get("title", "")
+    current_ai_subject.set(f"Goldfish Video Finder: {topic_title}")
     exclude_ids = {current_video_id} if current_video_id else set()
     user_prompt = payload.prompt or "Find a high quality alternative lecture for this topic."
 
@@ -497,6 +499,7 @@ async def generate_schedule(
 
     next_monday = today + timedelta(days=(7 - today.weekday()))
     now_datetime_str = datetime.now().strftime("%A, %B %d, %Y")
+    current_ai_subject.set(f"Goldfish Planner: {roadmap_title}")
 
     # 3. AI Intelligent Pacing & Pedagogical Grouping
     strategy_advice = ""
@@ -745,6 +748,7 @@ async def chat_with_goldfish(
     current_video_title = target_topic.get("youtube_video_title", "")
     module_title = modules[payload.module_index].get("title", "")
     roadmap_subject = roadmap.get("subject") or roadmap.get("title", "")
+    current_ai_subject.set(f"Goldfish Tutor: {topic_title or roadmap_subject}")
 
     # Calculate overall roadmap progress
     total_topics = sum(len(m.get("topics", [])) for m in modules)

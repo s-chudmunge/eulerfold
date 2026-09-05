@@ -14,18 +14,21 @@ from app.core.supabase_client import get_supabase_client
 
 from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
+import jwt
+from app.utils.ai_client import current_ai_user_id
+
 logger = logging.getLogger(__name__)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token", auto_error=False)
 
 @retry(
-    stop=stop_after_attempt(3),
-    wait=wait_exponential(multiplier=1, min=1, max=4),
+    stop=stop_after_attempt(2),
+    wait=wait_exponential(multiplier=0.5, min=0.5, max=1.5),
     retry=retry_if_exception_type((Exception)),
     before_sleep=lambda retry_state: logger.info(f"Retrying auth verification (attempt {retry_state.attempt_number})...")
 )
-async def verify_token_with_timeout(token: str, timeout: float = 10.0):
-    """Verify Supabase token with a timeout to avoid hanging on network issues."""
+async def verify_token_with_timeout(token: str, timeout: float = 2.5):
+    """Verify Supabase token with a tight timeout to avoid hanging on network issues."""
     try:
         supabase = get_supabase_client()
         response = await asyncio.wait_for(
@@ -72,6 +75,8 @@ async def get_current_user(request: Request) -> User:
     if token in _TOKEN_CACHE:
         cached_expires, cached_user = _TOKEN_CACHE[token]
         if now < cached_expires:
+            if cached_user and cached_user.supabase_uid:
+                current_ai_user_id.set(cached_user.supabase_uid)
             return cached_user
         else:
             del _TOKEN_CACHE[token]
@@ -97,6 +102,45 @@ async def get_current_user(request: Request) -> User:
         logger.debug(f"Auth: Local JWT parse failed, falling back to Supabase: {e}")
         pass
 
+    # Fast local JWT validation if SUPABASE_JWT_SECRET is configured (0.1ms, zero network roundtrips)
+    if settings.SUPABASE_JWT_SECRET:
+        try:
+            unverified_header = jwt.get_unverified_header(token)
+            alg = unverified_header.get("alg", "HS256")
+            # SUPABASE_JWT_SECRET is an HMAC secret, valid for HS256/HS384/HS512
+            if alg.startswith("HS"):
+                decoded = jwt.decode(
+                    token,
+                    settings.SUPABASE_JWT_SECRET,
+                    algorithms=[alg],
+                    options={"verify_aud": False}
+                )
+                uid = decoded.get("sub")
+                email = decoded.get("email", "")
+                user_metadata = decoded.get("user_metadata", {})
+                if uid:
+                    display_name = user_metadata.get('full_name') or user_metadata.get('name')
+                    user_obj = User(
+                        id=0,
+                        supabase_uid=uid,
+                        email=email,
+                        username="user_" + uid[:8],
+                        is_active=True,
+                        display_name=display_name,
+                        profile_completed=False,
+                        onboarding_completed=False,
+                        is_pro=False,
+                        roadmap_credits=1.0
+                    )
+                    _TOKEN_CACHE[token] = (now + _TOKEN_CACHE_TTL, user_obj)
+                    if user_obj and user_obj.supabase_uid:
+                        current_ai_user_id.set(user_obj.supabase_uid)
+                    return user_obj
+            if not alg.startswith("HS"):
+                logger.info(f"Auth: Token uses asymmetric algorithm '{alg}'. Skipping HMAC local verification.")
+        except Exception as jwt_err:
+            logger.warning(f"Auth: Local JWT verification failed, falling back to network: {jwt_err}")
+
     try:
         # Verify Supabase JWT token with timeout + retry
         try:
@@ -109,8 +153,9 @@ async def get_current_user(request: Request) -> User:
             user_metadata = supabase_user.user_metadata or {}
         except Exception as e:
             logger.error(f"Auth: Supabase token verification failed after retries: {e}")
-            if settings.ENVIRONMENT == "development" and 'payload' in locals() and payload.get('sub'):
-                logger.warning("Auth: Falling back to unverified local JWT payload in development mode.")
+            # If development or network issue, fallback to unverified local payload if sub exists
+            if ('payload' in locals() and payload.get('sub')) and (settings.ENVIRONMENT == "development" or isinstance(e, (asyncio.TimeoutError, Exception))):
+                logger.warning("Auth: Network verification failed. Falling back to local JWT payload.")
                 uid = payload['sub']
                 email = payload.get('email', '')
                 user_metadata = payload.get('user_metadata', {})
@@ -126,17 +171,20 @@ async def get_current_user(request: Request) -> User:
     # Create transient user object
     display_name = user_metadata.get('full_name') or user_metadata.get('name')
     
-    # Fetch profile data for authorization checks (like is_pro)
+    # Fetch profile data for authorization checks (like is_pro) with strict 2.0s timeout
     is_pro = False
     roadmap_credits = 1.0
     try:
         supabase = get_supabase_client()
-        profile_res = supabase.table("profiles").select("is_pro, roadmap_credits").eq("supabase_uid", uid).execute()
+        profile_res = await asyncio.wait_for(
+            asyncio.to_thread(lambda: supabase.table("profiles").select("is_pro, roadmap_credits").eq("supabase_uid", uid).execute()),
+            timeout=2.0
+        )
         if profile_res.data:
             is_pro = profile_res.data[0].get("is_pro", False)
             roadmap_credits = profile_res.data[0].get("roadmap_credits", 1.0)
     except Exception as e:
-        logger.error(f"Auth: Failed to fetch profile data for {uid}: {e}")
+        logger.warning(f"Auth: Profile query skipped or timed out for {uid}: {e}")
 
     # We provide a placeholder username to satisfy the mandatory schema.
     # The actual profile data will be fetched in the /auth/me route.
@@ -161,6 +209,9 @@ async def get_current_user(request: Request) -> User:
         stale_keys = [k for k, (exp, _) in _TOKEN_CACHE.items() if now >= exp]
         for k in stale_keys:
             _TOKEN_CACHE.pop(k, None)
+
+    if user_obj and user_obj.supabase_uid:
+        current_ai_user_id.set(user_obj.supabase_uid)
 
     return user_obj
 

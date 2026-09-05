@@ -13,7 +13,8 @@ import {
   ChevronRight, 
   Info, 
   Calendar, 
-  LayoutDashboard
+  LayoutDashboard,
+  Lock
 } from 'lucide-react';
 import { GoldfishIcon } from '@/components/goldfish/GoldfishAssistant';
 
@@ -35,6 +36,7 @@ interface LearnSidebarProps {
   displayPercent: number;
   roadmapSlug?: string;
   roadmapId: string | number;
+  onUnlockModule?: (moduleNumber: number) => void;
 }
 
 export default function LearnSidebar({
@@ -54,7 +56,8 @@ export default function LearnSidebar({
   submissions,
   displayPercent,
   roadmapSlug,
-  roadmapId
+  roadmapId,
+  onUnlockModule
 }: LearnSidebarProps) {
   const currentModule = modules[currentModuleIndex];
 
@@ -187,22 +190,58 @@ export default function LearnSidebar({
               </div>
             )}
 
-            {currentModuleIndex < modules.length - 1 && (
-              <div>
-                <p className="text-[10px] font-bold text-text-muted uppercase tracking-wider mb-1 px-1">Next Module</p>
-                <button 
-                  onClick={() => onTopicChange(currentModuleIndex + 1, 0)}
-                  className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-[11px] font-semibold text-text-heading hover:bg-callout-bg transition-all group"
-                >
-                  <span className="truncate mr-2 text-left">
-                    {modules[currentModuleIndex + 1].title?.toLowerCase().startsWith('module')
-                      ? modules[currentModuleIndex + 1].title
-                      : `Module ${currentModuleIndex + 2}: ${modules[currentModuleIndex + 1].title}`}
-                  </span>
-                  <ChevronRight className="h-3.5 w-3.5 shrink-0 transition-transform group-hover:translate-x-0.5" />
-                </button>
-              </div>
-            )}
+            {currentModuleIndex < modules.length - 1 && (() => {
+              const nextModule = modules[currentModuleIndex + 1];
+              const isNextLocked = nextModule?.locked === true || (!nextModule?.topics || nextModule.topics.length === 0);
+              const currentModTopics = currentModule?.topics || [];
+              const isCurrentModComplete = currentModTopics.length > 0 && currentModTopics.every((_: any, idx: number) =>
+                completedTopics.has(`${currentModuleIndex + 1}-${idx}`)
+              );
+
+              return (
+                <div>
+                  <p className="text-[10px] font-bold text-text-muted uppercase tracking-wider mb-1 px-1">Next Module</p>
+                  {isNextLocked ? (
+                    isCurrentModComplete && onUnlockModule ? (
+                      <button
+                        onClick={() => onUnlockModule(currentModuleIndex + 2)}
+                        className="w-full flex items-center justify-between px-2.5 py-2 rounded-md text-[11px] font-bold text-background bg-accent hover:opacity-90 transition-all shadow-xs group"
+                      >
+                        <span className="truncate mr-2 text-left flex items-center gap-1.5">
+                          <Lock className="h-3 w-3 shrink-0" />
+                          <span>Unlock Module {currentModuleIndex + 2}</span>
+                        </span>
+                        <ChevronRight className="h-3.5 w-3.5 shrink-0 transition-transform group-hover:translate-x-0.5" />
+                      </button>
+                    ) : (
+                      <div className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-[11px] font-medium text-text-muted/60 bg-background/30 border border-border/40 cursor-not-allowed">
+                        <span className="truncate mr-2 text-left flex items-center gap-1.5">
+                          <Lock className="h-3 w-3 shrink-0 text-text-muted/50" />
+                          <span>
+                            {nextModule.title?.toLowerCase().startsWith('module')
+                              ? nextModule.title
+                              : `Module ${currentModuleIndex + 2}: ${nextModule.title}`}
+                          </span>
+                        </span>
+                        <span className="text-[9px] uppercase tracking-wider text-text-muted/50 shrink-0 font-bold">Locked</span>
+                      </div>
+                    )
+                  ) : (
+                    <button 
+                      onClick={() => onTopicChange(currentModuleIndex + 1, 0)}
+                      className="w-full flex items-center justify-between px-2.5 py-1.5 rounded-md text-[11px] font-semibold text-text-heading hover:bg-callout-bg transition-all group"
+                    >
+                      <span className="truncate mr-2 text-left">
+                        {nextModule.title?.toLowerCase().startsWith('module')
+                          ? nextModule.title
+                          : `Module ${currentModuleIndex + 2}: ${nextModule.title}`}
+                      </span>
+                      <ChevronRight className="h-3.5 w-3.5 shrink-0 transition-transform group-hover:translate-x-0.5" />
+                    </button>
+                  )}
+                </div>
+              );
+            })()}
           </div>
         </div>
 

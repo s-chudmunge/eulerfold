@@ -30,6 +30,7 @@ class Settings(BaseSettings):
     SUPABASE_URL: Optional[str] = None
     SUPABASE_KEY: Optional[str] = None
     SUPABASE_SERVICE_ROLE_KEY: Optional[str] = None  # For admin operations
+    SUPABASE_JWT_SECRET: Optional[str] = None
 
     # Default AI Models for different use cases - centralized configuration
     DEFAULT_ROADMAP_MODEL: str = ""

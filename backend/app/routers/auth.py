@@ -246,17 +246,23 @@ async def read_users_me(background_tasks: BackgroundTasks, current_user: User = 
         def fetch_reviews():
             return supabase.table("submissions").select("id", count="exact").eq("user_email", email).eq("is_senate_eval", True).execute()
 
-        # refresh_streak is async
-        results = await asyncio.gather(
-            refresh_streak(email),
-            asyncio.to_thread(fetch_profile),
-            asyncio.to_thread(fetch_github),
-            asyncio.to_thread(fetch_skills),
-            asyncio.to_thread(fetch_reviews),
-            return_exceptions=True
-        )
-        
-        res = results[1]
+        # refresh_streak is async with a strict 2.5s timeout so network stalls don't freeze the page
+        try:
+            results = await asyncio.wait_for(
+                asyncio.gather(
+                    refresh_streak(email),
+                    asyncio.to_thread(fetch_profile),
+                    asyncio.to_thread(fetch_github),
+                    asyncio.to_thread(fetch_skills),
+                    asyncio.to_thread(fetch_reviews),
+                    return_exceptions=True
+                ),
+                timeout=2.5
+            )
+            res = results[1]
+        except asyncio.TimeoutError:
+            logger.warning(f"Auth /me: Database fetch timed out for {current_user.email}. Returning user.")
+            return current_user
         
         if isinstance(res, Exception) or not getattr(res, "data", None):
             # RACE CONDITION: Profile might not be created by trigger yet.

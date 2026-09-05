@@ -140,21 +140,25 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
     }, [profile, roadmap]);
 
     useEffect(() => {
+        let isMounted = true;
         async function fetchRoadmap() {
-            // Re-fetch if roadmap is missing OR if we just logged in (to get personal progress/cloned status)
-            if (!roadmap || (isAuthenticated && !isOwner && !roadmap.is_cloned)) {
+            if (!roadmap) {
                 setLoading(true);
-                try {
-                    const data = await roadmapsAPI.getRoadmapBySlug(slug);
-                    if (data) {
-                        setRoadmap(data);
-                    } else {
-                        setError('Roadmap not found');
-                    }
-                } catch (err: any) {
-                    console.error("Fetch roadmap error:", err);
+            }
+            try {
+                const data = await roadmapsAPI.getRoadmapBySlug(slug);
+                if (data && isMounted) {
+                    setRoadmap(data);
+                } else if (!data && isMounted && !roadmap) {
+                    setError('Roadmap not found');
+                }
+            } catch (err: any) {
+                console.error("Fetch roadmap error:", err);
+                if (isMounted && !roadmap) {
                     setError(err.response?.data?.detail || err.message || 'Roadmap not found');
-                } finally {
+                }
+            } finally {
+                if (isMounted) {
                     setLoading(false);
                 }
             }
@@ -166,7 +170,11 @@ export default function RoadmapClient({ slug, initialRoadmap, isProject = false 
             const hasSeenNudge = localStorage.getItem(`nudge_seen_${roadmap.slug}`);
             if (!hasSeenNudge) setShowNudge(true);
         }
-    }, [slug, isAuthenticated]); // Simplified dependencies to trigger on auth change
+
+        return () => {
+            isMounted = false;
+        };
+    }, [slug, isAuthenticated]);
 
 
     const handleUpdateVisibility = async (updates: { is_public?: boolean, show_author?: boolean }) => {

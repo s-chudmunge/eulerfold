@@ -17,7 +17,7 @@ from fastapi.responses import StreamingResponse
 
 from app.core.config import settings
 from app.core.supabase_client import get_supabase_client
-from app.schemas import RoadmapCreate, RoadmapMe, RoadmapRead, RoadmapSave, User, ProgressUpdate, RoadmapExtend, RoadmapStatusUpdate, ManualBuildRequest, JobRoadmapCreate, ExternalRoadmapCreate, SyncSkillsRequest, UrlRoadmapCreate, SyllabusRoadmapCreate, SkillGapRoadmapCreate, DiagnosticQuizCreate, DiagnosticQuizEvaluate
+from app.schemas import RoadmapCreate, RoadmapMe, RoadmapRead, RoadmapSave, User, ProgressUpdate, RoadmapExtend, RoadmapStatusUpdate, ManualBuildRequest, JobRoadmapCreate, ExternalRoadmapCreate, SyncSkillsRequest, UrlRoadmapCreate, SyllabusRoadmapCreate, SkillGapRoadmapCreate, DiagnosticQuizCreate, DiagnosticQuizEvaluate, UnlockModuleRequest
 from app.utils.ai_client import generate_text, generate_text_stream, clean_json_string, robust_json_loads, log_backend_ai_usage
 from app.utils.resend_client import send_onboarding_email
 from app.utils.youtube_client import search_youtube_videos, find_module_playlist, match_playlist_video_to_topic
@@ -392,10 +392,13 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
 5. **No fluff modules.** Do not create a "Introduction to the Course" or "What We'll Learn" module. Every module must teach real content.
 
 **Formatting Rules:**
-6. **Short, Clean Title:** The roadmap "title" must be concise and direct (3 to 6 words maximum). NEVER use dramatic colon subtitles (e.g. NEVER "Topic: From X to Y" or "Topic: The Engine Behind Z"). NEVER use marketing buzzwords like "Mastery", "High-Performance", "Lightning-Fast", "Chaos to Clarity", "Supercharged", or "Deep Dive". Do NOT include the time duration in the title.
+6. **Short, Clean Title:** The roadmap "title" must be concise and direct (3 to 6 words maximum). NEVER use dramatic colon subtitles. NEVER use marketing buzzwords like "Mastery", "Lightning-Fast", "Chaos to Clarity", or "Supercharged". Do NOT include the time duration in the title.
 7. **SEO-Friendly Description:** One punchy, clear sentence. Not a paragraph.
-8. **Strict Duration Mapping:** Generate exactly {roadmap_create.time_value} module(s) for a '{roadmap_create.time_value} {roadmap_create.time_unit}' course.
-9. **Topics per module:** 4-5 focused topics per module.
+8. **Just-In-Time Milestone Architecture:** 
+   - Generate exactly {roadmap_create.time_value} milestone module(s) for a '{roadmap_create.time_value} {roadmap_create.time_unit}' course.
+   - **CRITICAL: ONLY MODULE 1 is detailed at this initial stage.** Provide 4-5 concrete, teachable topics, subtopics, and 2-3 reading resources for Module 1.
+   - **Modules 2 through {roadmap_create.time_value} (the future milestones):** Provide ONLY the milestone "title", "timeline", "outcome", and "workspace_type". For these later modules, set "topics": [] and "recommended_resources": []. Do NOT generate detailed topics or video queries for later modules upfront—they will adaptively unfold as the learner advances.
+9. **Module 1 Topics:** 4-5 focused topics for Module 1 only.
 10. **Output JSON ONLY** matching this schema:
    {{
      "title": "string",
@@ -413,14 +416,14 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
          }},
          "recommended_resources": [
             {{
-              "title": "string (A specific TEXT-BASED technical reading resource: official documentation, university lecture notes PDF, engineering blog post, or textbook chapter. STRICTLY FORBIDDEN: Do NOT link to Wikipedia biographical pages of people (e.g. NEVER 'Richard Feynman Wikipedia', 'Alan Turing Wikipedia'). Good: 'David Tong: Cambridge Lectures on Quantum Field Theory PDF', 'MIT 8.04 Quantum Physics I Lecture Notes', 'Jay Alammar: The Illustrated Transformer', 'PostgreSQL Docs: Index Types'. Bad: 'Richard Feynman Wikipedia', 'YouTube playlist', 'Course overview')",
-              "search_query": "string (A precise search query to find this exact article, documentation, or PDF online, e.g. 'David Tong Quantum Field Theory lecture notes pdf', 'MIT 8.04 quantum physics lecture notes pdf', 'PostgreSQL docs B-tree index guide')"
+              "title": "string (A specific TEXT-BASED technical reading resource: documentation, notes, or textbook chapter)",
+              "search_query": "string (search query for the resource)"
             }}
           ],
-          "topics": [
+         "topics": [
              {{
-               "title": "string (ONE focused concept, specific enough that a dedicated lecture exists for it exactly)",
-               "youtube_search_query": "A precise 3-6 word search query describing ONLY the exact technical topic and mechanism (e.g. 'Lagrangian mechanics Euler-Lagrange derivation', 'wave-particle duality double slit experiment', 'transformer multi head self attention'). STRICTLY FORBIDDEN: Do NOT include channel/creator names (NEVER include 'Khan Academy', 'Veritasium', 'MIT OCW', 'Feynman', '3Blue1Brown', etc.). Do NOT include filler words like 'tutorial', 'explained', 'guide', 'complete course', 'for beginners'.",
+               "title": "string (ONE focused concept in Module 1)",
+               "youtube_search_query": "A precise 3-6 word search query describing ONLY the exact technical topic and subject (e.g. 'Python variables data types', 'Python basic operators')",
                "subtopics": [ {{ "title": "string" }} ]
              }}
           ]
@@ -439,14 +442,16 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
             log_backend_ai_usage(sb, uid, f"{roadmap_create.subject} (Cost: 1.0 Credits)", usage, source="backend")
             roadmap_plan = robust_json_loads(generated_text)
     
-            yield json.dumps({"status": "Curating lectures from educators..."}) + "\n"
-        # 2. Add IDs and YouTube Videos
-            used_video_ids = set()  # Deduplication: track assigned videos across the entire roadmap
+            yield json.dumps({"status": "Curating Module 1 lessons..."}) + "\n"
+            # 2. Add IDs, lock states, and curate ONLY Module 1
+            used_video_ids = set()
             for i, module in enumerate(roadmap_plan.get("modules", [])):
                 if not isinstance(module, dict): continue
                 module["id"] = f"module_{i+1}"
+                module["locked"] = (i > 0)
                 if not module.get("outcome"):
                      module["outcome"] = "By the end of this module you will be able to apply the listed topics and solve basic related problems."
+                
                 for t_idx, topic in enumerate(module.get("topics", [])):
                     if not isinstance(topic, dict): continue
                     topic["id"] = f"topic_{i+1}_{t_idx+1}"
@@ -454,82 +459,86 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
                     for s_idx, subtopic in enumerate(topic.get("subtopics", [])):
                         if not isinstance(subtopic, dict): continue
                         subtopic["id"] = str(uuid.uuid4())
-                    
-                    # Yield real-time progress for current topic
-                    topic_title = topic.get("title", "")
-                    if topic_title:
-                        yield json.dumps({"status": f"Matching lecture: {topic_title}..."}) + "\n"
 
-                    # YouTube Enrichment
-                    if settings.YOUTUBE_API_KEY:
-                        try:
-                            search_query = topic.get("youtube_search_query") or f"{topic['title']}"
-                            results = await search_youtube_videos(
-                                search_query,
-                                max_results=3,
-                                topic_title=topic['title'],
-                                strict_official_sources=getattr(roadmap_create, 'strict_official_sources', False),
-                                subject_context=roadmap_plan.get("title", ""),
-                                exclude_video_ids=used_video_ids
-                            )
-                            # Pick the highest-scoring candidate not yet used in this roadmap
-                            for result in results:
-                                if result["video_id"] not in used_video_ids:
-                                    topic["youtube_video_id"] = result["video_id"]
-                                    topic["youtube_video_title"] = result["video_title"]
-                                    topic["duration"] = result["duration_minutes"]
-                                    used_video_ids.add(result["video_id"])
-                                    break
-                            # Throttle a bit
-                            await asyncio.sleep(0.1)
-                        except Exception as yt_err:
-                            logger.error(f"YouTube enrichment failed for topic {topic['title']}: {yt_err}")
-    
-                yield json.dumps({"status": f"Finding lecture notes & papers for Module {i+1}..."}) + "\n"
-        # Reading References Enrichment (Articles, Docs, PDFs — NO VIDEOS)
-                recommended = module.get("recommended_resources", [])
-                if recommended:
-                    def fetch_ddg():
-                        found = []
-                        try:
-                            from ddgs import DDGS
-                            with DDGS() as ddgs:
-                                for rec in recommended[:4]:  # Search up to 4 reading resources
-                                    # Handle both old string format and new object format
-                                    if isinstance(rec, dict):
-                                        search_q = rec.get("search_query", rec.get("title", ""))
-                                        display_title = rec.get("title", search_q)
-                                    else:
-                                        search_q = str(rec)
-                                        display_title = str(rec)
-                                    
-                                    # Strictly exclude YouTube and video platforms from reading references
-                                    clean_search_q = f"{search_q} -site:youtube.com -site:youtu.be -site:vimeo.com -site:tiktok.com -site:dailymotion.com"
-                                    results = list(ddgs.text(clean_search_q, max_results=3))
-                                    
-                                    valid_result = None
-                                    for res in results:
-                                        href = res.get("href", "").lower()
-                                        if not any(v in href for v in ["youtube.com", "youtu.be", "vimeo.com", "tiktok.com", "dailymotion.com"]):
-                                            valid_result = res
-                                            break
+                # ONLY curate resources for Module 1 at initial creation!
+                if i == 0:
+                    for t_idx, topic in enumerate(module.get("topics", [])):
+                        topic_title = topic.get("title", "")
+                        if topic_title:
+                            yield json.dumps({"status": f"Matching lesson: {topic_title}..."}) + "\n"
 
-                                    if valid_result:
-                                        res_url = valid_result["href"]
-                                        res_type = "pdf" if res_url.lower().endswith(".pdf") else "article"
-                                        found.append({
-                                            "title": display_title,
-                                            "url": res_url,
-                                            "type": res_type
-                                        })
-                        except Exception as e:
-                            logger.error(f"DDG search failed for recommended resources: {e}")
-                        return found
-                    
-                    ddg_results = await asyncio.to_thread(fetch_ddg)
-                    if ddg_results:
-                        logger.info(f"Successfully mapped {len(ddg_results)} text reading references (articles/docs/PDFs).")
+                        # YouTube Enrichment for Module 1
+                        if settings.YOUTUBE_API_KEY:
+                            try:
+                                core_subj = extract_core_subject(roadmap_plan.get("title", roadmap_create.subject))
+                                raw_query = topic.get("youtube_search_query") or f"{topic['title']}"
+                                if core_subj and core_subj.lower() not in raw_query.lower():
+                                    search_query = f"{core_subj} {raw_query}"
+                                else:
+                                    search_query = raw_query
+
+                                results = await search_youtube_videos(
+                                    search_query,
+                                    max_results=3,
+                                    topic_title=topic['title'],
+                                    strict_official_sources=getattr(roadmap_create, 'strict_official_sources', False),
+                                    subject_context=core_subj or roadmap_plan.get("title", ""),
+                                    exclude_video_ids=used_video_ids
+                                )
+                                for result in results:
+                                    if result["video_id"] not in used_video_ids:
+                                        topic["youtube_video_id"] = result["video_id"]
+                                        topic["youtube_video_title"] = result["video_title"]
+                                        topic["duration"] = result["duration_minutes"]
+                                        used_video_ids.add(result["video_id"])
+                                        break
+                                await asyncio.sleep(0.1)
+                            except Exception as yt_err:
+                                logger.error(f"YouTube enrichment failed for topic {topic['title']}: {yt_err}")
+        
+                    yield json.dumps({"status": "Finding reading notes for Module 1..."}) + "\n"
+                    recommended = module.get("recommended_resources", [])
+                    if recommended:
+                        def fetch_ddg():
+                            found = []
+                            try:
+                                from ddgs import DDGS
+                                with DDGS() as ddgs:
+                                    for rec in recommended[:3]:
+                                        if isinstance(rec, dict):
+                                            search_q = rec.get("search_query", rec.get("title", ""))
+                                            display_title = rec.get("title", search_q)
+                                        else:
+                                            search_q = str(rec)
+                                            display_title = str(rec)
+                                        
+                                        clean_search_q = f"{search_q} -site:youtube.com -site:youtu.be -site:vimeo.com -site:tiktok.com -site:dailymotion.com"
+                                        results = list(ddgs.text(clean_search_q, max_results=3))
+                                        
+                                        valid_result = None
+                                        for res in results:
+                                            href = res.get("href", "").lower()
+                                            if not any(v in href for v in ["youtube.com", "youtu.be", "vimeo.com", "tiktok.com", "dailymotion.com"]):
+                                                valid_result = res
+                                                break
+
+                                        if valid_result:
+                                            res_url = valid_result["href"]
+                                            res_type = "pdf" if res_url.lower().endswith(".pdf") else "article"
+                                            found.append({
+                                                "title": display_title,
+                                                "url": res_url,
+                                                "type": res_type
+                                            })
+                            except Exception as e:
+                                logger.error(f"DDG search failed for Module 1 resources: {e}")
+                            return found
+                        
+                        ddg_results = await asyncio.to_thread(fetch_ddg)
                         module["resources"] = ddg_results
+                else:
+                    # Later modules have no resources pre-fetched yet
+                    module["resources"] = []
     
             # 3. Save to DB
             slug = await _generate_unique_slug(roadmap_plan["title"], email, sb)
@@ -580,3 +589,280 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
     
         
     return StreamingResponse(event_generator(), media_type="application/x-ndjson")
+
+
+@router.post("/roadmaps/unlock-module")
+async def unlock_module(
+    req: UnlockModuleRequest,
+    current_user: User = Depends(get_current_user)
+):
+    """
+    Adaptive Just-In-Time Module Unlocking.
+    Gathers user's past module performance (checkpoints, submissions, quizzes)
+    and uses the free OpenRouter waterfall cascade to synthesize 4-5 focused topics for the next milestone.
+    Streams real-time generation and curation status chunks via NDJSON.
+    """
+    async def event_stream():
+        yield json.dumps({"status": "Analyzing your performance and progress... 📊"}) + "\n"
+
+        email = current_user.email
+        uid = current_user.supabase_uid
+        if not email:
+            yield json.dumps({"error": "Unauthorized user session"}) + "\n"
+            return
+
+        sb = get_supabase_client()
+
+        # 1. Fetch roadmap
+        r_res = sb.table("roadmaps").select("*").eq("id", req.roadmap_id).execute()
+        if not r_res.data:
+            yield json.dumps({"error": "Roadmap not found"}) + "\n"
+            return
+
+        roadmap = r_res.data[0]
+        plan = _parse_roadmap_dict(roadmap.get("roadmap_plan", {}))
+        modules = plan.get("modules", [])
+
+        target_m_idx = req.target_module_number - 1
+        if target_m_idx < 0 or target_m_idx >= len(modules):
+            yield json.dumps({"error": f"Invalid module number {req.target_module_number}"}) + "\n"
+            return
+
+        target_module = modules[target_m_idx]
+        prev_m_idx = target_m_idx - 1
+        prev_module = modules[prev_m_idx] if prev_m_idx >= 0 else None
+
+        # 2. Gather learner performance from previous module
+        checkpoint_summary = "No checkpoint history recorded."
+        submission_summary = "No homework submission yet."
+
+        try:
+            # Checkpoint attempts
+            cp_res = sb.table("topic_checkpoints").select("topic_title, archetype, is_correct, attempts_count, difficulty_level").eq("roadmap_id", req.roadmap_id).eq("user_id", uid).execute()
+            if cp_res.data:
+                total_cp = len(cp_res.data)
+                correct_first = sum(1 for c in cp_res.data if c.get("is_correct") and c.get("attempts_count", 1) <= 1)
+                struggled_topics = [c.get("topic_title") for c in cp_res.data if not c.get("is_correct") or c.get("attempts_count", 1) > 1]
+                
+                checkpoint_summary = f"Passed {correct_first}/{total_cp} concept checks on first try."
+                if struggled_topics:
+                    checkpoint_summary += f" Encountered friction or needed remedial review on: {', '.join(struggled_topics[:3])}."
+                else:
+                    checkpoint_summary += " Demonstrated swift mastery on all concept checkpoints."
+
+            # Submissions for previous module
+            if prev_module:
+                sub_res = sb.table("submissions").select("evaluation_level, evaluation_feedback").eq("roadmap_id", req.roadmap_id).eq("module_number", prev_m_idx + 1).order("submitted_at", desc=True).limit(1).execute()
+                if sub_res.data:
+                    ev = sub_res.data[0]
+                    submission_summary = f"Evaluation Level: {ev.get('evaluation_level', 'Developing')}. Feedback: {ev.get('evaluation_feedback', '')[:200]}"
+        except Exception as data_err:
+            logger.warning(f"Could not load full performance metrics for module unlock: {data_err}")
+
+        # Extract topics already covered in prior modules to prevent repetition and build progression
+        covered_topics_summary = []
+        for p_idx in range(target_m_idx):
+            mod = modules[p_idx]
+            mod_title = mod.get("title", f"Module {p_idx + 1}")
+            top_titles = [t.get("title") for t in mod.get("topics", []) if isinstance(t, dict) and t.get("title")]
+            if top_titles:
+                covered_topics_summary.append(f"- {mod_title}: {', '.join(top_titles)}")
+            else:
+                covered_topics_summary.append(f"- {mod_title}")
+        covered_topics_str = "\n".join(covered_topics_summary) if covered_topics_summary else "None (Module 1)"
+
+        # 3. Formulate Master Educator Prompt
+        prompt = f"""You are a master educator and curriculum designer.
+The learner has completed Module {req.target_module_number - 1} and is now ready to unlock Module {req.target_module_number}.
+
+Course Subject: "{roadmap.get('subject') or roadmap.get('title')}"
+Learner's Ultimate Goal: "{roadmap.get('goal', 'Master this subject')}"
+
+Topics Already Covered in Previous Modules (DO NOT duplicate these; build directly upon them):
+{covered_topics_str}
+
+Learner Performance in Previous Module:
+- Checkpoints: {checkpoint_summary}
+- Proof of Work Homework: {submission_summary}
+
+Upcoming Module to Populate:
+- Milestone Title: "{target_module.get('title', f'Module {req.target_module_number}')}"
+- Target Outcome: "{target_module.get('outcome', '')}"
+- Workspace Type: "{target_module.get('workspace_type', 'code')}"
+
+Pedagogical Principles (MUST follow):
+1. **Teach, don't list.** Each topic must be a concrete, bite-sized teachable concept a learner can learn in 10-20 minutes.
+2. **Zero duplication & logical progression:** Do NOT re-teach concepts covered in previous modules. Advance naturally to the next stage of the curriculum.
+3. **One concept per topic:** Clean, focused natural chapter titles. Do NOT start titles with "How" or "How to".
+4. **Adaptive bridge:** If the learner struggled in earlier topics, ensure the initial topic smoothly bridges the gap into this module's objectives.
+5. **Generate 4 to 5 topics:** For each topic, provide a precise `youtube_search_query` (3-6 words, concise technical keywords) and 2-3 subtopics.
+6. **Practical Homework Task:** Refine `proof_of_work_instructions` to give a specific, real-world task testing this module's topics.
+7. **2-3 Text Resources:** Specific technical reading guides, official docs, or textbook chapter references.
+
+Output JSON ONLY matching this exact schema:
+{{
+  "topics": [
+    {{
+      "title": "string (ONE focused concept)",
+      "youtube_search_query": "3-6 word search query describing the technical topic",
+      "subtopics": [ {{ "title": "string" }} ]
+    }}
+  ],
+  "proof_of_work_instructions": {{
+    "what_to_build": "string (Max 1 line, concrete and specific)",
+    "what_counts_as_evidence": "string (Max 1 line, specific and verifiable)",
+    "eval_criteria": ["string", "string"]
+  }},
+  "recommended_resources": [
+    {{
+      "title": "string (Text-based documentation or guide)",
+      "search_query": "string (search query for the resource)"
+    }}
+  ]
+}}"""
+
+        # 4. Generate with OpenRouter/free and universal waterfall
+        generated_json = None
+        usage = None
+        used_model = "openrouter/free"
+        try:
+            model_to_use = "openrouter/free"
+            text_result, usage, used_model = await _call_openrouter(prompt, model=model_to_use, response_mime_type="application/json")
+            generated_json = robust_json_loads(text_result)
+        except Exception as e:
+            logger.warning(f"OpenRouter primary unlock failed: {e}. Cascading through fallback providers...")
+            try:
+                text_result, usage = await generate_text(prompt, model="openrouter/free", response_mime_type="application/json", return_usage=True)
+                generated_json = robust_json_loads(text_result)
+            except Exception as fb_err:
+                logger.error(f"Universal AI cascade failed for unlock module: {fb_err}")
+                yield json.dumps({"error": f"AI Engine Error: {str(fb_err)}. Please try again."}) + "\n"
+                return
+
+        if uid and usage:
+            if isinstance(usage, dict) and "model_name" not in usage:
+                usage["model_name"] = used_model
+            log_backend_ai_usage(
+                sb,
+                uid,
+                f"Module {req.target_module_number} Unlock: {target_module.get('title', '')} (Cost: 0 Credits)",
+                usage,
+                source="backend"
+            )
+
+        if not generated_json or "topics" not in generated_json:
+            yield json.dumps({"error": "Failed to synthesize module topics. Please retry."}) + "\n"
+            return
+
+        yield json.dumps({"status": f"Curating lessons for {target_module.get('title')}... 🎥"}) + "\n"
+
+        # 5. Format topics and curate YouTube videos
+        used_video_ids = set()
+        # Collect already used video IDs across existing modules
+        for mod in modules:
+            for top in mod.get("topics", []):
+                if isinstance(top, dict) and top.get("youtube_video_id"):
+                    used_video_ids.add(top["youtube_video_id"])
+
+        curated_topics = []
+        raw_topics = generated_json.get("topics", [])
+        core_subj = extract_core_subject(roadmap.get("title", roadmap.get("subject", "")))
+
+        for t_idx, topic in enumerate(raw_topics):
+            topic_title = topic.get("title", f"Topic {t_idx + 1}")
+            subtopics = []
+            for st in topic.get("subtopics", []):
+                if isinstance(st, dict) and st.get("title"):
+                    subtopics.append({"id": str(uuid.uuid4()), "title": st["title"]})
+                elif isinstance(st, str):
+                    subtopics.append({"id": str(uuid.uuid4()), "title": st})
+
+            topic_item = {
+                "id": f"topic_{req.target_module_number}_{t_idx + 1}",
+                "uuid": str(uuid.uuid4()),
+                "title": topic_title,
+                "youtube_search_query": topic.get("youtube_search_query", topic_title),
+                "subtopics": subtopics
+            }
+
+            yield json.dumps({"status": f"Matching lesson: {topic_title}..."}) + "\n"
+
+            if settings.YOUTUBE_API_KEY:
+                try:
+                    raw_query = topic.get("youtube_search_query") or topic_title
+                    if core_subj and core_subj.lower() not in raw_query.lower():
+                        search_query = f"{core_subj} {raw_query}"
+                    else:
+                        search_query = raw_query
+
+                    results = await search_youtube_videos(
+                        search_query,
+                        max_results=3,
+                        topic_title=topic_title,
+                        subject_context=core_subj,
+                        exclude_video_ids=used_video_ids
+                    )
+                    for res in results:
+                        if res["video_id"] not in used_video_ids:
+                            topic_item["youtube_video_id"] = res["video_id"]
+                            topic_item["youtube_video_title"] = res["video_title"]
+                            topic_item["duration"] = res["duration_minutes"]
+                            used_video_ids.add(res["video_id"])
+                            break
+                    await asyncio.sleep(0.05)
+                except Exception as yt_err:
+                    logger.warning(f"YouTube match error for '{topic_title}': {yt_err}")
+
+            curated_topics.append(topic_item)
+
+        yield json.dumps({"status": "Curating documentation and reference guides... 📖"}) + "\n"
+
+        # 6. Technical reading resources search via DuckDuckGo
+        rec_resources = generated_json.get("recommended_resources", [])
+        reading_materials = []
+        if rec_resources:
+            def fetch_ddg_resources():
+                found = []
+                try:
+                    from ddgs import DDGS
+                    with DDGS() as ddgs:
+                        for rec in rec_resources[:3]:
+                            search_q = rec.get("search_query", rec.get("title", "")) if isinstance(rec, dict) else str(rec)
+                            display_title = rec.get("title", search_q) if isinstance(rec, dict) else str(rec)
+                            clean_q = f"{search_q} -site:youtube.com -site:youtu.be -site:vimeo.com -site:tiktok.com"
+                            results = list(ddgs.text(clean_q, max_results=2))
+                            for r in results:
+                                href = r.get("href", "").lower()
+                                if not any(v in href for v in ["youtube.com", "youtu.be", "vimeo.com"]):
+                                    found.append({
+                                        "title": display_title,
+                                        "url": r["href"],
+                                        "type": "pdf" if href.endswith(".pdf") else "article"
+                                    })
+                                    break
+                except Exception as ddg_err:
+                    logger.warning(f"DDG search error: {ddg_err}")
+                return found
+
+            reading_materials = await asyncio.to_thread(fetch_ddg_resources)
+
+        # 7. Update module in roadmap_plan
+        target_module["locked"] = False
+        target_module["topics"] = curated_topics
+        target_module["resources"] = reading_materials
+        if generated_json.get("proof_of_work_instructions"):
+            target_module["proof_of_work_instructions"] = generated_json["proof_of_work_instructions"]
+
+        modules[target_m_idx] = target_module
+        plan["modules"] = modules
+
+        # 8. Save updated roadmap plan to Supabase
+        sb.table("roadmaps").update({
+            "roadmap_plan": plan,
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }).eq("id", req.roadmap_id).execute()
+
+        yield json.dumps({"status": f"Module {req.target_module_number} ready! 🚀"}) + "\n"
+        yield json.dumps({"result": plan}) + "\n"
+
+    return StreamingResponse(event_stream(), media_type="application/x-ndjson")

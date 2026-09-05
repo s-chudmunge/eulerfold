@@ -61,7 +61,18 @@ async def generate_autonomous_daily_briefing(current_user: User, sb) -> dict:
     # 5. Fetch skill summary & proof-of-work submissions
     try:
         skills_res = sb.table("user_skill_summary").select("skill_name, mastery_score, evidence_count").eq("user_id", uid).order("mastery_score", desc=True).limit(5).execute()
-        top_skills = skills_res.data or []
+        raw_skills = skills_res.data or []
+        top_skills = []
+        for s in raw_skills:
+            score = float(s.get("mastery_score") or 0.0)
+            # Convert 0.0-1.0 or 0-100 scale into clean display percentages and intuitive stages
+            pct = round(score * 100 if score <= 1.0 else score)
+            tier = "Advanced" if pct >= 75 else "Proficient" if pct >= 50 else "Developing" if pct >= 25 else "Introductory"
+            top_skills.append({
+                "skill": s.get("skill_name"),
+                "level": f"{tier} ({pct}%)",
+                "verified_checks": s.get("evidence_count", 0)
+            })
     except Exception as e:
         logger.warning(f"Error fetching user_skill_summary for briefing: {e}")
         top_skills = []
@@ -169,16 +180,22 @@ LEARNER 360 PROFILE & COMPLETE DATA:
 
 INSTRUCTIONS:
 1. Reason holistically across all tables and activities:
-   - Recognize overarching learning paths or career goals across multiple roadmaps (e.g. Data Science, Algorithms, GATE prep).
+   - Recognize overarching learning paths or goals across active roadmaps.
    - Recognize recent consistency vs inactivity gaps over the past 14 days.
    - Reference scheduled calendar tasks, homework feedback, or the next unfinished topic.
-2. Formulate 2-3 sentences of direct, personalized, and actionable advice on what they should tackle today.
-3. Choose a short 1-2 word highlight badge that accurately reflects their actual current subject or mode (e.g., "DATA SCIENCE", "FOUNDATIONS", "REVISION", "WARMUP", "MOMENTUM", "PRACTICE"). Do not output "GATE PREP" unless their active roadmap is explicitly for GATE.
-4. Keep tone encouraging, direct, and pedagogical. Strictly avoid fluffy marketing buzzwords (never use the words "high" or "highly"). NEVER use em dashes (—) or en dashes (–); use standard commas, periods, or parentheses instead.
-5. Output ONLY a valid JSON object matching this schema:
+2. How to talk about metrics & skill levels:
+   - Be helpful, conversational, and encouraging. Never regurgitate raw internal floats, decimals (e.g. never write "0.015 to 0.12"), or bureaucratic stats dumps.
+   - If mentioning skill progress or quiz scores, frame them naturally in terms of learning stages (e.g., "early stages", "getting comfortable with fundamentals", "ready for practice") or rounded percentages if truly helpful.
+3. Be genuinely helpful:
+   - Avoid generic robotic critique (such as scolding the user for opening multiple roadmaps or logging sessions without completions).
+   - Instead, give practical perspective: highlight what's next, what will give them the cleanest learning win today, or how finishing their current step builds into their bigger goals.
+4. Keep the message concise (2-3 sentences).
+5. Choose a short 1-2 word highlight badge reflecting their focus (e.g., "PYTHON", "FOUNDATIONS", "REVISION", "MOMENTUM", "PRACTICE").
+6. Tone: Direct, honest, encouraging, and clear. Avoid fluffy buzzwords (never use the words "high" or "highly"). NEVER use em dashes (—) or en dashes (–); use standard commas, periods, or parentheses instead.
+7. Output ONLY a valid JSON object matching this schema:
 {{
-  "briefing": "2-3 sentences of personalized guidance and recommended next action",
-  "highlight_badge": "DATA SCIENCE",
+  "briefing": "2-3 sentences of helpful, personalized guidance and recommended focus",
+  "highlight_badge": "PYTHON",
   "suggested_action_label": "Continue: [Topic Name]"
 }}"""
 
@@ -187,6 +204,8 @@ INSTRUCTIONS:
     fallback_label = f"Continue: {next_action_topic.get('topic_title')}" if next_action_topic else "Continue Learning"
 
     try:
+        from app.utils.ai_client import current_ai_subject
+        current_ai_subject.set("Goldfish Daily Briefing")
         ai_resp = await generate_text(prompt, response_mime_type="application/json")
         parsed = robust_json_loads(ai_resp)
         if isinstance(parsed, dict) and parsed.get("briefing"):

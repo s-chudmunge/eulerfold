@@ -67,12 +67,24 @@ export default function AuthProvider({ children }: { children: React.ReactNode }
       }
     };
 
-    // 1. Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (isInitialized) return;
-      isInitialized = true;
-      fetchUserProfile(session);
-    });
+    // 1. Get initial session with a safety timeout so UI never hangs if Supabase is unreachable
+    const sessionPromise = supabase.auth.getSession();
+    const timeoutPromise = new Promise<{ data: { session: null } }>((resolve) => 
+      setTimeout(() => resolve({ data: { session: null } }), 2500)
+    );
+
+    Promise.race([sessionPromise, timeoutPromise])
+      .then(({ data: { session } }) => {
+        if (isInitialized) return;
+        isInitialized = true;
+        fetchUserProfile(session);
+      })
+      .catch(() => {
+        if (!isInitialized) {
+          isInitialized = true;
+          setLoading(false);
+        }
+      });
 
     // 2. Listen for future auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {

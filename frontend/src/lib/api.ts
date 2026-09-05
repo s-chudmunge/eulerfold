@@ -173,6 +173,77 @@ export const roadmapsAPI = {
     scrapeUrl: async (payload: { url: string }): Promise<{ text: string }> => {
         const response = await api.post('/roadmaps/scrape-url', payload);
         return response.data;
+    },
+    unlockModuleStream: async (
+        roadmapId: number,
+        targetModuleNumber: number,
+        onStatus: (status: string) => void
+    ): Promise<any> => {
+        const session = await supabase.auth.getSession();
+        const token = session.data.session?.access_token;
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api'}/roadmaps/unlock-module`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+            },
+            body: JSON.stringify({
+                roadmap_id: roadmapId,
+                target_module_number: targetModuleNumber
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to unlock module (HTTP ${response.status})`);
+        }
+        if (!response.body) {
+            throw new Error("No response body received");
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder();
+        let buffer = '';
+        let resultPlan = null;
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
+
+            for (const line of lines) {
+                const trimmed = line.trim();
+                if (!trimmed) continue;
+                try {
+                    const data = JSON.parse(trimmed);
+                    if (data.error) throw new Error(data.error);
+                    if (data.status) onStatus(data.status);
+                    if (data.result) resultPlan = data.result;
+                } catch (e: any) {
+                    if (e.message && (e.message.includes("AI Engine Error") || e.message.includes("Failed"))) {
+                        throw e;
+                    }
+                }
+            }
+        }
+
+        if (buffer.trim()) {
+            try {
+                const data = JSON.parse(buffer.trim());
+                if (data.error) throw new Error(data.error);
+                if (data.status) onStatus(data.status);
+                if (data.result) resultPlan = data.result;
+            } catch (e: any) {
+                if (e.message && (e.message.includes("AI Engine Error") || e.message.includes("Failed"))) {
+                    throw e;
+                }
+            }
+        }
+
+        return resultPlan;
     }
 };
 
@@ -353,6 +424,7 @@ export interface RoadmapData {
     time_unit?: string;
     model?: string;
     last_position?: { mIdx: number; tIdx: number };
+    slug?: string;
     is_public?: boolean;
     show_author?: boolean;
     skills_extracted?: boolean;
@@ -364,9 +436,7 @@ export interface RoadmapData {
     cloned_from?: number;
     is_cloned?: boolean;
     extension_count: number;
-}
-
-export interface RoadmapMe extends RoadmapData {
+    completed_topic_ids?: string[];
     progress?: {
         percent: number;
         completed_topics: number;
@@ -375,8 +445,13 @@ export interface RoadmapMe extends RoadmapData {
         total_submissions?: number;
         completed_resources?: number;
         total_resources?: number;
+        completed_practice_sessions?: number;
+        required_practice_sessions?: number;
         bottleneck_module?: number;
     };
+}
+
+export interface RoadmapMe extends RoadmapData {
     status?: 'active' | 'completed' | 'action_required' | 'archived' | 'quit' | 'needs_improvement' | 'resubmit_required';
     user_rating?: number | null;
 }
@@ -1080,4 +1155,75 @@ export const goldfishAPI = {
         return response.data;
     }
 };
+
+export interface CheckpointItem {
+    id: string;
+    archetype: 'predict_output' | 'spot_bug' | 'concept_application';
+    question: string;
+    code_snippet?: string | null;
+    options: string[];
+    correct_index: number;
+    explanation: string;
+    concept_key: string;
+}
+
+export interface CheckpointEvaluateResponse {
+    is_correct: boolean;
+    coins_earned: number;
+    feedback: string;
+    explanation: string;
+    retry_checkpoint?: CheckpointItem | null;
+}
+
+export const checkpointsAPI = {
+    getOrGenerate: async (payload: {
+        roadmap_id: number;
+        module_number: number;
+        topic_index: number;
+        subject: string;
+        topic_title: string;
+        roadmap_slug?: string;
+        subtopics?: string[];
+        learner_level?: string;
+        previous_attempt?: any;
+    }, signal?: AbortSignal): Promise<CheckpointItem> => {
+        const response = await api.post('/checkpoints/get-or-generate', payload, { signal });
+        return response.data;
+    },
+    evaluateAndAdapt: async (payload: {
+        roadmap_id: number;
+        module_number: number;
+        topic_index: number;
+        checkpoint_id: string;
+        selected_option: number;
+        subject: string;
+        topic_title: string;
+        question?: string;
+        options: string[];
+        correct_index: number;
+        explanation: string;
+        concept_key?: string;
+        roadmap_slug?: string;
+    }): Promise<CheckpointEvaluateResponse> => {
+        const response = await api.post('/checkpoints/evaluate-and-adapt', payload);
+        return response.data;
+    },
+    unlockNextTopic: async (payload: {
+        roadmap_id: number;
+        module_number: number;
+        topic_index: number;
+        subject: string;
+    }): Promise<{
+        has_next: boolean;
+        module_number: number;
+        topic_index: number;
+        topic?: any;
+        tutor_note: string;
+        is_bridge: boolean;
+    }> => {
+        const response = await api.post('/checkpoints/unlock-next-topic', payload);
+        return response.data;
+    },
+};
+
 

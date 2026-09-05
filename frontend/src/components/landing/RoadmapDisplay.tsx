@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { RoadmapData, saveRoadmap, roadmapsAPI, submissionsAPI } from '../../lib/api';
-import { Download, CheckCircle, ChevronDown, ChevronUp, Play, BookOpen, X, Trophy, Plus, FileText, Copy, Target, MonitorPlay, BookText, Hash, Scroll, ChevronRight, Trash2, Hammer, Eye, Youtube, ExternalLink } from 'lucide-react';
+import { Download, CheckCircle, ChevronDown, ChevronUp, Play, BookOpen, X, Trophy, Plus, FileText, Copy, Target, MonitorPlay, BookText, Hash, Scroll, ChevronRight, Trash2, Hammer, Eye, Youtube, ExternalLink, Lock } from 'lucide-react';
 import { supabase } from '../../lib/supabase/client';
 import Link from 'next/link';
 
@@ -270,6 +270,7 @@ interface RoadmapDisplayProps {
         {(roadmapData.roadmap_plan?.modules || []).map((module: any, index: number) => {
             const isCurrent = currentModule === (index + 1);
             const isExpanded = expandedModules.includes(index);
+            const isLocked = module.locked === true || (index > 0 && (!module.topics || module.topics.length === 0));
             const videos = module.topics?.filter((t: any) => typeof t !== 'string' && t.youtube_video_id) || [];
             const videoCount = videos.length;
             const totalDuration = videos.reduce((acc: number, v: any) => acc + (v.duration || 0), 0);
@@ -282,20 +283,28 @@ interface RoadmapDisplayProps {
             return (
               <div
                 key={index}
-                className={`transition-all duration-300 relative group/module rounded-lg border overflow-hidden ${
-                  isCurrent 
-                    ? 'bg-accent/[0.02] border-accent/30 shadow-md shadow-accent/5' 
+                className={`transition-all duration-300 relative group/module rounded-md border overflow-hidden ${
+                  isLocked
+                    ? 'bg-sidebar/10 border-border/40 opacity-75'
+                    : isCurrent 
+                    ? 'bg-accent/[0.02] border-accent/30 shadow-sm' 
                     : 'bg-sidebar/30 border-border/50 hover:border-accent/30 hover:bg-sidebar/60 hover:shadow-sm'
                 }`}
               >
                 {/* Module Header */}
                 <div
-                  onClick={() => toggleModule(index)}
-                  className="w-full px-4 md:px-6 py-5 md:py-6 flex flex-col md:flex-row md:items-center justify-between text-left cursor-pointer gap-4 md:gap-6"
-                  role="button"
-                  tabIndex={0}
+                  onClick={() => {
+                    if (!isLocked) {
+                      toggleModule(index);
+                    }
+                  }}
+                  className={`w-full px-4 md:px-6 py-5 md:py-6 flex flex-col md:flex-row md:items-center justify-between text-left gap-4 md:gap-6 ${
+                    isLocked ? 'cursor-default' : 'cursor-pointer'
+                  }`}
+                  role={isLocked ? undefined : "button"}
+                  tabIndex={isLocked ? undefined : 0}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter' || e.key === ' ') {
+                    if (!isLocked && (e.key === 'Enter' || e.key === ' ')) {
                       e.preventDefault();
                       toggleModule(index);
                     }
@@ -303,143 +312,166 @@ interface RoadmapDisplayProps {
                 >
                   <div className="flex items-start gap-3 md:gap-5 min-w-0 w-full md:flex-1">
                     <div className={`inconsolata-ui w-10 h-10 md:w-12 md:h-12 rounded-md flex items-center justify-center text-[13px] md:text-[15px] font-bold shrink-0 transition-all border ${
-                      isCurrent 
+                      isLocked
+                        ? 'bg-background/50 border-border/50 text-text-muted/60'
+                        : isCurrent 
                         ? 'bg-accent text-white border-accent/20 shadow-sm' 
                         : 'bg-background border-border text-text-muted group-hover/module:border-accent/20 group-hover/module:text-text-primary'
                     }`}>
-                      W{index + 1}
+                      {isLocked ? <Lock className="w-4 h-4 text-text-muted" /> : `W${index + 1}`}
                     </div>
                     <div className="min-w-0 flex-1">
-                      {/* Mobile Top Row: Title + Chevron */}
+                      {/* Mobile Top Row: Title + Chevron / Lock */}
                       <div className="flex items-start justify-between gap-3 md:hidden mb-1.5">
-                        <h3 className="font-inter text-[15px] sm:text-[16px] font-bold text-text-heading leading-snug tracking-tight">{module.title}</h3>
+                        <div className="flex items-center gap-2 min-w-0">
+                          <h3 className="font-inter text-[15px] sm:text-[16px] font-bold text-text-heading leading-snug tracking-tight truncate">{module.title}</h3>
+                        </div>
                         <div className="flex items-center gap-1.5 shrink-0 mt-0.5">
                           {submissionsByModule[index+1] && submissionsByModule[index+1].length > 0 && (
                             <CheckCircle className="h-4 w-4 text-green-500" />
                           )}
-                          {isExpanded ? <ChevronUp className="h-4 w-4 text-text-muted" /> : <ChevronDown className="h-4 w-4 text-text-muted" />}
+                          {!isLocked && (isExpanded ? <ChevronUp className="h-4 w-4 text-text-muted" /> : <ChevronDown className="h-4 w-4 text-text-muted" />)}
                         </div>
                       </div>
 
                       {/* Desktop Title */}
-                      <h3 className="hidden md:block font-inter text-[18px] font-bold text-text-heading truncate pr-4 tracking-tight mb-1">{module.title}</h3>
+                      <div className="hidden md:flex items-center gap-2 mb-1">
+                        <h3 className="font-inter text-[18px] font-bold text-text-heading truncate tracking-tight">{module.title}</h3>
+                        {isLocked && (
+                          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-medium bg-background border border-border text-text-muted shrink-0">
+                            <Lock className="w-3 h-3 text-text-muted" />
+                            <span>Locked Milestone</span>
+                          </span>
+                        )}
+                      </div>
                       
                       <p className="text-[13px] md:text-[14px] text-text-muted line-clamp-2 md:line-clamp-3 leading-relaxed font-medium md:pr-6 mb-3">{module.outcome}</p>
                       
-                      <div className="flex flex-wrap items-center gap-x-3 md:gap-x-5 gap-y-2">
-                        {videoCount > 0 && (
-                          <div className="flex items-center gap-1.5">
-                            <div className="bg-accent/10 p-1 rounded-md border border-accent/10">
-                              <MonitorPlay className="w-3.5 h-3.5 text-accent" />
-                            </div>
-                            <span className="manrope-body text-[12px] font-bold text-text-primary/90">
-                              {videoCount} {videoCount === 1 ? 'video' : 'videos'}
-                              {totalDuration > 0 && <span className="mx-1.5 opacity-30">•</span>}
-                              {totalDuration > 0 && `${totalDuration}m`}
-                            </span>
-                          </div>
-                        )}
-                        {resourceCount > 0 && (
-                          <div className="flex items-center gap-1.5">
-                            <div className="bg-accent/10 p-1 rounded-md border border-accent/10">
-                              <BookText className="w-3.5 h-3.5 text-accent" />
-                            </div>
-                            <span className="manrope-body text-[12px] font-bold text-text-primary/90">{resourceCount} {resourceCount === 1 ? 'reading' : 'readings'}</span>
-                          </div>
-                        )}
-                        {topicCount > 0 && (
-                          <div className="flex items-center gap-1.5">
-                            <div className="bg-accent/10 p-1 rounded-md border border-accent/10">
-                              <Hash className="w-3.5 h-3.5 text-accent" />
-                            </div>
-                            <span className="manrope-body text-[12px] font-bold text-text-primary/90">{topicCount} {topicCount === 1 ? 'topic' : 'topics'}</span>
-                          </div>
-                        )}
-                        <div className="flex items-center gap-1.5">
-                          <div className="bg-accent/10 p-1 rounded-md border border-accent/10">
-                            <Scroll className="w-3.5 h-3.5 text-accent" />
-                          </div>
-                          <span className="manrope-body text-[12px] font-bold text-text-primary/90">1 homework</span>
+                      {isLocked ? (
+                        <div className="flex items-center gap-2 text-[12px] text-text-muted">
+                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-background/80 border border-border/70 font-medium">
+                            <Lock className="w-3 h-3 text-text-muted" />
+                            <span>Unlocks as you complete Module {index}</span>
+                          </span>
                         </div>
-                      </div>
+                      ) : (
+                        <div className="flex flex-wrap items-center gap-x-3 md:gap-x-5 gap-y-2">
+                          {videoCount > 0 && (
+                            <div className="flex items-center gap-1.5">
+                              <div className="bg-accent/10 p-1 rounded-md border border-accent/10">
+                                <MonitorPlay className="w-3.5 h-3.5 text-accent" />
+                              </div>
+                              <span className="manrope-body text-[12px] font-bold text-text-primary/90">
+                                {videoCount} {videoCount === 1 ? 'video' : 'videos'}
+                                {totalDuration > 0 && <span className="mx-1.5 opacity-30">•</span>}
+                                {totalDuration > 0 && `${totalDuration}m`}
+                              </span>
+                            </div>
+                          )}
+                          {resourceCount > 0 && (
+                            <div className="flex items-center gap-1.5">
+                              <div className="bg-accent/10 p-1 rounded-md border border-accent/10">
+                                <BookText className="w-3.5 h-3.5 text-accent" />
+                              </div>
+                              <span className="manrope-body text-[12px] font-bold text-text-primary/90">{resourceCount} {resourceCount === 1 ? 'reading' : 'readings'}</span>
+                            </div>
+                          )}
+                          {topicCount > 0 && (
+                            <div className="flex items-center gap-1.5">
+                              <div className="bg-accent/10 p-1 rounded-md border border-accent/10">
+                                <Hash className="w-3.5 h-3.5 text-accent" />
+                              </div>
+                              <span className="manrope-body text-[12px] font-bold text-text-primary/90">{topicCount} {topicCount === 1 ? 'topic' : 'topics'}</span>
+                            </div>
+                          )}
+                          <div className="flex items-center gap-1.5">
+                            <div className="bg-accent/10 p-1 rounded-md border border-accent/10">
+                              <Scroll className="w-3.5 h-3.5 text-accent" />
+                            </div>
+                            <span className="manrope-body text-[12px] font-bold text-text-primary/90">1 homework</span>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  <div className="flex flex-col md:flex-row items-center justify-end gap-3 w-full md:w-auto shrink-0 md:pl-2">
-                    {(isOwner || roadmapData.is_public) && (
-                      <div className="flex flex-row md:flex-col gap-2 w-full md:w-[120px]">
-                        <Link 
-                          href={`/roadmap/${roadmapData.cloned_id || roadmapData.slug || roadmapData.id}/learn?module=${index + 1}&topic=1`}
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (!user && onSignInRequired) {
-                              e.preventDefault();
-                              onSignInRequired();
-                              return;
-                            }
-                            if (!isOwner && user && onCloneRequired) {
-                              e.preventDefault();
-                              onCloneRequired();
-                            }
-                          }}
-                          className="flex-1 md:flex-none flex items-center justify-center gap-1.5 px-4 md:px-5 py-2 bg-accent text-white rounded-md text-[11px] md:text-[10px] font-bold tracking-widest uppercase hover:bg-teal-700 transition-all active:scale-95 shadow-sm"
-                        >
-                          <Play className="w-3.5 h-3.5 fill-current" />
-                          <span>Learn</span>
-                        </Link>
-
-                        {!submissionsByModule[index+1]?.length && (
-                          <button 
+                  {!isLocked && (
+                    <div className="flex flex-col md:flex-row items-center justify-end gap-3 w-full md:w-auto shrink-0 md:pl-2">
+                      {(isOwner || roadmapData.is_public) && (
+                        <div className="flex flex-row md:flex-col gap-2 w-full md:w-[120px]">
+                          <Link 
+                            href={`/roadmap/${roadmapData.cloned_id || roadmapData.slug || roadmapData.id}/learn?module=${index + 1}&topic=1`}
                             onClick={(e) => {
-                                e.stopPropagation();
-                                if (!user && onSignInRequired) {
-                                  onSignInRequired();
-                                  return;
-                                }
-                                if (!isOwner && user && onCloneRequired) {
-                                    onCloneRequired();
-                                    return;
-                                }
-                                if (onOpenHomework) {
-                                    onOpenHomework(index + 1, module.title, module.proof_of_work_instructions);
-                                } else {
-                                    window.location.href = `/roadmap/${roadmapData.slug || roadmapData.id}/build/${index + 1}`;
-                                }
+                              e.stopPropagation();
+                              if (!user && onSignInRequired) {
+                                e.preventDefault();
+                                onSignInRequired();
+                                return;
+                              }
+                              if (!isOwner && user && onCloneRequired) {
+                                e.preventDefault();
+                                onCloneRequired();
+                              }
                             }}
-                            className="flex-1 md:flex-none flex items-center justify-center gap-1.5 px-4 md:px-5 py-2 bg-background border border-border/80 text-text-primary rounded-md text-[11px] md:text-[10px] font-bold tracking-widest uppercase hover:border-accent/40 hover:text-accent transition-all active:scale-95 shadow-sm"
+                            className="flex-1 md:flex-none flex items-center justify-center gap-1.5 px-4 md:px-5 py-2 bg-accent text-white rounded-md text-[11px] md:text-[10px] font-bold tracking-widest uppercase hover:bg-teal-700 transition-all active:scale-95 shadow-sm"
                           >
-                            <Scroll className="w-3.5 h-3.5" />
-                            <span>Homework</span>
+                            <Play className="w-3.5 h-3.5 fill-current" />
+                            <span>Learn</span>
+                          </Link>
+
+                          {!submissionsByModule[index+1]?.length && (
+                            <button 
+                              onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (!user && onSignInRequired) {
+                                    onSignInRequired();
+                                    return;
+                                  }
+                                  if (!isOwner && user && onCloneRequired) {
+                                      onCloneRequired();
+                                      return;
+                                  }
+                                  if (onOpenHomework) {
+                                      onOpenHomework(index + 1, module.title, module.proof_of_work_instructions);
+                                  } else {
+                                      window.location.href = `/roadmap/${roadmapData.slug || roadmapData.id}/build/${index + 1}`;
+                                  }
+                              }}
+                              className="flex-1 md:flex-none flex items-center justify-center gap-1.5 px-4 md:px-5 py-2 bg-background border border-border/80 text-text-primary rounded-md text-[11px] md:text-[10px] font-bold tracking-widest uppercase hover:border-accent/40 hover:text-accent transition-all active:scale-95 shadow-sm"
+                            >
+                              <Scroll className="w-3.5 h-3.5" />
+                              <span>Homework</span>
+                            </button>
+                          )}
+                        </div>
+                      )}
+                      
+                      {/* Desktop actions and chevron */}
+                      <div className="hidden md:flex items-center gap-3">
+                        {isOwner && isLast && isExtension && onDeleteExtension && (
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              if (confirm('Are you sure you want to delete this extension?')) {
+                                onDeleteExtension();
+                              }
+                            }}
+                            className="p-1.5 text-text-muted hover:text-red-500 hover:bg-red-50 rounded-md transition-all opacity-0 group-hover/module:opacity-100"
+                            title="Delete last extension"
+                          >
+                            <Trash2 className="w-4 h-4" />
                           </button>
                         )}
+                        {submissionsByModule[index+1] && submissionsByModule[index+1].length > 0 && (
+                          <CheckCircle className="h-5 w-5 text-green-500" />
+                        )}
+                        {isExpanded ? <ChevronUp className="h-5 w-5 text-text-muted" /> : <ChevronDown className="h-5 w-5 text-text-muted" />}
                       </div>
-                    )}
-                    
-                    {/* Desktop actions and chevron */}
-                    <div className="hidden md:flex items-center gap-3">
-                      {isOwner && isLast && isExtension && onDeleteExtension && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (confirm('Are you sure you want to delete this extension?')) {
-                              onDeleteExtension();
-                            }
-                          }}
-                          className="p-1.5 text-text-muted hover:text-red-500 hover:bg-red-50 rounded-md transition-all opacity-0 group-hover/module:opacity-100"
-                          title="Delete last extension"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      )}
-                      {submissionsByModule[index+1] && submissionsByModule[index+1].length > 0 && (
-                        <CheckCircle className="h-5 w-5 text-green-500" />
-                      )}
-                      {isExpanded ? <ChevronUp className="h-5 w-5 text-text-muted" /> : <ChevronDown className="h-5 w-5 text-text-muted" />}
                     </div>
-                  </div>
+                  )}
                 </div>
 
-                {isExpanded && (
+                {!isLocked && isExpanded && (
                   <div className="px-5 py-4 pl-6 md:pl-20 animate-in fade-in slide-in-from-top-2 duration-300">
                     <div className="space-y-4">
                       <div>

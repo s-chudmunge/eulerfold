@@ -14,6 +14,7 @@ import dynamic from 'next/dynamic';
 import HeroBackground from '@/components/HeroBackground';
 
 const SettingsModal = dynamic(() => import('@/components/SettingsModal'), { ssr: false });
+const PomodoroCompletionModal = dynamic(() => import('@/components/grove/PomodoroCompletionModal'), { ssr: false });
 
 import { Familjen_Grotesk } from 'next/font/google';
 
@@ -240,6 +241,7 @@ export default function RootLayout({
                   {children}
                 </main>
                 <SettingsModal />
+                <PomodoroCompletionModal />
                 <Analytics />
                 <SpeedInsights />
             </SettingsProvider>

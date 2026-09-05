@@ -1,4 +1,4 @@
-export type GoldfishTab = 'chat' | 'reading' | 'video' | 'calendar' | 'focus';
+export type GoldfishTab = 'chat' | 'reading' | 'video' | 'calendar';
 
 export type GoldfishAgentState = 'idle' | 'thinking' | 'scouting' | 'happy' | 'success';
 

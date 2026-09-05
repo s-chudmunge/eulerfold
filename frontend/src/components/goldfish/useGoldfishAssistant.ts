@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useMemo } from 'react';
 import { goldfishAPI } from '@/lib/api';
 import { useAuth } from '@/components/AuthProvider';
+import { dispatchTreeHarvest } from '@/components/grove/harvestUtils';
 import { GoldfishAssistantProps, ChatMessage, GoldfishTab, GoldfishAgentState } from './types';
 
 export function useGoldfishAssistant({
@@ -89,6 +90,20 @@ export function useGoldfishAssistant({
         };
         localStorage.setItem(storageKey, JSON.stringify(updated));
       } catch {}
+
+      // Dispatch global tree harvest event so modal, stats, and notification bell trigger everywhere
+      try {
+        dispatchTreeHarvest({
+          type: 'focus_session',
+          title: `${timerDurationMins}m Deep Focus Session`,
+          treesEarned: 1,
+          coinsEarned: 5,
+          roadmapId: roadmapId,
+          durationMins: timerDurationMins
+        });
+      } catch (e) {
+        console.error('Failed to dispatch tree harvest from Goldfish timer:', e);
+      }
 
       setMessages(prev => [
         ...prev,

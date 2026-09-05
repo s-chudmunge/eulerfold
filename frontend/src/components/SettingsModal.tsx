@@ -26,7 +26,9 @@ import {
   Calendar,
   CalendarCheck,
   ListTodo,
-  BookOpen
+  BookOpen,
+  Coins,
+  Flame
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '@/components/AuthProvider';
@@ -409,7 +411,7 @@ export default function SettingsModal() {
                     type="text"
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
-                    className="w-full px-3 py-2 bg-background border border-border rounded-lg text-[13px] font-bold text-text-heading outline-none focus:border-accent transition-all"
+                    className="w-full px-3 py-2 bg-background border border-border rounded-md text-[13px] font-bold text-text-heading outline-none focus:border-accent transition-all"
                     placeholder="Enter full name"
                   />
                 </div>
@@ -424,7 +426,7 @@ export default function SettingsModal() {
                       type="text"
                       value={username}
                       onChange={(e) => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
-                      className="w-full pl-8 pr-3 py-2 bg-background border border-border rounded-lg text-[13px] font-bold text-text-heading outline-none focus:border-accent transition-all"
+                      className="w-full pl-8 pr-3 py-2 bg-background border border-border rounded-md text-[13px] font-bold text-text-heading outline-none focus:border-accent transition-all"
                       placeholder="username"
                     />
                   </div>
@@ -434,10 +436,61 @@ export default function SettingsModal() {
                   <label className="inconsolata-ui block text-[10px] font-bold tracking-wide text-text-muted opacity-60 uppercase">
                     System email
                   </label>
-                  <div className="flex items-center gap-3 px-3 py-2 bg-background/50 border border-border/50 rounded-lg text-[12px] text-text-muted font-medium italic">
+                  <div className="flex items-center gap-3 px-3 py-2 bg-background/50 border border-border/50 rounded-md text-[12px] text-text-muted font-medium italic">
                     <Mail className="h-3.5 w-3.5 opacity-30" />
                     <span className="inconsolata-ui">{email}</span>
                     <ShieldCheck className="h-3.5 w-3.5 ml-auto text-accent opacity-30" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Account Overview & EulerCoins */}
+              <div className="pt-3 border-t border-border/50 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="inconsolata-ui text-[10px] font-bold tracking-wide text-text-muted opacity-60 uppercase">
+                    Account Overview
+                  </span>
+                  {authUser?.is_pro ? (
+                    <span className="px-2 py-0.5 rounded-md text-[9px] font-bold inconsolata-ui bg-accent/15 text-accent border border-accent/30 uppercase">
+                      Pro Member
+                    </span>
+                  ) : (
+                    <span className="px-2 py-0.5 rounded-md text-[9px] font-bold inconsolata-ui bg-sidebar border border-border text-text-muted uppercase">
+                      Standard
+                    </span>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5">
+                  <div className="p-3 bg-background border border-border rounded-md">
+                    <div className="flex items-center gap-1.5 text-text-muted text-[11px] mb-1 inconsolata-ui">
+                      <Coins className="w-3.5 h-3.5 text-accent" />
+                      <span className="font-bold uppercase tracking-wider text-[10px]">EulerCoins</span>
+                    </div>
+                    <div className="text-lg font-bold text-text-heading inconsolata-ui">
+                      {(authUser?.eulercoins ?? profile?.eulercoins ?? 0).toLocaleString()}
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-background border border-border rounded-md">
+                    <div className="flex items-center gap-1.5 text-text-muted text-[11px] mb-1 inconsolata-ui">
+                      <Flame className="w-3.5 h-3.5 text-amber-500" />
+                      <span className="font-bold uppercase tracking-wider text-[10px]">Active Streak</span>
+                    </div>
+                    <div className="text-lg font-bold text-text-heading inconsolata-ui">
+                      {authUser?.current_streak ?? profile?.current_streak ?? 0}{' '}
+                      <span className="text-[11px] font-normal text-text-muted">days</span>
+                    </div>
+                  </div>
+
+                  <div className="p-3 bg-background border border-border rounded-md col-span-2 sm:col-span-1">
+                    <div className="flex items-center gap-1.5 text-text-muted text-[11px] mb-1 inconsolata-ui">
+                      <Zap className="w-3.5 h-3.5 text-accent" />
+                      <span className="font-bold uppercase tracking-wider text-[10px]">AI Credits</span>
+                    </div>
+                    <div className="text-lg font-bold text-text-heading inconsolata-ui">
+                      {authUser?.roadmap_credits ?? profile?.roadmap_credits ?? 0}
+                    </div>
                   </div>
                 </div>
               </div>
@@ -455,7 +508,7 @@ export default function SettingsModal() {
                 <button
                   type="submit"
                   disabled={saving}
-                  className="inconsolata-ui inline-flex items-center gap-2 px-5 py-2 bg-text-heading text-background text-[11px] font-bold tracking-wide rounded-lg hover:opacity-90 transition-all disabled:opacity-50 uppercase"
+                  className="inconsolata-ui inline-flex items-center gap-2 px-5 py-2 bg-text-heading text-background text-[11px] font-bold tracking-wide rounded-md hover:opacity-90 transition-all disabled:opacity-50 uppercase"
                 >
                   {saving ? <Loader2 className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3" />}
                   {saving ? 'Syncing...' : 'Apply changes'}

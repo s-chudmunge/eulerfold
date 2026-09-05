@@ -3,6 +3,7 @@ import logging
 import os
 import re
 import asyncio
+import contextvars
 import httpx
 import cohere
 from google import genai
@@ -18,6 +19,10 @@ except ImportError:
     HAS_JSON_REPAIR = False
 
 logger = logging.getLogger(__name__)
+
+# Context-local variables to automatically track the current user and subject across any AI generation
+current_ai_user_id = contextvars.ContextVar("current_ai_user_id", default=None)
+current_ai_subject = contextvars.ContextVar("current_ai_subject", default=None)
 
 _cached_free_model = None
 _cached_time = 0
@@ -332,11 +337,21 @@ async def generate_text(prompt: str, model: str = None, response_mime_type: str 
     
     def _attach_model(usage_dict, model_name):
         usage_dict["model_name"] = model_name
-        return usage_dict
+    def _maybe_auto_log(usage_dict, model_name):
+        try:
+            uid = current_ai_user_id.get()
+            subj = current_ai_subject.get() or "AI Generation"
+            if uid and usage_dict:
+                from app.core.supabase_client import get_supabase_client
+                sb = get_supabase_client()
+                log_backend_ai_usage(sb, uid, subj, usage_dict, source="backend")
+        except Exception as auto_log_err:
+            logger.debug(f"Auto AI usage log skipped: {auto_log_err}")
 
     def _log_success(provider: str, model_name: str, usage: dict, elapsed: float):
         tokens = usage.get("total_tokens", 0)
         logger.info(f"[AI] ✓ {provider} ({model_name}) — {tokens} tokens, {elapsed:.1f}s, prompt={prompt_len} chars{' [JSON]' if json_mode else ''}")
+        _maybe_auto_log(usage, model_name)
 
 
     if model in ("eulerfold", "openrouter", ""):
@@ -347,8 +362,9 @@ async def generate_text(prompt: str, model: str = None, response_mime_type: str 
         try:
             logger.info(f"[AI] Starting generation — model=local, prompt={prompt_len} chars")
             text, usage, used_model = await _call_ollama(prompt, response_mime_type)
+            _attach_model(usage, used_model)
             _log_success("Ollama (Local)", used_model, usage, time.time() - t0)
-            return (text, _attach_model(usage, used_model)) if return_usage else text
+            return (text, usage) if return_usage else text
         except Exception as e:
             logger.error(f"[AI] ✗ Local Ollama failed: {e}")
             raise Exception(f"Local AI failed: {e}. Is Ollama running on localhost:11434?")
@@ -359,38 +375,44 @@ async def generate_text(prompt: str, model: str = None, response_mime_type: str 
 
     try:
         text, usage, used_model = await _call_openrouter(prompt, actual_model, response_mime_type)
+        _attach_model(usage, used_model)
         _log_success("OpenRouter", used_model, usage, time.time() - t0)
-        return (text, _attach_model(usage, used_model)) if return_usage else text
+        return (text, usage) if return_usage else text
     except Exception as e:
         logger.warning(f"[AI] ✗ OpenRouter failed ({type(e).__name__}: {str(e)[:100]})")
         try:
             text, usage, used_model = await _call_groq(prompt, model or openrouter_model, response_mime_type)
+            _attach_model(usage, used_model)
             _log_success("Groq", used_model, usage, time.time() - t0)
-            return (text, _attach_model(usage, used_model)) if return_usage else text
+            return (text, usage) if return_usage else text
         except Exception as groq_e:
             logger.warning(f"[AI] ✗ Groq failed ({type(groq_e).__name__}: {str(groq_e)[:100]})")
             try:
                 text, usage, used_model = await _call_cohere(prompt, response_mime_type)
+                _attach_model(usage, used_model)
                 _log_success("Cohere", used_model, usage, time.time() - t0)
-                return (text, _attach_model(usage, used_model)) if return_usage else text
+                return (text, usage) if return_usage else text
             except Exception as cohere_e:
                 logger.warning(f"[AI] ✗ Cohere failed ({type(cohere_e).__name__}: {str(cohere_e)[:100]})")
                 try:
                     text, usage, used_model = await _call_gemini(prompt, response_mime_type)
+                    _attach_model(usage, used_model)
                     _log_success("Gemini", used_model, usage, time.time() - t0)
-                    return (text, _attach_model(usage, used_model)) if return_usage else text
+                    return (text, usage) if return_usage else text
                 except Exception as gemini_e:
                     logger.warning(f"[AI] ✗ Gemini failed ({type(gemini_e).__name__}: {str(gemini_e)[:100]})")
                     try:
                         logger.info(f"[AI] ⚠ All alternative providers failed. Attempting final Hail Mary with OpenRouter...")
                         text, usage, used_model = await _call_openrouter(prompt, "openrouter/free", response_mime_type)
+                        _attach_model(usage, used_model)
                         _log_success("OpenRouter (Final Fallback)", used_model, usage, time.time() - t0)
-                        return (text, _attach_model(usage, used_model)) if return_usage else text
+                        return (text, usage) if return_usage else text
                     except Exception as or_final_e:
                         try:
                             text, usage, used_model = await _call_huggingface(prompt, response_mime_type)
+                            _attach_model(usage, used_model)
                             _log_success("HuggingFace", used_model, usage, time.time() - t0)
-                            return (text, _attach_model(usage, used_model)) if return_usage else text
+                            return (text, usage) if return_usage else text
                         except Exception as hf_e:
                             elapsed = time.time() - t0
                             logger.error(f"[AI] ✗ All 6 providers failed after {elapsed:.1f}s")
@@ -624,11 +646,25 @@ async def call_openrouter_with_tools(
                         for tc in tool_calls:
                             logger.info(f"[AI Tool] -> Function: {tc.get('function', {}).get('name')} | Args: {tc.get('function', {}).get('arguments')}")
                         
+                        usage_dict = data.get("usage", {})
+                        usage_dict["model_name"] = resolved_model
+                        
+                        # Automatically track in ai_usage_logs for current user
+                        try:
+                            uid = current_ai_user_id.get()
+                            subj = current_ai_subject.get() or "Goldfish AI Co-Pilot"
+                            if uid and usage_dict:
+                                from app.core.supabase_client import get_supabase_client
+                                sb = get_supabase_client()
+                                log_backend_ai_usage(sb, uid, subj, usage_dict, source="backend")
+                        except Exception as auto_err:
+                            logger.debug(f"Auto tool AI usage log skipped: {auto_err}")
+
                         return {
                             "content": content,
                             "tool_calls": tool_calls,
                             "model": resolved_model,
-                            "usage": data.get("usage", {})
+                            "usage": usage_dict
                         }
                 logger.warning(f"OpenRouter tool call with {target_model} returned {res.status_code}: {res.text[:150]}")
             except Exception as e:

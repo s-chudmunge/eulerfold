@@ -203,15 +203,32 @@ TRUSTED_CHANNELS = frozenset([
     "anyscale", "ray", "mlsys", "mlsys conference", "scale ai",
     "sebastian raschka", "175b", "chris hayduk", "cohere",
     "tri dao", "tim dettmers",
+    # Elite Software & Computer Science Educators
+    "bro code", "keith galli", "telusko", "freecodecamp",
+    "freecodecamp.org", "corey schafer", "programming with mosh",
+    "tech with tim", "traversy media", "the net ninja", "cs dojo",
+    "john philip jones", "sentdex", "derek banas", "arjan codes", "arjancodes",
+    "michaël gallego", "calm code", "calmcode", "anthony writes code",
+    "codebasics", "codewithharry", "gate smashers",
+    # World-Class Scientists, Researchers & Professors (Physics, Quantum, ML/AI, Theoretical CS)
+    "subir sachdev", "sachdevsyk", "david tong", "frederic schuller",
+    "tobias osborne", "qiskit", "michael nielsen", "scott aaronson",
+    "ilya sutskever", "andrej karpathy", "richard feynman", "feynman",
+    "yoshua bengio", "yann lecun", "andrew ng", "geoffrey hinton",
+    "pieter abbeel", "sergey levine", "pascal poupart", "shai shalev-shwartz",
+    "alexander amini", "tim roughgarden", "erik demaine", "srinivas devadas",
+    "ryan o'donnell", "gilbert strang", "john preskill", "quantum computing report",
+    "alán aspuru-guzik", "ted sidiropoulos", "simons institute for the theory of computing"
 ])
 
 OFFICIAL_KEYWORDS = [
     "mit", "stanford", "harvard", "nptel", "courseware", "university", 
-    "institute", "oxford", "yale", "cambridge", "berkeley", 
+    "oxford", "yale", "cambridge", "berkeley", 
     "cmu", "carnegie", "caltech", "princeton", "cornell", "georgia tech",
     "nasa", "cern", "jpl", "esa", "polytechnic", "purdue", "michigan", 
     "eth zurich", "ocw", "ucla", "imperial", "waterloo", "ieee", "acm", 
-    "nsf", "darpa", "national lab", "department of", "perimeter", "ictp"
+    "nsf", "darpa", "national lab", "department of", "perimeter institute", "ictp",
+    "indian institute of technology", "iit", "iiit"
 ]
 
 # Words to ignore when computing title relevance
@@ -289,28 +306,67 @@ BANNED_CHANNELS = frozenset([
     "coding with john", "amigoscode", "java techie", "forrest knight", "forrestknight"
 ])
 
+CROSS_LANG_MAP = {
+    "python": [
+        r"(?:\bc\+\+|\bcpp\b|\bc#|\bcsharp\b|\bgolang\b|\brust\b|\bjavascript\b|\btypescript\b|\bjs\b|\bts\b|\bjava\b|\bphp\b|\bruby\b|\bswift\b|\bkotlin\b)",
+        r"(?:var, let, and const|var let const|var\b.*?\blet\b.*?\bconst\b)"
+    ],
+    "javascript": [r"(?:\bpython\b|\bc\+\+|\bcpp\b|\bc#|\bcsharp\b|\bgolang\b|\brust\b|\bjava\b|\bphp\b|\bruby\b|\bswift\b|\bkotlin\b)"],
+    "typescript": [r"(?:\bpython\b|\bc\+\+|\bcpp\b|\bc#|\bcsharp\b|\bgolang\b|\brust\b|\bjava\b|\bphp\b|\bruby\b|\bswift\b|\bkotlin\b)"],
+    "c++": [r"(?:\bpython\b|\bjavascript\b|\bjs\b|\btypescript\b|\bts\b|\bc#|\bcsharp\b|\bjava\b|\bphp\b|\bruby\b|\bswift\b)"],
+    "c#": [r"(?:\bpython\b|\bc\+\+|\bcpp\b|\bjavascript\b|\bjs\b|\btypescript\b|\bts\b|\bjava\b|\bphp\b|\bruby\b|\bswift\b)"],
+    "java": [r"(?:\bpython\b|\bc\+\+|\bcpp\b|\bc#|\bcsharp\b|\bjavascript\b|\bjs\b|\btypescript\b|\bts\b|\bphp\b|\bruby\b|\bswift\b)"],
+    "rust": [r"(?:\bpython\b|\bc\+\+|\bcpp\b|\bc#|\bcsharp\b|\bjavascript\b|\bjs\b|\bjava\b|\bphp\b|\bruby\b)"],
+    "golang": [r"(?:\bpython\b|\bc\+\+|\bcpp\b|\bc#|\bcsharp\b|\bjavascript\b|\bjs\b|\bjava\b|\bphp\b|\bruby\b)"],
+}
 
-def _score_video(video: dict, topic_title: str, search_query: str = "", preferred_channel: str = "") -> float:
+def _is_cross_language_conflict(subject_context: str, text: str) -> bool:
+    """Return True if video text advertises a competing programming language/syntax conflicting with the subject."""
+    if not subject_context or not text:
+        return False
+    subj_lower = subject_context.lower()
+    text_lower = text.lower()
+    
+    for lang, patterns in CROSS_LANG_MAP.items():
+        if re.search(rf"\b{re.escape(lang)}\b", subj_lower):
+            for pattern in patterns:
+                if re.search(pattern, text_lower, re.IGNORECASE):
+                    return True
+    return False
+
+
+def _score_video(
+    video: dict, 
+    topic_title: str, 
+    search_query: str = "", 
+    preferred_channel: str = "",
+    subject_context: str = ""
+) -> float:
     """
     Score a YouTube video for educational relevance in a domain-agnostic way.
     Returns -1.0 if the video should be excluded (duration or relevance gate).
     """
     duration_seconds = parse_iso8601_duration(video.get("contentDetails", {}).get("duration", ""))
 
-    # Duration gate: minimum 5 minutes (300s), no upper bound
-    if duration_seconds < 300:
+    # Duration gate per AGENTS.md: Videos MUST be between 8 and 60 minutes in length (480s to 3600s)
+    if duration_seconds < 480 or duration_seconds > 3600:
         return -1.0
 
     snippet = video.get("snippet", {})
     channel_name = snippet.get("channelTitle", "").lower()
+    video_title = snippet.get("title", "")
 
     # Hard ban gate: strictly reject banned creators
     if any(b in channel_name for b in BANNED_CHANNELS):
         return -1.0
 
+    # Cross-language / domain conflict gate: strictly reject wrong-language videos (e.g. C++ or JS for Python)
+    if _is_cross_language_conflict(subject_context, video_title):
+        return -1.0
+
     title_relevance = _compute_title_relevance(
         topic_title, 
-        snippet.get("title", ""), 
+        video_title, 
         snippet.get("description", ""), 
         search_query
     )
@@ -337,6 +393,10 @@ def _score_video(video: dict, topic_title: str, search_query: str = "", preferre
     view_score = min(math.log10(max(view_count, 1)) / 7, 1.0) * 10    # max 10
     affinity_score = 15 if preferred_channel and channel_name == preferred_channel.lower() else 0
 
+    # Subject reinforcement bonus: if video explicitly names the primary subject in title
+    if subject_context and subject_context.lower() in video_title.lower():
+        affinity_score += 10
+
     return relevance_score + duration_score + view_score + affinity_score
 
 
@@ -359,9 +419,10 @@ async def search_youtube_videos(
     
     # --- 1. THE CURATED DATABASE ENGINE (SUPABASE PGVECTOR) ---
     if topic_title:
-        search_target = topic_title
+        search_target = f"{subject_context} - {topic_title}".strip(" -") if subject_context else topic_title
     else:
-        search_target = query
+        search_target = f"{subject_context} - {query}".strip(" -") if subject_context else query
+
     if search_target and settings.GEMINI_API_KEY:
         try:
             # Generate Gemini embedding for semantic search
@@ -382,17 +443,19 @@ async def search_youtube_videos(
                             "match_curated_videos",
                             {
                                 "query_embedding": embedding_vector,
-                                "match_threshold": 0.88,
+                                "match_threshold": 0.82,
                                 "match_count": max(max_results * 4, 10)
                             }
                         ).execute()
                         
                         matches = rpc_response.data
                         if matches:
-                            # Filter out already used video IDs so topics always get unique videos
+                            # Filter out already used video IDs, wrong-language conflicts, and enforce 8-90 min duration for curated university lectures
                             filtered_matches = [
                                 m for m in matches
-                                if not exclude_video_ids or m["video_id"] not in exclude_video_ids
+                                if (not exclude_video_ids or m["video_id"] not in exclude_video_ids)
+                                and not _is_cross_language_conflict(subject_context, m.get("clean_title", ""))
+                                and 8 <= m.get("duration_mins", 0) <= 90
                             ]
                             if filtered_matches:
                                 logger.info(f"Supabase pgvector match! '{search_target}' -> '{filtered_matches[0]['topic']}' ({filtered_matches[0]['similarity']:.2f})")
@@ -405,7 +468,7 @@ async def search_youtube_videos(
                                     } for m in filtered_matches[:max_results]
                                 ]
                             else:
-                                logger.info(f"All {len(matches)} curated matches for '{search_target}' were already used in this roadmap. Falling back to dynamic search.")
+                                logger.info(f"All {len(matches)} curated matches for '{search_target}' were excluded by filters/usage. Falling back to dynamic search.")
                         else:
                             logger.info(f"No curated match >= 0.88 for '{search_target}'. Falling back to dynamic YouTube search.")
         except Exception as e:
@@ -488,12 +551,13 @@ async def search_youtube_videos(
                 continue
 
             if use_scoring:
-                score = _score_video(item, topic_title, query, preferred_channel)
+                score = _score_video(item, topic_title, query, preferred_channel, subject_context=subject_context)
                 if score >= 0:
                     valid.append((score, item))
             else:
                 duration_seconds = parse_iso8601_duration(item.get("contentDetails", {}).get("duration", ""))
-                if duration_seconds >= 300:
+                video_title = snippet.get("title", "")
+                if 480 <= duration_seconds <= 3600 and not _is_cross_language_conflict(subject_context, video_title):
                     valid.append((0, item))
         return valid
 
@@ -507,7 +571,16 @@ async def search_youtube_videos(
 
         # Multi-tier fallback queries if initial specific query produced 0 valid candidates
         if not candidates and topic_title:
-            for fallback_q in [f"{topic_title} lecture", f"{topic_title} derivation calculation", topic_title]:
+            subject_prefix = f"{subject_context} " if subject_context else ""
+            fallback_list = [
+                f"{subject_prefix}{topic_title} tutorial",
+                f"{subject_prefix}{topic_title}",
+                f"{subject_prefix}{topic_title} Mosh",
+                f"{subject_prefix}{topic_title} Corey Schafer",
+                f"{subject_prefix}{topic_title} FreeCodeCamp",
+                f"{subject_prefix}{topic_title} lecture"
+            ]
+            for fallback_q in fallback_list:
                 logger.info(f"Retrying YouTube search for '{topic_title}' with fallback: '{fallback_q}'")
                 items = await execute_search(fallback_q)
                 candidates = filter_and_score(items, False, use_scoring)

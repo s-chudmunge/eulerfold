@@ -54,3 +54,15 @@ content/previous_year_papers_pdf/
 GEMINI.md
 AGENTS.md
 .aider*
+
+# Outreach & Lead Generation Data
+*.csv
+leads.csv
+backend/*.csv
+backend/leads.csv
+backend/student_leads.csv
+backend/accessible_angels.csv
+backend/investors_pipeline.csv
+backend/sent_leads.json
+sent_leads.json
+backend/scripts/
