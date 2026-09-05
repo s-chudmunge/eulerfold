@@ -237,11 +237,8 @@ export function useLearnSession({ id, initialRoadmap }: UseLearnSessionProps) {
       return;
     }
 
-    // Automatically navigate to next uncompleted topic
-    const nextUncompleted = findFirstUncompletedTopic(modules, newCompleted);
-    if (nextUncompleted && (nextUncompleted.mIdx !== currentModuleIndex || nextUncompleted.tIdx !== currentTopicIndex)) {
-      handleTopicChange(nextUncompleted.mIdx, nextUncompleted.tIdx);
-    }
+    // Let the user manually click "Next Lesson" on the success banner
+    // so they have time to read the explanation.
   };
 
   const handleMarkAsCompleted = async () => {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import { RoadmapData } from '@/lib/api';
 import Link from 'next/link';
@@ -71,6 +71,15 @@ export default function LearnClient({
   const [isHomeworkModalOpen, setIsHomeworkModalOpen] = useState(false);
   const [isUnlockModalOpen, setIsUnlockModalOpen] = useState(false);
   const [unlockTargetModuleNumber, setUnlockTargetModuleNumber] = useState<number>(2);
+  const [videoProgress, setVideoProgress] = useState<number>(0);
+  const [isCheckpointUnlocked, setIsCheckpointUnlocked] = useState(false);
+
+  // A checkpoint remains available once this topic reaches its halfway mark,
+  // even if the learner pauses or seeks back in the video.
+  useEffect(() => {
+    setVideoProgress(0);
+    setIsCheckpointUnlocked(false);
+  }, [currentModuleIndex, currentTopicIndex]);
 
   const handleOpenUnlockModal = (targetModNum?: number) => {
     const target = targetModNum || (currentModuleIndex + 2);
@@ -195,9 +204,48 @@ export default function LearnClient({
     upNextTopicIdx = 0;
   }
 
-  const handleNext = () => {
-    if (upNextTopic) {
-      handleTopicChange(upNextModuleIdx, upNextTopicIdx);
+  const handleNext = async () => {
+    let nextTopic = upNextTopic;
+    let nextMIdx = upNextModuleIdx;
+    let nextTIdx = upNextTopicIdx;
+
+    // Fix: If we just finished a bridge topic, route back to the original topic we were struggling with
+    if (currentTopic?.is_bridge && currentTopic?.bridge_for) {
+      nextMIdx = currentTopic.bridge_for.module_number - 1;
+      nextTIdx = currentTopic.bridge_for.topic_index;
+      nextTopic = modules[nextMIdx]?.topics?.[nextTIdx];
+    }
+
+    if (nextTopic) {
+      // Fix: Call JIT video curation for the next topic if it lacks a video
+      if (!nextTopic.youtube_video_id) {
+        try {
+          const { checkpointsAPI } = await import('@/lib/api');
+          const res = await checkpointsAPI.unlockNextTopic({
+            roadmap_id: roadmap.id,
+            module_number: currentModuleIndex + 1,
+            topic_index: currentTopicIndex,
+            target_module_number: nextMIdx + 1,
+            target_topic_index: nextTIdx,
+            subject: roadmap.subject || roadmap.title || ''
+          });
+          
+          if (res.topic) {
+            setRoadmap((prev: any) => {
+              if (!prev) return prev;
+              const updatedPlan = structuredClone(prev.roadmap_plan);
+              if (updatedPlan.modules[nextMIdx]?.topics[nextTIdx]) {
+                updatedPlan.modules[nextMIdx].topics[nextTIdx] = res.topic;
+              }
+              return { ...prev, roadmap_plan: updatedPlan };
+            });
+          }
+        } catch (err) {
+          console.error("Failed to unlock next topic", err);
+        }
+      }
+      
+      handleTopicChange(nextMIdx, nextTIdx);
     }
   };
 
@@ -274,6 +322,28 @@ export default function LearnClient({
 
               {viewMode === 'video' ? (
                 <div className="animate-in fade-in duration-300">
+                  {/* Foundation Review Callout Banner */}
+                  {currentTopic?.is_bridge && (
+                    <div className="mb-6 p-4 rounded-md border border-accent/30 bg-accent/10 flex items-start gap-3.5 shadow-xs">
+                      <div className="p-2 rounded-md bg-accent/20 text-accent shrink-0 mt-0.5">
+                        <Sparkles className="w-5 h-5 text-amber-300" />
+                      </div>
+                      <div className="flex-1 min-w-0 space-y-1">
+                        <div className="flex items-center justify-between gap-2">
+                          <h4 className="text-[14px] font-bold text-text-heading">
+                            Quick Review: {currentTopic.bridge_for?.topic_title || currentTopic.title}
+                          </h4>
+                          <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-md font-bold bg-accent/20 text-accent border border-accent/30">
+                            Quick Review
+                          </span>
+                        </div>
+                        <p className="text-[13px] text-text-primary leading-relaxed">
+                          We paused your progress on <strong>{currentTopic.bridge_for?.topic_title || 'this topic'}</strong> to give you a quick refresher. Once you finish this short lesson and concept check, you'll jump right back to where you left off.
+                        </p>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Modular Video & Reference Player */}
                   <VideoReferenceArea
                     activeVideoId={activeVideoId}
@@ -286,6 +356,13 @@ export default function LearnClient({
                     onMarkAsCompleted={handleMarkAsCompleted}
                     onNext={handleNext}
                     onOpenGoldfishVideo={() => handleOpenGoldfish('video')}
+                    onVideoProgress={(fraction) => {
+                      const normalizedProgress = Math.max(0, Math.min(1, fraction));
+                      setVideoProgress(normalizedProgress);
+                      if (normalizedProgress >= 0.5) {
+                        setIsCheckpointUnlocked(true);
+                      }
+                    }}
                   />
 
                   {/* Interactive Concept Checkpoint with Auto-Advance */}
@@ -298,6 +375,9 @@ export default function LearnClient({
                     topicTitle={currentTopic?.title || ''}
                     subtopics={(currentTopic?.subtopics || []).map((s: any) => (typeof s === 'string' ? s : (s?.title || s?.name || ''))).filter(Boolean)}
                     isCompleted={isTopicCompleted}
+                    hasVideo={Boolean(activeVideoId)}
+                    videoProgress={videoProgress}
+                    isVideoCheckpointUnlocked={isCheckpointUnlocked}
                     isModuleCompleted={
                       Array.isArray(currentModule?.topics) &&
                       currentModule.topics.length > 0 &&
@@ -314,6 +394,18 @@ export default function LearnClient({
                     onUnlockNextModule={() => handleOpenUnlockModal(currentModuleIndex + 2)}
                     onSuccess={handleTopicMastered}
                     onNext={handleNext}
+                    onBridgeCreated={(bridgeTopic, moduleNumber, topicIndex) => {
+                      setRoadmap((previous: any) => {
+                        if (!previous) return previous;
+                        const updatedPlan = structuredClone(previous.roadmap_plan);
+                        const topics = updatedPlan.modules?.[moduleNumber - 1]?.topics;
+                        if (Array.isArray(topics) && !topics.some((topic: any) => topic.is_bridge && topic.bridge_for?.module_number === bridgeTopic.bridge_for?.module_number && topic.bridge_for?.topic_index === bridgeTopic.bridge_for?.topic_index)) {
+                          topics.push(bridgeTopic);
+                        }
+                        return { ...previous, roadmap_plan: updatedPlan };
+                      });
+                      handleTopicChange(moduleNumber - 1, topicIndex);
+                    }}
                   />
 
                   {/* Modular Topic Details & Reading Resources */}

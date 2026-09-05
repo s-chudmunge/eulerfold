@@ -20,6 +20,12 @@ logger = logging.getLogger(__name__)
 _inflight_generation_locks: Dict[str, asyncio.Lock] = {}
 _inflight_dict_lock = asyncio.Lock()
 
+
+def _normalize_cache_key(value: Optional[str]) -> str:
+    """Normalize text used to identify a reusable checkpoint's source topic."""
+    return " ".join((value or "").casefold().split())
+
+
 async def fetch_cached_checkpoint(
     sb,
     subject: str,
@@ -59,22 +65,43 @@ async def fetch_cached_checkpoint(
                         }
                     ).execute()
                     if rpc_res.data:
+                        normalized_subject = _normalize_cache_key(subject)
+                        normalized_topic_title = _normalize_cache_key(topic_title)
+
+                        # Vector similarity can place adjacent concepts together
+                        # (for example, algebraic expressions and combining like
+                        # terms). A cached checkpoint is reusable only for its
+                        # original subject and topic.
+                        candidates = [
+                            candidate for candidate in rpc_res.data
+                            if _normalize_cache_key(candidate.get("subject")) == normalized_subject
+                            and _normalize_cache_key(candidate.get("topic_title")) == normalized_topic_title
+                        ]
+
                         # Exclude previous question so the learner gets an alternative question from this topic pool
                         prev_q = (previous_attempt.get("question") or "").strip().lower() if previous_attempt else ""
-                        candidates = rpc_res.data
                         if prev_q:
                             candidates = [c for c in candidates if (c.get("question_data", {}).get("question") or "").strip().lower() != prev_q]
 
-                        if candidates:
-                            cached = candidates[0]
+                        # Filter out any corrupted or placeholder checkpoints that lack a real question or options
+                        valid_candidates = []
+                        for c in candidates:
+                            qd = c.get("question_data", {})
+                            q_text = (qd.get("question") or "").strip()
+                            opts = qd.get("options")
+                            if q_text and not q_text.startswith("Quick check for") and isinstance(opts, list) and len(opts) >= 2:
+                                valid_candidates.append(c)
+
+                        if valid_candidates:
+                            cached = valid_candidates[0]
                             q_data = cached.get("question_data", {})
                             logger.info(f"Curated Checkpoint Hit! '{search_target}' -> '{cached['topic_title']}' (similarity: {cached['similarity']:.2f})")
                             return {
                                 "id": f"cp_{roadmap_id}_{module_number}_{topic_index}_{uuid.uuid4().hex[:6]}",
                                 "archetype": q_data.get("archetype", "concept_application"),
-                                "question": q_data.get("question", f"Quick check for {topic_title}"),
+                                "question": q_data.get("question"),
                                 "code_snippet": q_data.get("code_snippet"),
-                                "options": q_data.get("options", ["True", "False"]),
+                                "options": q_data.get("options"),
                                 "correct_index": q_data.get("correct_index", 0),
                                 "explanation": q_data.get("explanation", "Good job checking your understanding."),
                                 "concept_key": q_data.get("concept_key", cached.get("concept_key", "core_concept"))
@@ -180,8 +207,10 @@ Output JSON format:
         if not isinstance(correct_idx, int) or correct_idx < 0 or correct_idx >= len(options):
             correct_idx = 0
 
-        # Cache both normal checkpoints and remedial checkpoints for future learners
-        if settings.GEMINI_API_KEY:
+        # Cache normal checkpoints for future learners (skip bridge topics or malformed responses)
+        has_real_question = bool(data.get("question") and not data.get("question", "").startswith("Quick check for"))
+        is_not_bridge = not topic_title.lower().startswith("bridge:")
+        if settings.GEMINI_API_KEY and has_real_question and len(options) >= 2 and is_not_bridge:
             async def cache_checkpoint_in_db():
                 try:
                     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-embedding-2:embedContent?key={settings.GEMINI_API_KEY}"
@@ -220,18 +249,19 @@ Output JSON format:
         }
     except Exception as e:
         logger.error(f"Failed to generate micro-checkpoint: {e}")
+        clean_title = topic_title.replace("Bridge: ", "").replace(" Foundations", "").strip()
         return {
             "id": f"cp_fallback_{uuid.uuid4().hex[:6]}",
             "archetype": "concept_application",
-            "question": f"Which statement best describes the purpose of {topic_title} in {subject}?",
+            "question": f"What is the key principle behind understanding {clean_title}?",
             "code_snippet": None,
             "options": [
-                f"It is a core building block used to structure logic and handle data effectively in {subject}.",
-                f"It is deprecated and should always be avoided in modern {subject}.",
-                "It only works inside external third-party compiled libraries."
+                f"Mastering the foundational rules and properties that govern {clean_title}.",
+                f"Assuming all variations follow identical patterns without verification.",
+                f"{clean_title} has no connection to the broader principles of {subject}."
             ],
             "correct_index": 0,
-            "explanation": f"{topic_title} is fundamental for structuring working programs in {subject}.",
+            "explanation": f"A solid grasp of {clean_title} provides the basis for problem-solving across {subject}.",
             "concept_key": "fundamentals"
         }
 

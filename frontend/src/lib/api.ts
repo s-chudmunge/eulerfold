@@ -1173,6 +1173,9 @@ export interface CheckpointEvaluateResponse {
     feedback: string;
     explanation: string;
     retry_checkpoint?: CheckpointItem | null;
+    bridge_topic?: Record<string, any> | null;
+    bridge_module_number?: number | null;
+    bridge_topic_index?: number | null;
 }
 
 export const checkpointsAPI = {
@@ -1213,6 +1216,8 @@ export const checkpointsAPI = {
         module_number: number;
         topic_index: number;
         subject: string;
+        target_module_number?: number;
+        target_topic_index?: number;
     }): Promise<{
         has_next: boolean;
         module_number: number;
@@ -1225,5 +1230,4 @@ export const checkpointsAPI = {
         return response.data;
     },
 };
-
 

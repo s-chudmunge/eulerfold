@@ -23,6 +23,7 @@ interface VideoReferenceAreaProps {
   onMarkAsCompleted: () => void;
   onNext: () => void;
   onOpenGoldfishVideo: () => void;
+  onVideoProgress?: (progressFraction: number, currentTime: number, duration: number) => void;
 }
 
 export default function VideoReferenceArea({
@@ -35,7 +36,8 @@ export default function VideoReferenceArea({
   setResourceCardIdx,
   onMarkAsCompleted,
   onNext,
-  onOpenGoldfishVideo
+  onOpenGoldfishVideo,
+  onVideoProgress
 }: VideoReferenceAreaProps) {
   return (
     <div className="bg-image-bg border border-border rounded-md overflow-hidden shadow-xs mb-8">
@@ -48,6 +50,7 @@ export default function VideoReferenceArea({
             onComplete={onMarkAsCompleted}
             onNext={onNext}
             isCompleted={isTopicCompleted}
+            onProgress={onVideoProgress}
           />
         ) : (
           <div className="w-full h-full bg-sidebar border border-border flex flex-col justify-between p-4 sm:p-6 relative group">

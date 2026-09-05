@@ -110,7 +110,14 @@ export default function LearnSidebar({
                     )}
                   </div>
                   <div className="flex flex-col min-w-0">
-                    <span className="line-clamp-2 leading-snug font-medium text-[12px]">{topic.title}</span>
+                    <div className="flex items-center gap-1.5">
+                      <span className="line-clamp-2 leading-snug font-medium text-[12px]">{topic.title}</span>
+                      {topic.is_bridge && (
+                        <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-md bg-accent/20 text-accent shrink-0">
+                          Review
+                        </span>
+                      )}
+                    </div>
                     <span className="text-[10px] mt-0.5 opacity-70">
                       {hasVideo ? (
                         `Video • ${typeof topic.duration === 'string' ? topic.duration.replace('m', ' min') : (topic.duration ? `${topic.duration} min` : '8 min')}`

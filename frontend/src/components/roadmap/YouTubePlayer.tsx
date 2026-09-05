@@ -7,6 +7,7 @@ interface YouTubePlayerProps {
     videoId: string;
     title?: string;
     onComplete?: () => void;
+    onProgress?: (progressFraction: number, currentTime: number, duration: number) => void;
     onNext?: () => void;
     isCompleted?: boolean;
 }
@@ -18,7 +19,7 @@ declare global {
     }
 }
 
-export default function YouTubePlayer({ videoId, title, onComplete, onNext, isCompleted }: YouTubePlayerProps) {
+export default function YouTubePlayer({ videoId, title, onComplete, onProgress, onNext, isCompleted }: YouTubePlayerProps) {
     const playerRef = useRef<any>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const onCompleteRef = useRef(onComplete);
@@ -28,20 +29,56 @@ export default function YouTubePlayer({ videoId, title, onComplete, onNext, isCo
     const [hasTriggeredComplete, setHasTriggeredComplete] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
+    const onProgressRef = useRef(onProgress);
+
     useEffect(() => {
         onCompleteRef.current = onComplete;
     }, [onComplete]);
 
     useEffect(() => {
+        onProgressRef.current = onProgress;
+    }, [onProgress]);
+
+    useEffect(() => {
         isCompletedRef.current = isCompleted;
     }, [isCompleted]);
 
-    const onPlayerReady = useCallback(() => {
+    const checkProgress = useCallback(() => {
+        if (playerRef.current &&
+            typeof playerRef.current.getCurrentTime === 'function' &&
+            typeof playerRef.current.getDuration === 'function') {
+            try {
+                const currentTime = playerRef.current.getCurrentTime();
+                const duration = playerRef.current.getDuration();
+                if (duration > 0) {
+                    const fraction = currentTime / duration;
+                    onProgressRef.current?.(fraction, currentTime, duration);
+                    if (!hasTriggeredComplete && !isCompletedRef.current && fraction > 0.9) {
+                        setHasTriggeredComplete(true);
+                        onCompleteRef.current?.();
+                    }
+                }
+            } catch (e) {
+                // Ignore transient iframe communication errors
+            }
+        }
+    }, [hasTriggeredComplete]);
+
+    const onPlayerReady = useCallback((event: any) => {
+        // Always retain the API instance provided by YouTube. In some browsers
+        // onReady fires before the constructor assignment below completes.
+        playerRef.current = event.target;
         setIsReady(true);
         setIsLoading(false);
-    }, []);
+        checkProgress();
+    }, [checkProgress]);
 
     const onPlayerStateChange = useCallback((event: any) => {
+        // Any playing or buffered state confirms player is ready
+        setIsReady(true);
+        setIsLoading(false);
+        checkProgress();
+
         // YT.PlayerState.ENDED = 0
         if (event.data === 0) {
             if (!isCompletedRef.current) {
@@ -50,7 +87,7 @@ export default function YouTubePlayer({ videoId, title, onComplete, onNext, isCo
             }
             setTimeLeft(12);
         }
-    }, []);
+    }, [checkProgress]);
 
     useEffect(() => {
         setHasTriggeredComplete(false);
@@ -63,18 +100,22 @@ export default function YouTubePlayer({ videoId, title, onComplete, onNext, isCo
                     videoId: videoId,
                     startSeconds: 0
                 });
+                setIsReady(true);
                 setIsLoading(false);
             } else if (window.YT && window.YT.Player && containerRef.current) {
                 playerRef.current = new window.YT.Player(containerRef.current, {
                     videoId: videoId,
-                    playerVars: {
-                        autoplay: 1,
-                        mute: 1,
+                        playerVars: {
+                            autoplay: 1,
+                            mute: 1,
                         rel: 0,
                         modestbranding: 1,
                         iv_load_policy: 3,
-                        controls: 1,
-                        enablejsapi: 1,
+                            controls: 1,
+                            enablejsapi: 1,
+                            // YouTube requires an explicit origin for reliable
+                            // postMessage responses from embedded players.
+                            origin: window.location.origin,
                     },
                     events: {
                         onReady: onPlayerReady,
@@ -117,23 +158,10 @@ export default function YouTubePlayer({ videoId, title, onComplete, onNext, isCo
     }, [videoId, onPlayerReady, onPlayerStateChange]);
 
     useEffect(() => {
-        let interval: NodeJS.Timeout;
-        if (isReady && !hasTriggeredComplete && !isCompleted) {
-            interval = setInterval(() => {
-                if (playerRef.current && 
-                    typeof playerRef.current.getCurrentTime === 'function' && 
-                    typeof playerRef.current.getDuration === 'function') {
-                    const currentTime = playerRef.current.getCurrentTime();
-                    const duration = playerRef.current.getDuration();
-                    if (duration > 0 && (currentTime / duration) > 0.9) {
-                        setHasTriggeredComplete(true);
-                        onCompleteRef.current?.();
-                    }
-                }
-            }, 2000);
-        }
+        // Poll every 800ms for continuous progress tracking
+        const interval = setInterval(checkProgress, 800);
         return () => clearInterval(interval);
-    }, [isReady, hasTriggeredComplete, isCompleted]);
+    }, [checkProgress]);
 
     useEffect(() => {
         let timer: NodeJS.Timeout;

@@ -127,6 +127,8 @@ TRUSTED_CHANNELS = frozenset([
     "martin fowler", "martin kleppmann", "math at andrews university",
     "math the beautiful", "math visualized", "mathemaddicts",
     "mathematicalmonk", "mathmajor ", "mathologer",
+    "math with mr. j", "math antics", "brian mclogan", "tabletclass math",
+    "mario's math tutoring", "nancy pi", "profrobbob", "kristakingmath", "tarrou's chalk talk",
     "mathosy guru - rajiv patel", "maths partner", "matthew donahue",
     "matthew salomone", "maurits haverkort", "maven silicon",
     "mcoding", "megr438", "meikanda sivam",

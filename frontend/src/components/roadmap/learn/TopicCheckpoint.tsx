@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { CheckCircle2, AlertCircle, Sparkles, ArrowRight, Loader2, HelpCircle } from 'lucide-react';
+import { CheckCircle2, AlertCircle, Sparkles, ArrowRight, Loader2, HelpCircle, Lock } from 'lucide-react';
 import { checkpointsAPI, CheckpointItem, CheckpointEvaluateResponse } from '@/lib/api';
 
 interface TopicCheckpointProps {
@@ -13,11 +13,15 @@ interface TopicCheckpointProps {
   topicTitle: string;
   subtopics?: string[];
   isCompleted: boolean;
+  hasVideo?: boolean;
+  videoProgress?: number;
+  isVideoCheckpointUnlocked?: boolean;
   isModuleCompleted?: boolean;
   nextModuleLocked?: boolean;
   onUnlockNextModule?: () => void;
   onSuccess: (coinsEarned: number) => void;
   onNext: () => void;
+  onBridgeCreated?: (topic: Record<string, any>, moduleNumber: number, topicIndex: number) => void;
 }
 
 // In-memory module/topic checkpoint cache to avoid re-fetching previously visited topics
@@ -32,17 +36,22 @@ export default function TopicCheckpoint({
   topicTitle,
   subtopics = [],
   isCompleted,
+  hasVideo = false,
+  videoProgress = 0,
+  isVideoCheckpointUnlocked = false,
   isModuleCompleted = false,
   nextModuleLocked = false,
   onUnlockNextModule,
   onSuccess,
-  onNext
+  onNext,
+  onBridgeCreated
 }: TopicCheckpointProps) {
   const [checkpoint, setCheckpoint] = useState<CheckpointItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [selectedOption, setSelectedOption] = useState<number | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [evaluation, setEvaluation] = useState<CheckpointEvaluateResponse | null>(null);
+  const [isReviewOpen, setIsReviewOpen] = useState(false);
 
   const cacheKey = `${roadmapId}_${moduleNumber}_${topicIndex}_${topicTitle}`;
 
@@ -88,6 +97,11 @@ export default function TopicCheckpoint({
     }
   };
 
+  // Cache availability must never unlock a video checkpoint. A topic can briefly
+  // render without its video ID while the session initializes, which may warm the
+  // cache before the video is known. Only playback can unlock this check.
+  const isVideoGated = hasVideo && !isCompleted && !isVideoCheckpointUnlocked;
+
   useEffect(() => {
     // If cached, load immediately without debounce
     if (checkpointMemoryCache.has(cacheKey)) {
@@ -95,6 +109,15 @@ export default function TopicCheckpoint({
       setEvaluation(null);
       setSelectedOption(null);
       setLoading(false);
+      return;
+    }
+
+    // If a video exists for this topic, only trigger AI generation once user watches >= 50% (or if already completed)
+    if (hasVideo && !isCompleted && !isVideoCheckpointUnlocked) {
+      setLoading(false);
+      setCheckpoint(null);
+      setEvaluation(null);
+      setSelectedOption(null);
       return;
     }
 
@@ -114,7 +137,7 @@ export default function TopicCheckpoint({
       clearTimeout(timer);
       abortController.abort();
     };
-  }, [roadmapId, moduleNumber, topicIndex, topicTitle]);
+  }, [roadmapId, moduleNumber, topicIndex, topicTitle, hasVideo, isCompleted, isVideoCheckpointUnlocked]);
 
   const [evaluatedCheckpointId, setEvaluatedCheckpointId] = useState<string | null>(null);
 
@@ -226,32 +249,110 @@ export default function TopicCheckpoint({
             </div>
           </div>
 
-          <div className="flex items-center justify-between gap-3 pt-1">
+          {isReviewOpen && (
+            <div className="rounded-md border border-border bg-background/60 p-4 space-y-3">
+              {loading ? (
+                <div className="flex items-center gap-2 text-[12px] text-text-muted">
+                  <Loader2 className="w-4 h-4 animate-spin text-accent" />
+                  Loading completed question...
+                </div>
+              ) : checkpoint ? (
+                <>
+                  <p className="text-[14px] font-semibold text-text-heading leading-relaxed">
+                    {checkpoint.question}
+                  </p>
+                  <div className="space-y-2">
+                    {checkpoint.options.map((option, index) => (
+                      <div
+                        key={index}
+                        className={`flex items-start gap-3 rounded-md border p-3 text-[13px] ${
+                          index === checkpoint.correct_index
+                            ? 'border-emerald-500/50 bg-emerald-500/10 text-emerald-700 dark:text-emerald-300'
+                            : 'border-border bg-sidebar text-text-muted'
+                        }`}
+                      >
+                        <span className="w-5 h-5 rounded-md border border-current/20 flex items-center justify-center shrink-0 text-[11px] font-mono">
+                          {String.fromCharCode(65 + index)}
+                        </span>
+                        <span className="leading-snug">{option}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="text-[12px] text-text-muted leading-relaxed pt-1">
+                    {checkpoint.explanation}
+                  </p>
+                </>
+              ) : (
+                <p className="text-[12px] text-text-muted">
+                  This topic was completed without a saved concept check.
+                </p>
+              )}
+            </div>
+          )}
+
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
             <span className="text-[11px] text-text-muted">
               {isModuleCompleted && nextModuleLocked
                 ? "Ready to unlock your next milestone?"
                 : "Ready to continue through your roadmap?"}
             </span>
-            {isModuleCompleted && nextModuleLocked && onUnlockNextModule ? (
+            <div className="flex flex-wrap items-center gap-2 shrink-0">
               <button
                 type="button"
-                onClick={onUnlockNextModule}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md bg-accent text-background text-[12px] font-bold hover:opacity-90 transition-opacity shrink-0 shadow-xs"
+                onClick={() => setIsReviewOpen((open) => !open)}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md border border-border bg-background text-text-primary text-[12px] font-bold hover:border-accent/50 transition-colors"
               >
-                <Sparkles className="w-3.5 h-3.5 text-amber-300" />
-                <span>Unlock Next Module</span>
-                <ArrowRight className="w-3.5 h-3.5" />
+                <span>{isReviewOpen ? 'Hide Question' : 'Review Question'}</span>
               </button>
-            ) : (
-              <button
-                type="button"
-                onClick={onNext}
-                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md bg-text-heading text-background text-[12px] font-bold hover:opacity-90 transition-opacity shrink-0 shadow-xs"
-              >
-                <span>Next Lesson</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </button>
-            )}
+              {isModuleCompleted && nextModuleLocked && onUnlockNextModule ? (
+                <button
+                  type="button"
+                  onClick={onUnlockNextModule}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md bg-accent text-background text-[12px] font-bold hover:opacity-90 transition-opacity shrink-0 shadow-xs"
+                >
+                  <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                  <span>Unlock Next Module</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              ) : (
+                <button
+                  type="button"
+                  onClick={onNext}
+                  className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md bg-text-heading text-background text-[12px] font-bold hover:opacity-90 transition-opacity shrink-0 shadow-xs"
+                >
+                  <span>Next Lesson</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      ) : isVideoGated ? (
+        <div className="py-6 px-4 rounded-md border border-border bg-background/60 flex flex-col sm:flex-row items-center justify-between gap-4 animate-in fade-in duration-200">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-md bg-accent/10 border border-accent/20 flex items-center justify-center text-accent shrink-0">
+              <Lock className="w-4 h-4" />
+            </div>
+            <div>
+              <h4 className="text-[13px] font-bold text-text-heading">
+                Check unlocks halfway through
+              </h4>
+              <p className="text-[12px] text-text-muted mt-0.5">
+                Take in the first half of the video, then test what you learned.
+              </p>
+            </div>
+          </div>
+
+          <div className="w-full sm:w-auto flex items-center gap-3 shrink-0">
+            <div className="flex-1 sm:w-28 bg-sidebar border border-border h-2 rounded-full overflow-hidden">
+              <div
+                className="bg-accent h-full transition-all duration-300"
+                style={{ width: `${Math.min(100, Math.round((videoProgress / 0.5) * 100))}%` }}
+              />
+            </div>
+            <span className="inconsolata-ui text-[11px] font-bold text-text-muted shrink-0">
+              {Math.min(50, Math.round(videoProgress * 100))}% / 50%
+            </span>
           </div>
         </div>
       ) : loading ? (
@@ -325,26 +426,37 @@ export default function TopicCheckpoint({
                   <AlertCircle className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0" />
                 )}
                 <span className="text-[13px] font-bold text-text-heading">
-                  {evaluation.is_correct ? "Correct! +0.5 Skill" : "Incorrect (-0.1 Skill)"}
+                  {evaluation.is_correct ? "Correct! +0.5 Skill" : evaluation.bridge_topic ? "Quick review ready (-0.1 Skill)" : "Incorrect (-0.1 Skill)"}
                 </span>
                 <span className={`ml-auto text-[10px] font-mono uppercase px-2 py-0.5 rounded-md font-bold border ${
                   evaluation.is_correct
                     ? "bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 border-emerald-500/30"
-                    : "bg-amber-500/20 text-amber-800 dark:text-amber-300 border-amber-500/30"
+                    : evaluation.bridge_topic
+                      ? "bg-accent/20 text-accent border-accent/30"
+                      : "bg-amber-500/20 text-amber-800 dark:text-amber-300 border-amber-500/30"
                 }`}>
-                  {evaluation.is_correct ? "Passed" : "Try Next Question"}
+                  {evaluation.is_correct ? "Passed" : evaluation.bridge_topic ? "Review Ready" : "Try Next Question"}
                 </span>
               </div>
 
-              <p className="text-[13px] text-text-primary leading-relaxed">
-                {evaluation.explanation}
-              </p>
+              <div className="space-y-1.5">
+                {evaluation.feedback && (
+                  <p className="text-[13px] font-medium text-text-heading leading-relaxed">
+                    {evaluation.feedback}
+                  </p>
+                )}
+                <p className="text-[12px] text-text-primary leading-relaxed">
+                  {evaluation.explanation}
+                </p>
+              </div>
 
               <div className="pt-2 border-t border-border/60 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <span className="text-[11px] text-text-muted">
                   {evaluation.is_correct
                     ? "Great momentum. Ready for the next lesson?"
-                    : "Review the explanation above, then try this follow-up question to lock in the concept."}
+                    : evaluation.bridge_topic
+                      ? "We've added a short review lesson to help you lock in the basics before retrying."
+                      : "Review the explanation above, then try this follow-up question to lock in the concept."}
                 </span>
                 {evaluation.is_correct ? (
                   <button
@@ -353,6 +465,20 @@ export default function TopicCheckpoint({
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-md bg-text-heading text-background text-[12px] font-bold hover:opacity-90 transition-opacity shrink-0 ml-auto"
                   >
                     <span>Next Lesson</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </button>
+                ) : evaluation.bridge_topic ? (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (evaluation.bridge_topic && evaluation.bridge_module_number && evaluation.bridge_topic_index !== null && evaluation.bridge_topic_index !== undefined) {
+                        onBridgeCreated?.(evaluation.bridge_topic, evaluation.bridge_module_number, evaluation.bridge_topic_index);
+                      }
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md bg-accent text-background text-[12px] font-bold hover:opacity-90 transition-opacity shrink-0 ml-auto shadow-xs"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                    <span>Take a quick review</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </button>
                 ) : (

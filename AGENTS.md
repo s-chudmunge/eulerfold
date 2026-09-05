@@ -128,3 +128,4 @@ Read it fully before making any changes. Rules here are not suggestions.
 - ALWAYS use `https://www.eulerfold.com` for all links and assets. NEVER use the non-www `https://eulerfold.com` version.
 - **NEVER** start application builds (e.g. `npm run build`, `next build`) without explicit permission from the user.
 - **NEVER** commit or push changes via git without explicitly asking for and receiving permission from the user first.
+- **NEVER** commit or push any marketing or leads files or directories (e.g., `marketing-and-leads/`, lead CSVs, scrapers, sent ledgers). NEVER place marketing and leads files anywhere else outside the `marketing-and-leads/` directory (which must always remain strictly git-ignored).

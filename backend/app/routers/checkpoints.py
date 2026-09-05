@@ -42,7 +42,39 @@ async def get_or_generate_checkpoint(
     sb = get_supabase_client()
     uid = current_user.supabase_uid
 
-    # 1. Check curated vector cache (for normal or remedial attempt)
+    # 1. Return this learner's completed checkpoint when revisiting a topic.
+    # It is read-only in the UI and lets them review the exact question answered.
+    try:
+        completed_res = (
+            sb.table("topic_checkpoints")
+            .select("id, question_data")
+            .eq("roadmap_id", req.roadmap_id)
+            .eq("user_email", current_user.email)
+            .eq("module_number", req.module_number)
+            .eq("topic_index", req.topic_index)
+            .eq("is_correct", True)
+            .order("created_at", desc=True)
+            .limit(1)
+            .execute()
+        )
+        if completed_res.data:
+            saved = completed_res.data[0]
+            question_data = saved.get("question_data") or {}
+            if question_data.get("question") and question_data.get("options"):
+                return CheckpointItem(
+                    id=f"review_{saved['id']}",
+                    archetype=question_data.get("archetype", "concept_application"),
+                    question=question_data["question"],
+                    code_snippet=question_data.get("code_snippet"),
+                    options=question_data["options"],
+                    correct_index=question_data.get("correct_index", 0),
+                    explanation=question_data.get("explanation", "") or "Review the correct answer below.",
+                    concept_key=question_data.get("concept_key", "core_concept")
+                )
+    except Exception as review_err:
+        logger.warning(f"Completed checkpoint lookup skipped: {review_err}")
+
+    # 2. Check curated vector cache (for normal or remedial attempt)
     cached = await fetch_cached_checkpoint(
         sb=sb,
         subject=req.subject,
@@ -56,7 +88,7 @@ async def get_or_generate_checkpoint(
     if cached:
         return CheckpointItem(**cached)
 
-    # 2. Acquire topic lock to prevent duplicate parallel AI calls
+    # 3. Acquire topic lock to prevent duplicate parallel AI calls
     lock_key = f"{(req.roadmap_slug or req.subject).lower().strip()}::{req.topic_title.lower().strip()}"
     from app.services.checkpoints_service import _inflight_generation_locks, _inflight_dict_lock
 
@@ -149,6 +181,28 @@ async def evaluate_and_adapt(
         except Exception as prog_err:
             logger.error(f"Error marking topic progress from checkpoint: {prog_err}")
 
+        # Keep the answered checkpoint for read-only review on later visits.
+        try:
+            sb.table("topic_checkpoints").insert({
+                "roadmap_id": req.roadmap_id,
+                "user_email": email,
+                "module_number": req.module_number,
+                "topic_index": req.topic_index,
+                "topic_title": req.topic_title,
+                "question_data": {
+                    "archetype": "concept_application",
+                    "question": req.question,
+                    "options": req.options,
+                    "correct_index": req.correct_index,
+                    "explanation": req.explanation,
+                    "concept_key": req.concept_key or "core_concept"
+                },
+                "selected_option": req.selected_option,
+                "is_correct": True
+            }).execute()
+        except Exception as review_save_err:
+            logger.warning(f"Failed to save completed checkpoint for review: {review_save_err}")
+
         # 3. Increment skill score by +0.5
         if uid:
             background_tasks.add_task(adjust_user_skill_for_checkpoint, sb, uid, req.roadmap_id, 0.5)
@@ -177,33 +231,73 @@ async def evaluate_and_adapt(
             "explanation": req.explanation
         }
 
-        # Check vector cache for an existing remedial question tailored to this mistake
-        cached_retry = await fetch_cached_checkpoint(
-            sb=sb,
-            subject=req.subject,
-            topic_title=req.topic_title,
-            roadmap_id=req.roadmap_id,
-            module_number=req.module_number,
-            topic_index=req.topic_index,
-            roadmap_slug=req.roadmap_slug,
-            previous_attempt=prev_attempt_payload
-        )
+        # Keep unsuccessful attempts so two failed checks can trigger a bridge.
+        try:
+            sb.table("topic_checkpoints").insert({
+                "roadmap_id": req.roadmap_id, "user_email": email,
+                "module_number": req.module_number, "topic_index": req.topic_index,
+                "topic_title": req.topic_title,
+                "question_data": {"question": req.question, "options": req.options,
+                                  "correct_index": req.correct_index, "explanation": req.explanation,
+                                  "concept_key": req.concept_key or "core_concept"},
+                "selected_option": req.selected_option, "is_correct": False,
+                "pace_assessment": "standard"
+            }).execute()
+            failed_res = sb.table("topic_checkpoints").select("id").eq("roadmap_id", req.roadmap_id).eq("user_email", email).eq("module_number", req.module_number).eq("topic_index", req.topic_index).eq("is_correct", False).eq("pace_assessment", "standard").execute()
+            failed_attempts = len(failed_res.data or [])
+        except Exception as attempt_err:
+            logger.warning(f"Failed to record checkpoint attempt: {attempt_err}")
+            failed_attempts = 0
 
-        if cached_retry:
-            retry_item = CheckpointItem(**cached_retry)
-        else:
-            retry_dict = await generate_new_checkpoint(
-                sb=sb,
-                uid=uid,
-                roadmap_id=req.roadmap_id,
-                module_number=req.module_number,
-                topic_index=req.topic_index,
-                subject=req.subject,
-                topic_title=req.topic_title,
-                previous_attempt=prev_attempt_payload,
-                roadmap_slug=req.roadmap_slug
-            )
-            retry_item = CheckpointItem(**retry_dict)
+        if failed_attempts >= 2:
+            from app.utils.youtube_client import search_youtube_videos
+            try:
+                roadmap_res = sb.table("roadmaps").select("roadmap_plan, subject, title").eq("id", req.roadmap_id).execute()
+                roadmap_plan = (roadmap_res.data or [{}])[0].get("roadmap_plan", {})
+                if isinstance(roadmap_plan, str):
+                    roadmap_plan = robust_json_loads(roadmap_plan)
+                modules = roadmap_plan.get("modules", [])
+                module = modules[req.module_number - 1]
+                
+                # Prevent bridge recursion: don't create a bridge for a bridge
+                current_topic = module.get("topics", [])[req.topic_index] if 0 <= req.topic_index < len(module.get("topics", [])) else {}
+                if not current_topic.get("is_bridge"):
+                    existing_bridge_index = next((index for index, topic in enumerate(module.get("topics", [])) if topic.get("is_bridge") and topic.get("bridge_for", {}).get("module_number") == req.module_number and topic.get("bridge_for", {}).get("topic_index") == req.topic_index), None)
+                    if existing_bridge_index is not None:
+                        return CheckpointEvaluateResponse(is_correct=False, coins_earned=0, feedback="Return to your foundation review before retrying this concept.", explanation=req.explanation, bridge_topic=module["topics"][existing_bridge_index], bridge_module_number=req.module_number, bridge_topic_index=existing_bridge_index)
+                    bridge_title = f"Bridge: {req.topic_title} Foundations"
+                    bridge_search_q = f"{req.topic_title} basics"
+                    bridge_topic = {
+                        "title": bridge_title,
+                        "subtopics": ["Review the idea behind the missed concept before retrying it."],
+                        "youtube_search_query": bridge_search_q,
+                        "resources": [],
+                        "is_bridge": True,
+                        "bridge_for": {"module_number": req.module_number, "topic_index": req.topic_index, "topic_title": req.topic_title}
+                    }
+                    # Search with clean topic title so 'Bridge:' prefix doesn't penalize educational matching
+                    results = await search_youtube_videos(bridge_search_q, max_results=1, topic_title=req.topic_title, subject_context=req.subject)
+                    if not results:
+                        results = await search_youtube_videos(f"{req.subject} {req.topic_title}", max_results=1, topic_title=req.topic_title, subject_context=req.subject)
+                    if results:
+                        bridge_topic.update({"youtube_video_id": results[0]["video_id"], "youtube_video_title": results[0]["video_title"], "duration": results[0]["duration_minutes"]})
+                    module.setdefault("topics", []).append(bridge_topic)
+                    bridge_topic_index = len(module["topics"]) - 1
+                    sb.table("roadmaps").update({"roadmap_plan": roadmap_plan}).eq("id", req.roadmap_id).execute()
+                    sb.table("topic_checkpoints").update({"pace_assessment": "bridge_assigned"}).eq("roadmap_id", req.roadmap_id).eq("user_email", email).eq("module_number", req.module_number).eq("topic_index", req.topic_index).eq("is_correct", False).eq("pace_assessment", "standard").execute()
+                    return CheckpointEvaluateResponse(is_correct=False, coins_earned=0, feedback="This concept needs a short foundation review before you retry it.", explanation=req.explanation, bridge_topic=bridge_topic, bridge_module_number=req.module_number, bridge_topic_index=bridge_topic_index)
+            except Exception as bridge_err:
+                logger.error(f"Failed to create checkpoint bridge: {bridge_err}")
+
+        # A retry must respond to this learner's specific wrong answer, so do
+        # not substitute a general cached question here.
+        retry_dict = await generate_new_checkpoint(
+            sb=sb, uid=uid, roadmap_id=req.roadmap_id,
+            module_number=req.module_number, topic_index=req.topic_index,
+            subject=req.subject, topic_title=req.topic_title,
+            previous_attempt=prev_attempt_payload, roadmap_slug=req.roadmap_slug
+        )
+        retry_item = CheckpointItem(**retry_dict)
 
         return CheckpointEvaluateResponse(
             is_correct=False,
@@ -236,22 +330,27 @@ async def unlock_next_topic(
         roadmap_plan = robust_json_loads(roadmap_plan)
 
     modules = roadmap_plan.get("modules", [])
-    current_m_idx = req.module_number - 1
-    current_t_idx = req.topic_index
 
-    next_m_idx = current_m_idx
-    next_t_idx = current_t_idx + 1
+    if req.target_module_number is not None and req.target_topic_index is not None:
+        next_m_idx = req.target_module_number - 1
+        next_t_idx = req.target_topic_index
+    else:
+        current_m_idx = req.module_number - 1
+        current_t_idx = req.topic_index
 
-    current_module = modules[current_m_idx] if 0 <= current_m_idx < len(modules) else None
-    if not current_module:
-        return UnlockNextTopicResponse(has_next=False, module_number=req.module_number, topic_index=req.topic_index, tutor_note="You have completed all lessons in this course.")
+        next_m_idx = current_m_idx
+        next_t_idx = current_t_idx + 1
 
-    topics = current_module.get("topics", [])
-    if next_t_idx >= len(topics):
-        next_m_idx += 1
-        next_t_idx = 0
+        current_module = modules[current_m_idx] if 0 <= current_m_idx < len(modules) else None
+        if not current_module:
+            return UnlockNextTopicResponse(has_next=False, module_number=req.module_number, topic_index=req.topic_index, tutor_note="You have completed all lessons in this course.")
 
-    if next_m_idx >= len(modules):
+        topics = current_module.get("topics", [])
+        if next_t_idx >= len(topics):
+            next_m_idx += 1
+            next_t_idx = 0
+
+    if next_m_idx >= len(modules) or next_m_idx < 0:
         return UnlockNextTopicResponse(
             has_next=False,
             module_number=req.module_number,
@@ -259,7 +358,17 @@ async def unlock_next_topic(
             tutor_note="Congratulations! You have completed every milestone in this roadmap."
         )
 
-    next_topic = modules[next_m_idx]["topics"][next_t_idx]
+    target_module = modules[next_m_idx]
+    target_topics = target_module.get("topics", [])
+    if next_t_idx >= len(target_topics) or next_t_idx < 0:
+        return UnlockNextTopicResponse(
+            has_next=False,
+            module_number=req.module_number,
+            topic_index=req.topic_index,
+            tutor_note="Topic not found."
+        )
+
+    next_topic = target_topics[next_t_idx]
 
     # Just-In-Time video curation
     if not next_topic.get("youtube_video_id") and settings.YOUTUBE_API_KEY:

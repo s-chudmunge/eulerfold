@@ -43,12 +43,17 @@ class CheckpointEvaluateResponse(BaseModel):
     feedback: str
     explanation: str
     retry_checkpoint: Optional[CheckpointItem] = None
+    bridge_topic: Optional[Dict[str, Any]] = None
+    bridge_module_number: Optional[int] = None
+    bridge_topic_index: Optional[int] = None
 
 class UnlockNextTopicRequest(BaseModel):
     roadmap_id: int
     module_number: int
     topic_index: int
     subject: str
+    target_module_number: Optional[int] = None
+    target_topic_index: Optional[int] = None
 
 class UnlockNextTopicResponse(BaseModel):
     has_next: bool
