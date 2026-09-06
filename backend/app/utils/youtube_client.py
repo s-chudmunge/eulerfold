@@ -225,7 +225,10 @@ TRUSTED_CHANNELS = frozenset([
     "maziar raissi", "machine learning street talk", "machine learning street talk (mlst)",
     "nathan kutz", "data-driven science and engineering", "institute for pure & applied mathematics (ipam)",
     "institute for pure and applied mathematics", "stanford mlsys", "zongyi li",
-    "physics-informed machine learning"
+    "physics-informed machine learning",
+    # Top-tier Robotics, ROS, and Control Systems Educators (Strictly Academic/Educational)
+    "the construct", "articulated robotics", "robotics back-end", "peter corke",
+    "cyrill stachniss", "matlab", "mathworks", "brian douglas"
 ])
 
 OFFICIAL_KEYWORDS = [
@@ -355,8 +358,8 @@ def _score_video(
     """
     duration_seconds = parse_iso8601_duration(video.get("contentDetails", {}).get("duration", ""))
 
-    # Duration gate per AGENTS.md: Videos MUST be between 8 and 60 minutes in length (480s to 3600s)
-    if duration_seconds < 480 or duration_seconds > 3600:
+    # Duration gate per AGENTS.md: Videos MUST be between 8 and 120 minutes in length (480s to 7200s)
+    if duration_seconds < 480 or duration_seconds > 7200:
         return -1.0
 
     snippet = video.get("snippet", {})
@@ -365,6 +368,13 @@ def _score_video(
 
     # Hard ban gate: strictly reject banned creators
     if any(b in channel_name for b in BANNED_CHANNELS):
+        return -1.0
+
+    # Spoken language gate: reject videos explicitly targeting non-English speakers
+    # (unless the search query explicitly asks for it)
+    non_english_keywords = ["in hindi", "in telugu", "in tamil", "in malayalam", "in urdu", "in bangla", "in bengali", "in marathi"]
+    title_lower = video_title.lower()
+    if any(k in title_lower for k in non_english_keywords) and not any(k in search_query.lower() for k in non_english_keywords):
         return -1.0
 
     # Cross-language / domain conflict gate: strictly reject wrong-language videos (e.g. C++ or JS for Python)

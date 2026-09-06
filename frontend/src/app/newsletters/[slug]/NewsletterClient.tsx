@@ -32,7 +32,7 @@ export default function NewsletterClient({ newsletter }: { newsletter: Newslette
       <HeroBackground />
       <PublicHeader />
       
-      <main className="flex-grow pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+      <main className="flex-grow pt-24 pb-16 px-8 sm:px-10 lg:px-12">
         <div className="max-w-[600px] mx-auto">
           
           <div className="mb-6">
@@ -90,7 +90,7 @@ export default function NewsletterClient({ newsletter }: { newsletter: Newslette
                 .newsletter-content {
                   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
                   color: #1a1a1a;
-                  font-size: 15px;
+                  font-size: 18px;
                   line-height: 1.8;
                 }
                 .newsletter-content p {

@@ -392,7 +392,7 @@ export default function ResearchDecodedClient({ paper, slug, papers }: Props) {
         <FloatingTTS content={fullContent} />
 
         {/* Design matches strictly the refined example/topic-page */}
-        <div className="max-w-[1500px] mx-auto flex flex-col items-center px-6 py-8 md:px-12 md:py-16">
+        <div className="max-w-[1500px] mx-auto flex flex-col items-center px-8 py-8 sm:px-10 md:px-12 md:py-16">
           <div className="max-w-4xl w-full">
         {/* Paper Header */}
         <header className="mb-20 text-center flex flex-col items-center">

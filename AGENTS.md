@@ -77,7 +77,7 @@ Read it fully before making any changes. Rules here are not suggestions.
 
 ### YouTube Filters
 
-- Videos MUST be between 8 and 60 minutes in length.
+- Videos MUST be between 8 and 120 minutes in length.
 - Videos MUST pass a keyword-based title relevance check.
 
 ### Database
@@ -127,5 +127,5 @@ Read it fully before making any changes. Rules here are not suggestions.
 - **Writing Style:** Use plain, simple English. NEVER use "fluffy" or marketing-focused language. Avoid buzzwords like "high-performance," "high-signal," "intelligence suite," "magic," or "superpowers." Be direct and honest about what features actually do. COMPLETELY BAN the words "high" and "highly" (e.g. "high-quality", "highly-tailored") from all copy, UI text, and loading states.
 - ALWAYS use `https://www.eulerfold.com` for all links and assets. NEVER use the non-www `https://eulerfold.com` version.
 - **NEVER** start application builds (e.g. `npm run build`, `next build`) without explicit permission from the user.
-- **NEVER** commit or push changes via git without explicitly asking for and receiving permission from the user first.
+- **NEVER** commit or push changes via git without explicitly asking for and receiving permission from the user first for that specific action, even if permission was granted earlier in the conversation.
 - **NEVER** commit or push any marketing or leads files or directories (e.g., `marketing-and-leads/`, lead CSVs, scrapers, sent ledgers). NEVER place marketing and leads files anywhere else outside the `marketing-and-leads/` directory (which must always remain strictly git-ignored).
