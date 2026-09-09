@@ -1,5 +1,6 @@
 import logging
 import json
+import re
 from datetime import datetime, date, timedelta, timezone
 from app.schemas import User
 from app.utils.ai_client import generate_text, robust_json_loads
@@ -189,9 +190,9 @@ INSTRUCTIONS:
 3. Be genuinely helpful:
    - Avoid generic robotic critique (such as scolding the user for opening multiple roadmaps or logging sessions without completions).
    - Instead, give practical perspective: highlight what's next, what will give them the cleanest learning win today, or how finishing their current step builds into their bigger goals.
-4. Keep the message concise (2-3 sentences).
+4. Keep the message concise (2-3 sentences). Ensure every sentence is completely finished and never trailed off.
 5. Choose a short 1-2 word highlight badge reflecting their focus (e.g., "PYTHON", "FOUNDATIONS", "REVISION", "MOMENTUM", "PRACTICE").
-6. Tone: Direct, honest, encouraging, and clear. Avoid fluffy buzzwords (never use the words "high" or "highly"). NEVER use em dashes (—) or en dashes (–); use standard commas, periods, or parentheses instead.
+6. Tone: Direct, honest, encouraging, and clear. Avoid fluffy buzzwords (never use the words "high" or "highly"). NEVER use em dashes (—) or en dashes (–); use standard commas, periods, or parentheses instead. Never use trailing ellipses (...) - always finish your sentences cleanly with proper punctuation.
 7. Output ONLY a valid JSON object matching this schema:
 {{
   "briefing": "2-3 sentences of helpful, personalized guidance and recommended focus",
@@ -222,9 +223,11 @@ INSTRUCTIONS:
         badge_text = fallback_badge
         label_text = fallback_label
 
-    # Sanitize any accidental em dashes or en dashes
+    # Sanitize any accidental em dashes or en dashes and strip trailing ellipses
     briefing_text = briefing_text.replace(" — ", ", ").replace("—", ", ").replace(" – ", ", ").replace("–", "-")
+    briefing_text = re.sub(r'[\s,]*\.\.\.\s*$', '.', briefing_text.strip())
     label_text = label_text.replace(" — ", " - ").replace("—", " - ").replace(" – ", " - ")
+    label_text = re.sub(r'[\s,]*\.\.\.\s*$', '', label_text.strip())
 
     action_url = f"/roadmap/{primary_roadmap_slug}/learn" if primary_roadmap_slug else "/dashboard"
 

@@ -304,7 +304,7 @@ export function DailyBriefingBell() {
                     </div>
                   ) : briefing ? (
                     <>
-                      <p className="text-[12px] text-text-primary leading-relaxed line-clamp-4">
+                      <p className="text-[12px] text-text-primary leading-relaxed">
                         {briefing.briefing}
                       </p>
 
@@ -313,9 +313,9 @@ export function DailyBriefingBell() {
                           <Link
                             href={briefing.action_cta.url}
                             onClick={() => setIsOpen(false)}
-                            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-sidebar hover:bg-callout-bg border border-border rounded-md text-[11.5px] font-medium text-accent transition-colors group"
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1.5 bg-sidebar hover:bg-callout-bg border border-border rounded-md text-[11.5px] font-medium text-accent transition-colors group max-w-full text-left"
                           >
-                            <span className="truncate max-w-[240px]">{briefing.action_cta.label}</span>
+                            <span className="break-words">{briefing.action_cta.label}</span>
                             <CompassArrowIcon className="w-3 h-3 group-hover:translate-x-0.5 transition-transform shrink-0" />
                           </Link>
                         </div>
