@@ -13,14 +13,6 @@ from app.routers.roadmaps import _enrich_roadmap_progress, _parse_roadmap_dict
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/dashboard", tags=["dashboard"])
 
-def run_sync(coro):
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    try:
-        return loop.run_until_complete(coro)
-    finally:
-        loop.close()
-
 @router.get("/overview")
 async def get_dashboard_overview(current_user: User = Depends(get_current_user)):
     """
@@ -48,7 +40,7 @@ async def get_dashboard_overview(current_user: User = Depends(get_current_user))
         username, prof_data = res
 
         try:
-            profile_model = await asyncio.to_thread(run_sync, get_public_profile(username))
+            profile_model = await get_public_profile(username)
             return profile_model.dict() if hasattr(profile_model, "dict") else profile_model
         except Exception as e:
             logger.error(f"Failed to fetch public profile in overview: {e}")
@@ -62,7 +54,7 @@ async def get_dashboard_overview(current_user: User = Depends(get_current_user))
         if not data:
             return []
             
-        enriched_data = await asyncio.to_thread(run_sync, _enrich_roadmap_progress(data, email, uid, sb, None))
+        enriched_data = await _enrich_roadmap_progress(data, email, uid, sb, None)
         
         results = []
         for r in enriched_data:
