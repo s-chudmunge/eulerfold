@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response
 from app.database.redis_client import get_redis_client
 from app.core.supabase_client import get_supabase_client
 import time
@@ -15,7 +15,7 @@ async def health_check():
     return {"status": "ok"}
 
 @router.api_route("/health/deep", methods=["GET", "HEAD"])
-async def deep_health_check():
+async def deep_health_check(response: Response):
     """Deep health check that tests cache and Supabase connectivity"""
     checks = {
         "redis": False,
@@ -47,14 +47,21 @@ async def deep_health_check():
         except Exception as e:
             logger.warning(f"Supabase check failed: {type(e).__name__}: {e}")
         
+        status = "healthy" if all(checks.values()) else "degraded"
+        
+        # Return HTTP 503 when not healthy
+        if status != "healthy":
+            response.status_code = 503
+        
         return {
-            "status": "healthy" if all(checks.values()) else "degraded",
+            "status": status,
             "checks": checks,
             "timestamp": time.time()
         }
         
     except Exception as e:
         logger.error(f"Health check failed: {e}")
+        response.status_code = 503
         return {
             "status": "unhealthy",
             "checks": checks,
