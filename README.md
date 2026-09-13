@@ -17,41 +17,104 @@
 
 ### What is EulerFold?
 
-Suppose you want to learn a complex technical subject—say, distributed consensus, GPU kernel optimization, or modern LLM inference architectures. Traditional platforms present disconnected video playlists or surface-level tutorials. You watch passively, assume you understand the concepts, and hit a wall when attempting to write real code.
+Suppose you want to learn a complex technical subject—say, distributed consensus, GPU kernel optimization, or modern LLM inference architectures. Traditional platforms present disconnected videos without structure. Learning paths require manual curation. Knowledge gaps remain hidden.
 
-EulerFold is a technical roadmap aggregator and learning platform. It takes your target subject, current background, and realistic timeframe, and pulls together video lectures from top educators, research papers, technical blogs, and official documentation into a structured, step-by-step path. It pairs this with diagnostic exercises and AI-evaluated proof-of-work submissions to test your understanding.
+EulerFold is a technical roadmap aggregator and learning platform. It takes your target subject, current background, and realistic timeframe, then constructs a personalized curriculum from verified video lectures, research papers, interactive checkpoints, and AI-guided problem sets.
 
 ---
 
-### How it Works (The Pipeline)
+### How it Works
 
-EulerFold organizes learning into a continuous adaptive loop:
+EulerFold organizes learning into five integrated stages:
+
+#### **Stage 1: Goal & Curriculum Initialization**
+You specify *what* you want to learn, *why*, and *when*. Provide a topic, job description, URL, or even a syllabus.
+
+The platform analyzes your inputs and creates a structured roadmap with topic sequencing, time estimates, and prerequisite chains.
+
+**Example:** "Learn LLM inference optimization for production" → roadmap auto-generates modules on transformers, quantization, batching, and cache optimization in dependency order.
+
+#### **Stage 2: Curated Lecture & Resource Matching**
+For each topic, the system performs **semantic vector search** across 1,800+ verified educational lectures curated from top educators (MIT, Stanford, etc.).
+
+If a perfect lecture match isn't found, it falls back to intelligent YouTube filtering (validated by duration, title relevance, and engagement signals).
+
+Topics are enriched with research papers, primary documentation, and reference carousels—no cookie-cutter playlists.
+
+**Example:** For "Transformer Attention Mechanisms," the system surfaces Andrej Karpathy's "Attention is All You Need" walkthrough alongside Hugging Face documentation and the original paper.
+
+#### **Stage 3: Interactive Adaptive Checkpoints**
+At the end of each topic, complete a **checkpoint quiz** that adapts difficulty based on your demonstrated comprehension.
+
+Questions are dynamically generated to reinforce weak concepts and progressively unlock deeper topics. When you pass, the next module automatically unlocks.
+
+**Features:**
+- Concept mastery detection prevents advancement without understanding
+- Multi-attempt support with cooldowns (Beginner-level attempts have 10-minute cooldowns)
+- Real-time feedback from AI technical reviewer
+
+#### **Stage 4: Proof-of-Work Homework & Technical Review**
+Submit code implementations, mathematical derivations, or written analysis for graded assignments.
+
+A **single-pass AI technical reviewer** provides 2–4 lines of concise, analytical feedback—no fluff, no generic encouragement. Only substantive evaluations.
+
+Successful submissions (Solid/Developing ratings) automatically trigger skill score updates. Failed submissions ("Beginner") include a cooldown before retry.
+
+**Example:** Submit a CUDA kernel for GPU optimization; receive: "Good thread block tuning. Missing shared memory optimization for 16KB+ data. See NVIDIA best practices guide p.8."
+
+#### **Stage 5: Verified Credentials & Progress Tracking**
+Your **Skill Score** is calculated via a fixed weighting formula:
+
+$$\text{Score} = 40\% \text{ (Homework PoW)} + 30\% \text{ (Practice Score)} + 15\% \text{ (Topic Completion)} + 15\% \text{ (Concept Depth)}$$
+
+Earn **EulerCoins** for completed assignments, maintain study streaks, and build your **personal study forest** (Grove) with a Pomodoro-style deep-work tracker.
+
+Export a **QR-verified PDF credential** displaying your badges, completion date, and verifiable skill attestation—perfect for LinkedIn, portfolios, or job applications.
+
+---
+
+### End-to-End Visual Flow
 
 ```
-[ User Goal & Background ]
-           │
-           ▼
-[ 1. Diagnostic & Curriculum Init ] ── (Target topic, experience level & roadmap baseline)
-           │
-           ▼
-[ 2. Curated Lecture & Paper Match] ── (Semantic lecture search, research papers & primary docs)
-           │
-           ▼
-[ 3. Interactive Checkpoints ]      ── (Adaptive questions to test comprehension and unlock next topics)
-           │
-           ▼
-[ 4. Technical Evaluation ]         ── (1-pass AI reviewer for homework submissions with cooldowns)
-           │
-           ▼
-[ 5. Verified Credentials & Grove ] ── (Calculated skill score, PDF credentials, EulerCoins & Grove forest)
+┌─────────────────────────────────────────────────────┐
+│  [1] User Goal Input                                │
+│  "I want to learn GPU kernel optimization"          │
+└──────────────────┬──────────────────────────────────┘
+                   │
+                   ▼
+┌─────────────────────────────────────────────────────┐
+│  [2] Roadmap Generated                              │
+│  └─ Module 1: CUDA Fundamentals & Memory Model      │
+│  └─ Module 2: Thread Blocks & Shared Memory         │
+│  └─ Module 3: Warp Optimization & Atomics           │
+│  └─ Module 4: Real-World Kernel Design              │
+└──────────────────┬──────────────────────────────────┘
+                   │
+                   ▼
+┌─────────────────────────────────────────────────────┐
+│  [3] Learn & Practice                               │
+│  ├─ Watch curated lectures (NVIDIA docs + YouTube)  │
+│  ├─ Read reference papers & code samples            │
+│  └─ Complete adaptive checkpoint quiz               │
+└──────────────────┬──────────────────────────────────┘
+                   │
+                   ▼
+┌─────────────────────────────────────────────────────┐
+│  [4] Submit Homework Assignment                     │
+│  "Implement memory-coalesced matrix multiply"       │
+│  AI Reviewer: "Correct coalescing pattern. Add      │
+│               occupancy analysis for validation."   │
+└──────────────────┬─────────────────────��────────────┘
+                   │
+                   ▼
+┌─────────────────────────────────────────────────────┐
+│  [5] Skill Score Updates & Credential Earned       │
+│  ├─ Proof of Work: +8 points                        │
+│  ├─ Skill Badge: "GPU Optimization (Intermediate)"  │
+│  ├─ EulerCoins: +25 credited                        │
+│  └─ QR-Verified PDF credential generated           │
+└─────────────────────────────────────────────────────┘
 ```
-
-1. **Goal & Background Input**: Specify what you want to learn, your starting level, and a target timeframe.
-2. **Roadmap Generation**: The backend builds a structured roadmap. For each topic, it performs pgvector semantic search against 1,800+ verified educational lectures (falling back to YouTube search filtered strictly to trusted channels), accompanied by documentation and paper references.
-3. **Adaptive Checkpoints**: Complete interactive checkpoints at the end of each topic. The system adapts questions to reinforce concepts and sequentially unlocks lessons.
-4. **Proof-of-Work Homework**: Submit your code or written derivation for module assignments. A technical AI reviewer evaluates your submission in a single pass (2–4 lines of analytical feedback). Failed attempts enforce a 10-minute cooldown before retaking.
-5. **Skill Scoring & Rewards**: Earn EulerCoins and maintain study streaks. Your overall skill score uses a fixed weighting formula:
-   $$\text{Score} = 40\% \text{ (Homework Proof of Work)} + 30\% \text{ (Practice Score)} + 15\% \text{ (Topic Completion)} + 15\% \text{ (Concept Depth)}$$
 
 ---
 
@@ -62,7 +125,7 @@ EulerFold organizes learning into a continuous adaptive loop:
 - **[Learn Platform](https://www.eulerfold.com/dashboard)**: Topic workspace featuring verified lectures, interactive checkpoints, reference carousels, transcripts, and progress tracking.
 - **[Goldfish AI Co-Pilot](https://www.eulerfold.com/dashboard)**: Companion for on-demand concept explanations, schedule creation, and daily briefings.
 - **[Study Planner & Grove Pomodoro](https://www.eulerfold.com/planner)**: Schedule study tasks, track deep work blocks, and plant trees in your personal study forest upon session completion.
-- **[Research Decoded](https://www.eulerfold.com/research-decoded)**: Read first-principles breakdowns of foundation research papers (e.g. Attention, DeepSeek-R1).
+- **[Research Decoded](https://www.eulerfold.com/research-decoded)**: Read first-principles breakdowns of foundation research papers (e.g., Attention, DeepSeek-R1).
 - **[Verified Credentials](https://www.eulerfold.com/account)**: Public profile displaying verified badges, EulerCoins balance, study streaks, and downloadable PDF certificates with QR verification.
 
 ---
@@ -133,7 +196,7 @@ Open `http://localhost:3000` in your browser.
 EulerFold relies on Supabase for data persistence and authentication.
 
 - **Auto-Profile Creation**: A Postgres trigger (`on_auth_user_created`) automatically creates a row in `public.profiles` whenever a new user signs up.
-- **Data Order Gotcha**: FastAPI routes match parameters in order. Static routes (e.g. `/roadmaps/me`, `/tasks/range`) must always be defined before dynamic parameterized routes (`/roadmaps/{id}`, `/tasks/{task_id}`).
+- **Data Order Gotcha**: FastAPI routes match parameters in order. Static routes (e.g., `/roadmaps/me`, `/tasks/range`) must always be defined before dynamic parameterized routes (`/roadmaps/{id}`, `/tasks/{task_id}`). Reversing this order causes 422 validation errors.
 
 ---
 
