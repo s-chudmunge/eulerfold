@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import { BookOpen, ArrowRight, Sparkles } from 'lucide-react';
+import { BookOpen, ArrowRight, Sparkles, Download } from 'lucide-react';
 import Link from 'next/link';
 import { useAuth } from '@/components/AuthProvider';
 import { roadmapsAPI } from '@/lib/api';
@@ -33,6 +33,25 @@ export default function HeroSection() {
       <section className="relative pt-24 pb-4 sm:pt-28 md:pt-36 md:pb-8 px-6 min-h-[600px] md:min-h-[720px] flex flex-col items-center justify-between w-full">
         <div className="max-w-3xl mx-auto w-full relative z-10 flex-1 flex flex-col justify-center">
           <div className="text-center flex flex-col items-center">
+            {/* ForwardBin Announcement Pill */}
+            <a
+              href="https://github.com/s-chudmunge/forwardbin"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 mb-5 rounded-full border border-accent/30 bg-accent/5 hover:bg-accent/10 text-xs font-medium text-text-heading transition-all shadow-xs group"
+            >
+              <span className="flex h-2 w-2 rounded-full bg-accent animate-pulse" />
+              <span className="font-semibold text-accent">ForwardBin</span>
+              <span className="text-border">|</span>
+              <span className="text-text-muted hidden sm:inline">
+                Desktop Drop Bin & AI Slot Scheduler for Linux & Mac
+              </span>
+              <span className="text-text-muted sm:hidden">
+                Desktop Drop Bin & Scheduler
+              </span>
+              <ArrowRight className="w-3.5 h-3.5 text-accent/70 group-hover:text-accent group-hover:translate-x-0.5 transition-all" />
+            </a>
+
             {/* Simple Clean Overline */}
             <div className="flex items-center gap-1.5 mb-5 text-[11px] font-mono font-bold tracking-wider text-accent uppercase">
               <span>EulerFold Agentic Learning</span>
@@ -67,6 +86,16 @@ export default function HeroSection() {
                   <ArrowRight className="w-3.5 h-3.5 text-text-muted" />
                 </Link>
               )}
+              <a
+                href="https://github.com/s-chudmunge/forwardbin"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 px-3.5 py-2 bg-sidebar/60 hover:bg-sidebar border border-border/80 hover:border-accent/40 rounded-md text-[12px] font-medium text-text-muted hover:text-text-heading transition-all"
+              >
+                <Download className="w-3.5 h-3.5 text-accent" />
+                <span>Get ForwardBin for Desktop</span>
+                <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-accent/10 text-accent font-semibold">Free</span>
+              </a>
             </div>
           </div>
         </div>
