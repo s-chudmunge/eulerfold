@@ -18,6 +18,7 @@ interface TopicCheckpointProps {
   isVideoCheckpointUnlocked?: boolean;
   isModuleCompleted?: boolean;
   nextModuleLocked?: boolean;
+  isLessonReady?: boolean;
   onUnlockNextModule?: () => void;
   onSuccess: (coinsEarned: number) => void;
   onNext: () => void;
@@ -41,6 +42,7 @@ export default function TopicCheckpoint({
   isVideoCheckpointUnlocked = false,
   isModuleCompleted = false,
   nextModuleLocked = false,
+  isLessonReady = true,
   onUnlockNextModule,
   onSuccess,
   onNext,
@@ -97,10 +99,11 @@ export default function TopicCheckpoint({
     }
   };
 
-  // Cache availability must never unlock a video checkpoint. A topic can briefly
-  // render without its video ID while the session initializes, which may warm the
-  // cache before the video is known. Only playback can unlock this check.
-  const isVideoGated = hasVideo && !isCompleted && !isVideoCheckpointUnlocked;
+  // A topic checkpoint is ready once the learner has either:
+  // 1. Read the lesson (isLessonReady), OR
+  // 2. Watched at least 50% of the video (isVideoCheckpointUnlocked)
+  // If neither has occurred yet, gate the checkpoint to ensure learning precedes testing.
+  const isLearningGated = !isCompleted && !isLessonReady && (hasVideo && !isVideoCheckpointUnlocked);
 
   useEffect(() => {
     // If cached, load immediately without debounce
@@ -112,8 +115,8 @@ export default function TopicCheckpoint({
       return;
     }
 
-    // If a video exists for this topic, only trigger AI generation once user watches >= 50% (or if already completed)
-    if (hasVideo && !isCompleted && !isVideoCheckpointUnlocked) {
+    // Gate until the lesson has loaded or the video has reached the halfway mark
+    if (isLearningGated) {
       setLoading(false);
       setCheckpoint(null);
       setEvaluation(null);
@@ -137,7 +140,7 @@ export default function TopicCheckpoint({
       clearTimeout(timer);
       abortController.abort();
     };
-  }, [roadmapId, moduleNumber, topicIndex, topicTitle, hasVideo, isCompleted, isVideoCheckpointUnlocked]);
+  }, [roadmapId, moduleNumber, topicIndex, topicTitle, hasVideo, isCompleted, isVideoCheckpointUnlocked, isLessonReady]);
 
   const [evaluatedCheckpointId, setEvaluatedCheckpointId] = useState<string | null>(null);
 
@@ -327,7 +330,7 @@ export default function TopicCheckpoint({
             </div>
           </div>
         </div>
-      ) : isVideoGated ? (
+      ) : isLearningGated ? (
         <div className="py-6 px-4 rounded-md border border-border bg-background/60 flex flex-col sm:flex-row items-center justify-between gap-4 animate-in fade-in duration-200">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-md bg-accent/10 border border-accent/20 flex items-center justify-center text-accent shrink-0">

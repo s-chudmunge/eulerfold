@@ -15,6 +15,7 @@ import HeroBackground from '@/components/HeroBackground';
 
 const SettingsModal = dynamic(() => import('@/components/SettingsModal'), { ssr: false });
 const PomodoroCompletionModal = dynamic(() => import('@/components/grove/PomodoroCompletionModal'), { ssr: false });
+const SpecialAwardModal = dynamic(() => import('@/components/SpecialAwardModal'), { ssr: false });
 
 import { Familjen_Grotesk } from 'next/font/google';
 
@@ -242,6 +243,7 @@ export default function RootLayout({
                 </main>
                 <SettingsModal />
                 <PomodoroCompletionModal />
+                <SpecialAwardModal />
                 <Analytics />
                 <SpeedInsights />
             </SettingsProvider>

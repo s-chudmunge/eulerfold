@@ -205,7 +205,7 @@ TRUSTED_CHANNELS = frozenset([
     "anyscale", "ray", "mlsys", "mlsys conference", "scale ai",
     "sebastian raschka", "175b", "chris hayduk", "cohere",
     "tri dao", "tim dettmers",
-    # Elite Software & Computer Science Educators
+    # Elite Software, Programming Language & Computer Science Educators (>95% Developer Population)
     "bro code", "keith galli", "telusko", "freecodecamp",
     "freecodecamp.org", "corey schafer", "programming with mosh",
     "tech with tim", "traversy media", "the net ninja", "cs dojo",
@@ -213,6 +213,55 @@ TRUSTED_CHANNELS = frozenset([
     "michaël gallego", "calm code", "calmcode", "anthony writes code",
     "codebasics", "codewithharry", "gate smashers", "patrick loeber",
     "python engineer", "aladdin persson", "daniel bourke", "mrdbourke",
+    # Rust & Systems Programming
+    "let's get rusty", "lets get rusty", "fasterthanlime", "jon gjengset", "tim clicks",
+    "chris biscardi", "bogdan flaviu", "logan smith", "decoding rust", "rust foundation",
+    "the rustacean station", "ryan levick", "no boilerplates",
+    # Go (Golang)
+    "anthony gg", "anthonygg", "melkey", "alex edwards", "packagemain", "junmin lee",
+    "go class by matt holiday", "matt holiday", "inanc gumus", "golang dojo",
+    # C & C++
+    "the cherno", "cherno", "javidx9", "onelonecoder", "coffee before arch", "lefticus",
+    "jason turner - c++ weekly", "c++ weekly", "cppcon", "meeting cpp", "codevault",
+    "low level learning", "lowlevellearning", "bisqwit", "creel", "cplusplusguy",
+    # C# & .NET
+    "nick chapsas", "tim corey", "iamtimcorey", "claudio bernasconi", "raw coding",
+    "kavindu gayan", "les jackson", "julio casagrande", "code opinion", "dotnet",
+    "microsoft developer", "dometrain",
+    # Java & Spring / JVM
+    "marcus biel", "java brains", "defog tech", "dan vega", "laurentiu spilca",
+    "amigoscode", "in28minutes", "in28minutes - java & cloud", "marco codes", "marcocodes",
+    "springdeveloper", "spring framework", "alireza feyz", "thorben janssen",
+    # Kotlin & Android
+    "philipp lackner", "steve d", "codingwithmitch", "android developers", "kotlin by jetbrains",
+    "sebastian aigner", "alexey tsvetkov",
+    # Swift, iOS & macOS
+    "sean allen", "kavsoft", "vincent pradeilles", "hacking with swift", "paul hudson",
+    "rebeloper", "azamsharp", "tundsdev", "stewart lynch", "swiftful thinking",
+    # TypeScript, JavaScript & Web Platforms
+    "matt pocock", "total typescript", "jack herrington", "web dev simplified", "fireship",
+    "kevin powell", "leigh halliday", "theo - t3.gg", "t3 dot gg", "kent c. dodds",
+    "syntax", "ben awad", "dave gray", "pedrotech", "cosden solutions",
+    # PHP & Modern Laravel
+    "laracasts", "jeffrey way", "stitcher.io", "brent roose", "coder's tape", "povilas korop",
+    "laravel daily", "aarondfrancis", "freek van der herten", "mateus guimarães",
+    # Ruby & Ruby on Rails
+    "drifting ruby", "gorails", "chris oliver", "supe rails", "deanin", "thoughtbot",
+    "david heinemeier hansson", "driftingruby",
+    # SQL, Databases & Data Engineering
+    "alex the analyst", "luke barousse", "seattle data guy", "chandoo", "kahan data solutions",
+    "cmu database group", "hussein nasser", "stratascratch", "wiseowl tutorials",
+    # Shell, Bash, Linux & DevOps
+    "learn linux tv", "networkchuck", "jeff geerling", "christian lempa", "levelupns",
+    "the linux experiment", "tutoriaLinux", "edureka!", "simplilearn",
+    # Elixir, Erlang & Functional Programming
+    "elixir casts", "elixircasts", "pragmatic studio", "tsoding daily", "tsoding",
+    # Dart & Flutter
+    "flutter", "flutterly", "robert brunhage", "vandad nahavandipoor", "heyflutter",
+    # R & Julia
+    "david robinson", "julia language", "the julia programming language", "statquest with josh starmer",
+    # Assembly & Hardware / Low Level Architecture
+    "ben eater", "retro game mechanics explained", "rootkit", "liveoverflow", "stack smashing",
     # World-Class Scientists, Researchers & Professors (Physics, Quantum, ML/AI, Theoretical CS)
     "subir sachdev", "sachdevsyk", "david tong", "frederic schuller",
     "tobias osborne", "qiskit", "michael nielsen", "scott aaronson",
@@ -228,7 +277,74 @@ TRUSTED_CHANNELS = frozenset([
     "physics-informed machine learning",
     # Top-tier Robotics, ROS, and Control Systems Educators (Strictly Academic/Educational)
     "the construct", "articulated robotics", "robotics back-end", "peter corke",
-    "cyrill stachniss", "matlab", "mathworks", "brian douglas"
+    "cyrill stachniss", "matlab", "mathworks", "brian douglas",
+    # Renowned World Language & Linguistics Educators (Covering >95% global speaking population)
+    # Arabic
+    "arabicpod101.com", "learn arabic with arabicpod101.com", "arabic 101", "the arabic coach", 
+    "arabic with amina", "easy arabic", "arabic for english speakers", "learn arabic with khasu",
+    "learn arabic with asmae", "arabic khatawaat", "arabic avenue", "arabic4nons", "brian wiles",
+    "arabic learners online", "daily life arabic", "learn with safaa", "talk in arabic", "madinah arabic",
+    # Spanish
+    "spanishpod101.com", "butterfly spanish", "dreaming spanish", "why not spanish?", "the spanish dude",
+    "spanish dude", "easy spanish", "spanish after 40", "spanish obsessed", "maria español", "spanishland school",
+    "holaspanish", "agustina dreaming spanish", "tu escuela de español", "the language tutor - spanish", "the language tutor",
+    "speak spanish faster", "senor jordan", "señor jordan", "spanish with vicente", "bilingüe blogs",
+    # Mandarin Chinese
+    "chineseclass101.com", "mandarin corner", "yoyo chinese", "shuo shuo chinese", "everyday chinese",
+    "grace mandarin chinese", "chinese zero to hero", "learn chinese with emma", "slow & clear chinese",
+    "shuoshuo chinese", "comprehensible mandarin", "mandarin companion",
+    # Hindi
+    "hindipod101.com", "learn hindi with hindipod101.com", "namaste hindi", "anil mahato",
+    "learn hindi through english", "easy hindi", "hindilanguage", "pebbles live hindi",
+    # Bengali
+    "bengalipod101.com", "learn bengali with bengalipod101.com", "bengali language lessons", "easy bengali",
+    "bengali tutor", "learn bengali through english",
+    # Portuguese
+    "portuguesepod101.com", "street smart brazil", "portuguese with leo", "speaking brazilian language school",
+    "practice portuguese", "portuguese lab", "easy portuguese", "portuguese with carla", "philipe brazuca",
+    # Russian
+    "russianpod101.com", "real russian club", "be fluent in russian", "russian with max", "easy russian",
+    "boost your russian", "russian progress", "fedya russian", "amazing russian",
+    # Japanese
+    "japanesepod101.com", "cure dolly", "miku real japanese", "japanese ammo with misa", "game gengo",
+    "tokini andy", "nihongo no mori", "easy japanese", "dogen", "japanese pod 101", "comprehensible japanese",
+    # German
+    "germanpod101.com", "easy german", "learn german with anja", "lingoni german", "deutsch für euch",
+    "natürlich german", "yourgermanteacher", "deutsch lernen mit der dw", "get germanized",
+    # Korean
+    "koreanclass101.com", "talk to me in korean", "go! billy korean", "sweetandtasty tv", "prof. yoon's korean language class",
+    "comprehensible korean", "korean unnie", "seemile korean", "learn korean with koreanclass101.com",
+    # French
+    "frenchpod101.com", "learn french with alexa", "easy french", "piece of french", "innerfrench",
+    "francais avec pierre", "comme une française", "french mornings with elisa", "maprofdefrancais",
+    # Vietnamese
+    "vietnamesepod101.com", "learn vietnamese with annie", "tieng viet oi", "easy vietnamese", "southern vietnamese",
+    "vietnamese with jessica", "svff - southern vietnamese for foreigners",
+    # Italian
+    "italianpod101.com", "learn italian with lucrezia", "easy italian", "italiano automatico", "podcast italiano",
+    "learn amo italiano", "passione italiana", "italiano bello",
+    # Turkish
+    "turkishclass101.com", "easy turkish", "learn turkish with turkishclass101.com", "turkishle",
+    "ali yilmaz turkish", "turkish tea time", "learn turkish with burhan",
+    # Persian / Farsi
+    "persianpod101.com", "chai and conversation", "learn persian with farsi pod 101", "persian language online",
+    "easy persian", "farsi wizard", "farsi veritas",
+    # Urdu
+    "urdupod101.com", "learn urdu with urdupod101.com", "learn urdu with zeeshan", "easy urdu",
+    # Dutch
+    "dutchpod101.com", "bart de pau", "learndutch.org", "easy dutch", "dutchies to be - learn dutch with kim",
+    # Tagalog / Filipino
+    "filipinopod101.com", "learn tagalog with filipinopod101.com", "tagalog lite", "talk tagalog", "easy tagalog",
+    # Swahili
+    "swahilipod101.com", "learn swahili with swahilipod101.com", "swahili kingdom", "easy swahili",
+    # Polish, Greek, Swedish, Czech, Indonesian
+    "polishpod101.com", "easy polish", "learn polish with polishpod101.com",
+    "greekpod101.com", "easy greek", "swedishpod101.com", "easy swedish",
+    "indonesianpod101.com", "easy indonesian",
+    # Tamil, Telugu, Punjabi, Marathi
+    "tamilpod101.com", "learn tamil with pebbles", "learn telugu with pebbles", "learn punjabi with punjabipod101",
+    # Premier Linguistics & Polyglot Foundations
+    "langfocus", "linguriosa", "nativlang", "tom scott", "lingthusiasm", "the linguaverse", "ecolinguist"
 ])
 
 OFFICIAL_KEYWORDS = [
@@ -331,12 +447,22 @@ CROSS_LANG_MAP = {
 }
 
 def _is_cross_language_conflict(subject_context: str, text: str) -> bool:
-    """Return True if video text advertises a competing programming language/syntax conflicting with the subject."""
+    """Return True if video text advertises a competing programming language/syntax or conflicting domain."""
     if not subject_context or not text:
         return False
     subj_lower = subject_context.lower()
     text_lower = text.lower()
     
+    # Language subject gate: if learning a human language, reject math/geometry/science videos
+    human_langs = [
+        "arabic", "spanish", "french", "german", "mandarin", "chinese", "japanese", "korean", "italian", "russian",
+        "hindi", "bengali", "portuguese", "vietnamese", "turkish", "persian", "farsi", "urdu", "dutch", "tagalog",
+        "filipino", "swahili", "polish", "greek", "swedish", "indonesian", "tamil", "telugu", "punjabi", "marathi"
+    ]
+    if any(hl in subj_lower for hl in human_langs):
+        if any(term in text_lower for term in ["arithmetic", "hindu-arabic", "geometry", "calculus", "linear algebra", "discrete math"]):
+            return True
+
     for lang, patterns in CROSS_LANG_MAP.items():
         if re.search(rf"\b{re.escape(lang)}\b", subj_lower):
             for pattern in patterns:
@@ -465,13 +591,22 @@ async def search_youtube_videos(
                         
                         matches = rpc_response.data
                         if matches:
-                            # Filter out already used video IDs, wrong-language conflicts, and enforce 8-90 min duration for curated university lectures
-                            filtered_matches = [
-                                m for m in matches
-                                if (not exclude_video_ids or m["video_id"] not in exclude_video_ids)
-                                and not _is_cross_language_conflict(subject_context, m.get("clean_title", ""))
-                                and 8 <= m.get("duration_mins", 0) <= 90
-                            ]
+                            # Filter out already used video IDs, wrong-language conflicts, enforce 8-120 min duration,
+                            # and require minimum title relevance to prevent unrelated curated matches
+                            filtered_matches = []
+                            for m in matches:
+                                if exclude_video_ids and m["video_id"] in exclude_video_ids:
+                                    continue
+                                if _is_cross_language_conflict(subject_context, m.get("clean_title", "")):
+                                    continue
+                                if not (8 <= m.get("duration_mins", 0) <= 120):
+                                    continue
+                                # Verify title relevance if topic_title or query is present
+                                if topic_title:
+                                    t_rel = _compute_title_relevance(topic_title, m.get("clean_title", ""), search_query=search_target)
+                                    if t_rel < 0.15:
+                                        continue
+                                filtered_matches.append(m)
                             if filtered_matches:
                                 logger.info(f"Supabase pgvector match! '{search_target}' -> '{filtered_matches[0]['topic']}' ({filtered_matches[0]['similarity']:.2f})")
                                 return [
@@ -587,14 +722,30 @@ async def search_youtube_videos(
         # Multi-tier fallback queries if initial specific query produced 0 valid candidates
         if not candidates and topic_title:
             subject_prefix = f"{subject_context} " if subject_context else ""
-            fallback_list = [
-                f"{subject_prefix}{topic_title} tutorial",
-                f"{subject_prefix}{topic_title}",
-                f"{subject_prefix}{topic_title} Mosh",
-                f"{subject_prefix}{topic_title} Corey Schafer",
-                f"{subject_prefix}{topic_title} FreeCodeCamp",
-                f"{subject_prefix}{topic_title} lecture"
-            ]
+            # Detect language/humanities subject context
+            is_lang_subj = any(l in (subject_context + " " + topic_title).lower() for l in [
+                "arabic", "spanish", "french", "german", "mandarin", "chinese", "japanese", "korean", "italian", "russian",
+                "hindi", "bengali", "portuguese", "vietnamese", "turkish", "persian", "farsi", "urdu", "dutch", "tagalog",
+                "filipino", "swahili", "polish", "greek", "swedish", "indonesian", "tamil", "telugu", "punjabi", "marathi",
+                "language", "speaking", "pronunciation", "grammar", "vocabulary", "alphabets", "kanji", "hangul", "hiragana"
+            ])
+            if is_lang_subj:
+                fallback_list = [
+                    f"{subject_prefix}{topic_title} lesson",
+                    f"{subject_prefix}{topic_title} conversation",
+                    f"{subject_prefix}{topic_title} for beginners",
+                    f"{subject_prefix}{topic_title}",
+                    f"{subject_prefix}{topic_title} full course"
+                ]
+            else:
+                fallback_list = [
+                    f"{subject_prefix}{topic_title} tutorial",
+                    f"{subject_prefix}{topic_title}",
+                    f"{subject_prefix}{topic_title} Mosh",
+                    f"{subject_prefix}{topic_title} Corey Schafer",
+                    f"{subject_prefix}{topic_title} FreeCodeCamp",
+                    f"{subject_prefix}{topic_title} lecture"
+                ]
             for fallback_q in fallback_list:
                 logger.info(f"Retrying YouTube search for '{topic_title}' with fallback: '{fallback_q}'")
                 items = await execute_search(fallback_q)

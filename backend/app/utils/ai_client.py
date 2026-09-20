@@ -27,17 +27,41 @@ current_ai_subject = contextvars.ContextVar("current_ai_subject", default=None)
 _cached_free_model = None
 _cached_time = 0
 
-# Preferred free models ranked by structured JSON capability
+# Preferred free models ranked by instruction-following and textbook prose capability
 PREFERRED_FREE_MODELS = [
+    "meta-llama/llama-3.3-70b-instruct:free",
+    "google/gemini-2.0-flash-exp:free",
+    "google/gemini-2.0-flash-lite-preview:free",
+    "qwen/qwen-2.5-coder-32b-instruct:free",
+    "deepseek/deepseek-chat:free",
+    "mistralai/mistral-small-24b-instruct-2501:free",
     "nvidia/nemotron-3.5-lightning:free",
-    "nvidia/nemotron-3-ultra-550b-a55b:free",
-    "google/gemma-4-31b-it:free",
-    "poolside/laguna-s-2.1:free",
-    "z-ai/glm-5.2:free",
-    "nvidia/nemotron-3-super-120b-a12b:free",
-    "cohere/north-mini-code:free",
     "openrouter/free"
 ]
+
+def strip_thinking_process(text: str) -> str:
+    """Strips internal model reasoning/thinking tokens and scratchpad reflections."""
+    if not text:
+        return ""
+        
+    # 1. Strip <think>...</think> or <thought>...</thought> blocks
+    text = re.sub(r'<(think|thought)>[\s\S]*?</\1>', '', text, flags=re.IGNORECASE)
+    text = re.sub(r'<(think|thought)>[\s\S]*$', '', text, flags=re.IGNORECASE)
+
+    # 2. Strip "Here's a thinking process:" or "Thinking Process:" blocks
+    if re.search(r'(?:here[\'’]s a thinking process|thinking process:|analyze the request|deconstruct the style)', text, re.IGNORECASE):
+        heading_match = re.search(r'\n(#{1,3}\s+[^\n]+[\s\S]*)', text)
+        if heading_match:
+            pre = text[:heading_match.start()].strip()
+            draft_match = re.search(r'(?:Draft|Opening):\s*(?:[^\n]*\.\s*)?([A-Z][^\n]+[\s\S]*)', pre, re.IGNORECASE)
+            if draft_match:
+                intro = draft_match.group(1).strip()
+                return intro + "\n\n" + heading_match.group(1).strip()
+            return heading_match.group(1).strip()
+        else:
+            text = re.sub(r'^(?:Here[\'’]s|Here is) a thinking process:[\s\S]*?\n\n(?=[A-Z])', '', text.strip(), flags=re.IGNORECASE)
+
+    return text.strip()
 
 async def get_fastest_free_openrouter_model() -> str:
     global _cached_free_model, _cached_time
@@ -52,15 +76,30 @@ async def get_fastest_free_openrouter_model() -> str:
             res.raise_for_status()
             data = res.json()
             
-            # Select the very first available free model with adequate context
+            # Map available free model IDs
+            available_free = {}
             for m in data.get("data", []):
                 pricing = m.get("pricing", {})
+                mid = m.get("id", "")
                 if str(pricing.get("prompt")) == "0" and str(pricing.get("completion")) == "0":
                     if m.get("context_length", 0) >= 8000:
-                        _cached_free_model = m["id"]
-                        _cached_time = time.time()
-                        logger.info(f"Selected first available free OpenRouter model: {_cached_free_model}")
-                        return _cached_free_model
+                        available_free[mid] = m
+
+            # 1. Prioritize preferred text models
+            for pref in PREFERRED_FREE_MODELS:
+                if pref in available_free:
+                    _cached_free_model = pref
+                    _cached_time = time.time()
+                    logger.info(f"Selected preferred free OpenRouter model: {_cached_free_model}")
+                    return _cached_free_model
+
+            # 2. Otherwise pick first non-vision text model
+            for mid in available_free:
+                if not any(tag in mid.lower() for tag in ["-vl", "vision", "vl:", "multimodal"]):
+                    _cached_free_model = mid
+                    _cached_time = time.time()
+                    logger.info(f"Selected text free OpenRouter model: {_cached_free_model}")
+                    return _cached_free_model
                         
     except Exception as e:
         logger.error(f"Failed to fetch free models from OpenRouter: {e}")
@@ -69,18 +108,21 @@ async def get_fastest_free_openrouter_model() -> str:
     return "openrouter/free"
 
 
-async def _call_ollama(prompt: str, response_mime_type: str):
-    # Try localhost ollama
-    endpoint = "http://localhost:11434/api/chat"
+async def _call_ollama(prompt: str, response_mime_type: str, model: str = None):
+    # Try localhost ollama or custom local OpenAI-compatible / Ollama endpoint
+    ollama_host = getattr(settings, "OLLAMA_HOST", None) or os.getenv("OLLAMA_HOST") or "http://localhost:11434"
+    endpoint = f"{ollama_host.rstrip('/')}/api/chat"
+    target_model = model if (model and model != "local") else (getattr(settings, "OLLAMA_MODEL", None) or os.getenv("OLLAMA_MODEL") or "llama3.1")
+    
     payload = {
-        "model": "llama3.1", # Or mistral, etc. We'll use llama3.1 as standard local.
+        "model": target_model,
         "messages": [{"role": "user", "content": prompt}],
         "stream": False
     }
     if response_mime_type == "application/json":
         payload["format"] = "json"
         
-    async with httpx.AsyncClient(timeout=300.0) as client:
+    async with httpx.AsyncClient(timeout=180.0) as client:
         response = await client.post(endpoint, json=payload)
         response.raise_for_status()
         data = response.json()
@@ -90,7 +132,7 @@ async def _call_ollama(prompt: str, response_mime_type: str):
             "prompt_tokens": data.get("prompt_eval_count", 0),
             "completion_tokens": data.get("eval_count", 0)
         }
-        return data["message"]["content"], usage, "ollama/llama3.1"
+        return data["message"]["content"], usage, f"ollama/{target_model}"
 
 async def _call_openrouter(prompt: str, model: str, response_mime_type: str):
     api_key = settings.OPENROUTER_API_KEY or os.getenv("OPENROUTER_API_KEY")
@@ -110,6 +152,7 @@ async def _call_openrouter(prompt: str, model: str, response_mime_type: str):
         "temperature": 0.1,
         "top_p": 0.95,
         "max_tokens": 8192,
+        "include_reasoning": False,
     }
     
     # We intentionally DO NOT pass "response_format": {"type": "json_object"} 
@@ -140,7 +183,8 @@ async def _call_openrouter(prompt: str, model: str, response_mime_type: str):
                 if "choices" not in data or not data["choices"]:
                     raise RuntimeError("Empty choices from OpenRouter")
                     
-                content = data["choices"][0]["message"]["content"]
+                raw_content = data["choices"][0]["message"]["content"]
+                content = strip_thinking_process(raw_content)
                 if not content or not content.strip() or content.strip() == "{}":
                     raise RuntimeError("Model returned empty or trivial text completion")
                     
@@ -357,17 +401,18 @@ async def generate_text(prompt: str, model: str = None, response_mime_type: str 
     if model in ("eulerfold", "openrouter", ""):
         model = None
 
-    if model == "local":
+    if model == "local" or (isinstance(model, str) and (model.startswith("local") or model.startswith("ollama"))):
         t0 = time.time()
         try:
-            logger.info(f"[AI] Starting generation — model=local, prompt={prompt_len} chars")
-            text, usage, used_model = await _call_ollama(prompt, response_mime_type)
+            target_local_model = model.split(":", 1)[1] if ":" in model else ("llama3.1" if model in ("local", "ollama") else model)
+            logger.info(f"[AI] Starting generation — model=local ({target_local_model}), prompt={prompt_len} chars")
+            text, usage, used_model = await _call_ollama(prompt, response_mime_type, model=target_local_model)
             _attach_model(usage, used_model)
             _log_success("Ollama (Local)", used_model, usage, time.time() - t0)
             return (text, usage) if return_usage else text
         except Exception as e:
             logger.error(f"[AI] ✗ Local Ollama failed: {e}")
-            raise Exception(f"Local AI failed: {e}. Is Ollama running on localhost:11434?")
+            raise Exception(f"Local AI failed: {e}. Is Ollama running on localhost:11434 with model '{target_local_model}'?")
 
     t0 = time.time()
     actual_model = model or openrouter_model

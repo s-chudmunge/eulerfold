@@ -1231,3 +1231,37 @@ export const checkpointsAPI = {
     },
 };
 
+export const lessonsAPI = {
+    generate: async (payload: {
+        roadmap_id: number;
+        module_number: number;
+        topic_index: number;
+        subject: string;
+        topic_title: string;
+        subtopics?: string[];
+        goal?: string;
+        model?: string;
+        force_regenerate?: boolean;
+    }, signal?: AbortSignal): Promise<{ lesson_content: string }> => {
+        const response = await api.post('/lessons/generate', payload, { signal });
+        return response.data;
+    },
+    getPrompt: async (payload: {
+        subject: string;
+        topic_title: string;
+        subtopics?: string[];
+        goal?: string;
+    }): Promise<{ prompt: string }> => {
+        const response = await api.post('/lessons/get-prompt', payload);
+        return response.data;
+    },
+    saveContent: async (payload: {
+        roadmap_id: number;
+        module_number: number;
+        topic_index: number;
+        lesson_content: string;
+    }): Promise<{ status: string }> => {
+        const response = await api.post('/lessons/save', payload);
+        return response.data;
+    },
+};

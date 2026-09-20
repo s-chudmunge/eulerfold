@@ -14,6 +14,7 @@ import LearnSidebar from '@/components/roadmap/learn/LearnSidebar';
 import VideoReferenceArea from '@/components/roadmap/learn/VideoReferenceArea';
 import TopicContentDetails from '@/components/roadmap/learn/TopicContentDetails';
 import TopicCheckpoint from '@/components/roadmap/learn/TopicCheckpoint';
+import TopicLesson from '@/components/roadmap/learn/TopicLesson';
 import CourseCompletionBanner from '@/components/roadmap/learn/CourseCompletionBanner';
 import { GroveTimerCard } from '@/components/grove/GroveTimerCard';
 
@@ -73,13 +74,15 @@ export default function LearnClient({
   const [unlockTargetModuleNumber, setUnlockTargetModuleNumber] = useState<number>(2);
   const [videoProgress, setVideoProgress] = useState<number>(0);
   const [isCheckpointUnlocked, setIsCheckpointUnlocked] = useState(false);
+  const [isLessonReady, setIsLessonReady] = useState(false);
 
   // A checkpoint remains available once this topic reaches its halfway mark,
   // even if the learner pauses or seeks back in the video.
   useEffect(() => {
     setVideoProgress(0);
     setIsCheckpointUnlocked(false);
-  }, [currentModuleIndex, currentTopicIndex]);
+    setIsLessonReady(Boolean(currentTopic?.lesson_content));
+  }, [currentModuleIndex, currentTopicIndex, currentTopic?.lesson_content]);
 
   const handleOpenUnlockModal = (targetModNum?: number) => {
     const target = targetModNum || (currentModuleIndex + 2);
@@ -344,7 +347,30 @@ export default function LearnClient({
                     </div>
                   )}
 
-                  {/* Modular Video & Reference Player */}
+                  {/* AI-Generated Micro-Lesson (Primary Foundation) */}
+                  <TopicLesson
+                    roadmapId={roadmap.id}
+                    moduleNumber={currentModuleIndex + 1}
+                    topicIndex={currentTopicIndex}
+                    subject={roadmap.subject || roadmap.title || 'Course'}
+                    topicTitle={currentTopic?.title || ''}
+                    subtopics={(currentTopic?.subtopics || []).map((s: any) => (typeof s === 'string' ? s : (s?.title || s?.name || ''))).filter(Boolean)}
+                    goal={roadmap.goal || roadmap.subject || ''}
+                    existingLessonContent={currentTopic?.lesson_content || null}
+                    onLessonLoaded={(content) => {
+                      setRoadmap((prev: any) => {
+                        if (!prev) return prev;
+                        const updatedPlan = structuredClone(prev.roadmap_plan);
+                        if (updatedPlan.modules?.[currentModuleIndex]?.topics?.[currentTopicIndex]) {
+                          updatedPlan.modules[currentModuleIndex].topics[currentTopicIndex].lesson_content = content;
+                        }
+                        return { ...prev, roadmap_plan: updatedPlan };
+                      });
+                      setIsLessonReady(true);
+                    }}
+                  />
+
+                  {/* Modular Video & Reference Player (Reinforcement) */}
                   <VideoReferenceArea
                     activeVideoId={activeVideoId}
                     currentTopic={currentTopic}
@@ -378,6 +404,7 @@ export default function LearnClient({
                     hasVideo={Boolean(activeVideoId)}
                     videoProgress={videoProgress}
                     isVideoCheckpointUnlocked={isCheckpointUnlocked}
+                    isLessonReady={isLessonReady}
                     isModuleCompleted={
                       Array.isArray(currentModule?.topics) &&
                       currentModule.topics.length > 0 &&

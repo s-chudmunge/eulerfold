@@ -118,6 +118,10 @@ function DismissCrossIcon({ className = "w-3 h-3" }: { className?: string }) {
   );
 }
 
+// Module-level deduplication cache to prevent parallel fetches across component instances
+let _inFlightBriefingPromise: Promise<DailyBriefingData> | null = null;
+let _cachedBriefingData: { date: string; data: DailyBriefingData } | null = null;
+
 export function DailyBriefingBell() {
   const { user } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
@@ -164,8 +168,33 @@ export function DailyBriefingBell() {
   useEffect(() => {
     if (!user) return;
 
+    // 1. Serve immediately from module cache if already fetched today
+    if (_cachedBriefingData && _cachedBriefingData.date === todayStr) {
+      setBriefing(_cachedBriefingData.data);
+      const isRead = sessionStorage.getItem(`eulerfold_briefing_read_${todayStr}`);
+      if (!isRead) {
+        setHasUnread(true);
+      }
+      return;
+    }
+
     setLoading(true);
-    goldfishAPI.getDailyBriefing()
+
+    // 2. Reuse in-flight promise if another instance is already requesting it
+    if (!_inFlightBriefingPromise) {
+      _inFlightBriefingPromise = goldfishAPI.getDailyBriefing()
+        .then((res: DailyBriefingData) => {
+          if (res && res.briefing) {
+            _cachedBriefingData = { date: todayStr, data: res };
+          }
+          return res;
+        })
+        .finally(() => {
+          _inFlightBriefingPromise = null;
+        });
+    }
+
+    _inFlightBriefingPromise
       .then((res: DailyBriefingData) => {
         if (res && res.briefing) {
           setBriefing(res);
@@ -179,7 +208,7 @@ export function DailyBriefingBell() {
         console.error('Failed to load daily briefing:', err);
       })
       .finally(() => setLoading(false));
-  }, [user, todayStr]);
+  }, [user?.email, todayStr]);
 
   const handleOpenDropdown = () => {
     setIsOpen(!isOpen);
