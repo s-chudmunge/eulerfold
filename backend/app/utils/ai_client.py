@@ -29,11 +29,11 @@ _cached_time = 0
 
 # Preferred free models ranked by reliability, speed, and auto-failover capability
 PREFERRED_FREE_MODELS = [
-    "openrouter/free",
     "meta-llama/llama-3.3-70b-instruct:free",
     "google/gemini-2.0-flash-exp:free",
     "google/gemma-4-31b-it:free",
-    "nvidia/nemotron-3.5-lightning:free"
+    "nvidia/nemotron-3.5-lightning:free",
+    "openrouter/free"
 ]
 
 def strip_thinking_process(text: str) -> str:
@@ -102,7 +102,7 @@ async def get_fastest_free_openrouter_model() -> str:
         logger.error(f"Failed to fetch free models from OpenRouter: {e}")
         
     # Absolute fallback
-    return "openrouter/free"
+    return getattr(settings, "DEFAULT_ROADMAP_MODEL", None) or "google/gemini-2.5-flash-lite"
 
 
 async def _call_ollama(prompt: str, response_mime_type: str, model: str = None):
@@ -158,19 +158,20 @@ async def _call_openrouter(prompt: str, model: str, response_mime_type: str):
 
     max_retries = 2
 
-    async with httpx.AsyncClient(timeout=90.0) as client:
+    async with httpx.AsyncClient(timeout=60.0) as client:
         for attempt in range(max_retries):
             if attempt > 0:
-                # Rotate to openrouter/free meta-router on retry
-                payload["model"] = "openrouter/free"
-                logger.info(f"OpenRouter attempt {attempt + 1}: Retrying with openrouter/free meta-router...")
+                # Rotate to default reliable model on retry
+                fallback_model = getattr(settings, "DEFAULT_ROADMAP_MODEL", None) or "google/gemini-2.5-flash-lite"
+                payload["model"] = fallback_model
+                logger.info(f"OpenRouter attempt {attempt + 1}: Retrying with {fallback_model}...")
                 
             try:
                 response = await client.post(
                     "https://openrouter.ai/api/v1/chat/completions",
                     headers=headers,
                     json=payload,
-                    timeout=90.0
+                    timeout=60.0
                 )
                 
                 response.raise_for_status()
@@ -391,8 +392,10 @@ async def generate_text(prompt: str, model: str = None, response_mime_type: str 
         _maybe_auto_log(usage, model_name)
 
 
-    if model in ("eulerfold", "openrouter", ""):
-        model = None
+    default_configured_model = getattr(settings, "DEFAULT_ROADMAP_MODEL", None) or "google/gemini-2.5-flash-lite"
+
+    if model in ("eulerfold", "openrouter", "", "openrouter/free", None):
+        model = default_configured_model
 
     if model == "local" or (isinstance(model, str) and (model.startswith("local") or model.startswith("ollama"))):
         t0 = time.time()
@@ -408,7 +411,7 @@ async def generate_text(prompt: str, model: str = None, response_mime_type: str 
             raise Exception(f"Local AI failed: {e}. Is Ollama running on localhost:11434 with model '{target_local_model}'?")
 
     t0 = time.time()
-    actual_model = model or openrouter_model
+    actual_model = model or default_configured_model
     logger.info(f"[AI] Starting generation — model={actual_model}, prompt={prompt_len} chars{' [JSON]' if json_mode else ''}")
 
     try:
@@ -440,8 +443,8 @@ async def generate_text(prompt: str, model: str = None, response_mime_type: str 
                 except Exception as gemini_e:
                     logger.warning(f"[AI] ✗ Gemini failed ({type(gemini_e).__name__}: {str(gemini_e)[:100]})")
                     try:
-                        logger.info(f"[AI] ⚠ All alternative providers failed. Attempting final Hail Mary with OpenRouter...")
-                        text, usage, used_model = await _call_openrouter(prompt, "openrouter/free", response_mime_type)
+                        logger.info(f"[AI] ⚠ All alternative providers failed. Attempting fallback with OpenRouter ({default_configured_model})...")
+                        text, usage, used_model = await _call_openrouter(prompt, default_configured_model, response_mime_type)
                         _attach_model(usage, used_model)
                         _log_success("OpenRouter (Final Fallback)", used_model, usage, time.time() - t0)
                         return (text, usage) if return_usage else text
@@ -642,16 +645,19 @@ async def generate_text_stream(prompt: str, model: str = None, response_mime_typ
 async def call_openrouter_with_tools(
     messages: list,
     tools: list,
-    model: str = "openrouter/free",
+    model: str = "google/gemini-2.5-flash-lite",
     tool_choice: str = "auto"
 ) -> dict:
     """
     Call OpenRouter models using native OpenAI-compatible tool calling.
-    Uses 'openrouter/free' router by default to leverage free models on OpenRouter.
+    Uses 'google/gemini-2.5-flash-lite' by default for rapid, reliable execution.
     """
     api_key = settings.OPENROUTER_API_KEY or os.getenv("OPENROUTER_API_KEY")
     if not api_key:
         raise RuntimeError("OPENROUTER_API_KEY not configured")
+
+    if model in ("openrouter/free", "", None):
+        model = getattr(settings, "DEFAULT_ROADMAP_MODEL", None) or "google/gemini-2.5-flash-lite"
 
     headers = {
         "Authorization": f"Bearer {api_key}",
@@ -661,10 +667,9 @@ async def call_openrouter_with_tools(
     }
 
     candidate_free_models = [
-        "openrouter/free",
+        model,
         "meta-llama/llama-3.3-70b-instruct:free",
-        "mistralai/mistral-7b-instruct:free",
-        "google/gemini-2.0-flash-lite-preview-02-05:free"
+        "google/gemini-2.0-flash-exp:free"
     ]
 
     payload = {

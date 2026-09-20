@@ -724,15 +724,15 @@ Output JSON ONLY matching this exact schema:
         # 4. Generate with OpenRouter/free and universal waterfall
         generated_json = None
         usage = None
-        used_model = "openrouter/free"
+        model_to_use = settings.DEFAULT_ROADMAP_MODEL or "google/gemini-2.5-flash-lite"
+        used_model = model_to_use
         try:
-            model_to_use = "openrouter/free"
             text_result, usage, used_model = await _call_openrouter(prompt, model=model_to_use, response_mime_type="application/json")
             generated_json = robust_json_loads(text_result)
         except Exception as e:
             logger.warning(f"OpenRouter primary unlock failed: {e}. Cascading through fallback providers...")
             try:
-                text_result, usage = await generate_text(prompt, model="openrouter/free", response_mime_type="application/json", return_usage=True)
+                text_result, usage = await generate_text(prompt, model=model_to_use, response_mime_type="application/json", return_usage=True)
                 generated_json = robust_json_loads(text_result)
             except Exception as fb_err:
                 logger.error(f"Universal AI cascade failed for unlock module: {fb_err}")

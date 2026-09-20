@@ -53,6 +53,7 @@ TRUSTED_CHANNELS = frozenset([
     "boosty labs", "bozeman science", "brackeys",
     "brian douglas", "bytebytego",
     "caleb curry", "caltech", "carnegie mellon university",
+    "chad's prep", "chads prep",
     "chainlink", "chalana kariyawasam", "chandan physics",
     "chem4432", "chemistnate", "chemistry untold",
     "chicken puck's quantum computing tutorials", "chris alexiuk", "christopher okhravi",
@@ -65,7 +66,7 @@ TRUSTED_CHANNELS = frozenset([
     "computerphile", "condensed matter cat", "confluent developer",
     "content-academy", "corey schafer", "cornell university",
     "corporate taleem", "coursejet", "coursera",
-    "crashcourse", "creel",
+    "cognito", "crashcourse", "creel",
     "cs & it tutorials by vrushali 👩‍🎓", "cs dojo", "cs50",
     "cybernetic systems and controls", "cyrill stachniss", "daily code buffer",
     "dan fleisch", "danish mustafa ", "darrenongmath",
@@ -89,7 +90,7 @@ TRUSTED_CHANNELS = frozenset([
     "essence of reality", "evan thacker", "explorer",
     "faculty of khan", "fastai", "felixtechtips",
     "fermilab", "finematics", "firebase",
-    "flammable maths", "foe asu 2nd electrical 20", "for the allure of physics",
+    "flammable maths", "flipping physics", "flippingphysics", "foe asu 2nd electrical 20", "for the allure of physics",
     "frank wong", "franklychemistry", "freecodecamp.org",
     "freelanceteach", "gate crackers", "gate smashers",
     "gaurav sen", "georgia tech", "google cloud tech",
@@ -127,7 +128,7 @@ TRUSTED_CHANNELS = frozenset([
     "martin fowler", "martin kleppmann", "math at andrews university",
     "math the beautiful", "math visualized", "mathemaddicts",
     "mathematicalmonk", "mathmajor ", "mathologer",
-    "math with mr. j", "math antics", "brian mclogan", "tabletclass math",
+    "math and science", "math with mr. j", "math antics", "brian mclogan", "tabletclass math",
     "mario's math tutoring", "nancy pi", "profrobbob", "kristakingmath", "tarrou's chalk talk",
     "mathosy guru - rajiv patel", "maths partner", "matthew donahue",
     "matthew salomone", "maurits haverkort", "maven silicon",
@@ -150,6 +151,7 @@ TRUSTED_CHANNELS = frozenset([
     "peetha academy ", "perimeter institute for theoretical physics",
     "pganalyze", "philipp lackner", "photovoltaics explained",
     "phys whiz", "physical chemistry", "physics almanac",
+    "physics galaxy", "physics galaxy - ashish arora",
     "physics online", "physics videos by eugene khutoryansky", "physics with andrés aragoneses",
     "potentialg - csir net | gate | tifr physics", "pretty much physics", "princeton university",
     "prof. van buren", "professor dave explains", "professor leonard",
@@ -159,7 +161,7 @@ TRUSTED_CHANNELS = frozenset([
     "ravindra soni health & wellness", "reducible", "reumi's world",
     "richard sutton", "ritvikmath", "sa7man",
     "sam witteveen", "sanjay choudhary", "sanju physics ",
-    "sasthra", "scalenescott", "science abc",
+    "sasthra", "scalenescott", "science abc", "science shorts",
     "science simplified", "scienceclic english", "seamlessblend",
     "sean allen", "seattle data guy", "sebastian lague",
     "sebastian wild (lectures)", "sebpic", "seeker",
@@ -196,7 +198,7 @@ TRUSTED_CHANNELS = frozenset([
     "xander gouws", "xraymancs", "xylyxylyx",
     "yale courses", "yalecourses", "yannic kilcher",
     "yoairfresh", "zeiss arivis", "zewail city opencourseware",
-    "zohaib hasan", "zoya (aspiring physicist)", "özhan özatay",
+    "zohaib hasan", "zoya (aspiring physicist)", "zphysics", "özhan özatay",
     "the ai epiphany", "aleksa gordić - the ai epiphany",
     "deeplearning.ai", "trelis research",
     "ai engineer", "ai engineer foundation", "ai engineer summit",
@@ -626,7 +628,7 @@ async def search_youtube_videos(
                             else:
                                 logger.info(f"All {len(matches)} curated matches for '{search_target}' were excluded by filters/usage. Falling back to dynamic search.")
                         else:
-                            logger.info(f"No curated match >= 0.88 for '{search_target}'. Falling back to dynamic YouTube search.")
+                            logger.info(f"No curated match >= 0.82 for '{search_target}'. Falling back to dynamic YouTube search.")
         except Exception as e:
             logger.error(f"Semantic search failed for '{search_target}', falling back to YouTube: {e}")
 
@@ -728,30 +730,66 @@ async def search_youtube_videos(
         # Multi-tier fallback queries if initial specific query produced 0 valid candidates
         if not candidates and topic_title:
             subject_prefix = f"{subject_context} " if subject_context else ""
+            combined_context = f"{subject_context} {topic_title}".lower()
+
             # Detect language/humanities subject context
-            is_lang_subj = any(l in (subject_context + " " + topic_title).lower() for l in [
+            is_lang_subj = any(l in combined_context for l in [
                 "arabic", "spanish", "french", "german", "mandarin", "chinese", "japanese", "korean", "italian", "russian",
                 "hindi", "bengali", "portuguese", "vietnamese", "turkish", "persian", "farsi", "urdu", "dutch", "tagalog",
                 "filipino", "swahili", "polish", "greek", "swedish", "indonesian", "tamil", "telugu", "punjabi", "marathi",
                 "language", "speaking", "pronunciation", "grammar", "vocabulary", "alphabets", "kanji", "hangul", "hiragana"
             ])
+
+            is_coding_subj = any(c in combined_context for c in [
+                "python", "javascript", "typescript", "react", "golang", "rust", "c++", "cpp", "c#", "csharp", "java",
+                "coding", "programming", "software", "web dev", "backend", "frontend", "algorithm",
+                "data structure", "docker", "kubernetes", "sql", "linux", "html", "css", "vue", "angular",
+                "node", "express", "django", "flask", "fastapi", "spring", "git", "devops", "cloud", "aws", "azure"
+            ])
+
             if is_lang_subj:
-                fallback_list = [
+                raw_fallbacks = [
                     f"{subject_prefix}{topic_title} lesson",
-                    f"{subject_prefix}{topic_title} conversation",
                     f"{subject_prefix}{topic_title} for beginners",
+                    f"{subject_prefix}{topic_title} conversation",
+                    f"{topic_title} lesson",
+                    f"{topic_title} for beginners",
                     f"{subject_prefix}{topic_title}",
-                    f"{subject_prefix}{topic_title} full course"
+                    f"{topic_title}"
+                ]
+            elif is_coding_subj:
+                raw_fallbacks = [
+                    f"{subject_prefix}{topic_title} tutorial",
+                    f"{subject_prefix}{topic_title} crash course",
+                    f"{topic_title} tutorial",
+                    f"{topic_title} crash course",
+                    f"{subject_prefix}{topic_title}",
+                    f"{topic_title}"
                 ]
             else:
-                fallback_list = [
+                # STEM, Math, Sciences, Humanities, General
+                # Extract first meaningful subject word preserving order (e.g., 'physics' from 'Physics Fundamentals Basics')
+                subject_words = [w for w in re.findall(r'[a-z0-9+#.]+', subject_context.lower()) if w not in _STOPWORDS and len(w) > 2]
+                primary_kw = f" {subject_words[0]}" if subject_words else ""
+                raw_fallbacks = [
+                    f"{subject_prefix}{topic_title} explained",
                     f"{subject_prefix}{topic_title} tutorial",
-                    f"{subject_prefix}{topic_title}",
-                    f"{subject_prefix}{topic_title} Mosh",
-                    f"{subject_prefix}{topic_title} Corey Schafer",
-                    f"{subject_prefix}{topic_title} FreeCodeCamp",
-                    f"{subject_prefix}{topic_title} lecture"
+                    f"{subject_prefix}{topic_title} lecture",
+                    f"{topic_title}{primary_kw} tutorial" if primary_kw else f"{topic_title} tutorial",
+                    f"{topic_title}{primary_kw}" if primary_kw else f"{topic_title} explained",
+                    f"{topic_title} explained",
+                    f"{topic_title} lecture",
+                    f"{topic_title}"
                 ]
+
+            fallback_list = []
+            seen_fb = set()
+            for fb in raw_fallbacks:
+                fb_clean = " ".join(fb.split())
+                if fb_clean and fb_clean.lower() not in seen_fb and fb_clean.lower() != query.lower():
+                    seen_fb.add(fb_clean.lower())
+                    fallback_list.append(fb_clean)
+
             for fallback_q in fallback_list:
                 logger.info(f"Retrying YouTube search for '{topic_title}' with fallback: '{fallback_q}'")
                 items = await execute_search(fallback_q)

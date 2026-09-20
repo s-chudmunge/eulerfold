@@ -33,12 +33,12 @@ class Settings(BaseSettings):
     SUPABASE_JWT_SECRET: Optional[str] = None
 
     # Default AI Models for different use cases - centralized configuration
-    DEFAULT_ROADMAP_MODEL: str = ""
-    DEFAULT_FEEDBACK_MODEL: str = ""
-    OPENROUTER_MODEL: str = "meta-llama/llama-3.3-70b-instruct"
-    DEFAULT_LEARNING_CONTENT_MODEL: str = ""
-    DEFAULT_VISUALIZATION_MODEL: str = ""
-    DEFAULT_LEARNING_RESOURCES_MODEL: str = ""
+    DEFAULT_ROADMAP_MODEL: str = "google/gemini-2.5-flash-lite"
+    DEFAULT_FEEDBACK_MODEL: str = "google/gemini-2.5-flash-lite"
+    OPENROUTER_MODEL: str = "google/gemini-2.5-flash-lite"
+    DEFAULT_LEARNING_CONTENT_MODEL: str = "google/gemini-2.5-flash-lite"
+    DEFAULT_VISUALIZATION_MODEL: str = "google/gemini-2.5-flash-lite"
+    DEFAULT_LEARNING_RESOURCES_MODEL: str = "google/gemini-2.5-flash-lite"
     # Email / Auth integrations
     RESEND_API_KEY: Optional[str] = None
     RESEND_SENDER: str = "eulerfold@gmail.com"

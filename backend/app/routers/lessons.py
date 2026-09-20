@@ -208,6 +208,7 @@ async def generate_lesson_stream(
                 return
 
             accumulated = []
+            stream_meta = {}
             try:
                 async for chunk in generate_topic_lesson_stream(
                     sb=sb,
@@ -218,7 +219,8 @@ async def generate_lesson_stream(
                     subject=req.subject,
                     topic_title=req.topic_title,
                     subtopics=req.subtopics,
-                    goal=req.goal
+                    goal=req.goal,
+                    meta=stream_meta
                 ):
                     if await request.is_disconnected():
                         logger.info(f"Client disconnected from lesson stream for topic '{req.topic_title}'. Aborting.")
@@ -242,13 +244,20 @@ async def generate_lesson_stream(
 
                 if uid:
                     try:
-                        prompt_est = len(req.topic_title + req.subject + req.goal) // 4
+                        # Use actual model name resolved in the stream, and prompt length for a proper token estimate
+                        actual_model = stream_meta.get("model_name", "unknown")
+                        prompt_est = stream_meta.get("prompt_len", len(req.topic_title + req.subject + req.goal)) // 4
                         comp_est = len(clean_lesson) // 4
                         log_backend_ai_usage(
                             sb,
                             uid,
-                            f"Micro-Lesson (Stream): {req.topic_title} (Cost: 0 Credits)",
-                            {"prompt_tokens": prompt_est, "completion_tokens": comp_est, "total_tokens": prompt_est + comp_est},
+                            f"AI Overview: {req.topic_title} (Cost: 0 Credits)",
+                            {
+                                "model_name": actual_model,
+                                "prompt_tokens": prompt_est,
+                                "completion_tokens": comp_est,
+                                "total_tokens": prompt_est + comp_est
+                            },
                             source="backend"
                         )
                     except Exception as log_err:

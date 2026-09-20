@@ -166,8 +166,11 @@ async def generate_topic_lesson_stream(
     topic_title: str,
     subtopics: list[str],
     goal: str = "",
-    model: str = None
+    model: str = None,
+    meta: dict | None = None
 ):
+    """Streams lesson content tokens. If `meta` dict is provided, writes the resolved
+    model name into meta['model_name'] before yielding so the caller can log it."""
     from app.utils.ai_client import generate_text_stream
     prompt = build_lesson_prompt(
         subject=subject,
@@ -176,6 +179,9 @@ async def generate_topic_lesson_stream(
         goal=goal
     )
     model_to_use = model or getattr(settings, "OPENROUTER_MODEL", None) or getattr(settings, "DEFAULT_FEEDBACK_MODEL", None) or "meta-llama/llama-3.3-70b-instruct"
+    if meta is not None:
+        meta["model_name"] = model_to_use
+        meta["prompt_len"] = len(prompt)
     async for token in generate_text_stream(prompt, model=model_to_use):
         yield token
 

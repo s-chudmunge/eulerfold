@@ -62,7 +62,12 @@ export default function SettingsModal() {
   const [openRouterModel, setOpenRouterModel] = useState<string>('openai/gpt-4o');
   const [availableModels, setAvailableModels] = useState<any[]>([]);
   const [usageHistory, setUsageHistory] = useState<any[]>([]);
-  const [isLoadingUsage, setIsLoadingUsage] = useState(true);
+  const [isLoadingUsage, setIsLoadingUsage] = useState(false);
+  const [isLoadingMoreUsage, setIsLoadingMoreUsage] = useState(false);
+  const [usageOffset, setUsageOffset] = useState(0);
+  const [hasMoreUsage, setHasMoreUsage] = useState(true);
+  const USAGE_PAGE_SIZE = 5;
+  const [usageStats, setUsageStats] = useState<{ total_tokens: number; total_credits: number; total_operations: number } | null>(null);
   const [keyInfo, setKeyInfo] = useState<any>(null);
   
   const [localAIModelId, setLocalAIModelId] = useState<string | null>(null);
@@ -155,13 +160,12 @@ export default function SettingsModal() {
       setEmail(authUser.email || '');
       setLoading(false);
       
-      setIsLoadingUsage(true);
-      api.get('/ai-usage?limit=100')
-        .then(res => {
-          if (res.data) setUsageHistory(res.data);
-        })
-        .catch(e => console.error("Failed to load usage history", e))
-        .finally(() => setIsLoadingUsage(false));
+      setIsLoadingUsage(false);
+      // Reset usage so the first page is fetched fresh when the tab is opened
+      setUsageHistory([]);
+      setUsageOffset(0);
+      setHasMoreUsage(true);
+      setUsageStats(null);
 
       paymentsAPI.getTransactions()
         .then(res => setTransactions(res))
@@ -203,6 +207,42 @@ export default function SettingsModal() {
       window.removeEventListener('storage', handleStorageEvent);
     };
   }, [authUser, isOpen]);
+
+  // When the usage tab is opened, fetch first page of history + aggregate stats in parallel
+  useEffect(() => {
+    if (activeTab === 'usage' && isOpen && authUser && usageHistory.length === 0 && !isLoadingUsage) {
+      setIsLoadingUsage(true);
+      Promise.all([
+        api.get(`/ai-usage?limit=${USAGE_PAGE_SIZE}&offset=0`),
+        api.get('/ai-usage/stats'),
+      ])
+        .then(([listRes, statsRes]) => {
+          const data = listRes.data || [];
+          setUsageHistory(data);
+          setUsageOffset(USAGE_PAGE_SIZE);
+          setHasMoreUsage(data.length === USAGE_PAGE_SIZE);
+          if (statsRes.data) setUsageStats(statsRes.data);
+        })
+        .catch(e => console.error("Failed to load usage", e))
+        .finally(() => setIsLoadingUsage(false));
+    }
+  }, [activeTab, isOpen, authUser]);
+
+  const loadMoreUsage = async () => {
+    if (isLoadingMoreUsage || !hasMoreUsage) return;
+    setIsLoadingMoreUsage(true);
+    try {
+      const res = await api.get(`/ai-usage?limit=${USAGE_PAGE_SIZE}&offset=${usageOffset}`);
+      const data = res.data || [];
+      setUsageHistory(prev => [...prev, ...data]);
+      setUsageOffset(prev => prev + USAGE_PAGE_SIZE);
+      setHasMoreUsage(data.length === USAGE_PAGE_SIZE);
+    } catch (e) {
+      console.error("Failed to load more usage history", e);
+    } finally {
+      setIsLoadingMoreUsage(false);
+    }
+  };
 
   const handleConnectGoogleCalendar = async () => {
     try {
@@ -915,16 +955,10 @@ export default function SettingsModal() {
           </div>
         );
       case 'usage': {
-        const totalTokens = usageHistory.reduce((acc, h) => acc + (h.total_tokens || 0), 0);
-        const energyKWh = totalTokens * 0.00004;
-        const waterLiters = totalTokens * 0.000045;
-        const totalCredits = usageHistory.reduce((acc, h) => {
-          const match = (h.subject || '').match(/\(Cost: ([\d.]+) Credits?\)/i);
-          if (match && match[1]) {
-            return acc + parseFloat(match[1]);
-          }
-          return acc;
-        }, 0);
+        const statTokens = usageStats?.total_tokens ?? 0;
+        const statCredits = usageStats?.total_credits ?? 0;
+        const energyKWh = statTokens * 0.00004;
+        const waterLiters = statTokens * 0.000045;
 
         return (
           <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
@@ -936,18 +970,18 @@ export default function SettingsModal() {
                 <a href="https://openrouter.ai/activity" target="_blank" rel="noopener noreferrer" className="inconsolata-ui text-[10px] font-bold text-accent hover:underline flex items-center gap-1.5">
                   Full Log <ExternalLink className="w-3 h-3" />
                 </a>
-                {!isLoadingUsage && usageHistory.length > 0 && (
-                  <div className="flex items-center gap-3 bg-sidebar/30 px-2.5 py-1.5 rounded-lg border border-border/50">
-                    {totalCredits > 0 && (
+                {usageStats && statTokens > 0 && (
+                  <div className="flex items-center gap-3 bg-sidebar/30 px-2.5 py-1.5 rounded-md border border-border/50">
+                    {statCredits > 0 && (
                       <>
                         <div className="text-[12px] font-black text-amber-500 tracking-tight flex items-center gap-1" title="Total EulerFold Credits Used">
-                           {totalCredits.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 2 })} <span className="text-[9px] font-bold uppercase opacity-60">credits</span>
+                           {statCredits.toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 2 })} <span className="text-[9px] font-bold uppercase opacity-60">credits</span>
                         </div>
                         <div className="w-px h-3 bg-border/50"></div>
                       </>
                     )}
                     <div className="text-[12px] font-black text-accent tracking-tight flex items-center gap-1">
-                       {totalTokens.toLocaleString()} <span className="text-[9px] font-bold uppercase opacity-60">tokens</span>
+                       {statTokens.toLocaleString()} <span className="text-[9px] font-bold uppercase opacity-60">tokens</span>
                     </div>
                     <div className="w-px h-3 bg-border/50"></div>
                     <div className="flex items-center gap-2.5 text-[10px] font-bold text-text-muted">
@@ -966,7 +1000,7 @@ export default function SettingsModal() {
             {isLoadingUsage ? (
               <div className="space-y-3">
                 {[1, 2, 3, 4, 5].map((i) => (
-                  <div key={i} className="flex items-center justify-between p-4 bg-background border border-border/50 rounded-lg shadow-sm animate-pulse">
+                  <div key={i} className="flex items-center justify-between p-4 bg-background border border-border/50 rounded-md shadow-sm animate-pulse">
                     <div className="flex-1 min-w-0 pr-4">
                       <div className="h-4 bg-border/40 rounded w-2/3 mb-2"></div>
                       <div className="flex flex-wrap items-center gap-2 mt-2">
@@ -982,7 +1016,7 @@ export default function SettingsModal() {
                 ))}
               </div>
             ) : usageHistory.length === 0 ? (
-              <div className="p-8 text-center bg-sidebar/50 rounded-lg border border-border">
+              <div className="p-8 text-center bg-sidebar/50 rounded-md border border-border">
                 <History className="w-8 h-8 text-text-muted mx-auto mb-3 opacity-20" />
                 <p className="inconsolata-ui text-[12px] font-bold text-text-heading">No usage history found</p>
                 <p className="manrope-body text-[11px] text-text-muted mt-1">Generations made using EulerFold AI, OpenRouter, or Local AI will appear here.</p>
@@ -990,11 +1024,11 @@ export default function SettingsModal() {
             ) : (
               <div className="space-y-3">
                 {usageHistory.map((h, i) => (
-                  <div key={i} className="flex items-center justify-between p-4 bg-background border border-border/50 rounded-lg shadow-sm">
+                  <div key={h.id || i} className="flex items-center justify-between p-4 bg-background border border-border/50 rounded-md shadow-sm">
                     <div className="flex-1 min-w-0 pr-4">
                       <div className="text-[13px] font-bold text-text-heading line-clamp-2 mb-1">{h.subject}</div>
                       <div className="flex flex-wrap items-center gap-2 mt-1.5">
-                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded border truncate ${
+                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border truncate ${
                           (h.model || h.model_name || '').includes('gemini') 
                             ? 'bg-blue-500/10 text-blue-500 border-blue-500/20' 
                             : (h.model || h.model_name || '').includes('/') 
@@ -1010,14 +1044,32 @@ export default function SettingsModal() {
                       </div>
                     </div>
                     <div className="text-right shrink-0 flex flex-col items-end gap-1">
-                      <div className="text-[12px] font-black text-accent tracking-tight">{h.total_tokens.toLocaleString()} <span className="text-[9px] font-bold uppercase opacity-60">tokens</span></div>
+                      <div className="text-[12px] font-black text-accent tracking-tight">{(h.total_tokens || 0).toLocaleString()} <span className="text-[9px] font-bold uppercase opacity-60">tokens</span></div>
                       <div className="text-[9px] text-text-muted flex gap-2">
-                        <span title="Prompt Tokens">P: {h.prompt_tokens.toLocaleString()}</span>
-                        <span title="Completion Tokens">C: {h.completion_tokens.toLocaleString()}</span>
+                        <span title="Prompt Tokens">P: {(h.prompt_tokens || 0).toLocaleString()}</span>
+                        <span title="Completion Tokens">C: {(h.completion_tokens || 0).toLocaleString()}</span>
                       </div>
                     </div>
                   </div>
                 ))}
+
+                {/* Load more */}
+                {hasMoreUsage && (
+                  <button
+                    onClick={loadMoreUsage}
+                    disabled={isLoadingMoreUsage}
+                    className="w-full py-2.5 text-[12px] font-bold text-text-muted border border-border/50 rounded-md bg-sidebar/30 hover:bg-sidebar hover:text-text-primary transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
+                  >
+                    {isLoadingMoreUsage ? (
+                      <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Loading...</>
+                    ) : (
+                      'Load more'
+                    )}
+                  </button>
+                )}
+                {!hasMoreUsage && usageHistory.length > 0 && (
+                  <p className="text-center text-[11px] text-text-muted opacity-50 py-1">All {usageStats?.total_operations ?? usageHistory.length} records loaded</p>
+                )}
               </div>
             )}
           </div>

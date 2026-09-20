@@ -139,7 +139,7 @@ async def scout_reading_materials(
             {"role": "system", "content": f"You are Goldfish, an expert AI educational scout. Subject: '{roadmap_subject}', Module: '{module_title}', Topic: '{target_subject}'."},
             {"role": "user", "content": f"The learner wants reading material: '{payload.prompt}'. Prioritize exact university lecture note PDFs or guides for '{target_subject}'. Call scout_reading_materials."}
         ]
-        tool_res = await call_openrouter_with_tools(messages, tools, model="openrouter/free")
+        tool_res = await call_openrouter_with_tools(messages, tools, model=settings.DEFAULT_ROADMAP_MODEL)
         tool_calls = tool_res.get("tool_calls", [])
         if tool_calls and tool_calls[0].get("function"):
             fn_args = json.loads(tool_calls[0]["function"].get("arguments", "{}"))
@@ -335,7 +335,7 @@ async def find_alternate_video(
             {"role": "system", "content": f"You are Goldfish, an expert AI educational assistant. Subject: '{roadmap_subject}', Module: '{module_title}', Topic: '{topic_title}'."},
             {"role": "user", "content": f"The learner asks: '{user_prompt}'. Select the best educational lecture for '{topic_title}' from a top reputed educator by calling search_youtube_lecture."}
         ]
-        tool_res = await call_openrouter_with_tools(messages, video_tools, model="openrouter/free")
+        tool_res = await call_openrouter_with_tools(messages, video_tools, model=settings.DEFAULT_ROADMAP_MODEL)
         tool_calls = tool_res.get("tool_calls", [])
         if tool_calls and tool_calls[0].get("function"):
             fn_args = json.loads(tool_calls[0]["function"].get("arguments", "{}"))
@@ -918,7 +918,7 @@ TUTORING INSTRUCTIONS:
     # 4. Call OpenRouter with tool-calling capabilities
     reply = ""
     try:
-        tool_res = await call_openrouter_with_tools(messages, chat_tools, model="openrouter/free")
+        tool_res = await call_openrouter_with_tools(messages, chat_tools, model=settings.DEFAULT_ROADMAP_MODEL)
         tool_calls = tool_res.get("tool_calls", [])
         
         if tool_calls:
@@ -960,7 +960,7 @@ TUTORING INSTRUCTIONS:
                 })
                     
             # Request final answer incorporating all tool execution results
-            final_res = await call_openrouter_with_tools(messages, [], model="openrouter/free")
+            final_res = await call_openrouter_with_tools(messages, [], model=settings.DEFAULT_ROADMAP_MODEL)
             reply = final_res.get("content") or ""
         else:
             reply = tool_res.get("content") or ""

@@ -181,8 +181,8 @@ Output JSON format:
     search_target = f"{prefix} - {topic_title}".strip()
 
     try:
-        # Use OpenRouter/free and the universal multi-provider cascade (OpenRouter -> Groq -> Cohere -> Gemini -> HF)
-        model = settings.DEFAULT_FEEDBACK_MODEL or "openrouter/free"
+        # Use fast, reliable model with universal multi-provider cascade
+        model = settings.DEFAULT_FEEDBACK_MODEL or "google/gemini-2.5-flash-lite"
         raw_text, usage = await generate_text(prompt, model=model, response_mime_type="application/json", return_usage=True)
 
         if uid and usage:
