@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { Bell } from 'lucide-react';
 import { useAuth } from '@/components/AuthProvider';
 import { goldfishAPI } from '@/lib/api';
 import { GoldfishIcon } from './GoldfishAvatar';
@@ -24,17 +25,6 @@ interface DailyBriefingData {
 }
 
 /* Bespoke EulerFold Custom Geometric SVG Icons */
-
-// Geometric faceted notification bell icon
-function EulerBellIcon({ className = "w-4 h-4" }: { className?: string }) {
-  return (
-    <svg className={className} viewBox="0 0 20 20" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M10 2.5a4.5 4.5 0 0 0-4.5 4.5v3.2L4 13.5h12l-1.5-3.3V7A4.5 4.5 0 0 0 10 2.5Z" />
-      <path d="M8.2 16a2 2 0 0 0 3.6 0" />
-      <circle cx="10" cy="2.5" r="0.75" fill="currentColor" />
-    </svg>
-  );
-}
 
 // Geometric 4-point golden star sparkle for AI Copilot
 function CoPilotSparkIcon({ className = "w-2.5 h-2.5" }: { className?: string }) {
@@ -128,7 +118,7 @@ export function DailyBriefingBell() {
   const [isOpen, setIsOpen] = useState(false);
   const [briefing, setBriefing] = useState<DailyBriefingData | null>(null);
   const [recentHarvests, setRecentHarvests] = useState<TreeHarvestEvent[]>([]);
-  const [hasUnread, setHasUnread] = useState(false);
+  const [unreadCount, setUnreadCount] = useState<number>(0);
   const [loading, setLoading] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -144,13 +134,43 @@ export function DailyBriefingBell() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Recalculate unread notifications count whenever briefing or harvests change
+  const recalculateUnread = (
+    currentBriefing: DailyBriefingData | null,
+    harvests: TreeHarvestEvent[]
+  ) => {
+    try {
+      let count = 0;
+      const isBriefingRead = sessionStorage.getItem(`eulerfold_briefing_read_${todayStr}`) === 'true';
+      if (!isBriefingRead && currentBriefing?.briefing) {
+        count += 1;
+      }
+
+      const lastHarvestViewedStr = localStorage.getItem('eulerfold_harvests_last_viewed_at');
+      const hasLegacyUnread = localStorage.getItem('eulerfold_harvest_has_unread') === 'true';
+
+      if (lastHarvestViewedStr) {
+        const lastViewedTime = parseInt(lastHarvestViewedStr, 10);
+        const unreadHarvests = harvests.filter(
+          (h) => new Date(h.timestamp).getTime() > lastViewedTime
+        ).length;
+        count += unreadHarvests;
+      } else if (hasLegacyUnread) {
+        count += Math.min(harvests.length, 2);
+      }
+
+      setUnreadCount(count);
+    } catch {
+      setUnreadCount(0);
+    }
+  };
+
   // 1. Initial load of past harvests from storage
   useEffect(() => {
     const saved = getRecentHarvests();
     if (saved.length > 0) {
       setRecentHarvests(saved);
-      const unread = localStorage.getItem('eulerfold_harvest_has_unread') === 'true';
-      if (unread) setHasUnread(true);
+      recalculateUnread(briefing, saved);
     }
   }, []);
 
@@ -158,13 +178,20 @@ export function DailyBriefingBell() {
   useEffect(() => {
     const handleTreePlanted = (e: CustomEvent<TreeHarvestEvent>) => {
       if (e.detail) {
-        setRecentHarvests(prev => [e.detail, ...prev.slice(0, 9)]);
-        setHasUnread(true);
+        setRecentHarvests((prev) => {
+          const updated = [e.detail, ...prev.slice(0, 9)];
+          recalculateUnread(briefing, updated);
+          return updated;
+        });
+        setUnreadCount((c) => c + 1);
+        try {
+          localStorage.setItem('eulerfold_harvest_has_unread', 'true');
+        } catch {}
       }
     };
     window.addEventListener('eulerfold_tree_planted' as any, handleTreePlanted);
     return () => window.removeEventListener('eulerfold_tree_planted' as any, handleTreePlanted);
-  }, []);
+  }, [briefing]);
 
   useEffect(() => {
     if (!user) return;
@@ -172,10 +199,7 @@ export function DailyBriefingBell() {
     // 1. Serve immediately from module cache if already fetched today
     if (_cachedBriefingData && _cachedBriefingData.date === todayStr) {
       setBriefing(_cachedBriefingData.data);
-      const isRead = sessionStorage.getItem(`eulerfold_briefing_read_${todayStr}`);
-      if (!isRead) {
-        setHasUnread(true);
-      }
+      recalculateUnread(_cachedBriefingData.data, recentHarvests);
       return;
     }
 
@@ -199,10 +223,7 @@ export function DailyBriefingBell() {
       .then((res: DailyBriefingData) => {
         if (res && res.briefing) {
           setBriefing(res);
-          const isRead = sessionStorage.getItem(`eulerfold_briefing_read_${todayStr}`);
-          if (!isRead) {
-            setHasUnread(true);
-          }
+          recalculateUnread(res, recentHarvests);
         }
       })
       .catch((err: any) => {
@@ -212,11 +233,13 @@ export function DailyBriefingBell() {
   }, [user?.email, todayStr]);
 
   const handleOpenDropdown = () => {
-    setIsOpen(!isOpen);
-    if (hasUnread) {
-      setHasUnread(false);
+    const nextOpen = !isOpen;
+    setIsOpen(nextOpen);
+    if (nextOpen && unreadCount > 0) {
+      setUnreadCount(0);
       try {
         sessionStorage.setItem(`eulerfold_briefing_read_${todayStr}`, 'true');
+        localStorage.setItem('eulerfold_harvests_last_viewed_at', Date.now().toString());
         localStorage.removeItem('eulerfold_harvest_has_unread');
       } catch {}
     }
@@ -251,13 +274,26 @@ export function DailyBriefingBell() {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={handleOpenDropdown}
-        className="relative p-1.5 rounded-md text-text-muted hover:text-text-heading hover:bg-sidebar/50 transition-colors border border-transparent hover:border-border/40"
+        className={`relative w-8 h-8 rounded-md flex items-center justify-center transition-all group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 ${
+          isOpen
+            ? 'bg-sidebar text-text-heading border border-border shadow-xs'
+            : 'text-text-muted hover:text-text-heading hover:bg-sidebar/80 border border-transparent hover:border-border/60'
+        }`}
         title="Notifications & Daily Briefing"
-        aria-label="Notifications"
+        aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ''}`}
+        aria-expanded={isOpen}
       >
-        <EulerBellIcon className="w-4 h-4 text-text-muted hover:text-text-heading transition-colors" />
-        {hasUnread && (
-          <span className="absolute top-1 right-1 w-2 h-2 rounded-full bg-accent ring-2 ring-background" />
+        <Bell
+          className={`w-4 h-4 transition-transform duration-200 group-hover:rotate-12 group-hover:scale-105 origin-top ${
+            unreadCount > 0 ? 'text-text-heading' : 'text-text-muted group-hover:text-text-heading'
+          }`}
+        />
+        {unreadCount > 0 && (
+          <span
+            className="absolute -top-1 -right-1 min-w-[17px] h-[17px] px-1 rounded-full bg-accent text-white ring-2 ring-background text-[10px] font-mono font-bold leading-none flex items-center justify-center shadow-xs animate-in zoom-in-75 duration-200 select-none"
+          >
+            {unreadCount > 9 ? '9+' : unreadCount}
+          </span>
         )}
       </button>
 
@@ -267,8 +303,14 @@ export function DailyBriefingBell() {
           <div className="px-3.5 py-2.5 bg-sidebar border-b border-border flex items-center justify-between shrink-0">
             <div className="flex items-center gap-2">
               <span className="text-[13px] font-semibold text-text-heading">Notifications</span>
-              {hasUnread && (
-                <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+              {unreadCount > 0 ? (
+                <span className="px-1.5 py-0.5 rounded-md text-[10px] font-mono font-semibold bg-accent/10 text-accent border border-accent/20">
+                  {unreadCount} new
+                </span>
+              ) : (
+                <span className="px-1.5 py-0.5 rounded-md text-[10px] font-mono text-text-muted bg-background/60 border border-border/50">
+                  All caught up
+                </span>
               )}
             </div>
 

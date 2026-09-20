@@ -32,7 +32,6 @@ PREFERRED_FREE_MODELS = [
     "google/gemini-2.5-flash-lite",
     "google/gemini-2.0-flash-exp:free",
     "google/gemma-4-31b-it:free",
-    "nvidia/nemotron-3.5-lightning:free",
     "openrouter/free"
 ]
 
