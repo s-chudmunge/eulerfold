@@ -136,7 +136,7 @@ async def generate_topic_lesson(
         goal=goal
     )
     try:
-        model_to_use = model or getattr(settings, "OPENROUTER_MODEL", None) or getattr(settings, "DEFAULT_FEEDBACK_MODEL", None) or "meta-llama/llama-3.3-70b-instruct"
+        model_to_use = model or getattr(settings, "OPENROUTER_MODEL", None) or getattr(settings, "DEFAULT_FEEDBACK_MODEL", None) or "google/gemini-2.5-flash-lite"
         raw_text, usage = await generate_text(prompt, model=model_to_use, return_usage=True)
         
         if uid and usage:
@@ -178,7 +178,7 @@ async def generate_topic_lesson_stream(
         subtopics=subtopics,
         goal=goal
     )
-    model_to_use = model or getattr(settings, "OPENROUTER_MODEL", None) or getattr(settings, "DEFAULT_FEEDBACK_MODEL", None) or "meta-llama/llama-3.3-70b-instruct"
+    model_to_use = model or getattr(settings, "OPENROUTER_MODEL", None) or getattr(settings, "DEFAULT_FEEDBACK_MODEL", None) or "google/gemini-2.5-flash-lite"
     if meta is not None:
         meta["model_name"] = model_to_use
         meta["prompt_len"] = len(prompt)

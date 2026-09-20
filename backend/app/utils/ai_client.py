@@ -29,7 +29,7 @@ _cached_time = 0
 
 # Preferred free models ranked by reliability, speed, and auto-failover capability
 PREFERRED_FREE_MODELS = [
-    "meta-llama/llama-3.3-70b-instruct:free",
+    "google/gemini-2.5-flash-lite",
     "google/gemini-2.0-flash-exp:free",
     "google/gemma-4-31b-it:free",
     "nvidia/nemotron-3.5-lightning:free",
@@ -583,11 +583,11 @@ def log_backend_ai_usage(sb, user_id, subject, usage, source="backend", status="
 async def generate_text_stream(prompt: str, model: str = None, response_mime_type: str = None):
     """Streams generated text tokens from OpenRouter with fast model priority and fallback."""
     api_key = settings.OPENROUTER_API_KEY or os.getenv("OPENROUTER_API_KEY")
-    actual_model = model or getattr(settings, "OPENROUTER_MODEL", None) or os.getenv("OPENROUTER_MODEL") or "meta-llama/llama-3.3-70b-instruct"
+    actual_model = model or getattr(settings, "OPENROUTER_MODEL", None) or os.getenv("OPENROUTER_MODEL") or "google/gemini-2.5-flash-lite"
 
     candidates = [
         actual_model,
-        "meta-llama/llama-3.3-70b-instruct",
+        "google/gemini-2.5-flash-lite",
         "google/gemini-2.5-flash",
         "deepseek/deepseek-chat"
     ]
@@ -668,7 +668,7 @@ async def call_openrouter_with_tools(
 
     candidate_free_models = [
         model,
-        "meta-llama/llama-3.3-70b-instruct:free",
+        "google/gemini-2.5-flash-lite",
         "google/gemini-2.0-flash-exp:free"
     ]
 
