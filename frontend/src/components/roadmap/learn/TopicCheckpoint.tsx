@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { CheckCircle2, AlertCircle, Sparkles, ArrowRight, Loader2, HelpCircle, Lock } from 'lucide-react';
 import { checkpointsAPI, CheckpointItem, CheckpointEvaluateResponse } from '@/lib/api';
 
@@ -19,9 +20,10 @@ interface TopicCheckpointProps {
   isModuleCompleted?: boolean;
   nextModuleLocked?: boolean;
   isLessonReady?: boolean;
+  isPro?: boolean;
   onUnlockNextModule?: () => void;
   onSuccess: (coinsEarned: number) => void;
-  onNext: () => void;
+  onNext?: () => void;
   onBridgeCreated?: (topic: Record<string, any>, moduleNumber: number, topicIndex: number) => void;
 }
 
@@ -43,6 +45,7 @@ export default function TopicCheckpoint({
   isModuleCompleted = false,
   nextModuleLocked = false,
   isLessonReady = true,
+  isPro = false,
   onUnlockNextModule,
   onSuccess,
   onNext,
@@ -99,13 +102,22 @@ export default function TopicCheckpoint({
     }
   };
 
-  // A topic checkpoint is ready once the learner has either:
-  // 1. Read the lesson (isLessonReady), OR
-  // 2. Watched at least 50% of the video (isVideoCheckpointUnlocked)
-  // If neither has occurred yet, gate the checkpoint to ensure learning precedes testing.
-  const isLearningGated = !isCompleted && !isLessonReady && (hasVideo && !isVideoCheckpointUnlocked);
+  // If the topic has a video, the checkpoint is strictly gated until 50% of the video is watched.
+  // If there is no video, it is gated until the lesson content is ready (for Pro users who receive AI overviews).
+  const isLearningGated = !isCompleted && (
+    hasVideo ? !isVideoCheckpointUnlocked : (!isLessonReady && isPro)
+  );
 
   useEffect(() => {
+    // Concept Check is strictly a Pro feature: do not trigger for free users
+    if (!isPro && !isCompleted) {
+      setLoading(false);
+      setCheckpoint(null);
+      setEvaluation(null);
+      setSelectedOption(null);
+      return;
+    }
+
     // If cached, load immediately without debounce
     if (checkpointMemoryCache.has(cacheKey)) {
       setCheckpoint(checkpointMemoryCache.get(cacheKey)!);
@@ -140,7 +152,7 @@ export default function TopicCheckpoint({
       clearTimeout(timer);
       abortController.abort();
     };
-  }, [roadmapId, moduleNumber, topicIndex, topicTitle, hasVideo, isCompleted, isVideoCheckpointUnlocked, isLessonReady]);
+  }, [roadmapId, moduleNumber, topicIndex, topicTitle, hasVideo, isCompleted, isVideoCheckpointUnlocked, isLessonReady, isPro]);
 
   const [evaluatedCheckpointId, setEvaluatedCheckpointId] = useState<string | null>(null);
 
@@ -328,6 +340,47 @@ export default function TopicCheckpoint({
                 </button>
               )}
             </div>
+          </div>
+        </div>
+      ) : !isPro ? (
+        <div className="py-6 px-4 rounded-md border border-border bg-background/60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 animate-in fade-in duration-200">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-md bg-accent/10 border border-accent/20 flex items-center justify-center text-accent shrink-0">
+              <Sparkles className="w-4 h-4 text-amber-400" />
+            </div>
+            <div className="space-y-0.5">
+              <div className="flex items-center gap-2">
+                <h4 className="text-[13.5px] font-bold text-text-heading">
+                  Concept Check is available with EulerFold Pro
+                </h4>
+                <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-md font-bold bg-accent/20 text-accent border border-accent/30">
+                  Pro Feature
+                </span>
+              </div>
+              <p className="text-[12px] text-text-muted leading-relaxed">
+                Test your understanding after every lecture with adaptive questions and earn EulerCoins.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2.5 shrink-0 flex-wrap">
+            <Link
+              href="/pricing"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md bg-accent text-background text-[12px] font-bold hover:opacity-90 transition-opacity shadow-xs"
+            >
+              <span>Upgrade to Pro</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+            {onNext && (
+              <button
+                type="button"
+                onClick={onNext}
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-md border border-border bg-background text-text-primary text-[12px] font-bold hover:border-accent/50 transition-colors cursor-pointer"
+              >
+                <span>Next Lesson</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
         </div>
       ) : isLearningGated ? (

@@ -19,6 +19,7 @@ interface DailyBriefingData {
     streak_days: number;
     active_roadmaps_count: number;
     sessions_last_7_days: number;
+    days_since_last_activity?: number | null;
   };
 }
 

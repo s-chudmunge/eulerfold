@@ -12,6 +12,46 @@ _briefing_user_locks = {}
 _briefing_meta_lock = asyncio.Lock()
 
 
+def _parse_datetime(val) -> datetime | None:
+    """Parse various date/datetime formats from Supabase into UTC datetime."""
+    if not val:
+        return None
+    if isinstance(val, datetime):
+        return val if val.tzinfo else val.replace(tzinfo=timezone.utc)
+    if isinstance(val, date):
+        return datetime.combine(val, datetime.min.time(), tzinfo=timezone.utc)
+    if isinstance(val, str):
+        val = val.strip()
+        try:
+            if val.endswith("Z"):
+                val = val[:-1] + "+00:00"
+            dt = datetime.fromisoformat(val)
+            if not dt.tzinfo:
+                dt = dt.replace(tzinfo=timezone.utc)
+            return dt
+        except Exception:
+            try:
+                d = date.fromisoformat(val[:10])
+                return datetime.combine(d, datetime.min.time(), tzinfo=timezone.utc)
+            except Exception:
+                return None
+    return None
+
+
+def _format_relative_time(val, now_utc: datetime) -> str:
+    """Return a human-friendly relative time string for LLM contextual awareness."""
+    dt = _parse_datetime(val)
+    if not dt:
+        return "Unknown date"
+    diff_days = (now_utc.date() - dt.date()).days
+    if diff_days <= 0:
+        return "today"
+    elif diff_days == 1:
+        return "yesterday (1 day ago)"
+    else:
+        return f"{diff_days} days ago ({dt.strftime('%Y-%m-%d')})"
+
+
 async def generate_autonomous_daily_briefing(current_user: User, sb) -> dict:
     """
     Aggregates comprehensive learner history across learning sessions, recent roadmaps,
@@ -28,10 +68,12 @@ async def generate_autonomous_daily_briefing(current_user: User, sb) -> dict:
         user_lock = _briefing_user_locks[email]
 
     async with user_lock:
-        today_str = date.today().isoformat()
+        now_utc = datetime.now(timezone.utc)
+        today_date = now_utc.date()
+        today_str = today_date.isoformat()
 
         # 1. Fetch user profile stats & existing briefing from DB metadata
-        profile_res = sb.table("profiles").select("display_name, current_streak, eulercoins, metadata").eq("email", email).execute()
+        profile_res = sb.table("profiles").select("display_name, current_streak, eulercoins, metadata, last_active_date").eq("email", email).execute()
         profile = profile_res.data[0] if profile_res.data else {}
         display_name = profile.get("display_name") or email.split("@")[0]
         streak_days = profile.get("current_streak", 0)
@@ -52,16 +94,16 @@ async def generate_autonomous_daily_briefing(current_user: User, sb) -> dict:
         roadmaps_res = sb.table("roadmaps").select("id, title, subject, goal, updated_at, slug, roadmap_plan, last_position").eq("email", email).order("updated_at", desc=True).limit(5).execute()
         roadmaps = roadmaps_res.data or []
 
-        # 3. Fetch learning sessions (last 14 days)
-        fourteen_days_ago = (datetime.now(timezone.utc) - timedelta(days=14)).isoformat()
+        # 3. Fetch learning sessions (retrieve recent sessions for history and pacing)
         try:
-            sessions_res = sb.table("learning_sessions").select("duration_seconds, created_at").eq("user_id", uid).gte("created_at", fourteen_days_ago).order("created_at", desc=True).limit(50).execute()
+            sessions_res = sb.table("learning_sessions").select("duration_seconds, created_at").eq("user_id", uid).order("created_at", desc=True).limit(50).execute()
             recent_sessions = sessions_res.data or []
         except Exception as e:
             logger.warning(f"Error fetching learning_sessions for briefing: {e}")
             recent_sessions = []
 
-        sessions_last_7_days = sum(1 for s in recent_sessions if s.get("created_at", "") >= (datetime.now(timezone.utc) - timedelta(days=7)).isoformat())
+        seven_days_ago_iso = (now_utc - timedelta(days=7)).isoformat()
+        sessions_last_7_days = sum(1 for s in recent_sessions if s.get("created_at", "") >= seven_days_ago_iso)
 
         # 4. Fetch recent MCQ / practice quiz performances
         try:
@@ -97,8 +139,90 @@ async def generate_autonomous_daily_briefing(current_user: User, sb) -> dict:
             logger.warning(f"Error fetching submissions for briefing: {e}")
             recent_submissions = []
 
+        # Format quizzes and submissions with explicit relative times so LLM knows their exact age
+        formatted_quizzes = []
+        for q in recent_quizzes:
+            created = q.get("created_at")
+            formatted_quizzes.append({
+                "topic": q.get("topic_name") or "Practice Topic",
+                "score": q.get("score"),
+                "status": q.get("status"),
+                "when": _format_relative_time(created, now_utc)
+            })
+
+        formatted_submissions = []
+        for s in recent_submissions:
+            submitted = s.get("submitted_at")
+            eval_text = (s.get("evaluation") or "").strip()
+            if len(eval_text) > 120:
+                eval_text = eval_text[:117] + "..."
+            formatted_submissions.append({
+                "evaluation_level": s.get("evaluation_level"),
+                "summary": eval_text,
+                "when": _format_relative_time(submitted, now_utc)
+            })
+
+        # Calculate user activity chronology across all tables
+        activity_timestamps = []
+
+        if profile.get("last_active_date"):
+            dt = _parse_datetime(profile.get("last_active_date"))
+            if dt:
+                activity_timestamps.append(dt)
+
+        for s in recent_sessions:
+            dt = _parse_datetime(s.get("created_at"))
+            if dt:
+                activity_timestamps.append(dt)
+
+        for q in recent_quizzes:
+            dt = _parse_datetime(q.get("created_at"))
+            if dt:
+                activity_timestamps.append(dt)
+
+        for sub in recent_submissions:
+            dt = _parse_datetime(sub.get("submitted_at"))
+            if dt:
+                activity_timestamps.append(dt)
+
+        for r in roadmaps:
+            dt = _parse_datetime(r.get("updated_at"))
+            if dt:
+                activity_timestamps.append(dt)
+
+        days_since_activity = None
+        days_since_prior = None
+        activity_context = "New learner or no prior activity recorded"
+
+        if activity_timestamps:
+            latest_activity_dt = max(activity_timestamps)
+            days_since_activity = max(0, (today_date - latest_activity_dt.date()).days)
+            last_active_date_str = latest_activity_dt.strftime("%Y-%m-%d")
+
+            prior_activities = [dt for dt in activity_timestamps if dt.date() < today_date]
+            if prior_activities:
+                latest_prior_dt = max(prior_activities)
+                days_since_prior = max(1, (today_date - latest_prior_dt.date()).days)
+                prior_date_str = latest_prior_dt.strftime("%Y-%m-%d")
+            else:
+                latest_prior_dt = None
+                days_since_prior = None
+                prior_date_str = None
+
+            if days_since_activity == 0:
+                if days_since_prior and days_since_prior > 1:
+                    activity_context = f"Active today. Prior activity before today was {days_since_prior} days ago on {prior_date_str} (learner is returning after a break)."
+                elif days_since_prior == 1:
+                    activity_context = "Active today and yesterday (consistent study streak)."
+                else:
+                    activity_context = "Active today (first recorded session)."
+            elif days_since_activity == 1:
+                activity_context = "Active yesterday (1 day ago, consistent study rhythm)."
+            else:
+                activity_context = f"Returning after a break: {days_since_activity} days since last activity (last active on {last_active_date_str})."
+
         # 6. Fetch upcoming / scheduled study tasks
-        today_iso = date.today().isoformat()
+        today_iso = today_str
         try:
             tasks_res = sb.table("study_tasks").select("title, scheduled_date, is_completed").eq("user_email", email).gte("scheduled_date", today_iso).order("scheduled_date").limit(5).execute()
             scheduled_tasks = tasks_res.data or []
@@ -152,6 +276,7 @@ async def generate_autonomous_daily_briefing(current_user: User, sb) -> dict:
                 "roadmap_id": r.get("id"),
                 "title": r_title,
                 "progress_percent": pct,
+                "last_updated": _format_relative_time(r.get("updated_at"), now_utc),
                 "next_up": pending_topics[0] if pending_topics else None
             }
             roadmap_summaries.append(summary_item)
@@ -166,40 +291,64 @@ async def generate_autonomous_daily_briefing(current_user: User, sb) -> dict:
             primary_roadmap = first_r.get("title") or first_r.get("subject") or "Current Subject"
             primary_roadmap_slug = first_r.get("slug") or str(first_r.get("id"))
 
-        # Fallback values
-        fallback_briefing = f"Welcome back, {display_name}. Keep your momentum going today by advancing through your study goals."
-        fallback_badge = "PROGRESS"
-        fallback_label = "Continue Learning"
+        # Fallback values tailored to returning vs daily active learners
+        is_returning = False
+        if days_since_activity is not None and days_since_activity > 1:
+            is_returning = True
+        elif days_since_prior is not None and days_since_prior > 1:
+            is_returning = True
+
+        if is_returning:
+            fallback_briefing = f"Welcome back, {display_name}. Great to see you back. Pick up right where you left off by advancing through your study goals."
+            fallback_badge = "WELCOME BACK"
+            fallback_label = "Resume Learning"
+        else:
+            fallback_briefing = f"Welcome back, {display_name}. Keep your momentum going today by advancing through your study goals."
+            fallback_badge = "PROGRESS"
+            fallback_label = "Continue Learning"
 
         if next_action_topic:
             t_name = next_action_topic["topic"]
-            fallback_briefing = f"Welcome back, {display_name}. Ready to dive back in? You're on track to master '{t_name}' next. Keep your momentum going and tackle your next milestone today."
-            fallback_badge = (t_name.split()[0] if t_name else "UP NEXT").upper()[:12]
-            fallback_label = f"Continue: {t_name}"[:36]
+            if is_returning:
+                fallback_briefing = f"Welcome back, {display_name}. Great to see you back. Ease back into your routine by tackling '{t_name}' today."
+                fallback_badge = (t_name.split()[0] if t_name else "RESUME").upper()[:12]
+                fallback_label = f"Resume: {t_name}"[:36]
+            else:
+                fallback_briefing = f"Welcome back, {display_name}. Ready to dive back in? You're on track to master '{t_name}' next. Keep your momentum going and tackle your next milestone today."
+                fallback_badge = (t_name.split()[0] if t_name else "UP NEXT").upper()[:12]
+                fallback_label = f"Continue: {t_name}"[:36]
 
         # 8. LLM synthesis
+        days_since_display = f"{days_since_activity} days" if days_since_activity is not None else "N/A (New learner)"
+
         prompt = f"""
 You are Goldfish, the personal AI study co-pilot on EulerFold.
-Analyze the following learner activity dossier and write a concise, motivating, highly actionable daily study briefing (3-4 sentences maximum).
+Analyze the following learner activity dossier and write a concise, motivating, actionable daily study briefing (3-4 sentences maximum).
 
 Learner Name: {display_name}
 Current Study Streak: {streak_days} days
+Days Since Last Activity: {days_since_display}
+Last User Activity Context: {activity_context}
 Total Focus Sessions (last 7 days): {sessions_last_7_days}
 Active Roadmaps: {json.dumps(roadmap_summaries)}
-Recent Practice Quizzes: {json.dumps(recent_quizzes)}
+Recent Practice Quizzes: {json.dumps(formatted_quizzes)}
 Top Verified Skills: {json.dumps(top_skills)}
-Recent Proof-of-Work Submissions: {json.dumps(recent_submissions)}
+Recent Proof-of-Work Submissions: {json.dumps(formatted_submissions)}
 Upcoming Study Tasks: {json.dumps(scheduled_tasks)}
 Next Recommended Learning Target: {json.dumps(next_action_topic)}
 
 INSTRUCTIONS:
 1. Greet the learner warmly by their first name ({display_name}).
-2. Acknowledge their real recent progress, streak, or current status with encouraging directness.
-3. Recommend EXACTLY ONE specific, high-leverage action to take right now (e.g. advance their next topic, review a concept, or test their knowledge).
+2. TIMING & RETURNING LEARNER AWARENESS (CRITICAL):
+   - Pay close attention to 'Days Since Last Activity', 'Last User Activity Context', and the 'when' timing on quizzes and submissions.
+   - If the learner is returning after a break (Days Since Last Activity > 1 or prior activity was > 1 day ago): warmly welcome them back into their study rhythm. DO NOT claim that old quizzes, submissions, or milestones "just" happened or that they have active daily momentum. Acknowledge their return, encourage easing back into the groove without guilt, and guide them to their next learning target.
+   - If the learner is active today or yesterday (Days Since Last Activity <= 1) with regular momentum, acknowledge their streak and consistency with encouraging directness.
+   - NEVER use the word "just" or "recently" to describe an event, quiz, or submission that happened days or weeks ago. Refer to past accomplishments accurately based on the relative age provided.
+3. Recommend EXACTLY ONE specific, direct action to take right now (e.g. advance their next topic, review a concept, or test their knowledge).
 4. Strictly 3 to 4 sentences. NEVER use bullet points. Write in fluid, natural paragraphs.
 5. NEVER sound clinical, robotic, or generic. DO NOT say "According to your logs" or "Dossier indicates". Sound like an attentive, sharp mentor who remembers everything they've studied.
-6. Provide a short, uppercase 1-2 word highlight badge (e.g., 'STREAK', 'PYTHON', 'CHECKPOINT', 'MILESTONE', 'PRACTICE').
-7. Provide a concise button label (e.g., 'Continue: Functions', 'Review Neural Operators', 'Start Quiz') maximum 35 characters.
+6. Provide a short, uppercase 1-2 word highlight badge (e.g., 'STREAK', 'WELCOME BACK', 'PYTHON', 'CHECKPOINT', 'MILESTONE', 'PRACTICE').
+7. Provide a concise button label (e.g., 'Continue: Functions', 'Resume Learning', 'Start Quiz') maximum 35 characters.
 
 Return valid JSON ONLY with this exact schema:
 {{
@@ -245,7 +394,8 @@ Return valid JSON ONLY with this exact schema:
             "stats": {
                 "streak_days": streak_days,
                 "active_roadmaps_count": len(roadmaps),
-                "sessions_last_7_days": sessions_last_7_days
+                "sessions_last_7_days": sessions_last_7_days,
+                "days_since_last_activity": days_since_activity
             }
         }
 

@@ -9,8 +9,8 @@ import { AlreadySignedInMessage, LandingOnboardingTrigger, ScrollToHeroCTA } fro
 import HeroSection from '@/components/landing/HeroSection';
 
 import ProductEcosystem from '@/components/landing/ProductEcosystem';
-import GenerationSystems from '@/components/landing/GenerationSystems';
 import SourcesConstellation from '@/components/landing/SourcesConstellation';
+import GenerationSystems from '@/components/landing/GenerationSystems';
 import LatestUpdates from '@/components/landing/LatestUpdates';
 
 export const revalidate = 3600;
@@ -69,11 +69,11 @@ export default async function LandingPage() {
       <main className="flex-grow">
         <HeroSection />
 
-        <GenerationSystems />
+        <ProductEcosystem />
 
         <SourcesConstellation />
 
-        <ProductEcosystem />
+        <GenerationSystems />
         
         <LatestUpdates />
 

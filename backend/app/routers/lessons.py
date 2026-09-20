@@ -1,14 +1,15 @@
 import asyncio
 import logging
-from typing import List
+from typing import List, Optional
 
-from fastapi import APIRouter, Depends, BackgroundTasks, HTTPException
+from fastapi import APIRouter, Depends, BackgroundTasks, HTTPException, Request
+from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
 
 from app.core.auth import get_current_user
 from app.core.supabase_client import get_supabase_client
 from app.schemas import User
-from app.services.lessons_service import generate_topic_lesson, build_lesson_prompt
+from app.services.lessons_service import generate_topic_lesson, generate_topic_lesson_stream, build_lesson_prompt
 
 logger = logging.getLogger(__name__)
 
@@ -22,7 +23,7 @@ class LessonRequest(BaseModel):
     topic_title: str
     subtopics: List[str] = []
     goal: str = ""
-    model: str = "cloud" # "cloud" or "local"
+    model: Optional[str] = "cloud"
     force_regenerate: bool = False
 
 class LessonPromptRequest(BaseModel):
@@ -47,6 +48,21 @@ async def generate_lesson(
     current_user: User = Depends(get_current_user)
 ):
     sb = get_supabase_client()
+    uid = current_user.supabase_uid or str(current_user.id)
+
+    # Pro gating: Goldfish AI Overview is strictly a Pro feature
+    is_pro = bool(current_user.is_pro)
+    if not is_pro and current_user.supabase_uid:
+        prof_res = sb.table("profiles").select("is_pro").eq("supabase_uid", current_user.supabase_uid).execute()
+        if prof_res.data and prof_res.data[0].get("is_pro"):
+            is_pro = True
+    elif not is_pro and current_user.email:
+        prof_res = sb.table("profiles").select("is_pro").eq("email", current_user.email).execute()
+        if prof_res.data and prof_res.data[0].get("is_pro"):
+            is_pro = True
+
+    if not is_pro:
+        raise HTTPException(status_code=403, detail="Goldfish AI Overview is a Pro feature. Upgrade to Pro to unlock.")
     
     lock_key = f"{req.roadmap_id}:{req.module_number}:{req.topic_index}"
     async with _lesson_dict_lock:
@@ -85,7 +101,6 @@ async def generate_lesson(
             if existing_lesson and not req.force_regenerate:
                 return {"lesson_content": existing_lesson}
                 
-            target_model = "local" if req.model == "local" else None
             lesson_content = await generate_topic_lesson(
                 sb=sb,
                 uid=current_user.supabase_uid or str(current_user.id),
@@ -95,8 +110,7 @@ async def generate_lesson(
                 subject=req.subject,
                 topic_title=req.topic_title,
                 subtopics=req.subtopics,
-                goal=req.goal,
-                model=target_model
+                goal=req.goal
             )
             
             topic["lesson_content"] = lesson_content
@@ -114,6 +128,133 @@ async def generate_lesson(
         except Exception as e:
             logger.error(f"Error in generate_lesson: {e}")
             raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/generate-stream")
+async def generate_lesson_stream(
+    req: LessonRequest,
+    request: Request,
+    current_user: User = Depends(get_current_user)
+):
+    sb = get_supabase_client()
+    uid = current_user.supabase_uid or str(current_user.id)
+
+    # Pro gating: Goldfish AI Overview is strictly a Pro feature
+    is_pro = bool(current_user.is_pro)
+    if not is_pro and uid:
+        prof_res = sb.table("profiles").select("is_pro").eq("supabase_uid", uid).execute()
+        if prof_res.data and prof_res.data[0].get("is_pro"):
+            is_pro = True
+    elif not is_pro and current_user.email:
+        prof_res = sb.table("profiles").select("is_pro").eq("email", current_user.email).execute()
+        if prof_res.data and prof_res.data[0].get("is_pro"):
+            is_pro = True
+
+    if not is_pro:
+        async def denied_stream():
+            yield "Error: Goldfish AI Overview is a Pro feature. Upgrade to Pro to unlock."
+        return StreamingResponse(denied_stream(), media_type="text/plain", status_code=403)
+
+    # Global per-roadmap lock: strictly enforce only ONE topic stream at a time per roadmap
+    lock_key = f"roadmap:{req.roadmap_id}"
+    async with _lesson_dict_lock:
+        if lock_key not in _lesson_locks:
+            _lesson_locks[lock_key] = asyncio.Lock()
+        lock = _lesson_locks[lock_key]
+
+    async def stream_generator():
+        # Abort immediately if client already disconnected
+        if await request.is_disconnected():
+            return
+
+        async with lock:
+            if await request.is_disconnected():
+                return
+
+            roadmap_res = sb.table("roadmaps").select("roadmap_plan").eq("id", req.roadmap_id).execute()
+            if not roadmap_res.data:
+                yield "Error: Roadmap not found"
+                return
+                
+            plan = roadmap_res.data[0].get("roadmap_plan")
+            if not plan:
+                yield "Error: Roadmap plan not found"
+                return
+                
+            if isinstance(plan, str):
+                import json
+                try:
+                    plan = json.loads(plan)
+                except Exception:
+                    yield "Error: Invalid roadmap plan"
+                    return
+                    
+            modules = plan.get("modules", [])
+            if req.module_number < 1 or req.module_number > len(modules):
+                yield "Error: Invalid module number"
+                return
+                
+            mod = modules[req.module_number - 1]
+            topics = mod.get("topics", [])
+            
+            if req.topic_index < 0 or req.topic_index >= len(topics):
+                yield "Error: Invalid topic index"
+                return
+                
+            topic = topics[req.topic_index]
+            existing_lesson = topic.get("lesson_content")
+            
+            if existing_lesson and not req.force_regenerate:
+                yield existing_lesson
+                return
+
+            accumulated = []
+            try:
+                async for chunk in generate_topic_lesson_stream(
+                    sb=sb,
+                    uid=uid,
+                    roadmap_id=req.roadmap_id,
+                    module_number=req.module_number,
+                    topic_index=req.topic_index,
+                    subject=req.subject,
+                    topic_title=req.topic_title,
+                    subtopics=req.subtopics,
+                    goal=req.goal
+                ):
+                    if await request.is_disconnected():
+                        logger.info(f"Client disconnected from lesson stream for topic '{req.topic_title}'. Aborting.")
+                        break
+                    accumulated.append(chunk)
+                    yield chunk
+            except Exception as stream_err:
+                logger.error(f"Error during streaming lesson: {stream_err}")
+                yield f"\n\n[Generation Error: {stream_err}]"
+                return
+
+            full_lesson = "".join(accumulated).strip()
+            if full_lesson:
+                from app.utils.ai_client import strip_thinking_process, log_backend_ai_usage
+                clean_lesson = strip_thinking_process(full_lesson)
+                topic["lesson_content"] = clean_lesson
+                try:
+                    sb.table("roadmaps").update({"roadmap_plan": plan}).eq("id", req.roadmap_id).execute()
+                except Exception as db_err:
+                    logger.warning(f"Could not persist streamed lesson_content to roadmap: {db_err}")
+
+                if uid:
+                    try:
+                        prompt_est = len(req.topic_title + req.subject + req.goal) // 4
+                        comp_est = len(clean_lesson) // 4
+                        log_backend_ai_usage(
+                            sb,
+                            uid,
+                            f"Micro-Lesson (Stream): {req.topic_title} (Cost: 0 Credits)",
+                            {"prompt_tokens": prompt_est, "completion_tokens": comp_est, "total_tokens": prompt_est + comp_est},
+                            source="backend"
+                        )
+                    except Exception as log_err:
+                        logger.warning(f"Could not log micro-lesson AI usage: {log_err}")
+
+    return StreamingResponse(stream_generator(), media_type="text/plain; charset=utf-8")
 
 @router.post("/get-prompt")
 async def get_lesson_prompt_endpoint(req: LessonPromptRequest):

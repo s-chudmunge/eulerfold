@@ -35,6 +35,7 @@ class Settings(BaseSettings):
     # Default AI Models for different use cases - centralized configuration
     DEFAULT_ROADMAP_MODEL: str = ""
     DEFAULT_FEEDBACK_MODEL: str = ""
+    OPENROUTER_MODEL: str = "meta-llama/llama-3.3-70b-instruct"
     DEFAULT_LEARNING_CONTENT_MODEL: str = ""
     DEFAULT_VISUALIZATION_MODEL: str = ""
     DEFAULT_LEARNING_RESOURCES_MODEL: str = ""

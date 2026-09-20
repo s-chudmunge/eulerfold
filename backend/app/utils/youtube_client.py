@@ -224,6 +224,10 @@ TRUSTED_CHANNELS = frozenset([
     "the cherno", "cherno", "javidx9", "onelonecoder", "coffee before arch", "lefticus",
     "jason turner - c++ weekly", "c++ weekly", "cppcon", "meeting cpp", "codevault",
     "low level learning", "lowlevellearning", "bisqwit", "creel", "cplusplusguy",
+    "cppnuts", "gary explains", "aleksandar haber phd",
+    # Quantitative Finance, Mathematical Finance & Financial Engineering
+    "luigi ballabio", "quant next", "quantpie", "patrick boyle", "baruch college",
+    "bionic turtle", "mit sloan", "columbia business school",
     # C# & .NET
     "nick chapsas", "tim corey", "iamtimcorey", "claudio bernasconi", "raw coding",
     "kavindu gayan", "les jackson", "julio casagrande", "code opinion", "dotnet",
@@ -354,7 +358,7 @@ OFFICIAL_KEYWORDS = [
     "nasa", "cern", "jpl", "esa", "polytechnic", "purdue", "michigan", 
     "eth zurich", "ocw", "ucla", "imperial", "waterloo", "ieee", "acm", 
     "nsf", "darpa", "national lab", "department of", "perimeter institute", "ictp",
-    "indian institute of technology", "iit", "iiit"
+    "indian institute of technology", "iit", "iiit", "baruch"
 ]
 
 # Words to ignore when computing title relevance
@@ -498,9 +502,11 @@ def _score_video(
 
     # Spoken language gate: reject videos explicitly targeting non-English speakers
     # (unless the search query explicitly asks for it)
-    non_english_keywords = ["in hindi", "in telugu", "in tamil", "in malayalam", "in urdu", "in bangla", "in bengali", "in marathi"]
+    non_english_keywords = ["in hindi", "in telugu", "in tamil", "in malayalam", "in urdu", "in bangla", "in bengali", "in marathi", "in kannada", "in gujarati"]
     title_lower = video_title.lower()
     if any(k in title_lower for k in non_english_keywords) and not any(k in search_query.lower() for k in non_english_keywords):
+        return -1.0
+    if re.search(r'[\u0900-\u0D7F]', video_title) and not re.search(r'[\u0900-\u0D7F]', search_query):
         return -1.0
 
     # Cross-language / domain conflict gate: strictly reject wrong-language videos (e.g. C++ or JS for Python)

@@ -27,16 +27,13 @@ current_ai_subject = contextvars.ContextVar("current_ai_subject", default=None)
 _cached_free_model = None
 _cached_time = 0
 
-# Preferred free models ranked by instruction-following and textbook prose capability
+# Preferred free models ranked by reliability, speed, and auto-failover capability
 PREFERRED_FREE_MODELS = [
+    "openrouter/free",
     "meta-llama/llama-3.3-70b-instruct:free",
     "google/gemini-2.0-flash-exp:free",
-    "google/gemini-2.0-flash-lite-preview:free",
-    "qwen/qwen-2.5-coder-32b-instruct:free",
-    "deepseek/deepseek-chat:free",
-    "mistralai/mistral-small-24b-instruct-2501:free",
-    "nvidia/nemotron-3.5-lightning:free",
-    "openrouter/free"
+    "google/gemma-4-31b-it:free",
+    "nvidia/nemotron-3.5-lightning:free"
 ]
 
 def strip_thinking_process(text: str) -> str:
@@ -163,11 +160,10 @@ async def _call_openrouter(prompt: str, model: str, response_mime_type: str):
 
     async with httpx.AsyncClient(timeout=90.0) as client:
         for attempt in range(max_retries):
-            if attempt > 0 and model.endswith(":free"):
-                # Rotate to another free model on retry
-                fallback_idx = attempt % len(PREFERRED_FREE_MODELS)
-                payload["model"] = PREFERRED_FREE_MODELS[fallback_idx]
-                logger.info(f"OpenRouter attempt {attempt + 1}: Retrying with fallback free model {payload['model']}...")
+            if attempt > 0:
+                # Rotate to openrouter/free meta-router on retry
+                payload["model"] = "openrouter/free"
+                logger.info(f"OpenRouter attempt {attempt + 1}: Retrying with openrouter/free meta-router...")
                 
             try:
                 response = await client.post(
@@ -194,7 +190,7 @@ async def _call_openrouter(prompt: str, model: str, response_mime_type: str):
                     ct = max(1, len(content) // 4)
                     usage = {"prompt_tokens": pt, "completion_tokens": ct, "total_tokens": pt + ct}
                     
-                return content, usage, model
+                return content, usage, payload["model"]
 
             except httpx.HTTPStatusError as e:
                 error_msg = response.text
@@ -202,10 +198,7 @@ async def _call_openrouter(prompt: str, model: str, response_mime_type: str):
                 
                 if e.response.status_code == 429:
                     if attempt == max_retries - 1:
-                        raise HTTPException(
-                            status_code=429, 
-                            detail="The AI engine is currently under heavy load or rate-limited on OpenRouter. Please try again in a few minutes."
-                        )
+                        raise RuntimeError(f"OpenRouter rate limit (429): {error_msg}")
                 elif e.response.status_code >= 400 and e.response.status_code < 500 and e.response.status_code != 429:
                     # Client errors (like context length exceeded, invalid key) shouldn't be retried
                     raise RuntimeError(f"OpenRouter client error: {e.response.status_code} - {error_msg}")
@@ -585,9 +578,18 @@ def log_backend_ai_usage(sb, user_id, subject, usage, source="backend", status="
         logger.error(f"Failed to log backend AI usage: {e}")
 
 async def generate_text_stream(prompt: str, model: str = None, response_mime_type: str = None):
-    """Streams generated text tokens from OpenRouter with non-stream fallback."""
+    """Streams generated text tokens from OpenRouter with fast model priority and fallback."""
     api_key = settings.OPENROUTER_API_KEY or os.getenv("OPENROUTER_API_KEY")
-    actual_model = model or await get_fastest_free_openrouter_model()
+    actual_model = model or getattr(settings, "OPENROUTER_MODEL", None) or os.getenv("OPENROUTER_MODEL") or "meta-llama/llama-3.3-70b-instruct"
+
+    candidates = [
+        actual_model,
+        "meta-llama/llama-3.3-70b-instruct",
+        "google/gemini-2.5-flash",
+        "deepseek/deepseek-chat"
+    ]
+    seen = set()
+    models_to_try = [m for m in candidates if m and not (m in seen or seen.add(m))]
 
     if api_key:
         headers = {
@@ -596,35 +598,42 @@ async def generate_text_stream(prompt: str, model: str = None, response_mime_typ
             "HTTP-Referer": "https://www.eulerfold.com",
             "X-Title": "EulerFold Cloud AI"
         }
-        payload = {
-            "model": actual_model,
-            "messages": [{"role": "user", "content": prompt}],
-            "temperature": 0.1,
-            "top_p": 0.95,
-            "stream": True
-        }
-        if response_mime_type == "application/json":
-            payload["response_format"] = {"type": "json_object"}
+        for target_model in models_to_try:
+            payload = {
+                "model": target_model,
+                "messages": [{"role": "user", "content": prompt}],
+                "temperature": 0.1,
+                "top_p": 0.95,
+                "stream": True,
+                "include_reasoning": False
+            }
+            if response_mime_type == "application/json":
+                payload["response_format"] = {"type": "json_object"}
 
-        try:
-            async with httpx.AsyncClient(timeout=90.0) as client:
-                async with client.stream("POST", "https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload) as response:
-                    response.raise_for_status()
-                    async for line in response.aiter_lines():
-                        if line.startswith("data: "):
-                            data_str = line[6:].strip()
-                            if data_str == "[DONE]":
-                                break
-                            try:
-                                chunk_json = json.loads(data_str)
-                                token = chunk_json.get("choices", [{}])[0].get("delta", {}).get("content", "")
-                                if token:
-                                    yield token
-                            except Exception:
-                                pass
-            return
-        except Exception as e:
-            logger.error(f"OpenRouter streaming failed: {e}. Falling back to generate_text.")
+            try:
+                async with httpx.AsyncClient(timeout=30.0) as client:
+                    async with client.stream("POST", "https://openrouter.ai/api/v1/chat/completions", headers=headers, json=payload) as response:
+                        if response.status_code != 200:
+                            logger.warning(f"OpenRouter streaming with {target_model} returned {response.status_code}")
+                            continue
+                        streamed_any = False
+                        async for line in response.aiter_lines():
+                            if line.startswith("data: "):
+                                data_str = line[6:].strip()
+                                if data_str == "[DONE]":
+                                    break
+                                try:
+                                    chunk_json = json.loads(data_str)
+                                    token = chunk_json.get("choices", [{}])[0].get("delta", {}).get("content", "")
+                                    if token:
+                                        streamed_any = True
+                                        yield token
+                                except Exception:
+                                    pass
+                        if streamed_any:
+                            return
+            except Exception as e:
+                logger.warning(f"OpenRouter streaming with {target_model} failed: {e}")
 
     full_text = await generate_text(prompt, model=model, response_mime_type=response_mime_type)
     yield full_text

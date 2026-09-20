@@ -1148,7 +1148,8 @@ export const goldfishAPI = {
         stats?: {
             streak_days: number,
             active_roadmaps_count: number,
-            sessions_last_7_days: number
+            sessions_last_7_days: number,
+            days_since_last_activity?: number | null
         }
     }> => {
         const response = await api.get('/goldfish/daily-briefing');
@@ -1245,6 +1246,57 @@ export const lessonsAPI = {
     }, signal?: AbortSignal): Promise<{ lesson_content: string }> => {
         const response = await api.post('/lessons/generate', payload, { signal });
         return response.data;
+    },
+    generateStream: async (
+        payload: {
+            roadmap_id: number;
+            module_number: number;
+            topic_index: number;
+            subject: string;
+            topic_title: string;
+            subtopics?: string[];
+            goal?: string;
+            model?: string;
+            force_regenerate?: boolean;
+        },
+        onChunk: (token: string) => void,
+        signal?: AbortSignal
+    ): Promise<string> => {
+        const { data: { session } } = await getDeduplicatedSession();
+        const response = await fetch(`${BACKEND_URL}/lessons/generate-stream`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                ...(session?.access_token ? { 'Authorization': `Bearer ${session.access_token}` } : {})
+            },
+            body: JSON.stringify(payload),
+            signal
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(errorText || `Failed to stream lesson: ${response.statusText}`);
+        }
+
+        if (!response.body) {
+            throw new Error('Response body is null');
+        }
+
+        const reader = response.body.getReader();
+        const decoder = new TextDecoder('utf-8');
+        let accumulated = '';
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+            const chunk = decoder.decode(value, { stream: true });
+            if (chunk) {
+                accumulated += chunk;
+                onChunk(chunk);
+            }
+        }
+
+        return accumulated;
     },
     getPrompt: async (payload: {
         subject: string;

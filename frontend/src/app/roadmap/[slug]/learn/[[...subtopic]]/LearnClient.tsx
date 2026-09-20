@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { RoadmapData } from '@/lib/api';
 import Link from 'next/link';
@@ -73,16 +73,40 @@ export default function LearnClient({
   const [isUnlockModalOpen, setIsUnlockModalOpen] = useState(false);
   const [unlockTargetModuleNumber, setUnlockTargetModuleNumber] = useState<number>(2);
   const [videoProgress, setVideoProgress] = useState<number>(0);
+  const [videoSeconds, setVideoSeconds] = useState<number>(0);
+  const [isVideoOneMinuteWatched, setIsVideoOneMinuteWatched] = useState<boolean>(false);
   const [isCheckpointUnlocked, setIsCheckpointUnlocked] = useState(false);
   const [isLessonReady, setIsLessonReady] = useState(false);
+
+  const currentTopic = roadmap?.roadmap_plan?.modules?.[currentModuleIndex]?.topics?.[currentTopicIndex];
 
   // A checkpoint remains available once this topic reaches its halfway mark,
   // even if the learner pauses or seeks back in the video.
   useEffect(() => {
     setVideoProgress(0);
+    setVideoSeconds(0);
+    setIsVideoOneMinuteWatched(false);
     setIsCheckpointUnlocked(false);
     setIsLessonReady(Boolean(currentTopic?.lesson_content));
   }, [currentModuleIndex, currentTopicIndex, currentTopic?.lesson_content]);
+
+  const currentSubtopics = useMemo(() => {
+    return (currentTopic?.subtopics || [])
+      .map((s: any) => (typeof s === 'string' ? s : (s?.title || s?.name || '')))
+      .filter(Boolean);
+  }, [currentTopic?.subtopics]);
+
+  const handleLessonLoaded = useCallback((content: string) => {
+    setRoadmap((prev: any) => {
+      if (!prev) return prev;
+      const updatedPlan = structuredClone(prev.roadmap_plan);
+      if (updatedPlan.modules?.[currentModuleIndex]?.topics?.[currentTopicIndex]) {
+        updatedPlan.modules[currentModuleIndex].topics[currentTopicIndex].lesson_content = content;
+      }
+      return { ...prev, roadmap_plan: updatedPlan };
+    });
+    setIsLessonReady(true);
+  }, [currentModuleIndex, currentTopicIndex, setRoadmap]);
 
   const handleOpenUnlockModal = (targetModNum?: number) => {
     const target = targetModNum || (currentModuleIndex + 2);
@@ -190,7 +214,6 @@ export default function LearnClient({
 
   const modules = roadmap.roadmap_plan?.modules || [];
   const currentModule = modules[currentModuleIndex];
-  const currentTopic = currentModule?.topics?.[currentTopicIndex];
   const isTopicCompleted = completedTopics.has(`${currentModuleIndex + 1}-${currentTopicIndex}`);
 
   let upNextTopic = null;
@@ -349,25 +372,21 @@ export default function LearnClient({
 
                   {/* AI-Generated Micro-Lesson (Primary Foundation) */}
                   <TopicLesson
+                    key={`${roadmap.id}-${currentModuleIndex}-${currentTopicIndex}`}
                     roadmapId={roadmap.id}
                     moduleNumber={currentModuleIndex + 1}
                     topicIndex={currentTopicIndex}
                     subject={roadmap.subject || roadmap.title || 'Course'}
                     topicTitle={currentTopic?.title || ''}
-                    subtopics={(currentTopic?.subtopics || []).map((s: any) => (typeof s === 'string' ? s : (s?.title || s?.name || ''))).filter(Boolean)}
+                    subtopics={currentSubtopics}
                     goal={roadmap.goal || roadmap.subject || ''}
                     existingLessonContent={currentTopic?.lesson_content || null}
-                    onLessonLoaded={(content) => {
-                      setRoadmap((prev: any) => {
-                        if (!prev) return prev;
-                        const updatedPlan = structuredClone(prev.roadmap_plan);
-                        if (updatedPlan.modules?.[currentModuleIndex]?.topics?.[currentTopicIndex]) {
-                          updatedPlan.modules[currentModuleIndex].topics[currentTopicIndex].lesson_content = content;
-                        }
-                        return { ...prev, roadmap_plan: updatedPlan };
-                      });
-                      setIsLessonReady(true);
-                    }}
+                    hasVideo={Boolean(activeVideoId)}
+                    videoSeconds={videoSeconds}
+                    isVideoOneMinuteWatched={isVideoOneMinuteWatched}
+                    isTopicCompleted={isTopicCompleted}
+                    isPro={Boolean(profile?.is_pro)}
+                    onLessonLoaded={handleLessonLoaded}
                   />
 
                   {/* Modular Video & Reference Player (Reinforcement) */}
@@ -382,9 +401,15 @@ export default function LearnClient({
                     onMarkAsCompleted={handleMarkAsCompleted}
                     onNext={handleNext}
                     onOpenGoldfishVideo={() => handleOpenGoldfish('video')}
-                    onVideoProgress={(fraction) => {
+                    onVideoProgress={(fraction, currentTime) => {
                       const normalizedProgress = Math.max(0, Math.min(1, fraction));
                       setVideoProgress(normalizedProgress);
+                      if (typeof currentTime === 'number') {
+                        setVideoSeconds(currentTime);
+                        if (currentTime >= 60) {
+                          setIsVideoOneMinuteWatched(true);
+                        }
+                      }
                       if (normalizedProgress >= 0.5) {
                         setIsCheckpointUnlocked(true);
                       }
@@ -405,6 +430,7 @@ export default function LearnClient({
                     videoProgress={videoProgress}
                     isVideoCheckpointUnlocked={isCheckpointUnlocked}
                     isLessonReady={isLessonReady}
+                    isPro={Boolean(profile?.is_pro)}
                     isModuleCompleted={
                       Array.isArray(currentModule?.topics) &&
                       currentModule.topics.length > 0 &&

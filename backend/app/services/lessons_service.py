@@ -47,10 +47,11 @@ DOMAIN: Language Learning.
         archetype_instructions = """\
 DOMAIN: Programming, Machine Learning & Software Engineering.
 - CRITICAL: Do NOT open with mathematical notation or equations. Open with the engineering problem this concept exists to solve — why does this thing need to exist at all?
-- Use code sparingly but concretely: one focused snippet (4–8 lines) that a working engineer would recognise. Annotate the key lines with inline comments.
+- CODE BLOCK DISCIPLINE: Code blocks must serve a very important and valuable purpose. ONLY include a code block when it makes the most sense to use (e.g. when syntax, memory layout, or exact execution flow cannot be explained clearly in words alone). Do NOT include code blocks each and every time unnecessarily or just to have boilerplate.
+- When code is genuinely necessary: keep it hyper-focused (strictly 3–7 lines of the exact critical mechanism) with standard inline comments. NEVER use markdown formatting like **bold** inside code comments.
 - Call out the one gotcha that trips people up the first time — be specific, not generic ("data leakage from fitting the scaler on the full dataset before splitting" is specific; "make sure to handle edge cases" is not).
 - Discuss real trade-offs: what does this approach cost, and when would you reach for something else?
-- Avoid bullet lists wherever prose flows naturally. Explanation should read, not scan."""
+- Present core mechanics and pitfalls as bullet points with bold highlights for effortless scanning."""
     elif is_stem:
         archetype_instructions = """\
 DOMAIN: Mathematics & Applied Science.
@@ -66,37 +67,41 @@ DOMAIN: Conceptual & Systems Thinking.
 - Address the most common misconception about this concept directly, by name."""
 
     prompt = f"""\
-You are an expert textbook author writing a concise, lucid section for an authoritative university textbook on "{subject}".
-Topic: "{topic_title}"
+You are an expert technical educator writing an explanatory, learner-focused AI Overview on "{topic_title}" for a course on "{subject}".
 Topics to cover: {subtopics_text}
-Target audience context: "{goal}"
+Learner context: "{goal}"
 
 ---
 
-STYLE MANDATE: CLASSIC TEXTBOOK PROSE (IN THE SPIRIT OF D.J. GRIFFITHS / K&R)
+PEDAGOGICAL DIRECTIVES (LEARNER-FIRST & EXPLANATORY):
+- Focus entirely on the learner: build a clear mental model of how the system works in practice and why it matters for their specific goal in "{subject}".
+- Be genuinely explanatory: explain the *intuition* and *mechanics* (what actually happens under the hood, how the system executes it, and why decisions are made).
+- Cut all meta-fluff: NEVER write filler like "{topic_title} is a fundamental concept...", "In this section we will explore...", or "Understanding this is essential...". Jump straight into the concrete reality.
+- Plain, direct English: analytical, explanatory, and clear. Maximum information density with zero fluff.
+- Code Block Value & Purpose: Code blocks must serve a very important and valuable purpose. ONLY include a code block when it makes the most sense to use. Do NOT use code blocks each and every time unnecessarily. If the topic is conceptual, architectural, or better explained through a direct mechanical trace or formula, do not include boilerplate code.
+- Brevity & Length: Strictly UNDER 450 words total (target 250–400 words).
+- Scannability: Structure the explanation using short, readable paragraphs, bullet points, and bold highlights for all key terms.
 
-Write this section as if it were an excerpt from a celebrated textbook (like David J. Griffiths' "Introduction to Electrodynamics" or Kernighan & Ritchie's "The C Programming Language"). 
-
-The tone must be:
-- Calm, direct, intellectually rigorous, and lucid.
-- Conversational yet academic: use "we" and "you" naturally as an instructor working through the ideas with a serious student at a blackboard ("Notice that...", "At first glance, one might expect...", "The reason for this becomes clear when we examine...").
-- Focused entirely on mechanical reality and technical precision.
-
-ABSOLUTE PROHIBITIONS (NO AI SLOP OR INFLUENCER CADENCE):
+ABSOLUTE PROHIBITIONS:
 - NEVER use motivational speaker hooks or dramatic openers (STRICTLY FORBIDDEN: "Picture this", "This isn't philosophy—", "Imagine you are...", "In the fast-paced world of...", "Have you ever wondered...?").
 - NEVER use organic/biological metaphors for software or math ("the nervous system of", "the heartbeat of", "the DNA of", "superpower", "magic").
 - NEVER invent fake personal anecdotes or war stories ("I've seen this waste hours in production", "In my years of engineering...").
 - NEVER use cheap rhetorical questions as transitions ("Why does this matter?", "What's the catch?").
 - STRICTLY BAN the words: "high", "highly", "delve", "tapestry", "game-changer", "vital", "crucial", "leverage", "supercharge".
-- Do NOT end with a bulleted "Key Takeaways" or "Summary" list. Close with a clean, measured explanatory paragraph.
+- Inside code blocks, NEVER use markdown formatting like asterisks (**bold**) inside comments or code.
 
-STRUCTURE AND TYPOGRAPHY (CRITICAL FOR READABILITY):
-Organize the excerpt like a polished, modern textbook chapter:
-- Section Headings: Use Markdown `## ` for primary sections and `### ` for deeper subtopics or edge cases. Headings MUST be descriptive and topical in Title Case (e.g., `## Namespaces and Object References`, `## The Operator Dispatch Protocol`, `### The Mutable Default Trap`) — NEVER use generic labels like "The Setup" or "Section 1".
-- Pacing & Paragraphs: Keep paragraphs focused (3–5 sentences each). Never present an unbroken wall of text. Give ideas room to breathe.
-- Textbook Callout Box: Include at least one blockquote (`> **Core Principle:** ...` or `> **Rule:** ...`) that crystallizes the foundational mechanic in one or two sentences, just like a highlighted axiom box in a university textbook.
-- Visual Scannability: Use **bold** for technical terms upon first introduction. Use backticks (`code`) for identifiers, methods, types, and keywords throughout the prose.
-- Code Presentation: Use a clean, fenced code block (e.g. ```python ... ```) with concise inline comments explaining the critical line. Follow the code block immediately with a short explanation of what the interpreter or engine actually did.
+STRUCTURE OF THE OVERVIEW:
+## Intuition & Mental Model
+1–2 concise, direct paragraphs giving the learner the practical mental model. Explain the problem this mechanism solves and how the machine or system processes it.
+
+## Core Mechanics
+- 3–4 bullet points with **bold terms** explaining the exact cause-and-effect mechanisms and internal rules.
+
+## Practical Example
+A concrete demonstration. Include a focused code block (strictly 3–7 lines with standard inline comments) ONLY when it serves an important and valuable purpose where seeing exact syntax makes the most sense. If a code block is not strictly necessary or would be generic boilerplate, provide a clear mechanical step-by-step trace or formula ($$...$$) instead. Do not force code blocks unnecessarily.
+
+## Common Pitfalls & What to Remember
+- 2–3 specific gotchas or trade-offs that trip learners up in practice and how to avoid them.
 
 {archetype_instructions}
 
@@ -104,9 +109,11 @@ LANGUAGE:
 If the learner goal ("{goal}") is written in French, write in French. If Spanish, in Spanish. Otherwise, write in English.
 
 CRITICAL OUTPUT DIRECTIVE:
-- Start IMMEDIATELY with the first section heading (`## ...`).
-- NEVER output any thinking process, reasoning tokens, scratchpad reflections, or outline notes (STRICTLY FORBIDDEN: "Here's a thinking process:", "Analyze the Request", "Deconstruct the Style Mandate", or any meta-commentary).
-- Output ONLY the finished textbook markdown text. No greetings, title banners, or conversational wrappers.
+- Start IMMEDIATELY with the first section heading (`## Intuition & Mental Model`).
+- STRICT LENGTH LIMIT: Keep the entire output UNDER 450 words total.
+- Format concepts with bullet points and bold highlights for effortless scanning.
+- NEVER output any thinking process, reasoning tokens, scratchpad reflections, or outline notes.
+- Output ONLY the finished markdown text. No greetings, title banners, or conversational wrappers.
 """
     return prompt.strip()
     
@@ -129,7 +136,7 @@ async def generate_topic_lesson(
         goal=goal
     )
     try:
-        model_to_use = model or settings.DEFAULT_FEEDBACK_MODEL or "openrouter/free"
+        model_to_use = model or getattr(settings, "OPENROUTER_MODEL", None) or getattr(settings, "DEFAULT_FEEDBACK_MODEL", None) or "meta-llama/llama-3.3-70b-instruct"
         raw_text, usage = await generate_text(prompt, model=model_to_use, return_usage=True)
         
         if uid and usage:
@@ -148,3 +155,27 @@ async def generate_topic_lesson(
     except Exception as e:
         logger.error(f"Failed to generate micro-lesson: {e}")
         raise e
+
+async def generate_topic_lesson_stream(
+    sb,
+    uid: str | None,
+    roadmap_id: int,
+    module_number: int,
+    topic_index: int,
+    subject: str,
+    topic_title: str,
+    subtopics: list[str],
+    goal: str = "",
+    model: str = None
+):
+    from app.utils.ai_client import generate_text_stream
+    prompt = build_lesson_prompt(
+        subject=subject,
+        topic_title=topic_title,
+        subtopics=subtopics,
+        goal=goal
+    )
+    model_to_use = model or getattr(settings, "OPENROUTER_MODEL", None) or getattr(settings, "DEFAULT_FEEDBACK_MODEL", None) or "meta-llama/llama-3.3-70b-instruct"
+    async for token in generate_text_stream(prompt, model=model_to_use):
+        yield token
+

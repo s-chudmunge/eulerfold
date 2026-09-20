@@ -74,6 +74,23 @@ async def get_or_generate_checkpoint(
     except Exception as review_err:
         logger.warning(f"Completed checkpoint lookup skipped: {review_err}")
 
+    # Pro check: Generating or taking a concept check is strictly a Pro feature
+    is_pro = bool(current_user.is_pro)
+    if not is_pro and uid:
+        prof_res = sb.table("profiles").select("is_pro").eq("supabase_uid", uid).execute()
+        if prof_res.data and prof_res.data[0].get("is_pro"):
+            is_pro = True
+    elif not is_pro and current_user.email:
+        prof_res = sb.table("profiles").select("is_pro").eq("email", current_user.email).execute()
+        if prof_res.data and prof_res.data[0].get("is_pro"):
+            is_pro = True
+
+    if not is_pro:
+        raise HTTPException(
+            status_code=403,
+            detail="Concept Check is a Pro feature. Upgrade to Pro to unlock."
+        )
+
     # 2. Check curated vector cache (for normal or remedial attempt)
     cached = await fetch_cached_checkpoint(
         sb=sb,
@@ -143,6 +160,23 @@ async def evaluate_and_adapt(
     email = current_user.email
     uid = current_user.supabase_uid
     sb = get_supabase_client()
+
+    # Pro check: Evaluating concept check is strictly a Pro feature
+    is_pro = bool(current_user.is_pro)
+    if not is_pro and uid:
+        prof_res = sb.table("profiles").select("is_pro").eq("supabase_uid", uid).execute()
+        if prof_res.data and prof_res.data[0].get("is_pro"):
+            is_pro = True
+    elif not is_pro and current_user.email:
+        prof_res = sb.table("profiles").select("is_pro").eq("email", current_user.email).execute()
+        if prof_res.data and prof_res.data[0].get("is_pro"):
+            is_pro = True
+
+    if not is_pro:
+        raise HTTPException(
+            status_code=403,
+            detail="Concept Check is a Pro feature. Upgrade to Pro to unlock."
+        )
 
     is_correct = (req.selected_option == req.correct_index)
 

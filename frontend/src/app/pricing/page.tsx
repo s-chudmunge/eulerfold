@@ -6,11 +6,11 @@ import UserNav from '@/components/UserNav';
 
 export const metadata: Metadata = {
   title: 'Pricing & Credits',
-  description: 'Choose a plan to build structured learning paths, access 24/7 Goldfish AI Co-Pilot, and master skills with EulerFold.',
-  keywords: 'pricing, EulerFold credits, agentic learning, AI co-pilot, learning paths, technical roadmaps, study planner, self-directed learning',
+  description: 'Choose a plan to build structured learning paths, access AI topic overviews, interactive concept checks, 24/7 Goldfish AI Co-Pilot, and master skills with EulerFold.',
+  keywords: 'pricing, EulerFold credits, agentic learning, AI co-pilot, topic overviews, concept check, technical roadmaps, study planner, self-directed learning',
   openGraph: {
     title: 'Pricing & Credits',
-    description: 'Choose a plan to build structured learning paths, access 24/7 Goldfish AI Co-Pilot, and master skills with EulerFold.',
+    description: 'Choose a plan to build structured learning paths, access AI topic overviews, interactive concept checks, 24/7 Goldfish AI Co-Pilot, and master skills with EulerFold.',
     type: 'website',
     url: 'https://www.eulerfold.com/pricing',
     siteName: 'EulerFold',
@@ -18,7 +18,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary',
     title: 'Pricing & Credits',
-    description: 'Choose a plan to build structured learning paths, access 24/7 Goldfish AI Co-Pilot, and master skills with EulerFold.',
+    description: 'Choose a plan to build structured learning paths, access AI topic overviews, interactive concept checks, 24/7 Goldfish AI Co-Pilot, and master skills with EulerFold.',
     creator: '@eulerfold',
   },
   alternates: {
