@@ -28,6 +28,7 @@ pillow
 sentry-sdk[fastapi]
 stripe==11.4.0
 razorpay==1.4.2
+setuptools<81
 
 protobuf
 json-repair

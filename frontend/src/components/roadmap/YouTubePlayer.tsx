@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { SkipForward, Loader2, CheckCircle2 } from 'lucide-react';
+import { Loader2, CheckCircle2, Sparkles } from 'lucide-react';
 
 interface YouTubePlayerProps {
     videoId: string;
@@ -10,6 +10,8 @@ interface YouTubePlayerProps {
     onProgress?: (progressFraction: number, currentTime: number, duration: number) => void;
     onNext?: () => void;
     isCompleted?: boolean;
+    isPro?: boolean;
+    onTakeCheckpoint?: () => void;
 }
 
 declare global {
@@ -19,13 +21,23 @@ declare global {
     }
 }
 
-export default function YouTubePlayer({ videoId, title, onComplete, onProgress, onNext, isCompleted }: YouTubePlayerProps) {
+export default function YouTubePlayer({ 
+    videoId, 
+    title, 
+    onComplete, 
+    onProgress, 
+    onNext, 
+    isCompleted,
+    isPro = false,
+    onTakeCheckpoint
+}: YouTubePlayerProps) {
     const playerRef = useRef<any>(null);
     const containerRef = useRef<HTMLDivElement>(null);
     const onCompleteRef = useRef(onComplete);
     const isCompletedRef = useRef(isCompleted);
+    const isProRef = useRef(isPro);
     const [isReady, setIsReady] = useState(false);
-    const [timeLeft, setTimeLeft] = useState<number | null>(null);
+    const [showEndedOverlay, setShowEndedOverlay] = useState(false);
     const [hasTriggeredComplete, setHasTriggeredComplete] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -43,6 +55,10 @@ export default function YouTubePlayer({ videoId, title, onComplete, onProgress, 
         isCompletedRef.current = isCompleted;
     }, [isCompleted]);
 
+    useEffect(() => {
+        isProRef.current = isPro;
+    }, [isPro]);
+
     const checkProgress = useCallback(() => {
         if (playerRef.current &&
             typeof playerRef.current.getCurrentTime === 'function' &&
@@ -53,7 +69,9 @@ export default function YouTubePlayer({ videoId, title, onComplete, onProgress, 
                 if (duration > 0) {
                     const fraction = currentTime / duration;
                     onProgressRef.current?.(fraction, currentTime, duration);
-                    if (!hasTriggeredComplete && !isCompletedRef.current && fraction > 0.9) {
+                    // For Free users, auto-complete at >90% progress.
+                    // For Pro users, topic completion requires passing the Concept Check.
+                    if (!hasTriggeredComplete && !isCompletedRef.current && !isProRef.current && fraction > 0.9) {
                         setHasTriggeredComplete(true);
                         onCompleteRef.current?.();
                     }
@@ -81,17 +99,17 @@ export default function YouTubePlayer({ videoId, title, onComplete, onProgress, 
 
         // YT.PlayerState.ENDED = 0
         if (event.data === 0) {
-            if (!isCompletedRef.current) {
+            if (!isCompletedRef.current && !isProRef.current) {
                 setHasTriggeredComplete(true);
                 onCompleteRef.current?.();
             }
-            setTimeLeft(12);
+            setShowEndedOverlay(true);
         }
     }, [checkProgress]);
 
     useEffect(() => {
         setHasTriggeredComplete(false);
-        setTimeLeft(null);
+        setShowEndedOverlay(false);
         setIsLoading(true);
 
         const initPlayer = () => {
@@ -163,17 +181,6 @@ export default function YouTubePlayer({ videoId, title, onComplete, onProgress, 
         return () => clearInterval(interval);
     }, [checkProgress]);
 
-    useEffect(() => {
-        let timer: NodeJS.Timeout;
-        if (timeLeft !== null && timeLeft > 0) {
-            timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
-        } else if (timeLeft === 0) {
-            onNext?.();
-            setTimeLeft(null);
-        }
-        return () => clearTimeout(timer);
-    }, [timeLeft, onNext]);
-
     return (
         <div className="relative w-full h-full bg-black">
             {isLoading && (
@@ -185,41 +192,78 @@ export default function YouTubePlayer({ videoId, title, onComplete, onProgress, 
                 <div ref={containerRef} className="w-full h-full" />
             </div>
             
-            {timeLeft !== null && (
-                <div className="absolute inset-0 flex items-center justify-center bg-black/60 z-50 animate-in fade-in duration-300">
-                    <div className="bg-sidebar border border-border rounded-lg shadow-2xl w-full max-w-[320px] overflow-hidden">
+            {showEndedOverlay && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black/70 z-50 animate-in fade-in duration-300 p-4">
+                    <div className="bg-sidebar border border-border rounded-md shadow-lg w-full max-w-[340px] overflow-hidden">
                         <div className="p-6 text-center">
-                            <h3 className="text-[16px] font-bold text-text-heading mb-1 flex items-center justify-center gap-2">
-                                <CheckCircle2 className="h-4 w-4 text-emerald-500" />
-                                Unit Completed
-                            </h3>
-                            <p className="text-[13px] text-text-primary mb-6">Moving to the next lesson in {timeLeft}s</p>
-                            
-                            <div className="flex flex-col gap-2">
-                                <button 
-                                    onClick={() => {
-                                        setTimeLeft(null);
-                                        onNext?.();
-                                    }}
-                                    className="w-full bg-text-heading text-background py-2.5 rounded-lg font-bold text-[13px] hover:opacity-90 transition-all active:scale-[0.98]"
-                                >
-                                    Next Unit
-                                </button>
-                                <button 
-                                    onClick={() => setTimeLeft(null)}
-                                    className="w-full text-text-muted py-2 rounded-lg font-bold text-[12px] hover:text-text-heading transition-colors"
-                                >
-                                    Stay on this unit
-                                </button>
-                            </div>
-                        </div>
-                        
-                        {/* Simple Linear Progress Bar */}
-                        <div className="h-1 w-full bg-border/30">
-                            <div 
-                                className="h-full bg-accent transition-all duration-1000 ease-linear"
-                                style={{ width: `${(timeLeft / 12) * 100}%` }}
-                            />
+                            {isPro && !isCompleted ? (
+                                <>
+                                    <div className="w-10 h-10 rounded-md bg-accent/10 border border-accent/20 flex items-center justify-center text-accent mx-auto mb-3">
+                                        <Sparkles className="h-5 w-5 text-amber-400" />
+                                    </div>
+                                    <h3 className="text-[15px] font-bold text-text-heading mb-1.5">
+                                        Video Finished
+                                    </h3>
+                                    <p className="text-[12.5px] text-text-muted leading-relaxed mb-5">
+                                        Complete the Concept Check below to lock in your progress and earn your EulerCoin.
+                                    </p>
+                                    <div className="flex flex-col gap-2">
+                                        <button 
+                                            type="button"
+                                            onClick={() => {
+                                                setShowEndedOverlay(false);
+                                                if (onTakeCheckpoint) {
+                                                    onTakeCheckpoint();
+                                                } else {
+                                                    document.getElementById('topic-checkpoint')?.scrollIntoView({ behavior: 'smooth' });
+                                                }
+                                            }}
+                                            className="w-full bg-accent text-background py-2.5 rounded-md font-bold text-[12px] hover:opacity-90 transition-all active:scale-[0.98] flex items-center justify-center gap-1.5 shadow-xs cursor-pointer"
+                                        >
+                                            <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                                            <span>Go to Concept Check</span>
+                                        </button>
+                                        <button 
+                                            type="button"
+                                            onClick={() => setShowEndedOverlay(false)}
+                                            className="w-full text-text-muted py-2 rounded-md font-bold text-[12px] hover:text-text-heading transition-colors cursor-pointer"
+                                        >
+                                            Stay on Video
+                                        </button>
+                                    </div>
+                                </>
+                            ) : (
+                                <>
+                                    <div className="w-10 h-10 rounded-md bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-500 mx-auto mb-3">
+                                        <CheckCircle2 className="h-5 w-5" />
+                                    </div>
+                                    <h3 className="text-[15px] font-bold text-text-heading mb-1.5">
+                                        Topic Completed
+                                    </h3>
+                                    <p className="text-[12.5px] text-text-muted leading-relaxed mb-5">
+                                        Nicely done! Ready to move to the next lesson?
+                                    </p>
+                                    <div className="flex flex-col gap-2">
+                                        <button 
+                                            type="button"
+                                            onClick={() => {
+                                                setShowEndedOverlay(false);
+                                                onNext?.();
+                                            }}
+                                            className="w-full bg-text-heading text-background py-2.5 rounded-md font-bold text-[12px] hover:opacity-90 transition-all active:scale-[0.98] shadow-xs cursor-pointer"
+                                        >
+                                            Next Lesson
+                                        </button>
+                                        <button 
+                                            type="button"
+                                            onClick={() => setShowEndedOverlay(false)}
+                                            className="w-full text-text-muted py-2 rounded-md font-bold text-[12px] hover:text-text-heading transition-colors cursor-pointer"
+                                        >
+                                            Stay on this Lesson
+                                        </button>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>

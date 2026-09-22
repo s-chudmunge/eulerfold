@@ -217,7 +217,7 @@ export default function TopicCheckpoint({
   };
 
   return (
-    <div className="bg-sidebar border border-border rounded-md p-5 sm:p-6 my-8 shadow-xs">
+    <div id="topic-checkpoint" className="bg-sidebar border border-border rounded-md p-5 sm:p-6 my-8 shadow-xs scroll-mt-6">
       {/* Header */}
       <div className="flex flex-wrap items-center justify-between gap-3 mb-4 pb-3 border-b border-border">
         <div className="flex items-center gap-2">

@@ -401,6 +401,10 @@ export default function LearnClient({
                     onMarkAsCompleted={handleMarkAsCompleted}
                     onNext={handleNext}
                     onOpenGoldfishVideo={() => handleOpenGoldfish('video')}
+                    isPro={Boolean(profile?.is_pro)}
+                    onTakeCheckpoint={() => {
+                      document.getElementById('topic-checkpoint')?.scrollIntoView({ behavior: 'smooth' });
+                    }}
                     onVideoProgress={(fraction, currentTime) => {
                       const normalizedProgress = Math.max(0, Math.min(1, fraction));
                       setVideoProgress(normalizedProgress);
