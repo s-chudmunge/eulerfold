@@ -242,7 +242,7 @@ export function ScrollToHeroCTA() {
   return (
     <button 
       onClick={handleScroll}
-      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-text-heading text-background hover:opacity-90 px-8 py-3.5 rounded-lg text-[14px] font-bold transition-all shadow-sm hover:-translate-y-0.5 cursor-pointer"
+      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-b from-[#11887e] to-accent text-white px-7 py-3 rounded-md text-[13.5px] font-semibold tracking-[-0.01em] shadow-[0_4px_16px_rgba(15,118,110,0.35),inset_0_1px_0_rgba(255,255,255,0.2)] hover:from-[#13968b] hover:to-[#0d6962] hover:shadow-[0_6px_20px_rgba(15,118,110,0.45)] active:scale-[0.98] transition-all cursor-pointer"
     >
       Create Course <ArrowRight className="w-4 h-4" />
     </button>

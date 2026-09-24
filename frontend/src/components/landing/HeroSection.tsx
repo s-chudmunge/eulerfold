@@ -34,7 +34,7 @@ export default function HeroSection() {
         <div className="max-w-3xl mx-auto w-full relative z-10 flex-1 flex flex-col justify-center">
           <div className="text-center flex flex-col items-center">
             {/* Simple Clean Overline */}
-            <div className="flex items-center gap-1.5 mb-5 text-[11px] font-mono font-bold tracking-wider text-accent uppercase">
+            <div className="flex items-center gap-1.5 mb-5 text-[11px] font-mono font-medium tracking-[0.14em] text-accent uppercase">
               <span>EulerFold Agentic Learning</span>
             </div>
 
@@ -60,11 +60,14 @@ export default function HeroSection() {
               <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
                 <Link
                   href={`/roadmap/${lastRoadmap.slug}`}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-sidebar hover:bg-callout-bg border border-border rounded-md text-[13px] font-medium text-text-heading transition-colors"
+                  className="inline-flex items-center gap-2.5 px-3.5 py-1.5 bg-sidebar/80 hover:bg-sidebar border border-[rgba(20,29,25,0.08)] dark:border-white/10 rounded-md text-[12.5px] text-text-heading transition-all shadow-[0_2px_8px_-2px_rgba(20,60,52,0.06)] hover:shadow-xs"
                 >
-                  <BookOpen className="w-4 h-4 text-accent" />
-                  <span>Resume: {lastRoadmap.title}</span>
-                  <ArrowRight className="w-3.5 h-3.5 text-text-muted" />
+                  <BookOpen className="w-3.5 h-3.5 text-accent shrink-0" />
+                  <span className="tracking-[-0.01em]">
+                    <span className="text-text-muted font-normal text-[11.5px] uppercase tracking-wider mr-1.5">Resume</span>
+                    <span className="font-semibold text-text-heading">{lastRoadmap.title}</span>
+                  </span>
+                  <ArrowRight className="w-3.5 h-3.5 text-text-muted/70 group-hover:text-text-heading transition-colors" />
                 </Link>
               </div>
             )}

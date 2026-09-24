@@ -82,7 +82,7 @@ export default function GenerationSystems() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.05 }}
-                className="border border-border rounded-md bg-sidebar/50 p-6 flex flex-col justify-between hover:border-accent/40 transition-colors"
+                className="border border-[rgba(20,29,25,0.08)] dark:border-white/10 rounded-md bg-sidebar/50 p-6 flex flex-col justify-between shadow-[0_12px_32px_-8px_rgba(20,60,52,0.12)] dark:shadow-[0_12px_32px_-8px_rgba(0,0,0,0.45)] hover:shadow-[0_16px_36px_-8px_rgba(20,60,52,0.18)] dark:hover:shadow-[0_16px_36px_-8px_rgba(0,0,0,0.6)] hover:border-accent/40 transition-all"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">

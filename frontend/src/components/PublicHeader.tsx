@@ -240,23 +240,23 @@ export default function PublicHeader() {
       }`}>
         <div className="max-w-7xl mx-auto h-full px-6 flex items-center justify-between">
           
-          <div className="flex items-center gap-8 h-full">
+          <div className="flex items-center gap-10 h-full">
             <Link href="/" className="group flex items-center hover:opacity-100 transition-opacity h-full">
               <img src="/apple-touch-icon.png" alt="" className="w-7 h-7 shrink-0" />
-              <span className="text-[18px] font-bold text-text-heading tracking-tight hidden md:block max-w-0 opacity-0 group-hover:max-w-[140px] group-hover:opacity-100 group-hover:pl-2 transition-all duration-300 ease-out overflow-hidden whitespace-nowrap">
+              <span className="text-[18px] font-bold text-text-heading tracking-tight hidden md:block max-w-0 opacity-0 group-hover:max-w-[140px] group-hover:opacity-100 group-hover:pl-2.5 transition-all duration-300 ease-out overflow-hidden whitespace-nowrap">
                 Euler<span className="text-teal-700">Fold</span> AI
               </span>
             </Link>
 
-          <nav className="hidden lg:flex items-center gap-5 h-full">
+          <nav className="hidden lg:flex items-center gap-7 h-full">
             <MegaMenu id="research" data={NAVIGATION_DATA.research} />
             <NavLink href="/about" label="About" />
             <NavLink href="/pricing" label="Pricing" />
           </nav>
         </div>
 
-        <div className="flex items-center gap-3">
-          <div className="hidden md:flex items-center gap-3">
+        <div className="flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-4">
             <GitHubStarButton />
 
             <button
@@ -271,7 +271,7 @@ export default function PublicHeader() {
               <UserNav />
             </Suspense>
             
-            <Link href="/#hero-prompt-input" className="hidden xs:flex items-center gap-1.5 bg-text-heading text-background px-3.5 py-1.5 rounded-full text-[12px] font-bold tracking-tight hover:opacity-90 transition-all">
+            <Link href="/#hero-prompt-input" className="hidden xs:flex items-center gap-1.5 bg-text-heading text-background px-3.5 py-1.5 rounded-full text-[12px] font-bold tracking-tight hover:opacity-90 transition-all ml-1">
               <Plus className="w-3.5 h-3.5" /> <span>New Goal</span>
             </Link>
           </div>

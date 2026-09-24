@@ -16,13 +16,13 @@ import LatestUpdates from '@/components/landing/LatestUpdates';
 export const revalidate = 3600;
 
 export const metadata: Metadata = {
-  title: 'EulerFold AI - A free agentic tool to build, structure, and track your learning',
+  title: 'EulerFold: Learn, Build, Practice & Master with AI',
   description: 'Tell us what you want to learn. Our free agentic system builds your study path using lectures from top educators, university notes, and research papers, tracking your progress every step of the way.',
   openGraph: {
     type: 'website',
     locale: 'en_US',
     url: 'https://www.eulerfold.com/',
-    title: 'EulerFold AI - A free agentic tool to build, structure, and track your learning',
+    title: 'EulerFold: Learn, Build, Practice & Master with AI',
     description: 'Tell us what you want to learn. Our free agentic system builds your study path using lectures from top educators, university notes, and research papers, tracking your progress every step of the way.',
     siteName: 'EulerFold AI',
     images: [{
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'EulerFold AI - A free agentic tool to build, structure, and track your learning',
+    title: 'EulerFold: Learn, Build, Practice & Master with AI',
     description: 'Tell us what you want to learn. Our free agentic system builds your study path using lectures from top educators, university notes, and research papers, tracking your progress every step of the way.',
     creator: '@eulerfold',
   },
@@ -95,7 +95,7 @@ export default async function LandingPage() {
               <ScrollToHeroCTA />
               <Link 
                 href="/explore"
-                className="inline-flex items-center justify-center gap-2 bg-background border border-border hover:border-accent/40 text-text-heading px-6 py-2.5 rounded-md text-[13px] font-bold transition-all"
+                className="inline-flex items-center justify-center gap-2 bg-background border border-[rgba(20,29,25,0.08)] dark:border-white/10 hover:border-accent/40 text-text-heading px-6 py-3 rounded-md text-[13px] font-semibold tracking-[-0.01em] shadow-[0_2px_8px_-2px_rgba(20,60,52,0.08)] hover:shadow-xs transition-all"
               >
                 <BookOpen className="w-4 h-4 text-text-muted" /> Browse Library
               </Link>

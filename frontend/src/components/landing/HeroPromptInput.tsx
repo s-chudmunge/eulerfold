@@ -681,7 +681,13 @@ Return ONLY this JSON structure:
         )}
       </AnimatePresence>
 
-      <div className={`relative rounded-lg transition-all duration-300 border ${isFocused ? 'border-accent shadow-[0_0_15px_-5px_rgba(15,118,110,0.2)]' : 'border-border'}`}>
+      <div 
+        className={`relative rounded-md transition-all duration-300 border ${
+          isFocused 
+            ? 'border-accent shadow-[0_12px_32px_-8px_rgba(20,60,52,0.22)]' 
+            : 'border-[rgba(20,29,25,0.08)] dark:border-white/10 shadow-[0_12px_32px_-8px_rgba(20,60,52,0.14)] dark:shadow-[0_12px_32px_-8px_rgba(0,0,0,0.5)]'
+        }`}
+      >
         <div className="bg-background rounded-[5px] p-4 flex flex-col gap-3">
           
           
@@ -753,7 +759,7 @@ Return ONLY this JSON structure:
                 <button
                   onClick={handleNextStep}
                   disabled={!value.trim()}
-                  className="inline-flex items-center gap-2 bg-accent text-white px-5 py-2 rounded-md text-[13px] font-bold transition-all hover:bg-teal-700 active:scale-[0.97] disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="inline-flex items-center gap-2 bg-gradient-to-b from-[#11887e] to-accent text-white px-5 py-2 rounded-md text-[13px] font-semibold tracking-[-0.01em] shadow-[0_2px_8px_rgba(15,118,110,0.35),inset_0_1px_0_rgba(255,255,255,0.2)] hover:from-[#13968b] hover:to-[#0d6962] hover:shadow-[0_4px_12px_rgba(15,118,110,0.4)] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
                 >
                   Next
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -807,7 +813,7 @@ Return ONLY this JSON structure:
                 <div className="flex justify-end mt-2 pt-2 border-t border-border/30">
                   <button
                     onClick={() => submitGeneration()}
-                    className="inline-flex items-center gap-2 bg-accent text-white px-5 py-2 rounded-md text-[13px] font-bold transition-all hover:bg-teal-700 active:scale-[0.97]"
+                    className="inline-flex items-center gap-2 bg-gradient-to-b from-[#11887e] to-accent text-white px-5 py-2 rounded-md text-[13px] font-semibold tracking-[-0.01em] shadow-[0_2px_8px_rgba(15,118,110,0.35),inset_0_1px_0_rgba(255,255,255,0.2)] hover:from-[#13968b] hover:to-[#0d6962] hover:shadow-[0_4px_12px_rgba(15,118,110,0.4)] active:scale-[0.98] transition-all"
                   >
                     Create My Course
                     <Wand2 className="w-3.5 h-3.5" />
@@ -843,8 +849,8 @@ Return ONLY this JSON structure:
 
       {/* Subtle Prompting Guideline */}
       <div className="flex items-center justify-center gap-1.5 mt-2.5 px-2 text-center">
-        <span className="text-[11.5px] text-text-muted leading-relaxed">
-          <strong className="text-text-primary font-semibold">Tip:</strong> Mention your background and pick a realistic timeframe for the best roadmap depth.
+        <span className="text-[11.5px] text-text-muted leading-relaxed tracking-[-0.01em]">
+          <strong className="text-text-primary font-medium tracking-normal mr-1">Tip:</strong>Mention your background and pick a realistic timeframe for the best roadmap depth.
         </span>
       </div>
 

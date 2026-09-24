@@ -47,7 +47,7 @@ export default function UserNav() {
     const initials = displayName.substring(0, 1).toUpperCase();
 
     return (
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3.5">
         <HeaderFocusPill />
         <DailyBriefingBell />
         <div className="relative" ref={dropdownRef}>

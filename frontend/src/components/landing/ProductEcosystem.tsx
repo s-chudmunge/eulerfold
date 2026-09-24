@@ -106,7 +106,7 @@ export default function ProductEcosystem() {
                 <Link
                   href={pillar.href}
                   onClick={(e) => handlePillarClick(e, pillar)}
-                  className="h-full border border-border rounded-md bg-sidebar/50 p-6 flex flex-col justify-between hover:border-accent/40 transition-colors group"
+                  className="h-full border border-[rgba(20,29,25,0.08)] dark:border-white/10 rounded-md bg-sidebar/50 p-6 flex flex-col justify-between shadow-[0_12px_32px_-8px_rgba(20,60,52,0.12)] dark:shadow-[0_12px_32px_-8px_rgba(0,0,0,0.45)] hover:shadow-[0_16px_36px_-8px_rgba(20,60,52,0.18)] dark:hover:shadow-[0_16px_36px_-8px_rgba(0,0,0,0.6)] hover:border-accent/40 transition-all group"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-4">

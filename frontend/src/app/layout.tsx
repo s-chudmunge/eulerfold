@@ -32,7 +32,7 @@ const inconsolata = { variable: '--font-mono', className: 'font-mono' };
 export const metadata: Metadata = {
   applicationName: 'EulerFold AI',
   title: {
-    default: 'EulerFold AI - A free agentic tool to build, structure, and track your learning',
+    default: 'EulerFold: Learn, Build, Practice & Master with AI',
     template: '%s'
   },
   description: 'Tell us what you want to learn. Our free agentic system builds your study path using lectures from top educators, university notes, and research papers, tracking your progress every step of the way.',
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_US',
     siteName: 'EulerFold AI',
-    title: 'EulerFold AI - A free agentic tool to build, structure, and track your learning',
+    title: 'EulerFold: Learn, Build, Practice & Master with AI',
     description: 'Tell us what you want to learn. Our free agentic system builds your study path using lectures from top educators, university notes, and research papers, tracking your progress every step of the way.',
     images: [{
       url: '/og-image.png',
@@ -81,7 +81,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'EulerFold AI - A free agentic tool to build, structure, and track your learning',
+    title: 'EulerFold: Learn, Build, Practice & Master with AI',
     description: 'Tell us what you want to learn. Our free agentic system builds your study path using lectures from top educators, university notes, and research papers, tracking your progress every step of the way.',
     images: ['/og-image.png'],
     creator: '@eulerfold',

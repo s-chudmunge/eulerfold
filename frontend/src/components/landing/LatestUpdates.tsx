@@ -74,7 +74,7 @@ export default function LatestUpdates() {
           {recentItems.map((item) => (
             <div
               key={item.id}
-              className="flex flex-col border border-border rounded-lg p-6 bg-transparent"
+              className="flex flex-col border border-[rgba(20,29,25,0.08)] dark:border-white/10 rounded-md p-6 bg-sidebar/40 shadow-[0_12px_32px_-8px_rgba(20,60,52,0.12)] dark:shadow-[0_12px_32px_-8px_rgba(0,0,0,0.45)] hover:shadow-[0_16px_36px_-8px_rgba(20,60,52,0.18)] dark:hover:shadow-[0_16px_36px_-8px_rgba(0,0,0,0.6)] transition-all"
             >
               <div className="flex-grow mb-8">
                 <h3 className="text-[20px] font-bold text-text-heading leading-snug tracking-tight mb-3">
@@ -91,7 +91,7 @@ export default function LatestUpdates() {
                 </p>
                 <Link
                   href={item.type === 'article' ? `/articles/${item.slug}` : `/newsletters/${item.slug}`}
-                  className="inline-block bg-text-heading text-background text-[13px] font-semibold px-4 py-2 rounded-md hover:opacity-80 transition-opacity"
+                  className="inline-block bg-gradient-to-b from-[#11887e] to-accent text-white text-[13px] font-semibold tracking-[-0.01em] px-4 py-2 rounded-md shadow-[0_2px_8px_rgba(15,118,110,0.35),inset_0_1px_0_rgba(255,255,255,0.2)] hover:from-[#13968b] hover:to-[#0d6962] hover:shadow-[0_4px_12px_rgba(15,118,110,0.4)] active:scale-[0.98] transition-all"
                 >
                   Read more
                 </Link>
