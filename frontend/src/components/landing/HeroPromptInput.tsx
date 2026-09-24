@@ -684,8 +684,8 @@ Return ONLY this JSON structure:
       <div 
         className={`relative rounded-md transition-all duration-300 border ${
           isFocused 
-            ? 'border-accent shadow-[0_12px_32px_-8px_rgba(20,60,52,0.22)]' 
-            : 'border-[rgba(20,29,25,0.08)] dark:border-white/10 shadow-[0_12px_32px_-8px_rgba(20,60,52,0.14)] dark:shadow-[0_12px_32px_-8px_rgba(0,0,0,0.5)]'
+            ? 'border-accent shadow-[0_12px_32px_-8px_rgba(20,60,52,0.22)] dark:border-accent dark:shadow-[0_0_0_1px_rgba(20,184,166,0.5),0_12px_36px_-6px_rgba(15,118,110,0.5),0_20px_50px_-10px_rgba(0,0,0,0.8)]' 
+            : 'border-[rgba(20,29,25,0.08)] dark:border-accent/40 shadow-[0_12px_32px_-8px_rgba(20,60,52,0.14)] dark:shadow-[0_0_0_1px_rgba(20,184,166,0.25),0_10px_32px_-6px_rgba(15,118,110,0.38),0_16px_40px_-8px_rgba(0,0,0,0.7)]'
         }`}
       >
         <div className="bg-background rounded-[5px] p-4 flex flex-col gap-3">

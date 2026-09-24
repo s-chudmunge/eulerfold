@@ -95,7 +95,7 @@ export default async function LandingPage() {
               <ScrollToHeroCTA />
               <Link 
                 href="/explore"
-                className="inline-flex items-center justify-center gap-2 bg-background border border-[rgba(20,29,25,0.08)] dark:border-white/10 hover:border-accent/40 text-text-heading px-6 py-3 rounded-md text-[13px] font-semibold tracking-[-0.01em] shadow-[0_2px_8px_-2px_rgba(20,60,52,0.08)] hover:shadow-xs transition-all"
+                className="inline-flex items-center justify-center gap-2 bg-background border border-[rgba(20,29,25,0.08)] dark:border-[#243333] hover:border-accent/40 dark:hover:border-accent/50 text-text-heading px-6 py-3 rounded-md text-[13px] font-semibold tracking-[-0.01em] shadow-[0_2px_8px_-2px_rgba(20,60,52,0.08)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_4px_16px_-2px_rgba(0,0,0,0.6)] hover:shadow-xs transition-all"
               >
                 <BookOpen className="w-4 h-4 text-text-muted" /> Browse Library
               </Link>

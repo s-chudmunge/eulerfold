@@ -82,7 +82,7 @@ export default function GenerationSystems() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: index * 0.05 }}
-                className="border border-[rgba(20,29,25,0.08)] dark:border-white/10 rounded-md bg-sidebar/50 p-6 flex flex-col justify-between shadow-[0_12px_32px_-8px_rgba(20,60,52,0.12)] dark:shadow-[0_12px_32px_-8px_rgba(0,0,0,0.45)] hover:shadow-[0_16px_36px_-8px_rgba(20,60,52,0.18)] dark:hover:shadow-[0_16px_36px_-8px_rgba(0,0,0,0.6)] hover:border-accent/40 transition-all"
+                className="border border-[rgba(20,29,25,0.08)] dark:border-[#243333] hover:border-accent/40 dark:hover:border-accent/60 rounded-md bg-sidebar/50 p-6 flex flex-col justify-between shadow-[0_12px_32px_-8px_rgba(20,60,52,0.12)] dark:shadow-[0_0_0_1px_rgba(20,184,166,0.15),0_10px_28px_-6px_rgba(15,118,110,0.3),0_16px_40px_-8px_rgba(0,0,0,0.7)] hover:shadow-[0_16px_36px_-8px_rgba(20,60,52,0.18)] dark:hover:shadow-[0_0_0_1px_rgba(20,184,166,0.4),0_14px_36px_-4px_rgba(15,118,110,0.48),0_20px_48px_-6px_rgba(0,0,0,0.8)] transition-all"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">

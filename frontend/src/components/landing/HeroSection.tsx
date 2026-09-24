@@ -60,7 +60,7 @@ export default function HeroSection() {
               <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
                 <Link
                   href={`/roadmap/${lastRoadmap.slug}`}
-                  className="inline-flex items-center gap-2.5 px-3.5 py-1.5 bg-sidebar/80 hover:bg-sidebar border border-[rgba(20,29,25,0.08)] dark:border-white/10 rounded-md text-[12.5px] text-text-heading transition-all shadow-[0_2px_8px_-2px_rgba(20,60,52,0.06)] hover:shadow-xs"
+                  className="inline-flex items-center gap-2.5 px-3.5 py-1.5 bg-sidebar/80 hover:bg-sidebar border border-[rgba(20,29,25,0.08)] dark:border-[#243333] hover:border-accent/40 dark:hover:border-accent/50 rounded-md text-[12.5px] text-text-heading transition-all shadow-[0_2px_8px_-2px_rgba(20,60,52,0.06)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.05),0_4px_16px_-2px_rgba(0,0,0,0.6)] hover:shadow-xs"
                 >
                   <BookOpen className="w-3.5 h-3.5 text-accent shrink-0" />
                   <span className="tracking-[-0.01em]">
