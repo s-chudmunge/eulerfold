@@ -322,6 +322,12 @@ By untangling reflexive judgment from creative generation, software architecture
 
 ---
 
+## A Note on the Architecture Diagrams
+
+TypeSafe AI has publicly confirmed that Jev is non-autoregressive, processes context in a single forward pass, and outputs typed primitives through specialized heads. The internal layer-level details shown in the diagrams — such as RoPE, SwiGLU, RMSNorm, and the cross-attention query pooling mechanism — are architectural inferences based on modern transformer conventions, not published specifications. TypeSafe has not disclosed the full internal design. The diagrams should be read as an illustrative reconstruction of how a model with Jev's confirmed behavior would plausibly be built, not as a reverse-engineered schematic.
+
+---
+
 ## References
 
 - Kahneman, D. (2011). *Thinking, Fast and Slow*. Farrar, Straus and Giroux.
