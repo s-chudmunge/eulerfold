@@ -188,7 +188,7 @@ To see the operational contrast clearly, let us compare their execution mechanic
 | **Inference Passes** | $T$ sequential forward passes (one per token generated) | $1$ single forward pass for all questions |
 | **Hardware Bottleneck** | Memory-bandwidth bound (reading weights from HBM repeatedly) | Compute-bound dense matrix multiplication |
 | **Output Type** | Token strings (unstructured text requiring JSON parsing) | Typed scalars, probability vectors, and confidence values |
-| **Latency Profile** | $600\text{ ms} - 3000\text{ ms}$ | $50\text{ ms} - 250\text{ ms}$ |
+| **Latency Profile** | $600\text{ ms} - 3000\text{ ms}$ | $70\text{ ms} - 500\text{ ms}$ |
 | **Failure Modes** | Broken JSON, schema hallucinations, missing brackets | Classification error (strictly bounded within schema) |
 
 *Table 2: Structural and mechanical comparison between autoregressive generative LLMs and Jev's parallel decision encoder.*
@@ -285,7 +285,7 @@ The result is a model whose output numbers can be treated as reliable operationa
 
 ## The Landscape: Jev, Drex, and Decision Models
 
-The release of Jev on September 16, 2026 sparked immediate competition in what is now termed the **Decision Model** space.
+The release of Jev on September 15, 2026 sparked immediate competition in what is now termed the **Decision Model** space.
 
 Within days, Nace AI announced **Drex**, a sub-6-billion parameter decision model that competes directly with Jev on the public Decision Index benchmark. The benchmark evaluates models on 40 discrete tasks spanning routing, tool-call parameter validation, legal contract interpretation, and financial auditing.
 
