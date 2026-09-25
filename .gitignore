@@ -43,6 +43,8 @@ out/
 *.pem
 *.tsbuildinfo
 frontend/src/app/research-decoded/generatedData.ts
+scratch/
+temp/
 
 # Large Assets
 content/previous_year_papers_pdf/

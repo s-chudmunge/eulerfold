@@ -290,16 +290,33 @@ body {
   margin-bottom: 0;
 }
 
+/* Academic ArXiv-style KaTeX typography */
 .katex-display {
-  margin: 1.5rem 0 !important;
-  padding: 0;
+  margin: 2rem 0 !important;
+  padding: 0.75rem 0 !important;
   overflow-x: auto;
   overflow-y: hidden;
   text-align: center;
 }
 
+.katex-display > .katex {
+  font-size: 1.25em !important;
+  line-height: 1.6 !important;
+  letter-spacing: normal !important;
+  text-align: center;
+}
+
+.katex {
+  font-size: 1.08em;
+  text-rendering: auto;
+}
+
 .prose-eulerfold .katex {
-  font-size: 1.1em;
+  font-size: 1.12em;
+}
+
+.prose-eulerfold .katex-display .katex {
+  font-size: 1.28em !important;
 }
 
 /* Prevent KaTeX math from being colored like standard code */
@@ -312,7 +329,10 @@ body {
 
 @media (max-width: 768px) {
   .prose-eulerfold .katex {
-    font-size: 1em;
+    font-size: 1.05em;
+  }
+  .prose-eulerfold .katex-display .katex {
+    font-size: 1.15em !important;
   }
 }
 

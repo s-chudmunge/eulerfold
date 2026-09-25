@@ -12,14 +12,20 @@ import {
   MessageCircle,
   Clock,
   List,
-  Linkedin
+  Linkedin,
+  Code2,
+  Copy,
+  Check
 } from 'lucide-react';
 import { FaXTwitter, FaWhatsapp } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/components/AuthProvider';
 import ReactMarkdown from 'react-markdown';
 import remarkMath from 'remark-math';
+import remarkGfm from 'remark-gfm';
 import rehypeKatex from 'rehype-katex';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
+import { oneDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import { motion, AnimatePresence } from 'framer-motion';
 import PublicHeader from '@/components/PublicHeader';
 import Breadcrumbs from '@/components/Breadcrumbs';
@@ -32,6 +38,41 @@ import { api } from '@/lib/api';
 import CommunityRoadmapBanner from '@/components/landing/CommunityRoadmapBanner';
 import NewsletterBanner from '@/components/landing/NewsletterBanner';
 import SocialShare from '@/components/SocialShare';
+
+function CodeCopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = React.useState(false);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (e) {
+      console.error('Failed to copy', e);
+    }
+  };
+
+  return (
+    <button
+      type="button"
+      onClick={handleCopy}
+      className="inline-flex items-center gap-1.5 px-2 py-1 rounded-md text-[11px] font-mono text-text-muted hover:text-text-primary hover:bg-white/5 transition-colors cursor-pointer"
+      title="Copy code to clipboard"
+    >
+      {copied ? (
+        <>
+          <Check className="w-3.5 h-3.5 text-emerald-400" />
+          <span className="text-emerald-400 font-medium">Copied!</span>
+        </>
+      ) : (
+        <>
+          <Copy className="w-3.5 h-3.5" />
+          <span>Copy</span>
+        </>
+      )}
+    </button>
+  );
+}
 const D2Diagram = ({ code, cache }: { code: string, cache?: Record<string, string> }) => {
   const [svg, setSvg] = React.useState<string>(cache?.[code] || '');
   const [loading, setLoading] = React.useState(!cache?.[code]);
@@ -101,7 +142,7 @@ const D2Diagram = ({ code, cache }: { code: string, cache?: Record<string, strin
   }
 
   return (
-    <div className="d2-container d2-diagram animate-in fade-in duration-700 my-8">
+    <div className="d2-container d2-diagram animate-in fade-in duration-700 my-8 -mx-8 sm:mx-0 w-[calc(100%+4rem)] sm:w-full">
       <div 
         className="w-full flex justify-center overflow-x-auto"
         dangerouslySetInnerHTML={{ __html: svg }}
@@ -109,6 +150,115 @@ const D2Diagram = ({ code, cache }: { code: string, cache?: Record<string, strin
     </div>
   );
 };
+
+const tweetCache = new Map<string, HTMLElement>();
+
+const TweetEmbed = React.memo(({ tweetId }: { tweetId: string }) => {
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [loading, setLoading] = React.useState(!tweetCache.has(tweetId));
+
+  React.useEffect(() => {
+    let isMounted = true;
+    const container = containerRef.current;
+    if (!container) return;
+
+    // If tweet element was already rendered, re-attach it immediately without network/widget re-run
+    if (tweetCache.has(tweetId)) {
+      const cached = tweetCache.get(tweetId)!;
+      if (!container.contains(cached)) {
+        container.innerHTML = '';
+        container.appendChild(cached);
+      }
+      setLoading(false);
+      return;
+    }
+
+    const targetDiv = document.createElement('div');
+    targetDiv.className = 'w-full flex justify-center';
+    container.innerHTML = '';
+    container.appendChild(targetDiv);
+
+    const renderTweet = () => {
+      if ((window as any).twttr && (window as any).twttr.widgets) {
+        (window as any).twttr.widgets.createTweet(
+          tweetId,
+          targetDiv,
+          {
+            theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
+            align: 'center',
+            dnt: true
+          }
+        ).then((el: HTMLElement | undefined) => {
+          if (el) {
+            tweetCache.set(tweetId, targetDiv);
+          }
+          if (isMounted) setLoading(false);
+        }).catch((err: any) => {
+          console.error("Tweet render error:", err);
+          if (isMounted) setLoading(false);
+        });
+      } else {
+        const script = document.createElement('script');
+        script.src = 'https://platform.twitter.com/widgets.js';
+        script.async = true;
+        script.charset = 'utf-8';
+        script.onload = () => {
+          if (!isMounted) return;
+          if ((window as any).twttr && (window as any).twttr.widgets) {
+            (window as any).twttr.widgets.createTweet(
+              tweetId,
+              targetDiv,
+              {
+                theme: document.documentElement.classList.contains('dark') ? 'dark' : 'light',
+                align: 'center',
+                dnt: true
+              }
+            ).then((el: HTMLElement | undefined) => {
+              if (el) {
+                tweetCache.set(tweetId, targetDiv);
+              }
+              if (isMounted) setLoading(false);
+            });
+          }
+        };
+        document.body.appendChild(script);
+      }
+    };
+
+    renderTweet();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [tweetId]);
+
+  return (
+    <div className="my-8 flex flex-col items-center justify-center w-full min-h-[220px]">
+      <div ref={containerRef} className="w-full flex justify-center" />
+      {loading && (
+        <div className="py-8 text-xs font-mono text-text-muted animate-pulse">
+          Loading tweet from @CompleteSkeptic...
+        </div>
+      )}
+    </div>
+  );
+});
+const LoomEmbed = React.memo(({ videoId }: { videoId: string }) => {
+  return (
+    <div className="my-10 w-full overflow-hidden rounded-md border border-border bg-sidebar/30 shadow-xs">
+      <div className="relative w-full pb-[56.25%] h-0">
+        <iframe
+          src={`https://www.loom.com/embed/${videoId}`}
+          frameBorder="0"
+          allowFullScreen
+          className="absolute top-0 left-0 w-full h-full rounded-md"
+          title="Loom Walkthrough Video"
+        />
+      </div>
+    </div>
+  );
+});
+LoomEmbed.displayName = 'LoomEmbed';
 
 const TermLink = ({ children, slug }: { children: React.ReactNode, slug: string }) => {
   return (
@@ -128,7 +278,7 @@ const slugify = (text: string) => {
     .replace(/\s+/g, '-');
 };
 
-const MarkdownWithLinks = ({ content, currentSlug, cache }: { content: string, currentSlug: string, cache?: Record<string, string> }) => {
+const MarkdownWithLinks = React.memo(({ content, currentSlug, cache }: { content: string, currentSlug: string, cache?: Record<string, string> }) => {
   // Dynamically build terms to link from the articles data, excluding the current article
   const termsToLink = React.useMemo(() => {
     return Object.values(articles)
@@ -225,7 +375,7 @@ const MarkdownWithLinks = ({ content, currentSlug, cache }: { content: string, c
 
   return (
     <ReactMarkdown 
-      remarkPlugins={[remarkMath]}
+      remarkPlugins={[remarkMath, remarkGfm]}
       rehypePlugins={[rehypeKatex]}
       components={{
         h2: ({node, children, ...props}) => {
@@ -247,17 +397,29 @@ const MarkdownWithLinks = ({ content, currentSlug, cache }: { content: string, c
         ul: ({ children }) => {
           return <ul className="list-disc ml-[40px] my-[24px] space-y-4">{processChildren(children)}</ul>;
         },
+        ol: ({ children }) => {
+          return <ol className="list-decimal ml-[40px] my-[24px] space-y-3">{processChildren(children)}</ol>;
+        },
         li: ({ children }) => {
           return <li>{processChildren(children)}</li>;
         },
         strong: ({node, ...props}) => <strong className="font-bold text-text-heading" {...props} />,
         a: ({node, ...props}) => (
-          <a className="text-teal-700 hover:text-teal-800 underline decoration-teal-700/30 hover:decoration-teal-700/100 transition-colors" target="_blank" rel="noopener noreferrer" {...props} />
+          <a className="text-teal-700 dark:text-accent hover:underline decoration-teal-700/40 hover:decoration-teal-700/100 transition-colors font-medium" target="_blank" rel="noopener noreferrer" {...props} />
         ),
-        hr: () => null,
-        blockquote: ({ children }) => {
+        hr: () => <hr className="my-10 border-border" />,
+        blockquote: ({ node, className, children, ...props }: any) => {
+          if (className && className.includes('twitter-tweet')) {
+            return (
+              <div className="my-8 flex justify-center w-full">
+                <blockquote className={className} {...props}>
+                  {children}
+                </blockquote>
+              </div>
+            );
+          }
           return (
-            <aside className="my-8 p-5 bg-sidebar border-l-4 border-l-accent border-y border-r border-border rounded-r-lg shadow-sm">
+            <aside className="my-8 p-5 bg-sidebar border-l-4 border-l-accent border-y border-r border-border rounded-r-md shadow-xs">
               <div className="text-[15px] text-text-primary font-medium leading-relaxed italic opacity-90">
                 {processChildren(children)}
               </div>
@@ -265,8 +427,8 @@ const MarkdownWithLinks = ({ content, currentSlug, cache }: { content: string, c
           );
         },
         img: ({node, alt, ...props}) => (
-          <figure className="my-10 w-full overflow-hidden rounded-lg border border-border shadow-md bg-card">
-            <img className="w-full h-auto object-cover hover:scale-[1.02] transition-transform duration-700" loading="lazy" alt={alt} {...props} />
+          <figure className="my-10 -mx-8 sm:mx-0 w-[calc(100%+4rem)] sm:w-full overflow-hidden rounded-none sm:rounded-md border-y sm:border border-border shadow-xs bg-card">
+            <img className="w-full h-auto object-cover" loading="lazy" alt={alt} {...props} />
             {alt && (
               <figcaption className="p-3 text-center text-[13px] font-medium text-text-muted border-t border-border/50 bg-sidebar/50 italic">
                 {alt}
@@ -274,15 +436,30 @@ const MarkdownWithLinks = ({ content, currentSlug, cache }: { content: string, c
             )}
           </figure>
         ),
-        pre: ({ node, children, ...props }: any) => {
-          return (
-            <pre
-              className="my-6 rounded-md bg-[#1a1a1a] border border-white/10 overflow-x-auto p-5 text-[13.5px] leading-relaxed font-mono text-[#e2e2e2]"
-              {...props}
-            >
+        table: ({ children }) => (
+          <div className="my-10 -mx-8 sm:mx-0 w-[calc(100%+4rem)] sm:w-full overflow-x-auto rounded-none sm:rounded-md border-y sm:border border-border bg-sidebar/40 shadow-xs">
+            <table className="w-full text-left text-[14px] border-collapse min-w-[640px]">
               {children}
-            </pre>
-          );
+            </table>
+          </div>
+        ),
+        thead: ({ children }) => (
+          <thead className="bg-sidebar border-b border-border text-text-heading font-semibold text-[13px] tracking-wide">
+            {children}
+          </thead>
+        ),
+        th: ({ children }) => (
+          <th className="py-3 px-4 text-left font-semibold text-text-heading border-r border-border/40 last:border-r-0 whitespace-nowrap">
+            {children}
+          </th>
+        ),
+        td: ({ children }) => (
+          <td className="py-3.5 px-4 border-t border-border/40 border-r border-border/40 last:border-r-0 text-text-primary leading-relaxed">
+            {processChildren(children)}
+          </td>
+        ),
+        pre: ({ node, children }: any) => {
+          return <div className="my-6">{children}</div>;
         },
         code: ({ node, className, children, ...props }: any) => {
           const match = /language-(\w+)/.exec(className || '');
@@ -290,26 +467,79 @@ const MarkdownWithLinks = ({ content, currentSlug, cache }: { content: string, c
           if (isD2) {
             return <D2Diagram code={String(children).replace(/\n$/, '')} cache={cache} />;
           }
-          // inline code (not inside a pre block)
-          const isInline = !className;
-          if (isInline) {
+
+          const isTweet = match && match[1] === 'tweet';
+          if (isTweet) {
+            const tweetId = String(children).trim();
+            return <TweetEmbed tweetId={tweetId} />;
+          }
+
+          const isLoom = match && match[1] === 'loom';
+          if (isLoom) {
+            const videoId = String(children).trim().replace(/^https?:\/\/(www\.)?loom\.com\/share\//, '');
+            return <LoomEmbed videoId={videoId} />;
+          }
+
+          const rawCode = String(children || '').replace(/\n$/, '');
+          const isBlock = Boolean(match) || (typeof children === 'string' && children.includes('\n'));
+
+          if (!isBlock) {
             return (
               <code
-                className="px-[5px] py-[2px] rounded bg-sidebar border border-border font-mono text-[13px] text-accent"
+                className="px-1.5 py-0.5 rounded-md bg-sidebar border border-border font-mono text-[13px] text-accent font-medium"
                 {...props}
               >
                 {children}
               </code>
             );
           }
-          return <code className={`font-mono text-[#e2e2e2] ${className || ''}`} {...props}>{children}</code>;
+
+          const lang = match ? match[1] : 'text';
+          const cleanCode = rawCode.replace(/(\/\/\s*|\#\s*)\*\*([^*]+)\*\*/g, '$1$2');
+
+          return (
+            <div className="rounded-md border border-border overflow-hidden bg-[#131b1b] dark:bg-[#101717] shadow-xs">
+              <div className="flex items-center justify-between px-3.5 py-1.5 bg-[#0c1212] dark:bg-[#0a0f0f] border-b border-border/40">
+                <div className="flex items-center gap-2">
+                  <Code2 className="w-3.5 h-3.5 text-accent/80" />
+                  <span className="text-[11px] font-mono font-semibold tracking-wider text-text-muted uppercase">
+                    {lang}
+                  </span>
+                </div>
+                <CodeCopyButton text={cleanCode} />
+              </div>
+              <div className="overflow-x-auto text-[13.5px] font-mono">
+                <SyntaxHighlighter
+                  style={oneDark}
+                  language={lang}
+                  PreTag="div"
+                  customStyle={{
+                    margin: 0,
+                    padding: '14px 16px',
+                    fontSize: '13.5px',
+                    lineHeight: '1.65',
+                    background: 'transparent',
+                    borderRadius: 0,
+                  }}
+                  codeTagProps={{
+                    style: {
+                      fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace'
+                    }
+                  }}
+                >
+                  {cleanCode}
+                </SyntaxHighlighter>
+              </div>
+            </div>
+          );
         }
       }}
     >
       {content}
     </ReactMarkdown>
   );
-};
+});
+MarkdownWithLinks.displayName = 'MarkdownWithLinks';
 
 interface Props {
   article: Article;
@@ -358,6 +588,7 @@ export default function ArticleClient({ article }: Props) {
         return { text, id, level };
       });
   }, [article.content]);
+
 
   // Reading progress + active heading tracker
   React.useEffect(() => {
@@ -572,20 +803,20 @@ export default function ArticleClient({ article }: Props) {
           </div>
         </header>
 
-        {/* Featured Image — full bleed (moved above ToC alignment) */}
-        <div className="w-full max-w-[720px] mx-auto min-w-0">
-          {article.heroImage && (
-            <figure className="mb-[48px] -mx-4 md:mx-0">
-              <div className="overflow-hidden rounded-none md:rounded-lg aspect-[16/7]">
+        {/* Featured Image — fully wide and unconstrained */}
+        {article.heroImage && (
+          <div className="-mx-8 sm:mx-auto w-[calc(100%+4rem)] sm:w-full max-w-[1100px] min-w-0 mb-12">
+            <figure className="w-full">
+              <div className="overflow-hidden rounded-none sm:rounded-md border-y sm:border border-border bg-white shadow-xs">
                 <img 
                   src={article.heroImage} 
                   alt={article.title} 
-                  className="w-full h-full object-cover"
+                  className="w-full h-auto object-contain mx-auto block"
                 />
               </div>
             </figure>
-          )}
-        </div>
+          </div>
+        )}
 
         <div className="flex justify-center pb-[80px]">
 
@@ -622,13 +853,13 @@ export default function ArticleClient({ article }: Props) {
           )}
 
           {/* Article Column */}
-          <main className="w-full max-w-[720px] min-w-0">
+          <main className="w-full max-w-[840px] min-w-0">
             <article>
               <div className="page-content">
 
-                <div className="max-w-[720px] mx-auto">
+                <div className="w-full mx-auto">
                   {article.status === 'archived' && (
-                    <div className="mb-10 p-5 bg-amber-500/5 border-l-4 border-l-amber-500 border-y border-r border-border rounded-r-lg">
+                    <div className="mb-10 p-5 bg-amber-500/5 border-l-4 border-l-amber-500 border-y border-r border-border rounded-r-md">
                       <p className="text-[14px] text-text-primary font-medium leading-relaxed italic opacity-90">
                         <strong className="text-amber-500 not-italic mr-2">Note:</strong> 
                         This article has been classified as legacy. It was written prior to current technical standards and is preserved purely for historical reference. Some information may be deprecated.
