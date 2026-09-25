@@ -140,36 +140,21 @@ def create_jev_architecture_diagram(output_path):
     draw_arrow(82, 82.5, 82, 83.5)
 
     # --- HEAD 1: NOUL (Left) ---
-    draw_box(6, 83.5, 24, 6.0, c_head_noul, "Noul Sigmoid Head\n$\\hat{p} = \\sigma(\\mathbf{w}_n^T \\mathbf{z} + b)$", fontsize=10, bold=True)
+    draw_box(6, 83.5, 24, 6.0, c_head_noul, "Noul Sigmoid Head", fontsize=10, bold=True)
     draw_arrow(18, 89.5, 18, 93.0)
-    draw_box(5, 93.0, 26, 6.2, '#FFFFFF', "Truth Probability\n$p \\in [0, 1]$\n(e.g., $p = 0.94$)", fontsize=10, bold=True)
+    draw_box(5, 93.0, 26, 6.2, '#FFFFFF', "Truth Probability\n$p \\in [0, 1]$", fontsize=10, bold=True)
 
     # --- HEAD 2: CHOICE (Center) ---
-    draw_box(37, 83.5, 26, 6.0, c_head_choice, "Choice Softmax Head\n$P(c_m) = \\frac{\\exp(\\mathbf{w}_m^T \\mathbf{z})}{\\sum_j \\exp(\\mathbf{w}_j^T \\mathbf{z})}$", fontsize=9.5, bold=True)
+    draw_box(37, 83.5, 26, 6.0, c_head_choice, "Choice Softmax Head", fontsize=10, bold=True)
     draw_arrow(50, 89.5, 50, 93.0)
-    draw_box(36, 93.0, 28, 6.2, '#FFFFFF', "Probability Distribution\n$[p_1, \\dots, p_M] + \\text{Conf } c$\n(e.g., Bug: 0.98, Sales: 0.02)", fontsize=9.5, bold=True)
+    draw_box(36, 93.0, 28, 6.2, '#FFFFFF', "Probability Distribution\n$[p_1, \\dots, p_M] + \\text{Conf } c$", fontsize=10, bold=True)
 
     # --- HEAD 3: SCORE (Right) ---
-    draw_box(70, 83.5, 24, 6.0, c_head_score, "Score Expectation Head\n$\\mathbb{E}[s] = \\sum_{j=0}^K j \\cdot \\pi_j(\\mathbf{z})$", fontsize=10, bold=True)
+    draw_box(70, 83.5, 24, 6.0, c_head_score, "Score Expectation Head", fontsize=10, bold=True)
     draw_arrow(82, 89.5, 82, 93.0)
-    draw_box(69, 93.0, 26, 6.2, '#FFFFFF', "Continuous Score Metric\n$\\mathbb{E}[s] \\in [0, K] + \\text{Conf } c$\n(e.g., 2.85 / 4.0, Conf: 0.91)", fontsize=9.5, bold=True)
+    draw_box(69, 93.0, 26, 6.2, '#FFFFFF', "Continuous Score Metric\n$\\mathbb{E}[s] \\in [0, K] + \\text{Conf } c$", fontsize=10, bold=True)
 
-    # -------------------------------------------------------------
-    # 6. ANNOTATIONS & SYSTEM ATTRIBUTES (Right Side Legend)
-    # -------------------------------------------------------------
-    info_box_text = (
-        "Execution Properties:\n"
-        "• Non-autoregressive forward pass\n"
-        "• Zero KV cache allocation\n"
-        "• Latency: 70 - 500 ms\n"
-        "• Trained via RLCD Objective:\n"
-        "  min L_Brier + ECE - H_Entropy"
-    )
-    p_info = FancyBboxPatch((78, 22), 20, 22, boxstyle="round,pad=0.3,rounding_size=1.0",
-                            facecolor='#F3F4F6', edgecolor='#9CA3AF', linewidth=1.2, zorder=2)
-    ax.add_patch(p_info)
-    ax.text(88, 33, info_box_text, ha='center', va='center', fontsize=9.0, 
-            color='#374151', family='monospace', zorder=3)
+    # (Execution properties side block removed for a clean diagram layout)
 
     # -------------------------------------------------------------
     # 7. EULERFOLD AI WATERMARK (Bottom Right, Discrete)
