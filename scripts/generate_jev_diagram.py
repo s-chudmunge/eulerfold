@@ -161,7 +161,7 @@ def create_jev_architecture_diagram(output_path):
         "Execution Properties:\n"
         "• Non-autoregressive forward pass\n"
         "• Zero KV cache allocation\n"
-        "• Latency: 50 - 200 ms\n"
+        "• Latency: 70 - 500 ms\n"
         "• Trained via RLCD Objective:\n"
         "  min L_Brier + ECE - H_Entropy"
     )
