@@ -9,25 +9,25 @@ from app.routers.optional_auth import get_optional_current_user
 
 client = TestClient(app)
 
-# User details provided by Sankalp
-SANKALP_USER = {
+# Mock user details
+MOCK_USER = {
     "id": 100,
-    "email": "jukeask@gmail.com",
-    "username": "sankalpc",
-    "display_name": "Sankalp C",
-    "supabase_uid": "b083da08-835f-458a-9b53-1ee01e3036ba",
+    "email": "testuser@example.com",
+    "username": "testuser",
+    "display_name": "Test User",
+    "supabase_uid": "00000000-0000-0000-0000-000000000001",
     "is_active": True,
     "profile_completed": True,
     "onboarding_completed": True
 }
 
 @pytest.fixture
-def mock_sankalp():
-    return User(**SANKALP_USER)
+def mock_user():
+    return User(**MOCK_USER)
 
 # --- 1. ROADMAP GENERATION TEST ---
 
-def test_generate_roadmap_success(mock_sankalp):
+def test_generate_roadmap_success(mock_user):
     """Verifies that a user can successfully trigger AI roadmap generation."""
     
     # Mock Gemini response
@@ -73,7 +73,7 @@ def test_generate_roadmap_success(mock_sankalp):
             }]
             
             # Override auth
-            app.dependency_overrides[get_optional_current_user] = lambda: mock_sankalp
+            app.dependency_overrides[get_optional_current_user] = lambda: mock_user
             
             try:
                 response = client.post(
@@ -96,12 +96,12 @@ def test_generate_roadmap_success(mock_sankalp):
                 app.dependency_overrides = {}
 # --- 2. COMPLETION FLOW TEST ---
 
-def test_mark_topic_complete(mock_sankalp):
+def test_mark_topic_complete(mock_user):
     """Verifies that a user can mark a topic as completed and it updates roadmaps."""
     
     mock_roadmap = {
         "id": 60,
-        "email": SANKALP_USER["email"],
+        "email": MOCK_USER["email"],
         "is_public": True,
         "roadmap_plan": {"modules": [{"topics": [{"title": "Variables"}]}]}
     }
@@ -117,7 +117,7 @@ def test_mark_topic_complete(mock_sankalp):
         mock_sb.table("module_progress").select().eq().eq().eq().eq().execute.return_value.data = []
 
         with patch("app.routers.roadmaps.track_activity", new_callable=AsyncMock) as mock_track:
-            app.dependency_overrides[get_current_user] = lambda: mock_sankalp
+            app.dependency_overrides[get_current_user] = lambda: mock_user
             try:
                 response = client.post(
                     "/roadmaps/60/progress",
@@ -139,11 +139,11 @@ def test_mark_topic_complete(mock_sankalp):
 
 # --- 3. SUBMISSION FLOW TEST ---
 
-def test_submit_proof_of_work_success(mock_sankalp):
+def test_submit_proof_of_work_success(mock_user):
     """Verifies that a user can submit work and the AI evaluator passes it."""
 
     mock_roadmap = {
-        "id": 60, "email": SANKALP_USER["email"],
+        "id": 60, "email": MOCK_USER["email"],
         "roadmap_plan": {
             "modules": [{
                 "title": "Basics",
@@ -176,7 +176,7 @@ def test_submit_proof_of_work_success(mock_sankalp):
             mock_gen.return_value = json.dumps(mock_ai_eval)
 
             with patch("app.routers.submissions.calculate_user_skill_scores_for_roadmap") as mock_calc:
-                app.dependency_overrides[get_current_user] = lambda: mock_sankalp
+                app.dependency_overrides[get_current_user] = lambda: mock_user
                 try:
                     response = client.post(
                         "/submissions",
@@ -200,7 +200,7 @@ def test_submit_proof_of_work_success(mock_sankalp):
 
 # --- 5. UI/PROFILE DATA TEST ---
 
-def test_public_profile_view(mock_sankalp):
+def test_public_profile_view(mock_user):
     """Verifies that the public profile endpoint returns correct calculated data."""
     
     with patch("app.routers.profiles.get_supabase_client") as mock_get_sb:
@@ -208,7 +208,7 @@ def test_public_profile_view(mock_sankalp):
         mock_get_sb.return_value = mock_sb
         
         # 1. Mock profile fetch
-        mock_sb.table("profiles").select().eq().maybe_single().execute.return_value.data = SANKALP_USER
+        mock_sb.table("profiles").select().eq().maybe_single().execute.return_value.data = MOCK_USER
         
         # 2. Mock skills fetch
         mock_sb.table("user_skills").select().eq().order().execute.return_value.data = [
@@ -232,11 +232,11 @@ def test_public_profile_view(mock_sankalp):
         mock_sb.table("submissions").select().eq().in_().in_().order().execute.return_value.data = []
         mock_sb.table("practice_progress").select().eq().eq().execute.return_value.data = []
 
-        response = client.get(f"/profile/{SANKALP_USER['username']}")
+        response = client.get(f"/profile/{MOCK_USER['username']}")
         
         assert response.status_code == 200
         data = response.json()
-        assert data["username"] == SANKALP_USER["username"]
+        assert data["username"] == MOCK_USER["username"]
         assert len(data["skills"]) == 1
         assert data["skills"][0]["name"] == "Python"
         # The profile endpoint recalculates confidence based on the formula

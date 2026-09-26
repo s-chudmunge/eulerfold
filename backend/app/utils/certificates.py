@@ -141,7 +141,7 @@ def generate_certificate_pdf(user_name: str, roadmap_title: str, grade: str, tim
     c.drawRightString(width - 1.5 * inch, 1.2 * inch, f"Credential ID: {credential_id}")
     
     # Footer Signature / Brand Logo
-    logo_path = "/home/sankalp/Documents/projects/eulerfold/backend/app/static/logo.png"
+    logo_path = os.path.join(os.path.dirname(__file__), "..", "static", "logo.png")
     if not os.path.exists(logo_path):
         logo_path = "/app/backend/app/static/logo.png"
         

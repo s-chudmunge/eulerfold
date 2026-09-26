@@ -12,9 +12,13 @@ if not url or not key:
     print("Missing SUPABASE_URL or SUPABASE_KEY")
     sys.exit(1)
 
-supabase: Client = create_client(url, key)
+if len(sys.argv) < 2:
+    print("Usage: python scripts/get_user_info.py <email>")
+    sys.exit(1)
 
-email = sys.argv[1] if len(sys.argv) > 1 else "shibinsp43@gmail.com"
+email = sys.argv[1]
+
+supabase: Client = create_client(url, key)
 
 # Get user profiles
 profile_res = supabase.table("profiles").select("*").eq("email", email).execute()

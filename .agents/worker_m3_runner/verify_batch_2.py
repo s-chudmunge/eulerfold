@@ -2,7 +2,7 @@ import os
 import sys
 import json
 
-sys.path.append("/home/sankalp/Documents/projects/eulerfold/backend")
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "../../backend")))
 from app.core.supabase_client import get_supabase_client
 
 def verify():
