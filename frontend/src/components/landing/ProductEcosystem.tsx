@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { Route, Repeat, ArrowRight } from 'lucide-react';
+import { Route, Target, Repeat, ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 
@@ -27,8 +27,17 @@ const PILLARS: Pillar[] = [
     href: '/#hero-prompt-input'
   },
   {
-    id: 'feedback-loop',
+    id: 'skill-assessment',
     step: '02',
+    title: 'Skill Assessment',
+    description: 'Diagnoses your knowledge gaps through targeted questions and benchmarks your understanding to calibrate your curriculum.',
+    icon: Target,
+    actionText: 'Start assessment',
+    href: '/#hero-prompt-input'
+  },
+  {
+    id: 'feedback-loop',
+    step: '03',
     title: 'Agentic Feedback Loop',
     description: 'Continuously tests your grasp through checkpoints, adapts explanations to weak spots, and unlocks lessons as you master them.',
     icon: Repeat,
@@ -37,7 +46,7 @@ const PILLARS: Pillar[] = [
   },
   {
     id: 'copilot',
-    step: '03',
+    step: '04',
     title: 'Runtime Co-Pilot & Focus',
     description: 'An on-demand tutor for doubts, automated study schedules, and timed focus sessions that reward consistency.',
     imageIcon: '/goldfish/goldfish_happy.png',
@@ -53,6 +62,11 @@ export default function ProductEcosystem() {
       const el = document.getElementById('hero-prompt-input');
       if (el) {
         el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+      if (pillar.id === 'skill-assessment') {
+        window.dispatchEvent(new CustomEvent('hero-mode-select', { detail: { mode: 'gaps' } }));
+      } else if (pillar.id === 'curriculum') {
+        window.dispatchEvent(new CustomEvent('hero-mode-select', { detail: { mode: 'ai' } }));
       }
     }
   };
@@ -87,12 +101,12 @@ export default function ProductEcosystem() {
             transition={{ delay: 0.1 }}
             className="text-[14px] text-text-muted leading-relaxed"
           >
-            Get an organized study path, test your understanding as you go, and stay consistent with structured focus blocks.
+            Get an organized study path, benchmark your skills, test your understanding as you go, and stay consistent with structured focus blocks.
           </motion.p>
         </div>
 
-        {/* 3 Infrastructure Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {/* 4 Infrastructure Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {PILLARS.map((pillar, index) => {
             const Icon = pillar.icon;
             return (
