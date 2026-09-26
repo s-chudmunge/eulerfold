@@ -11,17 +11,18 @@ import { supabase } from '@/lib/supabase/client';
 
 const LocalAIModal = dynamic(() => import('@/components/landing/LocalAIModal'), { ssr: false });
 const PaymentModal = dynamic(() => import('../PaymentModal'), { ssr: false });
+const KnowledgeGapQuiz = dynamic(() => import('@/components/landing/KnowledgeGapQuiz'), { ssr: false });
 
 type Mode = 'ai' | 'job' | 'url' | 'syllabus' | 'gaps' | 'research';
 type Engine = 'eulerfold' | 'openrouter' | 'local';
 
-const MODES: { id: Mode; label: string; icon: any; placeholder: string }[] = [
+const MODES: { id: Mode; label: string; icon: any; placeholder: string; isPro?: boolean }[] = [
   { id: 'ai', label: 'AI Gen', icon: Waypoints, placeholder: "e.g. I know Python basics and want to learn Transformer architectures in 6 weeks..." },
   { id: 'job', label: 'Job Decoded', icon: Compass, placeholder: "Paste any job description or URL..." },
-  { id: 'url', label: 'From Link', icon: Globe, placeholder: "Paste an article, GitHub repo, or doc link..." },
-  { id: 'syllabus', label: 'Syllabus', icon: Library, placeholder: "Paste your course syllabus or outline..." },
-  { id: 'gaps', label: 'Skill Quiz', icon: Activity, placeholder: "What is your target role?" },
-  { id: 'research', label: 'Research Lab', icon: Atom, placeholder: "Paste a PDF URL or ArXiv link to decode..." },
+  { id: 'url', label: 'From Link', icon: Globe, placeholder: "Paste an article, GitHub repo, or doc link...", isPro: true },
+  { id: 'syllabus', label: 'Syllabus', icon: Library, placeholder: "Paste your course syllabus or outline...", isPro: true },
+  { id: 'gaps', label: 'Skill Quiz', icon: Activity, placeholder: "What is your target role?", isPro: true },
+  { id: 'research', label: 'Research Lab', icon: Atom, placeholder: "Paste a PDF URL or ArXiv link to decode...", isPro: true },
 ];
 
 const ENGINES: { id: Engine; label: string; icon: any }[] = [
@@ -77,7 +78,32 @@ export default function HeroPromptInput() {
   }, []);
 
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const [paymentModalFeature, setPaymentModalFeature] = useState<string>('');
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [showGapQuizModal, setShowGapQuizModal] = useState(false);
+  const [hasPendingQuiz, setHasPendingQuiz] = useState(false);
+
+  useEffect(() => {
+    const checkPendingQuiz = () => {
+      try {
+        const saved = localStorage.getItem('active_diagnostic_quiz');
+        if (saved) {
+          const parsed = JSON.parse(saved);
+          if (parsed && parsed.quizQuestions && parsed.quizQuestions.length > 0 && !parsed.courseGenerated) {
+            setHasPendingQuiz(true);
+            return;
+          }
+        }
+        setHasPendingQuiz(false);
+      } catch (e) {
+        console.error("Failed to check active diagnostic draft:", e);
+      }
+    };
+
+    checkPendingQuiz();
+    window.addEventListener('storage', checkPendingQuiz);
+    return () => window.removeEventListener('storage', checkPendingQuiz);
+  }, [showGapQuizModal]);
   
   const [showModeMenu, setShowModeMenu] = useState(false);
   const [showEngineMenu, setShowEngineMenu] = useState(false);
@@ -169,6 +195,20 @@ export default function HeroPromptInput() {
 
   const handleNextStep = () => {
     if (!value.trim()) return;
+    if (activeMode.isPro) {
+      if (!user) {
+        sessionStorage.setItem('hero_prompt_state', JSON.stringify({
+          mode, engine, value: value.trim(), timeValue, timeUnit, experienceLevel
+        }));
+        setShowLoginPrompt(true);
+        return;
+      }
+      if (!user.is_pro) {
+        setPaymentModalFeature(`${activeMode.label} is an EulerFold Pro feature.`);
+        setIsPaymentModalOpen(true);
+        return;
+      }
+    }
     if (mode === 'research') {
        submitGeneration();
     } else {
@@ -186,6 +226,12 @@ export default function HeroPromptInput() {
         return;
     }
 
+    if (activeMode.isPro && !user.is_pro) {
+        setPaymentModalFeature(`${activeMode.label} is an EulerFold Pro feature.`);
+        setIsPaymentModalOpen(true);
+        return;
+    }
+
     setIsGenerating(true);
     setDynamicLoadingMsg(''); // Reset
     
@@ -195,7 +241,7 @@ export default function HeroPromptInput() {
 
 
         if (mode === 'research') {
-            if (engine === 'cloud' || engine === 'eulerfold') {
+            if (engine === 'eulerfold') {
                 const res = await api.post('/research-lab/decode', { paper_url: finalValue });
                 router.push(`/research-lab/${res.data.id}`);
                 return;
@@ -257,7 +303,7 @@ Return ONLY this JSON structure:
                     let engineLocal = null;
                     try {
                         const { CreateMLCEngine } = await import('@mlc-ai/web-llm');
-                        engineLocal = await CreateMLCEngine(localAIModelId, { 
+                        engineLocal = await CreateMLCEngine(localAIModelId!, { 
                             initProgressCallback: (p) => setDynamicLoadingMsg(`Local AI: ${p.text}`) 
                         });
                         setDynamicLoadingMsg("Decoding paper directly on your GPU... 🧠");
@@ -312,7 +358,11 @@ Return ONLY this JSON structure:
             }
         }
 
-        if (mode === 'ai') {
+        if (mode === 'gaps') {
+            setIsGenerating(false);
+            setShowGapQuizModal(true);
+            return;
+        }
 
         if (engine === 'local') {
             if (!localAIModelId) {
@@ -321,38 +371,104 @@ Return ONLY this JSON structure:
                 return;
             }
             
-            setDynamicLoadingMsg(`Loading local model: ${localAIModelId}... (This may take a while to download to your GPU)`);
+            setDynamicLoadingMsg(`Loading local model: ${localAIModelId}... (This may take a moment to load into GPU memory)`);
             
             const initProgressCallback = (report: any) => {
                 setDynamicLoadingMsg(`Local AI: ${report.text}`);
             };
-            
-            let mlc_engine = null;
-            try {
-                const { CreateMLCEngine } = await import('@mlc-ai/web-llm');
-                mlc_engine = await CreateMLCEngine(localAIModelId, { initProgressCallback });
-                setDynamicLoadingMsg("Brainstorming curriculum directly on your GPU... 🧠");
-                
-                const localSystemPrompt = `You are an expert technical lead. Generate a highly technical and mathematically rigorous course. Output ONLY valid JSON matching exactly this format:
+
+            let localUserPrompt = '';
+            let targetSubject = finalValue;
+
+            if (mode === 'job') {
+                localUserPrompt = `Job Requirements / Description:
+"""${finalValue.slice(0, 10000)}"""
+Current Experience Level: ${experienceLevel}
+Duration: ${timeValue} ${timeUnit}
+
+Deconstruct this job description and generate a targeted learning roadmap that equips the learner with the critical skills required for this role. Follow the Architectural Rules strictly.`;
+            } else if (mode === 'url') {
+                setDynamicLoadingMsg('Connecting & fetching webpage... 🌐');
+                let pageText = finalValue;
+                try {
+                    const scrapeRes = await api.post('/roadmaps/scrape-url', { url: finalValue, time_value: timeValue, time_unit: timeUnit });
+                    if (scrapeRes.data?.text) {
+                        pageText = scrapeRes.data.text;
+                        setExtractedTextPreview(scrapeRes.data.text);
+                        setExtractedDocType(scrapeRes.data.type || 'webpage');
+                    }
+                } catch (e) {
+                    console.warn("URL scrape fallback:", e);
+                }
+                localUserPrompt = `Webpage / Document Content:
+"""${pageText.slice(0, 10000)}"""
+Source URL: ${finalValue}
+Duration: ${timeValue} ${timeUnit}
+
+Synthesize the key concepts from this document and build a structured learning course. Follow the Architectural Rules strictly.`;
+            } else if (mode === 'syllabus') {
+                let syllabusText = finalValue;
+                const isUrl = finalValue.trim().startsWith('http://') || finalValue.trim().startsWith('https://');
+                if (isUrl) {
+                    setDynamicLoadingMsg('Reading syllabus document from URL... 📄');
+                    try {
+                        const scrapeRes = await api.post('/roadmaps/scrape-url', { url: finalValue.trim(), time_value: timeValue, time_unit: timeUnit });
+                        if (scrapeRes.data?.text) {
+                            syllabusText = scrapeRes.data.text;
+                            setExtractedTextPreview(scrapeRes.data.text);
+                            setExtractedDocType(scrapeRes.data.type || 'document');
+                        }
+                    } catch (e) {
+                        console.warn("Syllabus scrape fallback:", e);
+                    }
+                }
+                localUserPrompt = `Syllabus / Course Outline:
+"""${syllabusText.slice(0, 10000)}"""
+Duration: ${timeValue} ${timeUnit}
+
+Transform this syllabus into a clear, structured learning roadmap. Follow the Architectural Rules strictly.`;
+            } else {
+                // mode === 'ai'
+                localUserPrompt = `Subject: ${finalValue}\nGoal: Master ${finalValue}\nExperience: ${experienceLevel}\nDuration: ${timeValue} ${timeUnit}\n\nBuild a structured learning course that teaches a beginner. Follow the Architectural Rules strictly.`;
+            }
+
+            const localSystemPrompt = `You are an expert technical lead and curriculum designer. Output ONLY valid JSON matching exactly this schema:
 {
-  "title": "string",
-  "description": "string",
+  "title": "string (3 to 6 words maximum)",
+  "description": "string (One punchy sentence)",
   "modules": [
     {
       "title": "string",
-      "outcome": "string",
-      "optimal_search_query": "string",
+      "outcome": "string starting with: By the end of this module you will be able to...",
+      "timeline": "string",
+      "workspace_type": "code|research|design",
+      "proof_of_work_instructions": {
+        "what_to_build": "string (Max 1 line)",
+        "what_counts_as_evidence": "string (Max 1 line)",
+        "eval_criteria": ["string", "string"]
+      },
       "topics": [
         {
-          "title": "string",
-          "youtube_search_query": "string",
+          "title": "string (ONE focused concept in Module 1)",
+          "youtube_search_query": "string (A precise 3-6 word search query describing ONLY the exact technical topic and subject)",
           "subtopics": [ { "title": "string" } ]
         }
       ]
     }
   ]
-}`;
-                const localUserPrompt = `Subject: ${finalValue}\nGoal: ${finalValue}\nExperience: ${experienceLevel}\nTime: ${timeValue} ${timeUnit}\nGenerate the JSON.`;
+}
+
+ARCHITECTURAL RULES:
+1. Generate exactly ${timeValue} milestone module(s) for a '${timeValue} ${timeUnit}' course.
+2. CRITICAL: ONLY MODULE 1 is detailed at this initial stage. Provide 4-5 focused, teachable topics for Module 1 ONLY.
+3. Modules 2 through ${timeValue} (the future milestones): You MUST set "topics": []. Do NOT generate topics for later modules—they are locked stubs that will adaptively unlock later.
+4. Output JSON ONLY.`;
+            
+            let mlc_engine = null;
+            try {
+                const { CreateMLCEngine } = await import('@mlc-ai/web-llm');
+                mlc_engine = await CreateMLCEngine(localAIModelId, { initProgressCallback });
+                setDynamicLoadingMsg("Designing curriculum directly on your GPU... 🧠");
                 
                 const mlcResponse = await mlc_engine.chat.completions.create({
                     messages: [
@@ -371,16 +487,17 @@ Return ONLY this JSON structure:
                 const { jsonrepair } = await import('jsonrepair');
                 const parsedJSON = JSON.parse(jsonrepair(cleanedText));
                 
-                setDynamicLoadingMsg("Saving and enriching with YouTube videos... 🚀");
+                setDynamicLoadingMsg("Saving and curating lesson resources... 🚀");
                 
                 const saveResponse = await api.post("/roadmaps/save-external", {
                     roadmap_plan: parsedJSON,
-                    subject: finalValue,
-                    goal: finalValue,
+                    subject: parsedJSON.title || targetSubject,
+                    goal: `Master ${parsedJSON.title || targetSubject}`,
                     time_value: timeValue,
                     time_unit: timeUnit,
                     model: localAIModelId,
-                    email: user.email
+                    email: user.email,
+                    is_job_decoded: mode === 'job'
                 });
                 
                 const resultData = saveResponse.data;
@@ -395,6 +512,7 @@ Return ONLY this JSON structure:
             }
         }
 
+        if (mode === 'ai') {
             payload = { ...payload, subject: finalValue, goal: finalValue, experience_level: experienceLevel, model: engine };
             
             // SSE STREAMING LOGIC FOR AI GEN
@@ -499,9 +617,6 @@ Return ONLY this JSON structure:
                     }
                 }
                 payload = { ...payload, syllabus_text: finalValue };
-            } else if (mode === 'gaps') {
-                endpoint = '/roadmaps/generate-from-gaps';
-                payload = { ...payload, target_role: finalValue, known_skills: '', weak_skills: '' };
             }
 
             const response = await api.post(endpoint, payload);
@@ -515,10 +630,13 @@ Return ONLY this JSON structure:
         console.error("Generation error:", err);
         if (err.response?.status === 401) {
             setShowLoginPrompt(true);
-        } else if (err.response?.status === 402) {
+        } else if (err.response?.status === 402 || err.response?.status === 403) {
+            const detailMsg = err.response?.data?.detail;
+            setPaymentModalFeature(detailMsg || `${activeMode.label} is an EulerFold Pro feature.`);
             setIsPaymentModalOpen(true);
         } else {
-            alert(err.message || "Failed to generate course. Please try again.");
+            const errorDetail = err.response?.data?.detail || err.message || "Failed to generate course. Please try again.";
+            alert(errorDetail);
         }
         setIsGenerating(false);
     }
@@ -706,22 +824,66 @@ Return ONLY this JSON structure:
                 className="w-full bg-transparent text-text-primary text-[14px] font-medium placeholder:text-text-muted/50 resize-none outline-none leading-relaxed"
               />
               
+              {activeMode.isPro && !user?.is_pro && (
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-2.5 bg-sidebar/70 border border-border rounded-md text-[12px] mt-1">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-3.5 h-3.5 text-accent shrink-0" />
+                    <span className="text-text-primary text-[12px]">
+                      <strong className="text-text-heading font-semibold">{activeMode.label}</strong> is available with EulerFold Pro.
+                    </span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (!user) {
+                        setShowLoginPrompt(true);
+                      } else {
+                        setPaymentModalFeature(`${activeMode.label} is an EulerFold Pro feature.`);
+                        setIsPaymentModalOpen(true);
+                      }
+                    }}
+                    className="inline-flex items-center justify-center gap-1.5 px-3 py-1 bg-accent text-background font-bold text-[11px] rounded-md hover:opacity-90 transition-opacity shrink-0 cursor-pointer shadow-xs"
+                  >
+                    <span>Upgrade to Pro</span>
+                    <ArrowRight className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
+
               <div className="flex items-center justify-between mt-2 pt-2 border-t border-border/30 relative">
                 <div className="flex items-center gap-2">
                   {/* Mode Selector */}
                   <div className="relative">
                     <button 
                       onClick={() => { setShowModeMenu(!showModeMenu); setShowEngineMenu(false); }} 
-                      className="flex items-center justify-center w-8 h-8 rounded-md bg-sidebar/50 border border-border text-text-heading hover:text-accent hover:border-accent/50 transition-colors"
+                      className="flex items-center gap-1.5 px-2.5 h-8 rounded-md bg-sidebar/50 border border-border text-text-heading hover:text-accent hover:border-accent/50 transition-colors text-[11px] font-bold"
                       title={activeMode.label}
                     >
-                      <activeMode.icon className="w-4 h-4" />
+                      <activeMode.icon className="w-3.5 h-3.5" />
+                      <span className="hidden sm:inline">{activeMode.label}</span>
+                      {activeMode.isPro && (
+                        <span className="text-[9px] font-bold uppercase tracking-wider text-accent bg-accent/10 border border-accent/20 px-1 py-0.2 rounded-md">
+                          Pro
+                        </span>
+                      )}
                     </button>
                     {showModeMenu && (
-                      <div className="absolute bottom-full left-0 mb-2 w-40 bg-background border border-border rounded-md shadow-xl z-50 overflow-hidden">
+                      <div className="absolute bottom-full left-0 mb-2 w-48 bg-background border border-border rounded-md shadow-xl z-50 overflow-hidden">
                         {MODES.map(m => (
-                          <button key={m.id} onClick={() => { setMode(m.id); setShowModeMenu(false); }} className={`w-full text-left px-3 py-2 text-[12px] font-bold flex items-center gap-2 hover:bg-sidebar ${mode === m.id ? 'text-accent bg-sidebar/50' : 'text-text-muted'}`}>
-                            <m.icon className="w-3.5 h-3.5" /> {m.label}
+                          <button 
+                            key={m.id} 
+                            onClick={() => { setMode(m.id); setShowModeMenu(false); }} 
+                            className={`w-full text-left px-3 py-2 text-[12px] font-bold flex items-center justify-between hover:bg-sidebar transition-colors ${mode === m.id ? 'text-accent bg-sidebar/50' : 'text-text-muted hover:text-text-heading'}`}
+                          >
+                            <span className="flex items-center gap-2">
+                              <m.icon className="w-3.5 h-3.5" />
+                              <span>{m.label}</span>
+                            </span>
+                            {m.isPro && (
+                              <span className="text-[9px] font-bold uppercase tracking-wider text-accent bg-accent/10 border border-accent/20 px-1.5 py-0.5 rounded-md">
+                                Pro
+                              </span>
+                            )}
                           </button>
                         ))}
                       </div>
@@ -810,12 +972,38 @@ Return ONLY this JSON structure:
                   )}
                 </div>
 
+                {activeMode.isPro && !user?.is_pro && (
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 p-2.5 bg-sidebar/70 border border-border rounded-md text-[12px]">
+                    <div className="flex items-center gap-2">
+                      <Sparkles className="w-3.5 h-3.5 text-accent shrink-0" />
+                      <span className="text-text-primary text-[12px]">
+                        <strong className="text-text-heading font-semibold">{activeMode.label}</strong> is available with EulerFold Pro.
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        if (!user) {
+                          setShowLoginPrompt(true);
+                        } else {
+                          setPaymentModalFeature(`${activeMode.label} is an EulerFold Pro feature.`);
+                          setIsPaymentModalOpen(true);
+                        }
+                      }}
+                      className="inline-flex items-center justify-center gap-1.5 px-3 py-1 bg-accent text-background font-bold text-[11px] rounded-md hover:opacity-90 transition-opacity shrink-0 cursor-pointer shadow-xs"
+                    >
+                      <span>Upgrade to Pro</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </button>
+                  </div>
+                )}
+
                 <div className="flex justify-end mt-2 pt-2 border-t border-border/30">
                   <button
                     onClick={() => submitGeneration()}
                     className="inline-flex items-center gap-2 bg-gradient-to-b from-[#11887e] to-accent text-white px-5 py-2 rounded-md text-[13px] font-semibold tracking-[-0.01em] shadow-[0_2px_8px_rgba(15,118,110,0.35),inset_0_1px_0_rgba(255,255,255,0.2)] hover:from-[#13968b] hover:to-[#0d6962] hover:shadow-[0_4px_12px_rgba(15,118,110,0.4)] active:scale-[0.98] transition-all"
                   >
-                    Create My Course
+                    {mode === 'gaps' ? 'Start Diagnostic Assessment' : 'Create My Course'}
                     <Wand2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
@@ -854,7 +1042,24 @@ Return ONLY this JSON structure:
         </span>
       </div>
 
-      <PaymentModal isOpen={isPaymentModalOpen} onClose={() => setIsPaymentModalOpen(false)} onSuccess={() => setIsPaymentModalOpen(false)} />
+      {hasPendingQuiz && (
+        <div className="flex justify-center mt-3">
+          <button
+            type="button"
+            onClick={() => setShowGapQuizModal(true)}
+            className="px-4 py-2 rounded-md bg-accent text-white font-semibold text-[12px] hover:bg-teal-700 transition-all shadow-xs cursor-pointer"
+          >
+            Resume Assessment
+          </button>
+        </div>
+      )}
+
+      <PaymentModal 
+        isOpen={isPaymentModalOpen} 
+        onClose={() => setIsPaymentModalOpen(false)} 
+        onSuccess={() => setIsPaymentModalOpen(false)} 
+        featureTitle={paymentModalFeature} 
+      />
 
       <LocalAIModal
         isOpen={isLocalAIModalOpen}
@@ -868,6 +1073,23 @@ Return ONLY this JSON structure:
           setIsLocalAIModalOpen(false);
         }}
       />
+
+      {showGapQuizModal && (
+        <KnowledgeGapQuiz
+          initialTargetRole={value}
+          initialTimeValue={timeValue}
+          initialEngine={engine}
+          localModelId={localAIModelId}
+          hideEngineSelector={true}
+          onClose={() => setShowGapQuizModal(false)}
+          onRoadmapGenerated={(data) => {
+            setShowGapQuizModal(false);
+            localStorage.setItem('last_generated_roadmap', JSON.stringify({ data, timestamp: Date.now() }));
+            sessionStorage.setItem('roadmap_just_generated', 'true');
+            router.push(`/roadmap/${data.slug || data.id}`);
+          }}
+        />
+      )}
     </motion.div>
   );
 }

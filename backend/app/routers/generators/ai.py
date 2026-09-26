@@ -564,18 +564,29 @@ Estimated duration: {roadmap_create.time_value} {roadmap_create.time_unit}.
             if not response.data:
                 raise HTTPException(status_code=500, detail="Failed to save generated roadmap")
                 
-            # 4. Deduct credit
-            new_credits = credits - 1
-            sb.table("profiles").update({"roadmap_credits": new_credits}).eq("email", email).execute()
-            if new_credits <= 0:
-                await check_and_revoke_pro_if_no_credits(email, sb)
-            
-            # 5. Background task to extract skills
-            if uid:
-                background_tasks.add_task(extract_skills_from_roadmap, response.data[0]["id"], uid)
-    
-            yield json.dumps({"result": RoadmapRead(**response.data[0]).model_dump()}) + "\n"
-            return
+            # 4. Deduct credit with refund protection
+            credit_deducted = False
+            try:
+                new_credits = credits - 1
+                sb.table("profiles").update({"roadmap_credits": new_credits}).eq("email", email).execute()
+                credit_deducted = True
+                if new_credits <= 0:
+                    await check_and_revoke_pro_if_no_credits(email, sb)
+                
+                # 5. Background task to extract skills
+                if uid:
+                    background_tasks.add_task(extract_skills_from_roadmap, response.data[0]["id"], uid)
+        
+                yield json.dumps({"result": RoadmapRead(**response.data[0]).model_dump()}) + "\n"
+                return
+            except Exception as post_save_err:
+                if credit_deducted:
+                    try:
+                        sb.table("profiles").update({"roadmap_credits": credits}).eq("email", email).execute()
+                        logger.info(f"Refunded credit to {email} after error: {post_save_err}")
+                    except Exception as refund_err:
+                        logger.error(f"Failed to refund credit: {refund_err}")
+                raise post_save_err
     
         except HTTPException:
             raise

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Loader, CheckCircle2, Tag, Trash2, CreditCard } from 'lucide-react';
+import { X, Loader, CheckCircle2, Tag, Trash2, CreditCard, Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { api } from '../lib/api';
 import { supabase } from '../lib/supabase/client';
@@ -9,10 +9,13 @@ import Celebration from './Celebration';
 interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess?: () => void;
+  featureTitle?: string;
+  title?: string;
+  description?: string;
 }
 
-export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModalProps) {
+export default function PaymentModal({ isOpen, onClose, onSuccess, featureTitle, title, description }: PaymentModalProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [discountStatus, setDiscountStatus] = useState(getDiscountStatus());
@@ -62,7 +65,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
 
   const loadRazorpayScript = () => {
     return new Promise((resolve) => {
-      if ((window as Record<string, unknown>).Razorpay) {
+      if ((window as unknown as Record<string, unknown>).Razorpay) {
         resolve(true);
         return;
       }
@@ -117,7 +120,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
               setShowCelebration(true);
               setTimeout(() => {
                 setShowCelebration(false);
-                onSuccess();
+                onSuccess?.();
               }, 4000);
             } catch (err) {
               setError('Verification failed.');
@@ -153,7 +156,7 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/60 animate-in fade-in duration-100">
-      <div className="bg-sidebar border border-border rounded-lg w-full max-w-[340px] shadow-2xl relative p-0 overflow-hidden">
+      <div className="bg-sidebar border border-border rounded-md w-full max-w-[340px] shadow-2xl relative p-0 overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4 border-b border-border bg-sidebar/50">
           <h2 className="text-[14px] font-bold text-text-heading tracking-tight">
             Complete Purchase
@@ -164,6 +167,21 @@ export default function PaymentModal({ isOpen, onClose, onSuccess }: PaymentModa
         </div>
         
         <div className="p-6">
+          {(featureTitle || title || description) && (
+            <div className="mb-4 px-3 py-2 bg-accent/10 border border-accent/20 rounded-md flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-3.5 h-3.5 text-accent shrink-0" />
+                <span className="text-[12px] font-semibold text-text-heading">
+                  {title || featureTitle}
+                </span>
+              </div>
+              {description && (
+                <p className="text-[11px] text-text-muted leading-relaxed pl-5.5">
+                  {description}
+                </p>
+              )}
+            </div>
+          )}
           <div className="flex justify-between items-center mb-6">
             <div className="flex flex-col">
               <span className="text-[10px] font-bold uppercase text-text-muted tracking-widest">Pro Subscription (1 Month)</span>

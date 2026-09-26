@@ -158,11 +158,11 @@ export const roadmapsAPI = {
         });
         return response.data;
     },
-    generateFromGaps: async (payload: { target_role: string, known_skills: string, weak_skills: string, time_value: number, time_unit: string, strict_official_sources?: boolean }): Promise<RoadmapData> => {
+    generateFromGaps: async (payload: { target_role: string, known_skills: string, weak_skills: string, time_value: number, time_unit: string, strict_official_sources?: boolean, diagnostic_prompt_context?: string }): Promise<RoadmapData> => {
         const response = await api.post('/roadmaps/generate-from-gaps', payload);
         return response.data;
     },
-    generateDiagnosticQuiz: async (payload: { target_role: string, known_skills: string, question_count?: number }): Promise<any[]> => {
+    generateDiagnosticQuiz: async (payload: { target_role: string, known_skills: string, question_count?: number, engine?: string, model?: string, category?: string, domain?: string, search_keywords?: string[], dataset?: string, config?: string }): Promise<any[]> => {
         const response = await api.post('/roadmaps/generate-diagnostic-quiz', payload);
         return response.data;
     },

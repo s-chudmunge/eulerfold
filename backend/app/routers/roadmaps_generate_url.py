@@ -83,7 +83,12 @@ Generate a rigorous {payload.time_value} {payload.time_unit} learning course tha
 3. **Specific Topics:** Each module must have 3-5 specific topics using industry-standard terms.
 4. **Practical Outcomes:** The `proof_of_work_instructions` must describe a realistic technical task that demonstrates competency.
 5. **Conciseness:** Course description must be max 2 sentences. Each module 'outcome' must be max 1 sentence.
-6. **Output JSON ONLY** matching this schema:
+6. **Just-In-Time Milestone Architecture:** 
+   - Generate exactly {payload.time_value} milestone module(s) for a '{payload.time_value} {payload.time_unit}' course.
+   - **CRITICAL: ONLY MODULE 1 is detailed at this initial stage.** Provide 4-5 concrete, teachable topics and subtopics for Module 1.
+   - **Modules 2 through {payload.time_value} (the future milestones):** Provide ONLY the milestone "title", "timeline", "outcome", and "workspace_type". For these later modules, set "topics": [] and "recommended_resources": []. Do NOT generate detailed topics or video queries for later modules upfront—they will adaptively unfold as the learner advances.
+7. **Module 1 Topics:** 4-5 focused topics for Module 1 only.
+8. **Output JSON ONLY** matching this schema:
    {{
      "title": "string",
      "description": "string",
@@ -101,7 +106,7 @@ Generate a rigorous {payload.time_value} {payload.time_unit} learning course tha
          "optimal_search_query": "string",
          "topics": [
            {{
-              "title": "string",
+              "title": "string (ONE focused concept in Module 1)",
               "youtube_search_query": "Clean 3-5 word technical topic query for YouTube (e.g., 'Population Stability Index PSI', 'Kolmogorov Smirnov test'). DO NOT include university names like MIT or Stanford.",
               "subtopics": [ {{ "title": "string" }} ]
             }}
@@ -116,10 +121,15 @@ Generate a rigorous {payload.time_value} {payload.time_unit} learning course tha
         log_backend_ai_usage(sb, uid, f"URL Deconstruction (Cost: 1.0 Credits)", usage, source="backend")
         roadmap_plan = robust_json_loads(generated_text)
 
-        # Enrichment logic (IDs and YouTube)
+        # Enrichment logic (IDs, lock states, Module 1 YouTube)
+        used_video_ids = set()
         for i, module in enumerate(roadmap_plan.get("modules", [])):
             if not isinstance(module, dict): continue
             module["id"] = f"module_{i+1}"
+            module["locked"] = (i > 0)
+            if i > 0:
+                module["topics"] = []
+                module["recommended_resources"] = []
             if not module.get("outcome"):
                  module["outcome"] = "By the end of this module you will be able to apply the listed topics and solve basic related problems."
             for t_idx, topic in enumerate(module.get("topics", [])):
@@ -130,34 +140,44 @@ Generate a rigorous {payload.time_value} {payload.time_unit} learning course tha
                     if not isinstance(subtopic, dict): continue
                     subtopic["id"] = str(uuid.uuid4())
                 
-                # YouTube Enrichment
+            # ONLY curate resources for Module 1 at initial creation!
+            if i == 0:
                 if settings.YOUTUBE_API_KEY:
-                    try:
-                        search_query = topic.get("youtube_search_query") or f"{topic['title']}"
-                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(payload, 'strict_official_sources', False), subject_context=roadmap_plan.get("title", ""))
-                        if results:
-                            topic["youtube_video_id"] = results[0]["video_id"]
-                            topic["youtube_video_title"] = results[0]["video_title"]
-                            topic["duration"] = results[0]["duration_minutes"]
-                        await asyncio.sleep(0.1)
-                    except Exception as yt_err:
-                        logger.error(f"YouTube enrichment failed for topic {topic['title']}: {yt_err}")
+                    for t_idx, topic in enumerate(module.get("topics", [])):
+                        try:
+                            clean_title = roadmap_plan.get("title", "Course")
+                            raw_query = topic.get("youtube_search_query") or f"{topic['title']}"
+                            if clean_title and clean_title.lower() not in raw_query.lower():
+                                search_query = f"{clean_title} {raw_query}"
+                            else:
+                                search_query = raw_query
+                            results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(payload, 'strict_official_sources', False), subject_context=clean_title, exclude_video_ids=used_video_ids)
+                            for result in results:
+                                if result["video_id"] not in used_video_ids:
+                                    topic["youtube_video_id"] = result["video_id"]
+                                    topic["youtube_video_title"] = result["video_title"]
+                                    topic["duration"] = result["duration_minutes"]
+                                    used_video_ids.add(result["video_id"])
+                                    break
+                            await asyncio.sleep(0.1)
+                        except Exception as yt_err:
+                            logger.error(f"YouTube enrichment failed for topic {topic['title']}: {yt_err}")
 
-            # DuckDuckGo Enrichment
-            search_query = module.get("optimal_search_query")
-            if search_query:
-                def fetch_ddg():
-                    try:
-                        from ddgs import DDGS
-                        with DDGS() as ddgs:
-                            return list(ddgs.text(search_query, max_results=3))
-                    except Exception as e:
-                        logger.error(f"DDG search failed for query {search_query}: {e}")
-                        return []
-                ddg_results = await asyncio.to_thread(fetch_ddg)
-                if ddg_results:
-                    logger.info(f"DuckDuckGo search successful for '{search_query}'. Found {len(ddg_results)} references.")
-                    module["resources"] = [{"title": r["title"], "url": r["href"], "type": "article"} for r in ddg_results]
+                # DuckDuckGo Enrichment for Module 1
+                search_query = module.get("optimal_search_query")
+                if search_query:
+                    def fetch_ddg():
+                        try:
+                            from ddgs import DDGS
+                            with DDGS() as ddgs:
+                                return list(ddgs.text(search_query, max_results=3))
+                        except Exception as e:
+                            logger.error(f"DDG search failed for query {search_query}: {e}")
+                            return []
+                    ddg_results = await asyncio.to_thread(fetch_ddg)
+                    if ddg_results:
+                        logger.info(f"DuckDuckGo search successful for '{search_query}'. Found {len(ddg_results)} references.")
+                        module["resources"] = [{"title": r["title"], "url": r["href"], "type": "article"} for r in ddg_results]
 
         slug = await _generate_unique_slug(roadmap_plan["title"], email, sb)
         

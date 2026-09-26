@@ -27,6 +27,7 @@ from app.core.auth import get_current_user
 from app.routers.certificates import generate_and_store_certificate
 from app.routers.optional_auth import get_optional_current_user
 from app.services.skills_service import extract_skills_from_roadmap, calculate_user_skill_scores_for_roadmap, cleanup_skills_after_roadmap_deletion, process_extracted_skills
+from app.services.diagnostic_benchmark_service import generate_progressive_diagnostic_quiz
 from app.routers.payments import check_and_revoke_pro_if_no_credits
 
 from app.database.monitor import monitor_query
@@ -386,13 +387,18 @@ Return ONLY a JSON array of objects. Each object must have:
 - explanation: a concise one-line explanation of the correct choice
 """
     try:
-        model_to_use = settings.DEFAULT_ROADMAP_MODEL
-        generated_text, usage = await generate_text(prompt, model=model_to_use, response_mime_type="application/json", return_usage=True)
-        log_backend_ai_usage(sb, uid, f"Diagnostic Quiz Gen (Cost: 0 Credits)", usage, source="backend")
-        quiz_data = robust_json_loads(generated_text)
-        
-        # We don't deduct credits for the quiz itself, only for the roadmap generation later
-        
+        quiz_data = await generate_progressive_diagnostic_quiz(
+            target_role=payload.target_role,
+            known_skills=payload.known_skills,
+            question_count=payload.question_count,
+            pre_resolved_category=payload.category or payload.config,
+            pre_resolved_dataset=payload.dataset,
+            pre_resolved_config=payload.config,
+            pre_resolved_domain=payload.domain,
+            pre_resolved_keywords=payload.search_keywords,
+            model=payload.model,
+            user_id=uid
+        )
         return quiz_data
 
     except Exception as e:
@@ -407,8 +413,9 @@ async def generate_diagnostic_quiz_stream(
     payload: DiagnosticQuizCreate,
     current_user: User = Depends(get_current_user)
 ):
-    """Stream diagnostic quiz questions token by token so test can start immediately."""
+    """Stream progressive diagnostic quiz questions token by token so test can start immediately."""
     email = current_user.email
+    uid = current_user.supabase_uid
     if not email:
         raise HTTPException(status_code=401, detail="Could not determine user email")
 
@@ -428,31 +435,41 @@ async def generate_diagnostic_quiz_stream(
         else:
             raise HTTPException(status_code=402, detail="No roadmap credits left. Please upgrade to Pro.")
 
-    prompt = f"""
-You are a technical subject matter expert. 
-The user is aspiring to be a "{payload.target_role}".
-They already know: "{payload.known_skills}".
+    logger.info(f"[Diagnostic Stream] Request received from user={email} for target_role='{payload.target_role}', question_count={payload.question_count}")
 
-Your goal is to generate {payload.question_count} Multiple Choice Questions (MCQs) that test their knowledge on ADVANCED or MISSING concepts required for {payload.target_role} that they might NOT know yet. 
-Do not test them on what they already know.
+    async def stream_progressive_quiz():
+        try:
+            quiz_data = await generate_progressive_diagnostic_quiz(
+                target_role=payload.target_role,
+                known_skills=payload.known_skills,
+                question_count=payload.question_count,
+                pre_resolved_category=payload.category or payload.config,
+                pre_resolved_dataset=payload.dataset,
+                pre_resolved_config=payload.config,
+                pre_resolved_domain=payload.domain,
+                pre_resolved_keywords=payload.search_keywords,
+                model=payload.model,
+                user_id=uid
+            )
+            if isinstance(quiz_data, dict):
+                quiz_data = quiz_data.get("questions") or quiz_data.get("data") or quiz_data.get("modules") or []
+            if not isinstance(quiz_data, list):
+                quiz_data = []
 
-CRITICAL QUALITY STANDARDS:
-- Questions must be CONCEPTUAL and SITUATIONAL. Avoid simple recall or rote memorization.
-- Focus on application of principles and "what would happen if" scenarios.
-- Each question must have exactly 4 options.
-- Only one option must be clearly correct.
-- Options should be plausible but distinct.
+            logger.info(f"[Diagnostic Stream] Streaming {len(quiz_data)} benchmark questions to user={email}")
+            yield "[\n"
+            for i, q in enumerate(quiz_data):
+                comma = "," if i < len(quiz_data) - 1 else ""
+                yield json.dumps(q) + comma + "\n"
+                await asyncio.sleep(0.04)
+            yield "]"
+            logger.info(f"[Diagnostic Stream] Finished streaming {len(quiz_data)} benchmark questions.")
+        except Exception as e:
+            logger.error(f"[Diagnostic Stream] Stream error: {e}")
+            yield f'{{"error": "{str(e)}"}}'
 
-Return ONLY a JSON array of objects. Each object must have:
-- id: a unique string ID for the question (e.g. "q1", "q2")
-- question: string
-- options: array of 4 strings
-- correct_answer_index: integer (0-3)
-- explanation: a concise one-line explanation of the correct choice
-"""
-    model_to_use = settings.DEFAULT_ROADMAP_MODEL
     return StreamingResponse(
-        generate_text_stream(prompt, model=model_to_use, response_mime_type="application/json"),
+        stream_progressive_quiz(),
         media_type="text/event-stream"
     )
 
@@ -464,11 +481,13 @@ async def evaluate_diagnostic_quiz(
     payload: DiagnosticQuizEvaluate,
     current_user: User = Depends(get_current_user)
 ):
-    """Evaluate diagnostic quiz results to decide if more probing is needed or to proceed to roadmap generation."""
+    """Evaluate diagnostic quiz results with progressive difficulty ceiling to decide follow-up or roadmap synthesis."""
     email = current_user.email
     uid = current_user.supabase_uid
     if not email:
         raise HTTPException(status_code=401, detail="Could not determine user email")
+
+    logger.info(f"[Diagnostic Eval] Starting evaluation for user={email} | Round {payload.round_number} | Questions answered: {len(payload.questions_and_answers)}")
 
     sb = get_supabase_client()
     profile_res = sb.table("profiles").select("roadmap_credits, is_pro").eq("email", email).execute()
@@ -480,45 +499,68 @@ async def evaluate_diagnostic_quiz(
         raise HTTPException(status_code=403, detail="Diagnostic Quiz is a Pro feature.")
 
     prompt = f"""
-You are a technical subject matter expert evaluating a learner's diagnostic test for the role of "{payload.target_role}".
+You are an adaptive psychometric evaluator assessing a candidate's diagnostic test for the role of "{payload.target_role}".
 Stated prior experience: "{payload.known_skills}".
 Current Assessment Round: {payload.round_number}.
 
-Test Results:
+The assessment framework evaluates candidates across a 5-Tier Difficulty Ladder customized strictly for the domain of "{payload.target_role}":
+Tier 1: Foundational (Core definitions, basic axioms, elementary terminology of {payload.target_role})
+Tier 2: Core Application (Standard problems, direct formula application, routine operations in {payload.target_role})
+Tier 3: Intermediate (Multi-step problems, structural properties, theorem applications in {payload.target_role})
+Tier 4: Advanced (Complex analytical proofs, subtle invariants, counter-examples, edge configurations in {payload.target_role})
+Tier 5: Expert (Deep theoretical synthesis, non-trivial abstract generalizations, Olympiad/research-level depth in {payload.target_role})
+
+CRITICAL TOPIC INTEGRITY:
+All questions and follow-up evaluations MUST remain 100% focused strictly on "{payload.target_role}". NEVER introduce computer science, concurrency, web latency, or software engineering concepts unless the target role itself is explicitly about software engineering.
+
+Cumulative Test History Across All Rounds:
 {json.dumps(payload.questions_and_answers, indent=2)}
 
-Determine if deeper diagnostic probing is required or if you have sufficient evidence to build their custom gap-filling roadmap.
+OBJECTIVE:
+Act as an analytical psychometric evaluator for "{payload.target_role}". Analyze the candidate's answers across the 5-Tier Difficulty Ladder to identify:
+1. The candidate's exact skill level and mastery ceiling in "{payload.target_role}" (the highest tier they reliably understand).
+2. The specific concepts and skill gaps they failed or struggled with.
+3. A concise summary of their knowledge gaps to seed their personalized learning roadmap.
 
-RULES:
-1. If round_number == 1 AND user answered between 1 and 4 questions incorrectly, AND those incorrect answers point to specific sub-topics that require deeper diagnosis:
-   Set "decision": "DEEPER_DIAGNOSIS".
-   Generate 2 or 3 targeted follow-up MCQs in "follow_up_questions" that probe those exact weak spots at a deeper level.
-2. If round_number >= 2 OR user got 0 incorrect (passed all) OR user got all 5 incorrect (failed all):
-   Set "decision": "GENERATE_ROADMAP".
+Do NOT generate any follow-up questions. All assessment questions are served exclusively from authentic Hugging Face benchmarks. Your role is purely analytical assessment.
 
 Return ONLY a JSON object matching this schema:
 {{
-  "decision": "DEEPER_DIAGNOSIS" | "GENERATE_ROADMAP",
-  "reason": "Concise explanation of the decision",
-  "weak_skills": "Concise summary of missing competencies and knowledge gaps identified",
-  "follow_up_questions": [
-    {{
-      "id": "f1",
-      "question": "string",
-      "options": ["string", "string", "string", "string"],
-      "correct_answer_index": 0,
-      "explanation": "string"
-    }}
-  ]
+  "decision": "GENERATE_ROADMAP",
+  "reason": "Clear explanation of the candidate's strengths and where their understanding broke down",
+  "mastery_ceiling_tier": "Foundational" | "Application" | "Intermediate" | "Advanced" | "Expert" | "Novice",
+  "weak_skills": "Concise, precise summary of boundary gaps and missed concepts in {payload.target_role} so the learning path starts directly at their threshold"
 }}
 """
     try:
         model_to_use = settings.DEFAULT_ROADMAP_MODEL
         generated_text, usage = await generate_text(prompt, model=model_to_use, response_mime_type="application/json", return_usage=True)
         log_backend_ai_usage(sb, uid, f"Diagnostic Quiz Evaluation", usage, source="backend")
-        return robust_json_loads(generated_text)
+        res = robust_json_loads(generated_text)
+        logger.info(f"[Diagnostic Eval] Result for user={email}: ceiling='{res.get('mastery_ceiling_tier')}', reason='{res.get('reason')}'")
+        
+        # Persist diagnostic evaluation in database
+        try:
+            sb.table("diagnostic_sessions").insert({
+                "id": str(uuid.uuid4()),
+                "user_id": uid,
+                "topic": payload.target_role,
+                "mapped_domains": [],
+                "status": "completed",
+                "completed_at": datetime.now(timezone.utc).isoformat(),
+                "knowledge_profile": {
+                    "mastery_ceiling_tier": res.get("mastery_ceiling_tier"),
+                    "reason": res.get("reason"),
+                    "weak_skills": res.get("weak_skills"),
+                    "round_number": payload.round_number
+                }
+            }).execute()
+        except Exception as db_err:
+            logger.warning(f"Could not persist diagnostic session to database: {db_err}")
+
+        return res
     except Exception as e:
-        logger.error(f"Diagnostic Quiz evaluation failed: {e}")
+        logger.error(f"[Diagnostic Eval] Evaluation failed: {e}")
         return {
             "decision": "GENERATE_ROADMAP",
             "reason": "Proceeding to roadmap generation.",

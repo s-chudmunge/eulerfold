@@ -869,10 +869,14 @@ async def save_external_roadmap(
     sb = get_supabase_client()
     roadmap_plan = roadmap_create.roadmap_plan
     
-    # 1. Add IDs and YouTube Videos
+    # 1. Add IDs, lock states, and YouTube Videos for Module 1 only
     for i, module in enumerate(roadmap_plan.get("modules", [])):
         if not isinstance(module, dict): continue
         module["id"] = f"module_{i+1}"
+        module["locked"] = (i > 0)
+        if i > 0:
+            module["topics"] = []
+            module["recommended_resources"] = []
         if not module.get("outcome"):
              module["outcome"] = "By the end of this module you will be able to apply the listed topics and solve basic related problems."
         for t_idx, topic in enumerate(module.get("topics", [])):
@@ -882,41 +886,44 @@ async def save_external_roadmap(
             for s_idx, subtopic in enumerate(topic.get("subtopics", [])):
                 if not isinstance(subtopic, dict): continue
                 subtopic["id"] = str(uuid.uuid4())
-            
+        
+        # ONLY enrich Module 1
+        if i == 0:
             # YouTube Enrichment
             if settings.YOUTUBE_API_KEY:
-                try:
-                    raw_query = topic.get("youtube_search_query") or f"{topic['title']}"
-                    core_subj = roadmap_plan.get("title", "")
-                    if core_subj and core_subj.lower() not in raw_query.lower():
-                        search_query = f"{core_subj} {raw_query}"
-                    else:
-                        search_query = raw_query
-                    results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(roadmap_create, 'strict_official_sources', False), subject_context=core_subj)
-                    if results:
-                        topic["youtube_video_id"] = results[0]["video_id"]
-                        topic["youtube_video_title"] = results[0]["video_title"]
-                        topic["duration"] = results[0]["duration_minutes"]
-                    # Throttle a bit
-                    await asyncio.sleep(0.1)
-                except Exception as yt_err:
-                    logger.error(f"YouTube enrichment failed for topic {topic['title']}: {yt_err}")
+                for t_idx, topic in enumerate(module.get("topics", [])):
+                    try:
+                        raw_query = topic.get("youtube_search_query") or f"{topic['title']}"
+                        core_subj = roadmap_plan.get("title", "")
+                        if core_subj and core_subj.lower() not in raw_query.lower():
+                            search_query = f"{core_subj} {raw_query}"
+                        else:
+                            search_query = raw_query
+                        results = await search_youtube_videos(search_query, max_results=1, topic_title=topic['title'], strict_official_sources=getattr(roadmap_create, 'strict_official_sources', False), subject_context=core_subj)
+                        if results:
+                            topic["youtube_video_id"] = results[0]["video_id"]
+                            topic["youtube_video_title"] = results[0]["video_title"]
+                            topic["duration"] = results[0]["duration_minutes"]
+                        # Throttle a bit
+                        await asyncio.sleep(0.1)
+                    except Exception as yt_err:
+                        logger.error(f"YouTube enrichment failed for topic {topic['title']}: {yt_err}")
 
-        # DuckDuckGo Enrichment
-        search_query = module.get("optimal_search_query")
-        if search_query:
-            def fetch_ddg(query=search_query):
-                try:
-                    from ddgs import DDGS
-                    with DDGS() as ddgs:
-                        return list(ddgs.text(query, max_results=3))
-                except Exception as e:
-                    logger.error(f"DDG search failed for query {query}: {e}")
-                    return []
-            ddg_results = await asyncio.to_thread(fetch_ddg)
-            if ddg_results:
-                logger.info(f"DuckDuckGo search successful for '{search_query}'. Found {len(ddg_results)} references.")
-                module["resources"] = [{"title": r["title"], "url": r["href"], "type": "article"} for r in ddg_results]
+            # DuckDuckGo Enrichment
+            search_query = module.get("optimal_search_query")
+            if search_query:
+                def fetch_ddg(query=search_query):
+                    try:
+                        from ddgs import DDGS
+                        with DDGS() as ddgs:
+                            return list(ddgs.text(query, max_results=3))
+                    except Exception as e:
+                        logger.error(f"DDG search failed for query {query}: {e}")
+                        return []
+                ddg_results = await asyncio.to_thread(fetch_ddg)
+                if ddg_results:
+                    logger.info(f"DuckDuckGo search successful for '{search_query}'. Found {len(ddg_results)} references.")
+                    module["resources"] = [{"title": r["title"], "url": r["href"], "type": "article"} for r in ddg_results]
 
     # 2. Save to DB
     slug = await _generate_unique_slug(roadmap_plan.get("title", roadmap_create.subject), email, sb)

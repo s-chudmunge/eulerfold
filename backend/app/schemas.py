@@ -170,11 +170,20 @@ class SkillGapRoadmapCreate(BaseModel):
     time_unit: str = "weeks"
     model: Optional[str] = None
     strict_official_sources: bool = False
+    diagnostic_prompt_context: Optional[str] = None
 
 class DiagnosticQuizCreate(BaseModel):
     target_role: str
     known_skills: str
-    question_count: int = 5
+    question_count: int = 10
+    engine: Optional[str] = None
+    model: Optional[str] = None
+    category: Optional[str] = None
+    domain: Optional[str] = None
+    search_keywords: Optional[List[str]] = None
+    # Legacy fields maintained for backward compatibility
+    dataset: Optional[str] = None
+    config: Optional[str] = None
 
 class DiagnosticQuizEvaluate(BaseModel):
     target_role: str

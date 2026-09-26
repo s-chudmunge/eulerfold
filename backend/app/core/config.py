@@ -46,6 +46,8 @@ class Settings(BaseSettings):
     SENTRY_ENVIRONMENT: str = "development"
     FRONTEND_URL: str = "http://localhost:3000"  # URL of the Next.js frontend
     YOUTUBE_API_KEY: Optional[str] = None
+    BENCHMARK_DATASET_REGISTRY: Optional[str] = None
+    BENCHMARK_API_BASE: Optional[str] = None
     
     # ToS & Privacy Policy
     TOS_VERSION: str = "2026-03"

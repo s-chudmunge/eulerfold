@@ -399,11 +399,16 @@ Duration: {payload.time_value} {payload.time_unit}.
 1. **Short, Clean Title:** The "title" must be concise and direct (e.g., "Data Engineering Curriculum", "Full Stack Systems Guide"). Do NOT use dry, robotic formats like "Intensive 4-Week X Course". Do NOT include the time duration in the title.
 2. **Logical Progression:** Structure modules from foundational technical gaps to advanced implementation.
 2. **Technical Rigor:** Prioritize hard skills, tools, and theoretical knowledge required for the role.
-3. **Specific Topic Titles:** Each module must have 3-5 specific topics named cleanly as natural chapter headings. Do NOT start topic titles with "How", "How to", or "Understanding".
+3. **Specific Topic Titles:** Each topic in Module 1 must name ONE specific, focused concept cleanly as a natural chapter heading. Do NOT start topic titles with "How", "How to", or "Understanding".
 4. **Practical Outcomes:** The `proof_of_work_instructions` must describe a realistic technical task or project that demonstrates competency in that module's specific skills.
 5. **Applied Knowledge:** Ensure the user learns not just what a tool is, but how to apply it to solve role-specific problems.
 6. **Conciseness:** Course description must be max 2 sentences. Each module 'outcome' must be max 1 sentence.
-7. **Output JSON ONLY** matching this schema:
+7. **Just-In-Time Milestone Architecture:** 
+   - Generate exactly {payload.time_value} milestone module(s) for a '{payload.time_value} {payload.time_unit}' course.
+   - **CRITICAL: ONLY MODULE 1 is detailed at this initial stage.** Provide 4-5 concrete, teachable topics and subtopics for Module 1.
+   - **Modules 2 through {payload.time_value} (the future milestones):** Provide ONLY the milestone "title", "timeline", "outcome", and "workspace_type". For these later modules, set "topics": [] and "recommended_resources": []. Do NOT generate detailed topics or video queries for later modules upfront—they will adaptively unfold as the learner advances.
+8. **Module 1 Topics:** 4-5 focused topics for Module 1 only.
+9. **Output JSON ONLY** matching this schema:
    {{
      "title": "string", (e.g., Senior Analyst @ Goldman Sachs or Lead Designer @ Nike)
      "description": "Concise analysis of the chosen learning strategy (max 2 sentences).",
@@ -420,7 +425,7 @@ Duration: {payload.time_value} {payload.time_unit}.
          }},
           "topics": [
             {{
-               "title": "string (ONE focused concept, specific enough that a dedicated lecture exists for it exactly)",
+               "title": "string (ONE focused concept in Module 1)",
                "youtube_search_query": "A precise 3-6 word search query describing ONLY the exact technical topic and mechanism (e.g. 'Population Stability Index PSI calculation', 'Kolmogorov Smirnov test derivation'). STRICTLY FORBIDDEN: Do NOT include channel/creator names (NEVER include 'Khan Academy', 'Veritasium', 'MIT OCW', '3Blue1Brown', etc.). Do NOT include filler words like 'tutorial', 'explained', 'guide', 'complete course', 'for beginners'.",
                "subtopics": [ {{ "title": "string" }} ]
              }}
@@ -436,11 +441,15 @@ Duration: {payload.time_value} {payload.time_unit}.
         log_backend_ai_usage(sb, uid, "Job Decoded Roadmap (Cost: 1.0 Credits)", usage, source="backend")
         roadmap_plan = robust_json_loads(generated_text)
 
-        # Enrichment logic (IDs, YouTube) - Shared with standard generator
+        # Enrichment logic (IDs, lock states, Module 1 YouTube)
         used_video_ids = set()
         for i, module in enumerate(roadmap_plan.get("modules", [])):
             if not isinstance(module, dict): continue
             module["id"] = f"module_{i+1}"
+            module["locked"] = (i > 0)
+            if i > 0:
+                module["topics"] = []
+                module["recommended_resources"] = []
             if not module.get("outcome"):
                  module["outcome"] = "By the end of this module you will be able to apply the listed topics and solve basic related problems."
             for t_idx, topic in enumerate(module.get("topics", [])):
@@ -451,39 +460,46 @@ Duration: {payload.time_value} {payload.time_unit}.
                     if not isinstance(subtopic, dict): continue
                     subtopic["id"] = str(uuid.uuid4())
                 
+            # ONLY curate resources for Module 1 at initial creation!
+            if i == 0:
                 if settings.YOUTUBE_API_KEY:
-                    try:
-                        clean_title = roadmap_plan['title'].replace("Job Decoded: ", "").split("@")[0].strip()
-                        search_query = topic.get("youtube_search_query") or f"{topic['title']}"
-                        results = await search_youtube_videos(
-                            search_query,
-                            max_results=3,
-                            topic_title=topic['title'],
-                            strict_official_sources=getattr(payload, 'strict_official_sources', False),
-                            subject_context=roadmap_plan.get("title", ""),
-                            exclude_video_ids=used_video_ids
-                        )
-                        for result in results:
-                            if result["video_id"] not in used_video_ids:
-                                topic["youtube_video_id"] = result["video_id"]
-                                topic["youtube_video_title"] = result["video_title"]
-                                topic["duration"] = result["duration_minutes"]
-                                used_video_ids.add(result["video_id"])
-                                break
-                        await asyncio.sleep(0.1)
-                    except: pass
+                    for t_idx, topic in enumerate(module.get("topics", [])):
+                        try:
+                            clean_title = roadmap_plan['title'].replace("Job Decoded: ", "").split("@")[0].strip()
+                            raw_query = topic.get("youtube_search_query") or f"{topic['title']}"
+                            if clean_title and clean_title.lower() not in raw_query.lower():
+                                search_query = f"{clean_title} {raw_query}"
+                            else:
+                                search_query = raw_query
+                            results = await search_youtube_videos(
+                                search_query,
+                                max_results=3,
+                                topic_title=topic['title'],
+                                strict_official_sources=getattr(payload, 'strict_official_sources', False),
+                                subject_context=roadmap_plan.get("title", ""),
+                                exclude_video_ids=used_video_ids
+                            )
+                            for result in results:
+                                if result["video_id"] not in used_video_ids:
+                                    topic["youtube_video_id"] = result["video_id"]
+                                    topic["youtube_video_title"] = result["video_title"]
+                                    topic["duration"] = result["duration_minutes"]
+                                    used_video_ids.add(result["video_id"])
+                                    break
+                            await asyncio.sleep(0.1)
+                        except: pass
 
-            # DuckDuckGo Enrichment
-            search_query = module.get("optimal_search_query")
-            if search_query:
-                def fetch_ddg():
-                    try:
-                        from ddgs import DDGS
-                        with DDGS() as ddgs:
-                            return list(ddgs.text(search_query, max_results=3))
-                    except Exception as e:
-                        logger.error(f"DDG search failed for query {search_query}: {e}")
-                        return []
+                # DuckDuckGo Enrichment for Module 1
+                search_query = module.get("optimal_search_query")
+                if search_query:
+                    def fetch_ddg():
+                        try:
+                            from ddgs import DDGS
+                            with DDGS() as ddgs:
+                                return list(ddgs.text(search_query, max_results=3))
+                        except Exception as e:
+                            logger.error(f"DDG search failed for query {search_query}: {e}")
+                            return []
                 ddg_results = await asyncio.to_thread(fetch_ddg)
                 if ddg_results:
                     logger.info(f"DuckDuckGo search successful for '{search_query}'. Found {len(ddg_results)} references.")
@@ -511,15 +527,26 @@ Duration: {payload.time_value} {payload.time_unit}.
         if not response.data:
             raise HTTPException(status_code=500, detail="Failed to save roadmap")
             
-        new_credits = credits - 1
-        sb.table("profiles").update({"roadmap_credits": new_credits}).eq("email", email).execute()
-        if new_credits <= 0:
-            await check_and_revoke_pro_if_no_credits(email, sb)
-            
-        if uid:
-            background_tasks.add_task(extract_skills_from_roadmap, response.data[0]["id"], uid)
+        credit_deducted = False
+        try:
+            new_credits = credits - 1
+            sb.table("profiles").update({"roadmap_credits": new_credits}).eq("email", email).execute()
+            credit_deducted = True
+            if new_credits <= 0:
+                await check_and_revoke_pro_if_no_credits(email, sb)
+                
+            if uid:
+                background_tasks.add_task(extract_skills_from_roadmap, response.data[0]["id"], uid)
 
-        return RoadmapRead(**response.data[0])
+            return RoadmapRead(**response.data[0])
+        except Exception as post_save_err:
+            if credit_deducted:
+                try:
+                    sb.table("profiles").update({"roadmap_credits": credits}).eq("email", email).execute()
+                    logger.info(f"Refunded credit to {email} after error: {post_save_err}")
+                except Exception as refund_err:
+                    logger.error(f"Failed to refund credit: {refund_err}")
+            raise post_save_err
 
     except HTTPException:
         raise

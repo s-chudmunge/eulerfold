@@ -483,10 +483,10 @@ def clean_json_string(text: str) -> str:
     
     return text.strip()
 
-def robust_json_loads(text: str):
+def robust_json_loads(text: str, allow_array: bool = False):
     """Parses JSON with multiple fallback and repair strategies."""
     if not text:
-        return {}
+        return [] if allow_array else {}
         
     cleaned = clean_json_string(text)
     parsed = None
@@ -543,6 +543,9 @@ def robust_json_loads(text: str):
         except Exception:
             pass
             
+    if allow_array and isinstance(parsed, list):
+        return parsed
+
     # Ensure dict wrapping for common AI array hallucinations
     if isinstance(parsed, list):
         if len(parsed) == 1 and isinstance(parsed[0], dict):
@@ -557,6 +560,8 @@ def robust_json_loads(text: str):
                 
     # Final fallback if it's still not a dict (e.g. it was just an int, or an unparseable string)
     if not isinstance(parsed, dict):
+        if allow_array:
+            return [parsed]
         parsed = {"title": "Generated Content", "description": str(parsed), "modules": [], "data": parsed}
                 
     return parsed
