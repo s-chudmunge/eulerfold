@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     const buffer = Buffer.from(arrayBuffer);
 
     const { data, error } = await resend.emails.send({
-      from: 'EulerFold Careers <admin@eulerfold.com>',
+      from: 'EulerFold Careers <sankalp@eulerfold.com>',
       to: 'eulerfold@gmail.com',
       subject: `New Application: ${role} - ${name}`,
       text: `

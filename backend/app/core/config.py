@@ -41,7 +41,8 @@ class Settings(BaseSettings):
     DEFAULT_LEARNING_RESOURCES_MODEL: str = "google/gemini-2.5-flash-lite"
     # Email / Auth integrations
     RESEND_API_KEY: Optional[str] = None
-    RESEND_SENDER: str = "eulerfold@gmail.com"
+    RESEND_SENDER: str = "sankalp@eulerfold.com"
+    CHECKIN_RUN_KEY: Optional[str] = None
     SENTRY_DSN: Optional[str] = None
     SENTRY_ENVIRONMENT: str = "development"
     FRONTEND_URL: str = "http://localhost:3000"  # URL of the Next.js frontend

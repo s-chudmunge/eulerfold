@@ -7,9 +7,11 @@ from app.core.config import settings
 logger = logging.getLogger(__name__)
 RESEND_API = "https://api.resend.com/emails"
 
-async def send_email(to: str, subject: str, html: str, sender: str = None, reply_to: str = "eulerfold@gmail.com") -> dict:
+async def send_email(to: str, subject: str, html: str, sender: str = None, reply_to: str = None) -> dict:
     if not sender:
         sender = f"EulerFold <{settings.RESEND_SENDER}>"
+    if reply_to is None:
+        reply_to = settings.RESEND_SENDER or "sankalp@eulerfold.com"
 
     api_key = settings.RESEND_API_KEY or os.getenv("RESEND_API_KEY")
     if not api_key:
@@ -38,7 +40,7 @@ async def send_email(to: str, subject: str, html: str, sender: str = None, reply
 
 async def build_html_email(content_html: str, user_email: str = None, unsubscribe_link: str = None) -> str:
     # Branding assets and colors
-    logo_url = "https://www.eulerfold.com/logo_with_text.png"
+    logo_url = "https://www.eulerfold.com/apple-touch-icon.png"
     bg_color = "#e2eeed"
     card_bg = "#ffffff"
     text_color = "#1e293b"
@@ -65,8 +67,11 @@ async def build_html_email(content_html: str, user_email: str = None, unsubscrib
                 <td style="padding: 40px 20px;">
                     <table align="center" border="0" cellpadding="0" cellspacing="0" width="100%" style="max-width: 600px; border-collapse: collapse;">
                         <tr>
-                            <td style="padding: 0 0 32px 0; text-align: center;">
-                                <img src="{logo_url}" alt="EulerFold" width="160" style="display: block; margin: 0 auto;" />
+                            <td style="padding: 0 0 28px 0; text-align: center;">
+                                <a href="https://www.eulerfold.com" target="_blank" style="text-decoration: none; display: inline-block;">
+                                    <img src="{logo_url}" alt="EulerFold" width="56" height="56" style="display: block; margin: 0 auto 10px auto; border: 0; outline: none;" />
+                                    <span style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; font-size: 20px; font-weight: 800; letter-spacing: -0.025em; display: block; text-decoration: none;"><span style="color: #0f172a;">Euler</span><span style="color: #0f766e;">Fold</span></span>
+                                </a>
                             </td>
                         </tr>
                         <tr>

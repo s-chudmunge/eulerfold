@@ -127,7 +127,7 @@ export default function PricingClient() {
                             </div>
                             <div className="flex items-center gap-2.5 text-[11px] text-text-muted">
                                 <span className="text-text-muted/50">×</span>
-                                <span>Job Decoded, Link import, & Skill Assessment</span>
+                                <span>Skill Assessment & Research Decoded</span>
                             </div>
                         </div>
                     </div>
@@ -155,14 +155,13 @@ export default function PricingClient() {
                         </p>
                     </div>
 
-                    <div className="space-y-4 mb-8 flex-1 relative z-10">
+                    <div className="space-y-4 mb-10 flex-1 relative z-10">
                         <div className="mb-3 font-bold text-text-heading text-[11px] uppercase tracking-widest">Everything in Basic, plus:</div>
-                        <div className="space-y-2.5">
+                        <div className="space-y-3">
                             <div className="flex items-center gap-2.5 text-[12px] text-text-primary">
                                 <span className="text-accent font-bold">✓</span>
                                 <span className="flex items-center gap-1.5 font-semibold text-text-heading">
-                                    <span>Job Decoded & Link / URL Import</span>
-                                    <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded-md font-bold bg-accent/15 text-accent border border-accent/30">Pro</span>
+                                    <span>AI Topic Overviews & Concept Checks</span>
                                 </span>
                             </div>
                             <div className="flex items-center gap-2.5 text-[12px] text-text-primary">
@@ -170,12 +169,6 @@ export default function PricingClient() {
                                 <span className="flex items-center gap-1.5 font-semibold text-text-heading">
                                     <span>Skill Assessment & Diagnostic Quizzes</span>
                                     <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded-md font-bold bg-accent/15 text-accent border border-accent/30">Pro</span>
-                                </span>
-                            </div>
-                            <div className="flex items-center gap-2.5 text-[12px] text-text-primary">
-                                <span className="text-accent font-bold">✓</span>
-                                <span className="flex items-center gap-1.5 font-semibold text-text-heading">
-                                    <span>AI Topic Overviews & Concept Checks</span>
                                 </span>
                             </div>
                             <div className="flex items-center gap-2.5 text-[12px] text-text-primary">

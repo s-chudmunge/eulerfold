@@ -1,5 +1,6 @@
 import os
 os.environ["PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION"] = "python"
+import asyncio
 import logging
 import sentry_sdk
 from sentry_sdk.integrations.fastapi import FastApiIntegration
@@ -96,7 +97,7 @@ from app.routers.generators import job as gen_job
 from app.routers.generators import syllabus as gen_syllabus
 from app.routers.generators import gaps as gen_gaps
 from app.routers.generators import quiz as gen_quiz
-from app.routers import health, roadmaps, auth, explore, coins, profiles, sessions, leaderboard, payments, discussions, planner, tts, research_lab, interactions, ai_usage, dashboard, misc, certificates, diagnostics, practice, goldfish, checkpoints, lessons
+from app.routers import health, roadmaps, auth, explore, coins, profiles, sessions, leaderboard, payments, discussions, planner, tts, research_lab, interactions, ai_usage, dashboard, misc, certificates, diagnostics, practice, goldfish, checkpoints, lessons, checkins
 from app.routers import submissions as submissions_router
 from app.core.config import settings
 
@@ -216,13 +217,25 @@ app.include_router(ai_usage.router)
 app.include_router(dashboard.router)
 app.include_router(misc.router)
 app.include_router(diagnostics.router)
+app.include_router(checkins.router)
 
 from app.routers import local_tools
 app.include_router(local_tools.router)
 
+_scheduler_task = None
+
 @app.on_event("startup")
 async def startup_event():
     validate_environment()
+    global _scheduler_task
+    from app.routers.checkins import start_inactivity_scheduler
+    _scheduler_task = asyncio.create_task(start_inactivity_scheduler())
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    global _scheduler_task
+    if _scheduler_task:
+        _scheduler_task.cancel()
 
 @app.api_route("/", methods=["GET", "HEAD"])
 async def root():
