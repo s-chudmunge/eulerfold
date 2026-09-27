@@ -22,9 +22,18 @@ export default function AuthCallbackPage() {
     processed.current = true;
 
     const handleAuth = async () => {
-      const queryParams = new URLSearchParams(window.location.search);
-      const code = queryParams.get('code');
-      const next = queryParams.get('next') || '/dashboard';
+      const searchParams = new URLSearchParams(window.location.search);
+      const hashParams = new URLSearchParams(window.location.hash.startsWith('#') ? window.location.hash.slice(1) : window.location.hash);
+      
+      const oauthError = searchParams.get('error_description') || searchParams.get('error') || hashParams.get('error_description') || hashParams.get('error');
+      if (oauthError) {
+        console.error('OAuth redirect returned error:', oauthError);
+        router.push(`/login?error=${encodeURIComponent(oauthError)}`);
+        return;
+      }
+
+      const code = searchParams.get('code') || hashParams.get('code');
+      const next = searchParams.get('next') || '/dashboard';
 
       if (code) {
         try {

@@ -21,6 +21,13 @@ export default function LoginPage() {
     const searchParams = useSearchParams();
     const next = searchParams.get('next');
     const message = searchParams.get('message');
+    const queryError = searchParams.get('error') || searchParams.get('error_description');
+
+    useEffect(() => {
+        if (queryError) {
+            setError(queryError);
+        }
+    }, [queryError]);
 
     const getMessageContent = () => {
         switch (message) {

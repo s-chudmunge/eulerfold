@@ -127,7 +127,7 @@ export default function PricingClient() {
                             </div>
                             <div className="flex items-center gap-2.5 text-[11px] text-text-muted">
                                 <span className="text-text-muted/50">×</span>
-                                <span>Frontier AI models & Research Decoded</span>
+                                <span>Job Decoded, Link import, & Skill Assessment</span>
                             </div>
                         </div>
                     </div>
@@ -155,21 +155,27 @@ export default function PricingClient() {
                         </p>
                     </div>
 
-                    <div className="space-y-4 mb-10 flex-1 relative z-10">
+                    <div className="space-y-4 mb-8 flex-1 relative z-10">
                         <div className="mb-3 font-bold text-text-heading text-[11px] uppercase tracking-widest">Everything in Basic, plus:</div>
-                        <div className="space-y-3">
+                        <div className="space-y-2.5">
                             <div className="flex items-center gap-2.5 text-[12px] text-text-primary">
                                 <span className="text-accent font-bold">✓</span>
                                 <span className="flex items-center gap-1.5 font-semibold text-text-heading">
-                                    <span>AI Topic Overviews & Takeaways</span>
-                                    <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded-md font-bold bg-accent/15 text-accent border border-accent/30">New</span>
+                                    <span>Job Decoded & Link / URL Import</span>
+                                    <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded-md font-bold bg-accent/15 text-accent border border-accent/30">Pro</span>
                                 </span>
                             </div>
                             <div className="flex items-center gap-2.5 text-[12px] text-text-primary">
                                 <span className="text-accent font-bold">✓</span>
                                 <span className="flex items-center gap-1.5 font-semibold text-text-heading">
-                                    <span>Interactive Concept Check Quizzes</span>
-                                    <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded-md font-bold bg-accent/15 text-accent border border-accent/30">New</span>
+                                    <span>Skill Assessment & Diagnostic Quizzes</span>
+                                    <span className="text-[9px] font-mono uppercase px-1.5 py-0.5 rounded-md font-bold bg-accent/15 text-accent border border-accent/30">Pro</span>
+                                </span>
+                            </div>
+                            <div className="flex items-center gap-2.5 text-[12px] text-text-primary">
+                                <span className="text-accent font-bold">✓</span>
+                                <span className="flex items-center gap-1.5 font-semibold text-text-heading">
+                                    <span>AI Topic Overviews & Concept Checks</span>
                                 </span>
                             </div>
                             <div className="flex items-center gap-2.5 text-[12px] text-text-primary">
@@ -185,11 +191,11 @@ export default function PricingClient() {
                             </div>
                             <div className="flex items-center gap-2.5 text-[12px] text-text-primary">
                                 <span className="text-accent font-bold">✓</span>
-                                <span>Practice Portal & Homework Evaluations</span>
+                                <span>Research Decoded (arXiv paper breakdowns)</span>
                             </div>
                             <div className="flex items-center gap-2.5 text-[12px] text-text-primary">
                                 <span className="text-accent font-bold">✓</span>
-                                <span>Research Decoded (arXiv paper breakdowns)</span>
+                                <span>Practice Portal & Homework Evaluations</span>
                             </div>
                             <div className="flex items-center gap-2.5 text-[12px] text-text-primary">
                                 <span className="text-accent font-bold">✓</span>
@@ -281,6 +287,36 @@ export default function PricingClient() {
                                 <tr className="bg-sidebar/40">
                                     <td colSpan={3} className="py-2 px-4 font-mono text-[10.5px] uppercase tracking-widest font-bold text-text-muted">
                                         Curriculum & Core Learning
+                                    </td>
+                                </tr>
+                                <tr className="hover:bg-sidebar/30 transition-colors h-[44px]">
+                                    <td className="py-2.5 px-4 text-text-primary">
+                                        <div className="font-semibold text-text-heading">Job Decoded Roadmaps</div>
+                                        <div className="text-[11.5px] text-text-muted">Generate roadmaps tailored to specific job postings or role requirements</div>
+                                    </td>
+                                    <td className="py-2.5 px-4 text-center text-text-muted font-mono text-[12px]">—</td>
+                                    <td className="py-2.5 px-4 text-center text-accent font-semibold bg-accent/5">
+                                        <span className="inline-flex items-center gap-1 font-bold">✓ Included</span>
+                                    </td>
+                                </tr>
+                                <tr className="hover:bg-sidebar/30 transition-colors h-[44px]">
+                                    <td className="py-2.5 px-4 text-text-primary">
+                                        <div className="font-semibold text-text-heading">Skill Assessment & Diagnostic Quizzes</div>
+                                        <div className="text-[11.5px] text-text-muted">Targeted quiz to benchmark skill level and identify knowledge gaps</div>
+                                    </td>
+                                    <td className="py-2.5 px-4 text-center text-text-muted font-mono text-[12px]">—</td>
+                                    <td className="py-2.5 px-4 text-center text-accent font-semibold bg-accent/5">
+                                        <span className="inline-flex items-center gap-1 font-bold">✓ Included</span>
+                                    </td>
+                                </tr>
+                                <tr className="hover:bg-sidebar/30 transition-colors h-[44px]">
+                                    <td className="py-2.5 px-4 text-text-primary">
+                                        <div className="font-semibold text-text-heading">Link & Syllabus Import</div>
+                                        <div className="text-[11.5px] text-text-muted">Turn URLs, technical articles, and syllabus outlines into courses</div>
+                                    </td>
+                                    <td className="py-2.5 px-4 text-center text-text-muted font-mono text-[12px]">—</td>
+                                    <td className="py-2.5 px-4 text-center text-accent font-semibold bg-accent/5">
+                                        <span className="inline-flex items-center gap-1 font-bold">✓ Included</span>
                                     </td>
                                 </tr>
                                 <tr className="hover:bg-sidebar/30 transition-colors h-[44px]">
