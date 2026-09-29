@@ -85,7 +85,34 @@ export interface ProgressUpdate {
     completed: boolean;
 }
 
+export interface TopicPaper {
+    title: string;
+    authors: string;
+    year?: number | null;
+    citation_count: number;
+    url: string;
+    pdf_url?: string | null;
+    snippet?: string | null;
+    badge?: string | null;
+    venue?: string | null;
+    doi?: string | null;
+}
+
 export const roadmapsAPI = {
+    getTopicPapers: async (
+        topic: string,
+        subject?: string,
+        objectives?: string[],
+        signal?: AbortSignal
+    ): Promise<TopicPaper[]> => {
+        const params = new URLSearchParams({ topic });
+        if (subject) params.append('subject', subject);
+        if (objectives && objectives.length > 0) {
+            params.append('objectives', objectives.slice(0, 10).join('||'));
+        }
+        const response = await api.get(`/roadmaps/topic-papers?${params.toString()}`, { signal });
+        return response.data;
+    },
     getMyRoadmaps: async (limit: number = 5, offset: number = 0): Promise<RoadmapMe[]> => {
         const response = await api.get(`/roadmaps/me?limit=${limit}&offset=${offset}`);
         return response.data;
@@ -762,6 +789,14 @@ export interface MCQQuestion {
     options: string[];
     correct_answer_index: number;
     explanation: string;
+    difficulty?: 'easy' | 'medium' | 'medium-hard' | 'hard' | string;
+    momentum_stage?: 'Warm-up' | 'Core Mechanics' | 'Edge Cases' | 'Capstone Mastery' | string;
+    concepts_tested?: string[];
+    misconception_map?: Record<string, string>;
+    dataset_source?: string;
+    format?: 'mcq' | 'open_ended' | 'open_ended_coding' | string;
+    ground_truth_answer?: string;
+    solution?: string;
 }
 
 export interface MCQSessionRead {
@@ -773,7 +808,8 @@ export interface MCQSessionRead {
     subject: string;
     week_number: number;
     questions: MCQQuestion[];
-    user_answers?: number[];
+    pool?: Record<string, MCQQuestion[]>;
+    user_answers?: (number | string)[];
     score?: number;
     credit_cost: number;
     status: 'active' | 'completed' | 'abandoned';
@@ -802,12 +838,25 @@ export const practiceAPI = {
         const response = await api.get(`/practice/session/${sessionId}/progress`);
         return response.data;
     },
+    getFreemiumMCQPreview: async (topic: string, numQuestions: number = 3): Promise<{
+        topic: string;
+        questions: MCQQuestion[];
+        total_preview: number;
+        source: string;
+    }> => {
+        const response = await api.post('/practice/mcq/freemium-preview', {
+            topic,
+            num_questions: numQuestions
+        });
+        return response.data;
+    },
     generateMCQSession: async (payload: { 
         roadmap_id?: number, 
         subtopic_id?: string, 
         topic_name: string, 
         topics?: string[],
         module_title?: string,
+        learning_objectives?: string,
         learner_context?: string,
         subject: string, 
         week_number: number, 
@@ -856,8 +905,10 @@ export const practiceAPI = {
         const response = await api.get(`/practice/mcq/session/${sessionId}`);
         return response.data;
     },
-    submitMCQSession: async (sessionId: string, answers: number[]): Promise<MCQSessionRead> => {
-        const response = await api.post(`/practice/mcq/${sessionId}/submit`, { answers });
+    submitMCQSession: async (sessionId: string, answers: (number | string)[], questions?: MCQQuestion[]): Promise<MCQSessionRead> => {
+        const payload: any = { answers };
+        if (questions) payload.questions = questions;
+        const response = await api.post(`/practice/mcq/${sessionId}/submit`, payload);
         return response.data;
     }
 };

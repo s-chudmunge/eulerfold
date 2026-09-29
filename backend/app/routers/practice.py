@@ -24,11 +24,14 @@ from app.schemas import (
     MCQSessionRead,
     MCQSessionSaveExternal,
     MCQSubmitAnswer,
-    MCQQuestion
+    MCQQuestion,
+    FreemiumMCQPreviewRequest,
+    FreemiumMCQPreviewResponse
 )
 from app.utils.ai_client import generate_text, clean_json_string, robust_json_loads, log_backend_ai_usage
 from app.core.coins import EulerCoins
 from app.utils.eulercoins import award_coins
+from app.services.question_bank_service import find_momentum_practice_questions
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/practice", tags=["practice"])
@@ -82,7 +85,7 @@ async def _generate_practice_resources(topic: str, subject: str, goal: str, exis
     Suggest 3-4 practice problems, interactive exercises, or specific project-based resources.
     
     CRITICAL QUALITY STANDARDS:
-    - ONLY suggest well-established, high-authority platforms relevant to "{subject}":
+    - ONLY suggest well-established, authoritative platforms relevant to "{subject}":
         * Coding: LeetCode, HackerRank, Codewars, Exercism, Frontend Mentor
         * Math: Brilliant.org, Art of Problem Solving, Project Euler, Khan Academy, Desmos
         * Physics/Chemistry/Biology: PhET Simulations (phet.colorado.edu), Physics Classroom, HHMI BioInteractive, Chemix
@@ -107,7 +110,7 @@ async def _generate_practice_resources(topic: str, subject: str, goal: str, exis
     - difficulty: string (e.g., Easy, Medium, Hard)
     - note: a one-line focus note on why this is relevant
     
-    If you cannot find any truly high-quality resources that meet these strict criteria, return an empty array [].
+    If you cannot find any truly verified resources that meet these strict criteria, return an empty array [].
     """
     
     try:
@@ -285,9 +288,10 @@ async def _generate_mcq_questions(
     num_questions: int,
     topics: Optional[List[str]] = None,
     module_title: Optional[str] = None,
+    learning_objectives: Optional[str] = None,
     learner_context: Optional[str] = None
 ) -> List[dict]:
-    """Call Gemini to generate conceptual and MCQ questions."""
+    """Call Gemini to generate conceptual and MCQ questions structured along the momentum curve."""
     
     module_topics_list = (topics and len(topics) > 0) and topics or [topic]
     topics_str = "\n".join([f"{i+1}. {t}" for i, t in enumerate(module_topics_list)])
@@ -298,7 +302,16 @@ async def _generate_mcq_questions(
 
     The questions MUST comprehensively cover and be distributed across ALL the following topics of this module:
     {topics_str}
+    {f'{chr(10)}Module Learning Objectives:{chr(10)}{learning_objectives}{chr(10)}' if learning_objectives else ''}
     {f'{chr(10)}Learner Background Context (use this to tailor difficulty and cognitive challenge without referencing it explicitly in the questions):{chr(10)}{learner_context}{chr(10)}' if learner_context else ''}
+    
+    MOMENTUM PROGRESSION CURVE:
+    Structure the {num_questions} questions along a reverse progressive cognitive momentum curve to help the student build grounding and confidence:
+    1. Warm-up (easy) (6 questions): Foundational concepts, core vocabulary, intuitive invariants. These build immediate confidence and grounding.
+    2. Core Mechanics (medium) (5 questions): Standard implementation, direct application, and practical scenario analysis.
+    3. Edge Cases & Traps (medium-hard) (4 questions): Nuanced trade-offs, subtle boundary conditions, and common misconceptions.
+    4. Capstone Mastery (hard) (3 questions): Deep analytical reasoning, multi-step problem solving, and rigorous limits.
+
     CRITICAL QUALITY STANDARDS:
     - Questions must be distributed across the module topics listed above, testing holistic understanding of this module.
     - Questions must be CONCEPTUAL and SITUATIONAL. Avoid simple recall or rote memorization.
@@ -315,6 +328,9 @@ async def _generate_mcq_questions(
     - options: array of 4 strings
     - correct_answer_index: integer (0-3)
     - explanation: a concise one-line explanation of the correct choice
+    - difficulty: string ("easy", "medium", "medium-hard", or "hard")
+    - momentum_stage: string ("Warm-up", "Core Mechanics", "Edge Cases", or "Capstone Mastery")
+    - misconception_map: object mapping distractor index ("0", "1", "2", "3") to a one-line explanation of why a student might fall for this distractor
     """
     
     try:
@@ -340,9 +356,16 @@ async def _generate_mcq_questions(
             
         # Basic validation of the structure
         validated = []
-        for q in questions:
+        stages = ["Warm-up", "Core Mechanics", "Edge Cases", "Capstone Mastery"]
+        diffs = ["easy", "medium", "medium-hard", "hard"]
+        for idx, q in enumerate(questions):
             if isinstance(q, dict) and all(k in q for k in ["question", "options", "correct_answer_index", "explanation"]):
                 if len(q["options"]) == 4:
+                    # Ensure stage and difficulty are set
+                    if not q.get("momentum_stage"):
+                        stage_idx = min(3, int(idx / len(questions) * 4))
+                        q["momentum_stage"] = stages[stage_idx]
+                        q["difficulty"] = diffs[stage_idx]
                     validated.append(q)
                     
         return validated[:num_questions], usage
@@ -381,6 +404,58 @@ async def save_external_mcq_session(data: MCQSessionSaveExternal, current_user: 
         raise HTTPException(status_code=500, detail="Failed to save external MCQ session.")
 
     return result.data[0]
+
+@router.post("/mcq/freemium-preview", response_model=FreemiumMCQPreviewResponse)
+async def freemium_mcq_preview(req: FreemiumMCQPreviewRequest):
+    """
+    Public Freemium Practice Preview:
+    Allows any user or landing page visitor to test understanding on any topic
+    with a few preview questions (default 3) directly from the question bank.
+    No auth required.
+    """
+    topic_clean = req.topic.strip()
+    if not topic_clean:
+        raise HTTPException(status_code=400, detail="Topic is required")
+
+    num_q = min(3, max(1, req.num_questions))
+
+    # 1. Search Question Bank via Cohere embeddings and Supabase pgvector
+    bank_questions, _ = find_momentum_practice_questions(
+        module_title=topic_clean,
+        topics=[topic_clean],
+        learning_objectives=f"Foundational concepts, mechanics, and problems in {topic_clean}",
+        subtopic_name=topic_clean,
+        num_questions=num_q
+    )
+
+    if len(bank_questions) >= num_q:
+        formatted_qs = [MCQQuestion(**q) if isinstance(q, dict) else q for q in bank_questions[:num_q]]
+        return FreemiumMCQPreviewResponse(
+            topic=topic_clean,
+            questions=formatted_qs,
+            total_preview=num_q,
+            source="curated_questions_pgvector"
+        )
+
+    # 2. Fallback to Gemini if benchmark does not have enough matches for this custom topic
+    questions, _ = await _generate_mcq_questions(
+        topic=topic_clean,
+        subject=topic_clean,
+        week=1,
+        num_questions=num_q,
+        topics=[topic_clean],
+        module_title=topic_clean,
+        learning_objectives=f"Core concepts, invariants, and problems in {topic_clean}"
+    )
+
+    preview_raw = questions[:num_q] if questions else []
+    formatted_qs = [MCQQuestion(**q) if isinstance(q, dict) else q for q in preview_raw]
+    return FreemiumMCQPreviewResponse(
+        topic=topic_clean,
+        questions=formatted_qs,
+        total_preview=len(formatted_qs),
+        source="dynamic_ai"
+    )
 
 @router.post("/mcq/generate", response_model=MCQSessionRead)
 async def generate_mcq_session(data: MCQSessionCreate, current_user: User = Depends(get_current_user)):
@@ -434,20 +509,53 @@ async def generate_mcq_session(data: MCQSessionCreate, current_user: User = Depe
                     detail=f"Practice cap reached. You have completed {completed_count}/{max_sessions} sessions for this roadmap."
                 )
 
+    # 2. Check Question Bank First for instant, verified, zero-credit momentum practice
+    bank_questions, bank_meta = find_momentum_practice_questions(
+        subject=data.subject,
+        module_title=data.module_title,
+        topics=data.topics,
+        learning_objectives=data.learning_objectives,
+        subtopic_name=data.topic_name,
+        num_questions=data.num_questions
+    )
+
+    if len(bank_questions) >= data.num_questions:
+        logger.info(f"Serving {len(bank_questions)} verified questions from EulerFold Benchmark for {display_title} (Instant Momentum Mode).")
+        new_session = {
+            "user_id": uid,
+            "roadmap_id": data.roadmap_id,
+            "subtopic_id": str(data.subtopic_id) if data.subtopic_id else None,
+            "topic_name": display_title,
+            "subject": data.subject,
+            "week_number": data.week_number,
+            "questions": bank_questions[:data.num_questions],
+            "credit_cost": 0.0, # Zero credit cost when served directly from the verified question bank
+            "status": "active"
+        }
+        result = sb.table("mcq_sessions").insert(new_session).execute()
+        if not result.data:
+            raise HTTPException(status_code=500, detail="Failed to save MCQ session.")
+        
+        session_dict = dict(result.data[0])
+        if "pool" in bank_meta:
+            session_dict["pool"] = bank_meta["pool"]
+        return session_dict
+
+    # 3. Fallback to AI generation if question bank has insufficient coverage for this specific custom topic
     current_credits = float(profile.get("roadmap_credits") or 0.0)
     credit_cost = float(data.num_questions) * 0.01
 
     if current_credits < credit_cost:
         raise HTTPException(status_code=402, detail=f"Insufficient credits. This session costs {credit_cost} credits.")
 
-    # 2. Deduct credits first (Fail-safe: Refund if Gemini fails)
+    # Deduct credits first (Fail-safe: Refund if generation fails)
     new_credit_balance = round(current_credits - credit_cost, 2)
     sb.table("profiles").update({"roadmap_credits": new_credit_balance}).eq("supabase_uid", uid).execute()
     if new_credit_balance <= 0:
         await check_and_revoke_pro_if_no_credits(current_user.email, sb)
 
     try:
-        # 3. Generate Questions
+        # Generate Questions along the cognitive momentum curve
         questions, usage = await _generate_mcq_questions(
             data.topic_name, 
             data.subject, 
@@ -455,6 +563,7 @@ async def generate_mcq_session(data: MCQSessionCreate, current_user: User = Depe
             data.num_questions,
             topics=data.topics,
             module_title=data.module_title,
+            learning_objectives=data.learning_objectives,
             learner_context=data.learner_context
         )
         
@@ -463,9 +572,9 @@ async def generate_mcq_session(data: MCQSessionCreate, current_user: User = Depe
         if not questions:
             # Refund credits
             sb.table("profiles").update({"roadmap_credits": current_credits}).eq("supabase_uid", uid).execute()
-            raise HTTPException(status_code=500, detail="Failed to generate high-quality questions. Credits have been refunded.")
+            raise HTTPException(status_code=500, detail="Failed to generate verified questions. Credits have been refunded.")
 
-        # 4. Save Session
+        # Save Session
         new_session = {
             "user_id": uid,
             "roadmap_id": data.roadmap_id,
@@ -484,7 +593,18 @@ async def generate_mcq_session(data: MCQSessionCreate, current_user: User = Depe
             sb.table("profiles").update({"roadmap_credits": current_credits}).eq("supabase_uid", uid).execute()
             raise HTTPException(status_code=500, detail="Failed to save MCQ session. Credits have been refunded.")
 
-        return result.data[0]
+        session_dict = dict(result.data[0])
+        fallback_pool = defaultdict(list)
+        for q in questions:
+            stage = q.get("momentum_stage") or "Warm-up"
+            fallback_pool[stage].append(q)
+        session_dict["pool"] = {
+            "Warm-up": fallback_pool["Warm-up"],
+            "Core Mechanics": fallback_pool["Core Mechanics"],
+            "Edge Cases": fallback_pool["Edge Cases"],
+            "Capstone Mastery": fallback_pool["Capstone Mastery"],
+        }
+        return session_dict
 
     except Exception as e:
         # Final safety refund
@@ -595,7 +715,11 @@ async def submit_mcq_session(
         print(f"DEBUG: Session already completed. status: {session.get('status')}")
         raise HTTPException(status_code=400, detail="Session already completed")
         
-    questions = session.get("questions", [])
+    if submission.questions and len(submission.questions) > 0:
+        questions = [q.model_dump() for q in submission.questions]
+    else:
+        questions = session.get("questions", [])
+
     if len(submission.answers) != len(questions):
         print(f"DEBUG: Missing answers. len(submission.answers): {len(submission.answers)}, len(questions): {len(questions)}")
         raise HTTPException(status_code=400, detail="Missing answers for some questions")
@@ -603,13 +727,26 @@ async def submit_mcq_session(
     # 2. Calculate score
     correct_count = 0
     for i, q in enumerate(questions):
-        if submission.answers[i] == q.get("correct_answer_index"):
-            correct_count += 1
+        user_ans = submission.answers[i]
+        fmt = q.get("format") or ("open_ended" if not q.get("options") else "mcq")
+        if fmt in ["open_ended", "open_ended_coding"] or not q.get("options"):
+            gt = str(q.get("ground_truth_answer") or "").strip()
+            ans_str = str(user_ans).strip()
+            if (
+                ans_str == gt or
+                ans_str.strip("'\"") == gt.strip("'\"") or
+                ans_str.lower() == gt.lower()
+            ):
+                correct_count += 1
+        else:
+            if user_ans == q.get("correct_answer_index"):
+                correct_count += 1
             
     score = correct_count / len(questions) if questions else 0.0
     
     # 3. Update session
     update_data = {
+        "questions": questions,
         "user_answers": submission.answers,
         "score": score,
         "status": "completed",

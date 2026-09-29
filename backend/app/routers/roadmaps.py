@@ -389,6 +389,22 @@ async def get_my_roadmaps(
     return results
 
 
+@router.get("/roadmaps/topic-papers")
+async def get_topic_papers(
+    topic: str,
+    subject: Optional[str] = None,
+    objectives: Optional[str] = None
+):
+    """
+    Fetch top 3 most relevant research papers for a module/topic without AI calls.
+    """
+    if not topic or not topic.strip():
+        return []
+    from app.services.papers_service import fetch_top_cited_papers
+    objs_list = [o.strip() for o in objectives.split("||") if o.strip()] if objectives else []
+    return await fetch_top_cited_papers(topic=topic, subject=subject, objectives=objs_list)
+
+
 @router.get("/roadmaps/by-slug/{slug}", response_model=RoadmapMe)
 async def get_roadmap_by_slug(slug: str, background_tasks: BackgroundTasks, current_user: Optional[User] = Depends(get_optional_current_user)):
     sb = get_supabase_client()

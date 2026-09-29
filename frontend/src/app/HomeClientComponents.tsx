@@ -54,7 +54,7 @@ export function TrustedSourcesTicker() {
         Curriculum sourced from
       </span>
       
-      <div className="relative flex flex-nowrap overflow-hidden w-full max-w-full [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+      <div className="relative flex flex-nowrap overflow-hidden w-full max-w-full [mask-image:linear-gradient(to_right,transparent,black_32%,black_68%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_32%,black_68%,transparent)]">
         <div className="flex flex-nowrap animate-infinite-scroll items-center gap-x-12 md:gap-x-24 w-max shrink-0 pr-12 md:pr-24 opacity-[0.55] grayscale hover:[animation-play-state:paused]">
           {renderLogos()}
         </div>

@@ -65,13 +65,13 @@ const renderCreators = () => (
 
 export default function CurvedFlowShowcase() {
   return (
-    <div className="w-full text-center overflow-hidden border-t border-border/30 pt-6">
+    <div className="w-full text-center overflow-hidden border-t border-border/30 pt-8 pb-4 md:pt-10 md:pb-6">
       <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted/60 mb-5 block">
         Curriculum sourced from
       </span>
 
       {/* Sources Marquee (Typographic logos) */}
-      <div className="relative flex flex-nowrap overflow-hidden w-full max-w-full [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+      <div className="relative flex flex-nowrap overflow-hidden w-full max-w-full [mask-image:linear-gradient(to_right,transparent,black_32%,black_68%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_32%,black_68%,transparent)]">
         <div className="flex flex-nowrap animate-infinite-scroll items-center gap-x-12 md:gap-x-24 w-max shrink-0 pr-12 md:pr-24 opacity-[0.55] grayscale hover:[animation-play-state:paused]">
           {renderSources()}
         </div>
@@ -81,12 +81,12 @@ export default function CurvedFlowShowcase() {
       </div>
 
       {/* Creators Marquee (Avatar pills + Goldfish badge) */}
-      <div className="border-t border-border/30 pt-6 mt-6">
+      <div className="border-t border-border/30 pt-8 mt-8">
         <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-text-muted/60 mb-5 block">
           Videos from your favourite educational creators
         </span>
 
-        <div className="relative flex flex-nowrap overflow-hidden w-full max-w-full [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+        <div className="relative flex flex-nowrap overflow-hidden w-full max-w-full [mask-image:linear-gradient(to_right,transparent,black_32%,black_68%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_32%,black_68%,transparent)]">
           <div className="flex flex-nowrap animate-infinite-scroll-reverse items-center gap-x-4 md:gap-x-6 w-max shrink-0 pr-4 md:pr-6 opacity-[0.8] hover:[animation-play-state:paused]">
             {renderCreators()}
           </div>

@@ -30,7 +30,7 @@ export default function HeroSection() {
 
   return (
     <div className="relative w-full overflow-hidden">
-      <section className="relative pt-24 pb-4 sm:pt-28 md:pt-36 md:pb-8 px-6 min-h-[600px] md:min-h-[720px] flex flex-col items-center justify-between w-full">
+      <section className="relative pt-28 pb-12 sm:pt-36 sm:pb-16 md:pt-44 md:pb-24 px-6 min-h-[720px] sm:min-h-[820px] md:min-h-[920px] flex flex-col items-center justify-between w-full">
         <div className="max-w-3xl mx-auto w-full relative z-10 flex-1 flex flex-col justify-center">
           <div className="text-center flex flex-col items-center">
             {/* Simple Clean Overline */}
@@ -75,7 +75,7 @@ export default function HeroSection() {
         </div>
 
         {/* Visual Course Graph Showcase */}
-        <div className="w-full mt-4 md:mt-8">
+        <div className="w-full mt-10 md:mt-16">
           <CurvedFlowShowcase />
         </div>
       </section>

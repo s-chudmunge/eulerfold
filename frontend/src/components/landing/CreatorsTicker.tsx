@@ -53,7 +53,7 @@ export function CreatorsTicker() {
         Videos from your favourite educational creators
       </span>
       
-      <div className="relative flex flex-nowrap overflow-hidden w-full max-w-full [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+      <div className="relative flex flex-nowrap overflow-hidden w-full max-w-full [mask-image:linear-gradient(to_right,transparent,black_32%,black_68%,transparent)] [-webkit-mask-image:linear-gradient(to_right,transparent,black_32%,black_68%,transparent)]">
         <div className="flex flex-nowrap animate-infinite-scroll-reverse items-center gap-x-4 md:gap-x-6 w-max shrink-0 pr-4 md:pr-6 opacity-[0.8] hover:[animation-play-state:paused]">
           {renderAvatars()}
         </div>

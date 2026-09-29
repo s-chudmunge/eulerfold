@@ -1,9 +1,10 @@
 "use client";
 
-import React from 'react';
-import { Route, Target, Repeat, ArrowRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { Route, Target, Repeat, ArrowRight, BrainCircuit } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import TopicPracticeModal from '@/components/landing/TopicPracticeModal';
 
 interface Pillar {
   id: string;
@@ -27,8 +28,17 @@ const PILLARS: Pillar[] = [
     href: '/#hero-prompt-input'
   },
   {
-    id: 'skill-assessment',
+    id: 'practice',
     step: '02',
+    title: 'Practice',
+    description: 'Test your understanding on any concept with verified questions from our database, adapting to your gaps.',
+    icon: BrainCircuit,
+    actionText: 'Start practice',
+    href: '#practice'
+  },
+  {
+    id: 'skill-assessment',
+    step: '03',
     title: 'Skill Assessment',
     description: 'Diagnoses your knowledge gaps through targeted questions and benchmarks your understanding to calibrate your curriculum.',
     icon: Target,
@@ -37,7 +47,7 @@ const PILLARS: Pillar[] = [
   },
   {
     id: 'feedback-loop',
-    step: '03',
+    step: '04',
     title: 'Agentic Feedback Loop',
     description: 'Continuously tests your grasp through checkpoints, adapts explanations to weak spots, and unlocks lessons as you master them.',
     icon: Repeat,
@@ -46,7 +56,7 @@ const PILLARS: Pillar[] = [
   },
   {
     id: 'copilot',
-    step: '04',
+    step: '05',
     title: 'Runtime Co-Pilot & Focus',
     description: 'An on-demand tutor for doubts, automated study schedules, and timed focus sessions that reward consistency.',
     imageIcon: '/goldfish/goldfish_happy.png',
@@ -56,7 +66,14 @@ const PILLARS: Pillar[] = [
 ];
 
 export default function ProductEcosystem() {
+  const [isPracticeModalOpen, setIsPracticeModalOpen] = useState(false);
+
   const handlePillarClick = (e: React.MouseEvent, pillar: Pillar) => {
+    if (pillar.id === 'practice') {
+      e.preventDefault();
+      setIsPracticeModalOpen(true);
+      return;
+    }
     if (pillar.href === '/#hero-prompt-input') {
       e.preventDefault();
       const el = document.getElementById('hero-prompt-input');
@@ -105,8 +122,8 @@ export default function ProductEcosystem() {
           </motion.p>
         </div>
 
-        {/* 4 Infrastructure Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        {/* Infrastructure Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
           {PILLARS.map((pillar, index) => {
             const Icon = pillar.icon;
             return (
@@ -152,6 +169,11 @@ export default function ProductEcosystem() {
         </div>
 
       </div>
+
+      <TopicPracticeModal
+        isOpen={isPracticeModalOpen}
+        onClose={() => setIsPracticeModalOpen(false)}
+      />
     </section>
   );
 }

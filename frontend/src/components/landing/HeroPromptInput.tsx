@@ -12,12 +12,14 @@ import { supabase } from '@/lib/supabase/client';
 const LocalAIModal = dynamic(() => import('@/components/landing/LocalAIModal'), { ssr: false });
 const PaymentModal = dynamic(() => import('../PaymentModal'), { ssr: false });
 const KnowledgeGapQuiz = dynamic(() => import('@/components/landing/KnowledgeGapQuiz'), { ssr: false });
+const TopicPracticeModal = dynamic(() => import('@/components/landing/TopicPracticeModal'), { ssr: false });
 
-type Mode = 'ai' | 'job' | 'url' | 'syllabus' | 'gaps' | 'research';
+type Mode = 'ai' | 'practice' | 'job' | 'url' | 'syllabus' | 'gaps' | 'research';
 type Engine = 'eulerfold' | 'openrouter' | 'local';
 
 const MODES: { id: Mode; label: string; icon: any; placeholder: string; isPro?: boolean }[] = [
   { id: 'ai', label: 'AI Gen', icon: Waypoints, placeholder: "e.g. I know Python basics and want to learn Transformer architectures in 6 weeks..." },
+  { id: 'practice', label: 'Practice', icon: Target, placeholder: "Enter any topic to practice (e.g. Transformers, Backpropagation, SQL Indexing...)" },
   { id: 'job', label: 'Job Decoded', icon: Compass, placeholder: "Paste any job description or URL..." },
   { id: 'url', label: 'From Link', icon: Globe, placeholder: "Paste an article, GitHub repo, or doc link...", isPro: true },
   { id: 'syllabus', label: 'Syllabus', icon: Library, placeholder: "Paste your course syllabus or outline...", isPro: true },
@@ -82,6 +84,7 @@ export default function HeroPromptInput() {
   const [showLoginPrompt, setShowLoginPrompt] = useState(false);
   const [showGapQuizModal, setShowGapQuizModal] = useState(false);
   const [hasPendingQuiz, setHasPendingQuiz] = useState(false);
+  const [isPracticeModalOpen, setIsPracticeModalOpen] = useState(false);
 
   useEffect(() => {
     const checkPendingQuiz = () => {
@@ -195,6 +198,10 @@ export default function HeroPromptInput() {
 
   const handleNextStep = () => {
     if (!value.trim()) return;
+    if (mode === 'practice') {
+      setIsPracticeModalOpen(true);
+      return;
+    }
     if (activeMode.isPro) {
       if (!user) {
         sessionStorage.setItem('hero_prompt_state', JSON.stringify({
@@ -923,7 +930,7 @@ ARCHITECTURAL RULES:
                   disabled={!value.trim()}
                   className="inline-flex items-center gap-2 bg-gradient-to-b from-[#11887e] to-accent text-white px-5 py-2 rounded-md text-[13px] font-semibold tracking-[-0.01em] shadow-[0_2px_8px_rgba(15,118,110,0.35),inset_0_1px_0_rgba(255,255,255,0.2)] hover:from-[#13968b] hover:to-[#0d6962] hover:shadow-[0_4px_12px_rgba(15,118,110,0.4)] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:shadow-none"
                 >
-                  Next
+                  {mode === 'practice' ? 'Practice Now' : 'Next'}
                   <ArrowRight className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -1036,7 +1043,7 @@ ARCHITECTURAL RULES:
       </div>
 
       {/* Subtle Prompting Guideline */}
-      <div className="flex items-center justify-center gap-1.5 mt-2.5 px-2 text-center">
+      <div className="flex items-center justify-center gap-1.5 mt-6 sm:mt-7 px-2 text-center">
         <span className="text-[11.5px] text-text-muted leading-relaxed tracking-[-0.01em]">
           <strong className="text-text-primary font-medium tracking-normal mr-1">Tip:</strong>Mention your background and pick a realistic timeframe for the best roadmap depth.
         </span>
@@ -1088,6 +1095,14 @@ ARCHITECTURAL RULES:
             sessionStorage.setItem('roadmap_just_generated', 'true');
             router.push(`/roadmap/${data.slug || data.id}`);
           }}
+        />
+      )}
+
+      {isPracticeModalOpen && value.trim() && (
+        <TopicPracticeModal
+          isOpen={isPracticeModalOpen}
+          onClose={() => setIsPracticeModalOpen(false)}
+          topic={value.trim()}
         />
       )}
     </motion.div>

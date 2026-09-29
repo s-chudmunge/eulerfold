@@ -822,10 +822,10 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
             {/* Practice Modal */}
             {selectedPracticeTopic && (
                 <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-background/80 animate-in fade-in duration-200">
-                    <div className="w-full max-w-2xl bg-background border border-border shadow-2xl rounded-3xl overflow-hidden animate-in zoom-in-95 duration-200 relative">
+                    <div className="w-full max-w-2xl bg-background border border-border shadow-2xl rounded-md overflow-hidden animate-in zoom-in-95 duration-200 relative">
                         <button 
                             onClick={() => setSelectedPracticeTopic(null)}
-                            className="absolute top-6 right-6 z-[210] p-2 hover:bg-callout-bg rounded-full transition-colors text-text-muted"
+                            className="absolute top-6 right-6 z-[210] p-2 hover:bg-callout-bg rounded-md transition-colors text-text-muted"
                         >
                             <X className="w-5 h-5" />
                         </button>
@@ -837,6 +837,7 @@ export default function PublicRoadmapView({ roadmap: initialRoadmap, slug }: Pro
                                 topicName={selectedPracticeTopic.topic.title || ''}
                                 topics={(roadmap.roadmap_plan?.modules?.[selectedPracticeTopic.moduleIndex]?.topics || []).map((t: any) => t.title || '')}
                                 moduleTitle={roadmap.roadmap_plan?.modules?.[selectedPracticeTopic.moduleIndex]?.title || ''}
+                                learningObjectives={roadmap.roadmap_plan?.modules?.[selectedPracticeTopic.moduleIndex]?.outcome || ''}
                                 subject={roadmap.subject || roadmap.title || ''}
                                 weekNumber={selectedPracticeTopic.moduleIndex + 1}
                                 isPro={profile?.is_pro || false}

@@ -405,9 +405,17 @@ class PracticeStats(BaseModel):
 class MCQQuestion(BaseModel):
     id: str
     question: str
-    options: List[str]
-    correct_answer_index: int
-    explanation: str
+    options: List[str] = []
+    correct_answer_index: Optional[int] = -1
+    explanation: str = ""
+    difficulty: Optional[str] = "medium"
+    momentum_stage: Optional[str] = "Core Mechanics"
+    concepts_tested: Optional[List[str]] = []
+    misconception_map: Optional[Dict[str, str]] = None
+    dataset_source: Optional[str] = None
+    format: Optional[str] = "mcq"
+    ground_truth_answer: Optional[str] = None
+    solution: Optional[str] = None
 
 class MCQSessionCreate(BaseModel):
     roadmap_id: Optional[int] = None
@@ -415,13 +423,24 @@ class MCQSessionCreate(BaseModel):
     topic_name: str
     topics: Optional[List[str]] = None
     module_title: Optional[str] = None
+    learning_objectives: Optional[str] = None
     learner_context: Optional[str] = None
     subject: str
     week_number: int
-    num_questions: int = Field(10, ge=10, le=20)
+    num_questions: int = Field(18, ge=5, le=40)
     engine_type: Optional[str] = "cloud"
     api_key: Optional[str] = None
     model_name: Optional[str] = None
+
+class FreemiumMCQPreviewRequest(BaseModel):
+    topic: str
+    num_questions: int = Field(3, ge=1, le=5)
+
+class FreemiumMCQPreviewResponse(BaseModel):
+    topic: str
+    questions: List[MCQQuestion]
+    total_preview: int
+    source: str
 
 class MCQSessionSaveExternal(BaseModel):
     roadmap_id: Optional[int] = None
@@ -442,7 +461,8 @@ class MCQSessionRead(BaseModel):
     subject: str
     week_number: int
     questions: List[MCQQuestion]
-    user_answers: Optional[List[int]] = []
+    pool: Optional[Dict[str, List[MCQQuestion]]] = None
+    user_answers: Optional[List[Any]] = []
     score: Optional[float] = None
     credit_cost: float
     status: str
@@ -475,7 +495,8 @@ class PublicProfile(BaseModel):
     discussions: List["DiscussionRead"] = []
 
 class MCQSubmitAnswer(BaseModel):
-    answers: List[int] # List of chosen indices matching questions
+    answers: List[Any] # List of chosen indices or predicted strings matching questions
+    questions: Optional[List[MCQQuestion]] = None # Dynamically adapted question sequence
 
 # --- Discussion Schemas ---
 

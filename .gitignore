@@ -70,3 +70,9 @@ backend/sent_leads.json
 sent_leads.json
 backend/scripts/
 marketing-and-leads/
+
+# Custom Datasets (Local storage until 2-3M questions reached)
+/datasets/
+/dataset/
+*.parquet
+

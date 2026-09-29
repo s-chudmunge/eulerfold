@@ -469,6 +469,7 @@ export default function LearnClient({
                   <TopicContentDetails
                     currentTopic={currentTopic}
                     currentModule={currentModule}
+                    subject={roadmap.subject || roadmap.title || ''}
                     onOpenGoldfishReading={() => handleOpenGoldfish('reading')}
                   />
 
@@ -491,6 +492,7 @@ export default function LearnClient({
                     topicName={currentTopic?.title || ''}
                     topics={(currentModule?.topics || []).map((t: any) => t.title || '')}
                     moduleTitle={currentModule?.title || ''}
+                    learningObjectives={currentModule?.outcome || ''}
                     subject={roadmap.subject || roadmap.title || ''}
                     weekNumber={currentModuleIndex + 1}
                     isPro={profile?.is_pro || false}
@@ -532,7 +534,7 @@ export default function LearnClient({
                 </button>
               </div>
 
-              {/* Message Content: High contrast text and clear iconography */}
+              {/* Message Content: Elevated contrast text and clear iconography */}
               <div className="flex items-start gap-2.5">
                 <div className="p-1.5 rounded-md bg-orange-500/10 text-orange-600 dark:text-orange-400 shrink-0 mt-0.5 border border-orange-500/20">
                   <Sparkles className="w-3.5 h-3.5" />

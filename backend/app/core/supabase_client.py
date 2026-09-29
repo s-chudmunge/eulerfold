@@ -50,7 +50,8 @@ def get_admin_supabase_client() -> Client:
     """
     if not hasattr(_local, "admin_client"):
         url = settings.SUPABASE_URL
-        key = settings.SUPABASE_SERVICE_ROLE_KEY or settings.SUPABASE_KEY # Fallback
+        import os
+        key = settings.SUPABASE_SERVICE_ROLE_KEY or os.environ.get("SUPABASE_SERVICE_KEY") or settings.SUPABASE_KEY # Fallback
 
         if not url or not key:
             raise RuntimeError("Supabase admin credentials are not configured")
