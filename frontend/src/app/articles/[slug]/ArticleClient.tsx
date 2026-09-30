@@ -763,7 +763,7 @@ export default function ArticleClient({ article }: Props) {
             {/* Bar 1: Author identity */}
             {article.status !== 'archived' && (
               <div className="flex items-center justify-between w-full py-3 border-t border-border/60">
-                <span className="text-[11px] text-text-muted uppercase tracking-widest inconsolata-ui opacity-60">Written by</span>
+                <span className="text-[11px] text-text-muted uppercase tracking-widest inconsolata-ui opacity-60">By</span>
                 <div className="flex items-center manrope-body">
                   <a
                     href="https://www.linkedin.com/in/sankalp-chudmunge-a3ba80423/"
@@ -919,7 +919,7 @@ export default function ArticleClient({ article }: Props) {
                       </div>
                       <div className="flex flex-col items-start text-left">
                         <div className="text-[14px] font-bold text-text-heading manrope-body leading-tight">
-                          Written by {authorName}
+                          By {authorName}
                         </div>
                         {authorRole && (
                           <div className="text-[13px] text-text-muted manrope-body leading-tight mt-1">
