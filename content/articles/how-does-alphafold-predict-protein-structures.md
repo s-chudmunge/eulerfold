@@ -1,5 +1,5 @@
 ---
-title: "Why Do Static Maps Fail to Predict Living Machinery?"
+title: "How Does AlphaFold Predict Protein Structures?"
 slug: "how-does-alphafold-predict-protein-structures"
 shortSlug: "alphafold"
 author: "Sankalp Chudmunge — Engineering Lead"
