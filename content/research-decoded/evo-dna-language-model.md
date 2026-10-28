@@ -4,12 +4,16 @@ authors: "Eric Nguyen et al. (Arc Institute, 2024)"
 citation: "Nguyen, E., Poli, M., Durrant, M. G., et al. (2024). Sequence modeling and design from molecular to genome scale with Evo. Science, 386(6723), ado9336."
 link: "https://doi.org/10.1126/science.ado9336"
 slug: "evo-dna-language-model"
-heroImage: "/images/research-decoded/evo-dna-language-model.svg"
+heroImage: "/images/research-decoded/evo-dna-language-model.png"
 ---
 
 In 2024, researchers at the Arc Institute and Stanford University introduced Evo, a foundational genomic model that treats the entire code of life as a continuous, generative language. Prior to this work, genomic models were restricted by small context windows that could only capture local fragments of a sequence, preventing a holistic understanding of how distant genetic elements interact to define organismal regulation. The researchers demonstrated that by utilizing the StripedHyena architecture to process over 131,000 nucleotides in a single pass, a system can learn the global "grammar" of DNA across the molecular and genomic scales, establishing a predictive and generative framework for the design of novel biological machines.
 
 ## Long-Context Genomic Modeling and StripedHyena {#architecture}
+
+![The Evo foundation model architecture from the Arc Institute, demonstrating long-context StripedHyena hybrid attention across multi-scale biological sequences.](/images/research-decoded/evo-dna-language-model.png)
+
+_The Evo foundation model architecture from the Arc Institute, demonstrating long-context StripedHyena hybrid attention across multi-scale biological sequences._
 
 The primary technical contribution of Evo is the achievement of genome-scale context through the StripedHyena architecture—a hybrid model that interleaves multi-head attention with gated convolutions. Standard Transformer architectures suffer from a quadratic computational cost that makes the processing of long biological sequences infeasible. StripedHyena resolves this bottleneck by utilizing convolutions to capture local structural patterns while reserving attention for the critical long-range dependencies of operons and regulatory networks. This methodological choice allowed the model to be trained on 2.7 trillion nucleotides from diverse prokaryotic and viral sequences, proving that the most effective way to process the vast scale of biological data is through an architecture that prioritizes linear scaling.
 

@@ -613,36 +613,68 @@
     "expanded": true,
     "sections": [
       {
-        "title": "Solving Biology’s 50-Year-Old Protein Puzzle",
+        "title": "BLAST: The Engine of Comparative Genomics",
+        "slug": "blast-local-alignment-search"
+      },
+      {
+        "title": "DeepBind: Convolutional Discovery of Biological Motifs",
+        "slug": "deepbind-protein-dna-binding"
+      },
+      {
+        "title": "ESM-2: Language Models for Atomic Protein Structure",
+        "slug": "esm2-evolutionary-scale-protein-language-model"
+      },
+      {
+        "title": "RoseTTAFold: Three-Track Biomolecular Modeling",
+        "slug": "rosettafold-three-track-structure-prediction"
+      },
+      {
+        "title": "AlphaFold 2: Solving Biology’s 50-Year-Old Protein Puzzle",
         "slug": "alphafold-2-structure-prediction"
       },
       {
-        "title": "Mapping Every Molecule in the Human Body",
-        "slug": "alphafold-3-unified-biology"
+        "title": "ProteinMPNN: Neural Inverse Protein Folding",
+        "slug": "proteinmpnn-de-novo-protein-sequence-design"
+      },
+      {
+        "title": "RFdiffusion: Generative Diffusion for Protein Design",
+        "slug": "rfdiffusion-generative-protein-design"
+      },
+      {
+        "title": "Enformer: Long-Range Attention for Gene Regulation",
+        "slug": "enformer-gene-expression-long-range-interactions"
       },
       {
         "title": "Evo: Decoding the Code of Life with AI",
         "slug": "evo-dna-language-model"
       },
       {
-        "title": "Predicting Global Weather with Graph AI",
-        "slug": "graphcast-weather-ai"
+        "title": "AlphaFold 3: Mapping Every Molecule in the Human Body",
+        "slug": "alphafold-3-unified-biology"
       },
       {
-        "title": "AI-Assisted Precision Medicine",
-        "slug": "crispr-gpt-ai-assisted-genome-editing"
+        "title": "The Universal Foundation for Biological Data",
+        "slug": "bioverse-multimodal-biological-foundation-model-alignment"
       },
       {
         "title": "Physics-Informed AI for Medical Discovery",
         "slug": "physics-informed-machine-learning-biomedical-engineering"
       },
       {
+        "title": "scGPT: Foundation Transformer for Single-Cell Biology",
+        "slug": "scgpt-single-cell-generative-transformer"
+      },
+      {
+        "title": "AI-Assisted Precision Medicine",
+        "slug": "crispr-gpt-ai-assisted-genome-editing"
+      },
+      {
         "title": "Agentomics: Autonomous AI for Biology",
         "slug": "agentomics-ml-autonomous-ml-genomics"
       },
       {
-        "title": "The Universal Foundation for Biological Data",
-        "slug": "bioverse-multimodal-biological-foundation-model-alignment"
+        "title": "Predicting Global Weather with Graph AI",
+        "slug": "graphcast-weather-ai"
       }
     ]
   },
